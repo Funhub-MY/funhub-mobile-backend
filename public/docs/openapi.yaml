@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: Laravel
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/v1/login:
+    post:
+      summary: Login
+      operationId: login
+      description: 'Login user into the system with email and password and returns user''s token used for API authentication'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"user\": {\n    id: 1,\n    name: \"John Smith\"\n },\n \"token\": \"AuthenticationTokenHere\"\n}"
+        401:
+          description: 'Invalid Login details'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid login details'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid login details'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The email address of the user.  (john@example.com)'
+                  example: issac81@example.org
+                password:
+                  type: string
+                  description: 'The password of the user. (min 8 characters)'
+                  example: 0xT4HqKfcv@iB)Cp0
+              required:
+                - email
+                - password
+      security: []
+  '/api/v1/login/{provider}':
+    post:
+      summary: ''
+      operationId: postApiV1LoginProvider
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: provider
+        description: ''
+        example: architecto
+        required: true
+        schema:
+          type: string
+  /api/v1/register/email:
+    post:
+      summary: 'Register with Email'
+      operationId: registerWithEmail
+      description: 'Register user with email and password'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"user\": {\n    id: 1,\n    name: \"John Smith\"\n },\n \"token\": \"AuthenticationTokenHere\"\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the user.  (John Smith)'
+                  example: praesentium
+                email:
+                  type: string
+                  description: 'The email address of the user.  (john@example.com)'
+                  example: mswaniawski@example.com
+                password:
+                  type: string
+                  description: 'The password of the user. (min 8 characters)'
+                  example: 'uv(q+m*A.@7,Wb/XQ"'
+              required:
+                - name
+                - email
+                - password
+      security: []
+  '/api/v1/register/{provider}':
+    post:
+      summary: ''
+      operationId: postApiV1RegisterProvider
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: provider
+        description: ''
+        example: eum
+        required: true
+        schema:
+          type: string
+  /api/v1/logout:
+    post:
+      summary: Logout
+      operationId: logout
+      description: 'Log User Out and destroy any active tokens of user'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Logged Out'
+                properties:
+                  message:
+                    type: string
+                    example: 'Logged Out'
+        401:
+          description: 'Access Denied'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Access Denied'
+                properties:
+                  message:
+                    type: string
+                    example: 'Access Denied'
+      tags:
+        - Endpoints
+      security: []
+tags:
+  -
+    name: Endpoints
+    description: ''
