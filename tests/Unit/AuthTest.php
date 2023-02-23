@@ -3,10 +3,17 @@
 namespace Tests\Unit;
 
 use App\Models\User;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
+    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     /**
      * Test /api/v1/login with invalid email and password assert response 422
      */
