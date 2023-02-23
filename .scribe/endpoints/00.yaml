@@ -1,0 +1,265 @@
+name: Endpoints
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/login
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: Login
+      description: 'Login user into the system with email and password and returns user''s token used for API authentication'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'The email address of the user.  (john@example.com)'
+        required: true
+        example: issac81@example.org
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The password of the user. (min 8 characters)'
+        required: true
+        example: 0xT4HqKfcv@iB)Cp0
+        type: string
+        custom: []
+    cleanBodyParameters:
+      email: issac81@example.org
+      password: 0xT4HqKfcv@iB)Cp0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "user": {
+              id: 1,
+              name: "John Smith"
+           },
+           "token": "AuthenticationTokenHere"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Invalid login details"}'
+        headers: []
+        description: 'Invalid Login details'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/login/{provider}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      provider:
+        name: provider
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        custom: []
+    cleanUrlParameters:
+      provider: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/register/email
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Register with Email'
+      description: 'Register user with email and password'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the user.  (John Smith)'
+        required: true
+        example: praesentium
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'The email address of the user.  (john@example.com)'
+        required: true
+        example: mswaniawski@example.com
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The password of the user. (min 8 characters)'
+        required: true
+        example: 'uv(q+m*A.@7,Wb/XQ"'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: praesentium
+      email: mswaniawski@example.com
+      password: 'uv(q+m*A.@7,Wb/XQ"'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "user": {
+              id: 1,
+              name: "John Smith"
+           },
+           "token": "AuthenticationTokenHere"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/register/{provider}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      provider:
+        name: provider
+        description: ''
+        required: true
+        example: eum
+        type: string
+        custom: []
+    cleanUrlParameters:
+      provider: eum
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/logout
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: Logout
+      description: 'Log User Out and destroy any active tokens of user'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message" : "Logged Out"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Access Denied"}'
+        headers: []
+        description: 'Access Denied'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
