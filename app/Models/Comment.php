@@ -9,6 +9,12 @@ class Comment extends Model
 {
     use HasFactory;
 
+    const STATUS = [
+        0 => 'Draft',
+        1 => 'Published',
+        2 => 'Hidden'
+    ];
+
     protected $guarded = ['id'];
 
     public function commentable()

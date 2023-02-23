@@ -9,6 +9,18 @@ class Interaction extends Model
 {
     use HasFactory;
 
+    const STATUS = [
+        0 => 'Draft',
+        1 => 'Published',
+        2 => 'Hidden'
+    ];
+
+    const TYPE = [
+        0 => 'Like',
+        1 => 'Dislike',
+        2 => 'Share',
+    ];
+
     protected $guarded = ['id'];
 
     public function interactable()

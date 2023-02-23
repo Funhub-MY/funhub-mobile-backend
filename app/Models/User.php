@@ -69,4 +69,26 @@ class User extends Authenticatable
     {
         return $this->hasMany(ArticleTag::class);
     }
+
+    public function merchant()
+    {
+        return $this->hasOne(Merchant::class);
+    }
+    // Important Note:: This is to indicate what merchant_offers has created by the users.
+    public function merchant_offers()
+    {
+        return $this->hasMany(MerchantOffer::class);
+    }
+
+    // Important Note:: This is to indicate what merchant_offers has been claimed by the users.
+    public function claimed_merchant_offers()
+    {
+        return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_user')->withPivot('status');
+    }
+
+    public function stores()
+    {
+         return $this->hasMany(Store::class);
+    }
+
 }
