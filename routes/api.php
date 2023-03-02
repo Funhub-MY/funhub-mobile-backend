@@ -14,10 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::group(['prefix' => 'v1'], function () {
-    Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']); // login with email
-    Route::post('login/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'loginSocialProvider']);
-    Route::post('register/email', [\App\Http\Controllers\Api\AuthController::class, 'registerWithEmail']);
-    Route::post('register/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'registerSocialProvider']);
+    // primary otp login
+    Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
+    Route::post('verifyOtp', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyOtp']); // verify otp
+    Route::post('loginWithPassword', [\App\Http\Controllers\Api\AuthController::class, 'loginWithPassword']); // login with phone no + password
+    Route::post('register/otp', [\App\Http\Controllers\Api\AuthController::class, 'registerWithOtp']);
+
+    // social provider logins
+    // Route::post('login/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'loginSocialProvider']);
+    // Route::post('register/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'registerSocialProvider']);
+
 
     Route::group(['middleware' => ['auth:sanctum']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);

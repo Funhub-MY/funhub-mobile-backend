@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel",
-        "_postman_id": "669fc108-c2e8-42bb-8c2c-9cea5bf79b27",
+        "_postman_id": "3b0e4e1e-d9fb-46ee-8a4c-3d21da7dd25a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -20,13 +20,13 @@
             "description": "",
             "item": [
                 {
-                    "name": "Login",
+                    "name": "Send OTP",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/login",
+                            "path": "api\/v1\/sendOtp",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/login"
+                            "raw": "{{baseUrl}}\/api\/v1\/sendOtp"
                         },
                         "method": "POST",
                         "header": [
@@ -36,14 +36,77 @@
                             },
                             {
                                 "key": "Accept",
-                                "value": "application\/json"
+                                "value": "application\/x-www-form-urlencoded"
                             }
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"issac81@example.org\",\"password\":\"0xT4HqKfcv@iB)Cp0\"}"
+                            "raw": "{\"country_code\":\"60\",\"phone_no\":\"1234567890\"}"
                         },
-                        "description": "Login user into the system with email and password and returns user's token used for API authentication",
+                        "description": "Send SMS OTP to phone number",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"message\": \"OTP Sent!\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"country_code\": [\"The Country COde field is required.\"], \"phone_no\": [\"The Phone No field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
+                {
+                    "name": "Verify OTP",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/verifyOtp",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/verifyOtp"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/x-www-form-urlencoded"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "country_code",
+                                    "value": "60",
+                                    "type": "text",
+                                    "description": "The country code of user's phone number."
+                                },
+                                {
+                                    "key": "phone_no",
+                                    "value": "1234567890",
+                                    "type": "text",
+                                    "description": "The Phone No of the user."
+                                },
+                                {
+                                    "key": "otp",
+                                    "value": "123456",
+                                    "type": "text",
+                                    "description": "The OTP sent to user's phone number."
+                                }
+                            ]
+                        },
+                        "description": "Login user into the system with OTP",
                         "auth": {
                             "type": "noauth"
                         }
@@ -64,27 +127,19 @@
                         {
                             "header": [],
                             "code": 422,
-                            "body": "{\"errors\": [\"email\": [\"The email field is required.\"], \"password\": [\"The password field is required.\"] ]}",
+                            "body": "{\"errors\": [\"country_code\": [\"The Country COde field is required.\"], \"phone_no\": [\"The Phone No field is required.\"] ]}",
                             "name": "Invalid Form Fields"
                         }
                     ]
                 },
                 {
-                    "name": "POST api\/v1\/login\/{provider}",
+                    "name": "Login with Password",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/login\/:provider",
+                            "path": "api\/v1\/loginWithPassword",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/login\/:provider",
-                            "variable": [
-                                {
-                                    "id": "provider",
-                                    "key": "provider",
-                                    "value": "architecto",
-                                    "description": ""
-                                }
-                            ]
+                            "raw": "{{baseUrl}}\/api\/v1\/loginWithPassword"
                         },
                         "method": "POST",
                         "header": [
@@ -95,30 +150,56 @@
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept:",
+                                "value": "application\/x-www-form-urlencoded"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"country_code\":\"60\",\"phone_no\":\"1234567890\",\"password\":\"abcd1234\"}"
+                        },
                         "description": "",
                         "auth": {
                             "type": "noauth"
                         }
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"user\": {},\n \"token\": \"auth_token\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Invalid Credentials\"}",
+                            "name": "Invalid Credentials"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"country_code\": [\"The Country COde field is required.\"], \"phone_no\": [\"The Phone No field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
                 },
                 {
-                    "name": "Register with Email",
+                    "name": "Register with OTP",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/register\/email",
+                            "path": "api\/v1\/register\/otp",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/register\/email"
+                            "raw": "{{baseUrl}}\/api\/v1\/register\/otp"
                         },
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/json"
+                                "value": "application\/x-www-form-urlencoded"
                             },
                             {
                                 "key": "Accept",
@@ -126,10 +207,41 @@
                             }
                         ],
                         "body": {
-                            "mode": "raw",
-                            "raw": "{\"name\":\"praesentium\",\"email\":\"mswaniawski@example.com\",\"password\":\"uv(q+m*A.@7,Wb\\\/XQ\\\"\"}"
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "country_code",
+                                    "value": "60",
+                                    "type": "text",
+                                    "description": "The country code of user's phone number."
+                                },
+                                {
+                                    "key": "phone_no",
+                                    "value": "1234567890",
+                                    "type": "text",
+                                    "description": "The Phone No of the user."
+                                },
+                                {
+                                    "key": "otp",
+                                    "value": "123456",
+                                    "type": "text",
+                                    "description": "The OTP sent to user's phone number."
+                                },
+                                {
+                                    "key": "name",
+                                    "value": "John Smith",
+                                    "type": "text",
+                                    "description": "The name of the use."
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "abcd1234",
+                                    "type": "text",
+                                    "description": "The password of the user."
+                                }
+                            ]
                         },
-                        "description": "Register user with email and password",
+                        "description": "Register user with OTP",
                         "auth": {
                             "type": "noauth"
                         }
@@ -144,46 +256,10 @@
                         {
                             "header": [],
                             "code": 422,
-                            "body": "{\"errors\": [\"email\": [\"The email field is required.\"], \"password\": [\"The password field is required.\"] ]}",
+                            "body": "{\"errors\": [\"country_code\": [\"The Country COde field is required.\"], \"phone_no\": [\"The Phone No field is required.\"] ]}",
                             "name": "Invalid Form Fields"
                         }
                     ]
-                },
-                {
-                    "name": "POST api\/v1\/register\/{provider}",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/register\/:provider",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/register\/:provider",
-                            "variable": [
-                                {
-                                    "id": "provider",
-                                    "key": "provider",
-                                    "value": "eum",
-                                    "description": ""
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": []
                 },
                 {
                     "name": "Logout",
@@ -198,7 +274,7 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/json"
+                                "value": "application\/x-www-form-urlencoded"
                             },
                             {
                                 "key": "Accept",

@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'movider' => [
+        'key' => env('MOVIDER_KEY'),
+        'secret' => env('MOVIDER_SECRET'),
+        'api_url' => env('MOVIDER_API', 'https://api.movider.co/v1/sms'),
+    ]
 ];

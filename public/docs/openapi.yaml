@@ -7,17 +7,78 @@ servers:
   -
     url: 'http://localhost'
 paths:
-  /api/v1/login:
+  /api/v1/sendOtp:
     post:
-      summary: Login
-      operationId: login
-      description: 'Login user into the system with email and password and returns user''s token used for API authentication'
+      summary: 'Send OTP'
+      operationId: sendOTP
+      description: 'Send SMS OTP to phone number'
       parameters:
         -
           in: header
           name: Content-Type
           description: ''
           example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/x-www-form-urlencoded
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'OTP Sent!'
+                properties:
+                  message:
+                    type: string
+                    example: 'OTP Sent!'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: "The country code of user's phone number."
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'The Phone No of the user.'
+                  example: '1234567890'
+              required:
+                - country_code
+                - phone_no
+      security: []
+  /api/v1/verifyOtp:
+    post:
+      summary: 'Verify OTP'
+      operationId: verifyOTP
+      description: 'Login user into the system with OTP'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/x-www-form-urlencoded
           schema:
             type: string
         -
@@ -53,32 +114,37 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
         - Endpoints
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
-                email:
+                country_code:
                   type: string
-                  description: 'The email address of the user.  (john@example.com)'
-                  example: issac81@example.org
-                password:
+                  description: "The country code of user's phone number."
+                  example: '60'
+                phone_no:
                   type: string
-                  description: 'The password of the user. (min 8 characters)'
-                  example: 0xT4HqKfcv@iB)Cp0
+                  description: 'The Phone No of the user.'
+                  example: '1234567890'
+                otp:
+                  type: string
+                  description: "The OTP sent to user's phone number."
+                  example: '123456'
               required:
-                - email
-                - password
+                - country_code
+                - phone_no
+                - otp
       security: []
-  '/api/v1/login/{provider}':
+  /api/v1/loginWithPassword:
     post:
-      summary: ''
-      operationId: postApiV1LoginProvider
+      summary: 'Login with Password'
+      operationId: loginWithPassword
       description: ''
       parameters:
         -
@@ -95,30 +161,86 @@ paths:
           example: application/json
           schema:
             type: string
-      responses: {  }
+        -
+          in: header
+          name: 'Accept:'
+          description: ''
+          example: application/x-www-form-urlencoded
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user: {  }
+                  token: auth_token
+                properties:
+                  user:
+                    type: object
+                    properties: []
+                  token:
+                    type: string
+                    example: auth_token
+        401:
+          description: 'Invalid Credentials'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid Credentials'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid Credentials'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
         - Endpoints
-      security: []
-    parameters:
-      -
-        in: path
-        name: provider
-        description: ''
-        example: architecto
+      requestBody:
         required: true
-        schema:
-          type: string
-  /api/v1/register/email:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: 'Country code of phone number.'
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'Phone number.'
+                  example: '1234567890'
+                password:
+                  type: string
+                  description: Password.
+                  example: abcd1234
+              required:
+                - country_code
+                - phone_no
+                - password
+      security: []
+  /api/v1/register/otp:
     post:
-      summary: 'Register with Email'
-      operationId: registerWithEmail
-      description: 'Register user with email and password'
+      summary: 'Register with OTP'
+      operationId: registerWithOTP
+      description: 'Register user with OTP'
       parameters:
         -
           in: header
           name: Content-Type
           description: ''
-          example: application/json
+          example: application/x-www-form-urlencoded
           schema:
             type: string
         -
@@ -142,66 +264,43 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
         - Endpoints
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
+                country_code:
+                  type: string
+                  description: "The country code of user's phone number."
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'The Phone No of the user.'
+                  example: '1234567890'
+                otp:
+                  type: string
+                  description: "The OTP sent to user's phone number."
+                  example: '123456'
                 name:
                   type: string
-                  description: 'The name of the user.  (John Smith)'
-                  example: praesentium
-                email:
-                  type: string
-                  description: 'The email address of the user.  (john@example.com)'
-                  example: mswaniawski@example.com
+                  description: 'The name of the use.'
+                  example: 'John Smith'
                 password:
                   type: string
-                  description: 'The password of the user. (min 8 characters)'
-                  example: 'uv(q+m*A.@7,Wb/XQ"'
+                  description: 'The password of the user.'
+                  example: abcd1234
               required:
+                - country_code
+                - phone_no
+                - otp
                 - name
-                - email
                 - password
       security: []
-  '/api/v1/register/{provider}':
-    post:
-      summary: ''
-      operationId: postApiV1RegisterProvider
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
-      responses: {  }
-      tags:
-        - Endpoints
-      security: []
-    parameters:
-      -
-        in: path
-        name: provider
-        description: ''
-        example: eum
-        required: true
-        schema:
-          type: string
   /api/v1/logout:
     post:
       summary: Logout
@@ -212,7 +311,7 @@ paths:
           in: header
           name: Content-Type
           description: ''
-          example: application/json
+          example: application/x-www-form-urlencoded
           schema:
             type: string
         -

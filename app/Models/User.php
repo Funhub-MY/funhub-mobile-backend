@@ -18,12 +18,8 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'avatar',
-        'email',
-        'password',
-        'email_verified_at'
+    protected $guarded = [
+        'id'
     ];
 
     /**
@@ -34,6 +30,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $appends = [
+        'full_phone_no'
     ];
 
     /**
@@ -91,4 +91,12 @@ class User extends Authenticatable
          return $this->hasMany(Store::class);
     }
 
+    /**
+     * Get the user's full phone number
+     */
+    public function getFullPhoneNoAttribute()
+    {
+        // response 60123456789
+        return $this->phone_country_code . $this->phone_no;
+    }
 }
