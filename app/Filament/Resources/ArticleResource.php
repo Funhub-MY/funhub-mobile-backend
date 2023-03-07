@@ -43,11 +43,9 @@ class ArticleResource extends Resource
                                 ->disabled()
                                 ->required()
                                 ->unique(Article::class, 'slug', ignoreRecord: true),
-                            Forms\Components\Select::make('type')
-                                ->placeholder('Select Type')
-                                ->options(Article::TYPE)
-                                ->required()
-                                ->columnSpan('full'),
+                            Forms\Components\Hidden::make('type')
+                                ->default(Article::TYPE[0])
+                                ->required(),
                             Forms\Components\Textarea::make('excerpt')
                                 ->rows(3)
                                 ->columnSpan('full'),

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('unit_price', 8,2);
-            $table->timestamp('available_at');
-            $table->timestamp('available_until');
+            $table->timestamp('available_at')->nullable();
+            $table->timestamp('available_until')->nullable();
             $table->integer('quantity');
             $table->string('sku');
             $table->softDeletes();
