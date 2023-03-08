@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone_country_code')->nullable()->after('email_verified_at');
             $table->string('phone_no')->unique()->nullable()->after('email_verified_at');
-            $table->timestamp('otp_verified_at')->default(false)->after('email_verified_at');
+            $table->timestamp('otp_verified_at')->nullable()->after('email_verified_at');
             $table->string('otp')->nullable()->after('email_verified_at');
             $table->timestamp('otp_expiry')->nullable()->after('email_verified_at');
         });

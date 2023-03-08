@@ -28,7 +28,6 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      * 
-     * @header Accept: application/x-www-form-urlencoded
      * @bodyParam country_code string required Country code of phone number. Example: 60
      * @bodyParam phone_no string required Phone number. Example: 1234567890
      * @bodyParam password string required Password. Example: abcd1234
@@ -73,7 +72,6 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @header Accept application/x-www-form-urlencoded
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @response scenario=success {
@@ -134,7 +132,6 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @header Content-Type application/x-www-form-urlencoded
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
@@ -231,6 +228,7 @@ class AuthController extends Controller
                 'otp' => null,
                 'otp_expiry' => null,
                 'name' => $request->name,
+                'email' => $request->has('email') ? $request->email : null,
                 'password' => Hash::make($request->password),
             ]);
 
