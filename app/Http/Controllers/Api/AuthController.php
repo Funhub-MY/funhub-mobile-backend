@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -93,7 +94,7 @@ class AuthController extends Controller
         $success = false;
         if ($user) {
             // fire sms
-            if ($user->otp_expiry < now()) { // existing otp still valid
+            if ($user->otp && $user->otp_expiry < now()) { // existing otp still valid
                 $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
             } else {
                 $otp = rand(100000, 999999);
@@ -157,7 +158,6 @@ class AuthController extends Controller
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->where('otp', $request->otp)
-            ->where('otp_expiry', '<=', now())
             ->first();
 
         if ($user) {
@@ -166,14 +166,15 @@ class AuthController extends Controller
             $user->update([
                 'otp' => null,
                 'otp_expiry' => null,
+                'otp_verified_at' => now(),
             ]);
              // log user in
-            $token = $user->createToken('authToken')->accessToken;
+            $token = $user->createToken('authToken');
             Auth::login($user);
 
             return response()->json([
                 'user' => new UserResource($user),
-                'token' => $token,
+                'token' => $token->plainTextToken,
             ], 200);
         }
 
