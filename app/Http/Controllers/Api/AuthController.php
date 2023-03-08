@@ -235,12 +235,12 @@ class AuthController extends Controller
 
             // login user and issue token
              // log user in
-             $token = $user->createToken('authToken')->accessToken;
+             $token = $user->createToken('authToken');
              Auth::login($user);
  
              return response()->json([
                  'user' => new UserResource($user),
-                 'token' => $token,
+                 'token' => $token->plainTextToken,
              ], 200);
         } else {
             return response()->json(['message' => 'OTP Invalid or Expired'], 422);
