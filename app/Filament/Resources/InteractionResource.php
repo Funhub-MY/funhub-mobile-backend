@@ -21,6 +21,8 @@ class InteractionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationGroup = 'Users';
+
     public static function form(Form $form): Form
     {
         return $form
