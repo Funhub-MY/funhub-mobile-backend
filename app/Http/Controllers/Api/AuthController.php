@@ -219,7 +219,6 @@ class AuthController extends Controller
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->where('otp', $request->otp)
-            ->where('otp_expiry', '<=', now())
             ->first();
 
         if ($user) {
