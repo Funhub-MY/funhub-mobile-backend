@@ -49,4 +49,10 @@ class Article extends Model implements HasMedia
         return $this->morphMany(Interaction::class, 'interactable');
     }
 
+    public function hiddenUsers()
+    {
+        return $this->belongsToMany(User::class, 'article_hidden_users')
+            ->withPivot('hide_until')
+            ->withTimestamps();
+    }
 }

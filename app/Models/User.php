@@ -91,6 +91,23 @@ class User extends Authenticatable
          return $this->hasMany(Store::class);
     }
 
+    public function interestArticleTags()
+    {
+        return $this->belongsToMany(ArticleTag::class);
+    }
+
+    public function interestArticleCategories()
+    {
+        return $this->belongsToMany(ArticleCategory::class);
+    }
+
+    public function hiddenFromArticles()
+    {
+        return $this->belongsToMany(Article::class, 'articles_hidden_users')
+            ->withPivot('hide_until')
+            ->withTimestamps();
+    }
+
     /**
      * Get the user's full phone number
      */

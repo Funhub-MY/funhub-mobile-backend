@@ -27,6 +27,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:sanctum']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+    
+        Route::resource('article', \App\Http\Controllers\Api\ArticleController::class);
     });
-
 });
