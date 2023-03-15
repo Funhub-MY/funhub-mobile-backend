@@ -9,14 +9,702 @@
         }
     ],
     "info": {
-        "name": "Laravel",
-        "_postman_id": "3b0e4e1e-d9fb-46ee-8a4c-3d21da7dd25a",
+        "name": "FUNHUB",
+        "_postman_id": "12570210-38be-4108-86f5-e9f23333e6a6",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [
         {
-            "name": "Endpoints",
+            "name": "Article",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get Articles for Logged in user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/article",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/article"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"filter\":\"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get One Article by ID",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/article\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/article\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The id of the article."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"article\": {}\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"message\": \"Article not found\"}",
+                            "name": "Not Found"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update article by ID. (Only owner of article can update)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/article\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/article\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The id of the article."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "body",
+                                    "value": "This is a comment",
+                                    "type": "text",
+                                    "description": "The body of the article."
+                                },
+                                {
+                                    "key": "tags[0]",
+                                    "value": "#tag1",
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "tags[1]",
+                                    "value": "#tag2",
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "categories[0]",
+                                    "value": 1,
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "categories[1]",
+                                    "value": 2,
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "images",
+                                    "src": [],
+                                    "type": "file"
+                                },
+                                {
+                                    "key": "_method",
+                                    "value": "PUT",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Article updated\",\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"message\": \"Comment not found\"}",
+                            "name": "Not Found"
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove article by ID. (Only owner of article can delete)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/article\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/article\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The id of the Article."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Article deleted\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"message\": \"Article not found\"}",
+                            "name": "Not Found"
+                        }
+                    ]
+                },
+                {
+                    "name": "Comments",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get comments on a commentable type (eg. Articles)",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments",
+                                    "variable": [
+                                        {
+                                            "id": "type",
+                                            "key": "type",
+                                            "value": "article",
+                                            "description": "The type of commentable."
+                                        },
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The id of the commentable."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"filter\":\"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Create a new comment by logged in user",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"type\":\"article\",\"id\":1,\"body\":\"This is a comment\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n \"comment\": {},\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"commentable_type\": [\"The Commentable Type field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Show one comment by ID",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "18",
+                                            "description": "The ID of the comment."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"id\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n \"comment\": {},\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 401,
+                                    "body": "",
+                                    "name": "Forbidden"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Update comment by ID. (Only owner of comment can update)",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The id of the comment."
+                                        }
+                                    ]
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"body\":\"This is a comment\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Comment updated\",\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\"message\": \"Comment not found\"}",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Remove comment by ID. (Only owner of comment can delete)",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The id of the comment."
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Interactions",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get interactions on a interactable type (eg. Articles)",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/interactions",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/interactions",
+                                    "variable": [
+                                        {
+                                            "id": "type",
+                                            "key": "type",
+                                            "value": "article",
+                                            "description": "The type of interactable."
+                                        },
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The id of the interactable."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"filter\":\"Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Create an interaction for interactable type",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/interactions",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/interactions"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"interactable\":\"article\",\"interaction_type\":\"like,dislike,share\",\"id\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"interaction\": {}\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Show one interaction by ID",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/interactions\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/interactions\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The id of the interaction."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [
+                                        {
+                                            "key": "cache-control",
+                                            "value": "no-cache, private"
+                                        },
+                                        {
+                                            "key": "content-type",
+                                            "value": "application\/json"
+                                        },
+                                        {
+                                            "key": "access-control-allow-origin",
+                                            "value": "*"
+                                        }
+                                    ],
+                                    "code": 401,
+                                    "body": "{\"message\":\"Unauthenticated.\"}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Remove Interaction By ID\nOnly owner can call this method",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/interactions\/:id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/interactions\/:id",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "The id of the interaction."
+                                        }
+                                    ]
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Interaction deleted\"\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{['message' => 'Interaction not found']}",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Authentication",
             "description": "",
             "item": [
                 {
@@ -36,7 +724,7 @@
                             },
                             {
                                 "key": "Accept",
-                                "value": "application\/x-www-form-urlencoded"
+                                "value": "application\/json"
                             }
                         ],
                         "body": {
@@ -76,7 +764,7 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/x-www-form-urlencoded"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
@@ -84,27 +772,8 @@
                             }
                         ],
                         "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": [
-                                {
-                                    "key": "country_code",
-                                    "value": "60",
-                                    "type": "text",
-                                    "description": "The country code of user's phone number."
-                                },
-                                {
-                                    "key": "phone_no",
-                                    "value": "1234567890",
-                                    "type": "text",
-                                    "description": "The Phone No of the user."
-                                },
-                                {
-                                    "key": "otp",
-                                    "value": "123456",
-                                    "type": "text",
-                                    "description": "The OTP sent to user's phone number."
-                                }
-                            ]
+                            "mode": "raw",
+                            "raw": "{\"country_code\":\"60\",\"phone_no\":\"1234567890\",\"otp\":\"123456\"}"
                         },
                         "description": "Login user into the system with OTP",
                         "auth": {
@@ -150,10 +819,6 @@
                             {
                                 "key": "Accept",
                                 "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept:",
-                                "value": "application\/x-www-form-urlencoded"
                             }
                         ],
                         "body": {
@@ -199,7 +864,7 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/x-www-form-urlencoded"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
@@ -207,39 +872,8 @@
                             }
                         ],
                         "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": [
-                                {
-                                    "key": "country_code",
-                                    "value": "60",
-                                    "type": "text",
-                                    "description": "The country code of user's phone number."
-                                },
-                                {
-                                    "key": "phone_no",
-                                    "value": "1234567890",
-                                    "type": "text",
-                                    "description": "The Phone No of the user."
-                                },
-                                {
-                                    "key": "otp",
-                                    "value": "123456",
-                                    "type": "text",
-                                    "description": "The OTP sent to user's phone number."
-                                },
-                                {
-                                    "key": "name",
-                                    "value": "John Smith",
-                                    "type": "text",
-                                    "description": "The name of the use."
-                                },
-                                {
-                                    "key": "password",
-                                    "value": "abcd1234",
-                                    "type": "text",
-                                    "description": "The password of the user."
-                                }
-                            ]
+                            "mode": "raw",
+                            "raw": "{\"country_code\":\"60\",\"phone_no\":\"1234567890\",\"otp\":\"123456\",\"name\":\"John Smith\",\"password\":\"abcd1234\"}"
                         },
                         "description": "Register user with OTP",
                         "auth": {
@@ -274,7 +908,7 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/x-www-form-urlencoded"
+                                "value": "application\/json"
                             },
                             {
                                 "key": "Accept",
@@ -282,10 +916,7 @@
                             }
                         ],
                         "body": null,
-                        "description": "Log User Out and destroy any active tokens of user",
-                        "auth": {
-                            "type": "noauth"
-                        }
+                        "description": "Log User Out and destroy any active tokens of user"
                     },
                     "response": [
                         {
@@ -303,9 +934,113 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "User Settings",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get settings of logged in user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"key\": \"value\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"message\": \"No settings found yet.\"}",
+                            "name": "No settings found yet"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update\/Create settings of logged in user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"key\":\"profile_private\",\"value\":\"true\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Settings updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"key\": [\"The Key field is required.\"], \"value\": [\"The Value field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "auth": {
-        "type": "noauth"
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "key",
+                "value": null,
+                "type": "string"
+            }
+        ]
     }
 }

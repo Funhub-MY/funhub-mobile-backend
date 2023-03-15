@@ -21,6 +21,18 @@ class Interaction extends Model
         2 => 'Share',
     ];
 
+    // filterable columns for frontend filtering
+    const FILTERABLE = [
+        'id',
+        'interactable_id',
+        'interactable_type',
+        'type', // type of intereactions like, dislike, share
+        'user_id',
+        'status',
+        'created_at',
+        'updated_at'
+    ];
+
     protected $guarded = ['id'];
 
     public function interactable()

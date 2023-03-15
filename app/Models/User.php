@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -60,9 +61,21 @@ class User extends Authenticatable
         return $this->hasMany(Interaction::class);
     }
 
+    /**
+     * User created article categories
+     */
     public function articleCategories()
     {
         return $this->hasMany(ArticleCategory::class);
+    }
+
+    /**
+     * User interest article categories (settings)
+     */
+    public function articleCategoriesInterests()
+    {
+        return $this->belongsToMany(ArticleCategory::class, 'user_article_categories')
+            ->withTimestamps();
     }
 
     public function articleTags()
@@ -99,6 +112,11 @@ class User extends Authenticatable
     public function interestArticleCategories()
     {
         return $this->belongsToMany(ArticleCategory::class);
+    }
+
+    public function settings()
+    {
+        return $this->hasMany(UserSetting::class);
     }
 
     public function hiddenFromArticles()

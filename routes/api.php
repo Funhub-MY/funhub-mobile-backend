@@ -28,6 +28,18 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:sanctum']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     
-        Route::resource('article', \App\Http\Controllers\Api\ArticleController::class);
+        // Articles
+        Route::post('article/images', \App\Http\Controllers\Api\ArticleController::class . '@postGalleryUploads');
+        Route::resource('article', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
+
+        // Comments
+        Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
+        
+        // Interactions
+        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
+
+        // User Settings
+        Route::get('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
+        Route::post('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
     });
 });
