@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->boolean('followers_only')->default(false)->after('is_published'); // means whoever follow the user can see it
+            $table->boolean('followers_only')->default(false)->after('published_at'); // means whoever follow the user can see it
         });
     }
 

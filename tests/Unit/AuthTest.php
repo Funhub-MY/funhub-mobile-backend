@@ -4,60 +4,135 @@ namespace Tests\Unit;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
     }
 
     /**
-     * Test /api/v1/login with invalid email and password assert response 422
+     * Test SendOtp API 
      */
-    public function test_failed_login_with_invalid_email() {
-        $response = $this->postJson('/api/v1/login', [
-            'email' => 'somerandomemail@gmail.com',
-            'password' => 'password'
+    public function testSendOtp() {
+        $response = $this->postJson('/api/v1/sendOtp', [
+            'country_code' => '60',
+            'phone_no' => '1234567890' // fake phone number
         ]);
 
-        $response->assertStatus(422);
+        $response->assertStatus(200)
+            ->assertExactJson([
+                'message' => 'OTP sent'
+            ]);
     }
 
     /**
-     * Test /api/v1/login with email and password assert response 200 with token
+     * Test SendOtp API with invalid phone number
      */
-    public function test_successful_login_with_email() {
-        $user = User::factory()->create();
+    public function testSendOtpWithoutPhoneNo() {
+        $response = $this->postJson('/api/v1/sendOtp', [
+            'country_code' => '60',
+        ]);
 
-        $response = $this->postJson('/api/v1/login', [
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'errors' => [
+                    'phone_no'
+                ]
+            ]);
+    }
+
+    /**
+     * Test SendOtp API with invalid country code
+     */
+    public function testSendOtpWithoutCountryCode() {
+        $response = $this->postJson('/api/v1/sendOtp', [
+            'phone_no' => '1234567890' // fake phone number
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'errors' => [
+                    'country_code'
+                ]
+            ]);
+    }
+
+    /**
+     * Test Send OTP and Verify OTP flow as new user (success)
+     */
+    public function testSendOtpAndVerifyOtpAsNewUser()
+    {
+        $response = $this->postJson('/api/v1/sendOtp', [
+            'country_code' => '60',
+            'phone_no' => '1234567890' // fake phone number
+        ]);
+
+        // find User created
+        $user = User::where('phone_no', '1234567890')
+            ->where('phone_country_code', '60')
+            ->first();
+
+        // verify otp
+        $response = $this->postJson('/api/v1/verifyOtp', [
+            'country_code' => '60',
+            'phone_no' => '1234567890', // fake phone number
+            'otp' => $user->otp
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'user', 'token'
+            ]);
+
+        // verify user is created
+        $this->assertDatabaseHas('users', [
+            'phone_no' => '1234567890',
+            'phone_country_code' => '60',
+            'otp' => null,
+            'otp_verified_at' => now()
+        ]);
+    }
+
+    /**
+     * Test Register with OTP success
+     */
+    public function testRegisterWithOtpSuccess() 
+    {
+        $this->refreshDatabase();
+        
+        // create user first
+        $user = User::factory()->make([
+            'otp' => '123456',
+        ]);
+
+        // basically this just updates user information
+        $response = $this->postJson('/api/v1/register/otp', [
             'email' => $user->email,
-            'password' => 'abcd1234'
+            'country_code' => $user->phone_country_code,
+            'phone_no' => (string) $user->phone_no, // fake phone number
+            'otp' => $user->otp,
+            'name' => $user->name,
+            'password' => 'abcd1234',
         ]);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'user',
-                'token'
+                'user', 'token'
             ]);
-    }
 
-    /**
-     * Test /api/v1/register/email with email and password assert response 200 with token
-     */
-    public function test_successful_register_with_email() {
-        $response = $this->postJson('/api/v1/register/email', [
-            'name' => 'John Smith',
-            'email' => 'john@smith.com',
-            'password' => 'abcd1234'
+        // verify database has this user with the name, password
+        $this->assertDatabaseHas('users', [
+            'email' => $user->email,
+            'phone_no' => $user->phone_no,
+            'phone_country_code' => $user->phone_country_code,
+            'otp' => null,
+            'otp_expiry' => null,
         ]);
-
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'user',
-                'token'
-            ]);
     }
 }

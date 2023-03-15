@@ -21,6 +21,16 @@ return [
         'scheme' => 'https',
     ],
 
+    'facebook' => [
+        'key' => env('FACEBOOK_KEY'),
+        'secret' => env('FACEBOOK_SECRET'),
+    ],
+
+    'google' => [
+        'key' => env('GOOGLE_KEY'),
+        'secret' => env('GOOGLE_SECRET'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

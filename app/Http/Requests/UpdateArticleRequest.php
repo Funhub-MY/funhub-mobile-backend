@@ -24,7 +24,8 @@ class UpdateArticleRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'body' => 'required',
+            'status' => 'required|in:0,1'
         ];
     }
 }

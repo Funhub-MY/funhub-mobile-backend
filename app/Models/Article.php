@@ -17,11 +17,12 @@ class Article extends Model implements HasMedia
     ];
 
     const TYPE = [
-        'text', 'video', 'audio', 'image'
+        'multimedia', 'text', 'video'
     ];
 
     // filterables
     const FILTERABLE = [
+        'id',
         'title',
         'type',
         'slug',

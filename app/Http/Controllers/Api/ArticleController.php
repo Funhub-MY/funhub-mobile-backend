@@ -19,13 +19,14 @@ use function PHPSTORM_META\map;
 class ArticleController extends Controller
 {
     use QueryBuilderTrait;
+
     /**
      * Get Articles for Logged in user
      * 
      * @group Article
-     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
@@ -57,7 +58,7 @@ class ArticleController extends Controller
      * 
      * @group Article
      * @bodyParam title string required The title of the article. Example: This is a title
-     * @bodyParam type string required The type of the article. Example: multimedia,text,audio,video
+     * @bodyParam type string required The type of the article. Example: multimedia,text,video
      * @bodyParam body string required The body of the article. Example: This is a caption or body of article
      * @bodyParam status integer required The status of the article. Example: 0 is Draft,1 is Published
      * @bodyParam published_at datetime The published date of the article. Example: 2021-02-21 12:00:00
@@ -162,6 +163,7 @@ class ArticleController extends Controller
      * @group Article
      * @urlParam id integer required The id of the article. Example: 1
      * @bodyParam body string required The body of the article. Example: This is a comment
+     * @bodyParam status integer required The status of the article, change this to 0 to unpublish. Example: 0 is Draft,1 is Published
      * @bodyParam tags array The tags of the article. Example: ["#tag1", "#tag2"]
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
      * @bodyParam images file The images ID of the article.
@@ -177,8 +179,10 @@ class ArticleController extends Controller
         // check if owner of Article
         $article = Article::where('id', $id)->where('user_id', auth()->id());
         if ($article->exists()) {
+            
             $article->update([
                 'body' => $request->body,
+                'status' => $request->status,
             ]);
 
             // attach or detach images
