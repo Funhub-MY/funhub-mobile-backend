@@ -33,12 +33,14 @@ trait QueryBuilderTrait {
             return;
         }
 
-        // intersac tfilterable columns with request->filter
-        $filterable = array_intersect($filterable, [$request->filter]);
+        if ($request->has('filter')) {
+             // intersect filterable columns with request->filter
+            $filterable = array_intersect($filterable, [$request->filter]);
 
-        $query->when($filterable, function ($query) use ($request, $filterable) {
-            $query->where($filterable, 'like', '%' . $request->filter_value . '%');
-        });
+            $query->when($filterable, function ($query) use ($request, $filterable) {
+                $query->where($filterable, 'like', '%' . $request->filter_value . '%');
+            });
+        }
     }
 
     public function sort($query, $request)

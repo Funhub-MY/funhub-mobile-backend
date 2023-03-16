@@ -30,23 +30,32 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
+     * 
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     * 
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // TODO: get article for home page based on user preferences
 
         $query = Article::published()
-            ->whereDosentHave('hiddenUsers', function ($query) {
+            ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
 
-        $this->buildQuery($query, request()->all());
+        $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'caetgories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
-        return response()->json(ArticleResource::collection($data));
+        return ArticleResource::collection($data);
     }
 
     /**
@@ -136,7 +145,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::with('user', 'comments', 'interactions', 'media', 'caetgories', 'tags')
+        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
             ->where('id', $id)
             ->whereDosentHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);

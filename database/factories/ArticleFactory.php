@@ -21,10 +21,8 @@ class ArticleFactory extends Factory
     {
         $title = fake()->sentence(1);
         $published_at = fake()->dateTimeBetween('-1 year', 'now');
-        $status = 0;
-        if ($published_at > now()) {
-            $status = Article::STATUS[0]; // draft since published at in future
-        } else {
+        $status = 0; // default is draft
+        if ($published_at < now()) {
             $status = fake()->randomElement(Article::STATUS); // can be draft or published 
         }
 
@@ -43,7 +41,7 @@ class ArticleFactory extends Factory
     public function published()
     {
         return $this->state(fn (array $attributes) => [
-            'status' => Article::STATUS[1],
+            'status' => 1,
             'published_at' => now()->subMinutes(15), // past date
         ]);
     }

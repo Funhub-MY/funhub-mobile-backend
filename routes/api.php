@@ -29,8 +29,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     
         // Articles
-        Route::post('article/images', \App\Http\Controllers\Api\ArticleController::class . '@postGalleryUploads');
-        Route::resource('article', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
+        Route::post('articles/images', \App\Http\Controllers\Api\ArticleController::class . '@postGalleryUploads');
+        Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
 
         // Comments
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);

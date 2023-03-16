@@ -4,7 +4,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/article
+    uri: api/v1/articles
     metadata:
       groupName: Article
       groupDescription: ''
@@ -27,7 +27,7 @@ endpoints:
         name: filter
         description: 'Column to Filter.'
         required: false
-        example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         custom: []
       filter_value:
@@ -41,7 +41,7 @@ endpoints:
         name: sort
         description: 'Column to Sort.'
         required: false
-        example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         custom: []
       order:
@@ -66,9 +66,9 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
-      filter: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       order: 'Sortable directions are: asc, desc'
       limit: 10
       offset: 0
@@ -87,7 +87,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag6Ee54VkDc3baP6fdhv18Z'
+      - 'Bearer Zc5a6fb3Dd4eVPkv6a1Egh8'
     controller: null
     method: null
     route: null
@@ -95,7 +95,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/article/{id}'
+    uri: 'api/v1/articles/{id}'
     metadata:
       groupName: Article
       groupDescription: ''
@@ -144,7 +144,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D6avhgkbE4cdf3Zae8165VP'
+      - 'Bearer fVegav843k51caDZ66EPbhd'
     controller: null
     method: null
     route: null
@@ -153,7 +153,7 @@ endpoints:
     httpMethods:
       - PUT
       - PATCH
-    uri: 'api/v1/article/{id}'
+    uri: 'api/v1/articles/{id}'
     metadata:
       groupName: Article
       groupDescription: ''
@@ -187,6 +187,13 @@ endpoints:
         example: 'This is a comment'
         type: string
         custom: []
+      status:
+        name: status
+        description: 'The status of the article, change this to 0 to unpublish.'
+        required: true
+        example: 0
+        type: integer
+        custom: []
       tags:
         name: tags
         description: 'The tags of the article.'
@@ -214,6 +221,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       body: 'This is a comment'
+      status: 0
       tags:
         - '#tag1'
         - '#tag2'
@@ -248,7 +256,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6PDa6c5a1ed38Zvgk4bfhEV'
+      - 'Bearer dgck3V4h1eb6D8aEZav5P6f'
     controller: null
     method: null
     route: null
@@ -256,7 +264,7 @@ endpoints:
   -
     httpMethods:
       - DELETE
-    uri: 'api/v1/article/{id}'
+    uri: 'api/v1/articles/{id}'
     metadata:
       groupName: Article
       groupDescription: ''
@@ -305,7 +313,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4Va5ZbehcvP8Ed36Dkaf6g1'
+      - 'Bearer Z3vf6db8gV514k6eaDEcPah'
     controller: null
     method: null
     route: null
@@ -422,7 +430,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3418gb6PkhEaDeZc6Vvdf5a'
+      - 'Bearer eacgdkvVE548PZaD6fh163b'
     controller: null
     method: null
     route: null
@@ -495,7 +503,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3gkhZ1av5c6dE8VafPbD6e4'
+      - 'Bearer dEkDc36fa8geP54b16vZVah'
     controller: null
     method: null
     route: null
@@ -522,11 +530,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: 18
+        example: 11
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 18
+      id: 11
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -566,7 +574,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 138Ehdavebga6465ckfDZPV'
+      - 'Bearer fgb6a1P8acDvd5Ve3Ek46Zh'
     controller: null
     method: null
     route: null
@@ -638,7 +646,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kV13aPfZagh56cb6D4e8Evd'
+      - 'Bearer c3ah8bV6E6vPkf45Deg1Zad'
     controller: null
     method: null
     route: null
@@ -680,7 +688,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gE6468k5DhZvPc1Vdbfea3a'
+      - 'Bearer kce4vh81f3DaZ6ab5P6EgVd'
     controller: null
     method: null
     route: null
@@ -797,7 +805,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36ZcDvV5gdkhe8aaEfPb614'
+      - 'Bearer E4dbkPe58DV6a1Zafh36cvg'
     controller: null
     method: null
     route: null
@@ -870,7 +878,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1ah4v66Zfab5egcPd8VD3kE'
+      - 'Bearer Dfd1vE6a64b8kcVaPh5e3gZ'
     controller: null
     method: null
     route: null
@@ -921,7 +929,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 156EfaeabDkvhVd63ZgP8c4'
+      - 'Bearer 63egc5ZkbdaD61haV4vEfP8'
     controller: null
     method: null
     route: null
@@ -980,7 +988,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dh8Dfe6aga3PZ5bc1E6v4Vk'
+      - 'Bearer fgZ8Vk6cP45v13aa6DedbEh'
     controller: null
     method: null
     route: null

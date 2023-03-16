@@ -68,7 +68,7 @@ class Article extends Model implements HasMedia
 
     public function hiddenUsers()
     {
-        return $this->belongsToMany(User::class, 'article_hidden_users')
+        return $this->belongsToMany(User::class, 'articles_hidden_users')
             ->withPivot('hide_until')
             ->withTimestamps();
     }

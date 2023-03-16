@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "12570210-38be-4108-86f5-e9f23333e6a6",
+        "_postman_id": "8f6854de-78f7-4974-b111-944be020ac35",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -24,9 +24,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/article",
+                            "path": "api\/v1\/articles",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/article"
+                            "raw": "{{baseUrl}}\/api\/v1\/articles"
                         },
                         "method": "GET",
                         "header": [
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"filter\":\"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -72,9 +72,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/article\/:id",
+                            "path": "api\/v1\/articles\/:id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/article\/:id",
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/:id",
                             "variable": [
                                 {
                                     "id": "id",
@@ -118,9 +118,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/article\/:id",
+                            "path": "api\/v1\/articles\/:id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/article\/:id",
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/:id",
                             "variable": [
                                 {
                                     "id": "id",
@@ -149,6 +149,12 @@
                                     "value": "This is a comment",
                                     "type": "text",
                                     "description": "The body of the article."
+                                },
+                                {
+                                    "key": "status",
+                                    "value": 0,
+                                    "type": "text",
+                                    "description": "The status of the article, change this to 0 to unpublish."
                                 },
                                 {
                                     "key": "tags[0]",
@@ -214,9 +220,9 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/article\/:id",
+                            "path": "api\/v1\/articles\/:id",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/article\/:id",
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/:id",
                             "variable": [
                                 {
                                     "id": "id",
@@ -367,7 +373,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "18",
+                                            "value": "11",
                                             "description": "The ID of the comment."
                                         }
                                     ]

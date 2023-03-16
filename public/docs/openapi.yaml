@@ -7,7 +7,7 @@ servers:
   -
     url: 'http://localhost'
 paths:
-  /api/v1/article:
+  /api/v1/articles:
     get:
       summary: 'Get Articles for Logged in user'
       operationId: getArticlesForLoggedInUser
@@ -59,7 +59,7 @@ paths:
                 filter:
                   type: string
                   description: 'Column to Filter.'
-                  example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+                  example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
                 filter_value:
                   type: string
                   description: 'Value to Filter.'
@@ -67,7 +67,7 @@ paths:
                 sort:
                   type: string
                   description: 'Column to Sort.'
-                  example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+                  example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
                 order:
                   type: string
                   description: 'Direction to Sort.'
@@ -80,7 +80,7 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
-  '/api/v1/article/{id}':
+  '/api/v1/articles/{id}':
     get:
       summary: 'Get One Article by ID'
       operationId: getOneArticleByID
@@ -200,6 +200,10 @@ paths:
                   type: string
                   description: 'The body of the article.'
                   example: 'This is a comment'
+                status:
+                  type: integer
+                  description: 'The status of the article, change this to 0 to unpublish.'
+                  example: 0
                 tags:
                   type: array
                   description: 'The tags of the article.'
@@ -222,6 +226,7 @@ paths:
                   description: 'The images ID of the article.'
               required:
                 - body
+                - status
     delete:
       summary: 'Remove article by ID. (Only owner of article can delete)'
       operationId: removeArticleByIDOnlyOwnerOfArticleCanDelete
@@ -608,7 +613,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 18
+        example: 11
         required: true
         schema:
           type: integer

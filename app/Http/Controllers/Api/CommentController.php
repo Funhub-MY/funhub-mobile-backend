@@ -65,7 +65,7 @@ class CommentController extends Controller
 
         $this->buildQuery($query, $request);
         $data = $query->with('user')->paginate(config('app.paginate_per_page'));
-        return response()->json(CommentResource::collection($data));
+        return CommentResource::collection($data);
     }
 
     /**

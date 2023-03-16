@@ -63,7 +63,8 @@ class InteractionController extends Controller
 
         $this->buildQuery($query, $request);
         $data = $query->with('user')->paginate(config('app.paginate_per_page'));
-        return response()->json(InteractionResource::collection($data));
+        
+        return InteractionResource::collection($data);
     }
 
     /**

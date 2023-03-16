@@ -2,9 +2,12 @@
 
 namespace Tests\Unit;
 
+use Tests\TestCase;
+use App\Models\Article;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
-use PHPUnit\Framework\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 
 class ArticleTest extends TestCase
 {
@@ -22,16 +25,19 @@ class ArticleTest extends TestCase
     {
         // mock log in user get token
         Sanctum::actingAs(
-            factory(User::class)->create(),
+            User::factory()->create(),
             ['*']
         );
 
         // factory create articles
-        factory(Article::class, 10)
+        Article::factory()
+            ->count(10)
             ->published()
             ->create();
 
-        $response = $this->get('/api/v1/articles');
+        $response = $this->getJson('/api/v1/articles');
+
+        Log::info($response->getContent());
 
         $response->assertStatus(200)
         ->assertJsonStructure([
