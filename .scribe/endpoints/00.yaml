@@ -1,4 +1,4 @@
-name: Endpoints
+name: Authentication
 description: ''
 endpoints:
   -
@@ -6,7 +6,7 @@ endpoints:
       - POST
     uri: api/v1/sendOtp
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
@@ -16,7 +16,7 @@ endpoints:
       custom: []
     headers:
       Content-Type: application/json
-      Accept: application/x-www-form-urlencoded
+      Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
@@ -67,7 +67,7 @@ endpoints:
       - POST
     uri: api/v1/verifyOtp
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
@@ -76,7 +76,7 @@ endpoints:
       authenticated: false
       custom: []
     headers:
-      Content-Type: application/x-www-form-urlencoded
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
@@ -146,7 +146,7 @@ endpoints:
       - POST
     uri: api/v1/loginWithPassword
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
@@ -157,7 +157,6 @@ endpoints:
     headers:
       Content-Type: application/json
       Accept: application/json
-      'Accept:': application/x-www-form-urlencoded
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
@@ -223,7 +222,7 @@ endpoints:
       - POST
     uri: api/v1/register/otp
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
@@ -232,7 +231,7 @@ endpoints:
       authenticated: false
       custom: []
     headers:
-      Content-Type: application/x-www-form-urlencoded
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
@@ -312,16 +311,17 @@ endpoints:
       - POST
     uri: api/v1/logout
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
       title: Logout
       description: 'Log User Out and destroy any active tokens of user'
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
-      Content-Type: application/x-www-form-urlencoded
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
@@ -344,7 +344,10 @@ endpoints:
         description: 'Access Denied'
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fkv64gZahecDV1568P3bEad'
     controller: null
     method: null
     route: null

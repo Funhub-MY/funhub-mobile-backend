@@ -1,12 +1,885 @@
 openapi: 3.0.3
 info:
-  title: Laravel
+  title: FUNHUB
   description: ''
   version: 1.0.0
 servers:
   -
     url: 'http://localhost'
 paths:
+  /api/v1/articles:
+    get:
+      summary: 'Get Articles for Logged in user'
+      operationId: getArticlesForLoggedInUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+  '/api/v1/articles/{id}':
+    get:
+      summary: 'Get One Article by ID'
+      operationId: getOneArticleByID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  article: {  }
+                properties:
+                  article:
+                    type: object
+                    properties: []
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Article not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Article not found'
+      tags:
+        - Article
+    put:
+      summary: 'Update article by ID. (Only owner of article can update)'
+      operationId: updateArticleByIDOnlyOwnerOfArticleCanUpdate
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: multipart/form-data
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Article updated\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Comment not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Comment not found'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: 'The body of the article.'
+                  example: 'This is a comment'
+                status:
+                  type: integer
+                  description: 'The status of the article, change this to 0 to unpublish.'
+                  example: 0
+                tags:
+                  type: array
+                  description: 'The tags of the article.'
+                  example:
+                    - '#tag1'
+                    - '#tag2'
+                  items:
+                    type: string
+                categories:
+                  type: array
+                  description: 'The categories ID of the article.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
+                images:
+                  type: string
+                  format: binary
+                  description: 'The images ID of the article.'
+              required:
+                - body
+                - status
+    delete:
+      summary: 'Remove article by ID. (Only owner of article can delete)'
+      operationId: removeArticleByIDOnlyOwnerOfArticleCanDelete
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Article deleted'
+                properties:
+                  message:
+                    type: string
+                    example: 'Article deleted'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Article not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Article not found'
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v1/comments:
+    get:
+      summary: 'Get comments on a commentable type (eg. Articles)'
+      operationId: getCommentsOnACommentableTypeegArticles
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+    post:
+      summary: 'Create a new comment by logged in user'
+      operationId: createANewCommentByLoggedInUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"comment\": {},\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["commentable_type": ["The Commentable Type field is required."] ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: 'The type of commentable.'
+                  example: article
+                id:
+                  type: integer
+                  description: 'The id of the commentable.'
+                  example: 1
+                body:
+                  type: string
+                  description: 'The body of the comment.'
+                  example: 'This is a comment'
+              required:
+                - type
+                - id
+                - body
+    parameters:
+      -
+        in: path
+        name: type
+        description: 'The type of commentable.'
+        example: article
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: id
+        description: 'The id of the commentable.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/comments/{id}':
+    get:
+      summary: 'Show one comment by ID'
+      operationId: showOneCommentByID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"comment\": {},\n}"
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+        401:
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 'The id of the comment.'
+                  example: 1
+              required:
+                - id
+    put:
+      summary: 'Update comment by ID. (Only owner of comment can update)'
+      operationId: updateCommentByIDOnlyOwnerOfCommentCanUpdate
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment updated\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Comment not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Comment not found'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: 'The body of the comment.'
+                  example: 'This is a comment'
+              required:
+                - body
+    delete:
+      summary: 'Remove comment by ID. (Only owner of comment can delete)'
+      operationId: removeCommentByIDOnlyOwnerOfCommentCanDelete
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the comment.'
+        example: 11
+        required: true
+        schema:
+          type: integer
+  /api/v1/interactions:
+    get:
+      summary: 'Get interactions on a interactable type (eg. Articles)'
+      operationId: getInteractionsOnAInteractableTypeegArticles
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+    post:
+      summary: 'Create an interaction for interactable type'
+      operationId: createAnInteractionForInteractableType
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  interaction: {  }
+                properties:
+                  interaction:
+                    type: object
+                    properties: []
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {  }
+                properties: {  }
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: article
+                interaction_type:
+                  type: string
+                  description: 'The type of interaction.'
+                  example: 'like,dislike,share'
+                id:
+                  type: integer
+                  description: 'The id of the interactable (eg. Article ID).'
+                  example: 1
+              required:
+                - interactable
+                - interaction_type
+                - id
+    parameters:
+      -
+        in: path
+        name: type
+        description: 'The type of interactable.'
+        example: article
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: id
+        description: 'The id of the interactable.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/v1/interactions/{id}':
+    get:
+      summary: 'Show one interaction by ID'
+      operationId: showOneInteractionByID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Article
+    delete:
+      summary: "Remove Interaction By ID\nOnly owner can call this method"
+      operationId: removeInteractionByIDOnlyOwnerCanCallThisMethod
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Interaction deleted'
+                properties:
+                  message:
+                    type: string
+                    example: 'Interaction deleted'
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{['message' => 'Interaction not found']}"
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The id of the interaction.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/sendOtp:
     post:
       summary: 'Send OTP'
@@ -24,7 +897,7 @@ paths:
           in: header
           name: Accept
           description: ''
-          example: application/x-www-form-urlencoded
+          example: application/json
           schema:
             type: string
       responses:
@@ -48,7 +921,7 @@ paths:
                 type: string
                 example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
-        - Endpoints
+        - Authentication
       requestBody:
         required: true
         content:
@@ -78,7 +951,7 @@ paths:
           in: header
           name: Content-Type
           description: ''
-          example: application/x-www-form-urlencoded
+          example: application/json
           schema:
             type: string
         -
@@ -116,11 +989,11 @@ paths:
                 type: string
                 example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
-        - Endpoints
+        - Authentication
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -161,13 +1034,6 @@ paths:
           example: application/json
           schema:
             type: string
-        -
-          in: header
-          name: 'Accept:'
-          description: ''
-          example: application/x-www-form-urlencoded
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -205,7 +1071,7 @@ paths:
                 type: string
                 example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
-        - Endpoints
+        - Authentication
       requestBody:
         required: true
         content:
@@ -240,7 +1106,7 @@ paths:
           in: header
           name: Content-Type
           description: ''
-          example: application/x-www-form-urlencoded
+          example: application/json
           schema:
             type: string
         -
@@ -266,11 +1132,11 @@ paths:
                 type: string
                 example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
       tags:
-        - Endpoints
+        - Authentication
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -309,9 +1175,16 @@ paths:
       parameters:
         -
           in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
           name: Content-Type
           description: ''
-          example: application/x-www-form-urlencoded
+          example: application/json
           schema:
             type: string
         -
@@ -347,9 +1220,167 @@ paths:
                     type: string
                     example: 'Access Denied'
       tags:
-        - Endpoints
-      security: []
+        - Authentication
+  /api/v1/user/settings:
+    get:
+      summary: 'Get settings of logged in user'
+      operationId: getSettingsOfLoggedInUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  key: value
+                properties:
+                  key:
+                    type: string
+                    example: value
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        404:
+          description: 'No settings found yet'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No settings found yet.'
+                properties:
+                  message:
+                    type: string
+                    example: 'No settings found yet.'
+      tags:
+        - 'User Settings'
+    post:
+      summary: 'Update/Create settings of logged in user'
+      operationId: updateCreateSettingsOfLoggedInUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Settings updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Settings updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["key": ["The Key field is required."], "value": ["The Value field is required."] ]}'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  description: 'Key of the setting.'
+                  example: profile_private
+                value:
+                  type: string
+                  description: 'Value of the setting.'
+                  example: 'true'
+              required:
+                - key
+                - value
 tags:
   -
-    name: Endpoints
+    name: Article
     description: ''
+  -
+    name: Authentication
+    description: ''
+  -
+    name: 'User Settings'
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: ''
+security:
+  -
+    default: []

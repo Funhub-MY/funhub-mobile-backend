@@ -15,6 +15,17 @@ class Comment extends Model
         2 => 'Hidden'
     ];
 
+    // filterable columns for frontend filtering
+    const FILTERABLE = [
+        'id',
+        'commentable_id',
+        'commentable_type',
+        'user_id',
+        'status',
+        'created_at',
+        'updated_at'
+    ];
+
     protected $guarded = ['id'];
 
     public function commentable()
@@ -25,5 +36,10 @@ class Comment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
     }
 }

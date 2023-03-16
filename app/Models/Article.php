@@ -17,7 +17,19 @@ class Article extends Model implements HasMedia
     ];
 
     const TYPE = [
-        'text', 'video', 'audio', 'image'
+        'multimedia', 'text', 'video'
+    ];
+
+    // filterables
+    const FILTERABLE = [
+        'id',
+        'title',
+        'type',
+        'slug',
+        'status',
+        'published_at',
+        'created_at',
+        'updated_at'
     ];
 
     protected $guarded = ['id'];
@@ -49,4 +61,25 @@ class Article extends Model implements HasMedia
         return $this->morphMany(Interaction::class, 'interactable');
     }
 
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function hiddenUsers()
+    {
+        return $this->belongsToMany(User::class, 'articles_hidden_users')
+            ->withPivot('hide_until')
+            ->withTimestamps();
+    }
+
+    /**
+     * Scope a query to only include published articles.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePublished()
+    {
+        return $this->where('status', 1);
+    }
 }

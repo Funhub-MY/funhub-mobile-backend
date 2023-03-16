@@ -29,6 +29,9 @@ class AuthController extends Controller
      * @param Request $request
      * @return JsonResponse
      * 
+     * @group Authentication
+     * @unauthenticated
+     * 
      * @bodyParam country_code string required Country code of phone number. Example: 60
      * @bodyParam phone_no string required Phone number. Example: 1234567890
      * @bodyParam password string required Password. Example: abcd1234
@@ -72,7 +75,10 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     *
+     * 
+     * @group Authentication
+     * @unauthenticated
+     * 
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @response scenario=success {
@@ -132,11 +138,13 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     *
+     * 
+     * @group Authentication
+     * @unauthenticated
+     * 
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
-     * 
      * @response scenario=success {
      *  "user": {
      *     id: 1,
@@ -188,7 +196,9 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * 
-     * @header Content-Type application/x-www-form-urlencoded
+     * @group Authentication
+     * @unauthenticated
+     * 
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
@@ -253,8 +263,10 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     *
-     * @header Content-Type application/x-www-form-urlencoded
+     * 
+     * @group Authentication
+     * @authenticated
+     * 
      * @response scenario=success {"message" : "Logged Out"}
      * @response status=401 scenario="Access Denied" {"message": "Access Denied"}
      */

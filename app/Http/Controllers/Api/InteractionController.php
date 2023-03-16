@@ -1,0 +1,176 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Events\InteractionCreated;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\InteractionResource;
+use App\Models\Interaction;
+use App\Traits\QueryBuilderTrait;
+use Illuminate\Http\Request;
+
+class InteractionController extends Controller
+{
+    use QueryBuilderTrait;
+
+    /**
+     * Get interactions on a interactable type (eg. Articles)
+     * 
+     * @param $type string
+     * @param $id integer
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @subgroup Interactions
+     * @authenticated
+     * @urlParam type string required The type of interactable. Example: article
+     * @urlParam id integer required The id of the interactable. Example: 1
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * } 
+     * @response status=404 scenario="Not Found"
+    */
+    public function index($interactable, $id, Request $request)
+    {
+        // get all interactions of a interactable type
+        if ($request->interactable == 'article') {
+            $request->merge(['interactable_type' => Article::class]);
+        }
+
+        $query = Interaction::where('interactable_type', $request->interactable_type)
+            ->where('interactable_id', $id);
+
+        if ($interactable == 'article') {
+            // if type is article, ensure article is published and user is not hidden by article owner
+            $query->whereHas('article', function ($query) {
+                $query->published()
+                    ->whereDoesntHave('hiddenUsers', function ($query) {
+                        $query->where('user_id', auth()->id());
+                    });
+            });
+        }
+
+        $this->buildQuery($query, $request);
+        $data = $query->with('user')->paginate(config('app.paginate_per_page'));
+        
+        return InteractionResource::collection($data);
+    }
+
+    /**
+     * Create an interaction for interactable type
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @subgroup Interactions
+     * @authenticated
+     * @bodyParam interactable string required The type of interactable. Example: article
+     * @bodyParam interaction_type string required The type of interaction. Example: like,dislike,share
+     * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
+     * @response scenario=success {
+     * "interaction": {}
+     * }
+     * @response 422
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'interactable' => 'required|string',
+            'interaction_type' => 'required|string|in:like,dislike,share',
+            'id' => 'required|integer',
+        ]);
+
+        if ($request->interactable == 'article') {
+            $request->merge(['interactable_type' => Article::class]);
+        }
+
+        switch($request->interaction_type) {
+            case 'like':
+                $request->merge(['interaction_type' => Interaction::TYPE[0]]);
+                break;
+            case 'dislike':
+                $request->merge(['interaction_type' => Interaction::TYPE[1]]);
+                break;
+            case 'share':
+                $request->merge(['interaction_type' => Interaction::TYPE[2]]);
+                break;
+        }
+
+        $interaction = Interaction::create([
+            'user_id' => auth()->id(),
+            'interactable_type' => $request->interactable_type,
+            'interactable_id' => $request->id,
+            'type' => $request->interaction_type, // like or dislike or share
+        ]);
+
+        event(new InteractionCreated($interaction));
+
+        return response()->json([
+            'interaction' => new InteractionResource($interaction),
+        ]);
+    }
+
+    /**
+     * Show one interaction by ID
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @subgroup Interactions
+     * @authenticated
+     * @urlParam id integer required The id of the interaction. Example: 1
+     */
+    public function show($id)
+    {
+        $interaction = Interaction::where('id', $id)->with('user')
+            ->firstOrFail();
+
+        return response()->json([
+            'interaction' => new InteractionResource($interaction),
+        ]);
+    }
+
+    /**
+     * Remove Interaction By ID
+     * Only owner can call this method
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @subgroup Interactions
+     * @authenticated
+     * @urlParam id integer required The id of the interaction. Example: 1
+     * @response scenario=success {
+     * "message": "Interaction deleted"
+     * }
+     * 
+     * @response status=404 scenario="Not Found" {['message' => 'Interaction not found']}
+     */
+    public function destroy($id)
+    {
+        $interaction = Interaction::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if ($interaction->exists()) {
+            $interaction->delete();
+            return response()->json(['message' => 'Interaction deleted']);
+        } else {
+            return response()->json(['message' => 'Interaction not found'], 404);
+        }
+    }
+}
