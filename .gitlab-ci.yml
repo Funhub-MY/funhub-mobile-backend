@@ -28,7 +28,9 @@ building:
     - php /usr/local/bin/composer -V
     - php /usr/local/bin/composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
     - cp .env.gitlab .env
-    - php artisan install:project
+    - php artisan migrate --seed
+    - php artisan key:generate
+    - pjp artisan optimize
     
   artifacts:
     paths:
