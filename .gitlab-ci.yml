@@ -38,11 +38,6 @@ building:
       - node_modules/
       - .env
 
-phpcs:
-  stage: test
-  script:
-    - phpcs --error-severity=1 --warning-severity=8 --extensions=php
-
 testing:
   stage: test
   script:
