@@ -30,7 +30,7 @@ building:
     - cp .env.gitlab .env
     - php artisan migrate --seed
     - php artisan key:generate
-    - pjp artisan optimize
+    - php artisan optimize
     
   artifacts:
     paths:
