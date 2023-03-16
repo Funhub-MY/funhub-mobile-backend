@@ -9,7 +9,7 @@ cache:
 
 # Before Tests
 before_script:
-  - bash ci/docker_setup.sh > /dev/null
+  - bash docker_setup.sh > /dev/null
 
 # Services
 services:
