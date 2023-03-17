@@ -77,19 +77,162 @@ endpoints:
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer Zc5a6fb3Dd4eVPkv6a1Egh8'
+      - 'Bearer 4d5aa3Z1cEPk8eV6Dhv6bgf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create New Article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the article.'
+        required: true
+        example: 'This is a title'
+        type: string
+        custom: []
+      type:
+        name: type
+        description: 'The type of the article.'
+        required: true
+        example: 'multimedia,text,video'
+        type: string
+        custom: []
+      body:
+        name: body
+        description: 'The body of the article.'
+        required: true
+        example: 'This is a caption or body of article'
+        type: string
+        custom: []
+      status:
+        name: status
+        description: 'The status of the article.'
+        required: true
+        example: 0
+        type: integer
+        custom: []
+      published_at:
+        name: published_at
+        description: 'The published date of the article.'
+        required: false
+        example: '2021-02-21 12:00:00'
+        type: datetime
+        custom: []
+      categories:
+        name: categories
+        description: 'The categories ID of the article.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      tags:
+        name: tags
+        description: 'The tags of the article.'
+        required: false
+        example:
+          - '#tag1'
+          - '#tag2'
+        type: 'string[]'
+        custom: []
+      images:
+        name: images
+        description: 'The images ID of the article. Must first call upload images endpoint.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      excerpt:
+        name: excerpt
+        description: 'The excerpt of the article.'
+        required: false
+        example: 'This is a excerpt of article'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      title: 'This is a title'
+      type: 'multimedia,text,video'
+      body: 'This is a caption or body of article'
+      status: 0
+      published_at: '2021-02-21 12:00:00'
+      categories:
+        - 1
+        - 2
+      tags:
+        - '#tag1'
+        - '#tag2'
+      images:
+        - 1
+        - 2
+      excerpt: 'This is a excerpt of article'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Article updated",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Comment not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fZk56ebPgdDac6VEv3h41a8'
     controller: null
     method: null
     route: null
@@ -146,7 +289,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fVegav843k51caDZ66EPbhd'
+      - 'Bearer bZ568ak463DhVePgcdfvE1a'
     controller: null
     method: null
     route: null
@@ -258,7 +401,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dgck3V4h1eb6D8aEZav5P6f'
+      - 'Bearer f136PavV6DkgcEZ58habde4'
     controller: null
     method: null
     route: null
@@ -315,7 +458,153 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z3vf6db8gV514k6eaDEcPah'
+      - 'Bearer gd3b46VPvaeac6D1ZEk8f5h'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/article_tags
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Tags'
+      subgroupDescription: ''
+      title: 'Get popular tags'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      limit:
+        name: limit
+        description: 'optional Limit the number of tags returned.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'optional Offset the number of tags returned.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      query:
+        name: query
+        description: 'optional Search for a category by name.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      limit: 10
+      offset: 10
+      query: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "tags": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5Dghk4Zv18Eaabfc3eV66dP'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/article_categories
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Categories'
+      subgroupDescription: ''
+      title: 'Get popular Article Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      limit:
+        name: limit
+        description: 'optional Limit the number of tags returned.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'optional Offset the number of tags returned.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      query:
+        name: query
+        description: 'optional Search for a category by name.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      limit: 10
+      offset: 10
+      query: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b5f4d31acga66hkPvDVZE8e'
     controller: null
     method: null
     route: null
@@ -432,7 +721,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eacgdkvVE548PZaD6fh163b'
+      - 'Bearer DPE64Vag56hbfe18cZ3dkav'
     controller: null
     method: null
     route: null
@@ -505,7 +794,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dEkDc36fa8geP54b16vZVah'
+      - 'Bearer fP6Ddv5bg43ah6ak8eVcZE1'
     controller: null
     method: null
     route: null
@@ -532,11 +821,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: 11
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -576,7 +865,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fgb6a1P8acDvd5Ve3Ek46Zh'
+      - 'Bearer Egbf85cd4k31DvZP6aae6Vh'
     controller: null
     method: null
     route: null
@@ -648,7 +937,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c3ah8bV6E6vPkf45Deg1Zad'
+      - 'Bearer vh3Pa8V4fbEa1dc656eZkDg'
     controller: null
     method: null
     route: null
@@ -690,7 +979,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kce4vh81f3DaZ6ab5P6EgVd'
+      - 'Bearer 341VhbDg6k865EafcdaPeZv'
     controller: null
     method: null
     route: null
@@ -807,7 +1096,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4dbkPe58DV6a1Zafh36cvg'
+      - 'Bearer Zae56VDa6Pgfhv1dcE84bk3'
     controller: null
     method: null
     route: null
@@ -880,7 +1169,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dfd1vE6a64b8kcVaPh5e3gZ'
+      - 'Bearer VaZaf6bkPh58gv3EdeD4c61'
     controller: null
     method: null
     route: null
@@ -931,7 +1220,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 63egc5ZkbdaD61haV4vEfP8'
+      - 'Bearer e5aVZEfgkh6b8da3DPc6v14'
     controller: null
     method: null
     route: null
@@ -990,7 +1279,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fgZ8Vk6cP45v13aa6DedbEh'
+      - 'Bearer ZV5b1E46fdgh8vck3aPeDa6'
     controller: null
     method: null
     route: null

@@ -13,7 +13,7 @@ class ArticleCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,14 @@ class ArticleCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'required|string|max:255',
+            'type' => 'required|string|in:multimedia,text,video',
+            'body' => 'required',
+            'status' => 'required|integer|in:0,1',
+            'published_at' => 'nullable|datetime',
+            'categories' => 'nullable|array|exists:article_categories,id',
+            'tags' => 'nullable|array',
+            'images' => 'nullable|array',
         ];
     }
 }

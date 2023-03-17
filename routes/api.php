@@ -32,6 +32,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('articles/images', \App\Http\Controllers\Api\ArticleController::class . '@postGalleryUploads');
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
 
+        // Article Tags
+        Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
+        Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagsByArticleId');
+
+        // Article Categories
+        Route::get('article_categories', \App\Http\Controllers\Api\ArticleCategoryController::class . '@index');
+        Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getCategoriesByArticleId');
+
         // Comments
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
         

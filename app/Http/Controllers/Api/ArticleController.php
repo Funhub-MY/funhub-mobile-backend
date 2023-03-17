@@ -73,7 +73,7 @@ class ArticleController extends Controller
      * @bodyParam published_at datetime The published date of the article. Example: 2021-02-21 12:00:00
      * @bodyParam tags array The tags of the article. Example: ["#tag1", "#tag2"]
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
-     * @bodyParam images file The images ID of the article. Must first call upload images endpoint. Example: [1, 2]
+     * @bodyParam images array The images ID of the article. Must first call upload images endpoint. Example: [1, 2]
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
      * 
      * 
@@ -260,6 +260,9 @@ class ArticleController extends Controller
 
     /**
      * Upload Images for Article
+     * 
+     * @param ArticleImagesUploadRequest $request
+     * @return \Illuminate\Http\JsonResponse
      * 
      * @group Article
      * @bodyParam images file required The images to upload. Example: [file1, file2]

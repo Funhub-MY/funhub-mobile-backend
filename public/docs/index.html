@@ -75,6 +75,9 @@
                                                     <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles">
                                 <a href="#article-GETapi-v1-articles">Get Articles for Logged in user</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="article-POSTapi-v1-articles">
+                                <a href="#article-POSTapi-v1-articles">Create New Article</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles--id-">
                                 <a href="#article-GETapi-v1-articles--id-">Get One Article by ID</a>
                             </li>
@@ -84,6 +87,22 @@
                                                                                 <li class="tocify-item level-2" data-unique="article-DELETEapi-v1-articles--id-">
                                 <a href="#article-DELETEapi-v1-articles--id-">Remove article by ID. (Only owner of article can delete)</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="article-article-tags">
+                                <a href="#article-article-tags">Article Tags</a>
+                            </li>
+                                                            <ul id="tocify-subheader-article-article-tags" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="article-GETapi-v1-article_tags">
+                                            <a href="#article-GETapi-v1-article_tags">Get popular tags</a>
+                                        </li>
+                                                                    </ul>
+                                                                                <li class="tocify-item level-2" data-unique="article-article-categories">
+                                <a href="#article-article-categories">Article Categories</a>
+                            </li>
+                                                            <ul id="tocify-subheader-article-article-categories" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="article-GETapi-v1-article_categories">
+                                            <a href="#article-GETapi-v1-article_categories">Get popular Article Categories</a>
+                                        </li>
+                                                                    </ul>
                                                                                 <li class="tocify-item level-2" data-unique="article-comments">
                                 <a href="#article-comments">Comments</a>
                             </li>
@@ -168,7 +187,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: March 16, 2023</li>
+        <li>Last updated: March 17, 2023</li>
     </ul>
 </div>
 
@@ -251,19 +270,16 @@ fetch(url, {
 
 <span id="example-responses-GETapi-v1-articles">
             <blockquote>
-            <p>Example response (401):</p>
+            <p>Example response (200, success):</p>
         </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
+                <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
+ &quot;data&quot;: [],
+ &quot;links&quot;: {},
+ &quot;meta&quot;: {
+    &quot;current_page&quot;: 1,
+  }
 }</code>
  </pre>
     </span>
@@ -405,6 +421,294 @@ access-control-allow-origin: *
                data-component="body">
     <br>
 <p>Offset Override. Example: <code>0</code></p>
+        </div>
+        </form>
+
+                    <h2 id="article-POSTapi-v1-articles">Create New Article</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-articles">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/v1/articles" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"title\": \"This is a title\",
+    \"type\": \"multimedia,text,video\",
+    \"body\": \"This is a caption or body of article\",
+    \"status\": 0,
+    \"published_at\": \"2021-02-21 12:00:00\",
+    \"categories\": [
+        1,
+        2
+    ],
+    \"tags\": [
+        \"#tag1\",
+        \"#tag2\"
+    ],
+    \"images\": [
+        1,
+        2
+    ],
+    \"excerpt\": \"This is a excerpt of article\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/articles"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "title": "This is a title",
+    "type": "multimedia,text,video",
+    "body": "This is a caption or body of article",
+    "status": 0,
+    "published_at": "2021-02-21 12:00:00",
+    "categories": [
+        1,
+        2
+    ],
+    "tags": [
+        "#tag1",
+        "#tag2"
+    ],
+    "images": [
+        1,
+        2
+    ],
+    "excerpt": "This is a excerpt of article"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-articles">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Article updated&quot;,
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Form Fields):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;errors&quot;: [&quot;body&quot;: [&quot;The Body field is required.&quot;] ]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Comment not found&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-articles" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-articles"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-articles" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-articles"></code></pre>
+</span>
+<form id="form-POSTapi-v1-articles" data-method="POST"
+      data-path="api/v1/articles"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-articles', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-articles"
+                    onclick="tryItOut('POSTapi-v1-articles');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-articles"
+                    onclick="cancelTryOut('POSTapi-v1-articles');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-articles" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/articles</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-articles"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-articles"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-articles"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="title"                data-endpoint="POSTapi-v1-articles"
+               value="This is a title"
+               data-component="body">
+    <br>
+<p>The title of the article. Example: <code>This is a title</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="type"                data-endpoint="POSTapi-v1-articles"
+               value="multimedia,text,video"
+               data-component="body">
+    <br>
+<p>The type of the article. Example: <code>multimedia,text,video</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>body</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="body"                data-endpoint="POSTapi-v1-articles"
+               value="This is a caption or body of article"
+               data-component="body">
+    <br>
+<p>The body of the article. Example: <code>This is a caption or body of article</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="status"                data-endpoint="POSTapi-v1-articles"
+               value="0"
+               data-component="body">
+    <br>
+<p>The status of the article. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>published_at</code></b>&nbsp;&nbsp;
+<small>datetime</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="published_at"                data-endpoint="POSTapi-v1-articles"
+               value="2021-02-21 12:00:00"
+               data-component="body">
+    <br>
+<p>The published date of the article. Example: <code>2021-02-21 12:00:00</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>categories</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="categories[0]"                data-endpoint="POSTapi-v1-articles"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="categories[1]"                data-endpoint="POSTapi-v1-articles"
+               data-component="body">
+    <br>
+<p>The categories ID of the article.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>tags</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="tags[0]"                data-endpoint="POSTapi-v1-articles"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="tags[1]"                data-endpoint="POSTapi-v1-articles"
+               data-component="body">
+    <br>
+<p>The tags of the article.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>images</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="images[0]"                data-endpoint="POSTapi-v1-articles"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="images[1]"                data-endpoint="POSTapi-v1-articles"
+               data-component="body">
+    <br>
+<p>The images ID of the article. Must first call upload images endpoint.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>excerpt</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="excerpt"                data-endpoint="POSTapi-v1-articles"
+               value="This is a excerpt of article"
+               data-component="body">
+    <br>
+<p>The excerpt of the article. Example: <code>This is a excerpt of article</code></p>
         </div>
         </form>
 
@@ -574,7 +878,7 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php5VvSsm" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNDLZZT" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -776,7 +1080,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php5VvSsm</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNDLZZT</code></p>
         </div>
         </form>
 
@@ -923,6 +1227,362 @@ fetch(url, {
 <p>The id of the Article. Example: <code>1</code></p>
             </div>
                     </form>
+
+                                <h2 id="article-article-tags">Article Tags</h2>
+                                                    <h2 id="article-GETapi-v1-article_tags">Get popular tags</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-article_tags">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/api/v1/article_tags" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"limit\": 10,
+    \"offset\": 10,
+    \"query\": 0
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/article_tags"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "limit": 10,
+    "offset": 10,
+    "query": 0
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-article_tags">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;tags&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-article_tags" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-article_tags"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-article_tags" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-article_tags" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-article_tags"></code></pre>
+</span>
+<form id="form-GETapi-v1-article_tags" data-method="GET"
+      data-path="api/v1/article_tags"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-article_tags', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-article_tags"
+                    onclick="tryItOut('GETapi-v1-article_tags');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-article_tags"
+                    onclick="cancelTryOut('GETapi-v1-article_tags');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-article_tags" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/article_tags</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-article_tags"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-article_tags"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-article_tags"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-article_tags"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Limit the number of tags returned. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="offset"                data-endpoint="GETapi-v1-article_tags"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Offset the number of tags returned. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="query"                data-endpoint="GETapi-v1-article_tags"
+               value="0"
+               data-component="body">
+    <br>
+<p>optional Search for a category by name. Example: <code>0</code></p>
+        </div>
+        </form>
+
+                                <h2 id="article-article-categories">Article Categories</h2>
+                                                    <h2 id="article-GETapi-v1-article_categories">Get popular Article Categories</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-article_categories">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/api/v1/article_categories" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"limit\": 10,
+    \"offset\": 10,
+    \"query\": 0
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/article_categories"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "limit": 10,
+    "offset": 10,
+    "query": 0
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-article_categories">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;categories&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-article_categories" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-article_categories"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-article_categories" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-article_categories" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-article_categories"></code></pre>
+</span>
+<form id="form-GETapi-v1-article_categories" data-method="GET"
+      data-path="api/v1/article_categories"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-article_categories', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-article_categories"
+                    onclick="tryItOut('GETapi-v1-article_categories');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-article_categories"
+                    onclick="cancelTryOut('GETapi-v1-article_categories');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-article_categories" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/article_categories</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-article_categories"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-article_categories"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-article_categories"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-article_categories"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Limit the number of tags returned. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="offset"                data-endpoint="GETapi-v1-article_categories"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Offset the number of tags returned. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>query</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="query"                data-endpoint="GETapi-v1-article_categories"
+               value="0"
+               data-component="body">
+    <br>
+<p>optional Search for a category by name. Example: <code>0</code></p>
+        </div>
+        </form>
 
                                 <h2 id="article-comments">Comments</h2>
                                                     <h2 id="article-GETapi-v1-comments">Get comments on a commentable type (eg. Articles)</h2>
@@ -1359,7 +2019,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/11" \
+    --get "http://localhost/api/v1/comments/15" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1371,7 +2031,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/11"
+    "http://localhost/api/v1/comments/15"
 );
 
 const headers = {
@@ -1496,10 +2156,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="11"
+               value="15"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>11</code></p>
+<p>The ID of the comment. Example: <code>15</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">

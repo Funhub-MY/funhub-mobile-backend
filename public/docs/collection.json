@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "8f6854de-78f7-4974-b111-944be020ac35",
+        "_postman_id": "c8e7f614-3745-4d43-a478-0563f172ff17",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -47,23 +47,57 @@
                     },
                     "response": [
                         {
-                            "header": [
-                                {
-                                    "key": "cache-control",
-                                    "value": "no-cache, private"
-                                },
-                                {
-                                    "key": "content-type",
-                                    "value": "application\/json"
-                                },
-                                {
-                                    "key": "access-control-allow-origin",
-                                    "value": "*"
-                                }
-                            ],
-                            "code": 401,
-                            "body": "{\"message\":\"Unauthenticated.\"}",
-                            "name": ""
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create New Article",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"excerpt\":\"This is a excerpt of article\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Article updated\",\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"message\": \"Comment not found\"}",
+                            "name": "Not Found"
                         }
                     ]
                 },
@@ -262,6 +296,100 @@
                     ]
                 },
                 {
+                    "name": "Article Tags",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get popular tags",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/article_tags",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/article_tags"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"limit\":10,\"offset\":10,\"query\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"tags\": []\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Article Categories",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get popular Article Categories",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/article_categories",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/article_categories"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"limit\":10,\"offset\":10,\"query\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"categories\": []\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "Comments",
                     "description": "",
                     "item": [
@@ -373,7 +501,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "11",
+                                            "value": "15",
                                             "description": "The ID of the comment."
                                         }
                                     ]

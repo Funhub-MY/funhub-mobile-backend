@@ -35,18 +35,13 @@ paths:
           schema:
             type: string
       responses:
-        401:
-          description: ''
+        200:
+          description: success
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
       tags:
         - Article
       requestBody:
@@ -80,6 +75,121 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+    post:
+      summary: 'Create New Article'
+      operationId: createNewArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Article updated\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Comment not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Comment not found'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: 'The title of the article.'
+                  example: 'This is a title'
+                type:
+                  type: string
+                  description: 'The type of the article.'
+                  example: 'multimedia,text,video'
+                body:
+                  type: string
+                  description: 'The body of the article.'
+                  example: 'This is a caption or body of article'
+                status:
+                  type: integer
+                  description: 'The status of the article.'
+                  example: 0
+                published_at:
+                  type: datetime
+                  description: 'The published date of the article.'
+                  example: '2021-02-21 12:00:00'
+                categories:
+                  type: array
+                  description: 'The categories ID of the article.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
+                tags:
+                  type: array
+                  description: 'The tags of the article.'
+                  example:
+                    - '#tag1'
+                    - '#tag2'
+                  items:
+                    type: string
+                images:
+                  type: array
+                  description: 'The images ID of the article. Must first call upload images endpoint.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
+                excerpt:
+                  type: string
+                  description: 'The excerpt of the article.'
+                  example: 'This is a excerpt of article'
+              required:
+                - title
+                - type
+                - body
+                - status
   '/api/v1/articles/{id}':
     get:
       summary: 'Get One Article by ID'
@@ -289,6 +399,142 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/article_tags:
+    get:
+      summary: 'Get popular tags'
+      operationId: getPopularTags
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tags: []
+                properties:
+                  tags:
+                    type: array
+                    example: []
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                  description: 'optional Limit the number of tags returned.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'optional Offset the number of tags returned.'
+                  example: 10
+                query:
+                  type: integer
+                  description: 'optional Search for a category by name.'
+                  example: 0
+  /api/v1/article_categories:
+    get:
+      summary: 'Get popular Article Categories'
+      operationId: getPopularArticleCategories
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  categories: []
+                properties:
+                  categories:
+                    type: array
+                    example: []
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                  description: 'optional Limit the number of tags returned.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'optional Offset the number of tags returned.'
+                  example: 10
+                query:
+                  type: integer
+                  description: 'optional Search for a category by name.'
+                  example: 0
   /api/v1/comments:
     get:
       summary: 'Get comments on a commentable type (eg. Articles)'
@@ -613,7 +859,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 11
+        example: 15
         required: true
         schema:
           type: integer
