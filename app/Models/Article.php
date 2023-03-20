@@ -11,6 +11,8 @@ class Article extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    const MEDIA_COLLECTION_NAME = 'article_gallery';
+
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Article;
+use App\Models\ArticleTag;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -170,6 +171,7 @@ class ArticleTest extends TestCase
                 'message',
                 'article',
             ]);
+        $article_id = $response->json('article.id');
 
         $this->assertDatabaseHas('articles', [
             'title' => 'Test Article',
@@ -179,23 +181,23 @@ class ArticleTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        // check article categories (two categories)
-        $this->assertDatabaseHas('articles_article_categories', [
-            'article_id' => 1,
-            'article_category_id' => 1,
-       ]);
+       // check article categories (two categories)
        $this->assertDatabaseHas('articles_article_categories', [
-            'article_id' => 1,
-            'article_category_id' => 2,
+        'article_id' => $article_id,
+        'article_category_id' => $categories->first()->id,
+        ]);
+        $this->assertDatabaseHas('articles_article_categories', [
+            'article_id' => $article_id,
+            'article_category_id' => $categories->last()->id,
         ]);
         // check article has tags attached (two tags)
         $this->assertDatabaseHas('articles_article_tags',[
-            'article_id' => 1,
-            'article_tag_id' => 1,
+            'article_id' => $article_id,
+            'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
         ]);
         $this->assertDatabaseHas('articles_article_tags',[
-            'article_id' => 1,
-            'article_tag_id' => 2,
+            'article_id' => $article_id,
+            'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
     }
 
@@ -245,15 +247,14 @@ class ArticleTest extends TestCase
         $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
         ]);
-        
-        Log::info($response->json());
-
-         
         // create article category factory
         $categories = \App\Models\ArticleCategory::factory()
             ->count(2)
             ->create();
 
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+        Log::info($image_ids);
 
         $response = $this->postJson('/api/v1/articles', [
             'title' => 'Test Article with Images',
@@ -264,7 +265,7 @@ class ArticleTest extends TestCase
             'published_at' => now()->toDateTimeString(),
             'tags' => ['#test', '#test2'],
             'categories' => $categories->pluck('id')->toArray(),
-            'images' => $response->json('uploaded'),
+            'images' => $image_ids,
         ]);
 
         $response->assertStatus(200)
@@ -273,8 +274,10 @@ class ArticleTest extends TestCase
                 'article',
             ]);
 
+        $article_id = $response->json('article.id');
+
         $this->assertDatabaseHas('articles', [
-            'title' => 'Test Article',
+            'title' => 'Test Article with Images',
             'body' => 'Test Article Body',
             'type' => 'multimedia',
             'status' => 1,
@@ -283,27 +286,26 @@ class ArticleTest extends TestCase
 
         // check images are linked for this article
         $this->assertDatabaseHas('media', [
-            'model_id' => 1,
             'model_type' => 'App\Models\Article',
             'file_name' => 'test.jpg',
         ]);
         // check article categories (two categories)
         $this->assertDatabaseHas('articles_article_categories', [
-            'article_id' => 1,
-            'article_category_id' => 1,
+            'article_id' => $article_id,
+            'article_category_id' => $categories->first()->id,
        ]);
        $this->assertDatabaseHas('articles_article_categories', [
-            'article_id' => 1,
-            'article_category_id' => 2,
+            'article_id' => $article_id,
+            'article_category_id' => $categories->last()->id,
         ]);
         // check article has tags attached (two tags)
         $this->assertDatabaseHas('articles_article_tags',[
-            'article_id' => 1,
-            'article_tag_id' => 1,
+            'article_id' => $article_id,
+            'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
         ]);
         $this->assertDatabaseHas('articles_article_tags',[
-            'article_id' => 1,
-            'article_tag_id' => 2,
+            'article_id' => $article_id,
+            'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
     }
 }

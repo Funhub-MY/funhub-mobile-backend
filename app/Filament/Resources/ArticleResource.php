@@ -65,7 +65,7 @@ class ArticleResource extends Resource
                             Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
                                 ->label('Gallery')
                                 ->multiple()
-                                ->collection('article_gallery')
+                                ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
                                 ->maxFiles(10)

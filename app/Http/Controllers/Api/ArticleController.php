@@ -184,10 +184,16 @@ class ArticleController extends Controller
             'user_id' => $user->id,
         ]);
 
+        Log::info('Images', ['images' => $request->images]);
+
         // if request->images attach images from user_uploads to article_images collection media library
         if ($request->has('images')) {
-            $article->addMediaFromRequest('images')
-                ->toMediaCollection('article_images');
+            $userUploads = $user->getMedia('user_uploads')->whereIn('id', $request->images);
+            $userUploads->each(function ($media) use ($article) {
+                // move to article_gallery collection of the created article
+                Log::info('Media moved', ['media' => $media]);
+                $media->move($article, Article::MEDIA_COLLECTION_NAME);
+            });
         }
 
         // attach categories, do not create new categories if not exist
@@ -280,15 +286,19 @@ class ArticleController extends Controller
                 'status' => $request->status,
             ]);
 
-            // attach or detach images
+            // if request->images attach images from user_uploads to article_images collection media library
             if ($request->has('images')) {
-                $article->addMediaFromRequest('images')
-                    ->toMediaCollection('article_images');
+                $userUploads = $user->getMedia('user_uploads')->whereIn('id', $request->images);
+                $userUploads->each(function ($media) use ($article) {
+                    // move to article_gallery collection of the created article
+                    Log::info('Media moved', ['media' => $media]);
+                    $media->move($article, Article::MEDIA_COLLECTION_NAME);
+                });
             }
 
             // detach and delete images no longer in request->images
             if ($request->has('images')) {
-                $article->getMedia('article_images')->each(function ($media) use ($request) {
+                $article->getMedia(Article::MEDIA_COLLECTION_NAME)->each(function ($media) use ($request) {
                     if (!in_array($media->id, $request->images)) {
                         $media->delete();
                     }
