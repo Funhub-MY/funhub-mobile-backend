@@ -181,25 +181,21 @@ class ArticleTest extends TestCase
 
         // check article categories (two categories)
         $this->assertDatabaseHas('articles_article_categories', [
-           [
-                'article_id' => 1,
-                'article_category_id' => 1,
-           ],
-            [
-                'article_id' => 1,
-                'article_category_id' => 2,
-            ],
+            'article_id' => 1,
+            'article_category_id' => 1,
+       ]);
+       $this->assertDatabaseHas('articles_article_categories', [
+            'article_id' => 1,
+            'article_category_id' => 2,
         ]);
         // check article has tags attached (two tags)
-        $this->assertDatabaseHas('articles_article_tags', [
-            [
-                'article_id' => 1,
-                'article_tag_id' => 1,
-            ],
-            [
-                'article_id' => 1,
-                'article_tag_id' => 2,
-            ],
+        $this->assertDatabaseHas('articles_article_tags',[
+            'article_id' => 1,
+            'article_tag_id' => 1,
+        ]);
+        $this->assertDatabaseHas('articles_article_tags',[
+            'article_id' => 1,
+            'article_tag_id' => 2,
         ]);
     }
 
@@ -228,5 +224,86 @@ class ArticleTest extends TestCase
             ->assertJsonStructure([
                 'uploaded'
             ]);
+    }
+
+    /**
+     * Create articles with images, tags and categories
+     * /api/v1/articles
+     */
+    public function testCreateArticleByLoggedInUser()
+    {
+        $this->refreshDatabase();
+
+        $user = User::factory()->create();
+        // mock log in user get token
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        
+        Log::info($response->json());
+
+         
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $response->json('uploaded'),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Test Article',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $user->id,
+        ]);
+
+        // check images are linked for this article
+        $this->assertDatabaseHas('media', [
+            'model_id' => 1,
+            'model_type' => 'App\Models\Article',
+            'file_name' => 'test.jpg',
+        ]);
+        // check article categories (two categories)
+        $this->assertDatabaseHas('articles_article_categories', [
+            'article_id' => 1,
+            'article_category_id' => 1,
+       ]);
+       $this->assertDatabaseHas('articles_article_categories', [
+            'article_id' => 1,
+            'article_category_id' => 2,
+        ]);
+        // check article has tags attached (two tags)
+        $this->assertDatabaseHas('articles_article_tags',[
+            'article_id' => 1,
+            'article_tag_id' => 1,
+        ]);
+        $this->assertDatabaseHas('articles_article_tags',[
+            'article_id' => 1,
+            'article_tag_id' => 2,
+        ]);
     }
 }
