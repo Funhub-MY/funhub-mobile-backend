@@ -77,7 +77,7 @@ class InteractionController extends Controller
      * @subgroup Interactions
      * @authenticated
      * @bodyParam interactable string required The type of interactable. Example: article
-     * @bodyParam interaction_type string required The type of interaction. Example: like,dislike,share
+     * @bodyParam interaction_type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @response scenario=success {
      * "interaction": {}
@@ -88,7 +88,7 @@ class InteractionController extends Controller
     {
         $this->validate($request, [
             'interactable' => 'required|string',
-            'interaction_type' => 'required|string|in:like,dislike,share',
+            'interaction_type' => 'required|string|in:like,dislike,share,bookmark',
             'id' => 'required|integer',
         ]);
 
@@ -105,6 +105,9 @@ class InteractionController extends Controller
                 break;
             case 'share':
                 $request->merge(['interaction_type' => Interaction::TYPE[2]]);
+                break;
+            case 'bookmark':
+                $request->merge(['interaction_type' => Interaction::TYPE[3]]);
                 break;
         }
 

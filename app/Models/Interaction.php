@@ -19,6 +19,7 @@ class Interaction extends Model
         0 => 'Like',
         1 => 'Dislike',
         2 => 'Share',
+        3 => 'Bookmark',
     ];
 
     // filterable columns for frontend filtering

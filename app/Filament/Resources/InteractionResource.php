@@ -63,6 +63,7 @@ class InteractionResource extends Resource
                         0 => 'Like',
                         1 => 'Dislike',
                         2 => 'Share',
+                        3 => 'Bookmark',
                     ]),
                 Tables\Columns\TextColumn::make('meta'),
                 Tables\Columns\BadgeColumn::make('status')
