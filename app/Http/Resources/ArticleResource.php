@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Article;
+use App\Models\Interaction;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
@@ -28,9 +28,10 @@ class ArticleResource extends JsonResource
             'interactions' => InteractionResource::collection($this->interactions),
             'count' => [
                 'comments' => $this->comments->count(),
-                'likes' => $this->interactions->where('type', Article::TYPE[0])->count(),
-                'dislikes' => $this->interactions->where('type', Article::TYPE[1])->count(),
-                'share' => $this->interactions->where('type', Article::TYPE[2])->count(),
+                'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
+                'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
+                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
+                'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
             ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

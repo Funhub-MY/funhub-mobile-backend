@@ -28,7 +28,7 @@ class ArticleFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => Str::slug($title),
+            'slug' => Str::slug(fake()->asciify('******')),
             'excerpt' => fake()->sentence(10),
             'body' => fake()->paragraphs(3, true),
             'type' => fake()->randomElement(Article::TYPE),

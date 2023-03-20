@@ -98,16 +98,16 @@ class InteractionController extends Controller
 
         switch($request->interaction_type) {
             case 'like':
-                $request->merge(['interaction_type' => Interaction::TYPE[0]]);
+                $request->merge(['interaction_type' => Interaction::TYPE_LIKE]);
                 break;
             case 'dislike':
-                $request->merge(['interaction_type' => Interaction::TYPE[1]]);
+                $request->merge(['interaction_type' => Interaction::TYPE_DISLIKE]);
                 break;
             case 'share':
-                $request->merge(['interaction_type' => Interaction::TYPE[2]]);
+                $request->merge(['interaction_type' => Interaction::TYPE_SHARE]);
                 break;
             case 'bookmark':
-                $request->merge(['interaction_type' => Interaction::TYPE[3]]);
+                $request->merge(['interaction_type' => Interaction::TYPE_BOOKMARK]);
                 break;
         }
 

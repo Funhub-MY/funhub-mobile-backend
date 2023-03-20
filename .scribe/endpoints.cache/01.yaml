@@ -45,7 +45,6 @@ endpoints:
                  "id": 1,
                  "name": "image.jpg",
                  "url": "http://localhost:8000/storage/user_uploads/1/image.jpg",
-                 "thumbUrl": "http://localhost:8000/storage/user_uploads/1/thumb_image.jpg",
                  "size": 12345,
                  "type": "image/jpeg"
              }
@@ -64,7 +63,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer badVkgEP31Za6v65eD4f8ch'
+      - 'Bearer 4DPe36hVv6Zb5cgak8Ead1f'
     controller: null
     method: null
     route: null
@@ -72,13 +71,116 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/articles
+    uri: api/v1/articles/my_articles
     metadata:
       groupName: Article
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Articles for Logged in user'
+      title: 'Get Articles for Logged in user (for Profile Page)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      published_only:
+        name: published_only
+        description: 'optional Filter by published articles.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      published_only: true
+      filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 84aevbkh1d56P6DEgZVa3fc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/articles/my_bookmarks
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get My Bookmarked Articles'
       description: ''
       authenticated: true
       custom: []
@@ -159,7 +261,102 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aE4Vkb3eh5fcg68d6Z1PDva'
+      - 'Bearer 45vbgh6Za1P8DV3kc6efaEd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/articles
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Articles for Logged in user (for Home Page)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DhV86cgZ4be3vEaak56Pf1d'
     controller: null
     method: null
     route: null
@@ -298,7 +495,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fEZdhav8D3g54bk6P6ce1aV'
+      - 'Bearer kcEV8PDbd6va451gh63aeZf'
     controller: null
     method: null
     route: null
@@ -355,7 +552,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eacf4d6V5kaZ1P38D6ghbEv'
+      - 'Bearer f45v3hVadZDbk681PagE6ce'
     controller: null
     method: null
     route: null
@@ -467,7 +664,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5a3EZvbP66ad8hkDf4g1ecV'
+      - 'Bearer kvbchef5Pd1D4Ea38Zga6V6'
     controller: null
     method: null
     route: null
@@ -524,7 +721,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZg63e6D5fadk8b4vVEPah1'
+      - 'Bearer Eb866g3kDP5VfhdvaZa41ec'
     controller: null
     method: null
     route: null
@@ -597,7 +794,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EPhD4kV8fev6a3a5Zg1cd6b'
+      - 'Bearer fbvgDZPEdak63465Ve8hac1'
     controller: null
     method: null
     route: null
@@ -670,7 +867,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 641cb8gvfaeaVZ536kDEdPh'
+      - 'Bearer f36abZE6ehkcadDg5P8V14v'
     controller: null
     method: null
     route: null
@@ -787,7 +984,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZDkE6bghd518PcaeaV634fv'
+      - 'Bearer 34Dvf8e6Ed1Zb6gkahcPa5V'
     controller: null
     method: null
     route: null
@@ -860,7 +1057,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZ65ka3eba48gvDVdPE1h6f'
+      - 'Bearer d1abf6DckhPeaVv8654Z3Eg'
     controller: null
     method: null
     route: null
@@ -887,11 +1084,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: 16
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -931,7 +1128,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dk4fha6Pb6Z8e31gVa5Edcv'
+      - 'Bearer fbZ6vcP35h61eE4Va8Dkdga'
     controller: null
     method: null
     route: null
@@ -1003,7 +1200,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ab5hZ6ckV38devD641afgPE'
+      - 'Bearer dZ4v6E8Pca3DhkVgb1fa6e5'
     controller: null
     method: null
     route: null
@@ -1045,7 +1242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vb5Ee4gda6aZ8P6Vc3hkDf1'
+      - 'Bearer e3a8Vk6DEZa6cv5fgh1Pb4d'
     controller: null
     method: null
     route: null
@@ -1162,7 +1359,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ec6ZfvVa631P8g5khd4EbaD'
+      - 'Bearer Z5aVdb8PgDk1aE3e4h6c6vf'
     controller: null
     method: null
     route: null
@@ -1200,7 +1397,7 @@ endpoints:
         name: interaction_type
         description: 'The type of interaction.'
         required: true
-        example: 'like,dislike,share'
+        example: 'like,dislike,share,bookmark'
         type: string
         custom: []
       id:
@@ -1212,7 +1409,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       interactable: article
-      interaction_type: 'like,dislike,share'
+      interaction_type: 'like,dislike,share,bookmark'
       id: 1
     fileParameters: []
     responses:
@@ -1235,7 +1432,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pd6gbch638D4Z51eEaafvkV'
+      - 'Bearer f1bch4egZa686PD3dvEakV5'
     controller: null
     method: null
     route: null
@@ -1286,7 +1483,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bD4fe1VP8a3kZh5cEg6a6vd'
+      - 'Bearer c5k1DvE6b8eg4aVf6dZ3ahP'
     controller: null
     method: null
     route: null
@@ -1345,7 +1542,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8k36aefZv6VbEa1DPgdch54'
+      - 'Bearer 1d4fEv35g6VhPZkbc6Dea8a'
     controller: null
     method: null
     route: null

@@ -47,7 +47,6 @@ paths:
                       id: 1
                       name: image.jpg
                       url: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
-                      thumbUrl: 'http://localhost:8000/storage/user_uploads/1/thumb_image.jpg'
                       size: 12345
                       type: image/jpeg
                 properties:
@@ -58,7 +57,6 @@ paths:
                         id: 1
                         name: image.jpg
                         url: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
-                        thumbUrl: 'http://localhost:8000/storage/user_uploads/1/thumb_image.jpg'
                         size: 12345
                         type: image/jpeg
                     items:
@@ -73,9 +71,6 @@ paths:
                         url:
                           type: string
                           example: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
-                        thumbUrl:
-                          type: string
-                          example: 'http://localhost:8000/storage/user_uploads/1/thumb_image.jpg'
                         size:
                           type: integer
                           example: 12345
@@ -104,10 +99,150 @@ paths:
                   description: 'The images to upload.'
               required:
                 - images
+  /api/v1/articles/my_articles:
+    get:
+      summary: 'Get Articles for Logged in user (for Profile Page)'
+      operationId: getArticlesForLoggedInUserforProfilePage
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                published_only:
+                  type: boolean
+                  description: 'optional Filter by published articles.'
+                  example: true
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+  /api/v1/articles/my_bookmarks:
+    get:
+      summary: 'Get My Bookmarked Articles'
+      operationId: getMyBookmarkedArticles
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
   /api/v1/articles:
     get:
-      summary: 'Get Articles for Logged in user'
-      operationId: getArticlesForLoggedInUser
+      summary: 'Get Articles for Logged in user (for Home Page)'
+      operationId: getArticlesForLoggedInUserforHomePage
       description: ''
       parameters:
         -
@@ -956,7 +1091,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 16
+        example: 12
         required: true
         schema:
           type: integer
@@ -1098,7 +1233,7 @@ paths:
                 interaction_type:
                   type: string
                   description: 'The type of interaction.'
-                  example: 'like,dislike,share'
+                  example: 'like,dislike,share,bookmark'
                 id:
                   type: integer
                   description: 'The id of the interactable (eg. Article ID).'

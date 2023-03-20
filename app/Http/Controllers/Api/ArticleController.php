@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\ArticleTag;
+use App\Models\Interaction;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ class ArticleController extends Controller
     use QueryBuilderTrait;
 
     /**
-     * Get Articles for Logged in user
+     * Get Articles for Logged in user (for Home Page)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      * 
      * @group Article
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -47,6 +51,88 @@ class ArticleController extends Controller
         // TODO: get article for home page based on user preferences
 
         $query = Article::published()
+            ->whereDoesntHave('hiddenUsers', function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            });
+
+        $this->buildQuery($query, $request);
+
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+            ->paginate(config('app.paginate_per_page'));
+
+        return ArticleResource::collection($data);
+    }
+
+    /**
+     * Get Articles for Logged in user (for Profile Page)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @group Article
+     * @bodyParam published_only boolean optional Filter by published articles. Example: true
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
+     * 
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     * 
+     */
+    public function getMyArticles(Request $request)
+    {
+        $query = Article::where('user_id', auth()->user()->id);
+
+        if ($request->has('published_only')) {
+            $query->where('status', Article::STATUS[1]);
+        }
+
+        $this->buildQuery($query, $request);
+
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+            ->paginate(config('app.paginate_per_page'));
+
+        return ArticleResource::collection($data);
+    }
+
+    /**
+     * Get My Bookmarked Articles
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
+     * 
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     * 
+     */
+    public function getMyBookmarkedArticles(Request $request)
+    {
+        $query = Article::whereHas('interactions', function ($query) {
+            $query->where('user_id', auth()->user()->id)
+                ->where('type', Interaction::TYPE_BOOKMARK);
+        })->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
@@ -272,7 +358,6 @@ class ArticleController extends Controller
      *        "id": 1,
      *        "name": "image.jpg",
      *        "url": "http://localhost:8000/storage/user_uploads/1/image.jpg",
-     *        "thumbUrl": "http://localhost:8000/storage/user_uploads/1/thumb_image.jpg",
      *        "size": 12345,
      *        "type": "image/jpeg"
      *    }

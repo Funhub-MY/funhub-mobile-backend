@@ -20,10 +20,10 @@ class ArticleTest extends TestCase
     }
 
     /**
-     * Article get articles by logged in user
+     * Article get articles for Home by logged in user
      * /api/v1/articles
      */
-    public function testGetArticlesByLoggedInUser()
+    public function testGetArticlesForHomeByLoggedInUser()
     {
         // mock log in user get token
         Sanctum::actingAs(
@@ -39,12 +39,98 @@ class ArticleTest extends TestCase
 
         $response = $this->getJson('/api/v1/articles');
 
-        Log::info($response->getContent());
-
         $response->assertStatus(200)
         ->assertJsonStructure([
             'data',
         ]);
+    }
+
+    /**
+     * Article get articles for Profile by logged in user
+     * /api/v1/articles/my_articles
+     *
+     */
+    public function testGetArticlesForProfileByLoggedInUser()
+    {
+        $this->refreshDatabase();
+
+        $user = User::factory()->create();
+        // mock log in user get token
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+
+        // factory create articles creayed by this user
+        Article::factory()
+            ->count(3)
+            ->published()
+            ->create([
+                'user_id' => $user->id,
+            ]);
+
+        $response = $this->getJson('/api/v1/articles/my_articles');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        $this->assertEquals(3, $response->json('meta.total'));
+    }
+    
+
+    /**
+     * Article get articles bookmarked by logged in user
+     * /api/v1/articles/my_bookmarks
+     */
+    public function testGetArticlesBookmarkedByLoggedInUser()
+    {
+        $this->refreshDatabase();
+
+        $user = User::factory()->create();
+        // mock log in user get token
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+
+        // create 5 random users used for creating 5 articles
+        $users = User::factory()
+            ->count(5)
+            ->create();
+
+        // factory create articles by random users
+        $articles = Article::factory()
+            ->count(5)
+            ->published()
+            ->create([
+                'user_id' => $users->random()->id,
+            ]);
+
+        // bookmark each articles
+        foreach ($articles as $article) {
+            // bookmark articles by logged in user
+            $response = $this->postJson('/api/v1/interactions', [
+                'interactable' => 'article',
+                'interaction_type' => 'bookmark',
+                'id' => $article->id,
+            ]);
+
+            // assert json response
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'interaction',
+                ]);
+        }
+
+        // get bookmarks of user
+        $response = $this->getJson('/api/v1/articles/my_bookmarks');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        $this->assertEquals(5, $response->json('meta.total'));
     }
 
     /**
@@ -95,22 +181,25 @@ class ArticleTest extends TestCase
 
         // check article categories (two categories)
         $this->assertDatabaseHas('articles_article_categories', [
-            'article_id' => 1,
-            'article_category_id' => $categories->first()->id,
+           [
+                'article_id' => 1,
+                'article_category_id' => 1,
+           ],
+            [
+                'article_id' => 1,
+                'article_category_id' => 2,
+            ],
         ]);
-        $this->assertDatabaseHas('articles_article_categories', [
-            'article_id' => 1,
-            'article_category_id' => $categories->last()->id,
-        ]);
-
         // check article has tags attached (two tags)
         $this->assertDatabaseHas('articles_article_tags', [
-            'article_id' => 1,
-            'article_tag_id' => 1,
-        ]);
-        $this->assertDatabaseHas('articles_article_tags', [
-            'article_id' => 1,
-            'article_tag_id' => 2,
+            [
+                'article_id' => 1,
+                'article_tag_id' => 1,
+            ],
+            [
+                'article_id' => 1,
+                'article_tag_id' => 2,
+            ],
         ]);
     }
 
@@ -139,14 +228,5 @@ class ArticleTest extends TestCase
             ->assertJsonStructure([
                 'uploaded'
             ]);
-    }
-
-    /**
-     * Articles create article by logged in user with images
-     * /api/v1/articles
-     */
-    public function testCreateArticleByLoggedInUserWithImages()
-    {
-
     }
 }

@@ -32,7 +32,12 @@ class InteractionResource extends Resource
                     ->default(0)
                     ->required(),
                 Forms\Components\Select::make('type')
-                    ->options(Interaction::TYPE)
+                    ->options([
+                        1 => 'Like',
+                        2 => 'Dislike',
+                        3 => 'Share',
+                        4 => 'Bookmark',
+                    ])
                     ->default(0)
                     ->required(),
                 Forms\Components\Select::make('user_id')
@@ -60,10 +65,10 @@ class InteractionResource extends Resource
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('type')
                     ->enum([
-                        0 => 'Like',
-                        1 => 'Dislike',
-                        2 => 'Share',
-                        3 => 'Bookmark',
+                        1 => 'Like',
+                        2 => 'Dislike',
+                        3 => 'Share',
+                        4 => 'Bookmark',
                     ]),
                 Tables\Columns\TextColumn::make('meta'),
                 Tables\Columns\BadgeColumn::make('status')

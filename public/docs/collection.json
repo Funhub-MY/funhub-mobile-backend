@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "de065679-c8b1-40c6-ba39-858cdfe733ba",
+        "_postman_id": "fe03bd05-e353-470e-8ce2-7b75df2ae040",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -55,7 +55,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"uploaded\": [\n    {\n       \"id\": 1,\n       \"name\": \"image.jpg\",\n       \"url\": \"http:\/\/localhost:8000\/storage\/user_uploads\/1\/image.jpg\",\n       \"thumbUrl\": \"http:\/\/localhost:8000\/storage\/user_uploads\/1\/thumb_image.jpg\",\n       \"size\": 12345,\n       \"type\": \"image\/jpeg\"\n   }\n]\n}",
+                            "body": "{\n\"uploaded\": [\n    {\n       \"id\": 1,\n       \"name\": \"image.jpg\",\n       \"url\": \"http:\/\/localhost:8000\/storage\/user_uploads\/1\/image.jpg\",\n       \"size\": 12345,\n       \"type\": \"image\/jpeg\"\n   }\n]\n}",
                             "name": "success"
                         },
                         {
@@ -67,7 +67,77 @@
                     ]
                 },
                 {
-                    "name": "Get Articles for Logged in user",
+                    "name": "Get Articles for Logged in user (for Profile Page)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/my_articles",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/my_articles"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"published_only\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get My Bookmarked Articles",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/my_bookmarks",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/my_bookmarks"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Articles for Logged in user (for Home Page)",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -548,7 +618,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "16",
+                                            "value": "12",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -762,7 +832,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"interactable\":\"article\",\"interaction_type\":\"like,dislike,share\",\"id\":1}"
+                                    "raw": "{\"interactable\":\"article\",\"interaction_type\":\"like,dislike,share,bookmark\",\"id\":1}"
                                 },
                                 "description": ""
                             },
