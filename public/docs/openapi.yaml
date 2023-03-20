@@ -7,6 +7,103 @@ servers:
   -
     url: 'http://localhost'
 paths:
+  /api/v1/articles/gallery:
+    post:
+      summary: 'Upload Images for Article'
+      operationId: uploadImagesForArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: multipart/form-data
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  uploaded:
+                    -
+                      id: 1
+                      name: image.jpg
+                      url: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
+                      thumbUrl: 'http://localhost:8000/storage/user_uploads/1/thumb_image.jpg'
+                      size: 12345
+                      type: image/jpeg
+                properties:
+                  uploaded:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: image.jpg
+                        url: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
+                        thumbUrl: 'http://localhost:8000/storage/user_uploads/1/thumb_image.jpg'
+                        size: 12345
+                        type: image/jpeg
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: image.jpg
+                        url:
+                          type: string
+                          example: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
+                        thumbUrl:
+                          type: string
+                          example: 'http://localhost:8000/storage/user_uploads/1/thumb_image.jpg'
+                        size:
+                          type: integer
+                          example: 12345
+                        type:
+                          type: string
+                          example: image/jpeg
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["images": ["The images field is required."] ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: string
+                  format: binary
+                  description: 'The images to upload.'
+              required:
+                - images
   /api/v1/articles:
     get:
       summary: 'Get Articles for Logged in user'
@@ -859,7 +956,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 15
+        example: 16
         required: true
         schema:
           type: integer

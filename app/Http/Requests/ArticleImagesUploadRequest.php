@@ -24,12 +24,8 @@ class ArticleImagesUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            'images' => $this
-                ->validateMultipleMedia()
-                ->minItems(1)
-                ->maxItems(config('app.max_images_per_article'))
-                ->extension('png', 'jpg', 'jpeg', 'heic', 'heif')
-                ->maxItemSizeInKb(config('app.max_size_per_image_kb'))
+            'images' => 'required',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif,heic'
         ];
     }
 }

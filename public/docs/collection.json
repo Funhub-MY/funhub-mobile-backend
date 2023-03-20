@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "c8e7f614-3745-4d43-a478-0563f172ff17",
+        "_postman_id": "de065679-c8b1-40c6-ba39-858cdfe733ba",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -19,6 +19,53 @@
             "name": "Article",
             "description": "",
             "item": [
+                {
+                    "name": "Upload Images for Article",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/gallery",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/gallery"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "images",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"uploaded\": [\n    {\n       \"id\": 1,\n       \"name\": \"image.jpg\",\n       \"url\": \"http:\/\/localhost:8000\/storage\/user_uploads\/1\/image.jpg\",\n       \"thumbUrl\": \"http:\/\/localhost:8000\/storage\/user_uploads\/1\/thumb_image.jpg\",\n       \"size\": 12345,\n       \"type\": \"image\/jpeg\"\n   }\n]\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"images\": [\"The images field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
                 {
                     "name": "Get Articles for Logged in user",
                     "request": {
@@ -501,7 +548,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "15",
+                                            "value": "16",
                                             "description": "The ID of the comment."
                                         }
                                     ]

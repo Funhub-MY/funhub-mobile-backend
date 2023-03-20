@@ -12,6 +12,7 @@ use App\Models\ArticleTag;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 use function PHPSTORM_META\map;
@@ -85,15 +86,14 @@ class ArticleController extends Controller
      */
     public function store(ArticleCreateRequest $request)
     {
-        $user = auth()->user;
-
+        $user = auth()->user();
         $article = Article::create([
             'title' => $request->title,
             'type' => $request->type,
             'slug' => Str::slug($request->title),
             'excerpt' => ($request->excerpt) ?? null,
             'body' => $request->body,
-            'status' => $request->status, // default is dfraft
+            'status' => $request->status, // default is draft
             'published_at' => ($request->published_at) ? Carbon::parse($request->published_at)->toDateTimeString() : null,
             'user_id' => $user->id,
         ]);
@@ -119,7 +119,7 @@ class ArticleController extends Controller
 
             // create or update tags
             $tags = collect($tags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag])->id;
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
         }
@@ -223,7 +223,7 @@ class ArticleController extends Controller
 
                 // create or update tags
                 $tags = collect($tags)->map(function ($tag) {
-                    return ArticleTag::firstOrCreate(['name' => $tag])->id;
+                    return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
                 });
                 $article->tags()->sync($tags);
             }
@@ -265,7 +265,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group Article
-     * @bodyParam images file required The images to upload. Example: [file1, file2]
+     * @bodyParam images file required The images to upload.
      * @response scenario=success {
      * "uploaded": [
      *     {
@@ -282,25 +282,41 @@ class ArticleController extends Controller
      */
     public function postGalleryUpload(ArticleImagesUploadRequest $request)
     {
-        $user = auth()->user;
-
-        // upload via spatie medialibrary
-        $uploaded = $user->addFromMediaLibraryRequest($request->images)
-            ->each(function ($fileAdder) {
-                $fileAdder->toMediaCollection('user_uploads');
+        $user = auth()->user();
+        $images = [];
+        // if request images is not array wrap it in array
+        if (!is_array($request->images)) {
+            // upload via spatie medialibrary
+            // single image
+            $uploaded = $user->addMedia($request->images)->toMediaCollection('user_uploads');
+            return response()->json([
+                'uploaded' => [
+                    [
+                        'id' => $uploaded->id,
+                        'name' => $uploaded->file_name,
+                        'url' => $uploaded->getUrl(),
+                        'size' => $uploaded->size,
+                        'type' => $uploaded->mime_type,
+                    ],
+                ],
+            ]);
+        } else {
+            // multiple images
+            $uploaded = collect($request->images)->map(function ($image) use ($user) {
+                return $user->addMedia($image)->toMediaCollection('user_uploads');
             });
-        
-        return response()->json([
-            'uploaded' => $uploaded->map(function ($file) {
-                return [
-                    'id' => $file->id,
-                    'name' => $file->file_name,
-                    'url' => $file->getUrl(),
-                    'thumbUrl' => $file->getUrl('thumb'),
-                    'size' => $file->size,
-                    'type' => $file->mime_type,
+            $uploaded->each(function ($image) use (&$images) {
+                $images[] = [
+                    'id' => $image->id,
+                    'name' => $image->file_name,
+                    'url' => $image->getUrl(),
+                    'size' => $image->size,
+                    'type' => $image->mime_type,
                 ];
-            }),
-        ]);
+            });
+            return response()->json([
+                'uploaded' => $images,
+            ]);
+        }    
     }
 }
