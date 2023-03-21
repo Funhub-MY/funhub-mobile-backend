@@ -129,9 +129,9 @@ class ArticleResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('excerpt')
-                    ->sortable()
-                    ->searchable()->wrap(),
+                // Tables\Columns\TextColumn::make('excerpt')
+                //     ->sortable()
+                //     ->searchable()->wrap(),
                 Tables\Columns\TextColumn::make('type')
                     ->enum(Article::TYPE)
                     ->sortable()
