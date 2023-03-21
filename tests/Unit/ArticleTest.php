@@ -54,13 +54,8 @@ class ArticleTest extends TestCase
     public function testGetArticlesForProfileByLoggedInUser()
     {
         $this->refreshDatabase();
-
         $user = User::factory()->create();
-        // mock log in user get token
-        Sanctum::actingAs(
-            $user,
-            ['*']
-        );
+        Sanctum::actingAs($user,['*']);
 
         // factory create articles creayed by this user
         Article::factory()
@@ -87,13 +82,8 @@ class ArticleTest extends TestCase
     public function testGetArticlesBookmarkedByLoggedInUser()
     {
         $this->refreshDatabase();
-
         $user = User::factory()->create();
-        // mock log in user get token
-        Sanctum::actingAs(
-            $user,
-            ['*']
-        );
+        Sanctum::actingAs($user,['*']);
 
         // create 5 random users used for creating 5 articles
         $users = User::factory()
@@ -141,13 +131,8 @@ class ArticleTest extends TestCase
     public function testCreateArticleByLoggedInUserWihtoutImages()
     {
         $this->refreshDatabase();
-
         $user = User::factory()->create();
-         // mock log in user get token
-         Sanctum::actingAs(
-            $user,
-            ['*']
-        );
+        Sanctum::actingAs($user,['*']);
         
         // create article category factory
         $categories = \App\Models\ArticleCategory::factory()
@@ -208,13 +193,8 @@ class ArticleTest extends TestCase
     public function testGalleryUploadBeforeArticleIsCreated()
     {
         $this->refreshDatabase();
-
         $user = User::factory()->create();
-         // mock log in user get token
-         Sanctum::actingAs(
-            $user,
-            ['*']
-        );
+        Sanctum::actingAs($user,['*']);
 
         $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
@@ -235,13 +215,8 @@ class ArticleTest extends TestCase
     public function testCreateArticleByLoggedInUser()
     {
         $this->refreshDatabase();
-
         $user = User::factory()->create();
-        // mock log in user get token
-        Sanctum::actingAs(
-            $user,
-            ['*']
-        );
+        Sanctum::actingAs($user,['*']);
 
         // upload images first
         $response = $this->json('POST', '/api/v1/articles/gallery', [
@@ -254,7 +229,6 @@ class ArticleTest extends TestCase
 
         // get ids array out of response json uploaded
         $image_ids = array_column($response->json('uploaded'), 'id');
-        Log::info($image_ids);
 
         $response = $this->postJson('/api/v1/articles', [
             'title' => 'Test Article with Images',
@@ -307,5 +281,99 @@ class ArticleTest extends TestCase
             'article_id' => $article_id,
             'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
+    }
+
+    /**
+    * Update Articles Change Body and Status
+    * /api/v1/articles/{article}
+    */
+    public function testUpdateArticleBodyAndStatusByLoggedInUser()
+    {
+        $this->refreshDatabase();
+        $user = User::factory()->create();
+        Sanctum::actingAs($user,['*']);
+
+        // create one article by this user using factory
+        $article = Article::factory()->create([
+            'title' => 'Test Article',
+            'body' => 'Test Article Body',
+            'status' => 1,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->putJson('/api/v1/articles/'.$article->id, [
+            'body' => 'Test Article Body Updated',
+            'status' => 0, // unpublished
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert body and status is updated
+        $this->assertDatabaseHas('articles', [
+            'id' => $article->id,
+            'user_id' => $user->id,
+            'body' => 'Test Article Body Updated',
+            'status' => 0,
+        ]);
+    }
+
+    /**
+     * Update Articles Change Categories
+     * /api/v1/articles/{article}
+     */
+    public function testUpdateArticleChangeCategoriesByLoggedInUser()
+    {
+        $this->refreshDatabase();
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user,['*']);
+
+        // create one article by this user using factory
+        $article = Article::factory()->create([
+            'title' => 'Test Article',
+            'body' => 'Test Article Body',
+            'status' => 1,
+            'user_id' => $user->id,
+        ]);
+
+        // create category (original)
+        $category = \App\Models\ArticleCategory::factory()->count(3)->create();
+
+        // attach created article with category
+        $article->find($article->id)->categories()->attach($category->pluck('id')->toArray());
+
+        // create 3 more different categories
+        $categories_new = \App\Models\ArticleCategory::factory()->count(3)->create();
+
+        $response = $this->putJson('/api/v1/articles/'.$article->id, [
+            'body' => 'Test Article Body',
+            'status' => 1, // unpublished
+            'categories' => $categories_new->pluck('id')->toArray(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert body and status is updated
+        $this->assertDatabaseHas('articles', [
+            'id' => $article->id,
+            'user_id' => $user->id,
+            'body' => 'Test Article Body',
+            'status' => 1,
+        ]);
+
+        $article = Article::find($article->id);
+
+        Log::info($article->categories->pluck('id')->toArray());
+
+        // assert article has categories (new)
+        $this->assertTrue(
+            $article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray()
+        );
     }
 }

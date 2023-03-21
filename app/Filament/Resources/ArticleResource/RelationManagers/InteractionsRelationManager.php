@@ -26,11 +26,16 @@ class InteractionsRelationManager extends RelationManager
                     ->default(0)
                     ->required(),
                 Forms\Components\Select::make('type')
-                    ->options(Interaction::TYPE)
+                    ->options([
+                        1 => 'Like',
+                        2 => 'Dislike',
+                        3 => 'Share',
+                        4 => 'Bookmark',
+                    ])
                     ->default(0)
                     ->required(),
                 Forms\Components\Select::make('user_id')
-                    ->label('Belongs To User')
+                    ->label('User')
                     ->preload()
                     ->searchable()
                     ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
@@ -48,9 +53,10 @@ class InteractionsRelationManager extends RelationManager
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('type')
                     ->enum([
-                        0 => 'Like',
-                        1 => 'Dislike',
-                        2 => 'Share',
+                        1 => 'Like',
+                        2 => 'Dislike',
+                        3 => 'Share',
+                        4 => 'Bookmark',
                     ]),
                 Tables\Columns\TextColumn::make('meta'),
                 Tables\Columns\BadgeColumn::make('status')

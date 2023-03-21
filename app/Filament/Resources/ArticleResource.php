@@ -6,6 +6,7 @@ use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -42,28 +43,28 @@ class ArticleResource extends Resource
                             Forms\Components\TextInput::make('slug')
                                 ->disabled()
                                 ->required()
+                                ->helperText('Filled automatically when you fill title')
                                 ->unique(Article::class, 'slug', ignoreRecord: true),
                             Forms\Components\Hidden::make('type')
                                 ->default(Article::TYPE[0])
                                 ->required(),
-                            Forms\Components\Textarea::make('excerpt')
-                                ->rows(3)
-                                ->columnSpan('full'),
                             Forms\Components\RichEditor::make('body')
+                                ->required()
+                                ->placeholder('Write something...')
                                 ->columnSpan('full'),
                         ])->columns(2),
 
-                        Forms\Components\Section::make('Image')->schema([
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('cover_image')
-                                ->label('Cover Image')
-                                ->collection('article_cover')
-                                ->customProperties(['is_cover' => true])
-                                ->columnSpan('full')
-                                ->maxFiles(1)
-                                ->rules('image'),
+                        Forms\Components\Section::make('Gallery')->schema([
+                            // Forms\Components\SpatieMediaLibraryFileUpload::make('cover_image')
+                            //     ->label('Cover Image')
+                            //     ->collection('article_cover')
+                            //     ->customProperties(['is_cover' => true])
+                            //     ->columnSpan('full')
+                            //     ->maxFiles(1)
+                            //     ->rules('image'),
                             // multiple images
                             Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
-                                ->label('Gallery')
+                                ->label('Images')
                                 ->multiple()
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
@@ -76,6 +77,16 @@ class ArticleResource extends Resource
 
                 Forms\Components\Group::make()
                     ->schema([
+                        Section::make('Language')->schema([
+                            Forms\Components\Select::make('language')
+                                ->options([
+                                    'en' => 'English',
+                                    'zh' => 'Chinese',
+                                ])
+                                ->default('en')
+                                ->required(),
+                        ])->columnSpan('Language'),
+                        
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),

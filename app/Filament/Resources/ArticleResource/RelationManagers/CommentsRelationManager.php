@@ -21,14 +21,14 @@ class CommentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('body')
+                Forms\Components\Textarea::make('body')
                     ->label('Comment'),
                 Forms\Components\Select::make('status')
                     ->options(Comment::STATUS)
                     ->default(0)
                     ->required(),
                 Forms\Components\Select::make('user_id')
-                    ->label('Belongs To User')
+                    ->label('User')
                     ->preload()
                     ->searchable()
                     ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
