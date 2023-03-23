@@ -25,8 +25,8 @@ class CommentController extends Controller
      * @group Article
      * @subgroup Comments
      * @authenticated
-     * @urlParam type string required The type of commentable. Example: article
-     * @urlParam id integer required The id of the commentable. Example: 1
+     * @bodyParam type string required The type of commentable. Example: article
+     * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -45,8 +45,16 @@ class CommentController extends Controller
      * 
      * @response status=404 scenario="Not Found"
      */
-    public function index($type, $id, Request $request)
+    public function index(Request $request)
     {
+        $this->validate($request, [
+            'type' => 'required|string',
+            'id' => 'required|integer',
+        ]);
+
+        $id = $request->id;
+        $type = $request->type;
+
         if ($request->type == 'article') {
             $request->merge(['commentable_type' => Article::class]);
         }
@@ -56,7 +64,7 @@ class CommentController extends Controller
 
         if ($type == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
-            $query->whereHas('article', function ($query) {
+            $query->whereHas('commentable', function ($query) {
                 $query->published()
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
@@ -123,6 +131,7 @@ class CommentController extends Controller
             'commentable_id' => $request->id,
             'body' => $request->body,
             'parent_id' => $request->parent_id ?? null,
+            'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 
         event(new \App\Events\CommentCreated($comment)); // fires event

@@ -15,6 +15,10 @@ class Comment extends Model
         2 => 'Hidden'
     ];
 
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_HIDDEN = 2;
+
     // filterable columns for frontend filtering
     const FILTERABLE = [
         'id',
