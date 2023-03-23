@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "fe03bd05-e353-470e-8ce2-7b75df2ae040",
+        "_postman_id": "66f3bf2b-28c6-4d45-a8f5-d4696f19225d",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -511,6 +511,143 @@
                     "description": "",
                     "item": [
                         {
+                            "name": "Get replies to a comment",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments\/replies\/:comment_id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments\/replies\/:comment_id",
+                                    "variable": [
+                                        {
+                                            "id": "comment_id",
+                                            "key": "comment_id",
+                                            "value": "et",
+                                            "description": "The ID of the comment."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"filter\":\"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"data\": {},\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\"message\": \"Comment not found\"}",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Toggle a Comment Like",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments\/like_toggle",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments\/like_toggle"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"comment_id\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Comment liked\/Un-Liked\",\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"comment_id\": [\"The Comment Id field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Report a comment",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/comments\/report",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/comments\/report"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Comment reported\",\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"comment_id\": [\"The Comment Id field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"message\": \"You have already reported this comment\" ]}",
+                                    "name": "Invalid Form Fields"
+                                }
+                            ]
+                        },
+                        {
                             "name": "Get comments on a commentable type (eg. Articles)",
                             "request": {
                                 "url": {
@@ -546,7 +683,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"filter\":\"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"replies_per_comment\":3,\"filter\":\"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -587,7 +724,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"type\":\"article\",\"id\":1,\"body\":\"This is a comment\"}"
+                                    "raw": "{\"type\":\"article\",\"id\":1,\"body\":\"This is a comment\",\"parent_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -597,6 +734,12 @@
                                     "code": 200,
                                     "body": "{\n \"comment\": {},\n}",
                                     "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
                                 },
                                 {
                                     "header": [],
@@ -618,7 +761,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "13",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -636,7 +779,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"id\":1}"
+                                    "raw": "{\"id\":1,\"replies_per_comment\":3}"
                                 },
                                 "description": ""
                             },

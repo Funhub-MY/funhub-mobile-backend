@@ -42,4 +42,19 @@ class Comment extends Model
     {
         return $this->morphMany(Report::class, 'reportable');
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(CommentLike::class);
+    }
 }
