@@ -83,6 +83,7 @@ class CommentController extends Controller
             }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
+            ->published()
             ->paginate(config('app.paginate_per_page'));
 
         return CommentResource::collection($data);

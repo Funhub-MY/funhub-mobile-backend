@@ -15,6 +15,9 @@ class Interaction extends Model
         2 => 'Hidden'
     ];
 
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+
     const TYPE_LIKE = 1;
     const TYPE_DISLIKE = 2;
     const TYPE_SHARE = 3;
@@ -42,5 +45,19 @@ class Interaction extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Scopes
+     */
+    
+    public function scopePublished()
+    {
+        return $this->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function scopeDraft()
+    {
+        return $this->where('status', self::STATUS_DRAFT);
     }
 }

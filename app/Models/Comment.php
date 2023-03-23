@@ -61,4 +61,22 @@ class Comment extends Model
     {
         return $this->hasMany(CommentLike::class);
     }
+
+    /**
+     * Scopes
+     */
+    public function scopePublished()
+    {
+        return $this->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function scopeDraft()
+    {
+        return $this->where('status', self::STATUS_DRAFT);
+    }
+
+    public function scopeHidden()
+    {
+        return $this->where('status', self::STATUS_HIDDEN);
+    }
 }

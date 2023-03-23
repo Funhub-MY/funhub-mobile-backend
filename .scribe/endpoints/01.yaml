@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E6eb3g61Pc4kad5av8ZDVhf'
+      - 'Bearer vcf3EPVea6abD41d6k8h5Zg'
     controller: null
     method: null
     route: null
@@ -164,7 +164,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a61v3Vc4dD5bkE6Zeaf8gPh'
+      - 'Bearer 65he8aP34Dcvg1VkdE6Zfba'
     controller: null
     method: null
     route: null
@@ -259,7 +259,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D6Eh8V5cbve163kPadga4fZ'
+      - 'Bearer kZ5v3ae6DbdgfVaPc4Eh168'
     controller: null
     method: null
     route: null
@@ -354,7 +354,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6cfV5baeD6184E3vhZkdgPa'
+      - 'Bearer fehc8v64ZP1k3dagEb5DaV6'
     controller: null
     method: null
     route: null
@@ -493,7 +493,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k6avZa61db54Eehc8PfDgV3'
+      - 'Bearer aD6hZk4ad5g38vcEePbfV61'
     controller: null
     method: null
     route: null
@@ -550,7 +550,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8a6dVaegfhvE3ck54ZDb61P'
+      - 'Bearer aZ66dc13P4kgV85faEvhDbe'
     controller: null
     method: null
     route: null
@@ -662,7 +662,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D3v8ed5V1bchfa6E4Pg6kaZ'
+      - 'Bearer a385g6EDecP61bdZhfkaVv4'
     controller: null
     method: null
     route: null
@@ -719,7 +719,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g68c16DZ5Pa4fEevbhVda3k'
+      - 'Bearer dDbh3kevV166ga4fPZacE58'
     controller: null
     method: null
     route: null
@@ -792,7 +792,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g4Z8vbP65hdaDEe1ak6fVc3'
+      - 'Bearer 6v651gckZ3E4eVbDaaPhdf8'
     controller: null
     method: null
     route: null
@@ -865,7 +865,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DPf63V6da8eh4cZavkEg15b'
+      - 'Bearer aafkbV5Pg6hcE34d6ve1DZ8'
     controller: null
     method: null
     route: null
@@ -970,7 +970,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1chDk36EdZ6eP48abgVf5va'
+      - 'Bearer hfd63P8ba1ckD5Zv4EVe6ag'
     controller: null
     method: null
     route: null
@@ -1027,7 +1027,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 56ab6fcePVahg3d81E4DvZk'
+      - 'Bearer Zfa8vPd6V53EgaD6c4ekh1b'
     controller: null
     method: null
     route: null
@@ -1098,7 +1098,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vhca5V13k8ea6EfD4bd6gPZ'
+      - 'Bearer gEfd4b85aVevhZ3aP6c61kD'
     controller: null
     method: null
     route: null
@@ -1120,7 +1120,11 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
       type:
         name: type
         description: 'The type of commentable.'
@@ -1135,12 +1139,6 @@ endpoints:
         example: 1
         type: integer
         custom: []
-    cleanUrlParameters:
-      type: article
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
       replies_per_comment:
         name: replies_per_comment
         description: 'Number of replies to show per comment.'
@@ -1191,6 +1189,8 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
+      type: article
+      id: 1
       replies_per_comment: 3
       filter: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
@@ -1223,7 +1223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P84D6Za3bgh6E5v1eVcfdak'
+      - 'Bearer Efk43aPvaZ6geDdVb5c681h'
     controller: null
     method: null
     route: null
@@ -1310,7 +1310,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36agDhZv4bdaPE8k6Vc1ef5'
+      - 'Bearer Dfa15Pv3h8kcg4eab6d6VEZ'
     controller: null
     method: null
     route: null
@@ -1337,11 +1337,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: 13
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 13
+      id: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1389,7 +1389,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 646vea3Va15gZdbchDf8kPE'
+      - 'Bearer Vhvd66cg5ZaE134baDk8Pef'
     controller: null
     method: null
     route: null
@@ -1461,7 +1461,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VkPaZv86EDhd51acg3bfe64'
+      - 'Bearer kD43vfVP16h6b8ag5eZcEda'
     controller: null
     method: null
     route: null
@@ -1503,7 +1503,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fdb1akaEcg3Z6DP648v5hVe'
+      - 'Bearer 5ab3Ea6VfedhP86kv1DZcg4'
     controller: null
     method: null
     route: null
@@ -1525,9 +1525,13 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      type:
-        name: type
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
         description: 'The type of interactable.'
         required: true
         example: article
@@ -1540,12 +1544,6 @@ endpoints:
         example: 1
         type: integer
         custom: []
-    cleanUrlParameters:
-      type: article
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
       filter:
         name: filter
         description: 'Column to Filter.'
@@ -1589,6 +1587,8 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
+      interactable: article
+      id: 1
       filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
@@ -1620,7 +1620,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EPac6ad413fv8gVhZDb6e5k'
+      - 'Bearer a3eVPhkZdg5vbE66f41D8ca'
     controller: null
     method: null
     route: null
@@ -1654,8 +1654,8 @@ endpoints:
         example: article
         type: string
         custom: []
-      interaction_type:
-        name: interaction_type
+      type:
+        name: type
         description: 'The type of interaction.'
         required: true
         example: 'like,dislike,share,bookmark'
@@ -1670,7 +1670,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       interactable: article
-      interaction_type: 'like,dislike,share,bookmark'
+      type: 'like,dislike,share,bookmark'
       id: 1
     fileParameters: []
     responses:
@@ -1693,7 +1693,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vvab8D65g3kP1f4cdhZe6Ea'
+      - 'Bearer 8a6h1c3aE56gDv4VkebdPZf'
     controller: null
     method: null
     route: null
@@ -1744,7 +1744,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZ4EVgdcfPb6k8avD356a1h'
+      - 'Bearer aP6fev3bD1Va6kc8dg5hE4Z'
     controller: null
     method: null
     route: null
@@ -1803,7 +1803,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZaP6cfvd35Vegb6841khEaD'
+      - 'Bearer 48aE163hkbZcVfgaP6dD5ev'
     controller: null
     method: null
     route: null

@@ -8,7 +8,6 @@ use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 
 class CommentTest extends TestCase
 {

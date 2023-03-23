@@ -13,9 +13,16 @@ use Illuminate\Http\UploadedFile;
 class ArticleTest extends TestCase
 {
     use RefreshDatabase;
+    protected $user;
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->refreshDatabase();
+
+        // mock log in user get token
+        $this->user = User::factory()->create();
+        Sanctum::actingAs($this->user,['*']);
     }
 
     /**
@@ -24,12 +31,6 @@ class ArticleTest extends TestCase
      */
     public function testGetArticlesForHomeByLoggedInUser()
     {
-        // mock log in user get token
-        Sanctum::actingAs(
-            User::factory()->create(),
-            ['*']
-        );
-
         // factory create articles
         Article::factory()
             ->count(10)
@@ -51,16 +52,12 @@ class ArticleTest extends TestCase
      */
     public function testGetArticlesForProfileByLoggedInUser()
     {
-        $this->refreshDatabase();
-        $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
-
         // factory create articles creayed by this user
         Article::factory()
             ->count(3)
             ->published()
             ->create([
-                'user_id' => $user->id,
+                'user_id' => $this->user->id,
             ]);
 
         $response = $this->getJson('/api/v1/articles/my_articles');
@@ -79,10 +76,6 @@ class ArticleTest extends TestCase
      */
     public function testGetArticlesBookmarkedByLoggedInUser()
     {
-        $this->refreshDatabase();
-        $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
-
         // create 5 random users used for creating 5 articles
         $users = User::factory()
             ->count(5)
@@ -101,7 +94,7 @@ class ArticleTest extends TestCase
             // bookmark articles by logged in user
             $response = $this->postJson('/api/v1/interactions', [
                 'interactable' => 'article',
-                'interaction_type' => 'bookmark',
+                'type' => 'bookmark',
                 'id' => $article->id,
             ]);
 
@@ -128,10 +121,6 @@ class ArticleTest extends TestCase
      */
     public function testCreateArticleByLoggedInUserWihtoutImages()
     {
-        $this->refreshDatabase();
-        $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
-        
         // create article category factory
         $categories = \App\Models\ArticleCategory::factory()
             ->count(2)
@@ -161,7 +150,7 @@ class ArticleTest extends TestCase
             'body' => 'Test Article Body',
             'type' => 'multimedia',
             'status' => 1,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
        // check article categories (two categories)
@@ -190,15 +179,11 @@ class ArticleTest extends TestCase
      */
     public function testGalleryUploadBeforeArticleIsCreated()
     {
-        $this->refreshDatabase();
-        $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
-
         $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
         ]);
 
-        $this->assertTrue($user->media->where('file_name', 'test.jpg')->count() > 0);
+        $this->assertTrue($this->user->media->where('file_name', 'test.jpg')->count() > 0);
         
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -212,10 +197,6 @@ class ArticleTest extends TestCase
      */
     public function testCreateArticleByLoggedInUser()
     {
-        $this->refreshDatabase();
-        $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
-
         // upload images first
         $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
@@ -253,7 +234,7 @@ class ArticleTest extends TestCase
             'body' => 'Test Article Body',
             'type' => 'multimedia',
             'status' => 1,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
         // check images are linked for this article
@@ -287,16 +268,12 @@ class ArticleTest extends TestCase
     */
     public function testUpdateArticleBodyAndStatusByLoggedInUser()
     {
-        $this->refreshDatabase();
-        $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
-
         // create one article by this user using factory
         $article = Article::factory()->create([
             'title' => 'Test Article',
             'body' => 'Test Article Body',
             'status' => 1,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->putJson('/api/v1/articles/'.$article->id, [
@@ -312,7 +289,7 @@ class ArticleTest extends TestCase
         // assert body and status is updated
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'body' => 'Test Article Body Updated',
             'status' => 0,
         ]);

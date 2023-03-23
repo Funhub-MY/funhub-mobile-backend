@@ -247,7 +247,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpwQk16o" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php0OWSv6" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -380,7 +380,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpwQk16o</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php0OWSv6</code></p>
         </div>
         </form>
 
@@ -1500,7 +1500,7 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpSsR8m4" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpUiYJf1" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1702,7 +1702,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpSsR8m4</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpUiYJf1</code></p>
         </div>
         </form>
 
@@ -2778,6 +2778,8 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
+    \"type\": \"article\",
+    \"id\": 1,
     \"replies_per_comment\": 3,
     \"filter\": \"Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at\",
     \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
@@ -2801,6 +2803,8 @@ const headers = {
 };
 
 let body = {
+    "type": "article",
+    "id": 1,
     "replies_per_comment": 3,
     "filter": "Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at",
     "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
@@ -2912,31 +2916,30 @@ fetch(url, {
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                name="type"                data-endpoint="GETapi-v1-comments"
                value="article"
-               data-component="url">
+               data-component="body">
     <br>
 <p>The type of commentable. Example: <code>article</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments"
                value="1"
-               data-component="url">
+               data-component="body">
     <br>
 <p>The id of the commentable. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>replies_per_comment</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
@@ -3226,7 +3229,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/13" \
+    --get "http://localhost/api/v1/comments/12" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3239,7 +3242,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/13"
+    "http://localhost/api/v1/comments/12"
 );
 
 const headers = {
@@ -3365,10 +3368,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="13"
+               value="12"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>13</code></p>
+<p>The ID of the comment. Example: <code>12</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3717,6 +3720,8 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
+    \"interactable\": \"article\",
+    \"id\": 1,
     \"filter\": \"Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",
     \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
     \"sort\": \"Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",
@@ -3739,6 +3744,8 @@ const headers = {
 };
 
 let body = {
+    "interactable": "article",
+    "id": 1,
     "filter": "Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at",
     "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
     "sort": "Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at",
@@ -3849,31 +3856,30 @@ fetch(url, {
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-               name="type"                data-endpoint="GETapi-v1-interactions"
+               name="interactable"                data-endpoint="GETapi-v1-interactions"
                value="article"
-               data-component="url">
+               data-component="body">
     <br>
 <p>The type of interactable. Example: <code>article</code></p>
-            </div>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-interactions"
                value="1"
-               data-component="url">
+               data-component="body">
     <br>
 <p>The id of the interactable. Example: <code>1</code></p>
-            </div>
-                            <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
@@ -3961,7 +3967,7 @@ fetch(url, {
     --header "Accept: application/json" \
     --data "{
     \"interactable\": \"article\",
-    \"interaction_type\": \"like,dislike,share,bookmark\",
+    \"type\": \"like,dislike,share,bookmark\",
     \"id\": 1
 }"
 </code></pre></div>
@@ -3980,7 +3986,7 @@ const headers = {
 
 let body = {
     "interactable": "article",
-    "interaction_type": "like,dislike,share,bookmark",
+    "type": "like,dislike,share,bookmark",
     "id": 1
 };
 
@@ -4095,11 +4101,11 @@ fetch(url, {
 <p>The type of interactable. Example: <code>article</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>interaction_type</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-               name="interaction_type"                data-endpoint="POSTapi-v1-interactions"
+               name="type"                data-endpoint="POSTapi-v1-interactions"
                value="like,dislike,share,bookmark"
                data-component="body">
     <br>

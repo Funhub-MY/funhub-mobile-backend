@@ -1020,12 +1020,20 @@ paths:
       tags:
         - Article
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
+                type:
+                  type: string
+                  description: 'The type of commentable.'
+                  example: article
+                id:
+                  type: integer
+                  description: 'The id of the commentable.'
+                  example: 1
                 replies_per_comment:
                   type: integer
                   description: 'Number of replies to show per comment.'
@@ -1054,6 +1062,9 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+              required:
+                - type
+                - id
     post:
       summary: 'Create a new comment by logged in user'
       operationId: createANewCommentByLoggedInUser
@@ -1131,23 +1142,6 @@ paths:
                 - type
                 - id
                 - body
-    parameters:
-      -
-        in: path
-        name: type
-        description: 'The type of commentable.'
-        example: article
-        required: true
-        schema:
-          type: string
-      -
-        in: path
-        name: id
-        description: 'The id of the commentable.'
-        example: 1
-        required: true
-        schema:
-          type: integer
   '/api/v1/comments/{id}':
     get:
       summary: 'Show one comment by ID'
@@ -1318,7 +1312,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 13
+        example: 12
         required: true
         schema:
           type: integer
@@ -1367,12 +1361,20 @@ paths:
       tags:
         - Article
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: article
+                id:
+                  type: integer
+                  description: 'The id of the interactable.'
+                  example: 1
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -1397,6 +1399,9 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+              required:
+                - interactable
+                - id
     post:
       summary: 'Create an interaction for interactable type'
       operationId: createAnInteractionForInteractableType
@@ -1457,7 +1462,7 @@ paths:
                   type: string
                   description: 'The type of interactable.'
                   example: article
-                interaction_type:
+                type:
                   type: string
                   description: 'The type of interaction.'
                   example: 'like,dislike,share,bookmark'
@@ -1467,25 +1472,8 @@ paths:
                   example: 1
               required:
                 - interactable
-                - interaction_type
+                - type
                 - id
-    parameters:
-      -
-        in: path
-        name: type
-        description: 'The type of interactable.'
-        example: article
-        required: true
-        schema:
-          type: string
-      -
-        in: path
-        name: id
-        description: 'The id of the interactable.'
-        example: 1
-        required: true
-        schema:
-          type: integer
   '/api/v1/interactions/{id}':
     get:
       summary: 'Show one interaction by ID'
