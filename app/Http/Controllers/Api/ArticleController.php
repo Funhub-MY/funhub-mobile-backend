@@ -58,6 +58,7 @@ class ArticleController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);

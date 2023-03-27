@@ -15,6 +15,10 @@ class Comment extends Model
         2 => 'Hidden'
     ];
 
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_HIDDEN = 2;
+
     // filterable columns for frontend filtering
     const FILTERABLE = [
         'id',
@@ -41,5 +45,38 @@ class Comment extends Model
     public function reports()
     {
         return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(CommentLike::class);
+    }
+
+    /**
+     * Scopes
+     */
+    public function scopePublished()
+    {
+        return $this->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function scopeDraft()
+    {
+        return $this->where('status', self::STATUS_DRAFT);
+    }
+
+    public function scopeHidden()
+    {
+        return $this->where('status', self::STATUS_HIDDEN);
     }
 }

@@ -767,6 +767,214 @@ paths:
                   type: integer
                   description: 'optional Search for a category by name.'
                   example: 0
+  '/api/v1/comments/replies/{comment_id}':
+    get:
+      summary: 'Get replies to a comment'
+      operationId: getRepliesToAComment
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": {},\n}"
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Comment not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Comment not found'
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+    parameters:
+      -
+        in: path
+        name: comment_id
+        description: 'The ID of the comment.'
+        example: et
+        required: true
+        schema:
+          type: string
+  /api/v1/comments/like_toggle:
+    post:
+      summary: 'Toggle a Comment Like'
+      operationId: toggleACommentLike
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment liked/Un-Liked\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["comment_id": ["The Comment Id field is required."] ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment_id:
+                  type: integer
+                  description: 'The id of the comment.'
+                  example: 1
+              required:
+                - comment_id
+  /api/v1/comments/report:
+    post:
+      summary: 'Report a comment'
+      operationId: reportAComment
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment reported\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "You have already reported this comment" ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment_id:
+                  type: integer
+                  description: 'The id of the comment.'
+                  example: 1
+                reason:
+                  type: string
+                  description: 'The reason for reporting the comment.'
+                  example: Spam
+              required:
+                - comment_id
+                - reason
   /api/v1/comments:
     get:
       summary: 'Get comments on a commentable type (eg. Articles)'
@@ -812,12 +1020,24 @@ paths:
       tags:
         - Article
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
+                type:
+                  type: string
+                  description: 'The type of commentable.'
+                  example: article
+                id:
+                  type: integer
+                  description: 'The id of the commentable.'
+                  example: 1
+                replies_per_comment:
+                  type: integer
+                  description: 'Number of replies to show per comment.'
+                  example: 3
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -842,6 +1062,9 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+              required:
+                - type
+                - id
     post:
       summary: 'Create a new comment by logged in user'
       operationId: createANewCommentByLoggedInUser
@@ -876,6 +1099,13 @@ paths:
               schema:
                 type: string
                 example: "{\n \"comment\": {},\n}"
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
         422:
           description: 'Invalid Form Fields'
           content:
@@ -904,27 +1134,14 @@ paths:
                   type: string
                   description: 'The body of the comment.'
                   example: 'This is a comment'
+                parent_id:
+                  type: integer
+                  description: 'The id of the parent comment (For Replies).'
+                  example: 1
               required:
                 - type
                 - id
                 - body
-    parameters:
-      -
-        in: path
-        name: type
-        description: 'The type of commentable.'
-        example: article
-        required: true
-        schema:
-          type: string
-      -
-        in: path
-        name: id
-        description: 'The id of the commentable.'
-        example: 1
-        required: true
-        schema:
-          type: integer
   '/api/v1/comments/{id}':
     get:
       summary: 'Show one comment by ID'
@@ -987,6 +1204,10 @@ paths:
                   type: integer
                   description: 'The id of the comment.'
                   example: 1
+                replies_per_comment:
+                  type: integer
+                  description: 'Number of replies to show per comment.'
+                  example: 3
               required:
                 - id
     put:
@@ -1140,12 +1361,20 @@ paths:
       tags:
         - Article
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: article
+                id:
+                  type: integer
+                  description: 'The id of the interactable.'
+                  example: 1
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -1170,6 +1399,9 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+              required:
+                - interactable
+                - id
     post:
       summary: 'Create an interaction for interactable type'
       operationId: createAnInteractionForInteractableType
@@ -1230,7 +1462,7 @@ paths:
                   type: string
                   description: 'The type of interactable.'
                   example: article
-                interaction_type:
+                type:
                   type: string
                   description: 'The type of interaction.'
                   example: 'like,dislike,share,bookmark'
@@ -1240,25 +1472,8 @@ paths:
                   example: 1
               required:
                 - interactable
-                - interaction_type
+                - type
                 - id
-    parameters:
-      -
-        in: path
-        name: type
-        description: 'The type of interactable.'
-        example: article
-        required: true
-        schema:
-          type: string
-      -
-        in: path
-        name: id
-        description: 'The id of the interactable.'
-        example: 1
-        required: true
-        schema:
-          type: integer
   '/api/v1/interactions/{id}':
     get:
       summary: 'Show one interaction by ID'

@@ -63,7 +63,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4DPe36hVv6Zb5cgak8Ead1f'
+      - 'Bearer vcf3EPVea6abD41d6k8h5Zg'
     controller: null
     method: null
     route: null
@@ -166,7 +166,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 84aevbkh1d56P6DEgZVa3fc'
+      - 'Bearer 65he8aP34Dcvg1VkdE6Zfba'
     controller: null
     method: null
     route: null
@@ -261,7 +261,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 45vbgh6Za1P8DV3kc6efaEd'
+      - 'Bearer kZ5v3ae6DbdgfVaPc4Eh168'
     controller: null
     method: null
     route: null
@@ -356,7 +356,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DhV86cgZ4be3vEaak56Pf1d'
+      - 'Bearer fehc8v64ZP1k3dagEb5DaV6'
     controller: null
     method: null
     route: null
@@ -495,7 +495,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kcEV8PDbd6va451gh63aeZf'
+      - 'Bearer aD6hZk4ad5g38vcEePbfV61'
     controller: null
     method: null
     route: null
@@ -552,7 +552,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f45v3hVadZDbk681PagE6ce'
+      - 'Bearer aZ66dc13P4kgV85faEvhDbe'
     controller: null
     method: null
     route: null
@@ -664,7 +664,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kvbchef5Pd1D4Ea38Zga6V6'
+      - 'Bearer a385g6EDecP61bdZhfkaVv4'
     controller: null
     method: null
     route: null
@@ -721,7 +721,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Eb866g3kDP5VfhdvaZa41ec'
+      - 'Bearer dDbh3kevV166ga4fPZacE58'
     controller: null
     method: null
     route: null
@@ -794,7 +794,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fbvgDZPEdak63465Ve8hac1'
+      - 'Bearer 6v651gckZ3E4eVbDaaPhdf8'
     controller: null
     method: null
     route: null
@@ -867,7 +867,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f36abZE6ehkcadDg5P8V14v'
+      - 'Bearer aafkbV5Pg6hcE34d6ve1DZ8'
     controller: null
     method: null
     route: null
@@ -875,13 +875,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/comments
+    uri: 'api/v1/comments/replies/{comment_id}'
     metadata:
       groupName: Article
       groupDescription: ''
       subgroup: Comments
       subgroupDescription: ''
-      title: 'Get comments on a commentable type (eg. Articles)'
+      title: 'Get replies to a comment'
       description: ''
       authenticated: true
       custom: []
@@ -890,23 +890,15 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      type:
-        name: type
-        description: 'The type of commentable.'
+      comment_id:
+        name: comment_id
+        description: 'The ID of the comment.'
         required: true
-        example: article
+        example: et
         type: string
         custom: []
-      id:
-        name: id
-        description: 'The id of the commentable.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
     cleanUrlParameters:
-      type: article
-      id: 1
+      comment_id: et
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -965,6 +957,255 @@ endpoints:
         status: 200
         content: |-
           {
+          "data": {},
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Comment not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hfd63P8ba1ckD5Zv4EVe6ag'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/comments/like_toggle
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Toggle a Comment Like'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      comment_id:
+        name: comment_id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      comment_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment liked/Un-Liked",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["comment_id": ["The Comment Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Zfa8vPd6V53EgaD6c4ekh1b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/comments/report
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Report a comment'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      comment_id:
+        name: comment_id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: 'The reason for reporting the comment.'
+        required: true
+        example: Spam
+        type: string
+        custom: []
+    cleanBodyParameters:
+      comment_id: 1
+      reason: Spam
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["comment_id": ["The Comment Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gEfd4b85aVevhZ3aP6c61kD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/comments
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Get comments on a commentable type (eg. Articles)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      type:
+        name: type
+        description: 'The type of commentable.'
+        required: true
+        example: article
+        type: string
+        custom: []
+      id:
+        name: id
+        description: 'The id of the commentable.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      replies_per_comment:
+        name: replies_per_comment
+        description: 'Number of replies to show per comment.'
+        required: false
+        example: 3
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      type: article
+      id: 1
+      replies_per_comment: 3
+      filter: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
            "data": [],
            "links": {},
            "meta": {
@@ -984,7 +1225,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 34Dvf8e6Ed1Zb6gkahcPa5V'
+      - 'Bearer Efk43aPvaZ6geDdVb5c681h'
     controller: null
     method: null
     route: null
@@ -1032,10 +1273,18 @@ endpoints:
         example: 'This is a comment'
         type: string
         custom: []
+      parent_id:
+        name: parent_id
+        description: 'The id of the parent comment (For Replies).'
+        required: false
+        example: 1
+        type: integer
+        custom: []
     cleanBodyParameters:
       type: article
       id: 1
       body: 'This is a comment'
+      parent_id: 1
     fileParameters: []
     responses:
       -
@@ -1048,6 +1297,12 @@ endpoints:
         description: success
         custom: []
       -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+      -
         status: 422
         content: '{"errors": ["commentable_type": ["The Commentable Type field is required."] ]}'
         headers: []
@@ -1057,7 +1312,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d1abf6DckhPeaVv8654Z3Eg'
+      - 'Bearer Dfa15Pv3h8kcg4eab6d6VEZ'
     controller: null
     method: null
     route: null
@@ -1099,8 +1354,16 @@ endpoints:
         example: 1
         type: integer
         custom: []
+      replies_per_comment:
+        name: replies_per_comment
+        description: 'Number of replies to show per comment.'
+        required: false
+        example: 3
+        type: integer
+        custom: []
     cleanBodyParameters:
       id: 1
+      replies_per_comment: 3
     fileParameters: []
     responses:
       -
@@ -1128,7 +1391,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fbZ6vcP35h61eE4Va8Dkdga'
+      - 'Bearer Vhvd66cg5ZaE134baDk8Pef'
     controller: null
     method: null
     route: null
@@ -1200,7 +1463,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dZ4v6E8Pca3DhkVgb1fa6e5'
+      - 'Bearer kD43vfVP16h6b8ag5eZcEda'
     controller: null
     method: null
     route: null
@@ -1242,7 +1505,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e3a8Vk6DEZa6cv5fgh1Pb4d'
+      - 'Bearer 5ab3Ea6VfedhP86kv1DZcg4'
     controller: null
     method: null
     route: null
@@ -1264,9 +1527,13 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      type:
-        name: type
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
         description: 'The type of interactable.'
         required: true
         example: article
@@ -1279,12 +1546,6 @@ endpoints:
         example: 1
         type: integer
         custom: []
-    cleanUrlParameters:
-      type: article
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
       filter:
         name: filter
         description: 'Column to Filter.'
@@ -1328,6 +1589,8 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
+      interactable: article
+      id: 1
       filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
@@ -1359,7 +1622,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5aVdb8PgDk1aE3e4h6c6vf'
+      - 'Bearer a3eVPhkZdg5vbE66f41D8ca'
     controller: null
     method: null
     route: null
@@ -1393,8 +1656,8 @@ endpoints:
         example: article
         type: string
         custom: []
-      interaction_type:
-        name: interaction_type
+      type:
+        name: type
         description: 'The type of interaction.'
         required: true
         example: 'like,dislike,share,bookmark'
@@ -1409,7 +1672,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       interactable: article
-      interaction_type: 'like,dislike,share,bookmark'
+      type: 'like,dislike,share,bookmark'
       id: 1
     fileParameters: []
     responses:
@@ -1432,7 +1695,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f1bch4egZa686PD3dvEakV5'
+      - 'Bearer 8a6h1c3aE56gDv4VkebdPZf'
     controller: null
     method: null
     route: null
@@ -1483,7 +1746,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5k1DvE6b8eg4aVf6dZ3ahP'
+      - 'Bearer aP6fev3bD1Va6kc8dg5hE4Z'
     controller: null
     method: null
     route: null
@@ -1542,7 +1805,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1d4fEv35g6VhPZkbc6Dea8a'
+      - 'Bearer 48aE163hkbZcVfgaP6dD5ev'
     controller: null
     method: null
     route: null

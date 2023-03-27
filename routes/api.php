@@ -44,6 +44,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getCategoriesByArticleId');
 
         // Comments
+        Route::get('comments/replies/{comment_id}', \App\Http\Controllers\Api\CommentController::class . '@getRepliesByCommentId');
+        Route::post('comments/like_toggle', \App\Http\Controllers\Api\CommentController::class . '@postLikeToggle');
+        Route::post('comments/report', \App\Http\Controllers\Api\CommentController::class . '@postReportComment');
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
         
         // Interactions

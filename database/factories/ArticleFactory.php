@@ -23,12 +23,12 @@ class ArticleFactory extends Factory
         $published_at = fake()->dateTimeBetween('-1 year', 'now');
         $status = 0; // default is draft
         if ($published_at < now()) {
-            $status = fake()->randomElement(Article::STATUS); // can be draft or published 
+            $status = fake()->randomElement([0, 1]); // can be draft or published 
         }
 
         return [
             'title' => $title,
-            'slug' => Str::slug(fake()->asciify('******')),
+            'slug' => Str::slug(Str::random(10)),
             'excerpt' => fake()->sentence(10),
             'body' => fake()->paragraphs(3, true),
             'type' => fake()->randomElement(Article::TYPE),
