@@ -17,7 +17,11 @@ class InteractionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => UserResource::make($this->user),
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'avatar' => $this->user->avatar_url,
+            ],
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

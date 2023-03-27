@@ -18,7 +18,11 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'commentable_id' => $this->commentable_id,
-            'user' => UserResource::make($this->user),
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'avatar' => $this->user->avatar_url,
+            ],
             'counts' => [
                 'likes' => $this->likes_count,
                 'replies' => $this->replies_count,

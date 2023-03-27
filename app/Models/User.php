@@ -35,7 +35,8 @@ class User extends Authenticatable implements HasMedia
     ];
 
     protected $appends = [
-        'full_phone_no'
+        'full_phone_no',
+        'avatar_url',
     ];
 
     /**
@@ -139,5 +140,18 @@ class User extends Authenticatable implements HasMedia
     {
         // response 60123456789
         return $this->phone_country_code . $this->phone_no;
+    }
+
+    /**
+     * Get user avatar
+     */
+    public function getAvatarUrlAttribute() 
+    {
+        $avatar = $this->getMedia('avatar')->first();
+        if ($avatar) {
+            return $avatar->getUrl();
+        } else {
+            return 'https://ui-avatars.com/api/?name=' . $this->name;
+        }
     }
 }
