@@ -75,6 +75,11 @@ class Article extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function imports()
+    {
+        return $this->belongsToMany(ArticleImport::class, 'articles_article_imports');
+    }
+
     /**
      * Scope a query to only include published articles.
      *
