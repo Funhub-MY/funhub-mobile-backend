@@ -126,6 +126,16 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(UserSetting::class);
     }
 
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'users_followings', 'user_id', 'following_id');
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'users_followings', 'following_id', 'user_id');
+    }
+
     public function hiddenFromArticles()
     {
         return $this->belongsToMany(Article::class, 'articles_hidden_users')

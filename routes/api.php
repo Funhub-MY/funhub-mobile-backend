@@ -52,6 +52,12 @@ Route::group(['prefix' => 'v1'], function () {
         // Interactions
         Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
 
+        // User Following/Followers
+        Route::get('user/followings', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowings']);
+        Route::get('user/followers', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowers']);
+        Route::post('user/follow', [\App\Http\Controllers\Api\UserFollowingController::class, 'follow']);
+        Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
+
         // User Settings
         Route::get('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
         Route::post('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);

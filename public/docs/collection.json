@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "2c776f5c-a1a0-4abe-b41e-00e2b281fb3f",
+        "_postman_id": "b01c28df-3031-482a-ab68-0cc2b5e77396",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -522,7 +522,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "et",
+                                            "value": "alias",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -747,7 +747,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "6",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1296,6 +1296,170 @@
                             "code": 401,
                             "body": "{\"message\": \"Access Denied\"}",
                             "name": "Access Denied"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "description": "",
+            "item": [
+                {
+                    "name": "Followings",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get all followings",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/followings",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"followings\": []\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Follow another user",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/follow",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/follow"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"user_id\":15}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"You are now following this user\"\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 400,
+                                    "body": "{\"message\": \"You are already following this user\"}",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unfollow another user",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/unfollow",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/unfollow"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"user_id\":4}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"You are now unfollowing this user\"\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 400,
+                                    "body": "{\"message\": \"You are not following this user\"}",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Followers",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get all followers",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/followers",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"followers\": []\n}",
+                                    "name": "success"
+                                }
+                            ]
                         }
                     ]
                 }
