@@ -127,6 +127,11 @@ class User extends Authenticatable implements HasMedia
             ->withTimestamps();
     }
 
+    public function rss_channel()
+    {
+        return $this->hasOne(RssChannel::class);
+    }
+
     /**
      * Get the user's full phone number
      */
