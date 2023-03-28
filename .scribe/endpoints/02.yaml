@@ -1,16 +1,16 @@
-name: 'User Settings'
+name: User
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/settings
+    uri: api/v1/user/followings
     metadata:
-      groupName: 'User Settings'
+      groupName: User
       groupDescription: ''
-      subgroup: ''
+      subgroup: Followings
       subgroupDescription: ''
-      title: 'Get settings of logged in user'
+      title: 'Get all followings'
       description: ''
       authenticated: true
       custom: []
@@ -30,28 +30,59 @@ endpoints:
         status: 200
         content: |-
           {
-           "key": "value"
+          "followings": []
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 404
-        content: '{"message": "No settings found yet."}'
-        headers: []
-        description: 'No settings found yet'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Z1bge63EPdvk4ach5DVaf8'
+      - 'Bearer VZ3461vaadDhgfkb6P5eEc8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/followers
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followers
+      subgroupDescription: ''
+      title: 'Get all followers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "followers": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZgEh83bVfv416eaPDa56dkc'
     controller: null
     method: null
     route: null
@@ -59,13 +90,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/settings
+    uri: api/v1/user/follow
     metadata:
-      groupName: 'User Settings'
+      groupName: User
       groupDescription: ''
-      subgroup: ''
+      subgroup: Followings
       subgroupDescription: ''
-      title: 'Update/Create settings of logged in user'
+      title: 'Follow another user'
       description: ''
       authenticated: true
       custom: []
@@ -78,51 +109,94 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      key:
-        name: key
-        description: 'Key of the setting.'
+      user_id:
+        name: user_id
+        description: 'The id of the user to follow'
         required: true
-        example: profile_private
-        type: string
-        custom: []
-      value:
-        name: value
-        description: 'Value of the setting.'
-        required: true
-        example: 'true'
-        type: string
+        example: 15
+        type: integer
         custom: []
     cleanBodyParameters:
-      key: profile_private
-      value: 'true'
+      user_id: 15
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Settings updated"
+          "message": "You are now following this user"
           }
         headers: []
         description: success
         custom: []
       -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
+        status: 400
+        content: '{"message": "You are already following this user"}'
         headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["key": ["The Key field is required."], "value": ["The Value field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer a1cfZh83ED5aVdbv4ke6P6g'
+      - 'Bearer hDcZVd631ga56bPEev4fak8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/unfollow
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followings
+      subgroupDescription: ''
+      title: 'Unfollow another user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user to unfollow'
+        required: true
+        example: 4
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      user_id: 4
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You are now unfollowing this user"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 400
+        content: '{"message": "You are not following this user"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b3kDahadf41gPZec5E66vV8'
     controller: null
     method: null
     route: null

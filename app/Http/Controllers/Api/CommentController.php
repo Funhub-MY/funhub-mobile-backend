@@ -25,8 +25,9 @@ class CommentController extends Controller
      * @group Article
      * @subgroup Comments
      * @authenticated
-     * @urlParam type string required The type of commentable. Example: article
-     * @urlParam id integer required The id of the commentable. Example: 1
+     * @bodyParam type string required The type of commentable. Example: article
+     * @bodyParam id integer required The id of the commentable. Example: 1
+     * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
@@ -44,8 +45,16 @@ class CommentController extends Controller
      * 
      * @response status=404 scenario="Not Found"
      */
-    public function index($type, $id, Request $request)
+    public function index(Request $request)
     {
+        $this->validate($request, [
+            'type' => 'required|string',
+            'id' => 'required|integer',
+        ]);
+
+        $id = $request->id;
+        $type = $request->type;
+
         if ($request->type == 'article') {
             $request->merge(['commentable_type' => Article::class]);
         }
@@ -55,7 +64,7 @@ class CommentController extends Controller
 
         if ($type == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
-            $query->whereHas('article', function ($query) {
+            $query->whereHas('commentable', function ($query) {
                 $query->published()
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
@@ -64,7 +73,19 @@ class CommentController extends Controller
         }
 
         $this->buildQuery($query, $request);
-        $data = $query->with('user')->paginate(config('app.paginate_per_page'));
+
+        // with replies paginated and sorted latest first
+        // with replies count
+        $data = $query->with('user')
+            ->with(['replies' => function ($query) use ($request) {
+                $query->latest()
+                    ->paginate($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
+            }])
+            ->with('replies.user', 'likes')
+            ->withCount('replies', 'likes')
+            ->published()
+            ->paginate(config('app.paginate_per_page'));
+
         return CommentResource::collection($data);
     }
 
@@ -77,6 +98,7 @@ class CommentController extends Controller
      * @group Article
      * @subgroup Comments
      * @authenticated
+     * @bodyParam parent_id integer The id of the parent comment (For Replies). Example: 1
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
@@ -85,12 +107,21 @@ class CommentController extends Controller
      *  "comment": {},
      * }
      * 
+     * @response status=404 scenario="Not Found"
      * @response status=422 scenario="Invalid Form Fields" {"errors": ["commentable_type": ["The Commentable Type field is required."] ]}
      */
     public function store(CreateCommentRequest $request)
     {
         if ($request->type == 'article') {
             $request->merge(['type' => Article::class]);
+        }
+
+        // request has parent_id, check if parent comment exists
+        if ($request->has('parent_id')) {
+            $parent = Comment::where('id', $request->parent_id)
+                ->where('commentable_type', $request->type)
+                ->where('commentable_id', $request->id)
+                ->firstOrFail();
         }
 
         // TODO: auto filter comment through spam filter
@@ -100,6 +131,8 @@ class CommentController extends Controller
             'commentable_type' => $request->type,
             'commentable_id' => $request->id,
             'body' => $request->body,
+            'parent_id' => $request->parent_id ?? null,
+            'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 
         event(new \App\Events\CommentCreated($comment)); // fires event
@@ -119,15 +152,22 @@ class CommentController extends Controller
      * @subgroup Comments
      * @authenticated
      * @bodyParam id integer required The id of the comment. Example: 1
+     * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
      * @response scenario=success {
      *  "comment": {},
      * } 
      * @response status=404 scenario="Not Found"
      * @response status=401 scenario="Forbidden"
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $comment = Comment::where('id', $id)->with('user')
+            ->with(['replies' => function ($query) use ($request) {
+                $query->latest()
+                    ->paginate($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
+            }])
+            ->with('replies.user')
+            ->withCount('replies')
             ->firstOrFail();
 
         // TODO: check if user is blocked to view comment
@@ -209,6 +249,7 @@ class CommentController extends Controller
      * "message": "Comment reported",
      * }
      * @response status=422 scenario="Invalid Form Fields" {"errors": ["comment_id": ["The Comment Id field is required."] ]}
+     * @response status=422 scenario="Invalid Form Fields" {"message": "You have already reported this comment" ]}
      */
     public function postReportComment(Request $request)
     {
@@ -217,14 +258,92 @@ class CommentController extends Controller
             'reason' => 'required|string',
         ]);
         $comment = Comment::where('id', request('comment_id'))->firstOrFail();
-        $comment->reports()->create([
-            'user_id' => auth()->id(),
-            'reason' => request('reason'),
-        ]);
 
-        // TODO: Auto hide comment if comment is reported more than X times
-        event(new \App\Events\CommentReported($comment)); // fires event
+        // check if user has reported this comment before if not create
+        if (!$comment->reports()->where('user_id', auth()->id())->exists()) {
+            $comment->reports()->create([
+                'user_id' => auth()->id(),
+                'reason' => request('reason'),
+            ]);
+
+            // TODO: Auto hide comment if comment is reported more than X times
+            event(new \App\Events\CommentReported($comment)); // fires event
+
+        } else {
+            return response()->json(['message' => 'You have already reported this comment'], 422);
+        }
 
         return response()->json(['message' => 'Comment reported']);
+    }
+
+    /**
+     * Get replies to a comment
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @subgroup Comments
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
+     * @response scenario=success {
+     * "data": {},
+     * }
+     * @response status=404 scenario="Not Found" {"message": "Comment not found"}
+     */
+    public function getRepliesByCommentId(Request $request, $id)
+    {
+        $comment = Comment::where('id', $id)->firstOrFail();
+
+        $query = $comment->replies()->latest()
+            ->withCount('replies');
+
+        $this->buildQuery($query, $request);
+
+        $data = $query->with('user');
+
+        return CommentResource::collection($data);
+    }
+
+    /**
+     * Toggle a Comment Like
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * 
+     * @group Article
+     * @subgroup Comments
+     * @bodyParam comment_id integer required The id of the comment. Example: 1
+     * @response scenario=success {
+     * "message": "Comment liked/Un-Liked",
+     * }
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["comment_id": ["The Comment Id field is required."] ]}
+     */
+    public function postLikeToggle(Request $request)
+    {
+        $request->validate([
+            'comment_id' => 'required|integer',
+        ]);
+
+        $comment = Comment::where('id', request('comment_id'))->firstOrFail();
+
+        // check if user has liked this comment before if not create
+        if (!$comment->likes()->where('user_id', auth()->id())->exists()) {
+            $comment->likes()->create([
+                'user_id' => auth()->id(),
+            ]);
+            event(new \App\Events\CommentLiked($comment, true)); // fires event
+            return response()->json(['message' => 'Comment liked']);
+        } else {
+            // unlike
+            $comment->likes()->where('user_id', auth()->id())->delete();
+            event(new \App\Events\CommentLiked($comment, false)); // fires event
+            return response()->json(['message' => 'Comment Un-Liked']);
+        }
     }
 }

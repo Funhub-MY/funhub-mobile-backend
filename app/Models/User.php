@@ -35,7 +35,8 @@ class User extends Authenticatable implements HasMedia
     ];
 
     protected $appends = [
-        'full_phone_no'
+        'full_phone_no',
+        'avatar_url',
     ];
 
     /**
@@ -55,6 +56,11 @@ class User extends Authenticatable implements HasMedia
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function commentLikes()
+    {
+        return $this->hasMany(CommentLike::class);
     }
 
     public function interactions()
@@ -120,6 +126,16 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(UserSetting::class);
     }
 
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'users_followings', 'user_id', 'following_id');
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'users_followings', 'following_id', 'user_id');
+    }
+
     public function hiddenFromArticles()
     {
         return $this->belongsToMany(Article::class, 'articles_hidden_users')
@@ -139,5 +155,18 @@ class User extends Authenticatable implements HasMedia
     {
         // response 60123456789
         return $this->phone_country_code . $this->phone_no;
+    }
+
+    /**
+     * Get user avatar
+     */
+    public function getAvatarUrlAttribute() 
+    {
+        $avatar = $this->getMedia('avatar')->first();
+        if ($avatar) {
+            return $avatar->getUrl();
+        } else {
+            return 'https://ui-avatars.com/api/?name=' . $this->name;
+        }
     }
 }

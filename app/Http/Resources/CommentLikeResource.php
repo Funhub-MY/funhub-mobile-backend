@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\UserResource;
 
-class InteractionResource extends JsonResource
+class CommentLikeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,16 +16,11 @@ class InteractionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'avatar' => $this->user->avatar_url,
-            ],
-            'type' => $this->type,
+            'comment_id' => $this->comment_id,
+            'user_id' => $this->user_id,
+            'user_name' => $this->user->name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'created_at_diff' => $this->created_at->diffForHumans(),
-            'updated_at_diff' => $this->created_at->diffForHumans(),
         ];
     }
 }

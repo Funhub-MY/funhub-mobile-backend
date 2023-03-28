@@ -24,8 +24,8 @@ class InteractionController extends Controller
      * @group Article
      * @subgroup Interactions
      * @authenticated
-     * @urlParam type string required The type of interactable. Example: article
-     * @urlParam id integer required The id of the interactable. Example: 1
+     * @bodyParam interactable string required The type of interactable. Example: article
+     * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
@@ -41,8 +41,16 @@ class InteractionController extends Controller
      * } 
      * @response status=404 scenario="Not Found"
     */
-    public function index($interactable, $id, Request $request)
+    public function index(Request $request)
     {
+        $this->validate($request, [
+            'interactable' => 'required|string',
+            'id' => 'required|integer',
+        ]);
+
+        $id = $request->id;
+        $interactable = $request->interactable;
+
         // get all interactions of a interactable type
         if ($request->interactable == 'article') {
             $request->merge(['interactable_type' => Article::class]);
@@ -53,7 +61,7 @@ class InteractionController extends Controller
 
         if ($interactable == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
-            $query->whereHas('article', function ($query) {
+            $query->whereHas('interactable', function ($query) {
                 $query->published()
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
@@ -62,7 +70,9 @@ class InteractionController extends Controller
         }
 
         $this->buildQuery($query, $request);
-        $data = $query->with('user')->paginate(config('app.paginate_per_page'));
+        $data = $query->with('user')
+            ->published()
+            ->paginate(config('app.paginate_per_page'));
         
         return InteractionResource::collection($data);
     }
@@ -77,7 +87,7 @@ class InteractionController extends Controller
      * @subgroup Interactions
      * @authenticated
      * @bodyParam interactable string required The type of interactable. Example: article
-     * @bodyParam interaction_type string required The type of interaction. Example: like,dislike,share,bookmark
+     * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @response scenario=success {
      * "interaction": {}
@@ -88,34 +98,34 @@ class InteractionController extends Controller
     {
         $this->validate($request, [
             'interactable' => 'required|string',
-            'interaction_type' => 'required|string|in:like,dislike,share,bookmark',
+            'type' => 'required|string|in:like,dislike,share,bookmark',
             'id' => 'required|integer',
         ]);
 
         if ($request->interactable == 'article') {
-            $request->merge(['interactable_type' => Article::class]);
+            $request->merge(['interactable' => Article::class]);
         }
 
-        switch($request->interaction_type) {
+        switch($request->type) {
             case 'like':
-                $request->merge(['interaction_type' => Interaction::TYPE_LIKE]);
+                $request->merge(['type' => Interaction::TYPE_LIKE]);
                 break;
             case 'dislike':
-                $request->merge(['interaction_type' => Interaction::TYPE_DISLIKE]);
+                $request->merge(['type' => Interaction::TYPE_DISLIKE]);
                 break;
             case 'share':
-                $request->merge(['interaction_type' => Interaction::TYPE_SHARE]);
+                $request->merge(['type' => Interaction::TYPE_SHARE]);
                 break;
             case 'bookmark':
-                $request->merge(['interaction_type' => Interaction::TYPE_BOOKMARK]);
+                $request->merge(['type' => Interaction::TYPE_BOOKMARK]);
                 break;
         }
 
         $interaction = Interaction::create([
             'user_id' => auth()->id(),
-            'interactable_type' => $request->interactable_type,
+            'interactable_type' => $request->interactable,
             'interactable_id' => $request->id,
-            'type' => $request->interaction_type, // like or dislike or share
+            'type' => $request->type, // like or dislike or share
         ]);
 
         event(new InteractionCreated($interaction));
