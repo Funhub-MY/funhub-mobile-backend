@@ -38,7 +38,8 @@ class CommentTest extends TestCase
         $response = $this->postJson('/api/v1/comments', [
             'id' => $article->id,
             'type' => 'article',
-            'body' => 'test comment'
+            'body' => 'test comment',
+            'parent_id' => null
         ]);
 
         $response->assertStatus(200)

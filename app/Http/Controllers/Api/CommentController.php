@@ -117,11 +117,12 @@ class CommentController extends Controller
         }
 
         // request has parent_id, check if parent comment exists
-        if ($request->has('parent_id')) {
+        $parent = null;
+        if ($request->has('parent_id') && $request->parent_id) {
             $parent = Comment::where('id', $request->parent_id)
                 ->where('commentable_type', $request->type)
                 ->where('commentable_id', $request->id)
-                ->firstOrFail();
+                ->first();
         }
 
         // TODO: auto filter comment through spam filter
@@ -131,7 +132,7 @@ class CommentController extends Controller
             'commentable_type' => $request->type,
             'commentable_id' => $request->id,
             'body' => $request->body,
-            'parent_id' => $request->parent_id ?? null,
+            'parent_id' => $parent ?? null,
             'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 
