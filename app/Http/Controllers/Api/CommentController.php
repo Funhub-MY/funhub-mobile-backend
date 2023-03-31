@@ -132,7 +132,7 @@ class CommentController extends Controller
             'commentable_type' => $request->type,
             'commentable_id' => $request->id,
             'body' => $request->body,
-            'parent_id' => $parent ?? null,
+            'parent_id' => $parent ? $parent->id : null,
             'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 
