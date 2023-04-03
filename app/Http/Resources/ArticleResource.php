@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Article;
 use App\Models\Interaction;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,7 +28,7 @@ class ArticleResource extends JsonResource
                 'avatar' => $this->user->avatar_url,
             ],
             'categories' => ArticleCategoryResource::collection($this->categories),
-            'media' => $this->media,
+            'media' => MediaResource::collection($this->media),
             'tags' => $this->tags,
             'comments' => CommentResource::collection($this->comments),
             'interactions' => InteractionResource::collection($this->interactions),
