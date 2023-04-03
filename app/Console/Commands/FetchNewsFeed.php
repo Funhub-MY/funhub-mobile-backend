@@ -58,23 +58,31 @@ class FetchNewsFeed extends Command
         $this->info('Fetched RSS Channel');
         if (count($this->rss_channels) > 0) {
             foreach($this->rss_channels as $channel) {
-                if ($channel->channel_name == 'Goody25') {
-                    $this->info('Fetching RSS Feeds from channel: ' . $channel->channel_name);
-                    $this->goody25_service->fetchRSS($channel);
-                }
-                if ($channel->channel_name == 'Goody25') {
+                if ($channel->channel_name == 'Goody25' && $channel->is_active) {
                     $this->info('Fetching RSS Feeds from channel: '.$channel->channel_name);
+                    $start_fetch_goody25 = now();
                     $this->goody25_service->fetchRSS($channel);
-                } else if ($channel->channel_name == 'GoodyMy') {
+                    $fetch_time_diff = $start_fetch_goody25->diffInSeconds(now());
+                    $this->info('Finished processing in '.$fetch_time_diff. ' seconds');
+                } else if ($channel->channel_name == 'GoodyMy' && $channel->is_active) {
+                    $start_fetch_goodymy = now();
                     $this->info('Fetching RSS Feeds from channel: '.$channel->channel_name);
                     $this->goodymy_service->fetchRSS($channel);
+                    $fetch_time_diff = $start_fetch_goodymy->diffInSeconds(now());
+                    $this->info('Finished processing in '.$fetch_time_diff. ' seconds');
                 }
-                else if($channel->channel_name == 'Mortify') {
+                else if($channel->channel_name == 'Mortify' && $channel->is_active) {
+                    $start_fetch_mortify = now();
                     $this->info('Fetching RSS Feeds from channel: '.$channel->channel_name);
                     $this->mortify_service->fetchRSS($channel);
-                } else if ($channel->channel_name == 'Noodou') {
+                    $fetch_time_diff = $start_fetch_mortify->diffInSeconds(now());
+                    $this->info('Finished processing in '.$fetch_time_diff. ' seconds');
+                } else if ($channel->channel_name == 'Noodou' && $channel->is_active) {
+                    $start_fetch_noodou = now();
                     $this->info('Fetching RSS Feeds from channel: '.$channel->channel_name);
                     $this->noodou_service->fetchRSS($channel);
+                    $fetch_time_diff = $start_fetch_noodou->diffInSeconds(now());
+                    $this->info('Finished processing in '.$fetch_time_diff. ' seconds');
                 }
             }
         } else {

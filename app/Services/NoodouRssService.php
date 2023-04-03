@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Traits\ArticleSlugTrait;
+use App\Traits\ArticleTrait;
 
 class NoodouRssService
 {
-    use ArticleSlugTrait;
+    use ArticleTrait;
     private $error_messages = [];
     protected $article_categories = null;
 
@@ -38,41 +38,44 @@ class NoodouRssService
             ])->get($channel->channel_url);
             // check response
             if ($response->ok() || $response->status() === 200) {
-                // getting data / modify data starts here.
-                // string replace from content:encoded to content
-                $xml_body = $response->body();
-                $xml_body = str_replace('<content:encoded>', '<content>', $xml_body);
-                $xml_body = str_replace('</content:encoded>', '</content>', $xml_body);
-                $xml_body = str_replace('<media:content ', '<media ', $xml_body);
-                $xml_body = str_replace('<media:thumbnail ', '<media-thumbnail ', $xml_body);
-                $decoded_body = xml_decode($xml_body);
-                $articles = [];
-                foreach($decoded_body['channel']['item'] as $item) {
-                    // clean data and modification.
-                    $title = $item['title'];
-                    $link = $item['link'];
-                    // some articles may have more than 1 category.
-                    if (is_array($item['category']) && count($item['category']) > 1) {
-                        $category = implode(',', $item['category']);
-                    } else {
-                        $category = $item['category'];
+                    $body = new \DOMDocument();
+                    $body->loadXML($response->body());
+                    $items = $body->getElementsByTagName('item');
+                    $articles = [];
+                    $article_categories = [];
+                    foreach($items as $item) {
+                        $media_thumbnail = null;
+                        $tempArray = array (
+                            'title' => $item->getElementsByTagName('title')->item(0)->nodeValue,
+                            'link' => $item->getElementsByTagName('link')->item(0)->nodeValue,
+                            'content' => $item->getElementsByTagName('encoded')->item(0)->nodeValue,
+                            'pub_date' => $item->getElementsByTagName('pubDate')->item(0)->nodeValue,
+                            'lang' => $body->getElementsByTagName('language')->item(0)->nodeValue,
+                            'media' => null,
+                        );
+                        // loop media
+                        // then push it into articles array.
+                        $media = $item->getElementsByTagName('content');
+                        if ($media->length > 0) {
+                            $media_children = $media->item(0)->childNodes;
+                            foreach($media_children as $child) {
+                                if ($child->nodeName == 'media:thumbnail') {
+                                    if ($child->attributes && $child->attributes->length > 0) {
+                                        $media_thumbnail = $child->attributes->item(0)->nodeValue;
+                                    }
+                                }
+                            }
+                        }
+                        $tempArray['media_thumbnail'] = $media_thumbnail;
+                        // loop category
+                        // then push it into articles array.
+                        $categories = $item->getElementsByTagName('category');
+                        foreach($categories as $category) {
+                            $article_categories[] = $category->nodeValue;
+                        }
+                        $tempArray['category'] = $article_categories;
+                        $articles[] = $tempArray;
                     }
-                    $media = isset($item['media']) ? $item['media']['@attributes']['url'] : null;
-                    $media_thumbnail = isset($item['media-thumbnail']) ? $item['media-thumbnail']['@attributes']['url'] : null;
-                    $content = $item['content'];
-                    $pubDate = $item['pubDate'];
-                    $tempArray = array (
-                        'title' => $title,
-                        'link' => $link,
-                        'category' => $category,
-                        'media' => $media,
-                        'media_thumbnail' => $media_thumbnail,
-                        'content' => $content,
-                        'pub_date' => $pubDate,
-                        'lang' => $decoded_body['channel']['language']
-                    );
-                    $articles[] = $tempArray;
-                }
                 // get latest articles
                 $articles = $this->sortLatestArticles($articles, $channel);
                 // after articles are ready, we proceed to insert the data into our database.
@@ -117,43 +120,23 @@ class NoodouRssService
                 // save article first as categories and media needed article id to be attached.
                 $new_article->save();
                 // check categories.
-                if(strpos($article['category'], ',')) {
-                    // this is to check if it is an array.
-                    // make it into array, check if have same category in DB.
-                    $categories = explode(',', $article['category']);
-                    foreach($categories as $key => $category) {
-                        $found = $this->article_categories->where('name', strtolower($category))->first();
-                        if ($found == null) {
-                            $new_article_category = ArticleCategory::create([
-                                'name' => $category,
-                                'slug' => Str::slug($category),
-                                'lang' => $article['lang'],
-                                'user_id' => ($channel) ? $channel->user->id : 1 // at the moment is 1, will be transform it into rss_feed->user->id;
-                            ]);
-                            $categories[$key] = $new_article_category->id;
-                        } else {
-                            $categories[$key] = $found->id;
-                        }
-                    }
-                    $article['category'] = $categories;
-                    //$article['category'] = implode(',', $categories);
-                } else {
-                    // if it is not an array, perform categories check as well
-                    $found = $this->article_categories->where('name', strtolower($article['category']))->first();
+                $categories = $article['category'];
+                foreach($categories as $key => $category) {
+                    $found = $this->article_categories->where('name', strtolower($category))->first();
                     if ($found == null) {
                         $new_article_category = ArticleCategory::create([
-                            'name' => $article['category'],
-                            'slug' => Str::slug($article['category']),
+                            'name' => $category,
+                            'slug' => Str::slug($category),
                             'lang' => $article['lang'],
-                            'user_id' => ($channel) ? $channel->user->id : 1
+                            'user_id' => ($channel) ? $channel->user->id : 1 // at the moment is 1, will be transform it into rss_feed->user->id;
                         ]);
-                        $article['category'] = array($new_article_category->id);
-                        //$article['category'] = $new_article_category->id;
+                        $categories[$key] = $new_article_category->id;
                     } else {
-                        //$article['category'] = $found->id;
-                        $article['category'] = array($found->id);
+                        $categories[$key] = $found->id;
                     }
                 }
+                $article['category'] = $categories;
+                //$article['category'] = implode(',', $categories);
                 if ($new_article) {
                     // attach categories
                     $new_article->categories()->attach($article['category']);
@@ -177,7 +160,8 @@ class NoodouRssService
                     $import->articles()->attach($new_article);
                     // force update, as default status is 1. But at this stage it will be 1 as all thing run smoothly.
                     $import->status = ArticleImport::IMPORT_STATUS_SUCCESS;
-                    $import->article_pub_date = $articles[0]['pub_date'];
+                    //$import->article_pub_date = $articles[0]['pub_date'];
+                    $import->article_pub_date = Carbon::parse($articles[0]['pub_date']);
                     $import->save();
                 }
             } catch (\Exception $exception) {
@@ -197,20 +181,17 @@ class NoodouRssService
     public function sortLatestArticles($articles, $channel) : array
     {
         // get latest import
-        $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
-            ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
-            ->whereNotNull('article_pub_date')
-            ->orderBy('last_run_at','DESC')
-            ->first();
+        $channel_import = $this->getChannelLatestImport($channel);
         if (!$channel_import) {
             // if no import has been made, return the entire articles list.
             return $articles;
         }
         $latest_articles = array_filter($articles, function($item) use ($channel_import) {
             // carbon parse string to timestamps first in order to compare.
-            $article_date = Carbon::createFromFormat('Y-m-d H:i:s', $item['pub_date']);
+            $article_date = Carbon::parse($item['pub_date']);
             return $article_date->gt($channel_import->article_pub_date);
         });
-        return $latest_articles;
+        // use array_values to re-index the array.
+        return array_values($latest_articles);
     }
 }

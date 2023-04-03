@@ -5,16 +5,17 @@ namespace App\Services;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleImport;
-use App\Traits\ArticleSlugTrait;
+use App\Traits\ArticleTrait;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class MortifyRssService
 {
-    use ArticleSlugTrait;
+    use ArticleTrait;
     private $error_messages = [];
     protected $article_categories = null;
 
@@ -96,6 +97,7 @@ class MortifyRssService
             $import->save();
             return false;
         }
+
         // try 2 items first
         foreach($articles as $article) {
             try {
@@ -174,7 +176,7 @@ class MortifyRssService
                     $import->status = ArticleImport::IMPORT_STATUS_SUCCESS;
                     // format pub date for mortify.
                     //$import->article_pub_date = $articles[0]['pub_date'];
-                    $import->article_pub_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $articles[0]['pub_date']);
+                    $import->article_pub_date = Carbon::parse($articles[0]['pub_date']);
                     $import->save();
                 }
             } catch (\Exception $exception) {
@@ -194,20 +196,17 @@ class MortifyRssService
     public function sortLatestArticles($articles, $channel) : array
     {
         // get latest import
-        $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
-            ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
-            ->whereNotNull('article_pub_date')
-            ->orderBy('last_run_at','DESC')
-            ->first();
+        $channel_import = $this->getChannelLatestImport($channel);
         if (!$channel_import) {
             // if no import has been made, return the entire articles list.
             return $articles;
         }
         $latest_articles = array_filter($articles, function($item) use ($channel_import) {
             // carbon parse string to timestamps first in order to compare.
-            $article_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item['pub_date']);
+            $article_date = Carbon::parse($item['pub_date']);
             return $article_date->gt($channel_import->article_pub_date);
         });
-        return $latest_articles;
+        // use array_values here to re-index the articles key.
+        return array_values($latest_articles);
     }
 }

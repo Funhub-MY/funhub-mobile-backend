@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Traits\ArticleSlugTrait;
+use App\Traits\ArticleTrait;
 
 class Goody25RssService
 {
-    use ArticleSlugTrait;
+    use ArticleTrait;
     private $error_messages = [];
     protected $article_categories = null;
 
@@ -196,11 +196,7 @@ class Goody25RssService
     public function sortLatestArticles($articles, $channel) : array
     {
         // get latest import
-        $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
-            ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
-            ->whereNotNull('article_pub_date')
-            ->orderBy('last_run_at','DESC')
-            ->first();
+        $channel_import = $this->getChannelLatestImport($channel);
         if (!$channel_import) {
             // if no import has been made, return the entire articles list.
             return $articles;
@@ -210,6 +206,7 @@ class Goody25RssService
             $article_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item['pub_date']);
             return $article_date->gt($channel_import->article_pub_date);
         });
-        return $latest_articles;
+        // use array_values here to re-index the articles key.
+        return array_values($latest_articles);
     }
 }
