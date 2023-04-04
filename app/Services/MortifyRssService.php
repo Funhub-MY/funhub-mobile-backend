@@ -66,7 +66,7 @@ class MortifyRssService
                         'media_thumbnail' => $media_thumbnail,
                         'content' => $content,
                         'pub_date' => $pubDate,
-                        'lang' => $decoded_body['channel']['language']
+                        'lang' => 'zh'
                     );
                     $articles[] = $tempArray;
                 }
@@ -176,6 +176,7 @@ class MortifyRssService
                     $import->status = ArticleImport::IMPORT_STATUS_SUCCESS;
                     // format pub date for mortify.
                     //$import->article_pub_date = $articles[0]['pub_date'];
+                    $import->description = ['Successfully imported'];
                     $import->article_pub_date = Carbon::parse($articles[0]['pub_date']);
                     $import->save();
                 }
