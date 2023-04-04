@@ -50,7 +50,7 @@ class NoodouRssService
                             'link' => $item->getElementsByTagName('link')->item(0)->nodeValue,
                             'content' => $item->getElementsByTagName('encoded')->item(0)->nodeValue,
                             'pub_date' => $item->getElementsByTagName('pubDate')->item(0)->nodeValue,
-                            'lang' => $body->getElementsByTagName('language')->item(0)->nodeValue,
+                            'lang' => 'zh',
                             'media' => null,
                         );
                         // loop media
@@ -161,6 +161,7 @@ class NoodouRssService
                     // force update, as default status is 1. But at this stage it will be 1 as all thing run smoothly.
                     $import->status = ArticleImport::IMPORT_STATUS_SUCCESS;
                     //$import->article_pub_date = $articles[0]['pub_date'];
+                    $import->description = ['Successfully imported'];
                     $import->article_pub_date = Carbon::parse($articles[0]['pub_date']);
                     $import->save();
                 }

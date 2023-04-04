@@ -68,7 +68,7 @@ class Goody25RssService
                         'media_thumbnail' => $media_thumbnail,
                         'content' => $content,
                         'pub_date' => $pubDate,
-                        'lang' => $decoded_body['channel']['language']
+                        'lang' => 'zh'
                     );
                     $articles[] = $tempArray;
                 }
@@ -176,6 +176,7 @@ class Goody25RssService
                     $import->articles()->attach($new_article);
                     // force update, as default status is 1. But at this stage it will be 1 as all thing run smoothly.
                     $import->status = ArticleImport::IMPORT_STATUS_SUCCESS;
+                    $import->description = ['Successfully imported'];
                     $import->article_pub_date = $articles[0]['pub_date'];
                     $import->save();
                 }

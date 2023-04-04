@@ -96,6 +96,6 @@ class FetchNewsFeed extends Command
 
     public function prepareRssChannels() : Collection
     {
-        return RssChannel::all();
+        return RssChannel::where('is_active', true)->get();
     }
 }
