@@ -142,6 +142,20 @@ return [
         'driver' => 'file',
         // 'store'  => 'redis',
     ],
+    /*
+        |--------------------------------------------------------------------------
+        | News Feed Provider URL
+        |--------------------------------------------------------------------------
+        |
+        | This stores all the news feed url.
+        | If there is any changes on the url, we can change it here.
+        |
+    */
+    'news_feed_provider_url' => [
+        'https://www.goodymy.com/feed',
+        'https://www.goody25.com/feed',
+        'https://www.moretify.com/feed'
+    ],
 
     /*
     |--------------------------------------------------------------------------
