@@ -17,12 +17,6 @@ class MortifyRssService
 {
     use ArticleTrait;
     private $error_messages = [];
-    protected $article_categories = null;
-
-    public function __construct()
-    {
-        $this->article_categories = ArticleCategory::Select(DB::raw('id, LOWER(name) as name'))->get();
-    }
 
     public function fetchRSS($channel)
     {
@@ -97,8 +91,7 @@ class MortifyRssService
             $import->save();
             return false;
         }
-
-        // try 2 items first
+        $article_categories = ArticleCategory::Select(DB::raw('id, LOWER(name) as name'))->get();
         foreach($articles as $article) {
             try {
                 $new_article = new Article();
@@ -119,7 +112,7 @@ class MortifyRssService
                     // make it into array, check if have same category in DB.
                     $categories = explode(',', $article['category']);
                     foreach($categories as $key => $category) {
-                        $found = $this->article_categories->where('name', strtolower($category))->first();
+                        $found = $article_categories->where('name', strtolower($category))->first();
                         if ($found == null) {
                             $new_article_category = ArticleCategory::create([
                                 'name' => $category,
@@ -136,7 +129,7 @@ class MortifyRssService
                     //$article['category'] = implode(',', $categories);
                 } else {
                     // if it is not an array, perform categories check as well
-                    $found = $this->article_categories->where('name', strtolower($article['category']))->first();
+                    $found = $article_categories->where('name', strtolower($article['category']))->first();
                     if ($found == null) {
                         $new_article_category = ArticleCategory::create([
                             'name' => $article['category'],
@@ -209,5 +202,18 @@ class MortifyRssService
         });
         // use array_values here to re-index the articles key.
         return array_values($latest_articles);
+    }
+    public function getChannelLatestImport($channel = null) : Mixed // return as mixed because it can be collection or null.
+    {
+        $channel_import = null;
+        if ($channel !== null) {
+            $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
+                ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
+                ->whereNotNull('article_pub_date')
+                ->orderBy('last_run_at','DESC')
+                ->first();
+        }
+
+        return $channel_import;
     }
 }

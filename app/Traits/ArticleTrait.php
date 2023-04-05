@@ -54,18 +54,4 @@ trait ArticleTrait {
             return $concat.'-'.$random_text.'-'.$random_number;
         }
     }
-
-    public function getChannelLatestImport($channel = null) : Mixed // return as mixed because it can be collection or null.
-    {
-        $channel_import = null;
-        if ($channel !== null) {
-            $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
-                ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
-                ->whereNotNull('article_pub_date')
-                ->orderBy('last_run_at','DESC')
-                ->first();
-        }
-
-        return $channel_import;
-    }
 }

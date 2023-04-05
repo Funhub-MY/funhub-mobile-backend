@@ -17,12 +17,7 @@ class NoodouRssService
 {
     use ArticleTrait;
     private $error_messages = [];
-    protected $article_categories = null;
 
-    public function __construct()
-    {
-        $this->article_categories = ArticleCategory::Select(DB::raw('id, LOWER(name) as name'))->get();
-    }
     public function fetchRSS($channel)
     {
         $import = new ArticleImport();
@@ -103,7 +98,7 @@ class NoodouRssService
             $import->save();
             return false;
         }
-        // try 2 items first
+        $article_categories = ArticleCategory::Select(DB::raw('id, LOWER(name) as name'))->get();
         foreach($articles as $article) {
             try {
                 $new_article = new Article();
@@ -122,7 +117,7 @@ class NoodouRssService
                 // check categories.
                 $categories = $article['category'];
                 foreach($categories as $key => $category) {
-                    $found = $this->article_categories->where('name', strtolower($category))->first();
+                    $found = $article_categories->where('name', strtolower($category))->first();
                     if ($found == null) {
                         $new_article_category = ArticleCategory::create([
                             'name' => $category,
@@ -194,5 +189,18 @@ class NoodouRssService
         });
         // use array_values to re-index the array.
         return array_values($latest_articles);
+    }
+    public function getChannelLatestImport($channel = null) : Mixed // return as mixed because it can be collection or null.
+    {
+        $channel_import = null;
+        if ($channel !== null) {
+            $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
+                ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
+                ->whereNotNull('article_pub_date')
+                ->orderBy('last_run_at','DESC')
+                ->first();
+        }
+
+        return $channel_import;
     }
 }
