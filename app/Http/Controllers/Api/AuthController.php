@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -277,5 +278,90 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logged out'
         ]);
+    }
+
+    /**
+     * Login with Facebook
+     * 
+     * Login user with Facebook
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Authentication
+     * @unauthenticated
+     * 
+     * @bodyParam access_token string required The access token of the user from Facebook. Example: 1234567890
+     */
+    public function facebookLogin(Request $request)
+    {
+        // get access token from
+        $token = $request->input('access_token');
+
+        $socialiteUser = Socialite::driver('facebook')->userFromToken($token);
+        
+        //check if the user already exists in the database
+        $user = User::where('email', $socialiteUser->getEmail())->first();
+        
+        if(!$user) {
+            //if user does not exist in the database, create a new user using the Facebook data
+            $user = new User();
+            $user->name = $socialiteUser->getName();
+            $user->email = $socialiteUser->getEmail();
+            $user->facebook_id = $socialiteUser->getId();
+            $user->save();
+        }
+
+        //log the new user in
+        auth()->login($user);
+        $sanctumToken = $user->createToken('authToken');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged in successfully',
+            'user' => new UserResource($user),
+            'token' => $sanctumToken
+        ], 200);
+    }
+
+    /**
+     * Login with Google
+     * 
+     * Login user with Google
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Authentication
+     * @unauthenticated
+     * @bodyParam access_token string required The access token of the user from Google. Example: 1234567890
+     */
+    public function googleLogin(Request $request) {
+        // get access token from
+        $token = $request->input('access_token');
+
+        $socialiteUser = Socialite::driver('google')->userFromToken($token);
+        
+        //check if the user already exists in the database
+        $user = User::where('email', $socialiteUser->getEmail())->first();
+        
+        if(!$user) {
+            //if user does not exist in the database, create a new user using the Facebook data
+            $user = new User();
+            $user->name = $socialiteUser->getName();
+            $user->email = $socialiteUser->getEmail();
+            $user->google_id = $socialiteUser->getId();
+            $user->save();
+        }
+
+        //log the new user in
+        auth()->login($user);
+        $sanctumToken = $user->createToken('authToken');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged in successfully',
+            'user' => new UserResource($user),
+            'token' => $sanctumToken
+        ], 200);
     }
 }
