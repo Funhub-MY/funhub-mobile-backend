@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: FUNHUB
+  title: Funhub
   description: ''
   version: 1.0.0
 servers:
@@ -283,6 +283,24 @@ paths:
             schema:
               type: object
               properties:
+                category_ids:
+                  type: array
+                  description: 'optional Category Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                tag_ids:
+                  type: array
+                  description: 'optional Tag Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -341,13 +359,6 @@ paths:
               schema:
                 type: string
                 example: "{\n\"message\": \"Article updated\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["body": ["The Body field is required."] ]}'
         404:
           description: 'Not Found'
           content:
@@ -360,6 +371,13 @@ paths:
                   message:
                     type: string
                     example: 'Comment not found'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
       tags:
         - Article
       requestBody:
@@ -510,13 +528,6 @@ paths:
               schema:
                 type: string
                 example: "{\n\"message\": \"Article updated\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["body": ["The Body field is required."] ]}'
         404:
           description: 'Not Found'
           content:
@@ -529,6 +540,13 @@ paths:
                   message:
                     type: string
                     example: 'Comment not found'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
       tags:
         - Article
       requestBody:
@@ -687,18 +705,88 @@ paths:
             schema:
               type: object
               properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
                 limit:
                   type: integer
-                  description: 'optional Limit the number of tags returned.'
+                  description: 'Per Page Limit Override.'
                   example: 10
                 offset:
                   type: integer
-                  description: 'optional Offset the number of tags returned.'
-                  example: 10
-                query:
-                  type: integer
-                  description: 'optional Search for a category by name.'
+                  description: 'Offset Override.'
                   example: 0
+  '/api/v1/article_tags/{article_id}':
+    get:
+      summary: 'Get Tags by article id'
+      operationId: getTagsByArticleId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tags: []
+                properties:
+                  tags:
+                    type: array
+                    example: []
+        404:
+          description: 'No tags found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/article_categories:
     get:
       summary: 'Get popular Article Categories'
@@ -755,18 +843,88 @@ paths:
             schema:
               type: object
               properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
                 limit:
                   type: integer
-                  description: 'optional Limit the number of tags returned.'
+                  description: 'Per Page Limit Override.'
                   example: 10
                 offset:
                   type: integer
-                  description: 'optional Offset the number of tags returned.'
-                  example: 10
-                query:
-                  type: integer
-                  description: 'optional Search for a category by name.'
+                  description: 'Offset Override.'
                   example: 0
+  '/api/v1/article_categories/{article_id}':
+    get:
+      summary: 'Get Article Categories by article id'
+      operationId: getArticleCategoriesByArticleId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  categories: []
+                properties:
+                  categories:
+                    type: array
+                    example: []
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   '/api/v1/comments/replies/{comment_id}':
     get:
       summary: 'Get replies to a comment'
@@ -852,7 +1010,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: alias
+        example: harum
         required: true
         schema:
           type: string
@@ -1177,15 +1335,15 @@ paths:
               schema:
                 type: string
                 example: "{\n \"comment\": {},\n}"
-        404:
-          description: 'Not Found'
+        401:
+          description: Forbidden
           content:
             text/plain:
               schema:
                 type: string
                 example: ''
-        401:
-          description: Forbidden
+        404:
+          description: 'Not Found'
           content:
             text/plain:
               schema:
@@ -1244,13 +1402,6 @@ paths:
               schema:
                 type: string
                 example: "{\n\"message\": \"Comment updated\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["body": ["The Body field is required."] ]}'
         404:
           description: 'Not Found'
           content:
@@ -1263,6 +1414,13 @@ paths:
                   message:
                     type: string
                     example: 'Comment not found'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
       tags:
         - Article
       requestBody:
@@ -1312,7 +1470,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 6
+        example: 13
         required: true
         schema:
           type: integer
@@ -2062,7 +2220,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 15
+                  example: 18
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2129,7 +2287,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 4
+                  example: 9
               required:
                 - user_id
   /api/v1/user/settings:
@@ -2276,6 +2434,78 @@ paths:
               required:
                 - key
                 - value
+  /api/v1/user/settings/article_categories:
+    post:
+      summary: 'Link Article Categories to User (used for interest tagging)'
+      operationId: linkArticleCategoriesToUserusedForInterestTagging
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Article categories linked to user'
+                properties:
+                  message:
+                    type: string
+                    example: 'Article categories linked to user'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_ids:
+                  type: array
+                  description: 'Array of article category ids.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - category_ids
 tags:
   -
     name: Article

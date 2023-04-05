@@ -54,4 +54,30 @@ class UserSettingsController extends Controller
         );
         return response()->json(['message' => 'Settings updated']);
     }
+
+    /**
+     * Link Article Categories to User (used for interest tagging)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam category_ids array required Array of article category ids. Example: [1,2,3]
+     * @response status=200 scenario="success" {
+     * "message": "Article categories linked to user"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postLinkArticleCategoriesInterests(Request $request)
+    {
+        $request->validate([
+            'category_ids' => 'required|array',
+        ]);
+
+        $user = auth()->user();
+
+        // check if article category ids exists only sync
+        $user->articleCategoriesInterests()->sync($request->category_ids);
+        return response()->json(['message' => 'Article categories linked to user']);
+    }
 }

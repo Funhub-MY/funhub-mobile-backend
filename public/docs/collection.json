@@ -9,8 +9,8 @@
         }
     ],
     "info": {
-        "name": "FUNHUB",
-        "_postman_id": "b01c28df-3031-482a-ab68-0cc2b5e77396",
+        "name": "Funhub",
+        "_postman_id": "b0e54aa8-ef10-40a1-8547-b8e2eacf206d",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -158,7 +158,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"category_ids\":[1,2,3],\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -206,15 +206,15 @@
                         },
                         {
                             "header": [],
-                            "code": 422,
-                            "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
-                            "name": "Invalid Form Fields"
-                        },
-                        {
-                            "header": [],
                             "code": 404,
                             "body": "{\"message\": \"Comment not found\"}",
                             "name": "Not Found"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
                         }
                     ]
                 },
@@ -354,15 +354,15 @@
                         },
                         {
                             "header": [],
-                            "code": 422,
-                            "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
-                            "name": "Invalid Form Fields"
-                        },
-                        {
-                            "header": [],
                             "code": 404,
                             "body": "{\"message\": \"Comment not found\"}",
                             "name": "Not Found"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
                         }
                     ]
                 },
@@ -438,7 +438,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"limit\":10,\"offset\":10,\"query\":0}"
+                                    "raw": "{\"filter\":\"Filterable columns are: id, name, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -454,6 +454,52 @@
                                     "code": 404,
                                     "body": "",
                                     "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get Tags by article id",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/article_tags\/:article_id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/article_tags\/:article_id",
+                                    "variable": [
+                                        {
+                                            "id": "article_id",
+                                            "key": "article_id",
+                                            "value": "1",
+                                            "description": "The id of the article."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"tags\": []\n }",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "No tags found"
                                 }
                             ]
                         }
@@ -485,8 +531,54 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"limit\":10,\"offset\":10,\"query\":0}"
+                                    "raw": "{\"filter\":\"Filterable columns are: id, name, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"categories\": []\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get Article Categories by article id",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/article_categories\/:article_id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/article_categories\/:article_id",
+                                    "variable": [
+                                        {
+                                            "id": "article_id",
+                                            "key": "article_id",
+                                            "value": "1",
+                                            "description": "The id of the article."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
                                 "description": ""
                             },
                             "response": [
@@ -522,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "alias",
+                                            "value": "harum",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -747,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "6",
+                                            "value": "13",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -778,15 +870,15 @@
                                 },
                                 {
                                     "header": [],
-                                    "code": 404,
-                                    "body": "",
-                                    "name": "Not Found"
-                                },
-                                {
-                                    "header": [],
                                     "code": 401,
                                     "body": "",
                                     "name": "Forbidden"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
                                 }
                             ]
                         },
@@ -833,15 +925,15 @@
                                 },
                                 {
                                     "header": [],
-                                    "code": 422,
-                                    "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
-                                    "name": "Invalid Form Fields"
-                                },
-                                {
-                                    "header": [],
                                     "code": 404,
                                     "body": "{\"message\": \"Comment not found\"}",
                                     "name": "Not Found"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"body\": [\"The Body field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
                                 }
                             ]
                         },
@@ -1363,7 +1455,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":18}"
                                 },
                                 "description": ""
                             },
@@ -1404,7 +1496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":9}"
                                 },
                                 "description": ""
                             },
@@ -1557,6 +1649,47 @@
                             "code": 422,
                             "body": "{\"errors\": [\"key\": [\"The Key field is required.\"], \"value\": [\"The Value field is required.\"] ]}",
                             "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
+                {
+                    "name": "Link Article Categories to User (used for interest tagging)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/article_categories",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/article_categories"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"category_ids\":[1,2,3]}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Article categories linked to user\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
                         }
                     ]
                 }

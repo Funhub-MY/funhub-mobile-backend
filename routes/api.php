@@ -37,11 +37,11 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
-        Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagsByArticleId');
+        Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
 
         // Article Categories
         Route::get('article_categories', \App\Http\Controllers\Api\ArticleCategoryController::class . '@index');
-        Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getCategoriesByArticleId');
+        Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getArticleCategoryByArticleId');
 
         // Comments
         Route::get('comments/replies/{comment_id}', \App\Http\Controllers\Api\CommentController::class . '@getRepliesByCommentId');
@@ -61,5 +61,6 @@ Route::group(['prefix' => 'v1'], function () {
         // User Settings
         Route::get('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
         Route::post('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+        Route::post('user/settings/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
     });
 });

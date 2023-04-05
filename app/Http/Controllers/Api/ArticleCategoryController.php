@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleCategoryResource;
 use App\Models\ArticleCategory;
+use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 
 class ArticleCategoryController extends Controller
 {
+    use QueryBuilderTrait;
+
     /**
      * Get popular Article Categories
      * 
@@ -17,9 +20,12 @@ class ArticleCategoryController extends Controller
      * 
      * @group Article
      * @subgroup Article Categories
-     * @bodyParam limit integer optional Limit the number of tags returned. Example: 10
-     * @bodyParam offset integer optional Offset the number of tags returned. Example: 10
-     * @bodyParam query integer optional Search for a category by name. Example: "Entertainment"
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
      * @response scenario=success {
      * "categories": []
      * }
@@ -30,26 +36,12 @@ class ArticleCategoryController extends Controller
          // get popular tags by article count
          $query = ArticleCategory::withCount('articles')
             ->orderBy('articles_count', 'desc');
-         
-        if ($request->has('limit')) {
-            $query->limit($request->limit);
-        } else {
-            $query->limit(10);
-        }
 
-        if ($request->has('offset')) {
-            $query->offset($request->offset);
-        }
+        $this->buildQuery($query, $request);
 
-        if ($request->has('query')) {
-            $query->where('name', 'like', '%' . $request->query . '%');
-        }
+        $categories = $query->paginate(config('app.paginate_per_page'));
 
-        $tags = $query->get();
-
-        return response()->json([
-            'categories' => ArticleCategoryResource::collection($tags)
-        ]);
+        return ArticleCategoryResource::collection($categories);
     }
 
     /**
@@ -68,10 +60,10 @@ class ArticleCategoryController extends Controller
      */
     public function getArticleCategoryByArticleId($article_id)
     {
-        $article = ArticleCategory::where('article_id', $article_id)->firstOrFail();
-
-        return response()->json([
-            'categories' => ArticleCategoryResource::collection($article)
-        ]);
+        $article = ArticleCategory::whereHas('articles', function ($query) use ($article_id) {
+            $query->where('article_id', $article_id);
+        })->paginate(config('app.paginate_per_page'));
+        
+        return ArticleCategoryResource::collection($article);
     }
 }

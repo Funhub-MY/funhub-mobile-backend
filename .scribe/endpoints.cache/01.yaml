@@ -63,7 +63,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Va45fPg6bZh6kvea18Dc3dE'
+      - 'Bearer Vfged48av6hED5b1kPc63aZ'
     controller: null
     method: null
     route: null
@@ -166,7 +166,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 481a5aefkcZd6bvhDP6Vg3E'
+      - 'Bearer gZbhaVvc56P6e1Dk4fE3da8'
     controller: null
     method: null
     route: null
@@ -261,7 +261,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8ED3PfVcaZvbk6ha541gde6'
+      - 'Bearer 66vgP4a5dVfaDb13k8EhcZe'
     controller: null
     method: null
     route: null
@@ -288,6 +288,26 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      category_ids:
+        name: category_ids
+        description: 'optional Category Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        custom: []
+      tag_ids:
+        name: tag_ids
+        description: 'optional Tag Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        custom: []
       filter:
         name: filter
         description: 'Column to Filter.'
@@ -331,6 +351,14 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
+      category_ids:
+        - 1
+        - 2
+        - 3
+      tag_ids:
+        - 1
+        - 2
+        - 3
       filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
@@ -356,7 +384,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v4bZc8a5gEVf6k3hPdeD1a6'
+      - 'Bearer 6Vb8a3e4Pf1Zkcga6D5vEdh'
     controller: null
     method: null
     route: null
@@ -480,22 +508,22 @@ endpoints:
         description: success
         custom: []
       -
-        status: 422
-        content: '{"errors": ["body": ["The Body field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-      -
         status: 404
         content: '{"message": "Comment not found"}'
         headers: []
         description: 'Not Found'
         custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer fD3EVha61ZPde5vag8c6b4k'
+      - 'Bearer aPdef35DZvVE4hgb6c6ak18'
     controller: null
     method: null
     route: null
@@ -552,7 +580,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36he6EdaVkDcf854bga1PZv'
+      - 'Bearer aaZv1edcDk8Phgb4635Vf6E'
     controller: null
     method: null
     route: null
@@ -649,22 +677,22 @@ endpoints:
         description: success
         custom: []
       -
-        status: 422
-        content: '{"errors": ["body": ["The Body field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-      -
         status: 404
         content: '{"message": "Comment not found"}'
         headers: []
         description: 'Not Found'
         custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer kfDgEbZd16v8VP6345eaach'
+      - 'Bearer fvhdgb34V16D8EZ6ak5aceP'
     controller: null
     method: null
     route: null
@@ -721,7 +749,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d4gaV6D15hbec3fv8k6aEZP'
+      - 'Bearer fDe6b5a34chV8d61PvZakgE'
     controller: null
     method: null
     route: null
@@ -748,31 +776,55 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
       limit:
         name: limit
-        description: 'optional Limit the number of tags returned.'
+        description: 'Per Page Limit Override.'
         required: false
         example: 10
         type: integer
         custom: []
       offset:
         name: offset
-        description: 'optional Offset the number of tags returned.'
-        required: false
-        example: 10
-        type: integer
-        custom: []
-      query:
-        name: query
-        description: 'optional Search for a category by name.'
+        description: 'Offset Override.'
         required: false
         example: 0
         type: integer
         custom: []
     cleanBodyParameters:
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
       limit: 10
-      offset: 10
-      query: 0
+      offset: 0
     fileParameters: []
     responses:
       -
@@ -794,7 +846,64 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g58e4ca66bVD31daPhvfZEk'
+      - 'Bearer DZP13dcaV85Eke4gahvfb66'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/article_tags/{article_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Tags'
+      subgroupDescription: ''
+      title: 'Get Tags by article id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      article_id:
+        name: article_id
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      article_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "tags": []
+           }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'No tags found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P156kvfageDdhVcabE63Z48'
     controller: null
     method: null
     route: null
@@ -821,31 +930,55 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
       limit:
         name: limit
-        description: 'optional Limit the number of tags returned.'
+        description: 'Per Page Limit Override.'
         required: false
         example: 10
         type: integer
         custom: []
       offset:
         name: offset
-        description: 'optional Offset the number of tags returned.'
-        required: false
-        example: 10
-        type: integer
-        custom: []
-      query:
-        name: query
-        description: 'optional Search for a category by name.'
+        description: 'Offset Override.'
         required: false
         example: 0
         type: integer
         custom: []
     cleanBodyParameters:
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
       limit: 10
-      offset: 10
-      query: 0
+      offset: 0
     fileParameters: []
     responses:
       -
@@ -867,7 +1000,64 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hcdZb3ae8gk4fVP5a6vED61'
+      - 'Bearer dkfEb6cZDVPe86v3a14gh5a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/article_categories/{article_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Categories'
+      subgroupDescription: ''
+      title: 'Get Article Categories by article id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      article_id:
+        name: article_id
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      article_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3DvgZ6bh6ec4E8af5Vka1dP'
     controller: null
     method: null
     route: null
@@ -894,11 +1084,11 @@ endpoints:
         name: comment_id
         description: 'The ID of the comment.'
         required: true
-        example: alias
+        example: harum
         type: string
         custom: []
     cleanUrlParameters:
-      comment_id: alias
+      comment_id: harum
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -972,7 +1162,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ePf6Vk3v1acD8564gdhaZbE'
+      - 'Bearer 4668DaE1ceVZfk3Pha5bvdg'
     controller: null
     method: null
     route: null
@@ -1029,7 +1219,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer be4E6ckD3vfPZ81gahV5a6d'
+      - 'Bearer b4Ea81efa6Z36cgDk5PvVhd'
     controller: null
     method: null
     route: null
@@ -1100,7 +1290,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vZfg6k3Eebadah815VcD4P6'
+      - 'Bearer 66a1eEvkV4gb3haDcPfZ5d8'
     controller: null
     method: null
     route: null
@@ -1225,7 +1415,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a36e1gZDPvfVk4a8Ed5bch6'
+      - 'Bearer Ehvedb8ZP156fa64a3gkDcV'
     controller: null
     method: null
     route: null
@@ -1312,7 +1502,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8c1hVd6vEgZ5aP6Dek3b4fa'
+      - 'Bearer 16b4dZ5efv3a6caDPEV8khg'
     controller: null
     method: null
     route: null
@@ -1339,11 +1529,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: 6
+        example: 13
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 13
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1376,22 +1566,22 @@ endpoints:
         description: success
         custom: []
       -
-        status: 404
-        content: ''
-        headers: []
-        description: 'Not Found'
-        custom: []
-      -
         status: 401
         content: ''
         headers: []
         description: Forbidden
         custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 5kZbE66v8gfd1Dca3ePha4V'
+      - 'Bearer V8vka1eb3E6Zdhc6D45Pfga'
     controller: null
     method: null
     route: null
@@ -1448,22 +1638,22 @@ endpoints:
         description: success
         custom: []
       -
-        status: 422
-        content: '{"errors": ["body": ["The Body field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-      -
         status: 404
         content: '{"message": "Comment not found"}'
         headers: []
         description: 'Not Found'
         custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 4bDecah8vg1Pka635fEV6Zd'
+      - 'Bearer 4Dad8b6V36cfEv1ZPghek5a'
     controller: null
     method: null
     route: null
@@ -1505,7 +1695,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dda54Vb6kZPa8ecvEh163gf'
+      - 'Bearer heP6kadgv53EZD1f68ca4Vb'
     controller: null
     method: null
     route: null
@@ -1622,7 +1812,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ebZd8f6vaD1cah64VPEkg3'
+      - 'Bearer 48baaEZ1ecghv3f6Dk6d5VP'
     controller: null
     method: null
     route: null
@@ -1695,7 +1885,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hdE543bke8c6aPa6VZfD1gv'
+      - 'Bearer DdVvfb4kZ3a6P5g6Eceh81a'
     controller: null
     method: null
     route: null
@@ -1746,7 +1936,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64gPhdeE63vVf8DZabakc15'
+      - 'Bearer 4aavgEb86V35d1kePZDcf6h'
     controller: null
     method: null
     route: null
@@ -1805,7 +1995,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer df6E5DV6h8vbkcga3eP4Za1'
+      - 'Bearer h6VegkcE3vd1a84ZfDbP6a5'
     controller: null
     method: null
     route: null
