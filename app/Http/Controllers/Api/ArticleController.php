@@ -24,10 +24,10 @@ class ArticleController extends Controller
 
     /**
      * Get Articles for Logged in user (for Home Page)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -35,7 +35,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
-     * 
+     *
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -43,7 +43,7 @@ class ArticleController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -66,10 +66,10 @@ class ArticleController extends Controller
 
     /**
      * Get Articles for Logged in user (for Profile Page)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @group Article
      * @bodyParam published_only boolean optional Filter by published articles. Example: true
@@ -79,7 +79,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
-     * 
+     *
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -87,7 +87,7 @@ class ArticleController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     * 
+     *
      */
     public function getMyArticles(Request $request)
     {
@@ -107,10 +107,10 @@ class ArticleController extends Controller
 
     /**
      * Get My Bookmarked Articles
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -118,7 +118,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
-     * 
+     *
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -126,7 +126,7 @@ class ArticleController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     * 
+     *
      */
     public function getMyBookmarkedArticles(Request $request)
     {
@@ -152,7 +152,7 @@ class ArticleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @bodyParam title string required The title of the article. Example: This is a title
      * @bodyParam type string required The type of the article. Example: multimedia,text,video
@@ -163,8 +163,8 @@ class ArticleController extends Controller
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
      * @bodyParam images array The images ID of the article. Must first call upload images endpoint. Example: [1, 2]
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
-     * 
-     * 
+     *
+     *
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -228,7 +228,7 @@ class ArticleController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @urlParam id integer required The id of the article. Example: 1
      * @response scenario=success {
@@ -261,7 +261,7 @@ class ArticleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @urlParam id integer required The id of the article. Example: 1
      * @bodyParam body string required The body of the article. Example: This is a comment
@@ -269,7 +269,7 @@ class ArticleController extends Controller
      * @bodyParam tags array The tags of the article. Example: ["#tag1", "#tag2"]
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
      * @bodyParam images file The images ID of the article.
-     * 
+     *
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -281,7 +281,7 @@ class ArticleController extends Controller
         // check if owner of Article
         $article = Article::where('id', $id)->where('user_id', auth()->id());
         if ($article->exists()) {
-            
+
             $article->update([
                 'body' => $request->body,
                 'status' => $request->status,
@@ -335,7 +335,7 @@ class ArticleController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @urlParam id integer required The id of the Article. Example: 1
      * @response scenario=success {
@@ -357,10 +357,10 @@ class ArticleController extends Controller
 
     /**
      * Upload Images for Article
-     * 
+     *
      * @param ArticleImagesUploadRequest $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @bodyParam images file required The images to upload.
      * @response scenario=success {
@@ -413,6 +413,6 @@ class ArticleController extends Controller
             return response()->json([
                 'uploaded' => $images,
             ]);
-        }    
+        }
     }
 }
