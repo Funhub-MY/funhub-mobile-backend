@@ -22,7 +22,7 @@ return new class extends Migration
             // this is use to determine whether the article has been update / renew hourly.
             // it is nullable as when calling API, it might be failed already.
             $table->timestamp('article_pub_date')->nullable();
-            $table->timestamp('last_run_at');
+            $table->timestamp('last_run_at')->nullable();
         });
     }
 
