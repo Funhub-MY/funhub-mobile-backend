@@ -41,7 +41,7 @@ class ArticleImportPolicy
      */
     public function create(User $user)
     {
-        return false;
+        return $user->can('create_article::import');
     }
 
     /**
@@ -53,7 +53,7 @@ class ArticleImportPolicy
      */
     public function update(User $user, ArticleImport $articleImport)
     {
-        return false;
+        return $user->can('update_article::import');
     }
 
     /**
@@ -65,7 +65,7 @@ class ArticleImportPolicy
      */
     public function delete(User $user, ArticleImport $articleImport)
     {
-        return false;
+        return $user->can('delete_article::import');
     }
 
     /**
@@ -76,7 +76,7 @@ class ArticleImportPolicy
      */
     public function deleteAny(User $user)
     {
-        return false;
+        return $user->can('delete_any_article::import');
     }
 
     /**
@@ -88,7 +88,7 @@ class ArticleImportPolicy
      */
     public function forceDelete(User $user, ArticleImport $articleImport)
     {
-        return false;
+        return $user->can('force_delete_article::import');
     }
 
     /**
@@ -99,7 +99,7 @@ class ArticleImportPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return false;
+        return $user->can('force_delete_any_article::import');
     }
 
     /**
@@ -111,7 +111,7 @@ class ArticleImportPolicy
      */
     public function restore(User $user, ArticleImport $articleImport)
     {
-        return false;
+        return $user->can('restore_article::import');
     }
 
     /**
@@ -122,7 +122,7 @@ class ArticleImportPolicy
      */
     public function restoreAny(User $user)
     {
-        return false;
+        return $user->can('restore_any_article::import');
     }
 
     /**
@@ -134,7 +134,7 @@ class ArticleImportPolicy
      */
     public function replicate(User $user, ArticleImport $articleImport)
     {
-        return false;
+        return $user->can('replicate_article::import');
     }
 
     /**
