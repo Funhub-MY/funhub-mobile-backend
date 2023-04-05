@@ -98,8 +98,8 @@ class Goody25RssService
         foreach($articles as $article) {
             try {
                 $new_article = new Article();
-                $new_article->title = $article['title'];
-                $new_article->body = $article['content'];
+                $new_article->title = htmlspecialchars_decode($article['title']);
+                $new_article->body = htmlspecialchars_decode($article['content']);
                 // prepare slug text
                 $new_article->slug = $this->formatSlug($article['title']);
                 $new_article->type = Article::TYPE[0];
