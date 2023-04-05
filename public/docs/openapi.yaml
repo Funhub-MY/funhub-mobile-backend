@@ -1010,7 +1010,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: harum
+        example: mollitia
         required: true
         schema:
           type: string
@@ -1470,7 +1470,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 13
+        example: 12
         required: true
         schema:
           type: integer
@@ -2220,7 +2220,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 18
+                  example: 10
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2287,7 +2287,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 19
               required:
                 - user_id
   /api/v1/user/settings:
@@ -2506,6 +2506,81 @@ paths:
                     type: string
               required:
                 - category_ids
+  /api/v1/user/settings/avatar/upload:
+    post:
+      summary: 'Upload or Update User Profile Picture'
+      operationId: uploadOrUpdateUserProfilePicture
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: multipart/form-data
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Avatar uploaded'
+                  avatar: url
+                  avatar_thumb: url
+                properties:
+                  message:
+                    type: string
+                    example: 'Avatar uploaded'
+                  avatar:
+                    type: string
+                    example: url
+                  avatar_thumb:
+                    type: string
+                    example: url
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'One image file to upload.'
+              required:
+                - avatar
 tags:
   -
     name: Article

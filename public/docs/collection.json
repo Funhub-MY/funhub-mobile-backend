@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Funhub",
-        "_postman_id": "b0e54aa8-ef10-40a1-8547-b8e2eacf206d",
+        "_postman_id": "005c33a6-ac40-4868-a794-73b12e6f71bb",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "harum",
+                                            "value": "mollitia",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "13",
+                                            "value": "12",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1455,7 +1455,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":18}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -1496,7 +1496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -1683,6 +1683,53 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"message\": \"Article categories linked to user\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload or Update User Profile Picture",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/avatar\/upload",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/avatar\/upload"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "avatar",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Avatar uploaded\",\n\"avatar\": \"url\",\n\"avatar_thumb\": \"url\"\n}",
                             "name": "success"
                         },
                         {

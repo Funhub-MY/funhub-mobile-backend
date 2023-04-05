@@ -80,4 +80,53 @@ class UserSettingsController extends Controller
         $user->articleCategoriesInterests()->sync($request->category_ids);
         return response()->json(['message' => 'Article categories linked to user']);
     }
+
+    /**
+     * Upload or Update User Profile Picture
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam avatar file required One image file to upload.
+     * @response status=200 scenario="success" {
+     * "message": "Avatar uploaded",
+     * "avatar": "url",
+     * "avatar_thumb": "url"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postUploadAvatar(Request $request)
+    {
+        // image files support jpeg and common phone uploaded files and maximum of 10MB
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg|max:10000',
+        ]);
+
+        $user = auth()->user();
+
+        // check if user has profile picture
+        if ($user->avatar) {
+            // delete old profile picture
+            $user->avatar = null;
+            $user->save();
+
+            // delete from spatie media library as well
+            $user->clearMediaCollection('avatar');
+        }
+
+        // upload new profile picture
+        $uploadedAvatar = $user->addMedia($request->avatar)->toMediaCollection('avatar');
+
+        // save user avatar id
+        $user->avatar = $uploadedAvatar->id;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Avatar uploaded',
+            'avatar_id' => $uploadedAvatar->id,
+            'avatar' => $uploadedAvatar->getUrl(),
+            'avatar_thumb' => $uploadedAvatar->getUrl('thumb'),
+        ]);
+    }
 }

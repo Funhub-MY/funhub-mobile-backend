@@ -51,7 +51,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vdah4Vc6b5Z63EkaDf18geP'
+      - 'Bearer heak5dafb38v1Zcg6EDV6P4'
     controller: null
     method: null
     route: null
@@ -122,7 +122,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vaag68kDeE3fc41bh6dZvP5'
+      - 'Bearer ZeE846Ddkbah1af3gcP65vV'
     controller: null
     method: null
     route: null
@@ -185,7 +185,66 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64Za3PcgvEkh1V65fbeD8da'
+      - 'Bearer 4a3eka8Z6gfDc1Evh65bdVP'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/avatar/upload
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload or Update User Profile Picture'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      avatar:
+        name: avatar
+        description: 'One image file to upload.'
+        required: true
+        example: null
+        type: file
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      avatar: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Avatar uploaded",
+          "avatar": "url",
+          "avatar_thumb": "url"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hbPdcE3fDkgV416Zea6a58v'
     controller: null
     method: null
     route: null
