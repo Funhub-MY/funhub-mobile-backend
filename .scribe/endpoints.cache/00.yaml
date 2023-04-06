@@ -349,7 +349,89 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dc36Zh5kPe6aEgv48D1Vfab'
+      - 'Bearer 6Z3V5hfd6EkcvgPe1ba4Da8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/complete-profile
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Complete Profile'
+      description: 'Complete user profile after registration'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the use.'
+        required: true
+        example: 'John Smith'
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'The email of the user.'
+        required: true
+        example: john@example.com
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: 'John Smith'
+      email: john@example.com
+      password: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message" : "Profile Updated"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Please verify your phone number first" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer havZ5a8641E6DP3kcVdebgf'
     controller: null
     method: null
     route: null

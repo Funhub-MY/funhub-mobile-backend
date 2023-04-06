@@ -283,6 +283,28 @@ paths:
             schema:
               type: object
               properties:
+                category_ids:
+                  type: array
+                  description: 'optional Category Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                following_only:
+                  type: boolean
+                  description: 'optional Filter by Articles by Users who logged in user is following.'
+                  example: true
+                tag_ids:
+                  type: array
+                  description: 'optional Tag Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -341,13 +363,6 @@ paths:
               schema:
                 type: string
                 example: "{\n\"message\": \"Article updated\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["body": ["The Body field is required."] ]}'
         404:
           description: 'Not Found'
           content:
@@ -360,6 +375,13 @@ paths:
                   message:
                     type: string
                     example: 'Comment not found'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
       tags:
         - Article
       requestBody:
@@ -510,13 +532,6 @@ paths:
               schema:
                 type: string
                 example: "{\n\"message\": \"Article updated\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["body": ["The Body field is required."] ]}'
         404:
           description: 'Not Found'
           content:
@@ -529,6 +544,13 @@ paths:
                   message:
                     type: string
                     example: 'Comment not found'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
       tags:
         - Article
       requestBody:
@@ -687,18 +709,88 @@ paths:
             schema:
               type: object
               properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
                 limit:
                   type: integer
-                  description: 'optional Limit the number of tags returned.'
+                  description: 'Per Page Limit Override.'
                   example: 10
                 offset:
                   type: integer
-                  description: 'optional Offset the number of tags returned.'
-                  example: 10
-                query:
-                  type: integer
-                  description: 'optional Search for a category by name.'
+                  description: 'Offset Override.'
                   example: 0
+  '/api/v1/article_tags/{article_id}':
+    get:
+      summary: 'Get Tags by article id'
+      operationId: getTagsByArticleId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tags: []
+                properties:
+                  tags:
+                    type: array
+                    example: []
+        404:
+          description: 'No tags found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/article_categories:
     get:
       summary: 'Get popular Article Categories'
@@ -755,18 +847,88 @@ paths:
             schema:
               type: object
               properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
                 limit:
                   type: integer
-                  description: 'optional Limit the number of tags returned.'
+                  description: 'Per Page Limit Override.'
                   example: 10
                 offset:
                   type: integer
-                  description: 'optional Offset the number of tags returned.'
-                  example: 10
-                query:
-                  type: integer
-                  description: 'optional Search for a category by name.'
+                  description: 'Offset Override.'
                   example: 0
+  '/api/v1/article_categories/{article_id}':
+    get:
+      summary: 'Get Article Categories by article id'
+      operationId: getArticleCategoriesByArticleId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  categories: []
+                properties:
+                  categories:
+                    type: array
+                    example: []
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   '/api/v1/comments/replies/{comment_id}':
     get:
       summary: 'Get replies to a comment'
@@ -852,7 +1014,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: alias
+        example: sequi
         required: true
         schema:
           type: string
@@ -1177,15 +1339,15 @@ paths:
               schema:
                 type: string
                 example: "{\n \"comment\": {},\n}"
-        404:
-          description: 'Not Found'
+        401:
+          description: Forbidden
           content:
             text/plain:
               schema:
                 type: string
                 example: ''
-        401:
-          description: Forbidden
+        404:
+          description: 'Not Found'
           content:
             text/plain:
               schema:
@@ -1244,13 +1406,6 @@ paths:
               schema:
                 type: string
                 example: "{\n\"message\": \"Comment updated\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["body": ["The Body field is required."] ]}'
         404:
           description: 'Not Found'
           content:
@@ -1263,6 +1418,13 @@ paths:
                   message:
                     type: string
                     example: 'Comment not found'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["body": ["The Body field is required."] ]}'
       tags:
         - Article
       requestBody:
@@ -1312,7 +1474,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 6
+        example: 11
         required: true
         schema:
           type: integer
@@ -1914,6 +2076,90 @@ paths:
                     example: 'Access Denied'
       tags:
         - Authentication
+  /api/v1/user/complete-profile:
+    post:
+      summary: 'Complete Profile'
+      operationId: completeProfile
+      description: 'Complete user profile after registration'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Profile Updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Profile Updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "Please verify your phone number first" ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the use.'
+                  example: 'John Smith'
+                email:
+                  type: string
+                  description: 'The email of the user.'
+                  example: john@example.com
+                password:
+                  type: string
+                  description: 'The password of the user.'
+                  example: abcd1234
+              required:
+                - name
+                - email
+                - password
   /api/v1/user/followings:
     get:
       summary: 'Get all followings'
@@ -2062,7 +2308,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 15
+                  example: 1
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2129,7 +2375,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 4
+                  example: 13
               required:
                 - user_id
   /api/v1/user/settings:
@@ -2276,6 +2522,517 @@ paths:
               required:
                 - key
                 - value
+  /api/v1/user/settings/email:
+    post:
+      summary: 'Update User Email'
+      operationId: updateUserEmail
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+              required:
+                - email
+  /api/v1/user/settings/name:
+    post:
+      summary: 'Update User Name'
+      operationId: updateUserName
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Name updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Name updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Name of the user.'
+                  example: 'John Doe'
+              required:
+                - name
+  /api/v1/user/settings/article_categories:
+    post:
+      summary: 'Link Article Categories to User (used for interest tagging)'
+      operationId: linkArticleCategoriesToUserusedForInterestTagging
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Article categories linked to user'
+                properties:
+                  message:
+                    type: string
+                    example: 'Article categories linked to user'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_ids:
+                  type: array
+                  description: 'Array of article category ids.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - category_ids
+  /api/v1/user/settings/avatar/upload:
+    post:
+      summary: 'Upload or Update User Profile Picture'
+      operationId: uploadOrUpdateUserProfilePicture
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: multipart/form-data
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Avatar uploaded'
+                  avatar: url
+                  avatar_thumb: url
+                properties:
+                  message:
+                    type: string
+                    example: 'Avatar uploaded'
+                  avatar:
+                    type: string
+                    example: url
+                  avatar_thumb:
+                    type: string
+                    example: url
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+                  description: 'One image file to upload.'
+              required:
+                - avatar
+  /api/v1/user/settings/username:
+    post:
+      summary: 'Update User Username'
+      operationId: updateUserUsername
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Username updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Username updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: 'Username of the user.'
+                  example: johndoe
+              required:
+                - username
+  /api/v1/user/settings/bio:
+    post:
+      summary: 'Update User Bio'
+      operationId: updateUserBio
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                  description: 'Bio of the user.'
+                  example: 'I am a software engineer'
+              required:
+                - bio
+  /api/v1/user/settings/dob:
+    post:
+      summary: 'Update User Date of Birth'
+      operationId: updateUserDateOfBirth
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Date of birth updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Date of birth updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                day:
+                  type: integer
+                  description: 'Day of the date of birth.'
+                  example: 1
+                month:
+                  type: integer
+                  description: 'Month of the date of birth.'
+                  example: 1
+                year:
+                  type: integer
+                  description: 'Year of the date of birth.'
+                  example: 1990
+              required:
+                - day
+                - month
+                - year
+  /api/v1/user/settings/gender:
+    post:
+      summary: 'Update User Save Gender'
+      operationId: updateUserSaveGender
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gender:
+                  type: string
+                  description: 'Must be one of <code>male</code> or <code>female</code>.'
+                  example: male
+              required:
+                - gender
 tags:
   -
     name: Article

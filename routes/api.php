@@ -27,6 +27,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:sanctum']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+        Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
     
         // Articles
         // Post gallery upload
@@ -37,11 +38,11 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
-        Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagsByArticleId');
+        Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
 
         // Article Categories
         Route::get('article_categories', \App\Http\Controllers\Api\ArticleCategoryController::class . '@index');
-        Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getCategoriesByArticleId');
+        Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getArticleCategoryByArticleId');
 
         // Comments
         Route::get('comments/replies/{comment_id}', \App\Http\Controllers\Api\CommentController::class . '@getRepliesByCommentId');
@@ -59,7 +60,17 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
 
         // User Settings
-        Route::get('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
-        Route::post('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+        Route::prefix('/user/settings')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
+            Route::post('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+            Route::post('/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
+            Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
+            Route::post('/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
+            Route::post('/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);
+            Route::post('/username', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveUsername']);
+            Route::post('/bio', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveBio']);
+            Route::post('/dob', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveDob']);
+            Route::post('/gender', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveGender']);
+        });
     });
 });

@@ -68,6 +68,44 @@ class ArticleTest extends TestCase
 
         $this->assertEquals(3, $response->json('meta.total'));
     }
+
+    /**
+     * Get Articles by users whose logged in user is following
+     * /api/v1/articles
+     */
+    public function testGetArticlesByUserWhoseLoggedInUserIsFollowing()
+    {
+        // create new user
+        $friend = User::factory()->create();
+
+        // factory create articles creayed by this user
+        Article::factory()
+            ->count(5)
+            ->published()
+            ->create([
+                'user_id' => $friend->id,
+            ]);
+
+        // logged in user follow this friend
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $friend->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // get articles by my followings
+        $response = $this->getJson('/api/v1/articles?following_only=true');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        // count is 5
+        $this->assertEquals(5, $response->json('meta.total'));
+    }
     
 
     /**

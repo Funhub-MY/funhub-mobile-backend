@@ -19,6 +19,7 @@ class ArticleCategoryResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'cover_media_id' => $this->cover_media_id,
+            'is_interested' => (auth()->user()) ? auth()->user()->articleCategoriesInterests()->where('article_category_id', $this->id)->exists() : false,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),

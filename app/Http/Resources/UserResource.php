@@ -17,6 +17,9 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'username' => $this->username,
+            'avatar' => $this->avatar_url,
+            'avatar_thumb' => $this->avatar_thumb_url,
             'is_following' => (auth()->user()) ? auth()->user()->whereRelation('followings', 'following_id', $this->id)->exists() : false
         ];
     }
