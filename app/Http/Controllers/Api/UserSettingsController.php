@@ -56,6 +56,58 @@ class UserSettingsController extends Controller
     }
 
     /**
+     * Update User Email
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam email string required Email of the user. Example: john@gmail.com
+     * @response status=200 scenario="success" {
+     * "message": "Email updated"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postSaveEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+        ]);
+
+        $user = auth()->user();
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json(['message' => 'Email updated']);
+    }
+
+    /**
+     * Update User Name
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam name string required Name of the user. Example: John Doe
+     * @response status=200 scenario="success" {
+     * "message": "Name updated"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postSaveName(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = auth()->user();
+        $user->name = $request->name;
+        $user->save();
+
+        return response()->json(['message' => 'Name updated']);
+    }
+
+    /**
      * Link Article Categories to User (used for interest tagging)
      * 
      * @param Request $request

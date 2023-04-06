@@ -66,4 +66,50 @@ class UserSettingsTest extends TestCase
             'avatar' => $response->json('avatar_id'),
         ]);
     }
+
+    /**
+     * Test Save Email
+     * /api/v1/user-settings/email
+     */
+    public function testSaveEmail()
+    {
+        // save email
+        $response = $this->postJson('/api/v1/user/settings/email', [
+            'email' => 'test123@gmail.com'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert database of user email column is populated
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'email' => 'test123@gmail.com',
+        ]);
+    }
+
+    /**
+     * Test Save Name
+     * /api/v1/user-settings/name
+     */
+    public function testSaveName()
+    {
+        // save name
+        $response = $this->postJson('/api/v1/user/settings/name', [
+            'name' => 'test123'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert database of user name column is populated
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'name' => 'test123',
+        ]);
+    }
 }

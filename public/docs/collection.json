@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Funhub",
-        "_postman_id": "005c33a6-ac40-4868-a794-73b12e6f71bb",
+        "_postman_id": "eb1087a1-bf1f-4979-94ef-39bb26825302",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "mollitia",
+                                            "value": "facere",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "4",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1455,7 +1455,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -1649,6 +1649,88 @@
                             "code": 422,
                             "body": "{\"errors\": [\"key\": [\"The Key field is required.\"], \"value\": [\"The Value field is required.\"] ]}",
                             "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"john@gmail.com\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Email updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Name",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/name",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/name"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Doe\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Name updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
                         }
                     ]
                 },

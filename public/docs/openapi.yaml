@@ -1010,7 +1010,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: mollitia
+        example: facere
         required: true
         schema:
           type: string
@@ -1470,7 +1470,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 12
+        example: 4
         required: true
         schema:
           type: integer
@@ -2220,7 +2220,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 10
+                  example: 7
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2434,6 +2434,140 @@ paths:
               required:
                 - key
                 - value
+  /api/v1/user/settings/email:
+    post:
+      summary: 'Update User Email'
+      operationId: updateUserEmail
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+              required:
+                - email
+  /api/v1/user/settings/name:
+    post:
+      summary: 'Update User Name'
+      operationId: updateUserName
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Name updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Name updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Name of the user.'
+                  example: 'John Doe'
+              required:
+                - name
   /api/v1/user/settings/article_categories:
     post:
       summary: 'Link Article Categories to User (used for interest tagging)'
