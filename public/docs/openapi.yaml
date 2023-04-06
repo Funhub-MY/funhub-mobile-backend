@@ -292,6 +292,10 @@ paths:
                     - 3
                   items:
                     type: string
+                following_only:
+                  type: boolean
+                  description: 'optional Filter by Articles by Users who logged in user is following.'
+                  example: true
                 tag_ids:
                   type: array
                   description: 'optional Tag Ids to Filter.'
@@ -1010,7 +1014,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: dignissimos
+        example: sequi
         required: true
         schema:
           type: string
@@ -1470,7 +1474,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 2
+        example: 11
         required: true
         schema:
           type: integer
@@ -2304,7 +2308,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 2
+                  example: 1
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2371,7 +2375,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 13
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3026,7 +3030,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
 tags:

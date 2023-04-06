@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ceZdaPD8E3Vb6kg5a6h41vf'
+      - 'Bearer 4a66v5V1hbc8ZaEPeD3fkdg'
     controller: null
     method: null
     route: null
@@ -124,7 +124,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 816ZbkEdD5avfhVa4g63Pec'
+      - 'Bearer vhkVP35bZaeDd6gfacE6184'
     controller: null
     method: null
     route: null
@@ -181,7 +181,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cf4hV3ZkgeE8dD5b66a1avP'
+      - 'Bearer cV3P66adEv14a5kZfDbeg8h'
     controller: null
     method: null
     route: null
@@ -238,7 +238,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a4E35av68gc1fVZdkhebD6P'
+      - 'Bearer 54h6ab18vZcDd3aeP6kfVgE'
     controller: null
     method: null
     route: null
@@ -301,7 +301,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aE31cheZk86g64baDv5fPdV'
+      - 'Bearer b81hdg4V5aP6fva6k3cZEeD'
     controller: null
     method: null
     route: null
@@ -360,7 +360,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZP63a64eh8Vagdcbkv1EfD5'
+      - 'Bearer aZ3kh5gD6fecV1va8P64bEd'
     controller: null
     method: null
     route: null
@@ -417,7 +417,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dc516Edf8Vv6Pa4ahZg3ekb'
+      - 'Bearer ZDb8chfdv46PE6egVaa135k'
     controller: null
     method: null
     route: null
@@ -459,7 +459,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vd6e5D3acV486Pg1baEfkhZ'
+      - 'Bearer a6Pc8VDhb1kdE4fv3e6ag5Z'
     controller: null
     method: null
     route: null
@@ -532,7 +532,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V54vgk8hfEa16aDcbde6PZ'
+      - 'Bearer 6d3kb8ev4fgEPZaDVh651ac'
     controller: null
     method: null
     route: null
@@ -563,18 +563,18 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: female
+        example: male
         type: string
         custom: []
     cleanBodyParameters:
-      gender: female
+      gender: male
     fileParameters: []
     responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 85vb6fe3dVEPh61gkac4aZD'
+      - 'Bearer hav46ce8gE513a6DkbZPfVd'
     controller: null
     method: null
     route: null
