@@ -61,6 +61,9 @@ Route::group(['prefix' => 'v1'], function () {
         // User Settings
         Route::get('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
         Route::post('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+        Route::post('user/settings/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
+        Route::post('user/settings/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
         Route::post('user/settings/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
+        Route::post('user/settings/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);
     });
 });

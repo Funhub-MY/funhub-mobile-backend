@@ -15,13 +15,13 @@ class ArticleCategory extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
-        // filterables
-        const FILTERABLE = [
-            'id',
-            'name',
-            'created_at',
-            'updated_at'
-        ];
+    // filterables
+    const FILTERABLE = [
+        'id',
+        'name',
+        'created_at',
+        'updated_at'
+    ];
 
     public function articles()
     {

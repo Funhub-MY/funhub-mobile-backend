@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -37,6 +38,7 @@ class User extends Authenticatable implements HasMedia
     protected $appends = [
         'full_phone_no',
         'avatar_url',
+        'avatar_thumb_url'
     ];
 
     /**
@@ -47,6 +49,16 @@ class User extends Authenticatable implements HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Spatia Media conversions for thumbnail
+     */
+    public function registerAllMediaConversions() : void {    
+        $this->addMediaConversion('thumb')
+                ->performOnCollections('avatar')
+                ->width(60)
+                ->height(60);
+    }
 
     public function articles()
     {
@@ -165,6 +177,19 @@ class User extends Authenticatable implements HasMedia
         $avatar = $this->getMedia('avatar')->first();
         if ($avatar) {
             return $avatar->getUrl();
+        } else {
+            return 'https://ui-avatars.com/api/?name=' . $this->name;
+        }
+    }
+
+    /**
+     * Get user avatar thumbnail
+     */
+    public function getAvatarThumbUrlAttribute()
+    {
+        $avatar = $this->getMedia('avatar')->first();
+        if ($avatar) {
+            return $avatar->getUrl('thumb');
         } else {
             return 'https://ui-avatars.com/api/?name=' . $this->name;
         }
