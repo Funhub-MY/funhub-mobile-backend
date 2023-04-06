@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -162,6 +163,8 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get the user's full phone number
+     * 
+     * @return string
      */
     public function getFullPhoneNoAttribute()
     {
@@ -171,6 +174,8 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get user avatar
+     * 
+     * @return string
      */
     public function getAvatarUrlAttribute() 
     {
@@ -184,6 +189,8 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get user avatar thumbnail
+     * 
+     * @return string
      */
     public function getAvatarThumbUrlAttribute()
     {
@@ -192,6 +199,36 @@ class User extends Authenticatable implements HasMedia
             return $avatar->getUrl('thumb');
         } else {
             return 'https://ui-avatars.com/api/?name=' . $this->name;
+        }
+    }
+
+    /**
+     * Set username attribute
+     * 
+     * When user save a name, it also overrides the username if its null
+     * 
+     * @param string $value
+     * @return void
+     */
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = $value;
+
+        if (!$this->username) {
+            // check if english language
+            if (preg_match('/[a-zA-Z]/', $value)) {
+                // only allow 9 character length max for username
+                // check if username exists, if yes pad number
+                $username = strtolower(substr($value, 0, 9));
+                $user = User::where('username', $username)->first();
+                if ($user) {
+                    $username = $username . rand(1, 9);
+                }
+                $this->attributes['username'] = $username;
+            } else {
+                // random 6 character username with 3 numbers
+                $this->attributes['username'] = strtolower( Str . rand(100, 999));
+            }
         }
     }
 }

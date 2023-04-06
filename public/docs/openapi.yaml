@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Funhub
+  title: FUNHUB
   description: ''
   version: 1.0.0
 servers:
@@ -1010,7 +1010,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quas
+        example: dignissimos
         required: true
         schema:
           type: string
@@ -1470,7 +1470,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 11
+        example: 2
         required: true
         schema:
           type: integer
@@ -2304,7 +2304,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 9
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2371,7 +2371,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 5
+                  example: 15
               required:
                 - user_id
   /api/v1/user/settings:
@@ -2799,6 +2799,236 @@ paths:
                   description: 'One image file to upload.'
               required:
                 - avatar
+  /api/v1/user/settings/username:
+    post:
+      summary: 'Update User Username'
+      operationId: updateUserUsername
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Username updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Username updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: 'Username of the user.'
+                  example: johndoe
+              required:
+                - username
+  /api/v1/user/settings/bio:
+    post:
+      summary: 'Update User Bio'
+      operationId: updateUserBio
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                  description: 'Bio of the user.'
+                  example: 'I am a software engineer'
+              required:
+                - bio
+  /api/v1/user/settings/dob:
+    post:
+      summary: 'Update User Date of Birth'
+      operationId: updateUserDateOfBirth
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Date of birth updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Date of birth updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                day:
+                  type: integer
+                  description: 'Day of the date of birth.'
+                  example: 1
+                month:
+                  type: integer
+                  description: 'Month of the date of birth.'
+                  example: 1
+                year:
+                  type: integer
+                  description: 'Year of the date of birth.'
+                  example: 1990
+              required:
+                - day
+                - month
+                - year
+  /api/v1/user/settings/gender:
+    post:
+      summary: 'Update User Save Gender'
+      operationId: updateUserSaveGender
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gender:
+                  type: string
+                  description: 'Must be one of <code>male</code> or <code>female</code>.'
+                  example: female
+              required:
+                - gender
 tags:
   -
     name: Article

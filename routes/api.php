@@ -60,11 +60,17 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
 
         // User Settings
-        Route::get('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
-        Route::post('user/settings', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
-        Route::post('user/settings/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
-        Route::post('user/settings/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
-        Route::post('user/settings/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
-        Route::post('user/settings/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);
+        Route::prefix('/user/settings')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
+            Route::post('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+            Route::post('/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
+            Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
+            Route::post('/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
+            Route::post('/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);
+            Route::post('/username', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveUsername']);
+            Route::post('/bio', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveBio']);
+            Route::post('/dob', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveDob']);
+            Route::post('/gender', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveGender']);
+        });
     });
 });
