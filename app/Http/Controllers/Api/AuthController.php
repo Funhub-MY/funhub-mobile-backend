@@ -258,6 +258,46 @@ class AuthController extends Controller
     }
 
     /**
+     * Complete Profile
+     * 
+     * Complete user profile after registration
+     * @param Request $request
+     * 
+     * @group Authentication
+     * @authenticated
+     * @bodyParam name string required The name of the use. Example: John Smith
+     * @bodyParam email string required The email of the user. Example: john@example.com
+     * @bodyParam password string required The password of the user. Example: abcd1234
+     * 
+     * @response scenario=success {"message" : "Profile Updated"}
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}
+     * @response status=422 scenario="Invalid Form Fields" {"message": "Please verify your phone number first" ]}
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postCompleteProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'password' => 'required|string|min:8',
+        ]);
+
+        // ensure user is otp verified
+        if (!auth()->user()->otp_verified_at) {
+            return response()->json(['message' => 'Please verify your phone number first'], 422);
+        }
+
+        $user = auth()->user();
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json(['message' => 'Profile Updated'], 200);
+    }
+
+    /**
      * Logout
      *
      * Log User Out and destroy any active tokens of user

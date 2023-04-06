@@ -132,4 +132,61 @@ class AuthTest extends TestCase
             'otp_expiry' => null,
         ]);
     }
+
+    /**
+     * Test Register with OTP success
+     * /api/v1/user/complete-profile
+     */
+    public function testCompleteProfile()
+    {
+        $response = $this->postJson('/api/v1/sendOtp', [
+            'country_code' => '60',
+            'phone_no' => '1234567890' // fake phone number
+        ]);
+
+        // find User created
+        $user = User::where('phone_no', '1234567890')
+            ->where('phone_country_code', '60')
+            ->first();
+
+        // verify otp
+        $response = $this->postJson('/api/v1/verifyOtp', [
+            'country_code' => '60',
+            'phone_no' => '1234567890', // fake phone number
+            'otp' => $user->otp
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'user', 'token'
+            ]);
+
+        // verify user is created
+        $this->assertDatabaseHas('users', [
+            'phone_no' => '1234567890',
+            'phone_country_code' => '60',
+            'otp' => null,
+        ]);
+
+        // complete profile
+        $response = $this->postJson('/api/v1/user/complete-profile', [
+            'name' => 'John Doe',
+            'email' => 'john@gmail.com',
+            'password' => 'abcd1234',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // verify user is updated
+        $this->assertDatabaseHas('users', [
+            'phone_no' => '1234567890',
+            'phone_country_code' => '60',
+            'otp' => null,
+            'name' => 'John Doe',
+            'email' => 'john@gmail.com'
+        ]);
+    }
 }

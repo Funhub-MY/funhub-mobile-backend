@@ -1010,7 +1010,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: facere
+        example: quas
         required: true
         schema:
           type: string
@@ -1470,7 +1470,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 4
+        example: 11
         required: true
         schema:
           type: integer
@@ -2072,6 +2072,90 @@ paths:
                     example: 'Access Denied'
       tags:
         - Authentication
+  /api/v1/user/complete-profile:
+    post:
+      summary: 'Complete Profile'
+      operationId: completeProfile
+      description: 'Complete user profile after registration'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Profile Updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Profile Updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "Please verify your phone number first" ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the use.'
+                  example: 'John Smith'
+                email:
+                  type: string
+                  description: 'The email of the user.'
+                  example: john@example.com
+                password:
+                  type: string
+                  description: 'The password of the user.'
+                  example: abcd1234
+              required:
+                - name
+                - email
+                - password
   /api/v1/user/followings:
     get:
       summary: 'Get all followings'
@@ -2220,7 +2304,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 7
+                  example: 9
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2287,7 +2371,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 19
+                  example: 5
               required:
                 - user_id
   /api/v1/user/settings:
