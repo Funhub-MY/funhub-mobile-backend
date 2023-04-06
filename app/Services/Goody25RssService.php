@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\Article;
-use App\Models\ArticleCategory;
 use App\Models\ArticleImport;
+use App\Models\ArticleTag;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -58,7 +58,7 @@ class Goody25RssService
                     $tempArray = array (
                         'title' => $title,
                         'link' => $link,
-                        'category' => $category,
+                        'tag' => $category, // category that fetch from rss feed turn into tag in the app.
                         'media' => $media,
                         'media_thumbnail' => $media_thumbnail,
                         'content' => $content,
@@ -94,7 +94,7 @@ class Goody25RssService
             $import->save();
             return false;
         }
-        $article_categories = ArticleCategory::Select(DB::raw('id, LOWER(name) as name'))->get();
+        $article_tags = ArticleTag::Select(DB::raw('id, LOWER(name) as name'))->get();
         foreach($articles as $article) {
             try {
                 $new_article = new Article();
@@ -108,49 +108,45 @@ class Goody25RssService
                 $new_article->user_id = ($channel) ? $channel->user->id : 1;
                 //$new_article->user_id = 1;
                 $new_article->lang = $article['lang'];
-                // save article first as categories and media needed article id to be attached.
-                $new_article->save();
                 // check categories.
-                if(strpos($article['category'], ',')) {
+                if(strpos($article['tag'], ',')) {
                     // this is to check if it is an array.
                     // make it into array, check if have same category in DB.
-                    $categories = explode(',', $article['category']);
-                    foreach($categories as $key => $category) {
-                        $found = $article_categories->where('name', strtolower($category))->first();
+                    $tags = explode(',', $article['tag']);
+                    foreach($tags as $key => $tag) {
+                        $found = $article_tags->where('name', strtolower($tag))->first();
                         if ($found == null) {
-                            $new_article_category = ArticleCategory::create([
-                                'name' => $category,
-                                'slug' => Str::slug($category),
-                                'lang' => $article['lang'],
+                            $new_article_tag = ArticleTag::create([
+                                'name' => $tag,
                                 'user_id' => ($channel) ? $channel->user->id : 1 // at the moment is 1, will be transform it into rss_feed->user->id;
                             ]);
-                            $categories[$key] = $new_article_category->id;
+                            $tags[$key] = $new_article_tag->id;
                         } else {
-                            $categories[$key] = $found->id;
+                            $tags[$key] = $found->id;
                         }
                     }
-                    $article['category'] = $categories;
+                    $article['tag'] = $tags;
                     //$article['category'] = implode(',', $categories);
                 } else {
                     // if it is not an array, perform categories check as well
-                    $found = $article_categories->where('name', strtolower($article['category']))->first();
+                    $found = $article_tags->where('name', strtolower($article['tag']))->first();
                     if ($found == null) {
-                        $new_article_category = ArticleCategory::create([
-                            'name' => $article['category'],
-                            'slug' => Str::slug($article['category']),
-                            'lang' => $article['lang'],
+                        $new_article_tag = ArticleTag::create([
+                            'name' => $article['tag'],
                             'user_id' => ($channel) ? $channel->user->id : 1
                         ]);
-                        $article['category'] = array($new_article_category->id);
+                        $article['tag'] = array($new_article_tag->id);
                         //$article['category'] = $new_article_category->id;
                     } else {
                         //$article['category'] = $found->id;
-                        $article['category'] = array($found->id);
+                        $article['tag'] = array($found->id);
                     }
                 }
+                // save article first as categories and media needed article id to be attached.
+                $new_article->save();
                 if ($new_article) {
                     // attach categories
-                    $new_article->categories()->attach($article['category']);
+                    $new_article->tags()->attach($article['tag']);
                     // attach media
                     if (isset($article['media']) && $article['media'] != null) {
                         $new_article->addMediaFromUrl($article['media'])
