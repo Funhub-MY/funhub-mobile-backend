@@ -278,7 +278,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'email' => 'email|unique:users,email,' . auth()->user()->id,
             'password' => 'required|string|min:8',
         ]);
 
@@ -290,7 +290,7 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $request->email ?? null,
             'password' => Hash::make($request->password),
         ]);
 
