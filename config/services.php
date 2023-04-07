@@ -22,13 +22,15 @@ return [
     ],
 
     'facebook' => [
-        'key' => env('FACEBOOK_KEY'),
-        'secret' => env('FACEBOOK_SECRET'),
+        'client_id' => env('FACEBOOK_KEY'),
+        'client_secret' => env('FACEBOOK_SECRET'),
+        'redirect' => 'https://funhub-backend.dev.com/auth/facebook/callback'
     ],
-
+    // google redirect cannot use .test as domain. need to use top level domain such as .org, .com etc.
     'google' => [
-        'key' => env('GOOGLE_KEY'),
-        'secret' => env('GOOGLE_SECRET'),
+        'client_id' => env('GOOGLE_KEY'),
+        'client_secret' => env('GOOGLE_SECRET'),
+        'redirect' => 'https://funhub-backend.dev.com/auth/google/callback'
     ],
 
     'postmark' => [

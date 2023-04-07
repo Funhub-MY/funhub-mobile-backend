@@ -21,5 +21,8 @@
         </style>
     </head>
     <body class="antialiased">
+    {{--TODO:: code below can be deleted once flutter end finish login implementation.--}}
+    {{--this is use for getting access token from google. --}}
+     <a href="{{ url('/login/google_provider') }}" class="btn btn-xs btn-info pull-right">Google Login</a>
     </body>
 </html>

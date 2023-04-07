@@ -23,11 +23,12 @@ Route::group(['prefix' => 'v1'], function () {
     // social provider logins
     // Route::post('login/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'loginSocialProvider']);
     // Route::post('register/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'registerSocialProvider']);
+    Route::post('login/facebook', [\App\Http\Controllers\Api\AuthController::class, 'facebookLogin']);
+    Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
 
 
     Route::group(['middleware' => ['auth:sanctum']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
-    
         // Articles
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
