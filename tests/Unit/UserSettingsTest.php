@@ -206,11 +206,11 @@ class UserSettingsTest extends TestCase
 
         // get Malaysia country id
         $country = \App\Models\Country::where('code', 'MY')->first();
-
+        $state = \App\Models\State::where('country_id', $country->id)->first();
         // post to save location
         $response = $this->postJson('/api/v1/user/settings/location', [
             'country_id' => $country->id,
-            'state_id' => State::where('country_id', $country->id)->first()->id,
+            'state_id' => $state->id,
         ]);
 
         $response->assertStatus(200)
@@ -222,7 +222,7 @@ class UserSettingsTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'country_id' => $country->id,
-            'state_id' => 1,
+            'state_id' => $state->id,
         ]);
     }
 }
