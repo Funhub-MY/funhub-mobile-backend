@@ -5,10 +5,12 @@ use Tests\TestCase;
 use App\Models\UserSetting;
 use App\Models\User;
 use App\Models\ArticleCategory;
+use App\Models\Country;
 use App\Models\State;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class UserSettingsTest extends TestCase
 {
@@ -196,19 +198,19 @@ class UserSettingsTest extends TestCase
      */
     public function testSaveLocation()
     {
-        // // seed countries
-        // $this->seed(\CountriesTableSeeder::class);
+        // seed countries
+        $this->seed('CountriesTableSeeder');
 
-        // // seed states
-        // $this->seed(\Database\Seeders\StatesTableSeeder::class);
+        // seed states
+        $this->seed('StatesTableSeeder');
 
         // get Malaysia country id
-        $country = \App\Models\Country::where('name', 'Malaysia')->first();
+        $country = \App\Models\Country::where('code', 'MY')->first();
 
         // post to save location
         $response = $this->postJson('/api/v1/user/settings/location', [
             'country_id' => $country->id,
-            'state_id' => State::where('country_id', $country->id)->first()->id
+            'state_id' => State::where('country_id', $country->id)->first()->id,
         ]);
 
         $response->assertStatus(200)

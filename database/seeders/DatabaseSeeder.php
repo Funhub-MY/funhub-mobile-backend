@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             RssChannelSeeder::class,
-            CountriesTableSeeder::class,
-            StatesTableSeeder::class,
+            // CountriesTableSeeder::class,
+            // StatesTableSeeder::class,
         ]);
     }
 }
