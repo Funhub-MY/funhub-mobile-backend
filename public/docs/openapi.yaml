@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: FUNHUB
+  title: Funhub
   description: ''
   version: 1.0.0
 servers:
@@ -1014,7 +1014,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: fugit
+        example: est
         required: true
         schema:
           type: string
@@ -1474,7 +1474,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 5
+        example: 15
         required: true
         schema:
           type: integer
@@ -2382,7 +2382,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 9
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2449,7 +2449,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 5
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3104,9 +3104,81 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
+  /api/v1/user/settings/location:
+    post:
+      summary: 'Update User Location'
+      operationId: updateUserLocation
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Location updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Location updated'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_id:
+                  type: integer
+                  description: 'Country id of the user.'
+                  example: 1
+                state_id:
+                  type: integer
+                  description: 'State id of the user.'
+                  example: 1
+              required:
+                - country_id
+                - state_id
 tags:
   -
     name: Article

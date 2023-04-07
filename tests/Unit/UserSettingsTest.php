@@ -26,7 +26,7 @@ class UserSettingsTest extends TestCase
 
     /**
      * Test assign categories to a user
-     * /api/v1/user-settings/article_categories
+     * /api/v1/user/settings/article_categories
      */
     public function testAssignCategoriesToAUser()
     {
@@ -46,7 +46,7 @@ class UserSettingsTest extends TestCase
 
     /**
      * Test Upload user avatar
-     * /api/v1/user-settings/avatar/upload
+     * /api/v1/user/settings/avatar/upload
      */
     public function testUploadUserAvatar()
     {
@@ -69,7 +69,7 @@ class UserSettingsTest extends TestCase
 
     /**
      * Test Save Email
-     * /api/v1/user-settings/email
+     * /api/v1/user/settings/email
      */
     public function testSaveEmail()
     {
@@ -92,7 +92,7 @@ class UserSettingsTest extends TestCase
 
     /**
      * Test Save Name
-     * /api/v1/user-settings/name
+     * /api/v1/user/settings/name
      */
     public function testSaveName()
     {
@@ -110,6 +110,116 @@ class UserSettingsTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $this->user->id,
             'name' => 'test123',
+        ]);
+    }
+
+    /**
+     * Test Save Bio
+     * /api/v1/user/settings/bio
+     */
+    public function testSaveBio()
+    {
+        $bio = fake()->paragraph(3);
+        // save bio
+        $response = $this->postJson('/api/v1/user/settings/bio', [
+            'bio' => $bio
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert database of user bio column is populated
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'bio' => $bio,
+        ]);
+    }
+
+    /**
+     * Test Save Date of Birth
+     * /api/v1/user/settings/dob 
+     */
+    public function testSaveDob()
+    {
+        $date = [
+            'year' => 1990,
+            'month' => fake()->date('m'),
+            'day' => fake()->date('d'),
+        ];
+        // save dob
+        $response = $this->postJson('/api/v1/user/settings/dob', [
+            'year' =>  (int) $date['year'],
+            'month' => (int) $date['month'],
+            'day' => (int) $date['day'],
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert database of user dob column is populated
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'dob' => $date['year'].'-'.$date['month'].'-'.$date['day'],
+        ]);
+    }
+
+    /**
+     * Test Save Gender
+     * /api/v1/user/settings/gender
+     */
+    public function testSaveGender()
+    {
+        $response = $this->postJson('/api/v1/user/settings/gender', [
+            'gender' => 'male'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+    
+        // assert database
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'gender' => 'male'
+        ]);
+    }
+
+    /**
+     * Test Save Location
+     * /api/v1/user/settings/location
+     */
+    public function testSaveLocation()
+    {
+        // seed countries
+        $this->seed(\CountriesTableSeeder::class);
+
+        // seed states
+        $this->seed(\StatesTableSeeder::class);
+
+        // get Malaysia country id
+        $country = \App\Models\Country::where('name', 'Malaysia')->first();
+
+        // post to save location
+        $response = $this->postJson('/api/v1/user/settings/location', [
+            'country_id' => $country->id,
+            'state_id' => 1,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // assert database
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'country_id' => $country->id,
+            'state_id' => 1,
         ]);
     }
 }

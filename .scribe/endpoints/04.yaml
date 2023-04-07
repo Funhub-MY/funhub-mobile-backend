@@ -51,7 +51,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3PVc518hb6gfeDakvZEd6a4'
+      - 'Bearer 6acekhPdva5Z18fEb34gVD6'
     controller: null
     method: null
     route: null
@@ -122,7 +122,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eD65VEvhPg34d186Zfaackb'
+      - 'Bearer 61hZfVaedakcEg63vDP4b85'
     controller: null
     method: null
     route: null
@@ -179,7 +179,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZV6g81dEcafhk456aD3bePv'
+      - 'Bearer eaDch4a1Zb8v665PV3dgEfk'
     controller: null
     method: null
     route: null
@@ -236,7 +236,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vaba1kZ6cPVghfd8E45De36'
+      - 'Bearer 4ZDb5aE8gekvc6d6hP13fVa'
     controller: null
     method: null
     route: null
@@ -299,7 +299,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8gfDEeZh3kd51bVa46vPc6a'
+      - 'Bearer Da6fV81gh5ZPkbE6cve4da3'
     controller: null
     method: null
     route: null
@@ -358,7 +358,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EbdaDc4kfa6Vg13PZ586vhe'
+      - 'Bearer kfhdvP68Vc3g4Zb1eaa5ED6'
     controller: null
     method: null
     route: null
@@ -415,7 +415,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vb3fgP8Dahk416eZv6Edc5a'
+      - 'Bearer 1vhc5Z6d68Debk4VagfE3Pa'
     controller: null
     method: null
     route: null
@@ -457,7 +457,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g13aPekD84Zb5EafV6hv6dc'
+      - 'Bearer fce5v4b8Zag3dP166DahEVk'
     controller: null
     method: null
     route: null
@@ -530,7 +530,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 31bD5gfVaEhc6Pkav8e6d4Z'
+      - 'Bearer k6eadP8bfc35vD1ZgEVh64a'
     controller: null
     method: null
     route: null
@@ -561,18 +561,83 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: female
+        example: male
         type: string
         custom: []
     cleanBodyParameters:
-      gender: female
+      gender: male
     fileParameters: []
     responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer ZfP5d6k8DvE46aha1Ve3gcb'
+      - 'Bearer vDE35f8ea61kVa6gZbdchP4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/location
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Location'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      country_id:
+        name: country_id
+        description: 'Country id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      state_id:
+        name: state_id
+        description: 'State id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      country_id: 1
+      state_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Location updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P5hdf6Eve4Dgbka813ZVc6a'
     controller: null
     method: null
     route: null
