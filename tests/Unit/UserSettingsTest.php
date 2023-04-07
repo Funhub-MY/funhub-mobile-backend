@@ -5,6 +5,7 @@ use Tests\TestCase;
 use App\Models\UserSetting;
 use App\Models\User;
 use App\Models\ArticleCategory;
+use App\Models\State;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -199,7 +200,7 @@ class UserSettingsTest extends TestCase
         $this->seed(\CountriesTableSeeder::class);
 
         // seed states
-        $this->seed(\StatesTableSeeder::class);
+        $this->seed(\Database\Seeders\StatesTableSeeder::class);
 
         // get Malaysia country id
         $country = \App\Models\Country::where('name', 'Malaysia')->first();
@@ -207,7 +208,7 @@ class UserSettingsTest extends TestCase
         // post to save location
         $response = $this->postJson('/api/v1/user/settings/location', [
             'country_id' => $country->id,
-            'state_id' => 1,
+            'state_id' => State::where('country_id', $country->id)->first()->id
         ]);
 
         $response->assertStatus(200)
