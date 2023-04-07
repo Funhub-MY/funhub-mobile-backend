@@ -1014,7 +1014,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: sequi
+        example: fugit
         required: true
         schema:
           type: string
@@ -1474,7 +1474,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 11
+        example: 5
         required: true
         schema:
           type: integer
@@ -2160,6 +2160,80 @@ paths:
                 - name
                 - email
                 - password
+  /api/v1/countries:
+    get:
+      summary: 'Get Countries'
+      operationId: getCountries
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n[\"id\" => 1, \"name\" => \"Nigeria\", \"code\" => \"NG\"],\n}"
+      tags:
+        - Other
+  /api/v1/states:
+    get:
+      summary: 'Get States'
+      operationId: getStates
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n[\"id\" => 1, \"name\" => \"Abia\", \"code\" => \"AB\", \"country_id\" => 1],\n}"
+      tags:
+        - Other
   /api/v1/user/followings:
     get:
       summary: 'Get all followings'
@@ -2308,7 +2382,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 1
+                  example: 9
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2375,7 +2449,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 13
+                  example: 12
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3030,7 +3104,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
 tags:
@@ -3039,6 +3113,9 @@ tags:
     description: ''
   -
     name: Authentication
+    description: ''
+  -
+    name: Other
     description: ''
   -
     name: User

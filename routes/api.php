@@ -25,10 +25,14 @@ Route::group(['prefix' => 'v1'], function () {
     // Route::post('register/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'registerSocialProvider']);
 
 
-    Route::group(['middleware' => ['auth:sanctum']],  function() {
+    Route::group(['middleware' => ['auth:sanctum']],  function() {        
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
     
+        // Country & State
+        Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
+        Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);
+
         // Articles
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
