@@ -196,11 +196,11 @@ class UserSettingsTest extends TestCase
      */
     public function testSaveLocation()
     {
-        // seed countries
-        $this->seed(\CountriesTableSeeder::class);
+        // // seed countries
+        // $this->seed(\CountriesTableSeeder::class);
 
-        // seed states
-        $this->seed(\Database\Seeders\StatesTableSeeder::class);
+        // // seed states
+        // $this->seed(\Database\Seeders\StatesTableSeeder::class);
 
         // get Malaysia country id
         $country = \App\Models\Country::where('name', 'Malaysia')->first();
