@@ -31,6 +31,7 @@ class ArticleController extends Controller
      * @group Article
      * 
      * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam following_only boolean optional Filter by Articles by Users who logged in user is following. Example: true
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -69,6 +70,15 @@ class ArticleController extends Controller
         if ($request->has('tag_ids')) {
             $query->whereHas('tags', function ($query) use ($request) {
                 $query->whereIn('id', $request->tag_ids);
+            });
+        }
+
+        // get articles from users whose this auth user is following only
+        if($request->has('following_only') && $request->following_only) {
+            $myFollowings = auth()->user()->followings;
+
+            $query->whereHas('user', function ($query) use ($myFollowings) {
+                $query->whereIn('id', $myFollowings->pluck('id')->toArray());
             });
         }
         

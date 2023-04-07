@@ -39,7 +39,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E8PvefhV3g4abcD5adk6Z61'
+      - 'Bearer 6ZE6vbDc85Pd341kgVaehaf'
     controller: null
     method: null
     route: null
@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eaE4hbgcVDv81k6f36adZP5'
+      - 'Bearer Z5gEvd6a1P8hcafD634kebV'
     controller: null
     method: null
     route: null
@@ -113,11 +113,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 10
+        example: 1
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 10
+      user_id: 1
     fileParameters: []
     responses:
       -
@@ -139,7 +139,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5eavk6g1DbEZh6cVP438afd'
+      - 'Bearer PcE5D84kh1e3Zvadbg6Vf6a'
     controller: null
     method: null
     route: null
@@ -170,11 +170,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 19
+        example: 13
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 19
+      user_id: 13
     fileParameters: []
     responses:
       -
@@ -196,7 +196,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f4gZ8Vv5h1E3baae6Pk6Dcd'
+      - 'Bearer DbaghP46c5Z63faEk8d1evV'
     controller: null
     method: null
     route: null

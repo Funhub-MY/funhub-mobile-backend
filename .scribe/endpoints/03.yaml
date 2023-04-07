@@ -51,7 +51,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer heak5dafb38v1Zcg6EDV6P4'
+      - 'Bearer 4a66v5V1hbc8ZaEPeD3fkdg'
     controller: null
     method: null
     route: null
@@ -122,7 +122,121 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZeE846Ddkbah1af3gcP65vV'
+      - 'Bearer vhkVP35bZaeDd6gfacE6184'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/email
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        custom: []
+    cleanBodyParameters:
+      email: john@gmail.com
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Email updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cV3P66adEv14a5kZfDbeg8h'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/name
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Name'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Name of the user.'
+        required: true
+        example: 'John Doe'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: 'John Doe'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Name updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 54h6ab18vZcDd3aeP6kfVgE'
     controller: null
     method: null
     route: null
@@ -185,7 +299,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4a3eka8Z6gfDc1Evh65bdVP'
+      - 'Bearer b81hdg4V5aP6fva6k3cZEeD'
     controller: null
     method: null
     route: null
@@ -244,7 +358,221 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hbPdcE3fDkgV416Zea6a58v'
+      - 'Bearer aZ3kh5gD6fecV1va8P64bEd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/username
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Username'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      username:
+        name: username
+        description: 'Username of the user.'
+        required: true
+        example: johndoe
+        type: string
+        custom: []
+    cleanBodyParameters:
+      username: johndoe
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Username updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZDb8chfdv46PE6egVaa135k'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/bio
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Bio'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      bio:
+        name: bio
+        description: 'Bio of the user.'
+        required: true
+        example: 'I am a software engineer'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      bio: 'I am a software engineer'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a6Pc8VDhb1kdE4fv3e6ag5Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/dob
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Date of Birth'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      day:
+        name: day
+        description: 'Day of the date of birth.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      month:
+        name: month
+        description: 'Month of the date of birth.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      year:
+        name: year
+        description: 'Year of the date of birth.'
+        required: true
+        example: 1990
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      day: 1
+      month: 1
+      year: 1990
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Date of birth updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6d3kb8ev4fgEPZaDVh651ac'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/gender
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Save Gender'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      gender:
+        name: gender
+        description: 'Must be one of <code>male</code> or <code>female</code>.'
+        required: true
+        example: male
+        type: string
+        custom: []
+    cleanBodyParameters:
+      gender: male
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hav46ce8gE513a6DkbZPfVd'
     controller: null
     method: null
     route: null

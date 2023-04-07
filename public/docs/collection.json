@@ -9,8 +9,8 @@
         }
     ],
     "info": {
-        "name": "Funhub",
-        "_postman_id": "005c33a6-ac40-4868-a794-73b12e6f71bb",
+        "name": "FUNHUB",
+        "_postman_id": "9bd6ddca-5b8a-40e7-b172-7d648af71046",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -158,7 +158,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"category_ids\":[1,2,3],\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"category_ids\":[1,2,3],\"following_only\":true,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "mollitia",
+                                            "value": "sequi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "11",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1390,6 +1390,59 @@
                             "name": "Access Denied"
                         }
                     ]
+                },
+                {
+                    "name": "Complete Profile",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/complete-profile",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/complete-profile"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Smith\",\"email\":\"john@example.com\",\"password\":\"abcd1234\"}"
+                        },
+                        "description": "Complete user profile after registration"
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Profile Updated\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"name\": [\"The Name field is required.\"], \"email\": [\"The Email field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Please verify your phone number first\" ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
                 }
             ]
         },
@@ -1455,7 +1508,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -1496,7 +1549,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -1653,6 +1706,88 @@
                     ]
                 },
                 {
+                    "name": "Update User Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"john@gmail.com\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Email updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Name",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/name",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/name"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"John Doe\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Name updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
                     "name": "Link Article Categories to User (used for interest tagging)",
                     "request": {
                         "url": {
@@ -1739,6 +1874,144 @@
                             "name": "Unauthenticated"
                         }
                     ]
+                },
+                {
+                    "name": "Update User Username",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/username",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/username"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"johndoe\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Username updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Bio",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/bio",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/bio"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"bio\":\"I am a software engineer\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update User Date of Birth",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/dob",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/dob"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"day\":1,\"month\":1,\"year\":1990}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Date of birth updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Save Gender",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/gender",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/gender"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"gender\":\"male\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
                 }
             ]
         }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleImport;
+use App\Models\ArticleTag;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\DB;
@@ -68,7 +69,7 @@ class NoodouRssService
                         foreach($categories as $category) {
                             $article_categories[] = $category->nodeValue;
                         }
-                        $tempArray['category'] = $article_categories;
+                        $tempArray['tag'] = $article_categories;
                         $articles[] = $tempArray;
                     }
                 // get latest articles
@@ -98,7 +99,7 @@ class NoodouRssService
             $import->save();
             return false;
         }
-        $article_categories = ArticleCategory::Select(DB::raw('id, LOWER(name) as name'))->get();
+        $article_tags = ArticleTag::Select(DB::raw('id, LOWER(name) as name'))->get();
         foreach($articles as $article) {
             try {
                 $new_article = new Article();
@@ -112,29 +113,27 @@ class NoodouRssService
                 $new_article->user_id = ($channel) ? $channel->user->id : 1;
                 //$new_article->user_id = 1;
                 $new_article->lang = $article['lang'];
-                // save article first as categories and media needed article id to be attached.
-                $new_article->save();
                 // check categories.
-                $categories = $article['category'];
-                foreach($categories as $key => $category) {
-                    $found = $article_categories->where('name', strtolower($category))->first();
+                $tags = $article['tag'];
+                foreach($tags as $key => $tag) {
+                    $found = $article_tags->where('name', strtolower($tag))->first();
                     if ($found == null) {
-                        $new_article_category = ArticleCategory::create([
-                            'name' => $category,
-                            'slug' => Str::slug($category),
-                            'lang' => $article['lang'],
+                        $new_article_tag = ArticleTag::create([
+                            'name' => $tag,
                             'user_id' => ($channel) ? $channel->user->id : 1 // at the moment is 1, will be transform it into rss_feed->user->id;
                         ]);
-                        $categories[$key] = $new_article_category->id;
+                        $tags[$key] = $new_article_tag->id;
                     } else {
-                        $categories[$key] = $found->id;
+                        $tags[$key] = $found->id;
                     }
                 }
-                $article['category'] = $categories;
+                $article['tag'] = $tags;
                 //$article['category'] = implode(',', $categories);
+                // save article first as categories and media needed article id to be attached.
+                $new_article->save();
                 if ($new_article) {
                     // attach categories
-                    $new_article->categories()->attach($article['category']);
+                    $new_article->tags()->attach($article['tag']);
                     // attach media
                     if (isset($article['media']) && $article['media'] != null) {
                         $new_article->addMediaFromUrl($article['media'])
