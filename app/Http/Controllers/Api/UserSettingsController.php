@@ -209,6 +209,37 @@ class UserSettingsController extends Controller
     }
 
     /**
+     * Update User Location
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam country_id integer required Country id of the user. Example: 1
+     * @bodyParam state_id integer required State id of the user. Example: 1
+     * 
+     * @response status=200 scenario="success" {
+     * "message": "Location updated"
+     * }
+     * 
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postSaveLocation(Request $request)
+    {
+        $request->validate([
+            'country_id' => 'required|integer|exists:countries,id',
+            'state_id' => 'required|integer|exists:states,id',
+        ]);
+
+        $user = auth()->user();
+        $user->country_id = $request->country_id;
+        $user->state_id = $request->state_id;
+        $user->save();
+
+        return response()->json(['message' => 'Location updated']);
+    }
+
+    /**
      * Link Article Categories to User (used for interest tagging)
      * 
      * @param Request $request

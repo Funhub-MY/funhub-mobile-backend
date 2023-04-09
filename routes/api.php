@@ -21,15 +21,17 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('register/otp', [\App\Http\Controllers\Api\AuthController::class, 'registerWithOtp']);
 
     // social provider logins
-    // Route::post('login/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'loginSocialProvider']);
-    // Route::post('register/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'registerSocialProvider']);
     Route::post('login/facebook', [\App\Http\Controllers\Api\AuthController::class, 'facebookLogin']);
     Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
 
-
-    Route::group(['middleware' => ['auth:sanctum']],  function() {
+    Route::group(['middleware' => ['auth:sanctum']],  function() {        
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
+    
+        // Country & State
+        Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
+        Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);
+
         // Articles
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
@@ -72,6 +74,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/bio', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveBio']);
             Route::post('/dob', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveDob']);
             Route::post('/gender', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveGender']);
+            Route::post('/location', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveLocation']);
         });
     });
 });

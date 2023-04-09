@@ -9,8 +9,8 @@
         }
     ],
     "info": {
-        "name": "FUNHUB",
-        "_postman_id": "9bd6ddca-5b8a-40e7-b172-7d648af71046",
+        "name": "Funhub",
+        "_postman_id": "7b54c0d6-f07e-462a-b8a3-0f30e73c000e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "sequi",
+                                            "value": "est",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "11",
+                                            "value": "15",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1447,6 +1447,88 @@
             ]
         },
         {
+            "name": "Other",
+            "description": "",
+            "item": [
+                {
+                    "name": "Country",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get Countries",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/countries",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/countries"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n[\"id\" => 1, \"name\" => \"Nigeria\", \"code\" => \"NG\"],\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "State",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get States",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/states",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/states"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n[\"id\" => 1, \"name\" => \"Abia\", \"code\" => \"AB\", \"country_id\" => 1],\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "User",
             "description": "",
             "item": [
@@ -1508,7 +1590,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":2}"
                                 },
                                 "description": ""
                             },
@@ -1549,7 +1631,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":13}"
+                                    "raw": "{\"user_id\":5}"
                                 },
                                 "description": ""
                             },
@@ -2012,6 +2094,47 @@
                         "description": ""
                     },
                     "response": []
+                },
+                {
+                    "name": "Update User Location",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/location",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/location"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"country_id\":1,\"state_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Location updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
                 }
             ]
         }

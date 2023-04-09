@@ -21,7 +21,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call([
-            RssChannelSeeder::class
+            RssChannelSeeder::class,
+            // CountriesTableSeeder::class,
+            // StatesTableSeeder::class,
         ]);
     }
 }
