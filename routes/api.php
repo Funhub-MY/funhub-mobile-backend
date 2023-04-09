@@ -21,9 +21,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('register/otp', [\App\Http\Controllers\Api\AuthController::class, 'registerWithOtp']);
 
     // social provider logins
-    // Route::post('login/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'loginSocialProvider']);
-    // Route::post('register/{provider}', [\App\Http\Controllers\Api\AuthController::class, 'registerSocialProvider']);
-
+    Route::post('login/facebook', [\App\Http\Controllers\Api\AuthController::class, 'facebookLogin']);
+    Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
 
     Route::group(['middleware' => ['auth:sanctum']],  function() {        
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
@@ -53,7 +52,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('comments/like_toggle', \App\Http\Controllers\Api\CommentController::class . '@postLikeToggle');
         Route::post('comments/report', \App\Http\Controllers\Api\CommentController::class . '@postReportComment');
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
-        
+
         // Interactions
         Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
 

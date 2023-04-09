@@ -404,4 +404,16 @@ class AuthController extends Controller
             'token' => $sanctumToken
         ], 200);
     }
+    // TODO:: functions below can be deleted once flutter end finish login implementation. It was created for unit testing purpose.
+    public function redirectToGoogle()
+    {
+        // redirect user to login as google.
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function googleCallBack()
+    {
+        $user = Socialite::driver('google')->user();
+        dd($user);
+    }
 }
