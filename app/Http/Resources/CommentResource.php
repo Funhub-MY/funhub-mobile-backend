@@ -24,8 +24,8 @@ class CommentResource extends JsonResource
                 'avatar' => $this->user->avatar_url,
             ],
             'counts' => [
-                'likes' => $this->likes_count,
-                'replies' => $this->replies_count,
+                'likes' => $this->likes_count ?? 0,
+                'replies' => $this->replies_count ?? 0,
             ],
             'body' => $this->body,
             'liked_by_user' => $this->likes->contains('user_id', auth()->id()),
