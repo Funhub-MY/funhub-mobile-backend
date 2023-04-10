@@ -22,11 +22,7 @@ class ArticleResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'body' => $this->body,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'avatar' => $this->user->avatar_url,
-            ],
+            'user' => new UserResource($this->user),
             'categories' => ArticleCategoryResource::collection($this->categories),
             'media' => MediaResource::collection($this->media),
             'tags' => $this->tags,
