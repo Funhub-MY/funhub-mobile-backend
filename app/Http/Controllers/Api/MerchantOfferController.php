@@ -147,7 +147,6 @@ class MerchantOfferController extends Controller
         // TODO: future need add in discount, tax etc.
         $net_amount = $offer->unit_price * $request->quantity;
 
-        
         // ensure user have enough point balance
         $user = request()->user();
         if ($user->point_balance < $net_amount) {

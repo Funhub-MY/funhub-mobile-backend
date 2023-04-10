@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,9 +26,19 @@ class UserFactory extends Factory
             'otp_verified_at' => now(),
             'phone_no' => fake()->randomNumber(9),
             'phone_country_code' => '60',
+            'bio' => fake()->paragraph(1),
+            'gender' => fake()->randomElement(['male', 'female']),
+            'job_title' => fake()->jobTitle(),
             'password' => Hash::make('abcd1234'), // password
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function otpVerified()
+    {
+        return $this->state(fn (array $attributes) => [
+            'otp_verified_at' => now(),
+        ]);
     }
 
     /**

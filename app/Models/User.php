@@ -245,6 +245,8 @@ class User extends Authenticatable implements HasMedia
                 if ($user) {
                     $username = $username . rand(1, 9);
                 }
+                // remove any empty space
+                $username = str_replace(' ', '', $username);
                 $this->attributes['username'] = $username;
             } else {
                 // random 6 character username with 3 numbers

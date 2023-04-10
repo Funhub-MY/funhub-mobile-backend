@@ -24,6 +24,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login/facebook', [\App\Http\Controllers\Api\AuthController::class, 'facebookLogin']);
     Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
 
+    /**
+     * Authenticated routes
+     */
     Route::group(['middleware' => ['auth:sanctum']],  function() {        
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);

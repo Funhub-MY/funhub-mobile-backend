@@ -68,6 +68,12 @@ class Article extends Model implements HasMedia
         return $this->morphMany(Report::class, 'reportable');
     }
 
+    public function likes()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+            ->where('type', Interaction::TYPE_LIKE);
+    }
+
     public function hiddenUsers()
     {
         return $this->belongsToMany(User::class, 'articles_hidden_users')
