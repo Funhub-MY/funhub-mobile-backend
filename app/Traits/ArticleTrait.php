@@ -54,4 +54,24 @@ trait ArticleTrait {
             return $concat.'-'.$random_text.'-'.$random_number;
         }
     }
+
+    public function cleanContentForURL($string) : string
+    {
+        // define the regex pattern to match http and https URLs without html tags.
+        $pattern = "/(https:\/\/[^\s<>]*[\x{4e00}-\x{9fa5}][^\s<>]*)/u";
+        // define the callback function to encode or replace the matched URLs
+        $callback = function ($match) use (&$match_string) {
+            $string = $match[0];
+            $string = str_replace('%22', '"', $string);
+            $encoded_string = urlencode($string);
+            // when encoded, it will encode the '/', '"', ':'. So we replace it back by using str_replace.
+            $encoded_string = str_replace('%22', '"', $encoded_string);
+            $encoded_string = str_replace('%3A', ':', $encoded_string);
+            $encoded_string = str_replace('%2F', '/', $encoded_string);
+            return $encoded_string;
+        };
+        // use preg_replace_callback() to apply the callback function to all matched URLs
+        // output the processed string
+        return preg_replace_callback($pattern, $callback, $string);
+    }
 }

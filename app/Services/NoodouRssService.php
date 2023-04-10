@@ -41,10 +41,13 @@ class NoodouRssService
                     $article_categories = [];
                     foreach($items as $item) {
                         $media_thumbnail = null;
+                        //$content = $this->cleanContentForURL($item->getElementsByTagName('encoded')->item(0)->nodeValue);
+                        $content = $item->getElementsByTagName('encoded')->item(0)->nodeValue;
+                        $content = $this->cleanContentForURL($content);
                         $tempArray = array (
                             'title' => $item->getElementsByTagName('title')->item(0)->nodeValue,
                             'link' => $item->getElementsByTagName('link')->item(0)->nodeValue,
-                            'content' => $item->getElementsByTagName('encoded')->item(0)->nodeValue,
+                            'content' => $content,
                             'pub_date' => $item->getElementsByTagName('pubDate')->item(0)->nodeValue,
                             'lang' => 'zh',
                             'media' => null,
@@ -202,4 +205,5 @@ class NoodouRssService
 
         return $channel_import;
     }
+
 }

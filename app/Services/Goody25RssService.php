@@ -54,6 +54,8 @@ class Goody25RssService
                     $media = isset($item['media']) ? $item['media']['@attributes']['url'] : null;
                     $media_thumbnail = isset($item['media-thumbnail']) ? $item['media-thumbnail']['@attributes']['url'] : null;
                     $content = $item['content'];
+                    // clean content, when meet https, then encode it.
+                    $content = $this->cleanContentForURL($content);
                     $pubDate = $item['pubDate'];
                     $tempArray = array (
                         'title' => $title,
