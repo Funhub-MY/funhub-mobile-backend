@@ -8,6 +8,7 @@ use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class CommentTest extends TestCase
 {
@@ -204,11 +205,23 @@ class CommentTest extends TestCase
             ->assertJsonStructure([
                 'message'
             ]);
-
+        
         $this->assertDatabaseHas('comments_likes', [
             'comment_id' => $comment->id,
             'user_id' => $this->user->id,
         ]);
+
+        // get comment by id and asset json structure counts.likes is 1
+        $response = $this->getJson('/api/v1/comments/'.$comment->id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'comment'
+            ]);
+        Log::info($response->json());
+
+
+        $this->assertEquals(1, $response->json('comment.counts.likes'));
 
         // unlike comment
         $response = $this->postJson('/api/v1/comments/like_toggle', [
@@ -224,5 +237,17 @@ class CommentTest extends TestCase
             'comment_id' => $comment->id,
             'user_id' => $this->user->id,
         ]);
+
+         // get comment by id and asset json structure counts.likes is 0
+         $response = $this->getJson('/api/v1/comments/'.$comment->id);
+
+         $response->assertStatus(200)
+             ->assertJsonStructure([
+                 'comment'
+             ]);
+ 
+         $this->assertEquals(0, $response->json('comment.counts.likes'));
+ 
+
     }
 }
