@@ -309,6 +309,82 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/login/facebook
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login with Facebook'
+      description: 'Login user with Facebook'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      access_token:
+        name: access_token
+        description: 'The access token of the user from Facebook.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      access_token: '1234567890'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/login/google
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login with Google'
+      description: 'Login user with Google'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      access_token:
+        name: access_token
+        description: 'The access token of the user from Google.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      access_token: '1234567890'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/logout
     metadata:
       groupName: Authentication
@@ -347,7 +423,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bZfEd645hDaVkv63Pe1cga8'
+      - 'Bearer efa3846PZcdkEvDV6b5ah1g'
     controller: null
     method: null
     route: null
@@ -429,7 +505,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ZPdDa63v6k4Vafbg8E1ehc'
+      - 'Bearer cPa66D13vEb4hkgadVfZ8e5'
     controller: null
     method: null
     route: null

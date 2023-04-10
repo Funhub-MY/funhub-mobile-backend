@@ -43,6 +43,31 @@ class ArticleTest extends TestCase
         ->assertJsonStructure([
             'data',
         ]);
+
+        $this->assertEquals(10, $response->json('meta.total'));
+    }
+
+    /**
+     * Article get articles for Home by logged in user when user is following
+     * /api/v1/articles
+     */
+    public function testGetArticlesForHomeByLoggedInUserWhenUserIsNotFollowing()
+    {
+           // factory create articles
+           Article::factory()
+           ->count(10)
+           ->published()
+           ->create();
+
+       $response = $this->getJson('/api/v1/articles?following_only=1');
+
+       $response->assertStatus(200)
+       ->assertJsonStructure([
+           'data',
+       ]);
+
+        // count is 0
+        $this->assertEquals(0, $response->json('meta.total'));
     }
 
     /**
@@ -68,6 +93,7 @@ class ArticleTest extends TestCase
 
         $this->assertEquals(3, $response->json('meta.total'));
     }
+    
 
     /**
      * Get Articles by users whose logged in user is following
@@ -97,7 +123,7 @@ class ArticleTest extends TestCase
             ]);
 
         // get articles by my followings
-        $response = $this->getJson('/api/v1/articles?following_only=true');
+        $response = $this->getJson('/api/v1/articles?following_only=1');
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data',

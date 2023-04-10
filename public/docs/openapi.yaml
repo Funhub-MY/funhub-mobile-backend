@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Funhub
+  title: FUNHUB
   description: ''
   version: 1.0.0
 servers:
@@ -293,9 +293,9 @@ paths:
                   items:
                     type: string
                 following_only:
-                  type: boolean
+                  type: integer
                   description: 'optional Filter by Articles by Users who logged in user is following.'
-                  example: true
+                  example: 1
                 tag_ids:
                   type: array
                   description: 'optional Tag Ids to Filter.'
@@ -1014,7 +1014,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: est
+        example: placeat
         required: true
         schema:
           type: string
@@ -1474,7 +1474,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 15
+        example: 11
         required: true
         schema:
           type: integer
@@ -2022,6 +2022,80 @@ paths:
                 - name
                 - password
       security: []
+  /api/v1/login/facebook:
+    post:
+      summary: 'Login with Facebook'
+      operationId: loginWithFacebook
+      description: 'Login user with Facebook'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: 'The access token of the user from Facebook.'
+                  example: '1234567890'
+              required:
+                - access_token
+      security: []
+  /api/v1/login/google:
+    post:
+      summary: 'Login with Google'
+      operationId: loginWithGoogle
+      description: 'Login user with Google'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: 'The access token of the user from Google.'
+                  example: '1234567890'
+              required:
+                - access_token
+      security: []
   /api/v1/logout:
     post:
       summary: Logout
@@ -2382,7 +2456,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 2
+                  example: 7
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2449,7 +2523,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 5
+                  example: 3
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3104,7 +3178,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

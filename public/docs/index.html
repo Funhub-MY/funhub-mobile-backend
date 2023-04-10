@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Funhub Documentation</title>
+    <title>FUNHUB Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -184,6 +184,12 @@ Only owner can call this method</a>
                                                                                 <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-register-otp">
                                 <a href="#authentication-POSTapi-v1-register-otp">Register with OTP</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-login-facebook">
+                                <a href="#authentication-POSTapi-v1-login-facebook">Login with Facebook</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-login-google">
+                                <a href="#authentication-POSTapi-v1-login-google">Login with Google</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-logout">
                                 <a href="#authentication-POSTapi-v1-logout">Logout</a>
                             </li>
@@ -293,7 +299,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 7, 2023</li>
+        <li>Last updated: April 10, 2023</li>
     </ul>
 </div>
 
@@ -335,7 +341,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phphMmELN" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpwaj9tk" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -468,7 +474,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phphMmELN</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpwaj9tk</code></p>
         </div>
         </form>
 
@@ -945,7 +951,7 @@ fetch(url, {
         2,
         3
     ],
-    \"following_only\": true,
+    \"following_only\": 1,
     \"tag_ids\": [
         1,
         2,
@@ -978,7 +984,7 @@ let body = {
         2,
         3
     ],
-    "following_only": true,
+    "following_only": 1,
     "tag_ids": [
         1,
         2,
@@ -1103,24 +1109,14 @@ fetch(url, {
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>following_only</code></b>&nbsp;&nbsp;
-<small>boolean</small>&nbsp;
+<small>integer</small>&nbsp;
 <i>optional</i> &nbsp;
-                <label data-endpoint="GETapi-v1-articles" style="display: none">
-            <input type="radio" name="following_only"
-                   value="true"
-                   data-endpoint="GETapi-v1-articles"
-                   data-component="body"             >
-            <code>true</code>
-        </label>
-        <label data-endpoint="GETapi-v1-articles" style="display: none">
-            <input type="radio" name="following_only"
-                   value="false"
-                   data-endpoint="GETapi-v1-articles"
-                   data-component="body"             >
-            <code>false</code>
-        </label>
+                <input type="number" style="display: none"
+               name="following_only"                data-endpoint="GETapi-v1-articles"
+               value="1"
+               data-component="body">
     <br>
-<p>optional Filter by Articles by Users who logged in user is following. Example: <code>true</code></p>
+<p>optional Filter by Articles by Users who logged in user is following. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>tag_ids</code></b>&nbsp;&nbsp;
@@ -1657,7 +1653,7 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHOvUUv" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpoOv9zD" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1859,7 +1855,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHOvUUv</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpoOv9zD</code></p>
         </div>
         </form>
 
@@ -2740,7 +2736,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/replies/est" \
+    --get "http://localhost/api/v1/comments/replies/placeat" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2757,7 +2753,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/replies/est"
+    "http://localhost/api/v1/comments/replies/placeat"
 );
 
 const headers = {
@@ -2882,10 +2878,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="est"
+               value="placeat"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>est</code></p>
+<p>The ID of the comment. Example: <code>placeat</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3748,7 +3744,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/15" \
+    --get "http://localhost/api/v1/comments/11" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3761,7 +3757,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/15"
+    "http://localhost/api/v1/comments/11"
 );
 
 const headers = {
@@ -3887,10 +3883,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="15"
+               value="11"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>15</code></p>
+<p>The ID of the comment. Example: <code>11</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -5624,6 +5620,248 @@ fetch(url, {
         </div>
         </form>
 
+                    <h2 id="authentication-POSTapi-v1-login-facebook">Login with Facebook</h2>
+
+<p>
+</p>
+
+<p>Login user with Facebook</p>
+
+<span id="example-requests-POSTapi-v1-login-facebook">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/v1/login/facebook" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"access_token\": \"1234567890\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/login/facebook"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "access_token": "1234567890"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-login-facebook">
+</span>
+<span id="execution-results-POSTapi-v1-login-facebook" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-login-facebook"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-facebook" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-login-facebook" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-login-facebook"></code></pre>
+</span>
+<form id="form-POSTapi-v1-login-facebook" data-method="POST"
+      data-path="api/v1/login/facebook"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-login-facebook', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-login-facebook"
+                    onclick="tryItOut('POSTapi-v1-login-facebook');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-login-facebook"
+                    onclick="cancelTryOut('POSTapi-v1-login-facebook');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-login-facebook" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/login/facebook</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-login-facebook"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-login-facebook"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>access_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="access_token"                data-endpoint="POSTapi-v1-login-facebook"
+               value="1234567890"
+               data-component="body">
+    <br>
+<p>The access token of the user from Facebook. Example: <code>1234567890</code></p>
+        </div>
+        </form>
+
+                    <h2 id="authentication-POSTapi-v1-login-google">Login with Google</h2>
+
+<p>
+</p>
+
+<p>Login user with Google</p>
+
+<span id="example-requests-POSTapi-v1-login-google">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/v1/login/google" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"access_token\": \"1234567890\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/login/google"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "access_token": "1234567890"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-login-google">
+</span>
+<span id="execution-results-POSTapi-v1-login-google" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-login-google"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-google" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-login-google" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-login-google"></code></pre>
+</span>
+<form id="form-POSTapi-v1-login-google" data-method="POST"
+      data-path="api/v1/login/google"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-login-google', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-login-google"
+                    onclick="tryItOut('POSTapi-v1-login-google');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-login-google"
+                    onclick="cancelTryOut('POSTapi-v1-login-google');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-login-google" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/login/google</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-login-google"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-login-google"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>access_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="access_token"                data-endpoint="POSTapi-v1-login-google"
+               value="1234567890"
+               data-component="body">
+    <br>
+<p>The access token of the user from Google. Example: <code>1234567890</code></p>
+        </div>
+        </form>
+
                     <h2 id="authentication-POSTapi-v1-logout">Logout</h2>
 
 <p>
@@ -6348,7 +6586,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 2
+    \"user_id\": 7
 }"
 </code></pre></div>
 
@@ -6365,7 +6603,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 2
+    "user_id": 7
 };
 
 fetch(url, {
@@ -6475,10 +6713,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="2"
+               value="7"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>2</code></p>
+<p>The id of the user to follow Example: <code>7</code></p>
         </div>
         </form>
 
@@ -6501,7 +6739,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 5
+    \"user_id\": 3
 }"
 </code></pre></div>
 
@@ -6518,7 +6756,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 5
+    "user_id": 3
 };
 
 fetch(url, {
@@ -6628,10 +6866,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="5"
+               value="3"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>5</code></p>
+<p>The id of the user to unfollow Example: <code>3</code></p>
         </div>
         </form>
 
@@ -7564,7 +7802,7 @@ fetch(url, {
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpKA9Xr9" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpJQfiam" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -7693,7 +7931,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpKA9Xr9</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpJQfiam</code></p>
         </div>
         </form>
 
@@ -8183,7 +8421,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"gender\": \"male\"
+    \"gender\": \"female\"
 }"
 </code></pre></div>
 
@@ -8200,7 +8438,7 @@ const headers = {
 };
 
 let body = {
-    "gender": "male"
+    "gender": "female"
 };
 
 fetch(url, {
@@ -8292,10 +8530,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="gender"                data-endpoint="POSTapi-v1-user-settings-gender"
-               value="male"
+               value="female"
                data-component="body">
     <br>
-<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>male</code></p>
+<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>female</code></p>
         </div>
         </form>
 
