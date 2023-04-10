@@ -39,7 +39,8 @@ class User extends Authenticatable implements HasMedia
     protected $appends = [
         'full_phone_no',
         'avatar_url',
-        'avatar_thumb_url'
+        'avatar_thumb_url',
+        'point_balance'
     ];
 
     /**
@@ -116,7 +117,9 @@ class User extends Authenticatable implements HasMedia
     // Important Note:: This is to indicate what merchant_offers has been claimed by the users.
     public function claimed_merchant_offers()
     {
-        return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_user')->withPivot('status');
+        return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_user')
+            ->withPivot('status', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withTimestamps();
     }
 
     public function stores()
@@ -159,6 +162,24 @@ class User extends Authenticatable implements HasMedia
     public function rss_channel()
     {
         return $this->hasOne(RssChannel::class);
+    }
+
+    public function pointLedgers()
+    {
+        return $this->hasMany(PointLedger::class);
+    }
+
+    public function pointComponentsLedger()
+    {
+        return $this->hasMany(PointComponentLedger::class);
+    }
+
+    /**
+     * Get the user's point balance
+     */
+    public function getPointBalanceAttribute()
+    {
+        return $this->pointLedgers()->orderBy('id', 'desc')->first()->balance ?? 0;
     }
 
     /**
@@ -231,4 +252,5 @@ class User extends Authenticatable implements HasMedia
             }
         }
     }
+    
 }

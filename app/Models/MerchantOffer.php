@@ -9,21 +9,27 @@ class MerchantOffer extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $guarded = [
+        'id'
+    ];
+
+    protected $appends = [
+        'claimed_quantity'
+    ];
+
+    const STATUS = [
+        0 => 'Draft',
+        1 => 'Published',
+    ];
+
+    // filterables
+    const FILTERABLE = [
+        'id',
         'name',
-        'user_id',
-        'merchant_id',
-        'store_id',
         'description',
-        'unit_price',
         'available_at',
         'available_until',
-        'quantity',
-        'sku',
-        'claimed',
-        'deleted_at',
-        'created_at',
-        'updated_at'
+        'sku'
     ];
 
     public function merchant()
@@ -41,8 +47,31 @@ class MerchantOffer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function claimed_by_users()
+    public function claims()
     {
-        return $this->belongsToMany(User::class, 'merchant_offer_user')->withPivot('status');
+        return $this->belongsToMany(User::class, 'merchant_offer_user')
+            ->withPivot('status', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withTimestamps();
+    }
+
+    public function categories()
+    {
+        return $this->morphToMany(MerchantCategory::class, 'categoryable');
+    }
+
+    /**
+     * Scope a query to only include published offers.
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    /**
+     * claimed_quantity
+     */
+    public function getClaimedQuantityAttribute()
+    {
+        return $this->claims()->wherePivot('status', 'claimed')->count();
     }
 }

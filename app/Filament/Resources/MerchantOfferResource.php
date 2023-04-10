@@ -62,6 +62,8 @@ class MerchantOfferResource extends Resource
                                     ->cols(10)
                                     ->columnSpan('full')
                                     ->required(),
+                                    Forms\Components\Select::make('status')
+                                        ->options(MerchantOffer::STATUS)->default(0),
                             ])->columns(2),
                     ])->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
@@ -101,6 +103,14 @@ class MerchantOfferResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->enum(MerchantOffer::STATUS)
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('store.name')

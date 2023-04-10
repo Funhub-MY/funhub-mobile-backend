@@ -847,6 +847,10 @@ paths:
             schema:
               type: object
               properties:
+                is_featured:
+                  type: integer
+                  description: 'Is Featured Categories.'
+                  example: 1
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -1014,7 +1018,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: placeat
+        example: mollitia
         required: true
         schema:
           type: string
@@ -1474,7 +1478,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 11
+        example: 16
         required: true
         schema:
           type: integer
@@ -2234,6 +2238,204 @@ paths:
                 - name
                 - email
                 - password
+  /api/v1/merchant/offers:
+    get:
+      summary: 'Get Offers'
+      operationId: getOffers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Merchant
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_ids:
+                  type: array
+                  description: 'optional Merchant Category Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+  /api/v1/merchant/offers/claim:
+    post:
+      summary: 'Claim Offer'
+      operationId: claimOffer
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: offer_no_longer_valid
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Offer is no longer valid'
+                properties:
+                  message:
+                    type: string
+                    example: 'Offer is no longer valid'
+      tags:
+        - Merchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                offer_id:
+                  type: integer
+                  description: 'Offer ID.'
+                  example: 1
+                quantity:
+                  type: integer
+                  description: Quantity.
+                  example: 1
+              required:
+                - offer_id
+                - quantity
+  '/api/v1/merchant/offers/{offer_id}':
+    get:
+      summary: 'Get Offer By ID'
+      operationId: getOfferByID
+      description: ''
+      parameters:
+        -
+          in: query
+          name: offer_id
+          description: 'Offer ID.'
+          example: 1
+          required: true
+          schema:
+            type: integer
+            description: 'Offer ID.'
+            example: 1
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  offer: {  }
+                properties:
+                  offer:
+                    type: object
+                    properties: []
+      tags:
+        - Merchant
+    parameters:
+      -
+        in: path
+        name: offer_id
+        description: 'The ID of the offer.'
+        example: ipsa
+        required: true
+        schema:
+          type: string
   /api/v1/countries:
     get:
       summary: 'Get Countries'
@@ -2456,7 +2658,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 7
+                  example: 6
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2523,7 +2725,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 3
+                  example: 9
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3259,6 +3461,9 @@ tags:
     description: ''
   -
     name: Authentication
+    description: ''
+  -
+    name: Merchant
     description: ''
   -
     name: Other

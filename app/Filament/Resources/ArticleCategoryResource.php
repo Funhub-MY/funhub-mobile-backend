@@ -34,7 +34,10 @@ class ArticleCategoryResource extends Resource
                     ->required()
                     ->lazy()
                     ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
-
+                // is featured boolean
+                Forms\Components\Toggle::make('is_featured')
+                    ->label('Is Featured On Homepage?')
+                    ->columnSpan('full'),
                 Forms\Components\TextInput::make('slug')
                     ->disabled()
                     ->required()
@@ -58,6 +61,8 @@ class ArticleCategoryResource extends Resource
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_category_cover')->label('Image'),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                // is_featured
+                Tables\Columns\ToggleColumn::make('is_featured')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('description')->sortable()->searchable()->html(),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->sortable()->searchable(),

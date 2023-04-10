@@ -16,10 +16,11 @@ class MerchantOfferResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'sku' => $this->sku,
             'merchant_id' => $this->merchant_id,
             'store' => [
-                'id' => $this->merchant->store->id,
-                'name' => $this->merchant->store->name,
+                'id' => $this->store->id,
+                'name' => $this->store->name,
             ],
             'merchant' => [
                 'id' => $this->merchant->id,
@@ -32,12 +33,15 @@ class MerchantOfferResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'unit_price' => $this->unit_price,
-            'is_active' => $this->is_active,
-            'is_featured' => $this->is_featured,
-            'is_deleted' => $this->is_deleted,
+            'available_at' => $this->available_at,
+            'available_until' => $this->available_until,
+            'quantity' => $this->quantity,
+            'claimed_quantity' => $this->claimed_quantity,
+            'categories' => MerchantCategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
-        ]; 
+            'created_at_diff' => $this->created_at->diffForHumans(),
+            'updated_at_diff' => $this->updated_at->diffForHumans(),
+        ];
     }
 }

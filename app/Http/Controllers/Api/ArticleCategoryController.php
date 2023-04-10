@@ -20,6 +20,7 @@ class ArticleCategoryController extends Controller
      * 
      * @group Article
      * @subgroup Article Categories
+     * @bodyParam is_featured integer Is Featured Categories. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, created_at, updated_at
@@ -36,6 +37,11 @@ class ArticleCategoryController extends Controller
          // get popular tags by article count
          $query = ArticleCategory::withCount('articles')
             ->orderBy('articles_count', 'desc');
+
+        // get is_featured only
+        if ($request->has('is_featured') && $request->is_featured == 1) {
+            $query->where('is_featured', $request->is_featured);
+        }
 
         $this->buildQuery($query, $request);
 

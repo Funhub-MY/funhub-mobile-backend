@@ -62,6 +62,13 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/follow', [\App\Http\Controllers\Api\UserFollowingController::class, 'follow']);
         Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
 
+        // Merchant Offers
+        Route::prefix('/merchant/offers')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\MerchantOfferController::class, 'index']);
+            Route::post('/claim', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postClaimOffer']);
+            Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
+        });
+
         // User Settings
         Route::prefix('/user/settings')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
