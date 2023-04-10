@@ -68,6 +68,9 @@ trait ArticleTrait {
             $encoded_string = str_replace('%22', '"', $encoded_string);
             $encoded_string = str_replace('%3A', ':', $encoded_string);
             $encoded_string = str_replace('%2F', '/', $encoded_string);
+            $encoded_string = str_replace('%3F', '?', $encoded_string);
+            $encoded_string = str_replace('%3D', '=', $encoded_string);
+            $encoded_string = str_replace('%26', '&', $encoded_string);
             return $encoded_string;
         };
         // use preg_replace_callback() to apply the callback function to all matched URLs

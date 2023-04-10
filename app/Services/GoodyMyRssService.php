@@ -151,16 +151,31 @@ class GoodyMyRssService
                         $new_article->addMediaFromUrl($article['media'])
                             ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                     } else {
-                        Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
-                        Log::error('Article ID: '.$new_article->id. ' does not have media');
+                        // try get first image.
+                        $first_image_url = $this->getFirstImageInArticleContent($article);
+                        if ($first_image_url !== '' && $first_image_url !== null) {
+                            $new_article->addMediaFromUrl($first_image_url)
+                                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
+                        } else {
+                            Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
+                            Log::error('Article ID: '.$new_article->id. ' does not have media');
+                        }
                     }
                     if (isset($article['media_thumbnail']) && $article['media_thumbnail'] != null) {
                         $new_article->addMediaFromUrl($article['media_thumbnail'])
                             ->withCustomProperties(['is_cover_picture' => true])
                             ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                     } else {
-                        Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
-                        Log::error('Article ID: '.$new_article->id. ' does not have media');
+                        // try get first image as thumbnail.
+                        $first_image_url = $this->getFirstImageInArticleContent($article);
+                        if ($first_image_url !== '' && $first_image_url !== null) {
+                            $new_article->addMediaFromUrl($first_image_url)
+                                ->withCustomProperties(['is_cover_picture' => true])
+                                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
+                        } else {
+                            Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
+                            Log::error('Article ID: '.$new_article->id. ' does not have media');
+                        }
                     }
                     // assign batch import id with articles.
                     $import->articles()->attach($new_article);
@@ -213,5 +228,21 @@ class GoodyMyRssService
         }
 
         return $channel_import;
+    }
+
+    public function getFirstImageInArticleContent($article) : String
+    {
+        $first_image_url = null;
+        $content_string = $article['content'];
+        // Define the regular expression pattern to match <img> tags
+        $pattern = '/<img[^>]+src="([^"]+)"/';
+
+        // Match the first <img> tag in the input string
+        if (preg_match($pattern, $content_string, $matches)) {
+            // Extract the image URL from the first <img> tag
+            $first_image_url = $matches[1];
+            // Do something with the first image URL
+        }
+        return $first_image_url;
     }
 }
