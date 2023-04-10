@@ -74,7 +74,7 @@ class ArticleController extends Controller
         }
 
         // get articles from users whose this auth user is following only
-        if($request->has('following_only') && $request->following_only) {
+        if($request->has('following_only') && $request->following_only == true) {
             $myFollowings = auth()->user()->followings;
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
