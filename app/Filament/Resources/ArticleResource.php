@@ -155,6 +155,7 @@ class ArticleResource extends Resource
                 // filter by user
                 Tables\Filters\SelectFilter::make('user_id')
                     ->label('Created By')
+                    ->searchable()
                     ->options(fn () => Article::query()->withoutGlobalScope(SoftDeletingScope::class)->get()->pluck('user.name', 'user_id'))
                     ->placeholder('All'),
                 // filter by status
