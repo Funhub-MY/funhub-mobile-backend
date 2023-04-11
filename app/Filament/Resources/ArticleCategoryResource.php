@@ -59,7 +59,7 @@ class ArticleCategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_category_cover')->label('Image'),
+                // Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_category_cover')->label('Image'),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 // is_featured
                 Tables\Columns\ToggleColumn::make('is_featured')->sortable()->searchable(),
