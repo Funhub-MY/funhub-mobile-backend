@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\InteractionCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
+use App\Models\Article;
 use App\Models\Interaction;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;

@@ -451,7 +451,7 @@ class ArticleTest extends TestCase
 
         $response = $this->postJson('/api/v1/interactions', [
             'id' => $article->id,
-            'interactable' => Article::class,
+            'interactable' => 'article',
             'type' => 'like',
         ]);
 
