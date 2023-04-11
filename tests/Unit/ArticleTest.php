@@ -422,6 +422,15 @@ class ArticleTest extends TestCase
                 'interactions'
             ]
         ]);
+
+        // get articles bookmarked by this user
+        $response = $this->getJson('/api/v1/articles/my_bookmarks');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+        // meta.total should be 1
+        $this->assertEquals(1, $response->json('meta.total'));
     }
 
     /**
