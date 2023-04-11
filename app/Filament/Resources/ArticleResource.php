@@ -129,6 +129,11 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
+                // date created at
+                Tables\Columns\TextColumn::make('created_at')->dateTime('d/m/Y H:ia')
+                    ->sortable()
+                    ->label('Created At')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('title')
@@ -150,8 +155,9 @@ class ArticleResource extends Resource
                     ->sortable()
                     ->searchable(),
         
-                Tables\Columns\TextColumn::make('published_at')->dateTime('d-m-Y')
+                Tables\Columns\TextColumn::make('published_at')->dateTime('d/m/Y')
                     ->sortable()
+                    ->label('Publish At')
                     ->searchable(),
              
             ])
