@@ -125,7 +125,6 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_cover')->label('Image'),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('title')
@@ -153,7 +152,16 @@ class ArticleResource extends Resource
              
             ])
             ->filters([
-                //
+                // filter by user
+                Tables\Filters\SelectFilter::make('user_id')
+                    ->label('Created By')
+                    ->options(fn () => Article::query()->withoutGlobalScope(SoftDeletingScope::class)->get()->pluck('user.name', 'user_id'))
+                    ->placeholder('All'),
+                // filter by status
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options(Article::STATUS)
+                    ->placeholder('All'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
