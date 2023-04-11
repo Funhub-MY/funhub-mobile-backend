@@ -9,6 +9,7 @@ use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class ArticleTest extends TestCase
 {
@@ -356,6 +357,70 @@ class ArticleTest extends TestCase
             'user_id' => $this->user->id,
             'body' => 'Test Article Body Updated',
             'status' => 0,
+        ]);
+    }
+
+    /**
+     * Article liked by logged in user
+     * /api/v1/articles/{article}
+     */
+    public function testArticleLikeByLoggedInUser()
+    {
+        // create one article by this user using factory
+        $article = Article::factory()->create([
+            'title' => 'Test Article',
+            'body' => 'Test Article Body',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $article->id,
+            'interactable' => Article::class,
+            'type' => 'like',
+        ]);
+
+        $response->assertStatus(200);
+        
+        // get article
+        $response = $this->getJson('/api/v1/articles/'.$article->id);
+        // check articles has interactions json
+        $response->assertJsonStructure([
+            'article' => [
+                'interactions'
+            ]
+        ]);
+    }
+
+    /**
+     * Article bookmarked by logged in user
+     * /api/v1/articles/{article}
+     */
+    public function testArticleBookmarkedByLoggedInUser()
+    {
+        // create one article by this user using factory
+        $article = Article::factory()->create([
+            'title' => 'Test Article',
+            'body' => 'Test Article Body',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $article->id,
+            'interactable' => Article::class,
+            'type' => 'bookmark',
+        ]);
+
+        $response->assertStatus(200);
+        
+        // get article
+        $response = $this->getJson('/api/v1/articles/'.$article->id);
+        // check articles has interactions json
+        $response->assertJsonStructure([
+            'article' => [
+                'interactions'
+            ]
         ]);
     }
 
