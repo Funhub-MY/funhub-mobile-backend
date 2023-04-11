@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
+use App\Models\ArticleCategory;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Form;
@@ -104,7 +105,25 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Categories')->schema([
                             Forms\Components\Select::make('categories')
                                 ->label('')
-                                ->relationship('categories', 'name')
+                                ->relationship('categories', 'name')->createOptionForm([
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->placeholder('Category name'),
+                                    // slug
+                                    Forms\Components\TextInput::make('slug')
+                                        ->required()
+                                        ->placeholder('Category slug')
+                                        ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
+                                    Forms\Components\RichEditor::make('description')
+                                        ->placeholder('Category description'),
+                                    // is_featured
+                                    Forms\Components\Toggle::make('is_featured')
+                                        ->label('Featured on Home Page?')
+                                        ->default(false),
+                                    // hidden user id is logged in user
+                                    Forms\Components\Hidden::make('user_id')
+                                        ->default(fn () => auth()->id()),
+                                ])
                                 ->multiple()
                                 ->preload()
                                 ->placeholder('Select categories...'),
@@ -113,7 +132,14 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Tags')->schema([
                             Forms\Components\Select::make('tags')
                                 ->label('')
-                                ->relationship('tags', 'name')
+                                ->relationship('tags', 'name')->createOptionForm([
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->placeholder('Tag name'),
+                                   // hidden user id is logged in user
+                                   Forms\Components\Hidden::make('user_id')
+                                    ->default(fn () => auth()->id()),
+                                ])
                                 ->multiple()
                                 ->preload()
                                 ->placeholder('Select tags...'),
