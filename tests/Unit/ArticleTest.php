@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\Article;
+use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
@@ -46,6 +47,80 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertEquals(10, $response->json('meta.total'));
+    }
+
+    /**
+     * Article get articles for Home filtered by category ids by logged in user
+     * /api/v1/articles?category_ids=1,2,3
+     */
+    public function testGetArticlesForHomeFilteredByCategoryIdsByLoggedInUser()
+    {
+        $categories = ArticleCategory::factory()->count(2)->create();
+
+        // factory create 10 articles
+        $articles = Article::factory()
+            ->count(10)
+            ->published()
+            ->create();
+
+        // attach these two categories to 5 articles only
+        collect($articles->take(5))->each(function($article) use ($categories) {
+            $article->categories()->attach($categories->pluck('id')->toArray());
+        });
+
+        $response = $this->getJson('/api/v1/articles?category_ids='.$categories->pluck('id')->implode(','));
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        // ensure only 5 articles got taken
+        $this->assertEquals(5, $response->json('meta.total'));
+
+        // check 5 articles have correct article categories ids
+        collect($response->json('data'))->each(function($article) use ($categories) {
+            // get article categories ids from $article['categories']
+            $article_categories_id = collect($article['categories'])->pluck('id')->toArray();
+            $this->assertEquals($categories->pluck('id')->toArray(), $article_categories_id);
+        });
+    }
+
+     /**
+     * Article get articles for Home filtered by tag ids by logged in user
+     * /api/v1/articles?tag_ids=1,2,3
+     */
+    public function testGetArticlesForHomeFilteredByTagIdsByLoggedInUser()
+    {
+        $tags = ArticleTag::factory()->count(2)->create();
+
+        // factory create 10 articles
+        $articles = Article::factory()
+            ->count(10)
+            ->published()
+            ->create();
+
+        // attach these two tags to 5 articles only
+        collect($articles->take(5))->each(function($article) use ($tags) {
+            $article->tags()->attach($tags->pluck('id')->toArray());
+        });
+
+        $response = $this->getJson('/api/v1/articles?tag_ids='.$tags->pluck('id')->implode(','));
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        // ensure only 5 articles got taken
+        $this->assertEquals(5, $response->json('meta.total'));
+
+        // check 5 articles have correct article tags ids
+        collect($response->json('data'))->each(function($article) use ($tags) {
+            // get article tags ids from $article['tags']
+            $article_tag_id = collect($article['tags'])->pluck('id')->toArray();
+            $this->assertEquals($tags->pluck('id')->toArray(), $article_tag_id);
+        });
     }
 
     /**

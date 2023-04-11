@@ -61,16 +61,23 @@ class ArticleController extends Controller
 
         // category_ids filter
         if ($request->has('category_ids')) {
-            $query->whereHas('categories', function ($query) use ($request) {
-                $query->whereIn('id', $request->category_ids);
-            });
+            // explode categories ids
+            $category_ids = explode(',', $request->category_ids);
+            if (count($category_ids) > 0) {
+                $query->whereHas('categories', function ($q) use ($category_ids) {
+                    $q->whereIn('article_categories.id', $category_ids);
+                });
+            }
         }
 
         // tag_ids filter
         if ($request->has('tag_ids')) {
-            $query->whereHas('tags', function ($query) use ($request) {
-                $query->whereIn('id', $request->tag_ids);
-            });
+            $tag_ids = explode(',', $request->tag_ids);
+            if (count($tag_ids) > 0) {
+                $query->whereHas('tags', function ($q) use ($tag_ids) {
+                    $q->whereIn('article_tags.id', $tag_ids);
+                });
+            }
         }
 
         // get articles from users whose this auth user is following only
@@ -78,7 +85,7 @@ class ArticleController extends Controller
             $myFollowings = auth()->user()->followings;
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
-                $query->whereIn('id', $myFollowings->pluck('id')->toArray());
+                $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
             });
         }
         
