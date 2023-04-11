@@ -83,6 +83,8 @@ class ArticleResource extends Resource
                                     'en' => 'English',
                                     'zh' => 'Chinese',
                                 ])
+                                // hide label
+                                ->label('')
                                 ->default('en')
                                 ->required()
                         ])->columnSpan('Language'),
