@@ -91,10 +91,12 @@ class ArticleResource extends Resource
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
                             Forms\Components\DatePicker::make('published_at')
-                                ->label('Published At')
+                                ->label('Publish At')
+                                // set rule to date and must be a future date
+                                ->rules('date|after_or_equal:today')
+                                ->helperText('If you choose a future date, the article will be published at that date.')
                                 ->default(now())
                                 ->required()
-
                         ])->columnSpan('Status'),
 
                         Forms\Components\Section::make('Categories')->schema([
