@@ -8,6 +8,7 @@ use App\Http\Requests\ArticleImagesUploadRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
+use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\Interaction;
 use App\Traits\QueryBuilderTrait;
@@ -340,12 +341,16 @@ class ArticleController extends Controller
 
             // sync category
             if ($request->has('categories')) {
-                $article->categories()->sync($request->categories);
+                // explode categories
+                $category_ids = explode(',', $request->categories);
+                // check if category exists before sync
+                $categories = ArticleCategory::whereIn('id', $category_ids)->pluck('id');
+                $article->categories()->sync($categories);
             }
 
             // sync tags
             if ($request->has('tags')) {
-                $tags = $request->tags;
+                $tags = explode(',', $request->tags);
                 $tags = array_map(function ($tag) {
                     return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
                 }, $tags);

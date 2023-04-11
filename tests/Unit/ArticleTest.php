@@ -521,12 +521,8 @@ class ArticleTest extends TestCase
             $this->assertArrayHasKey('interactions', $article);
 
             // assert article['interactions'] has user_id == logged in user id and type is 1
-            $this->assertContains([
-                'user' => [
-                    'id' => $this->user->id,
-                ],
-                'type' => 1
-            ], $article['interactions']);
+            $this->assertEquals($article['interactions'][0]['user']['id'], $this->user->id);
+            $this->assertEquals($article['interactions'][0]['type'], 1);
         }
     }
 
