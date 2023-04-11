@@ -571,56 +571,56 @@ class ArticleTest extends TestCase
      * Update Articles Change Categories
      * /api/v1/articles/{article}
      */
-    // public function testUpdateArticleChangeCategoriesByLoggedInUser()
-    // {
-    //     $this->refreshDatabase();
+    public function testUpdateArticleChangeCategoriesByLoggedInUser()
+    {
+        $this->refreshDatabase();
 
-    //     $user = User::factory()->create();
-    //     Sanctum::actingAs($user,['*']);
+        $user = User::factory()->create();
+        Sanctum::actingAs($user,['*']);
 
-    //     // create one article by this user using factory
-    //     $article = Article::factory()->create([
-    //         'title' => 'Test Article',
-    //         'body' => 'Test Article Body',
-    //         'status' => 1,
-    //         'user_id' => $user->id,
-    //     ]);
+        // create one article by this user using factory
+        $article = Article::factory()->create([
+            'title' => 'Test Article',
+            'body' => 'Test Article Body',
+            'status' => 1,
+            'user_id' => $user->id,
+        ]);
 
-    //     // create category (original)
-    //     $category = \App\Models\ArticleCategory::factory()->count(3)->create();
+        // create category (original)
+        $category = \App\Models\ArticleCategory::factory()->count(3)->create();
 
-    //     // attach created article with category
-    //     $article->find($article->id)->categories()->attach($category->pluck('id')->toArray());
+        // attach created article with category
+        $article->find($article->id)->categories()->attach($category->pluck('id')->toArray());
 
-    //     // create 3 more different categories
-    //     $categories_new = \App\Models\ArticleCategory::factory()->count(3)->create();
+        // create 3 more different categories
+        $categories_new = \App\Models\ArticleCategory::factory()->count(3)->create();
 
-    //     $response = $this->putJson('/api/v1/articles/'.$article->id, [
-    //         'body' => 'Test Article Body',
-    //         'status' => 1, // unpublished
-    //         'categories' => $categories_new->pluck('id')->toArray(),
-    //     ]);
+        $response = $this->putJson('/api/v1/articles/'.$article->id, [
+            'body' => 'Test Article Body',
+            'status' => 1, // unpublished
+            'categories' => implode(',', $categories_new->pluck('id')->toArray()),
+        ]);
 
-    //     $response->assertStatus(200)
-    //         ->assertJsonStructure([
-    //             'message'
-    //         ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
 
-    //     // assert body and status is updated
-    //     $this->assertDatabaseHas('articles', [
-    //         'id' => $article->id,
-    //         'user_id' => $user->id,
-    //         'body' => 'Test Article Body',
-    //         'status' => 1,
-    //     ]);
+        // assert body and status is updated
+        $this->assertDatabaseHas('articles', [
+            'id' => $article->id,
+            'user_id' => $user->id,
+            'body' => 'Test Article Body',
+            'status' => 1,
+        ]);
 
-    //     $article = Article::find($article->id);
+        $article = Article::find($article->id);
 
-    //     Log::info($article->categories->pluck('id')->toArray());
+        Log::info($article->categories->pluck('id')->toArray());
 
-    //     // assert article has categories (new)
-    //     $this->assertTrue(
-    //         $article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray()
-    //     );
-    // }
+        // assert article has categories (new)
+        $this->assertTrue(
+            $article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray()
+        );
+    }
 }

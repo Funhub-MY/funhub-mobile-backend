@@ -312,8 +312,10 @@ class ArticleController extends Controller
     public function update(UpdateArticleRequest $request, $id)
     {
         // check if owner of Article
-        $article = Article::where('id', $id)->where('user_id', auth()->id());
-        if ($article->exists()) {
+        $article = Article::where('id', $id)->where('user_id', auth()->user()->id)
+            ->first();
+            
+        if ($article) {
 
             $article->update([
                 'body' => $request->body,
