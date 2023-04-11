@@ -78,13 +78,13 @@ class ArticleResource extends Resource
                 Forms\Components\Group::make()
                     ->schema([
                         Section::make('Language')->schema([
-                            Forms\Components\Select::make('language')
+                            Forms\Components\Select::make('lang')
                                 ->options([
                                     'en' => 'English',
                                     'zh' => 'Chinese',
                                 ])
                                 ->default('en')
-                                ->required(),
+                                ->required()
                         ])->columnSpan('Language'),
                         
                         Forms\Components\Section::make('Status')->schema([
