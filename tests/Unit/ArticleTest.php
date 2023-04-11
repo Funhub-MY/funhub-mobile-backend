@@ -465,6 +465,69 @@ class ArticleTest extends TestCase
                 'interactions'
             ]
         ]);
+
+        // check json article.interactions[0] has article_id
+        $response->assertJson([
+            'article' => [
+                'interactions' => [
+                    [
+                        'user' => [
+                            'id' => $this->user->id,
+                        ],
+                        'type' => 1
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Article liked by logged in user
+     * /api/v1/articles
+     */
+    public function testGetArticleHomeLikedByLoggedInUser()
+    {
+        // create another user
+        $otherUser = User::factory()->create();
+        // create 10 articles
+        $articles = Article::factory()->count(10)->published()
+            ->create([
+                'user_id' => $otherUser->id,
+            ]);
+
+        // log in user like all 10 articles
+        foreach ($articles as $article) {
+            $response = $this->postJson('/api/v1/interactions', [
+                'id' => $article->id,
+                'interactable' => Article::class,
+                'type' => 'like',
+            ]);
+
+            // assert each like is 200 response
+            $response->assertStatus(200);
+        }
+
+        // get articles home
+        $response = $this->getJson('/api/v1/articles');
+
+        // assert response is 200 and has data json structure
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // check each article has interactions and is liked by logged in user
+        foreach ($response->json('data') as $article) {
+            $this->assertArrayHasKey('interactions', $article);
+
+            // assert article['interactions'] has user_id == logged in user id and type is 1
+            $this->assertContains([
+                'user' => [
+                    'id' => $this->user->id,
+                ],
+                'type' => 1
+            ], $article['interactions']);
+        }
     }
 
     /**

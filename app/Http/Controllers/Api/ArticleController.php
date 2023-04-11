@@ -52,8 +52,6 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        // TODO: get article for home page based on user preferences
-
         $query = Article::published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
