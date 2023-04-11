@@ -126,7 +126,17 @@ class ArticleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_cover')->label('Image'),
+                Tables\Columns\TextColumn::make('user.name')->label('Created By')
+                    ->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('title')
+                    ->sortable()
+                    ->searchable(),
+                    Tables\Columns\BadgeColumn::make('status')
+                    ->enum(Article::STATUS)
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
                     ->sortable()
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('excerpt')
@@ -136,19 +146,11 @@ class ArticleResource extends Resource
                     ->enum(Article::TYPE)
                     ->sortable()
                     ->searchable(),
-              Tables\Columns\BadgeColumn::make('status')
-                    ->enum(Article::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
-                    ->sortable()
-                    ->searchable(),
+        
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d-m-Y')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')->label('Created By')
-                    ->sortable()->searchable(),
+             
             ])
             ->filters([
                 //
