@@ -43,13 +43,13 @@ class UserResource extends Resource
                     ->required(fn (string $context): bool => $context === 'create')
                     ->rules( 'min:8', 'max:255'),
 
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->rules('same:password')
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->type('password'),
-
                 Forms\Components\DateTimePicker::make('email_verified_at')
                     ->rules('nullable', 'date'),
+
+                // otp_verified_at
+                Forms\Components\DateTimePicker::make('otp_verified_at')
+                    ->required()
+                    ->rules('date'),
             ]);
     }
 
