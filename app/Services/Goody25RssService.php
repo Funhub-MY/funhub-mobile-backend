@@ -16,6 +16,7 @@ class Goody25RssService
 {
     use ArticleTrait;
     private $error_messages = [];
+    private $current_image_url = null;
 
     public function fetchRSS($channel)
     {
@@ -148,22 +149,9 @@ class Goody25RssService
                 $new_article->save();
                 if ($new_article) {
                     // attach categories
-                    $new_article->tags()->attach($article['tag']);
+                    $new_article->tags()->sync($article['tag']);
                     // attach media
-                    if (isset($article['media']) && $article['media'] != null) {
-                        $new_article->addMediaFromUrl($article['media'])
-                            ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
-                    } else {
-                        // get first image in content and treat it as the gallery.
-                        $first_image_url = $this->getFirstImageInArticleContent($article);
-                        if ($first_image_url !== '' && $first_image_url !== null) {
-                            $new_article->addMediaFromUrl($first_image_url)
-                                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
-                        } else {
-                            Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
-                            Log::error('Article ID: '.$new_article->id. ' does not have media');
-                        }
-                    }
+                    // save thumbnail first, as it need to be is_cover_picture = true.
                     if (isset($article['media_thumbnail']) && $article['media_thumbnail'] != null) {
                         $new_article->addMediaFromUrl($article['media_thumbnail'])
                             ->withCustomProperties(['is_cover_picture' => true])
@@ -172,6 +160,7 @@ class Goody25RssService
                         // try get first image as thumbnail.
                         $first_image_url = $this->getFirstImageInArticleContent($article);
                         if ($first_image_url !== '' && $first_image_url !== null) {
+                            $this->current_image_url = $first_image_url;
                             $new_article->addMediaFromUrl($first_image_url)
                                 ->withCustomProperties(['is_cover_picture' => true])
                                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
@@ -180,6 +169,32 @@ class Goody25RssService
                             Log::error('Article ID: '.$new_article->id. ' does not have media');
                         }
                     }
+                    if (isset($article['media']) && $article['media'] != null) {
+                        // this media check is only apply on second media, not the media thumbnail.
+                        $media = $new_article->media->first();
+                        $article_media = $new_article->addMediaFromUrl($article['media'])
+                            ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
+                        if ($media) {
+                            // compare both file name
+                            if ($media->file_name == $article_media->file_name) {
+                                $article_media->delete();
+                            }
+                        }
+                    } else {
+                        // get first image in content and treat it as the gallery.
+                        $first_image_url = $this->getFirstImageInArticleContent($article);
+                        if ($first_image_url !== '' && $first_image_url !== null) {
+                            if (!($this->current_image_url == $first_image_url)) {
+                                $new_article->addMediaFromUrl($first_image_url)
+                                    ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
+                            }
+                        } else {
+                            Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
+                            Log::error('Article ID: '.$new_article->id. ' does not have media');
+                        }
+                    }
+                    // reset to null
+                    $this->current_image_url = null;
                     // assign batch import id with articles.
                     $import->articles()->attach($new_article);
                     // force update, as default status is 1. But at this stage it will be 1 as all thing run smoothly.

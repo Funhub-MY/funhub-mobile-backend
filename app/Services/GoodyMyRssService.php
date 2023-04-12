@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class GoodyMyRssService
 {
     use ArticleTrait;
+
     private $error_messages = [];
+    private $current_image_url = null;
 
     public function fetchRSS($channel)
     {
@@ -40,7 +43,7 @@ class GoodyMyRssService
                 $xml_body = str_replace('<media:thumbnail ', '<media-thumbnail ', $xml_body);
                 $decoded_body = xml_decode($xml_body);
                 $articles = [];
-                foreach($decoded_body['channel']['item'] as $item) {
+                foreach ($decoded_body['channel']['item'] as $item) {
                     $title = $item['title'];
                     $link = $item['link'];
                     // some articles may have more than 1 category.
@@ -55,7 +58,7 @@ class GoodyMyRssService
                     // clean content, when meet https, then encode it.
                     $content = $this->cleanContentForURL($content);
                     $pubDate = $item['pubDate'];
-                    $tempArray = array (
+                    $tempArray = array(
                         'title' => $title,
                         'link' => $link,
                         'tag' => $category,
@@ -78,7 +81,7 @@ class GoodyMyRssService
                 $import->save();
             }
         } catch (BadResponseException $e) {
-            Log::info('Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
+            Log::info('Channel ID: ' . $channel->id . '\n' . 'Channel Name: ' . $channel->channel_name);
             Log::error($e);
             $import->status = ArticleImport::IMPORT_STATUS_FAILED;
             $this->error_messages[] = $e->getMessage();
@@ -86,16 +89,17 @@ class GoodyMyRssService
             $import->save();
         }
     }
+
     public function processArticlesUpload($articles = [], $channel = null, $import = null): bool
     {
-        if(count($articles) == 0) {
+        if (count($articles) == 0) {
             $import->status = ArticleImport::IMPORT_STATUS_SUCCESS;
             $import->description = ['No new articles found.'];
             $import->save();
             return false;
         }
         $article_tags = ArticleTag::Select(DB::raw('id, LOWER(name) as name'))->get();
-        foreach($articles as $article) {
+        foreach ($articles as $article) {
             try {
                 $new_article = new Article();
                 $new_article->title = htmlspecialchars_decode($article['title']);
@@ -108,11 +112,11 @@ class GoodyMyRssService
                 //$new_article->user_id = 1;
                 $new_article->lang = $article['lang'];
                 // check categories.
-                if(strpos($article['tag'], ',')) {
+                if (strpos($article['tag'], ',')) {
                     // this is to check if it is an array.
                     // make it into array, check if have same category in DB.
                     $tags = explode(',', $article['tag']);
-                    foreach($tags as $key => $tag) {
+                    foreach ($tags as $key => $tag) {
                         $found = $article_tags->where('name', strtolower($tag))->first();
                         if ($found == null) {
                             $new_article_tag = ArticleTag::create([
@@ -145,22 +149,9 @@ class GoodyMyRssService
                 $new_article->save();
                 if ($new_article) {
                     // attach categories
-                    $new_article->tags()->attach($article['tag']);
+                    $new_article->tags()->sync($article['tag']);
                     // attach media
-                    if (isset($article['media']) && $article['media'] != null) {
-                        $new_article->addMediaFromUrl($article['media'])
-                            ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
-                    } else {
-                        // try get first image.
-                        $first_image_url = $this->getFirstImageInArticleContent($article);
-                        if ($first_image_url !== '' && $first_image_url !== null) {
-                            $new_article->addMediaFromUrl($first_image_url)
-                                ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
-                        } else {
-                            Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
-                            Log::error('Article ID: '.$new_article->id. ' does not have media');
-                        }
-                    }
+                    // save thumbnail first, as it need to be is_cover_picture = true.
                     if (isset($article['media_thumbnail']) && $article['media_thumbnail'] != null) {
                         $new_article->addMediaFromUrl($article['media_thumbnail'])
                             ->withCustomProperties(['is_cover_picture' => true])
@@ -169,14 +160,43 @@ class GoodyMyRssService
                         // try get first image as thumbnail.
                         $first_image_url = $this->getFirstImageInArticleContent($article);
                         if ($first_image_url !== '' && $first_image_url !== null) {
+                            $this->current_image_url = $first_image_url;
                             $new_article->addMediaFromUrl($first_image_url)
                                 ->withCustomProperties(['is_cover_picture' => true])
                                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                         } else {
-                            Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
-                            Log::error('Article ID: '.$new_article->id. ' does not have media');
+                            Log::info('Processing Articles of Channel ID: ' . $channel->id . '\n' . 'Channel Name: ' . $channel->channel_name);
+                            Log::error('Article ID: ' . $new_article->id . ' does not have media');
                         }
                     }
+                    if (isset($article['media']) && $article['media'] != null) {
+                        // this media check is only apply on second media, not the media thumbnail.
+                        $media = $new_article->media->first();
+                        // save first then only can get file name.
+                        $article_media = $new_article->addMediaFromUrl($article['media'])
+                            ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
+                        if ($media) {
+                            // compare both file name
+                            if ($media->file_name == $article_media->file_name) {
+                                $article_media->delete();
+                            }
+                        }
+                    } else {
+                        // try get first image from content.
+                        $first_image_url = $this->getFirstImageInArticleContent($article);
+                        if ($first_image_url !== '' && $first_image_url !== null) {
+                            // compare url, if same then dont save.
+                            if (!($this->current_image_url == $first_image_url)) {
+                                $new_article->addMediaFromUrl($first_image_url)
+                                    ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
+                            }
+                        } else {
+                            Log::info('Processing Articles of Channel ID: ' . $channel->id . '\n' . 'Channel Name: ' . $channel->channel_name);
+                            Log::error('Article ID: ' . $new_article->id . ' does not have media');
+                        }
+                    }
+                    // reset to null.
+                    $this->current_image_url = null;
                     // assign batch import id with articles.
                     $import->articles()->attach($new_article);
                     // force update, as default status is 1. But at this stage it will be 1 as all thing run smoothly.
@@ -188,7 +208,7 @@ class GoodyMyRssService
             } catch (\Exception $exception) {
                 // Log messages
                 $this->error_messages[] = $exception->getMessage();
-                Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
+                Log::info('Processing Articles of Channel ID: ' . $channel->id . '\n' . 'Channel Name: ' . $channel->channel_name);
                 Log::error($exception->getMessage());
                 $import->description = $this->error_messages;
                 $import->status = ArticleImport::IMPORT_STATUS_FAILED;
@@ -199,7 +219,8 @@ class GoodyMyRssService
         }
         return true;
     }
-    public function sortLatestArticles($articles, $channel) : array
+
+    public function sortLatestArticles($articles, $channel): array
     {
         // get latest import
         $channel_import = $this->getChannelLatestImport($channel);
@@ -207,7 +228,7 @@ class GoodyMyRssService
             // if no import has been made, return the entire articles list.
             return $articles;
         }
-        $latest_articles = array_filter($articles, function($item) use ($channel_import) {
+        $latest_articles = array_filter($articles, function ($item) use ($channel_import) {
             // carbon parse string to timestamps first in order to compare.
             $article_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item['pub_date']);
             return $article_date->gt($channel_import->article_pub_date);
@@ -216,21 +237,21 @@ class GoodyMyRssService
         return array_values($latest_articles);
     }
 
-    public function getChannelLatestImport($channel = null) : Mixed // return as mixed because it can be collection or null.
+    public function getChannelLatestImport($channel = null): Mixed // return as mixed because it can be collection or null.
     {
         $channel_import = null;
         if ($channel !== null) {
             $channel_import = ArticleImport::where('rss_channel_id', $channel->id)
                 ->where('status', ArticleImport::IMPORT_STATUS_SUCCESS)
                 ->whereNotNull('article_pub_date')
-                ->orderBy('last_run_at','DESC')
+                ->orderBy('last_run_at', 'DESC')
                 ->first();
         }
 
         return $channel_import;
     }
 
-    public function getFirstImageInArticleContent($article) : String
+    public function getFirstImageInArticleContent($article): string
     {
         $first_image_url = null;
         $content_string = $article['content'];
