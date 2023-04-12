@@ -162,6 +162,10 @@ class ArticleResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->sortable()->searchable(),
+                // change status directly togglecolumn
+                Tables\Columns\ToggleColumn::make('status')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable(),
@@ -176,10 +180,10 @@ class ArticleResource extends Resource
                 // Tables\Columns\TextColumn::make('excerpt')
                 //     ->sortable()
                 //     ->searchable()->wrap(),
-                Tables\Columns\TextColumn::make('type')
-                    ->enum(Article::TYPE)
-                    ->sortable()
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('type')
+                //     ->enum(Article::TYPE)
+                //     ->sortable()
+                //     ->searchable(),
         
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d/m/Y')
                     ->sortable()

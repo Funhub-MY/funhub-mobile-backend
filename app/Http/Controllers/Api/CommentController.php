@@ -229,6 +229,12 @@ class CommentController extends Controller
         // check if owner of comment
         $comment = Comment::where('id', $id)->where('user_id', auth()->id());
         if ($comment->exists()) {
+            // unlink any interactions on comment
+            $comment->first()->likes()->delete();
+
+            // delete replies to comment if comment has parent_id of this comment
+            $comment->first()->replies()->delete();
+
             $comment->delete();
             return response()->json(['message' => 'Comment deleted']);
         } else {

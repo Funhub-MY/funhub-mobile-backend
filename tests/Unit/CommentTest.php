@@ -247,7 +247,58 @@ class CommentTest extends TestCase
              ]);
  
          $this->assertEquals(0, $response->json('comment.counts.likes'));
- 
+    }
 
+    /**
+     * Test Delete a comment where its liked
+     * 
+     * /api/v1/comments
+     */
+    public function testLikedCommentAndDeleteComment()
+    {
+        // create new article
+        $article = Article::factory()->create();
+        $comment = Comment::factory()->create([
+            'commentable_id' => $article->id,
+            'commentable_type' => Article::class,
+            'user_id' => $this->user->id,
+        ]);
+
+        // like comment
+        $response = $this->postJson('/api/v1/comments/like_toggle', [
+            'comment_id' => $comment->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        $this->assertDatabaseHas('comments_likes', [
+            'comment_id' => $comment->id,
+            'user_id' => $this->user->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // delete comment
+        $response = $this->deleteJson('/api/v1/comments/'.$comment->id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        $this->assertDatabaseMissing('comments', [
+            'id' => $comment->id,
+        ]);
+
+        $this->assertDatabaseMissing('comments_likes', [
+            'comment_id' => $comment->id,
+            'user_id' => $this->user->id,
+        ]);
     }
 }
