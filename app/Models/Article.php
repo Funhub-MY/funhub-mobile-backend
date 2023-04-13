@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Laravel\Scout\Searchable;
 
 class Article extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, Searchable;
 
     const MEDIA_COLLECTION_NAME = 'article_gallery';
 
@@ -36,6 +37,36 @@ class Article extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
+    /**
+     * Search Setup
+     */
+    public function searchableAs(): string
+    {
+        return 'articles_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => (int) $this->id,
+            'title' => $this->title,
+            'thumbnail' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
+            'type' => $this->type,
+            'categories' => $this->categories->pluck('id', 'name'),
+            'tags' => $this->tags->pluck('id', 'name'),
+            'status' => $this->status,
+            'published_at' => $this->published_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'gallery' => $this->getMedia(self::MEDIA_COLLECTION_NAME)->map(function ($media) {
+                return $media->getUrl();
+            }),
+        ];
+    }
+
+    /**
+     * Relationships
+     */
     public function categories()
     {
         return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')

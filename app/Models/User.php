@@ -12,10 +12,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +52,24 @@ class User extends Authenticatable implements HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Search Setup
+     */
+    public function searchableAs(): string
+    {
+        return 'users_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => (int) $this->id,
+            'name' => $this->name,
+            'username' => $this->username,
+            'thumb' => $this->avatar_thumb_url,
+        ];
+    }
 
     /**
      * Spatia Media conversions for thumbnail

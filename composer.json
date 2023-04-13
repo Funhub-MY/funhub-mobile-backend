@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "algolia/algoliasearch-client-php": "^3.3",
         "aws/aws-sdk-php": "^3.263",
         "bezhansalleh/filament-shield": "^2.4",
         "bmatovu/laravel-xml": "^3.2",
@@ -15,6 +16,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.2",
+        "laravel/scout": "^10.1",
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.12"
