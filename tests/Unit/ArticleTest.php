@@ -557,6 +557,13 @@ class ArticleTest extends TestCase
             ]
         ]);
 
+        // check response has user_bookmarked
+        $response->assertJson([
+            'article' => [
+                'user_bookmarked' => true
+            ]
+        ]);
+
         // get articles bookmarked by this user
         $response = $this->getJson('/api/v1/articles/my_bookmarks');
         $response->assertStatus(200)

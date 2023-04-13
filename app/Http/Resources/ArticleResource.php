@@ -36,6 +36,7 @@ class ArticleResource extends JsonResource
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
             ],
             'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
+            'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
             'lang' => $this->lang,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

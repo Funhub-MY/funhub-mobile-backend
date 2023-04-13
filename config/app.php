@@ -237,5 +237,6 @@ return [
     'paginate_per_page' => env('PAGINATE_PER_PAGE', 10),
     'max_images_per_article' => env('MAX_IMAGES_PER_ARTICLE', 9),
     'max_size_per_image_kb' => env('MAX_SIZE_PER_IMAGE_KB',  1024 * 1024 * 5),
+    'max_size_per_video_kb' => env('MAX_SIZE_PER_VIDEO_KB',  1024 * 1024 * 50),
     'default_user_media_collection' => 'user_uploads'
 ];

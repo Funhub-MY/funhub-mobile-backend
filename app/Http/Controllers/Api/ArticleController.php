@@ -15,6 +15,7 @@ use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
 
 use function PHPSTORM_META\map;
@@ -314,7 +315,7 @@ class ArticleController extends Controller
         // check if owner of Article
         $article = Article::where('id', $id)->where('user_id', auth()->user()->id)
             ->first();
-            
+
         if ($article) {
 
             $article->update([
@@ -453,5 +454,56 @@ class ArticleController extends Controller
                 'uploaded' => $images,
             ]);
         }
+    }
+
+    /**
+     * Upload Video for Article
+     * Must be able to stream completion percentage back to client
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Article
+     * @bodyParam video file required The video to upload.
+     * @response scenario=success {
+     * "uploaded": [
+     *    {
+     *       "id": 1,
+     *       "name": "video.mp4",
+     *       "url": "http://localhost:8000/storage/user_uploads/1/video.mp4",
+     *       "size": 12345,
+     *       "type": "video/mp4"
+     *    }
+     * ]
+     * }
+     */
+    public function postVideoUpload(Request $request) {
+        // validate video size must not larger than 500MB
+        $request->validate([
+            'video' => 'required|file|max:'.config('app.max_size_per_video_kb'),
+        ]);
+
+        $user = auth()->user();
+                
+        // Create new media item in the "user_uploads" collection
+        $media = $user->addMedia($request->file('video'))->toMediaCollection('user_uploads');
+
+        // Use ChunkUploaded() method to stream progress updates to the user
+        return response()->stream(function () use ($media) {
+            $media->streamVideoResponse([
+                'chunkSize' => 10 * 1024 * 1024,
+                'onProgress' => function (int $bytesUploaded, int $fileSize) use ($media) {
+                    $percentageComplete = round(($bytesUploaded / $fileSize) * 100, 2);
+                    return $percentageComplete / 100; // returns the percentage completed as a double
+                },
+                'onComplete' => function () use ($media) {
+                    return $media; // return the spatie uploaded file object
+                }
+            ]);
+        }, 200, [
+            'Content-Type' => $media->mime_type,
+            'Content-Length' => $media->size,
+            'Content-Disposition' => 'attachment; filename="'.$media->file_name.'"'
+        ]);
     }
 }
