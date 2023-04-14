@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: FUNHUB
+  title: Funhub
   description: ''
   version: 1.0.0
 servers:
@@ -1018,7 +1018,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: animi
+        example: aliquid
         required: true
         schema:
           type: string
@@ -1478,7 +1478,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 5
+        example: 8
         required: true
         schema:
           type: integer
@@ -2432,7 +2432,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: omnis
+        example: commodi
         required: true
         schema:
           type: string
@@ -2658,7 +2658,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 16
+                  example: 6
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2725,7 +2725,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 19
+                  example: 9
               required:
                 - user_id
   /api/v1/user/settings:
@@ -2759,43 +2759,10 @@ paths:
         200:
           description: success
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                example:
-                  name: 'John Doe'
-                  username: johndoe
-                  dob: '1990-01-01'
-                  gender: male
-                  bio: Hello
-                  job_title: Engineer
-                  country_id: 1
-                  state_id: 1
-                properties:
-                  name:
-                    type: string
-                    example: 'John Doe'
-                  username:
-                    type: string
-                    example: johndoe
-                  dob:
-                    type: string
-                    example: '1990-01-01'
-                  gender:
-                    type: string
-                    example: male
-                  bio:
-                    type: string
-                    example: Hello
-                  job_title:
-                    type: string
-                    example: Engineer
-                  country_id:
-                    type: integer
-                    example: 1
-                  state_id:
-                    type: integer
-                    example: 1
+                type: string
+                example: "{\n \"name\": \"John Doe\",\n \"email\": \"johndoe@gmail.com\"\n \"username\": \"johndoe\",\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"bio\": \"Hello\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"avatar\": \"https://www.example.com/avatar.jpg\",\n \"avatar_thumb\": \"https://www.example.com/avatar_thumb.jpg\",\n}"
         401:
           description: Unauthenticated
           content:
@@ -3402,7 +3369,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

@@ -12,6 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 
+use function PHPSTORM_META\map;
+
 class UserSettingsTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,6 +27,31 @@ class UserSettingsTest extends TestCase
         // mock log in user get token
         $this->user = User::factory()->create();
         Sanctum::actingAs($this->user,['*']);
+    }
+
+    /**
+     * Test Get User Settings
+     * /api/v1/user/settings
+     */
+    public function testGetSettings()
+    {
+        // get user settings
+        $response = $this->getJson('/api/v1/user/settings');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'name',
+                'username',
+                'email',
+                'dob',
+                'gender',
+                'bio',
+                'job_title',
+                'country_id',
+                'state_id',
+                'avatar',
+                'avatar_thumb',
+            ]);
     }
 
     /**

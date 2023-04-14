@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>FUNHUB Documentation</title>
+    <title>Funhub Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -333,7 +333,7 @@ Only owner can call this method</a>
 You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
-<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {USER_TOKEN_KEY}"</code></strong>.</p>
+<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {USER_TOKEN_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You will received a token to authenticate user requests after you logged in.</p>
 
@@ -359,7 +359,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php7z2IhN" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php8k2dAh" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -492,7 +492,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php7z2IhN</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php8k2dAh</code></p>
         </div>
         </form>
 
@@ -1671,7 +1671,7 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php2M8iPN" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpM2ttIK" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1873,7 +1873,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php2M8iPN</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpM2ttIK</code></p>
         </div>
         </form>
 
@@ -2767,7 +2767,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/replies/animi" \
+    --get "http://localhost/api/v1/comments/replies/aliquid" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2784,7 +2784,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/replies/animi"
+    "http://localhost/api/v1/comments/replies/aliquid"
 );
 
 const headers = {
@@ -2909,10 +2909,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="animi"
+               value="aliquid"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>animi</code></p>
+<p>The ID of the comment. Example: <code>aliquid</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3775,7 +3775,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/5" \
+    --get "http://localhost/api/v1/comments/8" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3788,7 +3788,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/5"
+    "http://localhost/api/v1/comments/8"
 );
 
 const headers = {
@@ -3914,10 +3914,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="5"
+               value="8"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>5</code></p>
+<p>The ID of the comment. Example: <code>8</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -6648,7 +6648,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/merchant/offers/omnis?offer_id=1" \
+    --get "http://localhost/api/v1/merchant/offers/commodi?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6656,7 +6656,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/merchant/offers/omnis"
+    "http://localhost/api/v1/merchant/offers/commodi"
 );
 
 const params = {
@@ -6768,10 +6768,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="omnis"
+               value="commodi"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>omnis</code></p>
+<p>The ID of the offer. Example: <code>commodi</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -7186,7 +7186,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 16
+    \"user_id\": 6
 }"
 </code></pre></div>
 
@@ -7203,7 +7203,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 16
+    "user_id": 6
 };
 
 fetch(url, {
@@ -7313,10 +7313,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="16"
+               value="6"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>16</code></p>
+<p>The id of the user to follow Example: <code>6</code></p>
         </div>
         </form>
 
@@ -7339,7 +7339,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 19
+    \"user_id\": 9
 }"
 </code></pre></div>
 
@@ -7356,7 +7356,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 19
+    "user_id": 9
 };
 
 fetch(url, {
@@ -7466,10 +7466,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="19"
+               value="9"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>19</code></p>
+<p>The id of the user to unfollow Example: <code>9</code></p>
         </div>
         </form>
 
@@ -7646,14 +7646,17 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;name&quot;: &quot;John Doe&quot;,
-    &quot;username&quot;: &quot;johndoe&quot;,
-    &quot;dob&quot;: &quot;1990-01-01&quot;,
-    &quot;gender&quot;: &quot;male&quot;,
-    &quot;bio&quot;: &quot;Hello&quot;,
-    &quot;job_title&quot;: &quot;Engineer&quot;,
-    &quot;country_id&quot;: 1,
-    &quot;state_id&quot;: 1
+ &quot;name&quot;: &quot;John Doe&quot;,
+ &quot;email&quot;: &quot;johndoe@gmail.com&quot;
+ &quot;username&quot;: &quot;johndoe&quot;,
+ &quot;dob&quot;: &quot;1990-01-01&quot;,
+ &quot;gender&quot;: &quot;male&quot;,
+ &quot;bio&quot;: &quot;Hello&quot;,
+ &quot;job_title&quot;: &quot;Engineer&quot;,
+ &quot;country_id&quot;: 1,
+ &quot;state_id&quot;: 1,
+ &quot;avatar&quot;: &quot;https://www.example.com/avatar.jpg&quot;,
+ &quot;avatar_thumb&quot;: &quot;https://www.example.com/avatar_thumb.jpg&quot;,
 }</code>
  </pre>
             <blockquote>
@@ -8243,7 +8246,7 @@ fetch(url, {
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpmCQW0s" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpGJ38Cv" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -8372,7 +8375,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpmCQW0s</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpGJ38Cv</code></p>
         </div>
         </form>
 
@@ -8883,7 +8886,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"gender\": \"male\"
+    \"gender\": \"female\"
 }"
 </code></pre></div>
 
@@ -8900,7 +8903,7 @@ const headers = {
 };
 
 let body = {
-    "gender": "male"
+    "gender": "female"
 };
 
 fetch(url, {
@@ -9002,10 +9005,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="gender"                data-endpoint="POSTapi-v1-user-settings-gender"
-               value="male"
+               value="female"
                data-component="body">
     <br>
-<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>male</code></p>
+<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>female</code></p>
         </div>
         </form>
 

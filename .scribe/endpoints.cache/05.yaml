@@ -33,13 +33,16 @@ endpoints:
         content: |-
           {
            "name": "John Doe",
+           "email": "johndoe@gmail.com"
            "username": "johndoe",
            "dob": "1990-01-01",
            "gender": "male",
            "bio": "Hello",
            "job_title": "Engineer",
            "country_id": 1,
-           "state_id": 1
+           "state_id": 1,
+           "avatar": "https://www.example.com/avatar.jpg",
+           "avatar_thumb": "https://www.example.com/avatar_thumb.jpg",
           }
         headers: []
         description: success
@@ -60,7 +63,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P1cfZk64DaEavVh63b8de5g'
+      - 'Bearer fhkEb8ev4a1dPag56ZDV6c3'
     controller: null
     method: null
     route: null
@@ -118,7 +121,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZ54vbed3g68hDPk6f1EaVa'
+      - 'Bearer PhVkf6de16D43Zcagv8E5ba'
     controller: null
     method: null
     route: null
@@ -176,7 +179,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6DEh6ka3vfPcdbZea1854V'
+      - 'Bearer 531a8davVZg6DfkePc4hEb6'
     controller: null
     method: null
     route: null
@@ -240,7 +243,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d16fcD3ge6kVv8bPhaEa54Z'
+      - 'Bearer EbPafdagk5h34vc68eVD1Z6'
     controller: null
     method: null
     route: null
@@ -299,7 +302,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer evbaf56kVD3Edg418Zc6hPa'
+      - 'Bearer 1b6Pa5Zvdag4eh3E8DfkVc6'
     controller: null
     method: null
     route: null
@@ -357,7 +360,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bePfgV866ha3ZDa15dkE4vc'
+      - 'Bearer v6Pbc6E483agZadh15eDkVf'
     controller: null
     method: null
     route: null
@@ -415,7 +418,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bhZav64f3Vc1DgaP586keEd'
+      - 'Bearer Ec5dka136ev8gfPVa4b6DZh'
     controller: null
     method: null
     route: null
@@ -489,7 +492,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e1E3hPDba845cZdvkaV6gf6'
+      - 'Bearer 6e513cP8av4kgdDEZfbVha6'
     controller: null
     method: null
     route: null
@@ -520,11 +523,11 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: male
+        example: female
         type: string
         custom: []
     cleanBodyParameters:
-      gender: male
+      gender: female
     fileParameters: []
     responses:
       -
@@ -541,7 +544,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gv4VDhcPZebka8613dfE5a6'
+      - 'Bearer h5DV3ek6P8Ed6ac4gabZv1f'
     controller: null
     method: null
     route: null
@@ -608,7 +611,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8dbak64Vfcv5hEge163ZaDP'
+      - 'Bearer ED4eVaf6vPa3gd8bhc65Z1k'
     controller: null
     method: null
     route: null

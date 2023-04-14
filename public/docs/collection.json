@@ -9,8 +9,8 @@
         }
     ],
     "info": {
-        "name": "FUNHUB",
-        "_postman_id": "6a5b0907-e361-4feb-a1ec-646907b0ac0b",
+        "name": "Funhub",
+        "_postman_id": "8dc144a7-bade-40e2-ae84-d21664a77e70",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "animi",
+                                            "value": "aliquid",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "5",
+                                            "value": "8",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1617,7 +1617,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "omnis",
+                                            "value": "commodi",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1793,7 +1793,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":16}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -1834,7 +1834,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":9}"
                                 },
                                 "description": ""
                             },
@@ -1926,7 +1926,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n \"name\": \"John Doe\",\n \"username\": \"johndoe\",\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"bio\": \"Hello\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1\n}",
+                            "body": "{\n \"name\": \"John Doe\",\n \"email\": \"johndoe@gmail.com\"\n \"username\": \"johndoe\",\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"bio\": \"Hello\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"avatar\": \"https:\/\/www.example.com\/avatar.jpg\",\n \"avatar_thumb\": \"https:\/\/www.example.com\/avatar_thumb.jpg\",\n}",
                             "name": "success"
                         },
                         {
@@ -2258,7 +2258,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

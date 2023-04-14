@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dZhgaPvEc8536DkaeV641bf'
+      - 'Bearer ah6ePEvd36kf85ca4DbZ1Vg'
     controller: null
     method: null
     route: null
@@ -182,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8afv6P163dDZ5cEh4baVkge'
+      - 'Bearer g4Zf8v1ab5d63haVED6kcPe'
     controller: null
     method: null
     route: null
@@ -209,11 +209,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: omnis
+        example: commodi
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: omnis
+      offer_id: commodi
     queryParameters:
       offer_id:
         name: offer_id
@@ -241,7 +241,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bf6Vc158eak6hDaEP4gZ3vd'
+      - 'Bearer kPVZf8d5e664bD1cEaa3gvh'
     controller: null
     method: null
     route: null

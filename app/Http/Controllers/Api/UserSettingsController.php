@@ -16,13 +16,16 @@ class UserSettingsController extends Controller
      * @group User Settings
      * @response status=200 scenario="success" {
      *  "name": "John Doe",
+     *  "email": "johndoe@gmail.com"
      *  "username": "johndoe",
      *  "dob": "1990-01-01",
      *  "gender": "male",
      *  "bio": "Hello",
      *  "job_title": "Engineer",
      *  "country_id": 1,
-     *  "state_id": 1
+     *  "state_id": 1,
+     *  "avatar": "https://www.example.com/avatar.jpg",
+     *  "avatar_thumb": "https://www.example.com/avatar_thumb.jpg",
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      * @response status=404 scenario="No settings found yet" {"message": "No settings found yet."}
@@ -32,6 +35,7 @@ class UserSettingsController extends Controller
         // get user name, username, dob, gender, bio, job title, country_id, state_id
         $settings = [
             'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
             'username' => auth()->user()->username,
             'dob' => auth()->user()->dob,
             'gender' => auth()->user()->gender,
@@ -39,6 +43,8 @@ class UserSettingsController extends Controller
             'job_title' => auth()->user()->job_title,
             'country_id' => auth()->user()->country_id,
             'state_id' => auth()->user()->state_id,
+            'avatar' => auth()->user()->avatar,
+            'avatar_thumb' => auth()->user()->avatar_thumb,
         ]; 
 
         if ($settings) {
