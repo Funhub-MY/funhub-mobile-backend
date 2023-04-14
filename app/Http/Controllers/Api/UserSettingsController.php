@@ -15,14 +15,32 @@ class UserSettingsController extends Controller
      * 
      * @group User Settings
      * @response status=200 scenario="success" {
-     *  "key": "value"
+     *  "name": "John Doe",
+     *  "username": "johndoe",
+     *  "dob": "1990-01-01",
+     *  "gender": "male",
+     *  "bio": "Hello",
+     *  "job_title": "Engineer",
+     *  "country_id": 1,
+     *  "state_id": 1
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      * @response status=404 scenario="No settings found yet" {"message": "No settings found yet."}
      */
     public function getSettings()
     {
-        $settings = auth()->user()->settings;
+        // get user name, username, dob, gender, bio, job title, country_id, state_id
+        $settings = [
+            'name' => auth()->user()->name,
+            'username' => auth()->user()->username,
+            'dob' => auth()->user()->dob,
+            'gender' => auth()->user()->gender,
+            'bio' => auth()->user()->bio,
+            'job_title' => auth()->user()->job_title,
+            'country_id' => auth()->user()->country_id,
+            'state_id' => auth()->user()->state_id,
+        ]; 
+
         if ($settings) {
             return response()->json($settings);
         } else {
@@ -30,30 +48,6 @@ class UserSettingsController extends Controller
         }
     }
 
-    /**
-     * Update/Create settings of logged in user
-     * 
-     * @param UserSettingsRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * 
-     * @group User Settings
-     * @bodyParam key string required Key of the setting. Example: profile_private
-     * @bodyParam value string required Value of the setting. Example: true
-     * @response status=200 scenario="success" {
-     * "message": "Settings updated"
-     * }
-     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
-     * @response status=422 scenario="Invalid Form Fields" {"errors": ["key": ["The Key field is required."], "value": ["The Value field is required."] ]}
-     */
-    public function postSettings(UserSettingsRequest $request)
-    {
-        $user = auth()->user();
-        $user->settings()->updateOrCreate(
-            ['key' => $request->key],
-            ['value' => $request->value]
-        );
-        return response()->json(['message' => 'Settings updated']);
-    }
 
     /**
      * Update User Email
@@ -64,7 +58,8 @@ class UserSettingsController extends Controller
      * @group User Settings
      * @bodyParam email string required Email of the user. Example: john@gmail.com
      * @response status=200 scenario="success" {
-     * "message": "Email updated"
+     * "message": "Email updated",
+     * "email": "johndoe@gmail.com"
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
@@ -78,7 +73,10 @@ class UserSettingsController extends Controller
         $user->email = $request->email;
         $user->save();
 
-        return response()->json(['message' => 'Email updated']);
+        return response()->json([
+            'message' => 'Email updated',
+             'email' => $user->email
+        ]);
     }
 
     /**
@@ -90,7 +88,8 @@ class UserSettingsController extends Controller
      * @group User Settings
      * @bodyParam name string required Name of the user. Example: John Doe
      * @response status=200 scenario="success" {
-     * "message": "Name updated"
+     * "message": "Name updated",
+     * "name": "John Doe"
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
@@ -104,7 +103,10 @@ class UserSettingsController extends Controller
         $user->name = $request->name;
         $user->save();
 
-        return response()->json(['message' => 'Name updated']);
+        return response()->json([
+            'message' => 'Name updated',
+            'name' => $user->name,
+        ]);
     }
 
     /**
@@ -116,7 +118,8 @@ class UserSettingsController extends Controller
      * @group User Settings
      * @bodyParam username string required Username of the user. Example: johndoe
      * @response status=200 scenario="success" {
-     * "message": "Username updated"
+     * "message": "Username updated",
+     * "username": "johndoe"
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
@@ -130,7 +133,10 @@ class UserSettingsController extends Controller
         $user->username = $request->username;
         $user->save();
 
-        return response()->json(['message' => 'Username updated']);
+        return response()->json([
+            'message' => 'Username updated',
+            'username' => $user->username,
+        ]);
     }
 
     /**
@@ -141,6 +147,11 @@ class UserSettingsController extends Controller
      * 
      * @group User Settings
      * @bodyParam bio string required Bio of the user. Example: I am a software engineer
+     * @response status=200 scenario="success" {
+     * "message": "Bio updated",
+     * "bio": "I am a software engineer"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
     public function postSaveBio(Request $request)
     {
@@ -152,7 +163,10 @@ class UserSettingsController extends Controller
         $user->bio = $request->bio;
         $user->save();
 
-        return response()->json(['message' => 'Bio updated']);
+        return response()->json([
+            'message' => 'Bio updated',
+            'bio' => $user->bio,
+        ]);
     }
 
     /**
@@ -166,7 +180,8 @@ class UserSettingsController extends Controller
      * @bodyParam month integer required Month of the date of birth. Example: 1
      * @bodyParam year integer required Year of the date of birth. Example: 1990
      * @response status=200 scenario="success" {
-     * "message": "Date of birth updated"
+     * "message": "Date of birth updated",
+     * "dob": "1990-01-01"
      * }
      * 
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
@@ -183,7 +198,10 @@ class UserSettingsController extends Controller
         $user->dob = $request->year . '-' . $request->month . '-' . $request->day;
         $user->save();
 
-        return response()->json(['message' => 'Date of birth updated']);
+        return response()->json([
+            'message' => 'Date of birth updated',
+            'dob' => $user->dob,
+        ]);
     }
     
     /**
@@ -194,6 +212,11 @@ class UserSettingsController extends Controller
      * 
      * @group User Settings
      * @bodyParams gender string required Male or Female. Example: male,female
+     * 
+     * @response status=200 scenario="success" {
+     * "message": "Gender updated",
+     * "gender": "male"
+     * } 
      */
     public function postSaveGender(Request $request)
     {
@@ -205,7 +228,10 @@ class UserSettingsController extends Controller
         $user->gender = $request->gender;
         $user->save();
 
-        return response()->json(['message' => 'Gender updated']);
+        return response()->json([
+            'message' => 'Gender updated',
+            'gender' => $user->gender
+        ]);
     }
 
     /**
@@ -220,6 +246,8 @@ class UserSettingsController extends Controller
      * 
      * @response status=200 scenario="success" {
      * "message": "Location updated"
+     * "country_id": 1,
+     * "state_id": 1
      * }
      * 
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
@@ -236,7 +264,11 @@ class UserSettingsController extends Controller
         $user->state_id = $request->state_id;
         $user->save();
 
-        return response()->json(['message' => 'Location updated']);
+        return response()->json([
+            'message' => 'Location updated',
+            'country_id' => $user->country_id,
+            'state_id' => $user->state_id,
+        ]);
     }
 
     /**
@@ -248,7 +280,8 @@ class UserSettingsController extends Controller
      * @group User Settings
      * @bodyParam category_ids array required Array of article category ids. Example: [1,2,3]
      * @response status=200 scenario="success" {
-     * "message": "Article categories linked to user"
+     * "message": "Article categories linked to user",
+     * "category_ids": [1,2,3]
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
@@ -262,7 +295,10 @@ class UserSettingsController extends Controller
 
         // check if article category ids exists only sync
         $user->articleCategoriesInterests()->sync($request->category_ids);
-        return response()->json(['message' => 'Article categories linked to user']);
+        return response()->json([
+            'message' => 'Article categories linked to user',
+            'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
+        ]);
     }
 
     /**

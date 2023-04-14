@@ -32,7 +32,14 @@ endpoints:
         status: 200
         content: |-
           {
-           "key": "value"
+           "name": "John Doe",
+           "username": "johndoe",
+           "dob": "1990-01-01",
+           "gender": "male",
+           "bio": "Hello",
+           "job_title": "Engineer",
+           "country_id": 1,
+           "state_id": 1
           }
         headers: []
         description: success
@@ -53,78 +60,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5ageDcvbPEfk1dV664a38h'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update/Create settings of logged in user'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      key:
-        name: key
-        description: 'Key of the setting.'
-        required: true
-        example: profile_private
-        type: string
-        custom: []
-      value:
-        name: value
-        description: 'Value of the setting.'
-        required: true
-        example: 'true'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      key: profile_private
-      value: 'true'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Settings updated"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["key": ["The Key field is required."], "value": ["The Value field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer VPedb1g66av8Zk4cfah5ED3'
+      - 'Bearer P1cfZk64DaEavVh63b8de5g'
     controller: null
     method: null
     route: null
@@ -166,7 +102,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Email updated"
+          "message": "Email updated",
+          "email": "johndoe@gmail.com"
           }
         headers: []
         description: success
@@ -181,7 +118,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fb8haaed3g5614vZ6PkVEcD'
+      - 'Bearer cZ54vbed3g68hDPk6f1EaVa'
     controller: null
     method: null
     route: null
@@ -223,7 +160,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Name updated"
+          "message": "Name updated",
+          "name": "John Doe"
           }
         headers: []
         description: success
@@ -238,7 +176,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D1PaZcgv8Vba643hfEdk56e'
+      - 'Bearer g6DEh6ka3vfPcdbZea1854V'
     controller: null
     method: null
     route: null
@@ -286,7 +224,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Article categories linked to user"
+          "message": "Article categories linked to user",
+          "category_ids": [1,2,3]
           }
         headers: []
         description: success
@@ -301,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer egcfd5ab8hvD6E1ak6Z34PV'
+      - 'Bearer d16fcD3ge6kVv8bPhaEa54Z'
     controller: null
     method: null
     route: null
@@ -360,7 +299,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1ah6b4E3ZfkP6e8caDVvd5g'
+      - 'Bearer evbaf56kVD3Edg418Zc6hPa'
     controller: null
     method: null
     route: null
@@ -402,7 +341,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Username updated"
+          "message": "Username updated",
+          "username": "johndoe"
           }
         headers: []
         description: success
@@ -417,7 +357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZcV6PE48fD1a6b3h5dgaekv'
+      - 'Bearer bePfgV866ha3ZDa15dkE4vc'
     controller: null
     method: null
     route: null
@@ -454,12 +394,28 @@ endpoints:
     cleanBodyParameters:
       bio: 'I am a software engineer'
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Bio updated",
+          "bio": "I am a software engineer"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer heaPa8fg1D6Z4c563EvVdkb'
+      - 'Bearer bhZav64f3Vc1DgaP586keEd'
     controller: null
     method: null
     route: null
@@ -517,7 +473,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Date of birth updated"
+          "message": "Date of birth updated",
+          "dob": "1990-01-01"
           }
         headers: []
         description: success
@@ -532,7 +489,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5dV86bEaeg6ch3a1k4vPfDZ'
+      - 'Bearer e1E3hPDba845cZdvkaV6gf6'
     controller: null
     method: null
     route: null
@@ -563,18 +520,28 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: female
+        example: male
         type: string
         custom: []
     cleanBodyParameters:
-      gender: female
+      gender: male
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Gender updated",
+          "gender": "male"
+          }
+        headers: []
+        description: success
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer Ecf68degVkb6Da54P1hZva3'
+      - 'Bearer gv4VDhcPZebka8613dfE5a6'
     controller: null
     method: null
     route: null
@@ -625,6 +592,8 @@ endpoints:
         content: |-
           {
           "message": "Location updated"
+          "country_id": 1,
+          "state_id": 1
           }
         headers: []
         description: success
@@ -639,7 +608,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DEad6ah35e8f6ZbPVk4cgv1'
+      - 'Bearer 8dbak64Vfcv5hEge163ZaDP'
     controller: null
     method: null
     route: null

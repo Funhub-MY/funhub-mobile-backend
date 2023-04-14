@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "10f4c226-3d75-4ea7-8931-b7ae70612f4d",
+        "_postman_id": "6a5b0907-e361-4feb-a1ec-646907b0ac0b",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "mollitia",
+                                            "value": "animi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "16",
+                                            "value": "5",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1617,7 +1617,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "ipsa",
+                                            "value": "omnis",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1793,7 +1793,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":6}"
+                                    "raw": "{\"user_id\":16}"
                                 },
                                 "description": ""
                             },
@@ -1834,7 +1834,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -1926,7 +1926,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n \"key\": \"value\"\n}",
+                            "body": "{\n \"name\": \"John Doe\",\n \"username\": \"johndoe\",\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"bio\": \"Hello\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1\n}",
                             "name": "success"
                         },
                         {
@@ -1940,53 +1940,6 @@
                             "code": 404,
                             "body": "{\"message\": \"No settings found yet.\"}",
                             "name": "No settings found yet"
-                        }
-                    ]
-                },
-                {
-                    "name": "Update\/Create settings of logged in user",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/settings",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"key\":\"profile_private\",\"value\":\"true\"}"
-                        },
-                        "description": ""
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n\"message\": \"Settings updated\"\n}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 401,
-                            "body": "{\"message\": \"Unauthenticated.\"}",
-                            "name": "Unauthenticated"
-                        },
-                        {
-                            "header": [],
-                            "code": 422,
-                            "body": "{\"errors\": [\"key\": [\"The Key field is required.\"], \"value\": [\"The Value field is required.\"] ]}",
-                            "name": "Invalid Form Fields"
                         }
                     ]
                 },
@@ -2020,7 +1973,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"message\": \"Email updated\"\n}",
+                            "body": "{\n\"message\": \"Email updated\",\n\"email\": \"johndoe@gmail.com\"\n}",
                             "name": "success"
                         },
                         {
@@ -2061,7 +2014,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"message\": \"Name updated\"\n}",
+                            "body": "{\n\"message\": \"Name updated\",\n\"name\": \"John Doe\"\n}",
                             "name": "success"
                         },
                         {
@@ -2102,7 +2055,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"message\": \"Article categories linked to user\"\n}",
+                            "body": "{\n\"message\": \"Article categories linked to user\",\n\"category_ids\": [1,2,3]\n}",
                             "name": "success"
                         },
                         {
@@ -2190,7 +2143,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"message\": \"Username updated\"\n}",
+                            "body": "{\n\"message\": \"Username updated\",\n\"username\": \"johndoe\"\n}",
                             "name": "success"
                         },
                         {
@@ -2227,7 +2180,20 @@
                         },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Bio updated\",\n\"bio\": \"I am a software engineer\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
                 },
                 {
                     "name": "Update User Date of Birth",
@@ -2259,7 +2225,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"message\": \"Date of birth updated\"\n}",
+                            "body": "{\n\"message\": \"Date of birth updated\",\n\"dob\": \"1990-01-01\"\n}",
                             "name": "success"
                         },
                         {
@@ -2292,11 +2258,18 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"female\"}"
+                            "raw": "{\"gender\":\"male\"}"
                         },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Gender updated\",\n\"gender\": \"male\"\n}",
+                            "name": "success"
+                        }
+                    ]
                 },
                 {
                     "name": "Update User Location",
@@ -2328,7 +2301,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"message\": \"Location updated\"\n}",
+                            "body": "{\n\"message\": \"Location updated\"\n\"country_id\": 1,\n\"state_id\": 1\n}",
                             "name": "success"
                         },
                         {

@@ -1018,7 +1018,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: mollitia
+        example: animi
         required: true
         schema:
           type: string
@@ -1478,7 +1478,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 16
+        example: 5
         required: true
         schema:
           type: integer
@@ -2432,7 +2432,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: ipsa
+        example: omnis
         required: true
         schema:
           type: string
@@ -2658,7 +2658,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 16
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2725,7 +2725,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 19
               required:
                 - user_id
   /api/v1/user/settings:
@@ -2763,11 +2763,39 @@ paths:
               schema:
                 type: object
                 example:
-                  key: value
+                  name: 'John Doe'
+                  username: johndoe
+                  dob: '1990-01-01'
+                  gender: male
+                  bio: Hello
+                  job_title: Engineer
+                  country_id: 1
+                  state_id: 1
                 properties:
-                  key:
+                  name:
                     type: string
-                    example: value
+                    example: 'John Doe'
+                  username:
+                    type: string
+                    example: johndoe
+                  dob:
+                    type: string
+                    example: '1990-01-01'
+                  gender:
+                    type: string
+                    example: male
+                  bio:
+                    type: string
+                    example: Hello
+                  job_title:
+                    type: string
+                    example: Engineer
+                  country_id:
+                    type: integer
+                    example: 1
+                  state_id:
+                    type: integer
+                    example: 1
         401:
           description: Unauthenticated
           content:
@@ -2794,84 +2822,6 @@ paths:
                     example: 'No settings found yet.'
       tags:
         - 'User Settings'
-    post:
-      summary: 'Update/Create settings of logged in user'
-      operationId: updateCreateSettingsOfLoggedInUser
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Settings updated'
-                properties:
-                  message:
-                    type: string
-                    example: 'Settings updated'
-        401:
-          description: Unauthenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"errors": ["key": ["The Key field is required."], "value": ["The Value field is required."] ]}'
-      tags:
-        - 'User Settings'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                key:
-                  type: string
-                  description: 'Key of the setting.'
-                  example: profile_private
-                value:
-                  type: string
-                  description: 'Value of the setting.'
-                  example: 'true'
-              required:
-                - key
-                - value
   /api/v1/user/settings/email:
     post:
       summary: 'Update User Email'
@@ -2908,10 +2858,14 @@ paths:
                 type: object
                 example:
                   message: 'Email updated'
+                  email: johndoe@gmail.com
                 properties:
                   message:
                     type: string
                     example: 'Email updated'
+                  email:
+                    type: string
+                    example: johndoe@gmail.com
         401:
           description: Unauthenticated
           content:
@@ -2975,10 +2929,14 @@ paths:
                 type: object
                 example:
                   message: 'Name updated'
+                  name: 'John Doe'
                 properties:
                   message:
                     type: string
                     example: 'Name updated'
+                  name:
+                    type: string
+                    example: 'John Doe'
         401:
           description: Unauthenticated
           content:
@@ -3042,10 +3000,22 @@ paths:
                 type: object
                 example:
                   message: 'Article categories linked to user'
+                  category_ids:
+                    - 1
+                    - 2
+                    - 3
                 properties:
                   message:
                     type: string
                     example: 'Article categories linked to user'
+                  category_ids:
+                    type: array
+                    example:
+                      - 1
+                      - 2
+                      - 3
+                    items:
+                      type: integer
         401:
           description: Unauthenticated
           content:
@@ -3189,10 +3159,14 @@ paths:
                 type: object
                 example:
                   message: 'Username updated'
+                  username: johndoe
                 properties:
                   message:
                     type: string
                     example: 'Username updated'
+                  username:
+                    type: string
+                    example: johndoe
         401:
           description: Unauthenticated
           content:
@@ -3247,7 +3221,35 @@ paths:
           example: application/json
           schema:
             type: string
-      responses: {  }
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Bio updated'
+                  bio: 'I am a software engineer'
+                properties:
+                  message:
+                    type: string
+                    example: 'Bio updated'
+                  bio:
+                    type: string
+                    example: 'I am a software engineer'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
       tags:
         - 'User Settings'
       requestBody:
@@ -3299,10 +3301,14 @@ paths:
                 type: object
                 example:
                   message: 'Date of birth updated'
+                  dob: '1990-01-01'
                 properties:
                   message:
                     type: string
                     example: 'Date of birth updated'
+                  dob:
+                    type: string
+                    example: '1990-01-01'
         401:
           description: Unauthenticated
           content:
@@ -3367,7 +3373,23 @@ paths:
           example: application/json
           schema:
             type: string
-      responses: {  }
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Gender updated'
+                  gender: male
+                properties:
+                  message:
+                    type: string
+                    example: 'Gender updated'
+                  gender:
+                    type: string
+                    example: male
       tags:
         - 'User Settings'
       requestBody:
@@ -3380,7 +3402,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -3414,15 +3436,10 @@ paths:
         200:
           description: success
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                example:
-                  message: 'Location updated'
-                properties:
-                  message:
-                    type: string
-                    example: 'Location updated'
+                type: string
+                example: "{\n\"message\": \"Location updated\"\n\"country_id\": 1,\n\"state_id\": 1\n}"
         401:
           description: Unauthenticated
           content:

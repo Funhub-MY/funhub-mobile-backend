@@ -107,7 +107,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vkdhb6Da54eZE3Vg6f1a8Pc'
+      - 'Bearer dZhgaPvEc8536DkaeV641bf'
     controller: null
     method: null
     route: null
@@ -184,7 +184,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4ekVaD86f5Zbadh3vc6PgE1'
+      - 'Bearer 8afv6P163dDZ5cEh4baVkge'
     controller: null
     method: null
     route: null
@@ -211,11 +211,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: ipsa
+        example: omnis
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: ipsa
+      offer_id: omnis
     queryParameters:
       offer_id:
         name: offer_id
@@ -243,7 +243,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aa3vegk5hd8fP1Db4cEZ6V6'
+      - 'Bearer bf6Vc158eak6hDaEP4gZ3vd'
     controller: null
     method: null
     route: null
