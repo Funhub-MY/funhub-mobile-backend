@@ -630,4 +630,26 @@ class ArticleTest extends TestCase
             $article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray()
         );
     }
+
+    /**
+     * Get article by article_ids
+     * /api/v1/articles?article_ids=1,2,3
+     */
+    public function testGetArticleByArticleIds()
+    {
+         // create one article by this user using factory
+        $articles = Article::factory()->count(20)
+            ->published()
+            ->create();
+
+        // get article
+        $response = $this->getJson('/api/v1/articles?article_ids='.implode(',', $articles->pluck('id')->toArray()));
+
+        $response->assertJsonStructure([
+            'data'
+        ]);
+
+        // check there's 20 items in meta.total
+        $this->assertEquals(20, $response->json('meta.total'));
+    }
 }

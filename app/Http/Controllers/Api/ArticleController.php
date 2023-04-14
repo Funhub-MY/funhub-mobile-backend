@@ -32,6 +32,7 @@ class ArticleController extends Controller
      *
      * @group Article
      * 
+     * @bodyParam article_ids array optional Article Ids to Filter. Example [1,2,3]
      * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
      * @bodyParam following_only integer optional Filter by Articles by Users who logged in user is following. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
@@ -67,6 +68,15 @@ class ArticleController extends Controller
                 $query->whereHas('categories', function ($q) use ($category_ids) {
                     $q->whereIn('article_categories.id', $category_ids);
                 });
+            }
+        }
+
+        // article_ids filter
+        if ($request->has('article_ids')) {
+            // explode article ids
+            $article_ids = explode(',', $request->article_ids);
+            if (count($article_ids) > 0) {
+                $query->whereIn('id', $article_ids);
             }
         }
 

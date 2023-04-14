@@ -283,6 +283,13 @@ paths:
             schema:
               type: object
               properties:
+                article_ids:
+                  type: array
+                  description: 'optional Article Ids to Filter. Example [1,2,3]'
+                  example:
+                    - non
+                  items:
+                    type: string
                 category_ids:
                   type: array
                   description: 'optional Category Ids to Filter.'
@@ -1018,7 +1025,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: aliquid
+        example: numquam
         required: true
         schema:
           type: string
@@ -1478,7 +1485,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 8
+        example: 10
         required: true
         schema:
           type: integer
@@ -2432,7 +2439,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: commodi
+        example: molestiae
         required: true
         schema:
           type: string
@@ -2658,7 +2665,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 8
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2725,7 +2732,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 17
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3369,7 +3376,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
