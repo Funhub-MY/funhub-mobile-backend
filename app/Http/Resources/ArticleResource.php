@@ -35,6 +35,12 @@ class ArticleResource extends JsonResource
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
             ],
+            'my_interactions' => [
+                'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),
+                'dislike' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->first(),
+                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first(),
+                'bookmark' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first(),
+            ],
             'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
             'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
             'lang' => $this->lang,
