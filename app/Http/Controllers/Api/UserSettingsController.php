@@ -43,8 +43,8 @@ class UserSettingsController extends Controller
             'job_title' => auth()->user()->job_title,
             'country_id' => auth()->user()->country_id,
             'state_id' => auth()->user()->state_id,
-            'avatar' => auth()->user()->avatar,
-            'avatar_thumb' => auth()->user()->avatar_thumb,
+            'avatar' => auth()->user()->avatar_url,
+            'avatar_thumb' => auth()->user()->avatar_thumb_url,
         ]; 
 
         if ($settings) {
