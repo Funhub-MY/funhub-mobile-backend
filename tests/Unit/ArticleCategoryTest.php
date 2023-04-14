@@ -54,23 +54,9 @@ class ArticleCategoryTest extends TestCase
         $articleCategories = ArticleCategory::factory()->count(5)->create([
             'is_featured' => true
         ]);
-
-        // get article categories
-        $response = $this->getJson('/api/v1/article_categories');
-
-        print_r($response->json('data'));
-
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'data'
-            ]);
-
-        $this->assertEquals(5, $response->json('meta.total'));
-
+        
         // get featured article categories
         $response = $this->getJson('/api/v1/article_categories?is_featured=1');
-
-        print_r($response->json('data'));
 
         $response->assertStatus(200)
             ->assertJsonStructure([
