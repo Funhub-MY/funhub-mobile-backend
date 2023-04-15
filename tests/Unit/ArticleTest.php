@@ -314,6 +314,38 @@ class ArticleTest extends TestCase
     }
 
     /**
+     * Articles create article with chinese title by logged in user 
+     * /api/v1/articles
+     */
+    public function testCreateArticleWithChineseCharactersAsTitle()
+    {
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => '測試文章',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        print_r($response->json());
+
+        $this->assertDatabaseHas('articles', [
+            'title' => '測試文章',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+    }
+
+    /**
      * Articles gallery upload before article is created
      * /api/v1/articles/gallery
      */

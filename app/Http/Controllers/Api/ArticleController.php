@@ -218,18 +218,41 @@ class ArticleController extends Controller
     public function store(ArticleCreateRequest $request)
     {
         $user = auth()->user();
+    
+        // slug 
+        // regex detect if non-latin characters exists in $request->title
+        $slug = '';
+        if (preg_match('/[^\x20-\x7E]/', $request->title)) {
+            // Check if the string contains Chinese characters
+            if (preg_match("/\p{Han}/u", $request->title)) {
+                // If the string contains Chinese characters, keep them in the slug
+                $slug = preg_replace('/[^\p{Han}\s]+/u', '-', $request->title);
+            } else {
+                // If the string doesn't contain Chinese characters, transliterate it to ASCII and replace non-alphanumeric characters with a dash
+                $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $slug);
+                $slug = preg_replace('/[^\w\s]+/', '-', $slug);
+            }
+            
+            // Replace spaces and multiple dashes with a single dash
+            $slug = preg_replace('/\s+/', '-', $slug);
+            $slug = preg_replace('/-+/', '-', $slug);
+            // Convert the string to lowercase
+            $slug = strtolower($slug);
+        } else {
+            // use normal way
+            $slug = Str::slug($request->title);
+        }
+
         $article = Article::create([
             'title' => $request->title,
             'type' => $request->type,
-            'slug' => Str::slug($request->title),
+            'slug' => $slug,
             'excerpt' => ($request->excerpt) ?? null,
             'body' => $request->body,
             'status' => $request->status, // default is draft
             'published_at' => ($request->published_at) ? Carbon::parse($request->published_at)->toDateTimeString() : null,
             'user_id' => $user->id,
         ]);
-
-        Log::info('Images', ['images' => $request->images]);
 
         // if request->images attach images from user_uploads to article_images collection media library
         if ($request->has('images')) {
