@@ -15,7 +15,7 @@ class ShareableLinkController extends Controller
     public function load(Request $request)
     {
         $link = $request->link;
-        $userAgent = $request->header('User-Agent');
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
         if ($link == null || $userAgent == null) {
             Log::info('Link or user-agent is null', [
