@@ -17,15 +17,22 @@ class ShareableLinkController extends Controller
         $link = $request->link;
         $userAgent = $request->userAgent;
 
+
+
         if ($link == null || $userAgent == null) {
-            Log::info('Link or user-agent is null');
+            Log::info('Link or user-agent is null', [
+                'link' => $link,
+                'user-agent' => $userAgent
+            ]);
             return abort(404);
         }
 
         // check if link exists
         $shareableLink = ShareableLink::where('link', $link)->first();
         if ($shareableLink == null) {
-            Log::info('Shareable link is null');
+            Log::info('Shareable link is null', [
+                'shareable_link' => $shareableLink,
+            ]);
             return abort(404);
         }
 
