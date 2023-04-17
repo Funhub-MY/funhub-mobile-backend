@@ -38,7 +38,7 @@ class ShareableLinkController extends Controller
         $linkStructure = $this->generateLinkStructure($shareableLink);
 
         // check if user-agent is mobile
-        if (preg_match('/(iphone|ipad|ipod|andriod|Andriod)/i', $userAgent)) {
+        if (preg_match('/(iPhone|iphone|ipad|iPad|ipod|iPod|andriod|Andriod)/i', $userAgent)) {
             if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
                   // eg. flutter://flutter.dev?article_id=1
                   Log::info('Redirecting to android deep link', [
