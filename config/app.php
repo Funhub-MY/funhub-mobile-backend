@@ -238,5 +238,10 @@ return [
     'max_images_per_article' => env('MAX_IMAGES_PER_ARTICLE', 9),
     'max_size_per_image_kb' => env('MAX_SIZE_PER_IMAGE_KB',  1024 * 1024 * 5),
     'max_size_per_video_kb' => env('MAX_SIZE_PER_VIDEO_KB',  1024 * 1024 * 50),
-    'default_user_media_collection' => 'user_uploads'
+    'default_user_media_collection' => 'user_uploads',
+
+    'ios_app_store_link' => env('IOS_APP_STORE_LINK', ''),
+    'android_play_store_link' => env('ANDROID_PLAY_STORE_LINK', ''),
+    'ios_deep_link' => env('IOS_DEEP_LINK', ''),
+    'android_deep_link' => env('ANDROID_DEEP_LINK', ''),
 ];

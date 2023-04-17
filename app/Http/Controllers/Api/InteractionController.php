@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
 use App\Models\Article;
 use App\Models\Interaction;
+use App\Models\ShareableLink;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class InteractionController extends Controller
 {
@@ -91,7 +93,7 @@ class InteractionController extends Controller
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @response scenario=success {
-     * "interaction": {}
+     *  "interaction": {}
      * }
      * @response 422
      */
@@ -122,12 +124,27 @@ class InteractionController extends Controller
                 break;
         }
 
-        $interaction = Interaction::create([
+        // all interactions should be unique to user, interactable_type, interactable_id, type, use firstOrCreate
+        $interaction = Interaction::firstOrCreate([
             'user_id' => auth()->id(),
             'interactable_type' => $request->interactable,
             'interactable_id' => $request->id,
-            'type' => $request->type, // like or dislike or share
+            'type' => $request->type,
         ]);
+
+        // if interaction type is share, create ShareableLink then link it to interaction
+        if ($request->type == Interaction::TYPE_SHARE) {
+            // create new shareable link exists for this article and user
+            $shareableLink = ShareableLink::create([
+                'link' => strtolower(Str::random(6)), // random 6 characters
+                'user_id' => auth()->id(), // logged in user
+                'model_id' => $request->id, // eg Article Id
+                'model_type' => $request->interactable, // eg Article Model Type
+            ]);
+
+            // link to interaction via relationship ShareableLink
+            $interaction->shareableLink()->attach($shareableLink->id);
+        }
 
         event(new InteractionCreated($interaction));
 

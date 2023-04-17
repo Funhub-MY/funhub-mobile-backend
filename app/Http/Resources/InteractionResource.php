@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\UserResource;
+use App\Models\Interaction;
 
 class InteractionResource extends JsonResource
 {
@@ -25,6 +26,7 @@ class InteractionResource extends JsonResource
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'share_url' => ($this->type == Interaction::TYPE_SHARE) ? $this->share_url : null,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->created_at->diffForHumans(),
         ];

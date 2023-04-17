@@ -165,4 +165,53 @@ class InteractionTest extends TestCase
             'id' => $interaction->id,
         ]);
     }
+
+    /**
+     * Test Share Interaction
+     * /api/v1/interactions
+     */
+    public function testShareInteraction()
+    {
+        // create new article
+        $article = Article::factory()->create();
+
+        // create interaction
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $article->id,
+            'interactable' => Article::class,
+            'type' => 'share',
+        ]);
+
+        // find Shareable Link generated
+        $interaction = Interaction::where('interactable_id', $article->id)
+            ->where('interactable_type', Article::class)
+            ->where('type', Interaction::TYPE_SHARE)
+            ->where('user_id', $this->user->id)
+            ->first();
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'interaction' => [
+                    'share_url'
+                ]
+            ]);
+
+        // ensure json share_url value is url('/s/{link}')
+        $this->assertEquals(url('/s/'.$interaction->shareableLink->first()->link), $response->json('interaction.share_url'));
+
+        $this->assertDatabaseHas('interactions', [
+            'interactable_id' => $article->id,
+            'interactable_type' => Article::class,
+            'type' => Interaction::TYPE_SHARE,
+            'user_id' => $this->user->id,
+        ]);
+
+        // check shareable link table
+        $this->assertDatabaseHas('shareable_links', [
+            'model_id' => $article->id,
+            'model_type' => Article::class,
+            'link' => $interaction->shareableLink->first()->link,
+            'user_id' => $this->user->id,
+        ]);
+    }
 }

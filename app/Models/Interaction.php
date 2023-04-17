@@ -37,6 +37,8 @@ class Interaction extends Model
 
     protected $guarded = ['id'];
 
+    protected $appends = ['share_url'];
+
     public function interactable()
     {
         return $this->morphTo();
@@ -45,6 +47,11 @@ class Interaction extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function shareableLink()
+    {
+        return $this->belongsToMany(ShareableLink::class, 'interactions_shareable_links', 'interaction_id', 'shareable_link_id');
     }
 
     /**
@@ -59,5 +66,21 @@ class Interaction extends Model
     public function scopeDraft()
     {
         return $this->where('status', self::STATUS_DRAFT);
+    }
+
+    /**
+     * Accessors
+     */
+
+     /**
+      * Get share_url
+      */
+    public function getShareUrlAttribute()
+    {
+        if ( $this->shareableLink()->first()) {
+            return url('/s/'.$this->shareableLink()->first()->link);
+        } else {
+            return null;
+        }
     }
 }
