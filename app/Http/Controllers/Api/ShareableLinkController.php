@@ -24,6 +24,11 @@ class ShareableLinkController extends Controller
             return abort(404);
         }
 
+        // trim whitespace
+        $link = trim($link);
+        // remove any commas or symbols
+        $link = preg_replace('/[^A-Za-z0-9\-]/', '', $link);
+
         // check if link exists
         $shareableLink = ShareableLink::where('link', $link)->first();
         if ($shareableLink == null) {
@@ -36,11 +41,6 @@ class ShareableLinkController extends Controller
 
         // get link structure
         $linkStructure = $this->generateLinkStructure($shareableLink);
-
-        Log::info('Link structure', [
-            'link_structure' => $linkStructure,
-            'user-agent' => $userAgent,
-        ]);
 
         // check if user-agent is mobile
         // preg match user header is mobile device
