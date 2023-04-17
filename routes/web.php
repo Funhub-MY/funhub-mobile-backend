@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Shareable link
-Route::get('s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::class, 'load']);
+Route::get('/s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::class, 'load']);
 
 Route::get('/', function () {
     return redirect()->to('/admin/login');
