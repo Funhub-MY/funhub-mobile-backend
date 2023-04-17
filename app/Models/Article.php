@@ -8,6 +8,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class Article extends Model implements HasMedia
 {
@@ -20,6 +21,10 @@ class Article extends Model implements HasMedia
         1 => 'Published',
         2 => 'Archived'
     ];
+
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_ARCHIVED = 2;
 
     const TYPE = [
         'multimedia', 'text', 'video'
@@ -121,11 +126,9 @@ class Article extends Model implements HasMedia
 
     /**
      * Scope a query to only include published articles.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePublished()
+    public function scopePublished(Builder $query): void 
     {
-        return $this->where('status', 1);
+        $query->where('status', self::STATUS_PUBLISHED);
     }
 }

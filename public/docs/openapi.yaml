@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Funhub
+  title: FUNHUB
   description: ''
   version: 1.0.0
 servers:
@@ -287,7 +287,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - non
+                    - unde
                   items:
                     type: string
                 category_ids:
@@ -1025,7 +1025,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: numquam
+        example: non
         required: true
         schema:
           type: string
@@ -1485,7 +1485,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 10
+        example: 14
         required: true
         schema:
           type: integer
@@ -2439,7 +2439,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: molestiae
+        example: expedita
         required: true
         schema:
           type: string
@@ -2665,7 +2665,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 8
+                  example: 13
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2732,7 +2732,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 17
+                  example: 5
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3446,6 +3446,77 @@ paths:
               required:
                 - country_id
                 - state_id
+  /api/v1/user/settings/job-title:
+    post:
+      summary: 'Update User Job title'
+      operationId: updateUserJobTitle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Job Title updated'
+                  job_title: 'Software Engineer'
+                properties:
+                  message:
+                    type: string
+                    example: 'Job Title updated'
+                  job_title:
+                    type: string
+                    example: 'Software Engineer'
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_title:
+                  type: string
+                  description: 'Job title of the user.'
+                  example: 'Software Engineer'
+              required:
+                - job_title
 tags:
   -
     name: Article

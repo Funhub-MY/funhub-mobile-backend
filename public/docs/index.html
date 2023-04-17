@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Funhub Documentation</title>
+    <title>FUNHUB Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -306,6 +306,9 @@ Only owner can call this method</a>
                                                                                 <li class="tocify-item level-2" data-unique="user-settings-POSTapi-v1-user-settings-location">
                                 <a href="#user-settings-POSTapi-v1-user-settings-location">Update User Location</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-settings-POSTapi-v1-user-settings-job-title">
+                                <a href="#user-settings-POSTapi-v1-user-settings-job-title">Update User Job title</a>
+                            </li>
                                                                         </ul>
                             </ul>
             </div>
@@ -317,7 +320,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 14, 2023</li>
+        <li>Last updated: April 17, 2023</li>
     </ul>
 </div>
 
@@ -359,7 +362,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpMlzUS2" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZPYnPV" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -492,7 +495,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpMlzUS2</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZPYnPV</code></p>
         </div>
         </form>
 
@@ -965,7 +968,7 @@ fetch(url, {
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"non\"
+        \"unde\"
     ],
     \"category_ids\": [
         1,
@@ -1001,7 +1004,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "non"
+        "unde"
     ],
     "category_ids": [
         1,
@@ -1690,7 +1693,7 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php3yBpqo" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZ0rCWP" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1892,7 +1895,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php3yBpqo</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZ0rCWP</code></p>
         </div>
         </form>
 
@@ -2786,7 +2789,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/replies/numquam" \
+    --get "http://localhost/api/v1/comments/replies/non" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2803,7 +2806,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/replies/numquam"
+    "http://localhost/api/v1/comments/replies/non"
 );
 
 const headers = {
@@ -2928,10 +2931,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="numquam"
+               value="non"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>numquam</code></p>
+<p>The ID of the comment. Example: <code>non</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3794,7 +3797,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/10" \
+    --get "http://localhost/api/v1/comments/14" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3807,7 +3810,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/10"
+    "http://localhost/api/v1/comments/14"
 );
 
 const headers = {
@@ -3933,10 +3936,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="10"
+               value="14"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>10</code></p>
+<p>The ID of the comment. Example: <code>14</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -6667,7 +6670,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/merchant/offers/molestiae?offer_id=1" \
+    --get "http://localhost/api/v1/merchant/offers/expedita?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6675,7 +6678,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/merchant/offers/molestiae"
+    "http://localhost/api/v1/merchant/offers/expedita"
 );
 
 const params = {
@@ -6787,10 +6790,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="molestiae"
+               value="expedita"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>molestiae</code></p>
+<p>The ID of the offer. Example: <code>expedita</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -7205,7 +7208,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 8
+    \"user_id\": 13
 }"
 </code></pre></div>
 
@@ -7222,7 +7225,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 8
+    "user_id": 13
 };
 
 fetch(url, {
@@ -7332,10 +7335,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="8"
+               value="13"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>8</code></p>
+<p>The id of the user to follow Example: <code>13</code></p>
         </div>
         </form>
 
@@ -7358,7 +7361,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 17
+    \"user_id\": 5
 }"
 </code></pre></div>
 
@@ -7375,7 +7378,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 17
+    "user_id": 5
 };
 
 fetch(url, {
@@ -7485,10 +7488,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="17"
+               value="5"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>17</code></p>
+<p>The id of the user to unfollow Example: <code>5</code></p>
         </div>
         </form>
 
@@ -8265,7 +8268,7 @@ fetch(url, {
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpFU4BKV" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNen5pj" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -8394,7 +8397,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpFU4BKV</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNen5pj</code></p>
         </div>
         </form>
 
@@ -9196,6 +9199,160 @@ fetch(url, {
                data-component="body">
     <br>
 <p>State id of the user. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="user-settings-POSTapi-v1-user-settings-job-title">Update User Job title</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user-settings-job-title">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/v1/user/settings/job-title" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"job_title\": \"Software Engineer\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/v1/user/settings/job-title"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "job_title": "Software Engineer"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user-settings-job-title">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Job Title updated&quot;,
+    &quot;job_title&quot;: &quot;Software Engineer&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (401, Unauthenticated):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Unauthenticated.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user-settings-job-title" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user-settings-job-title"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-job-title" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user-settings-job-title" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-job-title"></code></pre>
+</span>
+<form id="form-POSTapi-v1-user-settings-job-title" data-method="POST"
+      data-path="api/v1/user/settings/job-title"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user-settings-job-title', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user-settings-job-title"
+                    onclick="tryItOut('POSTapi-v1-user-settings-job-title');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user-settings-job-title"
+                    onclick="cancelTryOut('POSTapi-v1-user-settings-job-title');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user-settings-job-title" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user/settings/job-title</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-user-settings-job-title"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-user-settings-job-title"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-user-settings-job-title"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>job_title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="job_title"                data-endpoint="POSTapi-v1-user-settings-job-title"
+               value="Software Engineer"
+               data-component="body">
+    <br>
+<p>Job title of the user. Example: <code>Software Engineer</code></p>
         </div>
         </form>
 

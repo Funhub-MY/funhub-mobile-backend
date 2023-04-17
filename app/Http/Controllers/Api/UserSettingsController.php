@@ -176,6 +176,36 @@ class UserSettingsController extends Controller
     }
 
     /**
+     * Update User Job title
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam job_title string required Job title of the user. Example: Software Engineer
+     * @response status=200 scenario="success" {
+     * "message": "Job Title updated",
+     * "job_title": "Software Engineer"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postSaveJobTitle(Request $request)
+    {
+        $request->validate([
+            'job_title' => 'required|string|max:200',
+        ]);
+
+        $user = auth()->user();
+        $user->job_title = $request->job_title;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Job Title updated',
+            'job_title' => $user->job_title,
+        ]);
+    }
+
+    /**
      * Update User Date of Birth
      * 
      * @param Request $request
