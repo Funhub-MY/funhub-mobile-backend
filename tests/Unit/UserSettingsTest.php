@@ -220,6 +220,28 @@ class UserSettingsTest extends TestCase
     }
 
     /**
+     * Test Save Job Title
+     * /api/v1/user/settings/job_title
+     */
+    public function testSaveJobTitle()
+    {
+        $response = $this->postJson('/api/v1/user/settings/job-title', [
+            'job_title' => 'Software Engineer'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+    
+        // assert database
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'job_title' => 'Software Engineer'
+        ]);
+    }
+
+    /**
      * Test Save Location
      * /api/v1/user/settings/location
      */
