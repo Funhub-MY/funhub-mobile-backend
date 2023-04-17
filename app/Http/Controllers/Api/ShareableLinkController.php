@@ -12,9 +12,8 @@ class ShareableLinkController extends Controller
     /**
      * Load link then determine user-agent only create deep link to push to app
      */
-    public function load(Request $request)
+    public function load($link)
     {
-        $link = $request->link;
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
         if ($link == null || $userAgent == null) {
@@ -29,6 +28,7 @@ class ShareableLinkController extends Controller
         $shareableLink = ShareableLink::where('link', $link)->first();
         if ($shareableLink == null) {
             Log::info('Shareable link is null', [
+                'link' => $link,
                 'shareable_link' => $shareableLink,
             ]);
             return abort(404);
