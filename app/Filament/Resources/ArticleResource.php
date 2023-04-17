@@ -14,6 +14,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ArticleResource extends Resource
@@ -38,14 +39,14 @@ class ArticleResource extends Resource
                                 ->default(fn () => auth()->id()),
                             Forms\Components\TextInput::make('title')
                                 ->required()
-                                ->lazy()
-                                ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+                                ->lazy(),
 
                             Forms\Components\TextInput::make('slug')
-                                ->disabled()
                                 ->required()
-                                ->helperText('Filled automatically when you fill title')
+                                ->placeholder('eg. my-article-slug')
+                                ->helperText('The slug is used to generate the URL of the article.')
                                 ->unique(Article::class, 'slug', ignoreRecord: true),
+
                             Forms\Components\Hidden::make('type')
                                 ->default(Article::TYPE[0])
                                 ->required(),
@@ -99,7 +100,6 @@ class ArticleResource extends Resource
                                 ->rules('date|after_or_equal:today')
                                 ->helperText('If you choose a future date, the article will be published at that date.')
                                 ->default(now())
-                                ->required()
                         ])->columnSpan('Status'),
 
                         Forms\Components\Section::make('Categories')->schema([
@@ -209,6 +209,28 @@ class ArticleResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                // bulk change status
+                Tables\Actions\BulkAction::make('Change to Published')
+                ->action(function (Collection $records) {
+                    $records->each(function (Article $record) {
+                        $record->update([
+                            'status' => 1,
+                            'published_at' => now()
+                        ]);
+                    });
+                })->requiresConfirmation(),
+                Tables\Actions\BulkAction::make('Change to Draft')
+                ->action(function (Collection $records) {
+                    $records->each(function (Article $record) {
+                        $record->update(['status' => 0]);
+                    });
+                })->requiresConfirmation(),
+                Tables\Actions\BulkAction::make('Move to Archived')
+                ->action(function (Collection $records) {
+                    $records->each(function (Article $record) {
+                        $record->update(['status' => 2]);
+                    });
+                })->requiresConfirmation()
             ]);
     }
 

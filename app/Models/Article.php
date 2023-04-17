@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
+use Illuminate\Support\Facades\Log;
 
 class Article extends Model implements HasMedia
 {
@@ -17,6 +18,7 @@ class Article extends Model implements HasMedia
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',
+        2 => 'Archived'
     ];
 
     const TYPE = [
