@@ -37,6 +37,11 @@ class ShareableLinkController extends Controller
         // get link structure
         $linkStructure = $this->generateLinkStructure($shareableLink);
 
+        Log::info('Link structure', [
+            'link_structure' => $linkStructure,
+            'user-agent' => $userAgent,
+        ]);
+
         // check if user-agent is mobile
         if (preg_match('/(iPhone|iphone|ipad|iPad|ipod|iPod|andriod|Andriod)/i', $userAgent)) {
             if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
@@ -55,6 +60,10 @@ class ShareableLinkController extends Controller
                 return redirect(config('app.ios_deep_link').'?'.$linkStructure);
             }
         } else {
+            Log::info('Redirecting to web view', [
+                'link' => config('app.web_view').'?'.$linkStructure,
+                'user-agent' => $userAgent,
+            ]);
             // detect if ios redirect to app store, else redirec to play store
             if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
                 return redirect(config('app.android_play_store_link'));
