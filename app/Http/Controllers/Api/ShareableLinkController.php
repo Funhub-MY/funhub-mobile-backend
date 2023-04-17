@@ -43,15 +43,17 @@ class ShareableLinkController extends Controller
         ]);
 
         // check if user-agent is mobile
-        if (preg_match('/(iPhone|iphone|ipad|iPad|ipod|iPod|andriod|Andriod)/i', $userAgent)) {
-            if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
+        // preg match user header is mobile device
+
+        if (preg_match('/iPhone|iPod|iPad/', $userAgent) || preg_match('/Android/', $userAgent)) {
+            if (preg_match('/Android/', $userAgent)) {
                   // eg. flutter://flutter.dev?article_id=1
                   Log::info('Redirecting to android deep link', [
                     'link' => config('app.android_deep_link').'?'.$linkStructure,
                     'user-agent' => $userAgent,
                 ]);
                 return redirect(config('app.android_deep_link').'?'.$linkStructure);
-            } else {
+            } else if (preg_match('/iPhone|iPod|iPad/', $userAgent)){
                 // eg. flutter://flutter.dev?article_id=1
                 Log::info('Redirecting to ios deep link', [
                     'link' => config('app.ios_deep_link').'?'.$linkStructure,
@@ -65,7 +67,7 @@ class ShareableLinkController extends Controller
                 'user-agent' => $userAgent,
             ]);
             // detect if ios redirect to app store, else redirec to play store
-            if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
+            if (preg_match('/Android/', $userAgent)) {
                 return redirect(config('app.android_play_store_link'));
             } else {
                 return redirect(config('app.ios_app_store_link'));
