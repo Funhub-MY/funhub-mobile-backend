@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ShareableLink;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ShareableLinkController extends Controller
 {
@@ -17,12 +18,14 @@ class ShareableLinkController extends Controller
         $userAgent = $request->userAgent;
 
         if ($link == null || $userAgent == null) {
+            Log::info('Link or user-agent is null');
             return abort(404);
         }
 
         // check if link exists
         $shareableLink = ShareableLink::where('link', $link)->first();
         if ($shareableLink == null) {
+            Log::info('Shareable link is null');
             return abort(404);
         }
 
