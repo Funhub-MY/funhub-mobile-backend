@@ -38,34 +38,31 @@ class ShareableLinkController extends Controller
         $linkStructure = $this->generateLinkStructure($shareableLink);
 
         // check if user-agent is mobile
-        if (preg_match('/(android|iphone|ipad|mobile)/i', $userAgent)) {
-            // detect if ios redirect to app store, else redirec to play store
-            if (preg_match('/(ios)/i', $userAgent)) {
+        if (preg_match('/(iphone|ipad|ipod|andriod|Andriod)/i', $userAgent)) {
+            if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
+                  // eg. flutter://flutter.dev?article_id=1
+                  Log::info('Redirecting to android deep link', [
+                    'link' => config('app.android_deep_link').'?'.$linkStructure,
+                    'user-agent' => $userAgent,
+                ]);
+                return redirect(config('app.android_deep_link').'?'.$linkStructure);
+            } else {
                 // eg. flutter://flutter.dev?article_id=1
                 Log::info('Redirecting to ios deep link', [
                     'link' => config('app.ios_deep_link').'?'.$linkStructure,
+                    'user-agent' => $userAgent,
                 ]);
                 return redirect(config('app.ios_deep_link').'?'.$linkStructure);
-            } else {
-                // eg. flutter://flutter.dev?article_id=1
-                Log::info('Redirecting to android deep link', [
-                    'link' => config('app.android_deep_link').'?'.$linkStructure,
-                ]);
-                return redirect(config('app.android_deep_link').'?'.$linkStructure);
             }
         } else {
             // detect if ios redirect to app store, else redirec to play store
-            if (preg_match('/(ios)/i', $userAgent)) {
-                Log::info('Redirecting to ios app store', [
-                    'link' => config('app.ios_app_store_link'),
-                ]);
-                return redirect(config('app.ios_app_store_link'));
-            } else {
-                Log::info('Redirecting to android play store', [
-                    'link' => config('app.android_play_store_link'),
-                ]);
+            if (preg_match('/(andriod|Andriod)/i', $userAgent)) {
                 return redirect(config('app.android_play_store_link'));
+            } else {
+                return redirect(config('app.ios_app_store_link'));
             }
+
+            // TODO: web view choose app store
         }
 
         return abort(404);
