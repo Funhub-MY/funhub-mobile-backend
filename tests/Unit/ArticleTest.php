@@ -124,6 +124,31 @@ class ArticleTest extends TestCase
     }
 
     /**
+     * Article get one article via show route
+     * /api/v1/articles/{id}
+     */
+    public function testGetOneArticleByShowRouteByLoggedInUser()
+    {
+        $articles = Article::factory()->count(3)
+            ->published()
+            ->create();
+
+        // get second article
+        $secondArticle = $articles->get(2);
+
+        // get second article
+        $response = $this->getJson('/api/v1/articles/'.$secondArticle->id);
+        
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article',
+            ]);
+            
+        // cheeck article.id json is 2
+        $this->assertEquals($secondArticle->id, $response->json('article.id'));
+    }
+
+    /**
      * Article get articles for Home by logged in user when user is following
      * /api/v1/articles
      */
@@ -333,8 +358,6 @@ class ArticleTest extends TestCase
                 'message',
                 'article',
             ]);
-
-        print_r($response->json());
 
         $this->assertDatabaseHas('articles', [
             'title' => '測試文章',
