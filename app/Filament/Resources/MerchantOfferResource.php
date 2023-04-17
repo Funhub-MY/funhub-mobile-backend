@@ -54,9 +54,11 @@ class MerchantOfferResource extends Resource
                                     ->label('SKU')
                                     ->required(),
                                 Forms\Components\DateTimePicker::make('available_at')
-                                    ->required(),
+                                    ->required()
+                                    ->minDate(now()->startOfDay()),
                                 Forms\Components\DateTimePicker::make('available_until')
-                                    ->required(),
+                                    ->required()
+                                    ->minDate(now()->startOfDay()),
                                 Forms\Components\TextArea::make('description')
                                     ->rows(5)
                                     ->cols(10)

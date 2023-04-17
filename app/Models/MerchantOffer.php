@@ -50,13 +50,14 @@ class MerchantOffer extends Model
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks')
             ->withTimestamps();
     }
 
     public function categories()
     {
-        return $this->morphToMany(MerchantCategory::class, 'categoryable');
+        return $this->belongsToMany(MerchantCategory::class, 'merchant_category_merchant_offer')
+            ->withTimestamps();
     }
 
     /**
