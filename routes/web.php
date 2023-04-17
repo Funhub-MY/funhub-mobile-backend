@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Route;
 // Shareable link
 Route::get('/s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::class, 'load']);
 
-Route::get('/', function () {
+// any route other than /s redirect to /admin/login
+Route::get('/{any}', function () {
     return redirect()->to('/admin/login');
-});
+})->where('any', '^((?!s).)*$');
+
 // TODO:: routes below can be deleted once flutter end finish login implementation.
 // this is to get google access token, need to access to this page and login.
 Route::get('/get/google-access-token', function () {
