@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::group(['prefix' => 'v1'], function () {
-    // Shareable link
-    Route::get('s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::class, 'load']);
 
     // primary otp login
     Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
