@@ -129,6 +129,8 @@ class ArticleTest extends TestCase
      */
     public function testGetOneArticleByShowRouteByLoggedInUser()
     {
+        $this->refreshDatabase(); // must refresh db first
+
         $articles = Article::factory()->count(3)
             ->published()
             ->create();
