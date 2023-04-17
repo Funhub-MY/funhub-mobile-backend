@@ -303,7 +303,14 @@ class ArticleController extends Controller
      * }
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
-    public function show(Article $article) {                
+    public function show($id) {
+        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+            ->published()
+            ->whereDoesntHave('hiddenUsers', function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            })
+            ->findOrFail($id);
+
         return response()->json([
             'article' => new ArticleResource($article)
         ]);
