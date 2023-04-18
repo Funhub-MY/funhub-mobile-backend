@@ -9,8 +9,8 @@
         }
     ],
     "info": {
-        "name": "FUNHUB",
-        "_postman_id": "694976bb-9144-4766-b040-156565c10342",
+        "name": "Funhub",
+        "_postman_id": "e0b039aa-cbd0-499d-b1e8-f7f99201f611",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -158,7 +158,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"unde\"],\"category_ids\":[1,2,3],\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"consequatur\"],\"category_ids\":[1,2,3],\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -614,7 +614,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "non",
+                                            "value": "esse",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +839,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "14",
+                                            "value": "9",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1617,7 +1617,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "expedita",
+                                            "value": "eos",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1793,7 +1793,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":13}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -1926,7 +1926,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n \"name\": \"John Doe\",\n \"email\": \"johndoe@gmail.com\"\n \"username\": \"johndoe\",\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"bio\": \"Hello\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"avatar\": \"https:\/\/www.example.com\/avatar.jpg\",\n \"avatar_thumb\": \"https:\/\/www.example.com\/avatar_thumb.jpg\",\n}",
+                            "body": "{\n \"name\": \"John Doe\",\n \"email\": \"johndoe@gmail.com\"\n \"username\": \"johndoe\",\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"bio\": \"Hello\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"avatar\": \"https:\/\/www.example.com\/avatar.jpg\",\n \"avatar_thumb\": \"https:\/\/www.example.com\/avatar_thumb.jpg\",\n \"category_ids\": [1,2,3]\n}",
                             "name": "success"
                         },
                         {

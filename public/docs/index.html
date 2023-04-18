@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>FUNHUB Documentation</title>
+    <title>Funhub Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -320,7 +320,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 17, 2023</li>
+        <li>Last updated: April 18, 2023</li>
     </ul>
 </div>
 
@@ -336,7 +336,7 @@ Only owner can call this method</a>
 You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
-<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {USER_TOKEN_KEY}"</code></strong>.</p>
+<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {USER_TOKEN_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You will received a token to authenticate user requests after you logged in.</p>
 
@@ -362,7 +362,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZPYnPV" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpbNHZcf" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -495,7 +495,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZPYnPV</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpbNHZcf</code></p>
         </div>
         </form>
 
@@ -968,7 +968,7 @@ fetch(url, {
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"unde\"
+        \"consequatur\"
     ],
     \"category_ids\": [
         1,
@@ -1004,7 +1004,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "unde"
+        "consequatur"
     ],
     "category_ids": [
         1,
@@ -1693,7 +1693,7 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZ0rCWP" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpdX052p" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1895,7 +1895,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpZ0rCWP</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpdX052p</code></p>
         </div>
         </form>
 
@@ -2789,7 +2789,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/replies/non" \
+    --get "http://localhost/api/v1/comments/replies/esse" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2806,7 +2806,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/replies/non"
+    "http://localhost/api/v1/comments/replies/esse"
 );
 
 const headers = {
@@ -2931,10 +2931,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="non"
+               value="esse"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>non</code></p>
+<p>The ID of the comment. Example: <code>esse</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3797,7 +3797,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/14" \
+    --get "http://localhost/api/v1/comments/9" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3810,7 +3810,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/14"
+    "http://localhost/api/v1/comments/9"
 );
 
 const headers = {
@@ -3936,10 +3936,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="14"
+               value="9"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>14</code></p>
+<p>The ID of the comment. Example: <code>9</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -6670,7 +6670,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/merchant/offers/expedita?offer_id=1" \
+    --get "http://localhost/api/v1/merchant/offers/eos?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6678,7 +6678,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/merchant/offers/expedita"
+    "http://localhost/api/v1/merchant/offers/eos"
 );
 
 const params = {
@@ -6790,10 +6790,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="expedita"
+               value="eos"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>expedita</code></p>
+<p>The ID of the offer. Example: <code>eos</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -7208,7 +7208,7 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 13
+    \"user_id\": 4
 }"
 </code></pre></div>
 
@@ -7225,7 +7225,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 13
+    "user_id": 4
 };
 
 fetch(url, {
@@ -7335,10 +7335,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="13"
+               value="4"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>13</code></p>
+<p>The id of the user to follow Example: <code>4</code></p>
         </div>
         </form>
 
@@ -7679,6 +7679,7 @@ fetch(url, {
  &quot;state_id&quot;: 1,
  &quot;avatar&quot;: &quot;https://www.example.com/avatar.jpg&quot;,
  &quot;avatar_thumb&quot;: &quot;https://www.example.com/avatar_thumb.jpg&quot;,
+ &quot;category_ids&quot;: [1,2,3]
 }</code>
  </pre>
             <blockquote>
@@ -8268,7 +8269,7 @@ fetch(url, {
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNen5pj" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYkiEx5" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -8397,7 +8398,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNen5pj</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYkiEx5</code></p>
         </div>
         </form>
 

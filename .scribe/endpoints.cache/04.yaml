@@ -107,7 +107,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4egdVPfZvbEkD856163hcaa'
+      - 'Bearer 8cPbZ6h534Dv6ekVgdfaEa1'
     controller: null
     method: null
     route: null
@@ -184,7 +184,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c6gaf5EDdkZV14aPbhev836'
+      - 'Bearer 4eb1akDZ65Va8cEPg3hf6vd'
     controller: null
     method: null
     route: null
@@ -211,11 +211,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: expedita
+        example: eos
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: expedita
+      offer_id: eos
     queryParameters:
       offer_id:
         name: offer_id
@@ -243,7 +243,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 86E4kacPaZ51Vh6fevDb3gd'
+      - 'Bearer VDZ6e68Pdk5gb4hc1vEa3af'
     controller: null
     method: null
     route: null
