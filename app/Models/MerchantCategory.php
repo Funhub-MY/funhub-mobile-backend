@@ -18,8 +18,9 @@ class MerchantCategory extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function categoryable()
+    public function offer()
     {
-        return $this->morphTo();
+        return $this->belongsToMany(MerchantOffer::class, 'merchant_category_merchant_offer')
+                ->withTimestamps();
     }
 }

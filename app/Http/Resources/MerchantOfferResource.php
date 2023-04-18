@@ -17,17 +17,17 @@ class MerchantOfferResource extends JsonResource
         return [
             'id' => $this->id,
             'sku' => $this->sku,
-            'merchant_id' => $this->merchant_id,
+            'merchant_id' => ($this->user) ? $this->user->merchant->id : null,
             'store' => [
-                'id' => $this->store->id,
-                'name' => $this->store->name,
+                'id' => ($this->store) ? $this->store->id : null,
+                'name' => ($this->store) ? $this->store->name : null,
             ],
             'merchant' => [
-                'id' => $this->merchant->id,
-                'business_name' => $this->merchant->business_name,
+                'id' => ($this->user) ? $this->user->merchant->id : null,
+                'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
                 'user' => [
-                    'id' => $this->merchant->user->id,
-                    'name' => $this->merchant->user->name,
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
                 ],
             ],
             'name' => $this->name,

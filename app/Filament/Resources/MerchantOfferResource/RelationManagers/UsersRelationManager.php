@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UsersRelationManager extends RelationManager
 {
-    protected static string $relationship = 'claimed_by_users';
+    protected static string $relationship = 'claims';
 
     protected static ?string $recordTitleAttribute = 'status';
 

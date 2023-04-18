@@ -9,6 +9,8 @@ use App\Models\MerchantOffer;
 use App\Services\PointService;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -25,13 +27,13 @@ class MerchantOfferController extends Controller
 
     /**
      * Get Offers
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Offers
-     * 
+     *
      * @bodyParam category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -54,41 +56,40 @@ class MerchantOfferController extends Controller
         // ensure only published offers
         $query = MerchantOffer::query()
             ->published()
-            ->with('merchant', 'merchant.user', 'categories', 'store', 'claims');
+            ->with('merchant', 'merchant.user', 'categories', 'store', 'claims', 'user');
 
         // category_ids filter
         if ($request->has('category_ids')) {
-            $query->whereHas('categories', function ($query) use ($request) {
-                $query->whereIn('id', $request->category_ids);
-            });
+            // explode categories ids
+            $category_ids = explode(',', $request->category_ids);
+            if (count($category_ids) > 0) {
+                $query->whereHas('categories', function ($q) use ($category_ids) {
+                    $q->whereIn('merchant_categories.id', $category_ids);
+                });
+            }
         }
-
-        // ensure offer is valid/coming soon 
+        // ensure offer is valid/coming soon
         $query->where(function ($query) {
             $query->where('available_at', '<=', now())
-                ->where('available_until', '>=', now());
-        })->orWhere(function ($query) {
-            $query->where('available_at', '>=', now());
+                ->where('available_until', '>=', now())
+                ->orWhere('available_at', '>=', now());
         });
-
         // order by latest first if no query sort order
         if (!$request->has('sort')) {
             $query->orderBy('created_at', 'desc');
         }
 
         $this->buildQuery($query, $request);
-
         $data = $query->paginate(config('app.paginate_per_page'));
-
         return MerchantOfferResource::collection($data);
     }
 
     /**
      * Get Offer By ID
-     * 
+     *
      * @param MerchantOffer $merchantOffer
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Offers
      * @queryParam offer_id integer required Offer ID. Example: 1
@@ -104,10 +105,10 @@ class MerchantOfferController extends Controller
 
     /**
      * Claim Offer
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Offers
      * @bodyParam offer_id integer required Offer ID. Example: 1
@@ -129,7 +130,7 @@ class MerchantOfferController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
-        // check offer is still valid by checking available_at and available_until 
+        // check offer is still valid by checking available_at and available_until
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
             ->with('merchant', 'merchant.user', 'store', 'claims')
@@ -154,10 +155,11 @@ class MerchantOfferController extends Controller
                 'message' => 'Insufficient Point Balance'
             ], 422);
         }
-
         try {
             // create claim by deducting user points with PointLedger and create a claim record
-            $offer->claims()->create([
+            // use attach here, to attach the data with intermediate table.
+            // here mean, offer claim by the user with the offer data (pivots).
+            $offer->claims()->attach($user->id, [
                 // order no is CLAIM(YMd)
                 'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
                 'user_id' => $user->id,
@@ -166,12 +168,12 @@ class MerchantOfferController extends Controller
                 'total' => $offer->unit_price * $request->quantity,
                 'discount' => 0,
                 'tax' => 0,
-                'net_amount' => $net_amount
+                'net_amount' => $net_amount,
+                'status' => 1 // status set as 1 as right now the offer should be ready to claim.
             ]);
-
             // debit from point ledger
             $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
-        
+
             // fire event
             event(new MerchantOfferClaimed($offer, $user));
         } catch (\Exception $e) {
@@ -190,7 +192,6 @@ class MerchantOfferController extends Controller
 
         // refresh offer with latest data
         $offer->refresh();
-
         return response()->json([
             'message' => 'Claimed successfully',
             'offer' => new MerchantOfferResource($offer)
