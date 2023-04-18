@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8cPbZ6h534Dv6ekVgdfaEa1'
+      - 'Bearer kfeb6cZV6hEDa5v4Pg81da3'
     controller: null
     method: null
     route: null
@@ -182,7 +182,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4eb1akDZ65Va8cEPg3hf6vd'
+      - 'Bearer 8Vgcf63k5P41bEheaZ6advD'
     controller: null
     method: null
     route: null
@@ -209,11 +209,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: eos
+        example: inventore
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: eos
+      offer_id: inventore
     queryParameters:
       offer_id:
         name: offer_id
@@ -241,7 +241,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VDZ6e68Pdk5gb4hc1vEa3af'
+      - 'Bearer P3ba4fVcE5a86DZkhg6d1ev'
     controller: null
     method: null
     route: null

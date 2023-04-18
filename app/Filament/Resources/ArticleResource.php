@@ -125,7 +125,7 @@ class ArticleResource extends Resource
                                         ->default(fn () => auth()->id()),
                                 ])
                                 ->multiple()
-                                ->preload()
+                                ->searchable()
                                 ->placeholder('Select categories...'),
                         ]),
 
@@ -140,8 +140,9 @@ class ArticleResource extends Resource
                                    Forms\Components\Hidden::make('user_id')
                                     ->default(fn () => auth()->id()),
                                 ])
+                                // search
+                                ->searchable()
                                 ->multiple()
-                                ->preload()
                                 ->placeholder('Select tags...'),
                         ]),
 

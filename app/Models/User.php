@@ -101,6 +101,16 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Interaction::class);
     }
 
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
     /**
      * User created article categories
      */

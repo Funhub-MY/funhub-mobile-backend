@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Funhub
+  title: FUNHUB
   description: ''
   version: 1.0.0
 servers:
@@ -287,7 +287,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - consequatur
+                    - fugiat
                   items:
                     type: string
                 category_ids:
@@ -1025,7 +1025,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: esse
+        example: reprehenderit
         required: true
         schema:
           type: string
@@ -1485,7 +1485,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 9
+        example: 5
         required: true
         schema:
           type: integer
@@ -2439,7 +2439,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eos
+        example: inventore
         required: true
         schema:
           type: string
@@ -2665,7 +2665,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 15
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2732,7 +2732,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 5
+                  example: 13
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3376,7 +3376,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
