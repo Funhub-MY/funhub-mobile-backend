@@ -51,6 +51,7 @@ class UserSettingsTest extends TestCase
                 'state_id',
                 'avatar',
                 'avatar_thumb',
+                'category_ids'
             ]);
     }
 

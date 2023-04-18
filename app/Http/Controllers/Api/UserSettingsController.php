@@ -26,6 +26,7 @@ class UserSettingsController extends Controller
      *  "state_id": 1,
      *  "avatar": "https://www.example.com/avatar.jpg",
      *  "avatar_thumb": "https://www.example.com/avatar_thumb.jpg",
+     *  "category_ids": [1,2,3]
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      * @response status=404 scenario="No settings found yet" {"message": "No settings found yet."}
@@ -45,6 +46,7 @@ class UserSettingsController extends Controller
             'state_id' => auth()->user()->state_id,
             'avatar' => auth()->user()->avatar_url,
             'avatar_thumb' => auth()->user()->avatar_thumb_url,
+            'category_ids' => auth()->user()->articleCategoriesInterests->pluck('id')->toArray(),
         ]; 
 
         if ($settings) {
