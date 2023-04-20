@@ -41,7 +41,7 @@ building:
 testing:
   stage: test
   script:
-    - php artisan test
+    - ./vendor/bin/pest
 
 # deploy_staging:
 #   stage: deploy
