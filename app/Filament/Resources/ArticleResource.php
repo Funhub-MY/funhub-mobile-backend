@@ -97,16 +97,14 @@ class ArticleResource extends Resource
 
                             Forms\Components\SpatieMediaLibraryFileUpload::make('Upload')
                                 ->label('Video')
-                                ->multiple()
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
-                                ->customProperties(['is_cover' => false])
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
                                     }
                                 })
-                                ->maxFiles(20)
+                                ->maxFiles(1)
                                 ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov, mpeg')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
                                 ->rules('file|mimes:mp4,mov,mpeg|max:'.config('app.max_size_per_video_kb')),
