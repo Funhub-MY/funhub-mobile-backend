@@ -112,9 +112,9 @@ class ArticleResource extends Resource
                                 ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(1)
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('image|required_if:type,video'),
+                                ->rules('image'),
 
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('Upload')
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('video')
                                 ->label('Video File')
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
@@ -126,7 +126,7 @@ class ArticleResource extends Resource
                                 ->acceptedFileTypes(['video/*'])
                                 ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('required_if:type,video|mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
+                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),
