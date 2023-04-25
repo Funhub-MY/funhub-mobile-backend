@@ -387,6 +387,25 @@ class ArticleTest extends TestCase
     }
 
     /**
+     * Articles gallery upload with is_cover true before article is created
+     * /api/v1/articles/gallery
+     */
+    public function testGalleryUploadIsCoverTrueBeforeArticleIsCreated()
+    {
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg'),
+            'is_cover' => 1
+        ]);
+
+        $this->assertTrue($this->user->media->where('file_name', 'test.jpg')->first()->custom_properties['is_cover'] == 1);
+        
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'uploaded'
+            ]);
+    }
+
+    /**
      * Create articles with images, tags and categories
      * /api/v1/articles
      */

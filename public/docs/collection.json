@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "0df3e4e3-9cf3-4272-a8fa-b0678d1bcc10",
+        "_postman_id": "434c627b-3bde-4be1-b87a-f2a85fc4c718",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -42,6 +42,12 @@
                         "body": {
                             "mode": "formdata",
                             "formdata": [
+                                {
+                                    "key": "is_cover",
+                                    "value": true,
+                                    "type": "text",
+                                    "description": "used to set this image as a cover."
+                                },
                                 {
                                     "key": "images",
                                     "src": [],
@@ -199,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"dicta\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"cumque\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -660,7 +666,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "ducimus",
+                                            "value": "quam",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -885,7 +891,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "16",
+                                            "value": "7",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1663,7 +1669,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "ratione",
+                                            "value": "perspiciatis",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1839,7 +1845,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -1880,7 +1886,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":2}"
                                 },
                                 "description": ""
                             },
@@ -2304,7 +2310,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

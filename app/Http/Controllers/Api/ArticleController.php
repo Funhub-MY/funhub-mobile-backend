@@ -455,6 +455,7 @@ class ArticleController extends Controller
      *
      * @group Article
      * @bodyParam images file required The images to upload.
+     * @bodyParam is_cover boolean used to set this image as a cover. Example:1
      * @response scenario=success {
      * "uploaded": [
      *     {
@@ -477,9 +478,10 @@ class ArticleController extends Controller
             // upload via spatie medialibrary
             // single image
             $uploaded = $user->addMedia($request->images)
+                ->withCustomProperties(['is_cover' => $request->is_cover])
                 ->toMediaCollection(
                     'user_uploads',
-                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
                 );
             return response()->json([
                 'uploaded' => [
@@ -496,9 +498,10 @@ class ArticleController extends Controller
             // multiple images
             $uploaded = collect($request->images)->map(function ($image) use ($user) {
                 return $user->addMedia($image)
+                    ->withCustomProperties(['is_cover' => $request->is_cover])
                     ->toMediaCollection(
                         'user_uploads',
-                        (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                        (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
                 );
             });
             $uploaded->each(function ($image) use (&$images) {
