@@ -206,7 +206,8 @@ class ArticleController extends Controller
      * @bodyParam published_at datetime The published date of the article. Example: 2021-02-21 12:00:00
      * @bodyParam tags array The tags of the article. Example: ["#tag1", "#tag2"]
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
-     * @bodyParam images array The images ID of the article. Must first call upload images endpoint. Example: [1, 2]
+     * @bodyParam images array The images IDs. Must first call upload images endpoint. Example: [1, 2]
+     * @bodyParam video integer The video ID. Must first call upload videos endpoint. Example: 1
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
      *
      *
@@ -260,6 +261,17 @@ class ArticleController extends Controller
             $userUploads = $user->getMedia('user_uploads')->whereIn('id', $request->images);
             $userUploads->each(function ($media) use ($article) {
                 // move to article_gallery collection of the created article
+                Log::info('Media moved', ['media' => $media]);
+                $media->move($article, Article::MEDIA_COLLECTION_NAME);
+            });
+        }
+
+        // if request->video attach video from user_videos to article_videos collection media library
+        if ($request->has('video')) {
+            
+            $userVideos = $user->getMedia('user_videos')->whereIn('id', $request->video);
+            $userVideos->each(function ($media) use ($article) {
+                // move to article_videos collection of the created article
                 Log::info('Media moved', ['media' => $media]);
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
             });
@@ -331,6 +343,7 @@ class ArticleController extends Controller
      * @bodyParam tags array The tags of the article. Example: ["#tag1", "#tag2"]
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
      * @bodyParam images file The images ID of the article.
+     * @bodyParam video file The video ID of the article.
      *
      * @response scenario=success {
      * "message": "Article updated",
@@ -362,9 +375,14 @@ class ArticleController extends Controller
             }
 
             // detach and delete images no longer in request->images
-            if ($request->has('images')) {
+            if ($request->has('images') || $request->has('video')) {
                 $article->getMedia(Article::MEDIA_COLLECTION_NAME)->each(function ($media) use ($request) {
+                    // images gallery
                     if (!in_array($media->id, $request->images)) {
+                        $media->delete();
+                    }
+                    // video
+                    if (!in_array($media->id, $request->video)) {
                         $media->delete();
                     }
                 });
@@ -519,7 +537,6 @@ class ArticleController extends Controller
         ->toMediaCollection('user_video_uploads',
                 (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
         );
-
 
         $filesystem = config('filesystems.default');
 

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Closure;
 
 class ArticleResource extends Resource
 {
@@ -57,6 +58,19 @@ class ArticleResource extends Resource
                         ])->columns(2),
 
                         Forms\Components\Section::make('Gallery')->schema([
+                            // select type of article
+                            Forms\Components\Select::make('type')
+                                ->label('Type')
+                                ->options([
+                                    'multimedia' => 'Images Article',
+                                    'video' => 'Video Article',
+                                ])
+                                ->reactive()
+                                ->required()
+                                ->rules('required')
+                                ->helperText('Different type of articles will be displayed differently in user view')
+                                ->columnSpan('full'),
+
                             // Forms\Components\SpatieMediaLibraryFileUpload::make('cover_image')
                             //     ->label('Cover Image')
                             //     ->collection('article_cover')
@@ -78,7 +92,24 @@ class ArticleResource extends Resource
                                     }
                                 })
                                 ->maxFiles(20)
+                                ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
+
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('Upload')
+                                ->label('Video')
+                                ->multiple()
+                                ->collection(Article::MEDIA_COLLECTION_NAME)
+                                ->columnSpan('full')
+                                ->customProperties(['is_cover' => false])
+                                ->disk(function () {
+                                    if (config('filesystems.default') === 's3') {
+                                        return 's3_public';
+                                    }
+                                })
+                                ->maxFiles(20)
+                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov, mpeg')
+                                ->hidden(fn (Closure $get) => $get('type') !== 'video')
+                                ->rules('file|mimes:mp4,mov,mpeg|max:'.config('app.max_size_per_video_kb')),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),
@@ -175,7 +206,7 @@ class ArticleResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\BadgeColumn::make('status')
+                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(Article::STATUS)
                     ->colors([
                         'secondary' => 0,

@@ -32,6 +32,7 @@ class ArticleCreateRequest extends FormRequest
             'categories' => 'nullable|array|exists:article_categories,id',
             'tags' => 'nullable|array',
             'images' => 'nullable|array',
+            'video' => 'nullable|required_if:type,video',
         ];
     }
 }
