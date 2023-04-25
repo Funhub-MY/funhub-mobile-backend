@@ -553,6 +553,6 @@ class ArticleController extends Controller
         }
 
         fclose($stream);
-        return response()->json(['videoUrl' => $fullUrl]);
+        return response()->json(['url' => $fullUrl]);
     }
 }
