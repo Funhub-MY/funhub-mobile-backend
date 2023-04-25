@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "http:\/\/localhost"
+            "value": "https:\/\/funhub-mobile-backend.test"
         }
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "fa4b02db-7b0b-4436-915e-1f4fc3dbc884",
+        "_postman_id": "b7fd47df-d0bd-4fe9-ad17-3e5552cd19c0",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -63,6 +63,47 @@
                             "code": 422,
                             "body": "{\"errors\": [\"images\": [\"The images field is required.\"] ]}",
                             "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Video for Article",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/video-upload",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/video-upload"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "video",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress \/ calculate your own using X-Content-Duration"
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"url\" : \"http:\/\/localhost:8000\/storage\/user_video_uploads\/1\/video.mp4\"\n}",
+                            "name": "success"
                         }
                     ]
                 },
@@ -158,7 +199,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"fugiat\"],\"category_ids\":[1,2,3],\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"ea\"],\"category_ids\":[1,2,3],\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -614,7 +655,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "reprehenderit",
+                                            "value": "odit",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -839,7 +880,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "5",
+                                            "value": "7",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1617,7 +1658,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "inventore",
+                                            "value": "eum",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1793,7 +1834,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -1834,7 +1875,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":13}"
+                                    "raw": "{\"user_id\":9}"
                                 },
                                 "description": ""
                             },

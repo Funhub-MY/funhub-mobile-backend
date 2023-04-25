@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'http://localhost'
+    url: 'https://funhub-mobile-backend.test'
 paths:
   /api/v1/articles/gallery:
     post:
@@ -99,6 +99,61 @@ paths:
                   description: 'The images to upload.'
               required:
                 - images
+  /api/v1/articles/video-upload:
+    post:
+      summary: 'Upload Video for Article'
+      operationId: uploadVideoForArticle
+      description: 'Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: multipart/form-data
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  url: 'http://localhost:8000/storage/user_video_uploads/1/video.mp4'
+                properties:
+                  url:
+                    type: string
+                    example: 'http://localhost:8000/storage/user_video_uploads/1/video.mp4'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+                  description: 'The video to upload.'
+              required:
+                - video
   /api/v1/articles/my_articles:
     get:
       summary: 'Get Articles for Logged in user (for Profile Page)'
@@ -287,7 +342,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - fugiat
+                    - ea
                   items:
                     type: string
                 category_ids:
@@ -1025,7 +1080,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: reprehenderit
+        example: odit
         required: true
         schema:
           type: string
@@ -1485,7 +1540,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 5
+        example: 7
         required: true
         schema:
           type: integer
@@ -2439,7 +2494,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: inventore
+        example: eum
         required: true
         schema:
           type: string
@@ -2665,7 +2720,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 15
+                  example: 4
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2732,7 +2787,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 13
+                  example: 9
               required:
                 - user_id
   /api/v1/user/settings:

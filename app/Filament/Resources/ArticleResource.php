@@ -71,7 +71,13 @@ class ArticleResource extends Resource
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
-                                ->maxFiles(10)
+                                // disk is s3_public 
+                                ->disk(function () {
+                                    if (config('filesystems.default') === 's3') {
+                                        return 's3_public';
+                                    }
+                                })
+                                ->maxFiles(20)
                                 ->rules('image'),
                         ])->columnSpan('full')
                     ])
@@ -96,8 +102,7 @@ class ArticleResource extends Resource
                                 ->options(Article::STATUS)->default(0),
                             Forms\Components\DatePicker::make('published_at')
                                 ->label('Publish At')
-                                // set rule to date and must be a future date
-                                ->rules('date|after_or_equal:today')
+                                               
                                 ->helperText('If you choose a future date, the article will be published at that date.')
                                 ->default(now())
                         ])->columnSpan('Status'),

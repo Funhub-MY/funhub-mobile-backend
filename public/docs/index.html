@@ -26,7 +26,7 @@
             </style>
 
     <script>
-        var baseUrl = "http://localhost";
+        var baseUrl = "https://funhub-mobile-backend.test";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
@@ -74,6 +74,9 @@
                                     <ul id="tocify-subheader-article" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="article-POSTapi-v1-articles-gallery">
                                 <a href="#article-POSTapi-v1-articles-gallery">Upload Images for Article</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="article-POSTapi-v1-articles-video-upload">
+                                <a href="#article-POSTapi-v1-articles-video-upload">Upload Video for Article</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles-my_articles">
                                 <a href="#article-GETapi-v1-articles-my_articles">Get Articles for Logged in user (for Profile Page)</a>
@@ -320,7 +323,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 18, 2023</li>
+        <li>Last updated: April 25, 2023</li>
     </ul>
 </div>
 
@@ -329,14 +332,14 @@ Only owner can call this method</a>
     <div class="content">
         <h1 id="introduction">Introduction</h1>
 <aside>
-    <strong>Base URL</strong>: <code>http://localhost</code>
+    <strong>Base URL</strong>: <code>https://funhub-mobile-backend.test</code>
 </aside>
 <p>This documentation aims to provide all the information you need to work with our API.</p>
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
 You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
-<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {USER_TOKEN_KEY}"</code></strong>.</p>
+<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {USER_TOKEN_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You will received a token to authenticate user requests after you logged in.</p>
 
@@ -358,16 +361,16 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/articles/gallery" \
+    "https://funhub-mobile-backend.test/api/v1/articles/gallery" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpICkad8" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeWTIak" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles/gallery"
+    "https://funhub-mobile-backend.test/api/v1/articles/gallery"
 );
 
 const headers = {
@@ -495,7 +498,147 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpICkad8</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeWTIak</code></p>
+        </div>
+        </form>
+
+                    <h2 id="article-POSTapi-v1-articles-video-upload">Upload Video for Article</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration</p>
+
+<span id="example-requests-POSTapi-v1-articles-video-upload">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/articles/video-upload" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpKBUb0I" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/articles/video-upload"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('video', document.querySelector('input[name="video"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-articles-video-upload">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;url&quot;: &quot;http://localhost:8000/storage/user_video_uploads/1/video.mp4&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-articles-video-upload" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-articles-video-upload"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles-video-upload" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-articles-video-upload" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-articles-video-upload"></code></pre>
+</span>
+<form id="form-POSTapi-v1-articles-video-upload" data-method="POST"
+      data-path="api/v1/articles/video-upload"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-articles-video-upload', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-articles-video-upload"
+                    onclick="tryItOut('POSTapi-v1-articles-video-upload');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-articles-video-upload"
+                    onclick="cancelTryOut('POSTapi-v1-articles-video-upload');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-articles-video-upload" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/articles/video-upload</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-articles-video-upload"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-articles-video-upload"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-articles-video-upload"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+ &nbsp;
+                <input type="file" style="display: none"
+               name="video"                data-endpoint="POSTapi-v1-articles-video-upload"
+               value=""
+               data-component="body">
+    <br>
+<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpKBUb0I</code></p>
         </div>
         </form>
 
@@ -513,7 +656,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/articles/my_articles" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/my_articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -531,7 +674,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles/my_articles"
+    "https://funhub-mobile-backend.test/api/v1/articles/my_articles"
 );
 
 const headers = {
@@ -749,7 +892,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/articles/my_bookmarks" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/my_bookmarks" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -766,7 +909,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles/my_bookmarks"
+    "https://funhub-mobile-backend.test/api/v1/articles/my_bookmarks"
 );
 
 const headers = {
@@ -962,13 +1105,13 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/articles" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"fugiat\"
+        \"ea\"
     ],
     \"category_ids\": [
         1,
@@ -993,7 +1136,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles"
+    "https://funhub-mobile-backend.test/api/v1/articles"
 );
 
 const headers = {
@@ -1004,7 +1147,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "fugiat"
+        "ea"
     ],
     "category_ids": [
         1,
@@ -1253,7 +1396,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/articles" \
+    "https://funhub-mobile-backend.test/api/v1/articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1282,7 +1425,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles"
+    "https://funhub-mobile-backend.test/api/v1/articles"
 );
 
 const headers = {
@@ -1541,7 +1684,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/articles/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1549,7 +1692,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles/1"
+    "https://funhub-mobile-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -1685,7 +1828,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/v1/articles/1" \
+    "https://funhub-mobile-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
@@ -1693,12 +1836,12 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpIxU6a7" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpRduKh5" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles/1"
+    "https://funhub-mobile-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -1895,7 +2038,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpIxU6a7</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpRduKh5</code></p>
         </div>
         </form>
 
@@ -1913,7 +2056,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/v1/articles/1" \
+    "https://funhub-mobile-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1921,7 +2064,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/articles/1"
+    "https://funhub-mobile-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -2058,7 +2201,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/article_tags" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_tags" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2075,7 +2218,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/article_tags"
+    "https://funhub-mobile-backend.test/api/v1/article_tags"
 );
 
 const headers = {
@@ -2274,7 +2417,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/article_tags/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_tags/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2282,7 +2425,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/article_tags/1"
+    "https://funhub-mobile-backend.test/api/v1/article_tags/1"
 );
 
 const headers = {
@@ -2417,7 +2560,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/article_categories" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2435,7 +2578,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/article_categories"
+    "https://funhub-mobile-backend.test/api/v1/article_categories"
 );
 
 const headers = {
@@ -2646,7 +2789,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/article_categories/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_categories/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2654,7 +2797,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/article_categories/1"
+    "https://funhub-mobile-backend.test/api/v1/article_categories/1"
 );
 
 const headers = {
@@ -2789,7 +2932,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/replies/reprehenderit" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/odit" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2806,7 +2949,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/replies/reprehenderit"
+    "https://funhub-mobile-backend.test/api/v1/comments/replies/odit"
 );
 
 const headers = {
@@ -2931,10 +3074,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="reprehenderit"
+               value="odit"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>reprehenderit</code></p>
+<p>The ID of the comment. Example: <code>odit</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3019,7 +3162,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/comments/like_toggle" \
+    "https://funhub-mobile-backend.test/api/v1/comments/like_toggle" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3031,7 +3174,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/like_toggle"
+    "https://funhub-mobile-backend.test/api/v1/comments/like_toggle"
 );
 
 const headers = {
@@ -3170,7 +3313,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/comments/report" \
+    "https://funhub-mobile-backend.test/api/v1/comments/report" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3183,7 +3326,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/report"
+    "https://funhub-mobile-backend.test/api/v1/comments/report"
 );
 
 const headers = {
@@ -3341,7 +3484,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3361,7 +3504,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments"
+    "https://funhub-mobile-backend.test/api/v1/comments"
 );
 
 const headers = {
@@ -3600,7 +3743,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/comments" \
+    "https://funhub-mobile-backend.test/api/v1/comments" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3615,7 +3758,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments"
+    "https://funhub-mobile-backend.test/api/v1/comments"
 );
 
 const headers = {
@@ -3797,7 +3940,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/comments/5" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/7" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3810,7 +3953,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/5"
+    "https://funhub-mobile-backend.test/api/v1/comments/7"
 );
 
 const headers = {
@@ -3936,10 +4079,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="5"
+               value="7"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>5</code></p>
+<p>The ID of the comment. Example: <code>7</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3980,7 +4123,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/v1/comments/1" \
+    "https://funhub-mobile-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3992,7 +4135,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/1"
+    "https://funhub-mobile-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -4156,7 +4299,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/v1/comments/1" \
+    "https://funhub-mobile-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4164,7 +4307,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/comments/1"
+    "https://funhub-mobile-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -4283,7 +4426,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/interactions" \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4302,7 +4445,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/interactions"
+    "https://funhub-mobile-backend.test/api/v1/interactions"
 );
 
 const headers = {
@@ -4529,7 +4672,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/interactions" \
+    "https://funhub-mobile-backend.test/api/v1/interactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4543,7 +4686,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/interactions"
+    "https://funhub-mobile-backend.test/api/v1/interactions"
 );
 
 const headers = {
@@ -4706,7 +4849,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/interactions/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4714,7 +4857,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/interactions/1"
+    "https://funhub-mobile-backend.test/api/v1/interactions/1"
 );
 
 const headers = {
@@ -4849,7 +4992,7 @@ Only owner can call this method</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/v1/interactions/1" \
+    "https://funhub-mobile-backend.test/api/v1/interactions/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4857,7 +5000,7 @@ Only owner can call this method</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/interactions/1"
+    "https://funhub-mobile-backend.test/api/v1/interactions/1"
 );
 
 const headers = {
@@ -4994,7 +5137,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/sendOtp" \
+    "https://funhub-mobile-backend.test/api/v1/sendOtp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5006,7 +5149,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/sendOtp"
+    "https://funhub-mobile-backend.test/api/v1/sendOtp"
 );
 
 const headers = {
@@ -5144,7 +5287,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/verifyOtp" \
+    "https://funhub-mobile-backend.test/api/v1/verifyOtp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5157,7 +5300,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/verifyOtp"
+    "https://funhub-mobile-backend.test/api/v1/verifyOtp"
 );
 
 const headers = {
@@ -5320,7 +5463,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/loginWithPassword" \
+    "https://funhub-mobile-backend.test/api/v1/loginWithPassword" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5333,7 +5476,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/loginWithPassword"
+    "https://funhub-mobile-backend.test/api/v1/loginWithPassword"
 );
 
 const headers = {
@@ -5493,7 +5636,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/register/otp" \
+    "https://funhub-mobile-backend.test/api/v1/register/otp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5508,7 +5651,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/register/otp"
+    "https://funhub-mobile-backend.test/api/v1/register/otp"
 );
 
 const headers = {
@@ -5686,7 +5829,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/login/facebook" \
+    "https://funhub-mobile-backend.test/api/v1/login/facebook" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5697,7 +5840,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/login/facebook"
+    "https://funhub-mobile-backend.test/api/v1/login/facebook"
 );
 
 const headers = {
@@ -5807,7 +5950,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/login/google" \
+    "https://funhub-mobile-backend.test/api/v1/login/google" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5818,7 +5961,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/login/google"
+    "https://funhub-mobile-backend.test/api/v1/login/google"
 );
 
 const headers = {
@@ -5929,7 +6072,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/logout" \
+    "https://funhub-mobile-backend.test/api/v1/logout" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5937,7 +6080,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/logout"
+    "https://funhub-mobile-backend.test/api/v1/logout"
 );
 
 const headers = {
@@ -6061,7 +6204,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/complete-profile" \
+    "https://funhub-mobile-backend.test/api/v1/user/complete-profile" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6075,7 +6218,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/complete-profile"
+    "https://funhub-mobile-backend.test/api/v1/user/complete-profile"
 );
 
 const headers = {
@@ -6259,7 +6402,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/merchant/offers" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6281,7 +6424,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/merchant/offers"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers"
 );
 
 const headers = {
@@ -6495,7 +6638,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/merchant/offers/claim" \
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/claim" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6508,7 +6651,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/merchant/offers/claim"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/claim"
 );
 
 const headers = {
@@ -6670,7 +6813,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/merchant/offers/inventore?offer_id=1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/eum?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6678,7 +6821,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/merchant/offers/inventore"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/eum"
 );
 
 const params = {
@@ -6790,10 +6933,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="inventore"
+               value="eum"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>inventore</code></p>
+<p>The ID of the offer. Example: <code>eum</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -6828,7 +6971,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/countries" \
+    --get "https://funhub-mobile-backend.test/api/v1/countries" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6836,7 +6979,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/countries"
+    "https://funhub-mobile-backend.test/api/v1/countries"
 );
 
 const headers = {
@@ -6952,7 +7095,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/states" \
+    --get "https://funhub-mobile-backend.test/api/v1/states" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6960,7 +7103,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/states"
+    "https://funhub-mobile-backend.test/api/v1/states"
 );
 
 const headers = {
@@ -7080,7 +7223,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/user/followings" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/followings" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7088,7 +7231,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/followings"
+    "https://funhub-mobile-backend.test/api/v1/user/followings"
 );
 
 const headers = {
@@ -7203,19 +7346,19 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/follow" \
+    "https://funhub-mobile-backend.test/api/v1/user/follow" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 15
+    \"user_id\": 4
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/follow"
+    "https://funhub-mobile-backend.test/api/v1/user/follow"
 );
 
 const headers = {
@@ -7225,7 +7368,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 15
+    "user_id": 4
 };
 
 fetch(url, {
@@ -7335,10 +7478,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="15"
+               value="4"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>15</code></p>
+<p>The id of the user to follow Example: <code>4</code></p>
         </div>
         </form>
 
@@ -7356,19 +7499,19 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/unfollow" \
+    "https://funhub-mobile-backend.test/api/v1/user/unfollow" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 13
+    \"user_id\": 9
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/unfollow"
+    "https://funhub-mobile-backend.test/api/v1/user/unfollow"
 );
 
 const headers = {
@@ -7378,7 +7521,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 13
+    "user_id": 9
 };
 
 fetch(url, {
@@ -7488,10 +7631,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="13"
+               value="9"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>13</code></p>
+<p>The id of the user to unfollow Example: <code>9</code></p>
         </div>
         </form>
 
@@ -7510,7 +7653,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/user/followers" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/followers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7518,7 +7661,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/followers"
+    "https://funhub-mobile-backend.test/api/v1/user/followers"
 );
 
 const headers = {
@@ -7637,7 +7780,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/user/settings" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/settings" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7645,7 +7788,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings"
+    "https://funhub-mobile-backend.test/api/v1/user/settings"
 );
 
 const headers = {
@@ -7789,7 +7932,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/email" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/email" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -7801,7 +7944,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/email"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/email"
 );
 
 const headers = {
@@ -7943,7 +8086,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/name" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/name" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -7955,7 +8098,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/name"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/name"
 );
 
 const headers = {
@@ -8097,7 +8240,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/article_categories" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/article_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8113,7 +8256,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/article_categories"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/article_categories"
 );
 
 const headers = {
@@ -8265,16 +8408,16 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/avatar/upload" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpRcZqf0" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpj1nMPR" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/avatar/upload"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload"
 );
 
 const headers = {
@@ -8398,7 +8541,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpRcZqf0</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpj1nMPR</code></p>
         </div>
         </form>
 
@@ -8416,7 +8559,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/username" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/username" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8428,7 +8571,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/username"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/username"
 );
 
 const headers = {
@@ -8570,7 +8713,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/bio" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/bio" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8582,7 +8725,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/bio"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/bio"
 );
 
 const headers = {
@@ -8724,7 +8867,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/dob" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/dob" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8738,7 +8881,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/dob"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/dob"
 );
 
 const headers = {
@@ -8904,7 +9047,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/gender" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/gender" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8916,7 +9059,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/gender"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/gender"
 );
 
 const headers = {
@@ -9049,7 +9192,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/location" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/location" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9062,7 +9205,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/location"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/location"
 );
 
 const headers = {
@@ -9217,7 +9360,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/user/settings/job-title" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/job-title" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9229,7 +9372,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/user/settings/job-title"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/job-title"
 );
 
 const headers = {

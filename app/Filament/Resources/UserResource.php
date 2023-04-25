@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class UserResource extends Resource
 {
@@ -90,6 +91,18 @@ class UserResource extends Resource
                     ])->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
                     ->schema([
+                        // avatar
+                        SpatieMediaLibraryFileUpload::make('avatar')
+                            ->maxFiles(1)
+                            ->nullable()
+                             // disk is s3_public 
+                             ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->collection('avatar'),
+
                         // bio
                         Forms\Components\Textarea::make('bio')
                             ->rules('nullable', 'max:255'),

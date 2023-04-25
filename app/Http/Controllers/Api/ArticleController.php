@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 use function PHPSTORM_META\map;
@@ -451,7 +452,11 @@ class ArticleController extends Controller
         if (!is_array($request->images)) {
             // upload via spatie medialibrary
             // single image
-            $uploaded = $user->addMedia($request->images)->toMediaCollection('user_uploads');
+            $uploaded = $user->addMedia($request->images)
+                ->toMediaCollection(
+                    'user_uploads',
+                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                );
             return response()->json([
                 'uploaded' => [
                     [
@@ -466,7 +471,11 @@ class ArticleController extends Controller
         } else {
             // multiple images
             $uploaded = collect($request->images)->map(function ($image) use ($user) {
-                return $user->addMedia($image)->toMediaCollection('user_uploads');
+                return $user->addMedia($image)
+                    ->toMediaCollection(
+                        'user_uploads',
+                        (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                );
             });
             $uploaded->each(function ($image) use (&$images) {
                 $images[] = [
@@ -485,7 +494,8 @@ class ArticleController extends Controller
 
     /**
      * Upload Video for Article
-     * Must be able to stream completion percentage back to client
+     * 
+     * Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -493,15 +503,7 @@ class ArticleController extends Controller
      * @group Article
      * @bodyParam video file required The video to upload.
      * @response scenario=success {
-     * "uploaded": [
-     *    {
-     *       "id": 1,
-     *       "name": "video.mp4",
-     *       "url": "http://localhost:8000/storage/user_uploads/1/video.mp4",
-     *       "size": 12345,
-     *       "type": "video/mp4"
-     *    }
-     * ]
+     * "url" : "http://localhost:8000/storage/user_video_uploads/1/video.mp4"
      * }
      */
     public function postVideoUpload(Request $request) {
@@ -509,28 +511,48 @@ class ArticleController extends Controller
         $request->validate([
             'video' => 'required|file|max:'.config('app.max_size_per_video_kb'),
         ]);
-
+        $videoFile = $request->file('video');
         $user = auth()->user();
                 
         // Create new media item in the "user_uploads" collection
-        $media = $user->addMedia($request->file('video'))->toMediaCollection('user_uploads');
+        $media = $user->addMedia($videoFile)
+        ->toMediaCollection('user_video_uploads',
+                (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+        );
 
-        // Use ChunkUploaded() method to stream progress updates to the user
-        return response()->stream(function () use ($media) {
-            $media->streamVideoResponse([
-                'chunkSize' => 10 * 1024 * 1024,
-                'onProgress' => function (int $bytesUploaded, int $fileSize) use ($media) {
-                    $percentageComplete = round(($bytesUploaded / $fileSize) * 100, 2);
-                    return $percentageComplete / 100; // returns the percentage completed as a double
-                },
-                'onComplete' => function () use ($media) {
-                    return $media; // return the spatie uploaded file object
-                }
+
+        $filesystem = config('filesystems.default');
+
+        if ($filesystem == 's3' || $filesystem == 's3_public') {
+            $fullUrl = Storage::disk(config('filesystems.default'))->url($media->getPath());
+            $stream = Storage::disk(config('filesystems.default'))->readStream($media->getPath());
+            $filesize = Storage::disk(config('filesystems.default'))->size($media->getPath());
+        } else {
+            $fullUrl = Storage::url($media->getPath());
+            $stream = Storage::readStream($media->getPath());
+            $filesize = Storage::size($media->getPath());
+        }
+
+        $chunksize = 1024 * 1024; // 1MB chunks
+        $bytesRead = 0;
+
+        while (!feof($stream)) {
+            $chunk = fread($stream, $chunksize);
+            $bytesRead += strlen($chunk);
+            $progress = min(100, round($bytesRead / $filesize * 100));
+
+            $response = new Response($chunk, 200, [
+                'Content-Type' => $videoFile->getClientMimeType(),
+                'X-Upload-Progress' => $progress,
+                'X-Content-Duration' => $filesize,
             ]);
-        }, 200, [
-            'Content-Type' => $media->mime_type,
-            'Content-Length' => $media->size,
-            'Content-Disposition' => 'attachment; filename="'.$media->file_name.'"'
-        ]);
+
+            ob_end_clean();
+            $response->send();
+            flush();
+        }
+
+        fclose($stream);
+        return response()->json(['videoUrl' => $fullUrl]);
     }
 }
