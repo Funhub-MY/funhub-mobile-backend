@@ -91,6 +91,7 @@ class ArticleResource extends Resource
                                         return 's3_public';
                                     }
                                 })
+                                ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(20)
                                 ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
@@ -104,10 +105,10 @@ class ArticleResource extends Resource
                                         return 's3_public';
                                     }
                                 })
-                                ->maxFiles(1)
-                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov, mpeg')
+                                ->acceptedFileTypes(['video/*'])
+                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('file|mimes:mp4,mov,mpeg|max:'.config('app.max_size_per_video_kb')),
+                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),
