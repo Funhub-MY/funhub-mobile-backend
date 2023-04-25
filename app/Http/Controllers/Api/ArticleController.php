@@ -35,6 +35,7 @@ class ArticleController extends Controller
      * 
      * @bodyParam article_ids array optional Article Ids to Filter. Example [1,2,3]
      * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      * @bodyParam following_only integer optional Filter by Articles by Users who logged in user is following. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -60,6 +61,11 @@ class ArticleController extends Controller
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
+
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
 
         // category_ids filter
         if ($request->has('category_ids')) {

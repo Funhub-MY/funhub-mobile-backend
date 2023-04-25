@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "b7fd47df-d0bd-4fe9-ad17-3e5552cd19c0",
+        "_postman_id": "0df3e4e3-9cf3-4272-a8fa-b0678d1bcc10",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -199,7 +199,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"ea\"],\"category_ids\":[1,2,3],\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"dicta\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -234,7 +234,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"excerpt\":\"This is a excerpt of article\"}"
+                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"video\":1,\"excerpt\":\"This is a excerpt of article\"}"
                         },
                         "description": ""
                     },
@@ -374,6 +374,11 @@
                                 },
                                 {
                                     "key": "images",
+                                    "src": [],
+                                    "type": "file"
+                                },
+                                {
+                                    "key": "video",
                                     "src": [],
                                     "type": "file"
                                 },
@@ -655,7 +660,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "odit",
+                                            "value": "ducimus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -880,7 +885,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "7",
+                                            "value": "16",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1658,7 +1663,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "eum",
+                                            "value": "ratione",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1834,7 +1839,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -1875,7 +1880,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -2299,7 +2304,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"female\"}"
+                            "raw": "{\"gender\":\"male\"}"
                         },
                         "description": ""
                     },

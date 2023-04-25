@@ -342,7 +342,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ea
+                    - dicta
                   items:
                     type: string
                 category_ids:
@@ -354,6 +354,10 @@ paths:
                     - 3
                   items:
                     type: string
+                video_only:
+                  type: integer
+                  description: 'optional Filter by Videos.'
+                  example: 1
                 following_only:
                   type: integer
                   description: 'optional Filter by Articles by Users who logged in user is following.'
@@ -491,12 +495,16 @@ paths:
                     type: string
                 images:
                   type: array
-                  description: 'The images ID of the article. Must first call upload images endpoint.'
+                  description: 'The images IDs. Must first call upload images endpoint.'
                   example:
                     - 1
                     - 2
                   items:
                     type: string
+                video:
+                  type: integer
+                  description: 'The video ID. Must first call upload videos endpoint.'
+                  example: 1
                 excerpt:
                   type: string
                   description: 'The excerpt of the article.'
@@ -650,6 +658,10 @@ paths:
                   type: string
                   format: binary
                   description: 'The images ID of the article.'
+                video:
+                  type: string
+                  format: binary
+                  description: 'The video ID of the article.'
               required:
                 - body
                 - status
@@ -1080,7 +1092,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: odit
+        example: ducimus
         required: true
         schema:
           type: string
@@ -1540,7 +1552,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 7
+        example: 16
         required: true
         schema:
           type: integer
@@ -2494,7 +2506,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eum
+        example: ratione
         required: true
         schema:
           type: string
@@ -2720,7 +2732,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 3
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2787,7 +2799,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 4
               required:
                 - user_id
   /api/v1/user/settings:
@@ -3431,7 +3443,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
