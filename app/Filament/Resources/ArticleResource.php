@@ -96,8 +96,26 @@ class ArticleResource extends Resource
                                 ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
 
+                            //  video upload
+                            // image upload for video thumbnail
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('video_thumbnail')
+                                ->label('Video Thumbnail')
+                                ->helperText('This image will be used as the thumbnail for the video')
+                                ->collection(Article::MEDIA_COLLECTION_NAME)
+                                ->columnSpan('full')
+                                ->disk(function () {
+                                    if (config('filesystems.default') === 's3') {
+                                        return 's3_public';
+                                    }
+                                })
+                                ->customProperties(['is_cover' => true])
+                                ->acceptedFileTypes(['image/*'])
+                                ->maxFiles(1)
+                                ->hidden(fn (Closure $get) => $get('type') !== 'video')
+                                ->rules('image|required_if:type,video'),
+
                             Forms\Components\SpatieMediaLibraryFileUpload::make('Upload')
-                                ->label('Video')
+                                ->label('Video File')
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->disk(function () {
@@ -108,7 +126,7 @@ class ArticleResource extends Resource
                                 ->acceptedFileTypes(['video/*'])
                                 ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
+                                ->rules('required_if:type,video|mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),
