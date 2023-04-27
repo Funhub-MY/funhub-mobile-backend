@@ -28,10 +28,10 @@ Route::group(['prefix' => 'v1'], function () {
     /**
      * Authenticated routes
      */
-    Route::group(['middleware' => ['auth:sanctum']],  function() {        
+    Route::group(['middleware' => ['auth:sanctum']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
-    
+
         // Country & State
         Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
         Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);
@@ -43,6 +43,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/my_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getMyArticles']);
         Route::get('articles/my_bookmarks', [\App\Http\Controllers\Api\ArticleController::class, 'getMyBookmarkedArticles']);
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
+        Route::post('articles/report', [\App\Http\Controllers\Api\ArticleController::class, 'postReportArticle']);
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
         Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
@@ -65,6 +66,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('user/followers', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowers']);
         Route::post('user/follow', [\App\Http\Controllers\Api\UserFollowingController::class, 'follow']);
         Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
+        Route::post('user/report', [\App\Http\Controllers\Api\UserController::class, 'postReportUser']);
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {

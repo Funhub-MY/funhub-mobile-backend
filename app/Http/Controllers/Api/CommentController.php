@@ -16,7 +16,7 @@ class CommentController extends Controller
 
     /**
      * Get comments on a commentable type (eg. Articles)
-     * 
+     *
      * @param $type string
      * @param $id integer
      * @param Request $request
@@ -34,7 +34,7 @@ class CommentController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
-     * 
+     *
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -42,7 +42,7 @@ class CommentController extends Controller
      *     "current_page": 1,
      *   }
      * }
-     * 
+     *
      * @response status=404 scenario="Not Found"
      */
     public function index(Request $request)
@@ -94,7 +94,7 @@ class CommentController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @authenticated
@@ -102,11 +102,11 @@ class CommentController extends Controller
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
-     * 
+     *
      * @response scenario=success {
      *  "comment": {},
      * }
-     * 
+     *
      * @response status=404 scenario="Not Found"
      * @response status=422 scenario="Invalid Form Fields" {"errors": ["commentable_type": ["The Commentable Type field is required."] ]}
      */
@@ -148,7 +148,7 @@ class CommentController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @authenticated
@@ -156,7 +156,7 @@ class CommentController extends Controller
      * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
      * @response scenario=success {
      *  "comment": {},
-     * } 
+     * }
      * @response status=404 scenario="Not Found"
      * @response status=401 scenario="Forbidden"
      */
@@ -184,13 +184,13 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @authenticated
      * @urlParam id integer required The id of the comment. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
-     * 
+     *
      * @response scenario=success {
      * "message": "Comment updated",
      * }
@@ -218,7 +218,7 @@ class CommentController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @authenticated
@@ -244,14 +244,16 @@ class CommentController extends Controller
 
     /**
      * Report a comment
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @bodyParam comment_id integer required The id of the comment. Example: 1
      * @bodyParam reason string required The reason for reporting the comment. Example: Spam
+     * @bodyParam violation_type required The violation type of this report
+     * @bodyParam violation_level required The violation level of this report
      * @response scenario=success {
      * "message": "Comment reported",
      * }
@@ -263,6 +265,8 @@ class CommentController extends Controller
         $request->validate([
             'comment_id' => 'required|integer',
             'reason' => 'required|string',
+            'violation_level' => 'required|integer',
+            'violation_type' => 'required|string'
         ]);
         $comment = Comment::where('id', request('comment_id'))->firstOrFail();
 
@@ -271,6 +275,8 @@ class CommentController extends Controller
             $comment->reports()->create([
                 'user_id' => auth()->id(),
                 'reason' => request('reason'),
+                'violation_level' => request('violation_level'),
+                'violation_type' => request('violation_type'),
             ]);
 
             // TODO: Auto hide comment if comment is reported more than X times
@@ -285,11 +291,11 @@ class CommentController extends Controller
 
     /**
      * Get replies to a comment
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
@@ -319,10 +325,10 @@ class CommentController extends Controller
 
     /**
      * Toggle a Comment Like
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Comments
      * @bodyParam comment_id integer required The id of the comment. Example: 1
