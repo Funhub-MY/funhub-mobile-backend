@@ -44,7 +44,7 @@ class Comment extends Model
 
     public function reports()
     {
-        return $this->morphMany(Report::class, 'reportable');
+        return $this->morphMany(Reports::class, 'reportable');
     }
 
     public function parent()

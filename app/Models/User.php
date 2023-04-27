@@ -74,7 +74,7 @@ class User extends Authenticatable implements HasMedia
     /**
      * Spatia Media conversions for thumbnail
      */
-    public function registerAllMediaConversions() : void {    
+    public function registerAllMediaConversions() : void {
         $this->addMediaConversion('thumb')
                 ->performOnCollections('avatar')
                 ->width(60)
@@ -217,6 +217,10 @@ class User extends Authenticatable implements HasMedia
             ->withTimestamps();
     }
     
+    public function reports()
+    {
+        return $this->morphMany(Reports::class, 'reportable');
+    }
 
     /**
      * Get the user's point balance
@@ -228,7 +232,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get the user's full phone number
-     * 
+     *
      * @return string
      */
     public function getFullPhoneNoAttribute()
@@ -239,10 +243,10 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get user avatar
-     * 
+     *
      * @return string
      */
-    public function getAvatarUrlAttribute() 
+    public function getAvatarUrlAttribute()
     {
         $avatar = $this->getMedia('avatar')->first();
         if ($avatar) {
@@ -254,7 +258,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get user avatar thumbnail
-     * 
+     *
      * @return string
      */
     public function getAvatarThumbUrlAttribute()
@@ -269,9 +273,9 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Set username attribute
-     * 
+     *
      * When user save a name, it also overrides the username if its null
-     * 
+     *
      * @param string $value
      * @return void
      */
@@ -298,5 +302,5 @@ class User extends Authenticatable implements HasMedia
             }
         }
     }
-    
+
 }
