@@ -203,6 +203,21 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(PointComponentLedger::class);
     }
 
+    // missions user created
+    public function missions()
+    {
+        return $this->hasMany(Mission::class);
+    }
+
+    // missions users are participating
+    public function missionsParticipating()
+    {
+        return $this->belongsToMany(Mission::class, 'missions_users')
+            ->withPivot('is_completed', 'started_at', 'current_value')
+            ->withTimestamps();
+    }
+    
+
     /**
      * Get the user's point balance
      */
