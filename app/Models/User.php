@@ -78,7 +78,10 @@ class User extends Authenticatable implements HasMedia
         $this->addMediaConversion('thumb')
                 ->performOnCollections('avatar')
                 ->width(60)
-                ->height(60);
+                ->height(60)
+                ->disk(
+                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+                );
     }
 
     public function articles()
@@ -202,7 +205,6 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(PointComponentLedger::class);
     }
-
     // missions user created
     public function missions()
     {
