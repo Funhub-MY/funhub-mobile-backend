@@ -78,10 +78,7 @@ class User extends Authenticatable implements HasMedia
         $this->addMediaConversion('thumb')
                 ->performOnCollections('avatar')
                 ->width(60)
-                ->height(60)
-                ->disk(
-                    (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
-                );
+                ->height(60);
     }
 
     public function articles()
