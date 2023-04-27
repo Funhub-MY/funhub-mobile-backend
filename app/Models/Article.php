@@ -103,7 +103,7 @@ class Article extends Model implements HasMedia
 
     public function reports()
     {
-        return $this->morphMany(Report::class, 'reportable');
+        return $this->morphMany(Reports::class, 'reportable');
     }
 
     public function likes()
@@ -127,7 +127,7 @@ class Article extends Model implements HasMedia
     /**
      * Scope a query to only include published articles.
      */
-    public function scopePublished(Builder $query): void 
+    public function scopePublished(Builder $query): void
     {
         $query->where('status', self::STATUS_PUBLISHED);
     }

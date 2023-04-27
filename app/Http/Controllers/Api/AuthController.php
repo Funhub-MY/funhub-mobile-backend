@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -26,13 +25,13 @@ class AuthController extends Controller
 
     /**
      * Login with Password
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
-     * 
+     *
      * @bodyParam country_code string required Country code of phone number. Example: 60
      * @bodyParam phone_no string required Phone number. Example: 1234567890
      * @bodyParam password string required Password. Example: abcd1234
@@ -88,10 +87,10 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
-     * 
+     *
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @response scenario=success {
@@ -119,7 +118,7 @@ class AuthController extends Controller
                 $otp = rand(100000, 999999);
                 $user->update([
                     'otp' => $otp,
-                    'otp_expiry' => now()->addMinutes(1), 
+                    'otp_expiry' => now()->addMinutes(1),
                 ]);
                 $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
             }
@@ -132,7 +131,7 @@ class AuthController extends Controller
                     'phone_country_code' => $request->country_code,
                     'phone_no' => $request->phone_no, // unique
                     'otp' => $otp,
-                    'otp_expiry' => now()->addMinutes(1), 
+                    'otp_expiry' => now()->addMinutes(1),
                 ]);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Phone Number already registered'], 422);
@@ -140,7 +139,7 @@ class AuthController extends Controller
             // fire sms
             $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
         }
-        
+
         return response()->json(['message' => 'OTP sent'], 200);
     }
 
@@ -151,10 +150,10 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
-     * 
+     *
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
@@ -216,20 +215,20 @@ class AuthController extends Controller
 
     /**
      * Register with OTP
-     * 
+     *
      * Register user with OTP
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
-     * 
+     *
      * @bodyParam country_code string required The country code of user's phone number. Example: 60
      * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
      * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
      * @bodyParam name string required The name of the use. Example: John Smith
      * @bodyParam password string required The password of the user. Example: abcd1234
-     * 
+     *
       * @response scenario=success {
      *  "user": {
      *     id: 1,
@@ -237,7 +236,7 @@ class AuthController extends Controller
      *  },
      *  "token": "AuthenticationTokenHere"
      * }
-     * 
+     *
      * @response status=422 scenario="Invalid Form Fields" {"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}
      */
     public function registerWithOtp(Request $request)
@@ -271,7 +270,7 @@ class AuthController extends Controller
              // log user in
              $token = $user->createToken('authToken');
              Auth::login($user);
- 
+
              return response()->json([
                  'user' => new UserResource($user),
                  'token' => $token->plainTextToken,
@@ -283,16 +282,16 @@ class AuthController extends Controller
 
     /**
      * Complete Profile
-     * 
+     *
      * Complete user profile after registration
      * @param Request $request
-     * 
+     *
      * @group Authentication
      * @authenticated
      * @bodyParam name string required The name of the use. Example: John Smith
      * @bodyParam email string required The email of the user. Example: john@example.com
      * @bodyParam password string required The password of the user. Example: abcd1234
-     * 
+     *
      * @response scenario=success {"message" : "Profile Updated"}
      * @response status=422 scenario="Invalid Form Fields" {"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}
      * @response status=422 scenario="Invalid Form Fields" {"message": "Please verify your phone number first" ]}
@@ -328,10 +327,10 @@ class AuthController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @authenticated
-     * 
+     *
      * @response scenario=success {"message" : "Logged Out"}
      * @response status=401 scenario="Access Denied" {"message": "Access Denied"}
      */
@@ -346,14 +345,14 @@ class AuthController extends Controller
 
     /**
      * Login with Facebook
-     * 
+     *
      * Login user with Facebook
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
-     * 
+     *
      * @bodyParam access_token string required The access token of the user from Facebook. Example: 1234567890
      */
     public function facebookLogin(Request $request)
@@ -362,10 +361,10 @@ class AuthController extends Controller
         $token = $request->input('access_token');
 
         $socialiteUser = Socialite::driver('facebook')->userFromToken($token);
-        
+
         //check if the user already exists in the database
         $user = User::where('email', $socialiteUser->getEmail())->first();
-        
+
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
             $user = new User();
@@ -389,12 +388,12 @@ class AuthController extends Controller
 
     /**
      * Login with Google
-     * 
+     *
      * Login user with Google
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
      * @bodyParam access_token string required The access token of the user from Google. Example: 1234567890
@@ -404,10 +403,10 @@ class AuthController extends Controller
         $token = $request->input('access_token');
 
         $socialiteUser = Socialite::driver('google')->userFromToken($token);
-        
+
         //check if the user already exists in the database
         $user = User::where('email', $socialiteUser->getEmail())->first();
-        
+
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
             $user = new User();

@@ -32,7 +32,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Article
-     * 
+     *
      * @bodyParam article_ids array optional Article Ids to Filter. Example [1,2,3]
      * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
      * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
@@ -105,7 +105,7 @@ class ArticleController extends Controller
                 $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
             });
         }
-        
+
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
@@ -226,8 +226,8 @@ class ArticleController extends Controller
     public function store(ArticleCreateRequest $request)
     {
         $user = auth()->user();
-    
-        // slug 
+
+        // slug
         // regex detect if non-latin characters exists in $request->title
         $slug = '';
         if (preg_match('/[^\x20-\x7E]/', $request->title)) {
@@ -240,7 +240,7 @@ class ArticleController extends Controller
                 $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $slug);
                 $slug = preg_replace('/[^\w\s]+/', '-', $slug);
             }
-            
+
             // Replace spaces and multiple dashes with a single dash
             $slug = preg_replace('/\s+/', '-', $slug);
             $slug = preg_replace('/-+/', '-', $slug);
@@ -274,7 +274,7 @@ class ArticleController extends Controller
 
         // if request->video attach video from user_videos to article_videos collection media library
         if ($request->has('video')) {
-            
+
             $userVideos = $user->getMedia('user_videos')->whereIn('id', $request->video);
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
@@ -521,12 +521,14 @@ class ArticleController extends Controller
 
     /**
      * Upload Video for Article
-     * 
+     *
      * Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration
-     * 
+     *
+     * Must be able to stream completion percentage back to client
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @bodyParam video file required The video to upload.
      * @response scenario=success {
@@ -540,7 +542,7 @@ class ArticleController extends Controller
         ]);
         $videoFile = $request->file('video');
         $user = auth()->user();
-                
+
         // Create new media item in the "user_uploads" collection
         $media = $user->addMedia($videoFile)
         ->toMediaCollection('user_video_uploads',
@@ -580,5 +582,47 @@ class ArticleController extends Controller
 
         fclose($stream);
         return response()->json(['url' => $fullUrl]);
+    }
+    /**
+     * Report an article
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Article
+     * @subgroup Reports
+     * @bodyParam article integer required The id of the article. Example: 1
+     * @bodyParam reason string required The reason for reporting the comment. Example: Spam
+     * @bodyParam violation_type required The violation type of this report
+     * @bodyParam violation_level required The violation level of this report
+     * @response scenario=success {
+     * "message": "Comment reported",
+     * }
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["article_id": ["The Article Id field is required."] ]}
+     * @response status=422 scenario="Invalid Form Fields" {"message": "You have already reported this comment" ]}
+     */
+    public function postReportArticle(Request $request)
+    {
+        // validate
+        $request->validate([
+           'article_id' => 'required|integer',
+           'reason' => 'required|string',
+           'violation_type' => 'required|string',
+           'violation_level' => 'required|integer',
+        ]);
+        // find article
+        $article = Article::where('id', request('article_id'))->firstOrFail();
+        // check if user has reported this comment before if not create
+        if (!$article->reports()->where('user_id', auth()->id())->exists()) {
+            $article->reports()->create([
+                'user_id' => auth()->id(),
+                'reason' => request('reason'),
+                'violation_type' => request('violation_type'),
+                'violation_level' => request('violation_level'),
+            ]);
+        } else {
+            return response()->json(['message' => 'You have already reported this comment'], 422);
+        }
+        return response()->json(['message' => 'Comment reported']);
     }
 }
