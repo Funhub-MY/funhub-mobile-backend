@@ -87,18 +87,6 @@ class ArticleController extends Controller
             }
         }
         
-        // get article whereHas media disk is s3, move directory to use disk s3_public
-        $s3 = Article::whereHas('media', function ($q) {
-            $q->where('disk', 's3');
-        });
-        // move disk to use s3_public
-        $s3->each(function ($article) {
-            $article->media->each(function ($media) {
-                $media->move($article->media, 'new-collection', 's3');
-            });
-        });
-
-
         // tag_ids filter
         if ($request->has('tag_ids')) {
             $tag_ids = explode(',', $request->tag_ids);
