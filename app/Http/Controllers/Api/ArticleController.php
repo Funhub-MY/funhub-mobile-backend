@@ -58,6 +58,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
+        ->where()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
@@ -86,6 +87,18 @@ class ArticleController extends Controller
                 $query->whereIn('id', $article_ids);
             }
         }
+        
+        // get article whereHas media disk is s3, move directory to use disk s3_public
+        $s3 = Article::whereHas('media', function ($q) {
+            $q->where('disk', 's3');
+        });
+        // move disk to use s3_public
+        $s3->each(function ($article) {
+            $article->media->each(function ($media) {
+                $media->move($article->media, 'new-collection', 's3');
+            });
+        });
+
 
         // tag_ids filter
         if ($request->has('tag_ids')) {
@@ -569,7 +582,7 @@ class ArticleController extends Controller
             $bytesRead += strlen($chunk);
             $progress = min(100, round($bytesRead / $filesize * 100));
 
-            $response = new Response($chunk, 200, [
+            $response = response($chunk, 200, [
                 'Content-Type' => $videoFile->getClientMimeType(),
                 'X-Upload-Progress' => $progress,
                 'X-Content-Duration' => $filesize,
