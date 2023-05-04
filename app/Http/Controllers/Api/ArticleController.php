@@ -58,7 +58,6 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
-        ->where()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
@@ -596,6 +595,7 @@ class ArticleController extends Controller
         fclose($stream);
         return response()->json(['url' => $fullUrl]);
     }
+    
     /**
      * Report an article
      *
