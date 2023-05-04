@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebaseAuthController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Exception\AuthException;
+use Kreait\Firebase\Exception\FirebaseException;
 use Laravel\Socialite\Facades\Socialite;
+use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class AuthController extends Controller
 {
@@ -426,6 +432,71 @@ class AuthController extends Controller
             'user' => new UserResource($user),
             'token' => $sanctumToken
         ], 200);
+    }
+    /**
+     * Login with Social
+     *
+     * Login user with Social
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Authentication
+     * @unauthenticated
+     * @bodyParam access_token string required The access token of the user from Google. Example: 1234567890
+     */
+    public function socialLogin(Request $request) {
+        // get access token from
+        $token = $request->input('access_token');
+        $firebase_auth = Firebase::auth();
+        // get verify ID, wrap it in a try catch.
+        try {
+            $verified_id = $firebase_auth->verifyIdToken($token);
+        } catch (FailedToVerifyToken $e) {
+            Log::error($e->getMessage());
+            return response()->json(['message' => 'Invalid Token'], 422);
+        }
+        // as this point, the auth should be verified at firebase.
+        $uid = $verified_id->claims()->get('sub');
+        if ($uid) {
+            $firebase_user = $firebase_auth->getUser($uid);
+        } else {
+            return response()->json(['message' => 'Invalid Token'], 422);
+        }
+        //check if the user already exists in the database
+        $user = User::where('email', $firebase_user->email)->first();
+        if(!$user) {
+            //if user does not exist in the database, create a new user using the Facebook data
+            $user = new User();
+            if ($firebase_user->displayName == null || $firebase_user->displayName == '') {
+                $pattern = '/(.*)@.*$/';
+                preg_match($pattern, $firebase_user->email, $matches);
+                $textBeforeDomain = trim($matches[1]);
+                $cleanedText = preg_replace('/[^a-zA-Z0-9]+/', '', $textBeforeDomain);
+                $user->name = $cleanedText;
+            } else {
+                $user->name = $firebase_user->displayName;
+            }
+            $user->email = $firebase_user->email;
+            if ($firebase_user->providerData[0]->providerId == 'google.com') {
+                $user->google_id = $firebase_user->providerData[0]->uid;
+            } else {
+                // need to get facebook_id.
+                $user->facebook_id = $firebase_user->uid; // use uid at the moment.
+            }
+            $user->save();
+        }
+        //log the new user in
+        auth()->login($user);
+        $sanctumToken = $user->createToken('authToken');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged in successfully',
+            'user' => new UserResource($user),
+            'token' => $sanctumToken
+        ], 200);
+
     }
     // TODO:: functions below can be deleted once flutter end finish login implementation. It was created for unit testing purpose.
     public function redirectToGoogle()

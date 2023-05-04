@@ -8,7 +8,10 @@ use App\Models\Mission;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use Filament\Forms;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -21,33 +24,62 @@ class MissionResource extends Resource
 {
     protected static ?string $model = Mission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
+
+    protected static ?string $navigationGroup = 'Points & Rewards';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->autofocus()
-                    ->required()
-                    ->rules('required', 'max:255'),
+               Group::make()
+                ->schema([
+                    Section::make('Reward')
+                        ->schema([
+                            TextInput::make('name')
+                            ->autofocus()
+                            ->required()
+                            ->rules('required', 'max:255'),
+            
+                            TextInput::make('description'),
+            
+                            // event select input
+                            Select::make('event')
+                                ->label('Event')
+                                ->options([
+                                    'new_comment_added' => 'Added a Comment on an Article',
+                                    'new_article_created' => 'Created a new Article',
+                                    'liked_an_article' => 'Liked an Article',
+                                    'liked_a_comment' => 'Liked a Comment',
+                                    'claim_an_offer' => 'Claimed a Merchant Offer/Deal',
+                                ])
+                                ->required()
+                                ->rules('required'),
+                            
+                            // when event selected, choose the value to meet to reward
+                            TextInput::make('value')
+                                ->label('Event Value')
+                                ->helperText('The value to meet to reward the user, eg 1 for event new comment added')
+                                ->required()
+                                ->default(1)
+                                ->hidden(fn ($request) => $request->input('event'))
+                                ->rules('required', 'numeric', 'min:1'),
+                        ]) 
+                ]),
 
-                TextInput::make('description'),
-
-                MorphToSelect::make('missionable')
+                // reward type
+                Forms\Components\MorphToSelect::make('missionable')
                     ->label('Reward Type')
                     ->types([
-                        Reward::class => 'Reward',
-                        RewardComponent::class => 'Reward Component',
-                    ])
-                    ->required()
-                    ->rules('required'),
+                        Forms\Components\MorphToSelect\Type::make(Reward::class)->titleColumnName('name'),
+                        Forms\Components\MorphToSelect\Type::make(RewardComponent::class)->titleColumnName('name'),
+                    ]),
 
                 // how many to reward
                 TextInput::make('reward_quantity')
                     ->label('Reward Quantity')
                     ->required()
-                    ->rules('required', 'numeric', 'min:1'),
+                    ->rules('required', 'numeric', 'min:1')
             ]);
     }
 

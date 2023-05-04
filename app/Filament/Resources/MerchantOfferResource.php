@@ -15,6 +15,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Closure;
 
 class MerchantOfferResource extends Resource
 {
@@ -35,6 +36,21 @@ class MerchantOfferResource extends Resource
                     ->schema([
                         Forms\Components\Card::make()
                             ->schema([
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                                    ->label('Offer Images')
+                                    ->multiple()
+                                    ->collection(MerchantOffer::MEDIA_COLLECTION_NAME)
+                                    ->columnSpan('full')
+                                    ->customProperties(['is_cover' => false])
+                                    // disk is s3_public 
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    })
+                                    ->acceptedFileTypes(['image/*'])
+                                    ->maxFiles(20)
+                                    ->rules('image'),
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
                                 Forms\Components\TextInput::make('unit_price')
@@ -64,19 +80,20 @@ class MerchantOfferResource extends Resource
                                     ->cols(10)
                                     ->columnSpan('full')
                                     ->required(),
-                                    Forms\Components\Select::make('status')
-                                        ->options(MerchantOffer::STATUS)->default(0),
+                                
                             ])->columns(2),
                     ])->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Owners')
+                        Forms\Components\Section::make('Other')
                             ->schema([
+                                Forms\Components\Select::make('status')
+                                    ->options(MerchantOffer::STATUS)->default(0),
                                 Forms\Components\Select::make('user_id')
+                                    ->label('Merchant')
                                     ->searchable()
                                     ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
                                     ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
-                                    ->default(fn () => User::where('id', auth()->user()->id)?->first()->id)
                                     ->required()
                                     ->reactive()
                                     ->afterStateUpdated(fn (callable $set) => $set('store_id', null))
@@ -90,6 +107,7 @@ class MerchantOfferResource extends Resource
                                         // TODO:: pluck all first until permissions and roles is up and running.
                                         return Store::all()->pluck('id', 'name');
                                     })
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null)
                                     ->searchable()
                                     ->label('Store')
                                     ->helperText('By selecting this will make the offers only applicable to the selected store.')

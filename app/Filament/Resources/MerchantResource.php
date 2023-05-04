@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class MerchantResource extends Resource
 {
     protected static ?string $model = Merchant::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $navigationGroup = 'Merchant';
@@ -37,11 +36,10 @@ class MerchantResource extends Resource
                             ->required()
                             ->rules('required', 'max:255'),
                         Forms\Components\Select::make('user_id')
-                            ->label('Belongs To User')
+                            ->label('Attached To User Account')
                             ->searchable()
                             ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
                             ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
-                            ->default(fn () => User::where('id', auth()->user()->id)?->first()->id)
                             ->required()
                             ->relationship('user','name')
                     ]),

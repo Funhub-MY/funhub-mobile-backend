@@ -24,7 +24,8 @@ Route::group(['prefix' => 'v1'], function () {
     // social provider logins
     Route::post('login/facebook', [\App\Http\Controllers\Api\AuthController::class, 'facebookLogin']);
     Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
-
+    Route::post('login/social', [\App\Http\Controllers\Api\AuthController::class, 'socialLogin']);
+    
     /**
      * Authenticated routes
      */
