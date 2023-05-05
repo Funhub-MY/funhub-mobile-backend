@@ -434,7 +434,7 @@ class AuthController extends Controller
         ], 200);
     }
     /**
-     * Login with Social
+     * Login with Social (via Firebase Auth)
      *
      * Login user with Social
      *
@@ -443,7 +443,7 @@ class AuthController extends Controller
      *
      * @group Authentication
      * @unauthenticated
-     * @bodyParam access_token string required The access token of the user from social login authentication. Example: 'ey271236...'
+     * @bodyParam access_token string required Firebase Auth Token. Example: 'ey271236...'
      * @response scenario=success {
      *  "user": {
      *     id: 1,

@@ -393,7 +393,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Login with Social'
+      title: 'Login with Social (via Firebase Auth)'
       description: 'Login user with Social'
       authenticated: false
       custom: []
@@ -407,7 +407,7 @@ endpoints:
     bodyParameters:
       access_token:
         name: access_token
-        description: 'The access token of the user from social login authentication.'
+        description: 'Firebase Auth Token.'
         required: true
         example: "'ey271236...'"
         type: string
@@ -482,7 +482,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DhkfZEPe6abdvga365481cV'
+      - 'Bearer 36afVgebD48P5acZ6Edkvh1'
     controller: null
     method: null
     route: null
@@ -564,7 +564,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6gDhaac4dEvb315PVekf86Z'
+      - 'Bearer bVePdZa36ahc5Eg4k1v6Df8'
     controller: null
     method: null
     route: null

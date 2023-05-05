@@ -41,7 +41,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kVacv3bhZ4e1a5D6dEf6P8g'
+      - 'Bearer h1aPZ6f3ga5VDvdk86Eb4ec'
     controller: null
     method: null
     route: null
@@ -84,7 +84,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D36gcEP4a8Vfvbk1aeZ6hd5'
+      - 'Bearer ZbgvefD6a6cP3d58ak4hV1E'
     controller: null
     method: null
     route: null
@@ -115,11 +115,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 2
+        example: 12
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 2
+      user_id: 12
     fileParameters: []
     responses:
       -
@@ -141,7 +141,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k465VdPa3hgDZfe6a1vcEb8'
+      - 'Bearer 1eabh6DvZ3dkPf6EcV8a45g'
     controller: null
     method: null
     route: null
@@ -172,11 +172,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 3
+        example: 13
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 3
+      user_id: 13
     fileParameters: []
     responses:
       -
@@ -198,7 +198,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a4agPdD636ZekEvcbV5h18f'
+      - 'Bearer kPgZecDad4aE518h6v6Vfb3'
     controller: null
     method: null
     route: null
@@ -236,28 +236,28 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: facilis
+        example: aspernatur
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: sit
+        example: mollitia
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: nesciunt
+        example: quaerat
         type: required
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: facilis
-      violation_level: sit
-      violation_type: nesciunt
+      reason: aspernatur
+      violation_level: mollitia
+      violation_type: quaerat
     fileParameters: []
     responses:
       -
@@ -285,7 +285,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PDvd85h6ebk6VEcaaZ3f1g4'
+      - 'Bearer ZEaavPgbf36dVe6D514k8hc'
     controller: null
     method: null
     route: null

@@ -539,7 +539,7 @@ class ArticleController extends Controller
         // validate video size must not larger than 500MB
         $request->validate([
             'video' => 'required|file|max:'.config('app.max_size_per_video_kb'),
-        ]);X
+        ]);
         $videoFile = $request->file('video');
         $user = auth()->user();
 

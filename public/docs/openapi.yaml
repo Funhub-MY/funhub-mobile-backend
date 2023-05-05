@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'https://funhub-backend.test'
+    url: 'https://funhub-mobile-backend.test'
 paths:
   /api/v1/articles/gallery:
     post:
@@ -276,7 +276,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - assumenda
+                    - sint
                   items:
                     type: string
                 category_ids:
@@ -645,7 +645,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 12
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -653,11 +653,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptatem
+                  example: nulla
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: tempora
+                  example: distinctio
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -961,7 +961,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ratione
+        example: voluptates
         required: true
         schema:
           type: string
@@ -1056,11 +1056,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ea
+                  example: repellat
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: minima
+                  example: earum
               required:
                 - comment_id
                 - reason
@@ -1331,7 +1331,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -1815,8 +1815,8 @@ paths:
       security: []
   /api/v1/login/social:
     post:
-      summary: 'Login with Social'
-      operationId: loginWithSocial
+      summary: 'Login with Social (via Firebase Auth)'
+      operationId: loginWithSocialviaFirebaseAuth
       description: 'Login user with Social'
       parameters: []
       responses:
@@ -1845,7 +1845,7 @@ paths:
               properties:
                 access_token:
                   type: string
-                  description: 'The access token of the user from social login authentication.'
+                  description: 'Firebase Auth Token.'
                   example: "'ey271236...'"
               required:
                 - access_token
@@ -2112,7 +2112,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: delectus
+        example: qui
         required: true
         schema:
           type: string
@@ -2268,7 +2268,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 2
+                  example: 12
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2321,7 +2321,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 3
+                  example: 13
               required:
                 - user_id
   /api/v1/user/report:
@@ -2368,15 +2368,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: facilis
+                  example: aspernatur
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sit
+                  example: mollitia
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: nesciunt
+                  example: quaerat
               required:
                 - user_id
                 - reason
@@ -2895,7 +2895,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
