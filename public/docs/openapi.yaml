@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   -
-    url: 'https://funhub-mobile-backend.test'
+    url: 'https://funhub-backend.test'
 paths:
   /api/v1/articles/gallery:
     post:
@@ -18,20 +18,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: multipart/form-data
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -107,27 +93,13 @@ paths:
     post:
       summary: 'Upload Video for Article'
       operationId: uploadVideoForArticle
-      description: 'Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration'
+      description: "Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration\n\nMust be able to stream completion percentage back to client"
       parameters:
         -
           in: header
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: multipart/form-data
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -169,20 +141,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -243,20 +201,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -311,20 +255,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -346,7 +276,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - cumque
+                    - assumenda
                   items:
                     type: string
                 category_ids:
@@ -409,20 +339,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -531,20 +447,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -582,20 +484,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: multipart/form-data
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -681,20 +569,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -731,6 +605,67 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/articles/report:
+    post:
+      summary: 'Report an article'
+      operationId: reportAnArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment reported\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "You have already reported this comment" ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_id:
+                  type: integer
+                  description: ''
+                  example: 10
+                reason:
+                  type: string
+                  description: 'The reason for reporting the comment.'
+                  example: Spam
+                violation_type:
+                  type: required
+                  description: 'The violation type of this report'
+                  example: voluptatem
+                violation_level:
+                  type: required
+                  description: 'The violation level of this report'
+                  example: tempora
+                article:
+                  type: integer
+                  description: 'The id of the article.'
+                  example: 1
+              required:
+                - article_id
+                - reason
+                - article
   /api/v1/article_tags:
     get:
       summary: 'Get popular tags'
@@ -742,20 +677,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -824,20 +745,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -880,20 +787,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -966,20 +859,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -1022,20 +901,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -1096,7 +961,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quam
+        example: ratione
         required: true
         schema:
           type: string
@@ -1111,20 +976,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -1170,20 +1021,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -1216,6 +1053,14 @@ paths:
                   type: string
                   description: 'The reason for reporting the comment.'
                   example: Spam
+                violation_level:
+                  type: required
+                  description: 'The violation level of this report'
+                  example: ea
+                violation_type:
+                  type: required
+                  description: 'The violation type of this report'
+                  example: minima
               required:
                 - comment_id
                 - reason
@@ -1230,20 +1075,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -1321,20 +1152,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -1399,20 +1216,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -1464,20 +1267,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -1534,20 +1323,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses: {  }
       tags:
         - Article
@@ -1556,7 +1331,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 7
+        example: 1
         required: true
         schema:
           type: integer
@@ -1571,20 +1346,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -1658,20 +1419,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -1731,20 +1478,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         401:
           description: ''
@@ -1770,20 +1503,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -1822,21 +1541,7 @@ paths:
       summary: 'Send OTP'
       operationId: sendOTP
       description: 'Send SMS OTP to phone number'
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1883,21 +1588,7 @@ paths:
       summary: 'Verify OTP'
       operationId: verifyOTP
       description: 'Login user into the system with OTP'
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1956,21 +1647,7 @@ paths:
       summary: 'Login with Password'
       operationId: loginWithPassword
       description: ''
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2038,21 +1715,7 @@ paths:
       summary: 'Register with OTP'
       operationId: registerWithOTP
       description: 'Register user with OTP'
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2109,21 +1772,7 @@ paths:
       summary: 'Login with Facebook'
       operationId: loginWithFacebook
       description: 'Login user with Facebook'
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses: {  }
       tags:
         - Authentication
@@ -2146,21 +1795,7 @@ paths:
       summary: 'Login with Google'
       operationId: loginWithGoogle
       description: 'Login user with Google'
-      parameters:
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
+      parameters: []
       responses: {  }
       tags:
         - Authentication
@@ -2178,6 +1813,43 @@ paths:
               required:
                 - access_token
       security: []
+  /api/v1/login/social:
+    post:
+      summary: 'Login with Social'
+      operationId: loginWithSocial
+      description: 'Login user with Social'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"user\": {\n    id: 1,\n    name: \"John Smith\"\n },\n \"token\": \"AuthenticationTokenHere\"\n}"
+        422:
+          description: 'Invalid Token'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "Invalid Token" ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: 'The access token of the user from social login authentication.'
+                  example: "'ey271236...'"
+              required:
+                - access_token
+      security: []
   /api/v1/logout:
     post:
       summary: Logout
@@ -2189,20 +1861,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2243,20 +1901,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2329,20 +1973,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -2406,20 +2036,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: offer_no_longer_valid
@@ -2476,20 +2092,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -2510,7 +2112,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: perspiciatis
+        example: delectus
         required: true
         schema:
           type: string
@@ -2525,20 +2127,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2564,20 +2152,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -2599,20 +2173,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2643,20 +2203,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -2683,20 +2229,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2736,7 +2268,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2750,20 +2282,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2803,9 +2321,65 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 2
+                  example: 3
               required:
                 - user_id
+  /api/v1/user/report:
+    post:
+      summary: 'Report a user'
+      operationId: reportAUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment reported\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "You have already reported this comment" ]}'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'The id of the comment.'
+                  example: 1
+                reason:
+                  type: string
+                  description: ''
+                  example: facilis
+                violation_level:
+                  type: required
+                  description: 'The violation level of this report'
+                  example: sit
+                violation_type:
+                  type: required
+                  description: 'The violation type of this report'
+                  example: nesciunt
+              required:
+                - user_id
+                - reason
   /api/v1/user/settings:
     get:
       summary: 'Get settings of logged in user'
@@ -2817,20 +2391,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2878,20 +2438,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -2951,20 +2497,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -3020,20 +2552,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -3106,20 +2624,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: multipart/form-data
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -3181,20 +2685,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -3252,20 +2742,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -3321,20 +2797,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -3404,20 +2866,6 @@ paths:
           example: 'Bearer {USER_TOKEN_KEY}'
           schema:
             type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -3461,20 +2909,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:
@@ -3528,20 +2962,6 @@ paths:
           name: Authorization
           description: ''
           example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-        -
-          in: header
-          name: Content-Type
-          description: ''
-          example: application/json
-          schema:
-            type: string
-        -
-          in: header
-          name: Accept
-          description: ''
-          example: application/json
           schema:
             type: string
       responses:

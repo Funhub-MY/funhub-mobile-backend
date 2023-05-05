@@ -443,7 +443,15 @@ class AuthController extends Controller
      *
      * @group Authentication
      * @unauthenticated
-     * @bodyParam access_token string required The access token of the user from Google. Example: 1234567890
+     * @bodyParam access_token string required The access token of the user from social login authentication. Example: 'ey271236...'
+     * @response scenario=success {
+     *  "user": {
+     *     id: 1,
+     *     name: "John Smith"
+     *  },
+     *  "token": "AuthenticationTokenHere"
+     * }
+     * @response status=422 scenario="Invalid Token" {"message": "Invalid Token" ]}
      */
     public function socialLogin(Request $request) {
         // get access token from
