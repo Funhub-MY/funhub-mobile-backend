@@ -387,6 +387,63 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/login/social
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login with Social'
+      description: 'Login user with Social'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      access_token:
+        name: access_token
+        description: 'The access token of the user from social login authentication.'
+        required: true
+        example: "'ey271236...'"
+        type: string
+        custom: []
+    cleanBodyParameters:
+      access_token: "'ey271236...'"
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "user": {
+              id: 1,
+              name: "John Smith"
+           },
+           "token": "AuthenticationTokenHere"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Invalid Token" ]}'
+        headers: []
+        description: 'Invalid Token'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/logout
     metadata:
       groupName: Authentication
@@ -425,7 +482,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer abkZVd4Df8EPv356a1hg6ec'
+      - 'Bearer DhkfZEPe6abdvga365481cV'
     controller: null
     method: null
     route: null
@@ -507,7 +564,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k1V6a6ZcP38EhDvd4fg5eab'
+      - 'Bearer 6gDhaac4dEvb315PVekf86Z'
     controller: null
     method: null
     route: null

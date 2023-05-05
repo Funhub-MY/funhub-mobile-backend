@@ -26,13 +26,13 @@
             </style>
 
     <script>
-        var baseUrl = "https://funhub-mobile-backend.test";
+        var tryItOutBaseUrl = "https://funhub-backend.test";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
-    <script src="../docs/js/tryitout-4.17.0.js"></script>
+    <script src="../docs/js/tryitout-4.18.0.js"></script>
 
-    <script src="../docs/js/theme-default-4.17.0.js"></script>
+    <script src="../docs/js/theme-default-4.18.0.js"></script>
 
 </head>
 
@@ -99,6 +99,14 @@
                                                                                 <li class="tocify-item level-2" data-unique="article-DELETEapi-v1-articles--id-">
                                 <a href="#article-DELETEapi-v1-articles--id-">Remove article by ID. (Only owner of article can delete)</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="article-reports">
+                                <a href="#article-reports">Reports</a>
+                            </li>
+                                                            <ul id="tocify-subheader-article-reports" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="article-POSTapi-v1-articles-report">
+                                            <a href="#article-POSTapi-v1-articles-report">Report an article</a>
+                                        </li>
+                                                                    </ul>
                                                                                 <li class="tocify-item level-2" data-unique="article-article-tags">
                                 <a href="#article-article-tags">Article Tags</a>
                             </li>
@@ -193,6 +201,9 @@ Only owner can call this method</a>
                                                                                 <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-login-google">
                                 <a href="#authentication-POSTapi-v1-login-google">Login with Google</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-login-social">
+                                <a href="#authentication-POSTapi-v1-login-social">Login with Social</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="authentication-POSTapi-v1-logout">
                                 <a href="#authentication-POSTapi-v1-logout">Logout</a>
                             </li>
@@ -272,6 +283,14 @@ Only owner can call this method</a>
                                             <a href="#user-GETapi-v1-user-followers">Get all followers</a>
                                         </li>
                                                                     </ul>
+                                                                                <li class="tocify-item level-2" data-unique="user-reports">
+                                <a href="#user-reports">Reports</a>
+                            </li>
+                                                            <ul id="tocify-subheader-user-reports" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="user-POSTapi-v1-user-report">
+                                            <a href="#user-POSTapi-v1-user-report">Report a user</a>
+                                        </li>
+                                                                    </ul>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-user-settings" class="tocify-header">
@@ -323,7 +342,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 25, 2023</li>
+        <li>Last updated: May 5, 2023</li>
     </ul>
 </div>
 
@@ -361,17 +380,17 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/articles/gallery" \
+    "https://funhub-backend.test/api/v1/articles/gallery" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "is_cover=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpX4HHLV" </code></pre></div>
+    --form "images=@C:\Users\danie\AppData\Local\Temp\phpD73A.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/gallery"
+    "https://funhub-backend.test/api/v1/articles/gallery"
 );
 
 const headers = {
@@ -422,11 +441,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-articles-gallery"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles-gallery" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles-gallery"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-articles-gallery" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-articles-gallery"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-articles-gallery">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-articles-gallery" data-method="POST"
       data-path="api/v1/articles/gallery"
@@ -449,7 +473,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-articles-gallery" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-articles-gallery"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -500,7 +527,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpX4HHLV</code></p>
+<p>The images to upload. Example: <code>C:\Users\danie\AppData\Local\Temp\phpD73A.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
@@ -532,6 +559,7 @@ fetch(url, {
 </p>
 
 <p>Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration</p>
+<p>Must be able to stream completion percentage back to client</p>
 
 <span id="example-requests-POSTapi-v1-articles-video-upload">
 <blockquote>Example request:</blockquote>
@@ -539,16 +567,16 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/articles/video-upload" \
+    "https://funhub-backend.test/api/v1/articles/video-upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDwX7gn" </code></pre></div>
+    --form "video=@C:\Users\danie\AppData\Local\Temp\phpD74C.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/video-upload"
+    "https://funhub-backend.test/api/v1/articles/video-upload"
 );
 
 const headers = {
@@ -583,11 +611,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-articles-video-upload"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles-video-upload" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles-video-upload"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-articles-video-upload" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-articles-video-upload"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-articles-video-upload">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-articles-video-upload" data-method="POST"
       data-path="api/v1/articles/video-upload"
@@ -610,7 +643,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-articles-video-upload" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-articles-video-upload"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -661,7 +697,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDwX7gn</code></p>
+<p>The video to upload. Example: <code>C:\Users\danie\AppData\Local\Temp\phpD74C.tmp</code></p>
         </div>
         </form>
 
@@ -679,7 +715,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/articles/my_articles" \
+    --get "https://funhub-backend.test/api/v1/articles/my_articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -697,7 +733,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/my_articles"
+    "https://funhub-backend.test/api/v1/articles/my_articles"
 );
 
 const headers = {
@@ -743,11 +779,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-articles-my_articles"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-articles-my_articles" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-articles-my_articles"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-articles-my_articles" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-articles-my_articles"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-articles-my_articles">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-articles-my_articles" data-method="GET"
       data-path="api/v1/articles/my_articles"
@@ -770,7 +811,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-articles-my_articles" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-articles-my_articles"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -915,7 +959,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/articles/my_bookmarks" \
+    --get "https://funhub-backend.test/api/v1/articles/my_bookmarks" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -932,7 +976,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/my_bookmarks"
+    "https://funhub-backend.test/api/v1/articles/my_bookmarks"
 );
 
 const headers = {
@@ -977,11 +1021,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-articles-my_bookmarks"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-articles-my_bookmarks" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-articles-my_bookmarks"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-articles-my_bookmarks" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-articles-my_bookmarks"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-articles-my_bookmarks">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-articles-my_bookmarks" data-method="GET"
       data-path="api/v1/articles/my_bookmarks"
@@ -1004,7 +1053,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-articles-my_bookmarks" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-articles-my_bookmarks"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1128,13 +1180,13 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/articles" \
+    --get "https://funhub-backend.test/api/v1/articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"cumque\"
+        \"assumenda\"
     ],
     \"category_ids\": [
         1,
@@ -1160,7 +1212,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles"
+    "https://funhub-backend.test/api/v1/articles"
 );
 
 const headers = {
@@ -1171,7 +1223,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "cumque"
+        "assumenda"
     ],
     "category_ids": [
         1,
@@ -1220,11 +1272,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-articles"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-articles" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-articles"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-articles" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-articles"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-articles">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-articles" data-method="GET"
       data-path="api/v1/articles"
@@ -1247,7 +1304,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-articles" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-articles"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1432,7 +1492,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/articles" \
+    "https://funhub-backend.test/api/v1/articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1462,7 +1522,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles"
+    "https://funhub-backend.test/api/v1/articles"
 );
 
 const headers = {
@@ -1532,11 +1592,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-articles"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-articles" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-articles"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-articles">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-articles" data-method="POST"
       data-path="api/v1/articles"
@@ -1559,7 +1624,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-articles" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-articles"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1733,7 +1801,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/articles/1" \
+    --get "https://funhub-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1741,7 +1809,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/1"
+    "https://funhub-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -1781,11 +1849,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-articles--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-articles--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-articles--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-articles--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-articles--id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-articles--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-articles--id-" data-method="GET"
       data-path="api/v1/articles/{id}"
@@ -1808,7 +1881,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-articles--id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-articles--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -1877,7 +1953,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "https://funhub-mobile-backend.test/api/v1/articles/1" \
+    "https://funhub-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
@@ -1885,13 +1961,13 @@ fetch(url, {
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfebk32" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDi9Zcq" </code></pre></div>
+    --form "images=@C:\Users\danie\AppData\Local\Temp\phpD79C.tmp" \
+    --form "video=@C:\Users\danie\AppData\Local\Temp\phpD79D.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/1"
+    "https://funhub-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -1947,11 +2023,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-v1-articles--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-PUTapi-v1-articles--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-PUTapi-v1-articles--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-PUTapi-v1-articles--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PUTapi-v1-articles--id-"></code></pre>
+    <pre><code id="execution-error-message-PUTapi-v1-articles--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PUTapi-v1-articles--id-" data-method="PUT"
       data-path="api/v1/articles/{id}"
@@ -1974,7 +2055,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PUTapi-v1-articles--id-" hidden>Send Request 💥
+                    id="btn-executetryout-PUTapi-v1-articles--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2089,7 +2173,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfebk32</code></p>
+<p>The images ID of the article. Example: <code>C:\Users\danie\AppData\Local\Temp\phpD79C.tmp</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
@@ -2100,7 +2184,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDi9Zcq</code></p>
+<p>The video ID of the article. Example: <code>C:\Users\danie\AppData\Local\Temp\phpD79D.tmp</code></p>
         </div>
         </form>
 
@@ -2118,7 +2202,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "https://funhub-mobile-backend.test/api/v1/articles/1" \
+    "https://funhub-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2126,7 +2210,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/articles/1"
+    "https://funhub-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -2166,11 +2250,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-v1-articles--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-articles--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-articles--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-DELETEapi-v1-articles--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-articles--id-"></code></pre>
+    <pre><code id="execution-error-message-DELETEapi-v1-articles--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-DELETEapi-v1-articles--id-" data-method="DELETE"
       data-path="api/v1/articles/{id}"
@@ -2193,7 +2282,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-articles--id-" hidden>Send Request 💥
+                    id="btn-executetryout-DELETEapi-v1-articles--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2248,6 +2340,225 @@ fetch(url, {
             </div>
                     </form>
 
+                                <h2 id="article-reports">Reports</h2>
+                                                    <h2 id="article-POSTapi-v1-articles-report">Report an article</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-articles-report">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-backend.test/api/v1/articles/report" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"article_id\": 10,
+    \"reason\": \"Spam\",
+    \"violation_type\": \"voluptatem\",
+    \"violation_level\": \"tempora\",
+    \"article\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-backend.test/api/v1/articles/report"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "article_id": 10,
+    "reason": "Spam",
+    "violation_type": "voluptatem",
+    "violation_level": "tempora",
+    "article": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-articles-report">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Comment reported&quot;,
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Form Fields):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;errors&quot;: [&quot;article_id&quot;: [&quot;The Article Id field is required.&quot;] ]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Form Fields):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;message&quot;: &quot;You have already reported this comment&quot; ]}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-articles-report" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-articles-report"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-articles-report"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-articles-report" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-articles-report">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-articles-report" data-method="POST"
+      data-path="api/v1/articles/report"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-articles-report', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-articles-report"
+                    onclick="tryItOut('POSTapi-v1-articles-report');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-articles-report"
+                    onclick="cancelTryOut('POSTapi-v1-articles-report');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-articles-report"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/articles/report</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-articles-report"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-articles-report"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-articles-report"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>article_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="article_id"                data-endpoint="POSTapi-v1-articles-report"
+               value="10"
+               data-component="body">
+    <br>
+<p>Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="reason"                data-endpoint="POSTapi-v1-articles-report"
+               value="Spam"
+               data-component="body">
+    <br>
+<p>The reason for reporting the comment. Example: <code>Spam</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="violation_type"                data-endpoint="POSTapi-v1-articles-report"
+               value="voluptatem"
+               data-component="body">
+    <br>
+<p>The violation type of this report Example: <code>voluptatem</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="violation_level"                data-endpoint="POSTapi-v1-articles-report"
+               value="tempora"
+               data-component="body">
+    <br>
+<p>The violation level of this report Example: <code>tempora</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="article"                data-endpoint="POSTapi-v1-articles-report"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the article. Example: <code>1</code></p>
+        </div>
+        </form>
+
                                 <h2 id="article-article-tags">Article Tags</h2>
                                                     <h2 id="article-GETapi-v1-article_tags">Get popular tags</h2>
 
@@ -2263,7 +2574,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/article_tags" \
+    --get "https://funhub-backend.test/api/v1/article_tags" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2280,7 +2591,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/article_tags"
+    "https://funhub-backend.test/api/v1/article_tags"
 );
 
 const headers = {
@@ -2328,11 +2639,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-article_tags"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-article_tags" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-article_tags"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-article_tags" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-article_tags"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-article_tags">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-article_tags" data-method="GET"
       data-path="api/v1/article_tags"
@@ -2355,7 +2671,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-article_tags" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-article_tags"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2479,7 +2798,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/article_tags/1" \
+    --get "https://funhub-backend.test/api/v1/article_tags/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2487,7 +2806,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/article_tags/1"
+    "https://funhub-backend.test/api/v1/article_tags/1"
 );
 
 const headers = {
@@ -2525,11 +2844,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-article_tags--article_id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-article_tags--article_id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-article_tags--article_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-article_tags--article_id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-article_tags--article_id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-article_tags--article_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-article_tags--article_id-" data-method="GET"
       data-path="api/v1/article_tags/{article_id}"
@@ -2552,7 +2876,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-article_tags--article_id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-article_tags--article_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2622,7 +2949,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/article_categories" \
+    --get "https://funhub-backend.test/api/v1/article_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2640,7 +2967,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/article_categories"
+    "https://funhub-backend.test/api/v1/article_categories"
 );
 
 const headers = {
@@ -2689,11 +3016,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-article_categories"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-article_categories" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-article_categories"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-article_categories" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-article_categories"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-article_categories">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-article_categories" data-method="GET"
       data-path="api/v1/article_categories"
@@ -2716,7 +3048,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-article_categories" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-article_categories"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2851,7 +3186,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/article_categories/1" \
+    --get "https://funhub-backend.test/api/v1/article_categories/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2859,7 +3194,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/article_categories/1"
+    "https://funhub-backend.test/api/v1/article_categories/1"
 );
 
 const headers = {
@@ -2897,11 +3232,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-article_categories--article_id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-article_categories--article_id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-article_categories--article_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-article_categories--article_id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-article_categories--article_id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-article_categories--article_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-article_categories--article_id-" data-method="GET"
       data-path="api/v1/article_categories/{article_id}"
@@ -2924,7 +3264,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-article_categories--article_id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-article_categories--article_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -2994,7 +3337,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/quam" \
+    --get "https://funhub-backend.test/api/v1/comments/replies/ratione" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3011,7 +3354,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/replies/quam"
+    "https://funhub-backend.test/api/v1/comments/replies/ratione"
 );
 
 const headers = {
@@ -3061,11 +3404,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-comments-replies--comment_id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-comments-replies--comment_id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-comments-replies--comment_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-comments-replies--comment_id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-comments-replies--comment_id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-comments-replies--comment_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-comments-replies--comment_id-" data-method="GET"
       data-path="api/v1/comments/replies/{comment_id}"
@@ -3088,7 +3436,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-comments-replies--comment_id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-comments-replies--comment_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -3136,10 +3487,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="quam"
+               value="ratione"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>quam</code></p>
+<p>The ID of the comment. Example: <code>ratione</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3224,7 +3575,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/comments/like_toggle" \
+    "https://funhub-backend.test/api/v1/comments/like_toggle" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3236,7 +3587,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/like_toggle"
+    "https://funhub-backend.test/api/v1/comments/like_toggle"
 );
 
 const headers = {
@@ -3279,11 +3630,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-comments-like_toggle"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-comments-like_toggle" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-comments-like_toggle"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-comments-like_toggle" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-comments-like_toggle"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-comments-like_toggle">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-comments-like_toggle" data-method="POST"
       data-path="api/v1/comments/like_toggle"
@@ -3306,7 +3662,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-comments-like_toggle" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-comments-like_toggle"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -3375,20 +3734,22 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/comments/report" \
+    "https://funhub-backend.test/api/v1/comments/report" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"comment_id\": 1,
-    \"reason\": \"Spam\"
+    \"reason\": \"Spam\",
+    \"violation_level\": \"ea\",
+    \"violation_type\": \"minima\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/report"
+    "https://funhub-backend.test/api/v1/comments/report"
 );
 
 const headers = {
@@ -3399,7 +3760,9 @@ const headers = {
 
 let body = {
     "comment_id": 1,
-    "reason": "Spam"
+    "reason": "Spam",
+    "violation_level": "ea",
+    "violation_type": "minima"
 };
 
 fetch(url, {
@@ -3439,11 +3802,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-comments-report"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-comments-report" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-comments-report"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-comments-report" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-comments-report"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-comments-report">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-comments-report" data-method="POST"
       data-path="api/v1/comments/report"
@@ -3466,7 +3834,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-comments-report" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-comments-report"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -3530,6 +3901,28 @@ fetch(url, {
     <br>
 <p>The reason for reporting the comment. Example: <code>Spam</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="violation_level"                data-endpoint="POSTapi-v1-comments-report"
+               value="ea"
+               data-component="body">
+    <br>
+<p>The violation level of this report Example: <code>ea</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="violation_type"                data-endpoint="POSTapi-v1-comments-report"
+               value="minima"
+               data-component="body">
+    <br>
+<p>The violation type of this report Example: <code>minima</code></p>
+        </div>
         </form>
 
                     <h2 id="article-GETapi-v1-comments">Get comments on a commentable type (eg. Articles)</h2>
@@ -3546,7 +3939,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments" \
+    --get "https://funhub-backend.test/api/v1/comments" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3566,7 +3959,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments"
+    "https://funhub-backend.test/api/v1/comments"
 );
 
 const headers = {
@@ -3621,11 +4014,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-comments"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-comments" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-comments"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-comments" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-comments"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-comments">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-comments" data-method="GET"
       data-path="api/v1/comments"
@@ -3648,7 +4046,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-comments" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-comments"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -3805,7 +4206,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/comments" \
+    "https://funhub-backend.test/api/v1/comments" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3820,7 +4221,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments"
+    "https://funhub-backend.test/api/v1/comments"
 );
 
 const headers = {
@@ -3873,11 +4274,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-comments"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-comments" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-comments"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-comments" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-comments"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-comments">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-comments" data-method="POST"
       data-path="api/v1/comments"
@@ -3900,7 +4306,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-comments" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-comments"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -4002,7 +4411,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/7" \
+    --get "https://funhub-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4015,7 +4424,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/7"
+    "https://funhub-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -4066,11 +4475,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-comments--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-comments--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-comments--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-comments--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-comments--id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-comments--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-comments--id-" data-method="GET"
       data-path="api/v1/comments/{id}"
@@ -4093,7 +4507,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-comments--id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-comments--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -4141,10 +4558,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="7"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>7</code></p>
+<p>The ID of the comment. Example: <code>1</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -4185,7 +4602,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "https://funhub-mobile-backend.test/api/v1/comments/1" \
+    "https://funhub-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4197,7 +4614,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/1"
+    "https://funhub-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -4249,11 +4666,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-PUTapi-v1-comments--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-PUTapi-v1-comments--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-PUTapi-v1-comments--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-PUTapi-v1-comments--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-PUTapi-v1-comments--id-"></code></pre>
+    <pre><code id="execution-error-message-PUTapi-v1-comments--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-PUTapi-v1-comments--id-" data-method="PUT"
       data-path="api/v1/comments/{id}"
@@ -4276,7 +4698,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-PUTapi-v1-comments--id-" hidden>Send Request 💥
+                    id="btn-executetryout-PUTapi-v1-comments--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -4361,7 +4786,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "https://funhub-mobile-backend.test/api/v1/comments/1" \
+    "https://funhub-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4369,7 +4794,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/1"
+    "https://funhub-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -4391,11 +4816,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-v1-comments--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-comments--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-comments--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-DELETEapi-v1-comments--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-comments--id-"></code></pre>
+    <pre><code id="execution-error-message-DELETEapi-v1-comments--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-DELETEapi-v1-comments--id-" data-method="DELETE"
       data-path="api/v1/comments/{id}"
@@ -4418,7 +4848,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-comments--id-" hidden>Send Request 💥
+                    id="btn-executetryout-DELETEapi-v1-comments--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -4488,7 +4921,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/interactions" \
+    --get "https://funhub-backend.test/api/v1/interactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4507,7 +4940,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions"
+    "https://funhub-backend.test/api/v1/interactions"
 );
 
 const headers = {
@@ -4561,11 +4994,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-interactions"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-interactions" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-interactions"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-interactions">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-interactions" data-method="GET"
       data-path="api/v1/interactions"
@@ -4588,7 +5026,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-interactions" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-interactions"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -4734,7 +5175,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/interactions" \
+    "https://funhub-backend.test/api/v1/interactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4748,7 +5189,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions"
+    "https://funhub-backend.test/api/v1/interactions"
 );
 
 const headers = {
@@ -4793,11 +5234,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-interactions"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-interactions" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-interactions"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-interactions" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-interactions"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-interactions">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-interactions" data-method="POST"
       data-path="api/v1/interactions"
@@ -4820,7 +5266,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-interactions" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-interactions"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -4911,7 +5360,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/interactions/1" \
+    --get "https://funhub-backend.test/api/v1/interactions/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4919,7 +5368,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions/1"
+    "https://funhub-backend.test/api/v1/interactions/1"
 );
 
 const headers = {
@@ -4957,11 +5406,16 @@ access-control-allow-origin: *
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-interactions--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-interactions--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-interactions--id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-interactions--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-interactions--id-" data-method="GET"
       data-path="api/v1/interactions/{id}"
@@ -4984,7 +5438,10 @@ access-control-allow-origin: *
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-interactions--id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-interactions--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -5054,7 +5511,7 @@ Only owner can call this method</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "https://funhub-mobile-backend.test/api/v1/interactions/1" \
+    "https://funhub-backend.test/api/v1/interactions/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -5062,7 +5519,7 @@ Only owner can call this method</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions/1"
+    "https://funhub-backend.test/api/v1/interactions/1"
 );
 
 const headers = {
@@ -5100,11 +5557,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-DELETEapi-v1-interactions--id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-interactions--id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-interactions--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-DELETEapi-v1-interactions--id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-interactions--id-"></code></pre>
+    <pre><code id="execution-error-message-DELETEapi-v1-interactions--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-DELETEapi-v1-interactions--id-" data-method="DELETE"
       data-path="api/v1/interactions/{id}"
@@ -5127,7 +5589,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-interactions--id-" hidden>Send Request 💥
+                    id="btn-executetryout-DELETEapi-v1-interactions--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -5199,7 +5664,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/sendOtp" \
+    "https://funhub-backend.test/api/v1/sendOtp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5211,7 +5676,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/sendOtp"
+    "https://funhub-backend.test/api/v1/sendOtp"
 );
 
 const headers = {
@@ -5254,11 +5719,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-sendOtp"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-sendOtp" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-sendOtp"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-sendOtp" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-sendOtp"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-sendOtp">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-sendOtp" data-method="POST"
       data-path="api/v1/sendOtp"
@@ -5281,7 +5751,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-sendOtp" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-sendOtp"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -5349,7 +5822,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/verifyOtp" \
+    "https://funhub-backend.test/api/v1/verifyOtp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5362,7 +5835,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/verifyOtp"
+    "https://funhub-backend.test/api/v1/verifyOtp"
 );
 
 const headers = {
@@ -5419,11 +5892,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-verifyOtp"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-verifyOtp" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-verifyOtp"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-verifyOtp" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-verifyOtp"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-verifyOtp">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-verifyOtp" data-method="POST"
       data-path="api/v1/verifyOtp"
@@ -5446,7 +5924,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-verifyOtp" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-verifyOtp"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -5525,7 +6006,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/loginWithPassword" \
+    "https://funhub-backend.test/api/v1/loginWithPassword" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5538,7 +6019,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/loginWithPassword"
+    "https://funhub-backend.test/api/v1/loginWithPassword"
 );
 
 const headers = {
@@ -5592,11 +6073,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-loginWithPassword"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-loginWithPassword" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-loginWithPassword"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-loginWithPassword" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-loginWithPassword"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-loginWithPassword">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-loginWithPassword" data-method="POST"
       data-path="api/v1/loginWithPassword"
@@ -5619,7 +6105,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-loginWithPassword" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-loginWithPassword"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -5698,7 +6187,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/register/otp" \
+    "https://funhub-backend.test/api/v1/register/otp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5713,7 +6202,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/register/otp"
+    "https://funhub-backend.test/api/v1/register/otp"
 );
 
 const headers = {
@@ -5763,11 +6252,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-register-otp"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-register-otp" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-register-otp"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-register-otp" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-register-otp"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-register-otp">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-register-otp" data-method="POST"
       data-path="api/v1/register/otp"
@@ -5790,7 +6284,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-register-otp" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-register-otp"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -5891,7 +6388,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/login/facebook" \
+    "https://funhub-backend.test/api/v1/login/facebook" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -5902,7 +6399,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/login/facebook"
+    "https://funhub-backend.test/api/v1/login/facebook"
 );
 
 const headers = {
@@ -5928,11 +6425,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-login-facebook"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-facebook" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-facebook"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-login-facebook" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-login-facebook"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-login-facebook">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-login-facebook" data-method="POST"
       data-path="api/v1/login/facebook"
@@ -5955,7 +6457,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-login-facebook" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-login-facebook"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6012,7 +6517,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/login/google" \
+    "https://funhub-backend.test/api/v1/login/google" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -6023,7 +6528,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/login/google"
+    "https://funhub-backend.test/api/v1/login/google"
 );
 
 const headers = {
@@ -6049,11 +6554,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-login-google"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-google" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-google"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-login-google" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-login-google"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-login-google">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-login-google" data-method="POST"
       data-path="api/v1/login/google"
@@ -6076,7 +6586,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-login-google" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-login-google"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6120,6 +6633,155 @@ fetch(url, {
         </div>
         </form>
 
+                    <h2 id="authentication-POSTapi-v1-login-social">Login with Social</h2>
+
+<p>
+</p>
+
+<p>Login user with Social</p>
+
+<span id="example-requests-POSTapi-v1-login-social">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-backend.test/api/v1/login/social" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"access_token\": \"\'ey271236...\'\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-backend.test/api/v1/login/social"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "access_token": "'ey271236...'"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-login-social">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+ &quot;user&quot;: {
+    id: 1,
+    name: &quot;John Smith&quot;
+ },
+ &quot;token&quot;: &quot;AuthenticationTokenHere&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Token):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;message&quot;: &quot;Invalid Token&quot; ]}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-login-social" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-login-social"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-login-social"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-login-social" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-login-social">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-login-social" data-method="POST"
+      data-path="api/v1/login/social"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-login-social', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-login-social"
+                    onclick="tryItOut('POSTapi-v1-login-social');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-login-social"
+                    onclick="cancelTryOut('POSTapi-v1-login-social');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-login-social"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/login/social</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-login-social"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-login-social"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>access_token</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="access_token"                data-endpoint="POSTapi-v1-login-social"
+               value="'ey271236...'"
+               data-component="body">
+    <br>
+<p>The access token of the user from social login authentication. Example: <code>'ey271236...'</code></p>
+        </div>
+        </form>
+
                     <h2 id="authentication-POSTapi-v1-logout">Logout</h2>
 
 <p>
@@ -6134,7 +6796,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/logout" \
+    "https://funhub-backend.test/api/v1/logout" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6142,7 +6804,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/logout"
+    "https://funhub-backend.test/api/v1/logout"
 );
 
 const headers = {
@@ -6182,11 +6844,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-logout"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-logout" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-logout"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-logout" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-logout"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-logout">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-logout" data-method="POST"
       data-path="api/v1/logout"
@@ -6209,7 +6876,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-logout" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-logout"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6266,7 +6936,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/complete-profile" \
+    "https://funhub-backend.test/api/v1/user/complete-profile" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6280,7 +6950,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/complete-profile"
+    "https://funhub-backend.test/api/v1/user/complete-profile"
 );
 
 const headers = {
@@ -6341,11 +7011,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-complete-profile"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-complete-profile" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-complete-profile"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-complete-profile" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-complete-profile"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-complete-profile">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-complete-profile" data-method="POST"
       data-path="api/v1/user/complete-profile"
@@ -6368,7 +7043,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-complete-profile" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-complete-profile"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6464,7 +7142,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers" \
+    --get "https://funhub-backend.test/api/v1/merchant/offers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6486,7 +7164,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers"
+    "https://funhub-backend.test/api/v1/merchant/offers"
 );
 
 const headers = {
@@ -6536,11 +7214,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-merchant-offers"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant-offers" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant-offers"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-merchant-offers" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-merchant-offers"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-merchant-offers">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-merchant-offers" data-method="GET"
       data-path="api/v1/merchant/offers"
@@ -6563,7 +7246,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-merchant-offers" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-merchant-offers"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6700,7 +7386,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/claim" \
+    "https://funhub-backend.test/api/v1/merchant/offers/claim" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6713,7 +7399,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/claim"
+    "https://funhub-backend.test/api/v1/merchant/offers/claim"
 );
 
 const headers = {
@@ -6768,11 +7454,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-merchant-offers-claim"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-merchant-offers-claim" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-merchant-offers-claim"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-merchant-offers-claim" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-merchant-offers-claim"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-merchant-offers-claim">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-merchant-offers-claim" data-method="POST"
       data-path="api/v1/merchant/offers/claim"
@@ -6795,7 +7486,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-merchant-offers-claim" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-merchant-offers-claim"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6875,7 +7569,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/perspiciatis?offer_id=1" \
+    --get "https://funhub-backend.test/api/v1/merchant/offers/delectus?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6883,7 +7577,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/perspiciatis"
+    "https://funhub-backend.test/api/v1/merchant/offers/delectus"
 );
 
 const params = {
@@ -6920,11 +7614,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-merchant-offers--offer_id-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant-offers--offer_id-" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant-offers--offer_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-merchant-offers--offer_id-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-merchant-offers--offer_id-"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-merchant-offers--offer_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-merchant-offers--offer_id-" data-method="GET"
       data-path="api/v1/merchant/offers/{offer_id}"
@@ -6947,7 +7646,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-merchant-offers--offer_id-" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-merchant-offers--offer_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -6995,10 +7697,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="perspiciatis"
+               value="delectus"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>perspiciatis</code></p>
+<p>The ID of the offer. Example: <code>delectus</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -7033,7 +7735,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/countries" \
+    --get "https://funhub-backend.test/api/v1/countries" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7041,7 +7743,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/countries"
+    "https://funhub-backend.test/api/v1/countries"
 );
 
 const headers = {
@@ -7072,11 +7774,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-countries"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-countries" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-countries"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-countries" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-countries"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-countries">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-countries" data-method="GET"
       data-path="api/v1/countries"
@@ -7099,7 +7806,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-countries" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-countries"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7157,7 +7867,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/states" \
+    --get "https://funhub-backend.test/api/v1/states" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7165,7 +7875,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/states"
+    "https://funhub-backend.test/api/v1/states"
 );
 
 const headers = {
@@ -7196,11 +7906,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-states"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-states" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-states"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-states" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-states"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-states">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-states" data-method="GET"
       data-path="api/v1/states"
@@ -7223,7 +7938,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-states" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-states"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7285,7 +8003,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/user/followings" \
+    --get "https://funhub-backend.test/api/v1/user/followings" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7293,7 +8011,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/followings"
+    "https://funhub-backend.test/api/v1/user/followings"
 );
 
 const headers = {
@@ -7324,11 +8042,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-user-followings"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-user-followings" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-user-followings"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-user-followings" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-user-followings"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-user-followings">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-user-followings" data-method="GET"
       data-path="api/v1/user/followings"
@@ -7351,7 +8074,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-user-followings" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-user-followings"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7408,19 +8134,19 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/follow" \
+    "https://funhub-backend.test/api/v1/user/follow" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 6
+    \"user_id\": 2
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/follow"
+    "https://funhub-backend.test/api/v1/user/follow"
 );
 
 const headers = {
@@ -7430,7 +8156,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 6
+    "user_id": 2
 };
 
 fetch(url, {
@@ -7465,11 +8191,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-follow"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-follow" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-follow"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-follow" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-follow"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-follow">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-follow" data-method="POST"
       data-path="api/v1/user/follow"
@@ -7492,7 +8223,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-follow" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-follow"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7540,10 +8274,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="6"
+               value="2"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>6</code></p>
+<p>The id of the user to follow Example: <code>2</code></p>
         </div>
         </form>
 
@@ -7561,19 +8295,19 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/unfollow" \
+    "https://funhub-backend.test/api/v1/user/unfollow" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 2
+    \"user_id\": 3
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/unfollow"
+    "https://funhub-backend.test/api/v1/user/unfollow"
 );
 
 const headers = {
@@ -7583,7 +8317,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 2
+    "user_id": 3
 };
 
 fetch(url, {
@@ -7618,11 +8352,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-unfollow"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-unfollow" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-unfollow"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-unfollow" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-unfollow"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-unfollow">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-unfollow" data-method="POST"
       data-path="api/v1/user/unfollow"
@@ -7645,7 +8384,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-unfollow" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-unfollow"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7693,10 +8435,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="2"
+               value="3"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>2</code></p>
+<p>The id of the user to unfollow Example: <code>3</code></p>
         </div>
         </form>
 
@@ -7715,7 +8457,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/user/followers" \
+    --get "https://funhub-backend.test/api/v1/user/followers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7723,7 +8465,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/followers"
+    "https://funhub-backend.test/api/v1/user/followers"
 );
 
 const headers = {
@@ -7754,11 +8496,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-user-followers"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-user-followers" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-user-followers"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-user-followers" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-user-followers"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-user-followers">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-user-followers" data-method="GET"
       data-path="api/v1/user/followers"
@@ -7781,7 +8528,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-user-followers" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-user-followers"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7824,6 +8574,212 @@ fetch(url, {
             </div>
                         </form>
 
+                                <h2 id="user-reports">Reports</h2>
+                                                    <h2 id="user-POSTapi-v1-user-report">Report a user</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user-report">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-backend.test/api/v1/user/report" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"user_id\": 1,
+    \"reason\": \"facilis\",
+    \"violation_level\": \"sit\",
+    \"violation_type\": \"nesciunt\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-backend.test/api/v1/user/report"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "user_id": 1,
+    "reason": "facilis",
+    "violation_level": "sit",
+    "violation_type": "nesciunt"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user-report">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Comment reported&quot;,
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Form Fields):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;errors&quot;: [&quot;user_id&quot;: [&quot;The User Id field is required.&quot;] ]}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Form Fields):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{&quot;message&quot;: &quot;You have already reported this comment&quot; ]}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user-report" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user-report"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-report"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user-report" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user-report">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-user-report" data-method="POST"
+      data-path="api/v1/user/report"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user-report', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user-report"
+                    onclick="tryItOut('POSTapi-v1-user-report');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user-report"
+                    onclick="cancelTryOut('POSTapi-v1-user-report');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user-report"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user/report</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-user-report"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-user-report"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-user-report"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="POSTapi-v1-user-report"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the comment. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="reason"                data-endpoint="POSTapi-v1-user-report"
+               value="facilis"
+               data-component="body">
+    <br>
+<p>Example: <code>facilis</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="violation_level"                data-endpoint="POSTapi-v1-user-report"
+               value="sit"
+               data-component="body">
+    <br>
+<p>The violation level of this report Example: <code>sit</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
+<small>required</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="violation_type"                data-endpoint="POSTapi-v1-user-report"
+               value="nesciunt"
+               data-component="body">
+    <br>
+<p>The violation type of this report Example: <code>nesciunt</code></p>
+        </div>
+        </form>
+
                 <h1 id="user-settings">User Settings</h1>
 
     
@@ -7842,7 +8798,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/user/settings" \
+    --get "https://funhub-backend.test/api/v1/user/settings" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7850,7 +8806,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings"
+    "https://funhub-backend.test/api/v1/user/settings"
 );
 
 const headers = {
@@ -7910,11 +8866,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-GETapi-v1-user-settings"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-user-settings" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-user-settings"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-GETapi-v1-user-settings" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-user-settings"></code></pre>
+    <pre><code id="execution-error-message-GETapi-v1-user-settings">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-GETapi-v1-user-settings" data-method="GET"
       data-path="api/v1/user/settings"
@@ -7937,7 +8898,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-user-settings" hidden>Send Request 💥
+                    id="btn-executetryout-GETapi-v1-user-settings"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -7994,7 +8958,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/email" \
+    "https://funhub-backend.test/api/v1/user/settings/email" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8006,7 +8970,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/email"
+    "https://funhub-backend.test/api/v1/user/settings/email"
 );
 
 const headers = {
@@ -8052,11 +9016,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-email"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-email" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-email"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-email" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-email"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-email">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-email" data-method="POST"
       data-path="api/v1/user/settings/email"
@@ -8079,7 +9048,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-email" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-email"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -8148,7 +9120,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/name" \
+    "https://funhub-backend.test/api/v1/user/settings/name" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8160,7 +9132,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/name"
+    "https://funhub-backend.test/api/v1/user/settings/name"
 );
 
 const headers = {
@@ -8206,11 +9178,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-name"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-name" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-name"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-name" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-name"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-name">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-name" data-method="POST"
       data-path="api/v1/user/settings/name"
@@ -8233,7 +9210,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-name" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-name"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -8302,7 +9282,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/article_categories" \
+    "https://funhub-backend.test/api/v1/user/settings/article_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8318,7 +9298,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/article_categories"
+    "https://funhub-backend.test/api/v1/user/settings/article_categories"
 );
 
 const headers = {
@@ -8372,11 +9352,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-article_categories"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-article_categories" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-article_categories"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-article_categories" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-article_categories"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-article_categories">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-article_categories" data-method="POST"
       data-path="api/v1/user/settings/article_categories"
@@ -8399,7 +9384,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-article_categories" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-article_categories"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -8470,16 +9458,16 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload" \
+    "https://funhub-backend.test/api/v1/user/settings/avatar/upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpwQPAlO" </code></pre></div>
+    --form "avatar=@C:\Users\danie\AppData\Local\Temp\phpD86A.tmp" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload"
+    "https://funhub-backend.test/api/v1/user/settings/avatar/upload"
 );
 
 const headers = {
@@ -8525,11 +9513,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-avatar-upload"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-avatar-upload" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-avatar-upload"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-avatar-upload" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-avatar-upload"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-avatar-upload">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-avatar-upload" data-method="POST"
       data-path="api/v1/user/settings/avatar/upload"
@@ -8552,7 +9545,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-avatar-upload" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-avatar-upload"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -8603,7 +9599,7 @@ fetch(url, {
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpwQPAlO</code></p>
+<p>One image file to upload. Example: <code>C:\Users\danie\AppData\Local\Temp\phpD86A.tmp</code></p>
         </div>
         </form>
 
@@ -8621,7 +9617,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/username" \
+    "https://funhub-backend.test/api/v1/user/settings/username" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8633,7 +9629,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/username"
+    "https://funhub-backend.test/api/v1/user/settings/username"
 );
 
 const headers = {
@@ -8679,11 +9675,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-username"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-username" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-username"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-username" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-username"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-username">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-username" data-method="POST"
       data-path="api/v1/user/settings/username"
@@ -8706,7 +9707,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-username" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-username"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -8775,7 +9779,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/bio" \
+    "https://funhub-backend.test/api/v1/user/settings/bio" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8787,7 +9791,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/bio"
+    "https://funhub-backend.test/api/v1/user/settings/bio"
 );
 
 const headers = {
@@ -8833,11 +9837,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-bio"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-bio" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-bio"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-bio" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-bio"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-bio">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-bio" data-method="POST"
       data-path="api/v1/user/settings/bio"
@@ -8860,7 +9869,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-bio" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-bio"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -8929,7 +9941,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/dob" \
+    "https://funhub-backend.test/api/v1/user/settings/dob" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8943,7 +9955,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/dob"
+    "https://funhub-backend.test/api/v1/user/settings/dob"
 );
 
 const headers = {
@@ -8991,11 +10003,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-dob"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-dob" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-dob"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-dob" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-dob"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-dob">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-dob" data-method="POST"
       data-path="api/v1/user/settings/dob"
@@ -9018,7 +10035,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-dob" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-dob"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -9109,7 +10129,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/gender" \
+    "https://funhub-backend.test/api/v1/user/settings/gender" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9121,7 +10141,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/gender"
+    "https://funhub-backend.test/api/v1/user/settings/gender"
 );
 
 const headers = {
@@ -9158,11 +10178,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-gender"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-gender" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-gender"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-gender" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-gender"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-gender">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-gender" data-method="POST"
       data-path="api/v1/user/settings/gender"
@@ -9185,7 +10210,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-gender" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-gender"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -9254,7 +10282,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/location" \
+    "https://funhub-backend.test/api/v1/user/settings/location" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9267,7 +10295,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/location"
+    "https://funhub-backend.test/api/v1/user/settings/location"
 );
 
 const headers = {
@@ -9315,11 +10343,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-location"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-location" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-location"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-location" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-location"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-location">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-location" data-method="POST"
       data-path="api/v1/user/settings/location"
@@ -9342,7 +10375,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-location" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-location"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>
@@ -9422,7 +10458,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/user/settings/job-title" \
+    "https://funhub-backend.test/api/v1/user/settings/job-title" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9434,7 +10470,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/settings/job-title"
+    "https://funhub-backend.test/api/v1/user/settings/job-title"
 );
 
 const headers = {
@@ -9480,11 +10516,16 @@ fetch(url, {
     <blockquote>Received response<span
                 id="execution-response-status-POSTapi-v1-user-settings-job-title"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-job-title" style="max-height: 400px;"></code></pre>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-settings-job-title"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
 <span id="execution-error-POSTapi-v1-user-settings-job-title" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-user-settings-job-title"></code></pre>
+    <pre><code id="execution-error-message-POSTapi-v1-user-settings-job-title">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
 </span>
 <form id="form-POSTapi-v1-user-settings-job-title" data-method="POST"
       data-path="api/v1/user/settings/job-title"
@@ -9507,7 +10548,10 @@ fetch(url, {
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-user-settings-job-title" hidden>Send Request 💥
+                    id="btn-executetryout-POSTapi-v1-user-settings-job-title"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
             </button>
             </h3>
             <p>

@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "https:\/\/funhub-mobile-backend.test"
+            "value": "https:\/\/funhub-backend.test"
         }
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "434c627b-3bde-4be1-b87a-f2a85fc4c718",
+        "_postman_id": "17176a78-1e97-46d2-9235-1dcaa0524e6a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -102,7 +102,7 @@
                                 }
                             ]
                         },
-                        "description": "Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress \/ calculate your own using X-Content-Duration"
+                        "description": "Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress \/ calculate your own using X-Content-Duration\n\nMust be able to stream completion percentage back to client"
                     },
                     "response": [
                         {
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"cumque\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"assumenda\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -465,6 +465,59 @@
                     ]
                 },
                 {
+                    "name": "Reports",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Report an article",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/articles\/report",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/articles\/report"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"article_id\":10,\"reason\":\"Spam\",\"violation_type\":\"voluptatem\",\"violation_level\":\"tempora\",\"article\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Comment reported\",\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"article_id\": [\"The Article Id field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"message\": \"You have already reported this comment\" ]}",
+                                    "name": "Invalid Form Fields"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "Article Tags",
                     "description": "",
                     "item": [
@@ -666,7 +719,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "quam",
+                                            "value": "ratione",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -766,7 +819,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ea\",\"violation_type\":\"minima\"}"
                                 },
                                 "description": ""
                             },
@@ -891,7 +944,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "7",
+                                            "value": "1",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1468,6 +1521,50 @@
                     "response": []
                 },
                 {
+                    "name": "Login with Social",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/login\/social",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/login\/social"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"access_token\":\"'ey271236...'\"}"
+                        },
+                        "description": "Login user with Social",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"user\": {\n    id: 1,\n    name: \"John Smith\"\n },\n \"token\": \"AuthenticationTokenHere\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Invalid Token\" ]}",
+                            "name": "Invalid Token"
+                        }
+                    ]
+                },
+                {
                     "name": "Logout",
                     "request": {
                         "url": {
@@ -1669,7 +1766,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "perspiciatis",
+                                            "value": "delectus",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1845,7 +1942,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":6}"
+                                    "raw": "{\"user_id\":2}"
                                 },
                                 "description": ""
                             },
@@ -1886,7 +1983,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":2}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -1940,6 +2037,59 @@
                                     "code": 200,
                                     "body": "{\n\"followers\": []\n}",
                                     "name": "success"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Reports",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Report a user",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/report",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/report"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"user_id\":1,\"reason\":\"facilis\",\"violation_level\":\"sit\",\"violation_type\":\"nesciunt\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Comment reported\",\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"user_id\": [\"The User Id field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"message\": \"You have already reported this comment\" ]}",
+                                    "name": "Invalid Form Fields"
                                 }
                             ]
                         }

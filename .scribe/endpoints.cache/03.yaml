@@ -41,7 +41,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pv3bgfckDaEhd5aZ466eV18'
+      - 'Bearer kVacv3bhZ4e1a5D6dEf6P8g'
     controller: null
     method: null
     route: null
@@ -84,7 +84,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v166Ecbd4V3P5fZa8aDkghe'
+      - 'Bearer D36gcEP4a8Vfvbk1aeZ6hd5'
     controller: null
     method: null
     route: null
@@ -115,11 +115,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 6
+        example: 2
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 6
+      user_id: 2
     fileParameters: []
     responses:
       -
@@ -141,7 +141,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bvP1agkeVD5ca6Z4Efh386d'
+      - 'Bearer k465VdPa3hgDZfe6a1vcEb8'
     controller: null
     method: null
     route: null
@@ -172,11 +172,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 2
+        example: 3
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 2
+      user_id: 3
     fileParameters: []
     responses:
       -
@@ -198,7 +198,94 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3Vk41a6evDg58PabEdhfcZ6'
+      - 'Bearer a4agPdD636ZekEvcbV5h18f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/report
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Reports
+      subgroupDescription: ''
+      title: 'Report a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: facilis
+        type: string
+        custom: []
+      violation_level:
+        name: violation_level
+        description: 'The violation level of this report'
+        required: false
+        example: sit
+        type: required
+        custom: []
+      violation_type:
+        name: violation_type
+        description: 'The violation type of this report'
+        required: false
+        example: nesciunt
+        type: required
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      reason: facilis
+      violation_level: sit
+      violation_type: nesciunt
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["user_id": ["The User Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PDvd85h6ebk6VEcaaZ3f1g4'
     controller: null
     method: null
     route: null
