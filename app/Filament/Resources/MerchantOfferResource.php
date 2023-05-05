@@ -27,7 +27,7 @@ class MerchantOfferResource extends Resource
 
     protected static ?string $navigationGroup = 'Merchant';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
     public static function form(Form $form): Form
     {
         return $form
@@ -92,10 +92,13 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant')
                                     ->searchable()
-                                    ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
+                                    ->getSearchResultsUsing(fn (string $search) => User::whereHas('merchant')
+                                        ->where('name', 'like', "%{$search}%")->limit(25)
+                                    )
                                     ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
                                     ->required()
                                     ->reactive()
+                                    ->helperText('Users who has merchant profile created.')
                                     ->afterStateUpdated(fn (callable $set) => $set('store_id', null))
                                     ->relationship('user', 'name'),
                                 Forms\Components\Select::make('store_id')
@@ -110,7 +113,7 @@ class MerchantOfferResource extends Resource
                                     ->hidden(fn (Closure $get) => $get('user_id') === null)
                                     ->searchable()
                                     ->label('Store')
-                                    ->helperText('By selecting this will make the offers only applicable to the selected store.')
+                                    ->helperText('Optional, by selecting this will make the offers only applicable to the selected store.')
                                     ->nullable()
                             ])->columns(1),
                     ])->columnSpan(['lg' => 1]),

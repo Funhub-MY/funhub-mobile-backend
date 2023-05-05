@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Builder;
 
 class MerchantOffer extends Model implements HasMedia
 {
@@ -113,9 +114,9 @@ class MerchantOffer extends Model implements HasMedia
     /**
      * Scope a query to only include published offers.
      */
-    public function scopePublished($query)
+    public function scopePublished(Builder $query): void
     {
-        return $query->where('status', 1);
+        $query->where('status', 1);
     }
 
     /**

@@ -18,11 +18,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class MerchantResource extends Resource
 {
     protected static ?string $model = Merchant::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $navigationGroup = 'Merchant';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
