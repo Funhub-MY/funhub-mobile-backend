@@ -18,6 +18,10 @@ class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
 
+    const USER_VIDEO_UPLOADS = 'user_video_uploads';
+    const USER_AVATAR = 'user_avatar';
+    const USER_UPLOADS = 'user_uploads';
+
     /**
      * The attributes that are mass assignable.
      *

@@ -11,6 +11,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\Interaction;
+use App\Models\User;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -264,7 +265,7 @@ class ArticleController extends Controller
 
         // if request->images attach images from user_uploads to article_images collection media library
         if ($request->has('images')) {
-            $userUploads = $user->getMedia('user_uploads')->whereIn('id', $request->images);
+            $userUploads = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->images);
             $userUploads->each(function ($media) use ($article) {
                 // move to article_gallery collection of the created article
                 Log::info('Media moved', ['media' => $media]);
@@ -274,8 +275,7 @@ class ArticleController extends Controller
 
         // if request->video attach video from user_videos to article_videos collection media library
         if ($request->has('video')) {
-
-            $userVideos = $user->getMedia('user_videos')->whereIn('id', $request->video);
+            $userVideos = $user->getMedia(User::USER_VIDEO_UPLOADS)->whereIn('id', $request->video);
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
                 Log::info('Media moved', ['media' => $media]);
@@ -372,7 +372,7 @@ class ArticleController extends Controller
 
             // if request->images attach images from user_uploads to article_images collection media library
             if ($request->has('images')) {
-                $userUploads = $user->getMedia('user_uploads')->whereIn('id', $request->images);
+                $userUploads = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->images);
                 $userUploads->each(function ($media) use ($article) {
                     // move to article_gallery collection of the created article
                     Log::info('Media moved', ['media' => $media]);
@@ -539,13 +539,13 @@ class ArticleController extends Controller
         // validate video size must not larger than 500MB
         $request->validate([
             'video' => 'required|file|max:'.config('app.max_size_per_video_kb'),
-        ]);
+        ]);X
         $videoFile = $request->file('video');
         $user = auth()->user();
 
         // Create new media item in the "user_uploads" collection
         $media = $user->addMedia($videoFile)
-        ->toMediaCollection('user_video_uploads',
+        ->toMediaCollection(User::USER_VIDEO_UPLOADS,
                 (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
         );
 
