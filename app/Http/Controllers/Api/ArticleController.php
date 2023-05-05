@@ -574,6 +574,7 @@ class ArticleController extends Controller
                 'X-Upload-Progress' => $progress,
                 'X-Content-Duration' => $filesize,
                 'X-Content-Url' => $fullUrl,
+                'Media-Id' => $media->id,
             ]);
 
             ob_end_clean();
