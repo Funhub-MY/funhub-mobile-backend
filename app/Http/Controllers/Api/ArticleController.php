@@ -573,6 +573,7 @@ class ArticleController extends Controller
                 'Content-Type' => $videoFile->getClientMimeType(),
                 'X-Upload-Progress' => $progress,
                 'X-Content-Duration' => $filesize,
+                'X-Content-Url' => $fullUrl,
             ]);
 
             ob_end_clean();
