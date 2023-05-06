@@ -407,7 +407,7 @@ endpoints:
     bodyParameters:
       access_token:
         name: access_token
-        description: 'Firebase Auth Token.'
+        description: 'Firebase Auth Token ().'
         required: true
         example: "'ey271236...'"
         type: string
@@ -482,7 +482,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36afVgebD48P5acZ6Edkvh1'
+      - 'Bearer Zab68D6435PEdkchgaVv1fe'
     controller: null
     method: null
     route: null
@@ -525,8 +525,8 @@ endpoints:
         custom: []
       password:
         name: password
-        description: 'The password of the user.'
-        required: true
+        description: 'The password of the user(social login do not need to provide).'
+        required: false
         example: abcd1234
         type: string
         custom: []
@@ -564,7 +564,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bVePdZa36ahc5Eg4k1v6Df8'
+      - 'Bearer v6Zf5aE18hgdP4cka6DebV3'
     controller: null
     method: null
     route: null

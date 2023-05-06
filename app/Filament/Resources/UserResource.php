@@ -154,6 +154,9 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make(name: 'name')->sortable()->searchable(),
+                // phone no combine phone country code and phone no as html
+                Tables\Columns\TextColumn::make('phone_no')
+                    ->virtualAs('concat(phone_country_code, \' \', phone_no)'),
                 Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()

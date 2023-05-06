@@ -189,4 +189,36 @@ class AuthTest extends TestCase
             'email' => 'john@gmail.com'
         ]);
     }
+
+    /**
+     * Test PostCompleteProfile if user has google_id or facebook_id populated no need password
+     */
+    public function testPostCompleteProfileWithGoogleId()
+    {
+        // create a user with google_id
+        $user = User::factory()->create([
+            'google_id' => '1234567890',
+        ]);
+
+        // act as this user in session
+        $this->actingAs($user);
+
+        // complete profile
+        $response = $this->postJson('/api/v1/user/complete-profile', [
+            'name' => 'John Doe',
+            'email' => 'john@gmail.com',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // verify user is updated
+        $this->assertDatabaseHas('users', [
+            'name' => 'John Doe',
+            'email' => 'john@gmail.com',
+            'google_id' => $user->google_id
+        ]);
+    }
 }

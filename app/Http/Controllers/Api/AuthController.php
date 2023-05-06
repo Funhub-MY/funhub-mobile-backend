@@ -296,7 +296,7 @@ class AuthController extends Controller
      * @authenticated
      * @bodyParam name string required The name of the use. Example: John Smith
      * @bodyParam email string required The email of the user. Example: john@example.com
-     * @bodyParam password string required The password of the user. Example: abcd1234
+     * @bodyParam password string The password of the user(social login do not need to provide). Example: abcd1234
      *
      * @response scenario=success {"message" : "Profile Updated"}
      * @response status=422 scenario="Invalid Form Fields" {"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}
@@ -308,8 +308,14 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'email|unique:users,email,' . auth()->user()->id,
-            'password' => 'required|string|min:8',
         ]);
+
+        // auth user if social login (has google_id or facebook_id) then no need to verify password required rule
+        if (!(auth()->user()->google_id || auth()->user()->facebook_id)) {
+            $request->validate([
+                'password' => 'required|string|min:8',
+            ]);
+        }
 
         // ensure user is otp verified
         if (!auth()->user()->otp_verified_at) {
@@ -320,7 +326,7 @@ class AuthController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email ?? null,
-            'password' => Hash::make($request->password),
+            'password' => ($request->password) ? Hash::make($request->password) : null,
         ]);
 
         return response()->json(['message' => 'Profile Updated'], 200);
@@ -443,7 +449,7 @@ class AuthController extends Controller
      *
      * @group Authentication
      * @unauthenticated
-     * @bodyParam access_token string required Firebase Auth Token. Example: 'ey271236...'
+     * @bodyParam access_token string required Firebase Auth Token (). Example: 'ey271236...'
      * @response scenario=success {
      *  "user": {
      *     id: 1,
@@ -516,6 +522,5 @@ class AuthController extends Controller
     public function googleCallBack()
     {
         $user = Socialite::driver('google')->user();
-        dd($user);
     }
 }
