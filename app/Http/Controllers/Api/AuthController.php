@@ -315,11 +315,11 @@ class AuthController extends Controller
             $request->validate([
                 'password' => 'required|string|min:8',
             ]);
-        }
 
-        // ensure user is otp verified
-        if (!auth()->user()->otp_verified_at) {
-            return response()->json(['message' => 'Please verify your phone number first'], 422);
+            // ensure user is otp verified
+            if (!auth()->user()->otp_verified_at) {
+                return response()->json(['message' => 'Please verify your phone number first'], 422);
+            }
         }
 
         $user = auth()->user();
