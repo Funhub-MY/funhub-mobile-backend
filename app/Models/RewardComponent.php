@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RewardComponent extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [
         'id'
@@ -21,7 +21,7 @@ class RewardComponent extends Model
 
     public function rewards()
     {
-        return $this->belongsToMany(Reward::class, 'rewards_reward_components')
+        return $this->belongsToMany(Reward::class, 'rewards_reward_components', 'reward_component_id', 'reward_id')
             ->withPivot('points')
             ->withTimestamps();
     }

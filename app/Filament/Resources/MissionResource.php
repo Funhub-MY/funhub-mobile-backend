@@ -66,7 +66,7 @@ class MissionResource extends Resource
                                 ->rules('required', 'numeric', 'min:1'),
                         ]) 
                 ]),
-
+                
                 // reward type
                 Forms\Components\MorphToSelect::make('missionable')
                     ->label('Reward Type')
@@ -87,7 +87,36 @@ class MissionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('event')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('value')
+                    ->searchable()
+                    ->sortable(),
+
+                // morph to missionable column
+                Tables\Columns\TextColumn::make('missionable')
+                    ->searchable()
+                    ->sortable()
+                    ->formatStateUsing(function ($value, $record) {
+                        return $record->missionable->name;
+                    }),
+
+                Tables\Columns\TextColumn::make('reward_quantity')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
