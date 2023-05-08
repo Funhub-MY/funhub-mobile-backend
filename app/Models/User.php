@@ -325,7 +325,7 @@ class User extends Authenticatable implements HasMedia
     /**
      * Get user has completed profile
      */
-    public function getHasCompletedProfile()
+    public function getHasCompletedProfileAttribute()
     {
         // ensure name and email are set for social auth user
         // else ensure name, email, password are set for phone no sms otp login user
