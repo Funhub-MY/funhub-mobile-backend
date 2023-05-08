@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MerchantOfferResource\Pages;
 use App\Filament\Resources\MerchantOfferResource\RelationManagers;
 use App\Models\Merchant;
+use App\Models\MerchantCategory;
 use App\Models\MerchantOffer;
 use App\Models\Store;
 use App\Models\User;
@@ -115,6 +116,29 @@ class MerchantOfferResource extends Resource
                                     ->label('Store')
                                     ->helperText('Optional, by selecting this will make the offers only applicable to the selected store.')
                                     ->nullable()
+                            ])->columns(1),
+
+                            Forms\Components\Section::make('Categories')->schema([
+                                Forms\Components\Select::make('categories')
+                                    ->label('')
+                                    ->relationship('categories', 'name')->createOptionForm([
+                                        Forms\Components\TextInput::make('name')
+                                            ->required()
+                                            ->placeholder('Category name'),
+                                        // slug
+                                        Forms\Components\TextInput::make('slug')
+                                            ->required()
+                                            ->placeholder('Category slug')
+                                            ->unique(MerchantCategory::class, 'slug', ignoreRecord: true),
+                                        Forms\Components\RichEditor::make('description')
+                                            ->placeholder('Category description'),
+                                        // hidden user id is logged in user
+                                        Forms\Components\Hidden::make('user_id')
+                                            ->default(fn () => auth()->id()),
+                                    ])
+                                    ->multiple()
+                                    ->searchable()
+                                    ->placeholder('Select categories...'),
                             ])->columns(1),
                     ])->columnSpan(['lg' => 1]),
             ])
