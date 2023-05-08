@@ -45,7 +45,9 @@ class User extends Authenticatable implements HasMedia
         'full_phone_no',
         'avatar_url',
         'avatar_thumb_url',
-        'point_balance'
+        'point_balance',
+        'auth_provider',
+        'has_completed_profile'
     ];
 
     /**
@@ -306,4 +308,31 @@ class User extends Authenticatable implements HasMedia
         }
     }
 
+    /**
+     * Get user's auth provider
+     */
+    public function getAuthProviderAttribute()
+    {
+        if ($this->google_id) {
+            return 'google';
+        } elseif ($this->facebook_id) {
+            return 'facebook';
+        } else {
+            return 'phone_no';
+        }
+    }
+
+    /**
+     * Get user has completed profile
+     */
+    public function getHasCompletedProfile()
+    {
+        // ensure name and email are set for social auth user
+        // else ensure name, email, password are set for phone no sms otp login user
+        if ($this->auth_provider == 'phone_no') {
+            return $this->name && $this->email && $this->password;
+        } else {
+            return $this->name && $this->email;
+        }
+    }
 }
