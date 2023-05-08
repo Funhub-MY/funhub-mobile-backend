@@ -75,7 +75,7 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\DateTimePicker::make('available_until')
                                     ->required()
                                     ->minDate(now()->startOfDay()),
-                                Forms\Components\TextArea::make('description')
+                                Forms\Components\Textarea::make('description')
                                     ->rows(5)
                                     ->cols(10)
                                     ->columnSpan('full')
