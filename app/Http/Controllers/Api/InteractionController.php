@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
 use App\Models\Article;
 use App\Models\Interaction;
+use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
@@ -18,12 +19,12 @@ class InteractionController extends Controller
 
     /**
      * Get interactions on a interactable type (eg. Articles)
-     * 
+     *
      * @param $type string
      * @param $id integer
      * @param Request $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Interactions
      * @authenticated
@@ -41,7 +42,7 @@ class InteractionController extends Controller
      *  "meta": {
      *     "current_page": 1,
      *   }
-     * } 
+     * }
      * @response status=404 scenario="Not Found"
     */
     public function index(Request $request)
@@ -57,6 +58,10 @@ class InteractionController extends Controller
         // get all interactions of a interactable type
         if ($request->interactable == 'article') {
             $request->merge(['interactable_type' => Article::class]);
+        }
+
+        if ($request->interactable == 'merchant_offer') {
+            $request->merge(['interactable_type' => MerchantOffer::class]);
         }
 
         $query = Interaction::where('interactable_type', $request->interactable_type)
@@ -76,7 +81,7 @@ class InteractionController extends Controller
         $data = $query->with('user')
             ->published()
             ->paginate(config('app.paginate_per_page'));
-        
+
         return InteractionResource::collection($data);
     }
 
@@ -85,7 +90,7 @@ class InteractionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Interactions
      * @authenticated
@@ -107,6 +112,10 @@ class InteractionController extends Controller
 
         if ($request->interactable == 'article') {
             $request->merge(['interactable' => Article::class]);
+        }
+
+        if ($request->interactable == 'merchant_offer') {
+            $request->merge(['interactable' => MerchantOffer::class]);
         }
 
         switch($request->type) {
@@ -158,7 +167,7 @@ class InteractionController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Interactions
      * @authenticated
@@ -177,10 +186,10 @@ class InteractionController extends Controller
     /**
      * Remove Interaction By ID
      * Only owner can call this method
-     * 
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Article
      * @subgroup Interactions
      * @authenticated
@@ -188,7 +197,7 @@ class InteractionController extends Controller
      * @response scenario=success {
      * "message": "Interaction deleted"
      * }
-     * 
+     *
      * @response status=404 scenario="Not Found" {['message' => 'Interaction not found']}
      */
     public function destroy($id)
