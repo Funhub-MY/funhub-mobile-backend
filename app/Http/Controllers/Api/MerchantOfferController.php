@@ -170,7 +170,7 @@ class MerchantOfferController extends Controller
                 'discount' => 0,
                 'tax' => 0,
                 'net_amount' => $net_amount,
-                'status' => 1 // status set as 1 as right now the offer should be ready to claim.
+                'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
             ]);
             // debit from point ledger
             $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
