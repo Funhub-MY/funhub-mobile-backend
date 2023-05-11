@@ -102,6 +102,12 @@ class MerchantOffer extends Model implements HasMedia
     {
         return $this->morphMany(Interaction::class, 'interactable');
     }
+    
+    public function likes()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+            ->where('type', Interaction::TYPE_LIKE);
+    }
 
     public function claims()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Interaction;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MerchantOfferResource extends JsonResource
@@ -39,6 +40,13 @@ class MerchantOfferResource extends JsonResource
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
             'interactions' => InteractionResource::collection($this->interactions),
+            'count' => [
+                'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
+                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
+                'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+            ],
+            'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
+            'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
             'categories' => MerchantCategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
