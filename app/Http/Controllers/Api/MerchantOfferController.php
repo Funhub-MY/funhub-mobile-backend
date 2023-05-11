@@ -99,9 +99,10 @@ class MerchantOfferController extends Controller
      * }
      *
      */
-    public function show(MerchantOffer $merchantOffer)
+    public function show($id)
     {
-        return new MerchantOfferResource($merchantOffer);
+        $offer = MerchantOffer::where('id', $id)->first();
+        return new MerchantOfferResource($offer);
     }
 
     /**
