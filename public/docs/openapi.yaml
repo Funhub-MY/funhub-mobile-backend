@@ -276,7 +276,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - dicta
+                    - ut
                   items:
                     type: string
                 category_ids:
@@ -645,7 +645,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 11
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -653,11 +653,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quisquam
+                  example: earum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: accusamus
+                  example: numquam
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -961,7 +961,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quia
+        example: doloribus
         required: true
         schema:
           type: string
@@ -1056,11 +1056,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: recusandae
+                  example: numquam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: natus
+                  example: explicabo
               required:
                 - comment_id
                 - reason
@@ -1331,208 +1331,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 16
-        required: true
-        schema:
-          type: integer
-  /api/v1/interactions:
-    get:
-      summary: 'Get interactions on a interactable type (eg. Articles)'
-      operationId: getInteractionsOnAInteractableTypeegArticles
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-      responses:
-        200:
-          description: success
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
-        404:
-          description: 'Not Found'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: ''
-      tags:
-        - Article
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                interactable:
-                  type: string
-                  description: 'The type of interactable.'
-                  example: article
-                id:
-                  type: integer
-                  description: 'The id of the interactable.'
-                  example: 1
-                filter:
-                  type: string
-                  description: 'Column to Filter.'
-                  example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-                filter_value:
-                  type: string
-                  description: 'Value to Filter.'
-                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-                sort:
-                  type: string
-                  description: 'Column to Sort.'
-                  example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-                order:
-                  type: string
-                  description: 'Direction to Sort.'
-                  example: 'Sortable directions are: asc, desc'
-                limit:
-                  type: integer
-                  description: 'Per Page Limit Override.'
-                  example: 10
-                offset:
-                  type: integer
-                  description: 'Offset Override.'
-                  example: 0
-              required:
-                - interactable
-                - id
-    post:
-      summary: 'Create an interaction for interactable type'
-      operationId: createAnInteractionForInteractableType
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  interaction: {  }
-                properties:
-                  interaction:
-                    type: object
-                    properties: []
-        422:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example: {  }
-                properties: {  }
-      tags:
-        - Article
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                interactable:
-                  type: string
-                  description: 'The type of interactable.'
-                  example: article
-                type:
-                  type: string
-                  description: 'The type of interaction.'
-                  example: 'like,dislike,share,bookmark'
-                id:
-                  type: integer
-                  description: 'The id of the interactable (eg. Article ID).'
-                  example: 1
-              required:
-                - interactable
-                - type
-                - id
-  '/api/v1/interactions/{id}':
-    get:
-      summary: 'Show one interaction by ID'
-      operationId: showOneInteractionByID
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-      responses:
-        401:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-      tags:
-        - Article
-    delete:
-      summary: "Remove Interaction By ID\nOnly owner can call this method"
-      operationId: removeInteractionByIDOnlyOwnerCanCallThisMethod
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Interaction deleted'
-                properties:
-                  message:
-                    type: string
-                    example: 'Interaction deleted'
-        404:
-          description: 'Not Found'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{['message' => 'Interaction not found']}"
-      tags:
-        - Article
-    parameters:
-      -
-        in: path
-        name: id
-        description: 'The id of the interaction.'
-        example: 1
+        example: 9
         required: true
         schema:
           type: integer
@@ -1959,6 +1758,261 @@ paths:
               required:
                 - name
                 - email
+  /api/v1/interactions:
+    get:
+      summary: 'Get interactions on a interactable type (eg. Articles)'
+      operationId: getInteractionsOnAInteractableTypeegArticles
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Interactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: 'article,merchant_offer'
+                id:
+                  type: integer
+                  description: 'The id of the interactable.'
+                  example: 1
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+              required:
+                - interactable
+                - id
+    post:
+      summary: 'Create an interaction for interactable type'
+      operationId: createAnInteractionForInteractableType
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  interaction: {  }
+                properties:
+                  interaction:
+                    type: object
+                    properties: []
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {  }
+                properties: {  }
+      tags:
+        - Interactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: 'article,merchant_offer'
+                type:
+                  type: string
+                  description: 'The type of interaction.'
+                  example: 'like,dislike,share,bookmark'
+                id:
+                  type: integer
+                  description: 'The id of the interactable (eg. Article ID).'
+                  example: 1
+              required:
+                - interactable
+                - type
+                - id
+  '/api/v1/interactions/{id}':
+    get:
+      summary: 'Show one interaction by ID'
+      operationId: showOneInteractionByID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Interactions
+    delete:
+      summary: "Remove Interaction By ID\nOnly owner can call this method"
+      operationId: removeInteractionByIDOnlyOwnerCanCallThisMethod
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Interaction deleted'
+                properties:
+                  message:
+                    type: string
+                    example: 'Interaction deleted'
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{['message' => 'Interaction not found']}"
+      tags:
+        - Interactions
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The id of the interaction.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/v1/merchant/offers/my_bookmarks:
+    get:
+      summary: 'Get My Bookmarked Merchant Offers'
+      operationId: getMyBookmarkedMerchantOffers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Merchant
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
   /api/v1/merchant/offers:
     get:
       summary: 'Get Offers'
@@ -2111,7 +2165,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: asperiores
+        example: repellat
         required: true
         schema:
           type: string
@@ -2267,7 +2321,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 18
+                  example: 16
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2320,7 +2374,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 8
+                  example: 20
               required:
                 - user_id
   /api/v1/user/report:
@@ -2367,15 +2421,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: illo
+                  example: ratione
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: velit
+                  example: atque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: doloremque
+                  example: et
               required:
                 - user_id
                 - reason
@@ -3013,6 +3067,9 @@ tags:
     description: ''
   -
     name: Authentication
+    description: ''
+  -
+    name: Interactions
     description: ''
   -
     name: Merchant

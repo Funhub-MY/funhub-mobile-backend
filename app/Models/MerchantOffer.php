@@ -98,6 +98,11 @@ class MerchantOffer extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function interactions()
+    {
+        return $this->morphMany(Interaction::class, 'interactable');
+    }
+
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')

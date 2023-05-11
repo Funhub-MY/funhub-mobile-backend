@@ -38,6 +38,7 @@ class MerchantOfferResource extends JsonResource
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
+            'interactions' => InteractionResource::collection($this->interactions),
             'categories' => MerchantCategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

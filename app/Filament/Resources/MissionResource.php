@@ -10,6 +10,7 @@ use App\Models\RewardComponent;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -19,6 +20,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Closure;
 
 class MissionResource extends Resource
 {
@@ -34,14 +36,15 @@ class MissionResource extends Resource
             ->schema([
                Group::make()
                 ->schema([
-                    Section::make('Reward')
+                    Section::make('Missions Details')
                         ->schema([
                             TextInput::make('name')
                             ->autofocus()
                             ->required()
                             ->rules('required', 'max:255'),
             
-                            TextInput::make('description'),
+                            RichEditor::make('description')
+                                ->required(),
             
                             // event select input
                             Select::make('event')
@@ -58,28 +61,54 @@ class MissionResource extends Resource
                             
                             // when event selected, choose the value to meet to reward
                             TextInput::make('value')
-                                ->label('Event Value')
+                                ->label('When Event Value is Met')
                                 ->helperText('The value to meet to reward the user, eg 1 for event new comment added')
                                 ->required()
                                 ->default(1)
-                                ->hidden(fn ($request) => $request->input('event'))
                                 ->rules('required', 'numeric', 'min:1'),
+
+                            // media gallery
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                                ->label('Images')
+                                ->multiple()
+                                ->collection(Mission::MEDIA_COLLECTION_NAME)
+                                ->columnSpan('full')
+                                // disk is s3_public 
+                                ->disk(function () {
+                                    if (config('filesystems.default') === 's3') {
+                                        return 's3_public';
+                                    }
+                                })
+                                ->acceptedFileTypes(['image/*'])
+                                ->maxFiles(20)
+                                ->rules('image'),
                         ]) 
                 ]),
                 
-                // reward type
-                Forms\Components\MorphToSelect::make('missionable')
-                    ->label('Reward Type')
-                    ->types([
-                        Forms\Components\MorphToSelect\Type::make(Reward::class)->titleColumnName('name'),
-                        Forms\Components\MorphToSelect\Type::make(RewardComponent::class)->titleColumnName('name'),
-                    ]),
+               Group::make()
+                ->schema([
+                    Section::make('Reward Details')
+                        ->schema([
+                            // reward type
+                            Forms\Components\MorphToSelect::make('missionable')
+                            ->label('Reward Type')
+                            ->types([
+                                Forms\Components\MorphToSelect\Type::make(Reward::class)->titleColumnName('name'),
+                                Forms\Components\MorphToSelect\Type::make(RewardComponent::class)->titleColumnName('name'),
+                            ]),
 
-                // how many to reward
-                TextInput::make('reward_quantity')
-                    ->label('Reward Quantity')
-                    ->required()
-                    ->rules('required', 'numeric', 'min:1')
+                            // how many to reward
+                            TextInput::make('reward_quantity')
+                                ->label('Reward Quantity')
+                                ->helperText('How many to reward the user')
+                                ->required()
+                                ->rules('required', 'numeric', 'min:1')
+                        ])
+                ]),
+
+            // user id auto fill hidden
+                Forms\Components\Hidden::make('user_id')
+                ->default(fn () => auth()->id()),
             ]);
     }
 

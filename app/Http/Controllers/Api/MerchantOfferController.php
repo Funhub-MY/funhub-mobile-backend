@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferResource;
+use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Services\PointService;
 use App\Traits\QueryBuilderTrait;
@@ -196,5 +197,47 @@ class MerchantOfferController extends Controller
             'message' => 'Claimed successfully',
             'offer' => new MerchantOfferResource($offer)
         ], 200);
+    }
+
+    /**
+     * Get My Bookmarked Merchant Offers
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are:  id, name, description, available_at, available_until, sku
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     * @bodyParam offset integer Offset Override. Example: 0
+     *
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     *
+     */
+    public function getMyBookmarkedMerchantOffers(Request $request)
+    {
+        $query = MerchantOffer::whereHas('interactions', function ($query) {
+            $query->where('user_id', auth()->user()->id)
+                ->where('type', Interaction::TYPE_BOOKMARK);
+        })->published()
+            ->whereDoesntHave('hiddenUsers', function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            });
+
+        $this->buildQuery($query, $request);
+
+        $data = $query->with('user', 'interactions', 'media', 'categories')
+            ->paginate(config('app.paginate_per_page'));
+
+        return MerchantOfferResource::collection($data);
     }
 }

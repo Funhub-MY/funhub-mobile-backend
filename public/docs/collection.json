@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "16ba8d0e-7cee-45b8-a961-41e7c4a10698",
+        "_postman_id": "47d34c38-ab64-4643-9f2c-3ddc7f80058c",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"dicta\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"ut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -490,7 +490,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":2,\"reason\":\"Spam\",\"violation_type\":\"quisquam\",\"violation_level\":\"accusamus\",\"article\":1}"
+                                    "raw": "{\"article_id\":11,\"reason\":\"Spam\",\"violation_type\":\"earum\",\"violation_level\":\"numquam\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -719,7 +719,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "quia",
+                                            "value": "doloribus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -819,7 +819,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"recusandae\",\"violation_type\":\"natus\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"numquam\",\"violation_type\":\"explicabo\"}"
                                 },
                                 "description": ""
                             },
@@ -944,7 +944,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "16",
+                                            "value": "9",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1074,193 +1074,6 @@
                                 "description": ""
                             },
                             "response": []
-                        }
-                    ]
-                },
-                {
-                    "name": "Interactions",
-                    "description": "",
-                    "item": [
-                        {
-                            "name": "Get interactions on a interactable type (eg. Articles)",
-                            "request": {
-                                "url": {
-                                    "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/interactions",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/interactions"
-                                },
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application\/json"
-                                    },
-                                    {
-                                        "key": "Accept",
-                                        "value": "application\/json"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\"interactable\":\"article\",\"id\":1,\"filter\":\"Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
-                                },
-                                "description": ""
-                            },
-                            "response": [
-                                {
-                                    "header": [],
-                                    "code": 200,
-                                    "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
-                                    "name": "success"
-                                },
-                                {
-                                    "header": [],
-                                    "code": 404,
-                                    "body": "",
-                                    "name": "Not Found"
-                                }
-                            ]
-                        },
-                        {
-                            "name": "Create an interaction for interactable type",
-                            "request": {
-                                "url": {
-                                    "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/interactions",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/interactions"
-                                },
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application\/json"
-                                    },
-                                    {
-                                        "key": "Accept",
-                                        "value": "application\/json"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\"interactable\":\"article\",\"type\":\"like,dislike,share,bookmark\",\"id\":1}"
-                                },
-                                "description": ""
-                            },
-                            "response": [
-                                {
-                                    "header": [],
-                                    "code": 200,
-                                    "body": "{\n \"interaction\": {}\n}",
-                                    "name": "success"
-                                },
-                                {
-                                    "header": [],
-                                    "code": 422,
-                                    "body": "{}",
-                                    "name": ""
-                                }
-                            ]
-                        },
-                        {
-                            "name": "Show one interaction by ID",
-                            "request": {
-                                "url": {
-                                    "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/interactions\/:id",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/interactions\/:id",
-                                    "variable": [
-                                        {
-                                            "id": "id",
-                                            "key": "id",
-                                            "value": "1",
-                                            "description": "The id of the interaction."
-                                        }
-                                    ]
-                                },
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application\/json"
-                                    },
-                                    {
-                                        "key": "Accept",
-                                        "value": "application\/json"
-                                    }
-                                ],
-                                "body": null,
-                                "description": ""
-                            },
-                            "response": [
-                                {
-                                    "header": [
-                                        {
-                                            "key": "cache-control",
-                                            "value": "no-cache, private"
-                                        },
-                                        {
-                                            "key": "content-type",
-                                            "value": "application\/json"
-                                        },
-                                        {
-                                            "key": "access-control-allow-origin",
-                                            "value": "*"
-                                        }
-                                    ],
-                                    "code": 401,
-                                    "body": "{\"message\":\"Unauthenticated.\"}",
-                                    "name": ""
-                                }
-                            ]
-                        },
-                        {
-                            "name": "Remove Interaction By ID\nOnly owner can call this method",
-                            "request": {
-                                "url": {
-                                    "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/interactions\/:id",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/interactions\/:id",
-                                    "variable": [
-                                        {
-                                            "id": "id",
-                                            "key": "id",
-                                            "value": "1",
-                                            "description": "The id of the interaction."
-                                        }
-                                    ]
-                                },
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application\/json"
-                                    },
-                                    {
-                                        "key": "Accept",
-                                        "value": "application\/json"
-                                    }
-                                ],
-                                "body": null,
-                                "description": ""
-                            },
-                            "response": [
-                                {
-                                    "header": [],
-                                    "code": 200,
-                                    "body": "{\n\"message\": \"Interaction deleted\"\n}",
-                                    "name": "success"
-                                },
-                                {
-                                    "header": [],
-                                    "code": 404,
-                                    "body": "{['message' => 'Interaction not found']}",
-                                    "name": "Not Found"
-                                }
-                            ]
                         }
                     ]
                 }
@@ -1658,6 +1471,193 @@
             ]
         },
         {
+            "name": "Interactions",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get interactions on a interactable type (eg. Articles)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/interactions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/interactions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"interactable\":\"article,merchant_offer\",\"id\":1,\"filter\":\"Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "",
+                            "name": "Not Found"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create an interaction for interactable type",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/interactions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/interactions"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"interactable\":\"article,merchant_offer\",\"type\":\"like,dislike,share,bookmark\",\"id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"interaction\": {}\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Show one interaction by ID",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/interactions\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/interactions\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The id of the interaction."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Interaction By ID\nOnly owner can call this method",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/interactions\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/interactions\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The id of the interaction."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Interaction deleted\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{['message' => 'Interaction not found']}",
+                            "name": "Not Found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Merchant",
             "description": "",
             "item": [
@@ -1665,6 +1665,41 @@
                     "name": "Merchant Offers",
                     "description": "",
                     "item": [
+                        {
+                            "name": "Get My Bookmarked Merchant Offers",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/merchant\/offers\/my_bookmarks",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/my_bookmarks"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"filter\":\"Filterable columns are:  id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
                         {
                             "name": "Get Offers",
                             "request": {
@@ -1766,7 +1801,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "asperiores",
+                                            "value": "repellat",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1942,7 +1977,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":18}"
+                                    "raw": "{\"user_id\":16}"
                                 },
                                 "description": ""
                             },
@@ -1983,7 +2018,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":8}"
+                                    "raw": "{\"user_id\":20}"
                                 },
                                 "description": ""
                             },
@@ -2068,7 +2103,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"illo\",\"violation_level\":\"velit\",\"violation_type\":\"doloremque\"}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"ratione\",\"violation_level\":\"atque\",\"violation_type\":\"et\"}"
                                 },
                                 "description": ""
                             },

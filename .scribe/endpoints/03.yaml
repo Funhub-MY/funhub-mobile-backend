@@ -1,16 +1,16 @@
-name: User
+name: Interactions
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/followings
+    uri: api/v1/interactions
     metadata:
-      groupName: User
+      groupName: Interactions
       groupDescription: ''
-      subgroup: Followings
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get all followings'
+      title: 'Get interactions on a interactable type (eg. Articles)'
       description: ''
       authenticated: true
       custom: []
@@ -22,24 +22,171 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
+        description: 'The type of interactable.'
+        required: true
+        example: 'article,merchant_offer'
+        type: string
+        custom: []
+      id:
+        name: id
+        description: 'The id of the interactable.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      interactable: 'article,merchant_offer'
+      id: 1
+      filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "followings": []
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
           }
         headers: []
         description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer Zvda61gb4ehEPkcDfa356V8'
+      - 'Bearer 14cba58DaEkedfV36vhZ6gP'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/interactions
+    metadata:
+      groupName: Interactions
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create an interaction for interactable type'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
+        description: 'The type of interactable.'
+        required: true
+        example: 'article,merchant_offer'
+        type: string
+        custom: []
+      type:
+        name: type
+        description: 'The type of interaction.'
+        required: true
+        example: 'like,dislike,share,bookmark'
+        type: string
+        custom: []
+      id:
+        name: id
+        description: 'The id of the interactable (eg. Article ID).'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      interactable: 'article,merchant_offer'
+      type: 'like,dislike,share,bookmark'
+      id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "interaction": {}
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a1De4Pchda6vEZb3gfkV568'
     controller: null
     method: null
     route: null
@@ -47,13 +194,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/followers
+    uri: 'api/v1/interactions/{id}'
     metadata:
-      groupName: User
+      groupName: Interactions
       groupDescription: ''
-      subgroup: Followers
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get all followers'
+      title: 'Show one interaction by ID'
       description: ''
       authenticated: true
       custom: []
@@ -61,8 +208,69 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the interaction.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VaDPEadZ613kbv4ghe6f58c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/interactions/{id}'
+    metadata:
+      groupName: Interactions
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Remove Interaction By ID
+        Only owner can call this method
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the interaction.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -73,65 +281,14 @@ endpoints:
         status: 200
         content: |-
           {
-          "followers": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer dDE6v3P6Zba58V4cgfk1aeh'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/follow
-    metadata:
-      groupName: User
-      groupDescription: ''
-      subgroup: Followings
-      subgroupDescription: ''
-      title: 'Follow another user'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      user_id:
-        name: user_id
-        description: 'The id of the user to follow'
-        required: true
-        example: 18
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      user_id: 18
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "You are now following this user"
+          "message": "Interaction deleted"
           }
         headers: []
         description: success
         custom: []
       -
-        status: 400
-        content: '{"message": "You are already following this user"}'
+        status: 404
+        content: "{['message' => 'Interaction not found']}"
         headers: []
         description: 'Not Found'
         custom: []
@@ -139,151 +296,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer efv4Paak3c6586d1bgDEhZV'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/unfollow
-    metadata:
-      groupName: User
-      groupDescription: ''
-      subgroup: Followings
-      subgroupDescription: ''
-      title: 'Unfollow another user'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      user_id:
-        name: user_id
-        description: 'The id of the user to unfollow'
-        required: true
-        example: 8
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      user_id: 8
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "You are now unfollowing this user"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 400
-        content: '{"message": "You are not following this user"}'
-        headers: []
-        description: 'Not Found'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer gPa6eEdZab5D18fk4Vh36cv'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/report
-    metadata:
-      groupName: User
-      groupDescription: ''
-      subgroup: Reports
-      subgroupDescription: ''
-      title: 'Report a user'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      user_id:
-        name: user_id
-        description: 'The id of the comment.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      reason:
-        name: reason
-        description: ''
-        required: true
-        example: illo
-        type: string
-        custom: []
-      violation_level:
-        name: violation_level
-        description: 'The violation level of this report'
-        required: false
-        example: velit
-        type: required
-        custom: []
-      violation_type:
-        name: violation_type
-        description: 'The violation type of this report'
-        required: false
-        example: doloremque
-        type: required
-        custom: []
-    cleanBodyParameters:
-      user_id: 1
-      reason: illo
-      violation_level: velit
-      violation_type: doloremque
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Comment reported",
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["user_id": ["The User Id field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-      -
-        status: 422
-        content: '{"message": "You have already reported this comment" ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8V1Ea6Zad3Dk6chg4vb5fPe'
+      - 'Bearer DhgEZkd38fbV6a1e6c4P5av'
     controller: null
     method: null
     route: null

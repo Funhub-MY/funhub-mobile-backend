@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
 use App\Models\Article;
 use App\Models\Interaction;
+use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
@@ -24,10 +25,9 @@ class InteractionController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      * 
-     * @group Article
-     * @subgroup Interactions
+     * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
      * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -59,6 +59,10 @@ class InteractionController extends Controller
             $request->merge(['interactable_type' => Article::class]);
         }
 
+        if ($request->interactable == 'merchant_offer') {
+            $request->merge(['interactable_type' => MerchantOffer::class]);
+        }
+
         $query = Interaction::where('interactable_type', $request->interactable_type)
             ->where('interactable_id', $id);
 
@@ -86,10 +90,9 @@ class InteractionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      * 
-     * @group Article
-     * @subgroup Interactions
+     * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @response scenario=success {
@@ -107,6 +110,10 @@ class InteractionController extends Controller
 
         if ($request->interactable == 'article') {
             $request->merge(['interactable' => Article::class]);
+        }
+
+        if ($request->interactable == 'merchant_offer') {
+            $request->merge(['interactable' => MerchantOffer::class]);
         }
 
         switch($request->type) {
@@ -159,8 +166,7 @@ class InteractionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * 
-     * @group Article
-     * @subgroup Interactions
+     * @group Interactions
      * @authenticated
      * @urlParam id integer required The id of the interaction. Example: 1
      */
@@ -181,8 +187,7 @@ class InteractionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * 
-     * @group Article
-     * @subgroup Interactions
+     * @group Interactions
      * @authenticated
      * @urlParam id integer required The id of the interaction. Example: 1
      * @response scenario=success {
