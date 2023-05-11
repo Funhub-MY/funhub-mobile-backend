@@ -201,8 +201,7 @@ class MerchantOfferTest extends TestCase
                 'message',
                 'offer'
             ]);
-        $merchant_offer->refresh();
-        dd($merchant_offer->claimed_quantity);
+
         // check current user latest point ledger is debit or not.
         $user_point_ledgers = $this->loggedInUser->pointLedgers()->orderBy('id','desc')->first();
         $this->assertEquals(1, $user_point_ledgers->debit);
