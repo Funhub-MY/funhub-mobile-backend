@@ -38,6 +38,9 @@ class MerchantOffer extends Model implements HasMedia
         'sku'
     ];
 
+    const CLAIM_SUCCESS = 1;
+    const CLAIM_FAILED = 2;
+
     /**
      * Search Setup
      */
@@ -135,6 +138,6 @@ class MerchantOffer extends Model implements HasMedia
      */
     public function getClaimedQuantityAttribute()
     {
-        return $this->claims()->wherePivot('status', 'claimed')->count();
+        return $this->claims()->wherePivot('status', self::CLAIM_SUCCESS)->count();
     }
 }
