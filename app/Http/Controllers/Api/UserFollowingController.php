@@ -70,38 +70,48 @@ class UserFollowingController extends Controller
     }
 
     /**
-     * Get all followers
+     * Get all followers of user id or logged in user
      * 
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group User
      * @subgroup Followers
+     * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
      * @response scenario="success" {
      * "followers": []
      * }
+     * @response status=404 scenario="Not Found" {"message": "User not found"}
      */
-    public function getFollowers()
+    public function getFollowers(Request $request)
     {
-        $followers = auth()->user()->followers()
+        $user_id = $request->input('user_id') ?? auth()->id();
+        $user = User::findOrFail($user_id);
+
+        $followers = $user->followers()
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followers);
     }
 
     /**
-     * Get all followings
+     * Get all followings of user id or logged in user
      * 
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group User
      * @subgroup Followings
+     * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
      * @response scenario="success" {
      * "followings": []
      * }
+     * @response status=404 scenario="Not Found" {"message": "User not found"}
      */
-    public function getFollowings()
+    public function getFollowings(Request $request)
     {
-        $followings = auth()->user()->followings()
+        $user_id = $request->input('user_id') ?? auth()->id();
+        $user = User::findOrFail($user_id);
+
+        $followings = $user->followings()
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followings);

@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - in
+                    - repellendus
                   items:
                     type: string
                 category_ids:
@@ -653,7 +653,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 16
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -661,11 +661,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: omnis
+                  example: eum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolore
+                  example: necessitatibus
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -969,7 +969,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quibusdam
+        example: quisquam
         required: true
         schema:
           type: string
@@ -1064,11 +1064,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: recusandae
+                  example: tempore
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ut
+                  example: dignissimos
               required:
                 - comment_id
                 - reason
@@ -1339,7 +1339,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 9
+        example: 13
         required: true
         schema:
           type: integer
@@ -2173,7 +2173,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: sed
+        example: explicabo
         required: true
         schema:
           type: string
@@ -2339,8 +2339,8 @@ paths:
         - Other
   /api/v1/user/followings:
     get:
-      summary: 'Get all followings'
-      operationId: getAllFollowings
+      summary: 'Get all followings of user id or logged in user'
+      operationId: getAllFollowingsOfUserIdOrLoggedInUser
       description: ''
       parameters:
         -
@@ -2363,12 +2363,39 @@ paths:
                   followings:
                     type: array
                     example: []
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'User not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - User
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'Optional parameter. optional The id of the user, if not provided will use Logged In User ID.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 1
   /api/v1/user/followers:
     get:
-      summary: 'Get all followers'
-      operationId: getAllFollowers
+      summary: 'Get all followers of user id or logged in user'
+      operationId: getAllFollowersOfUserIdOrLoggedInUser
       description: ''
       parameters:
         -
@@ -2391,8 +2418,35 @@ paths:
                   followers:
                     type: array
                     example: []
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'User not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'User not found'
       tags:
         - User
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'Optional parameter. optional The id of the user, if not provided will use Logged In User ID.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 1
   /api/v1/user/follow:
     post:
       summary: 'Follow another user'
@@ -2443,7 +2497,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 7
+                  example: 9
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2496,7 +2550,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 16
+                  example: 4
               required:
                 - user_id
   /api/v1/user/report:
@@ -2543,15 +2597,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: earum
+                  example: cupiditate
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: eum
+                  example: provident
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quae
+                  example: consequatur
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -2627,7 +2681,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 18
+        example: 17
         required: true
         schema:
           type: integer
@@ -3269,8 +3323,8 @@ paths:
                 - job_title
   /api/v1/views:
     post:
-      summary: 'Record view for viewable'
-      operationId: recordViewForViewable
+      summary: "Record view for viewable\nThis is used for recording views for articles, comments, and merchant offers"
+      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsAndMerchantOffers
       description: ''
       parameters:
         -
@@ -3315,8 +3369,8 @@ paths:
                 - viewable_id
   '/api/v1/views/{type}/{id}':
     get:
-      summary: 'Get views for viewable type'
-      operationId: getViewsForViewableType
+      summary: "Get views for viewable type\nThis is used for getting views for articles, comments, and merchant offers"
+      operationId: getViewsForViewableTypeThisIsUsedForGettingViewsForArticlesCommentsAndMerchantOffers
       description: ''
       parameters:
         -

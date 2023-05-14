@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "8e545eb8-f8ab-480d-9b66-8f5d124b3875",
+        "_postman_id": "8a048144-0a86-4c3e-b0c2-432bcdb33e12",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"in\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"repellendus\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -490,7 +490,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":10,\"reason\":\"Spam\",\"violation_type\":\"omnis\",\"violation_level\":\"dolore\",\"article\":1}"
+                                    "raw": "{\"article_id\":16,\"reason\":\"Spam\",\"violation_type\":\"eum\",\"violation_level\":\"necessitatibus\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -719,7 +719,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "quibusdam",
+                                            "value": "quisquam",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -819,7 +819,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"recusandae\",\"violation_type\":\"ut\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"tempore\",\"violation_type\":\"dignissimos\"}"
                                 },
                                 "description": ""
                             },
@@ -944,7 +944,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "9",
+                                            "value": "13",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1801,7 +1801,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "sed",
+                                            "value": "explicabo",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2017,13 +2017,21 @@
                     "description": "",
                     "item": [
                         {
-                            "name": "Get all followings",
+                            "name": "Get all followings of user id or logged in user",
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/user\/followings",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings"
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings",
+                                    "variable": [
+                                        {
+                                            "id": "user_id",
+                                            "key": "user_id",
+                                            "value": "1",
+                                            "description": "optional The id of the user, if not provided will use Logged In User ID."
+                                        }
+                                    ]
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2045,6 +2053,12 @@
                                     "code": 200,
                                     "body": "{\n\"followings\": []\n}",
                                     "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\"message\": \"User not found\"}",
+                                    "name": "Not Found"
                                 }
                             ]
                         },
@@ -2070,7 +2084,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":7}"
+                                    "raw": "{\"user_id\":9}"
                                 },
                                 "description": ""
                             },
@@ -2111,7 +2125,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":16}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -2137,13 +2151,21 @@
                     "description": "",
                     "item": [
                         {
-                            "name": "Get all followers",
+                            "name": "Get all followers of user id or logged in user",
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/user\/followers",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers"
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers",
+                                    "variable": [
+                                        {
+                                            "id": "user_id",
+                                            "key": "user_id",
+                                            "value": "1",
+                                            "description": "optional The id of the user, if not provided will use Logged In User ID."
+                                        }
+                                    ]
                                 },
                                 "method": "GET",
                                 "header": [
@@ -2165,6 +2187,12 @@
                                     "code": 200,
                                     "body": "{\n\"followers\": []\n}",
                                     "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "{\"message\": \"User not found\"}",
+                                    "name": "Not Found"
                                 }
                             ]
                         }
@@ -2196,7 +2224,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"earum\",\"violation_level\":\"eum\",\"violation_type\":\"quae\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"cupiditate\",\"violation_level\":\"provident\",\"violation_type\":\"consequatur\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2276,7 +2304,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "18",
+                                    "value": "17",
                                     "description": "The ID of the user."
                                 },
                                 {
@@ -2777,7 +2805,7 @@
             "description": "",
             "item": [
                 {
-                    "name": "Record view for viewable",
+                    "name": "Record view for viewable\nThis is used for recording views for articles, comments, and merchant offers",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -2812,7 +2840,7 @@
                     ]
                 },
                 {
-                    "name": "Get views for viewable type",
+                    "name": "Get views for viewable type\nThis is used for getting views for articles, comments, and merchant offers",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",

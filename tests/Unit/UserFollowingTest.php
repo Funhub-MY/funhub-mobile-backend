@@ -153,4 +153,67 @@ class UserFollowingTest extends TestCase
             $this->assertTrue($user['is_following']);
         }
     }
+
+    /**
+     * Test Get Followers Of User Via User Id
+     * /api/v1/user/followings?user_id={user_id}
+     */
+    public function testGetFollowerViaUserId()
+    {
+        $user = User::factory()->create();
+
+        // logged in user follow $user
+        $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        // get followers of $user
+        $response = $this->getJson('/api/v1/user/followers?user_id=' . $user->id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // assert should be 1 follower
+        $this->assertCount(1, $response->json()['data']);
+
+        // assert the follower should be $this->user
+        $this->assertEquals(
+            $this->user->id, 
+            collect($response->json()['data'])->pluck('id')->first()
+        );
+    }
+
+
+    /**
+     * Test Get Followings Of User Via User Id
+     * /api/v1/user/followings?user_id={user_id}
+     */
+    public function testGetFollowingsViaUserId()
+    {
+        $user = User::factory()->create();
+
+        // logged in user follow $user
+        $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        // get followers of $user
+        $response = $this->getJson('/api/v1/user/followings?user_id=' . $this->user->id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // assert should be 1 follower
+        $this->assertCount(1, $response->json()['data']);
+
+        // assert the follower should be $this->user
+        $this->assertEquals(
+            $user->id, 
+            collect($response->json()['data'])->pluck('id')->first()
+        );
+    }
 }

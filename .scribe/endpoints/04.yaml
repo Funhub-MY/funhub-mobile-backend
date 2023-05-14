@@ -10,7 +10,7 @@ endpoints:
       groupDescription: ''
       subgroup: Followings
       subgroupDescription: ''
-      title: 'Get all followings'
+      title: 'Get all followings of user id or logged in user'
       description: ''
       authenticated: true
       custom: []
@@ -18,8 +18,16 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'optional The id of the user, if not provided will use Logged In User ID.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -35,11 +43,17 @@ endpoints:
         headers: []
         description: success
         custom: []
+      -
+        status: 404
+        content: '{"message": "User not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer v3kgdah8bZ6EeaD65cVPf14'
+      - 'Bearer d643Ec1aZaegV6fhvkDP58b'
     controller: null
     method: null
     route: null
@@ -53,7 +67,7 @@ endpoints:
       groupDescription: ''
       subgroup: Followers
       subgroupDescription: ''
-      title: 'Get all followers'
+      title: 'Get all followers of user id or logged in user'
       description: ''
       authenticated: true
       custom: []
@@ -61,8 +75,16 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'optional The id of the user, if not provided will use Logged In User ID.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -78,11 +100,17 @@ endpoints:
         headers: []
         description: success
         custom: []
+      -
+        status: 404
+        content: '{"message": "User not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer Vh8Pg41cfZvaDbak6Ee5d63'
+      - 'Bearer Vfv3ahD1cg6Za4EPdk865eb'
     controller: null
     method: null
     route: null
@@ -113,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 7
+        example: 9
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 7
+      user_id: 9
     fileParameters: []
     responses:
       -
@@ -139,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PkaabDZ8fEg6c65he1Vd3v4'
+      - 'Bearer bDcPh86gv4Vda5ae6Efk3Z1'
     controller: null
     method: null
     route: null
@@ -170,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 16
+        example: 4
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 16
+      user_id: 4
     fileParameters: []
     responses:
       -
@@ -196,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hV5gdE1akfcPZba68e4D36v'
+      - 'Bearer DPEda6b64Vc1Z85fahevkg3'
     controller: null
     method: null
     route: null
@@ -234,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: earum
+        example: cupiditate
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: eum
+        example: provident
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: quae
+        example: consequatur
         type: required
         custom: []
       also_block_user:
@@ -260,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: earum
-      violation_level: eum
-      violation_type: quae
+      reason: cupiditate
+      violation_level: provident
+      violation_type: consequatur
       also_block_user: true
     fileParameters: []
     responses:
@@ -291,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a3Zga16DhfEvV8Pe64kd5bc'
+      - 'Bearer fcg36Z1edk6VE5ba4hPD8av'
     controller: null
     method: null
     route: null
@@ -350,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 663f81baVdkah4PceD5vgEZ'
+      - 'Bearer kfa6V5cEPD481dZga3hbe6v'
     controller: null
     method: null
     route: null
@@ -377,7 +405,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 18
+        example: 17
         type: integer
         custom: []
       user:
@@ -388,7 +416,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
-      user_id: 18
+      user_id: 17
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -409,7 +437,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bVPD54Zv68E6g3a1hfekacd'
+      - 'Bearer bZgPh18ved6V5a4ca3EDf6k'
     controller: null
     method: null
     route: null

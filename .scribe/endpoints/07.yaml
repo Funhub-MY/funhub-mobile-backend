@@ -10,7 +10,9 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Record view for viewable'
+      title: |-
+        Record view for viewable
+        This is used for recording views for articles, comments, and merchant offers
       description: ''
       authenticated: true
       custom: []
@@ -55,7 +57,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZPdc5h3V186Ekfaavbe46gD'
+      - 'Bearer Vk1Z64hag35deca86PbEfvD'
     controller: null
     method: null
     route: null
@@ -69,7 +71,9 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get views for viewable type'
+      title: |-
+        Get views for viewable type
+        This is used for getting views for articles, comments, and merchant offers
       description: ''
       authenticated: true
       custom: []
@@ -115,7 +119,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed16keDchv6bfPg83V4aZ5a'
+      - 'Bearer Vgv1Da35eakE6b4Z8h6fdcP'
     controller: null
     method: null
     route: null
