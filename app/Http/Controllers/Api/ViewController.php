@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\Comment;
+use App\Models\MerchantOffer;
 use App\Models\View;
 use Illuminate\Http\Request;
 
@@ -10,6 +13,7 @@ class ViewController extends Controller
 {
     /**
      * Record view for viewable
+     * This is used for recording views for articles, comments, and merchant offers
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -55,6 +59,7 @@ class ViewController extends Controller
 
     /**
      * Get views for viewable type
+     * This is used for getting views for articles, comments, and merchant offers
      * 
      * @param string $type
      * @param int $id

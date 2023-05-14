@@ -791,37 +791,37 @@ class ArticleTest extends TestCase
      * Test View Article and get view count
      * /api/v1/articles/{article}
      */
-    // public function testViewArticle()
-    // {
-    //     // create ten users 
-    //     $users = User::factory()->count(10)->create();
+    public function testViewArticle()
+    {
+        // create ten users 
+        $users = User::factory()->count(10)->create();
 
-    //     // create a new article
-    //     $article = Article::factory()->create([
-    //         'user_id' => $this->user->id,
-    //     ]);
+        // create a new article
+        $article = Article::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
 
-    //     // each user view article
-    //     foreach($users as $user) {
-    //         $this->actingAs($user);
-    //         $response = $this->postJson('/api/v1/views', [
-    //             'viewable_type' => 'article',
-    //             'viewable_id' => $article->id,
-    //         ]);
+        // each user view article
+        foreach($users as $user) {
+            $this->actingAs($user);
+            $response = $this->postJson('/api/v1/views', [
+                'viewable_type' => 'article',
+                'viewable_id' => $article->id,
+            ]);
 
-    //         $response->assertStatus(200)
-    //             ->assertJsonStructure([
-    //                 'message'
-    //             ]);
-    //     }
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+        }
 
-    //     // switch back to $this->user
-    //     $this->actingAs($this->user);
+        // switch back to $this->user
+        $this->actingAs($this->user);
 
-    //     // article refresh
-    //     $article->refresh();
+        // article refresh
+        $article->refresh();
 
-    //     // check article view count
-    //     $this->assertEquals(count($users), $article->views->count());
-    // }
+        // check article view count
+        $this->assertEquals(count($users), $article->views->count());
+    }
 }
