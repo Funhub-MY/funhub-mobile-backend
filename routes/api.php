@@ -78,6 +78,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
 
+        // Merchant Categories
+        Route::get('merchant_categories', \App\Http\Controllers\Api\MerchantCategoryController::class . '@index');
+        Route::get('merchant_categories/{offer_id}', \App\Http\Controllers\Api\MerchantCategoryController::class . '@getMerchantCategoryByOfferId');
+
         // User Settings
         Route::prefix('/user/settings')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);

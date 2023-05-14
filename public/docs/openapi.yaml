@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - vero
+                    - in
                   items:
                     type: string
                 category_ids:
@@ -653,7 +653,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 4
+                  example: 10
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -661,11 +661,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: natus
+                  example: omnis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: dolore
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -969,7 +969,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: debitis
+        example: quibusdam
         required: true
         schema:
           type: string
@@ -1064,11 +1064,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: recusandae
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: deserunt
+                  example: ut
               required:
                 - comment_id
                 - reason
@@ -1339,7 +1339,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 19
+        example: 9
         required: true
         schema:
           type: integer
@@ -2173,10 +2173,124 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: id
+        example: sed
         required: true
         schema:
           type: string
+  /api/v1/merchant_categories:
+    get:
+      summary: 'Get popular Merchant Categories'
+      operationId: getPopularMerchantCategories
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  categories: []
+                properties:
+                  categories:
+                    type: array
+                    example: []
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Merchant
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_featured:
+                  type: integer
+                  description: 'Is Featured Categories.'
+                  example: 1
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
+                offset:
+                  type: integer
+                  description: 'Offset Override.'
+                  example: 0
+  '/api/v1/merchant_categories/{offer_id}':
+    get:
+      summary: 'Get Merchant Categories by offer id'
+      operationId: getMerchantCategoriesByOfferId
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  categories: []
+                properties:
+                  categories:
+                    type: array
+                    example: []
+        404:
+          description: 'Not Found'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: ''
+      tags:
+        - Merchant
+    parameters:
+      -
+        in: path
+        name: offer_id
+        description: 'The id of the merchant offer id.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/countries:
     get:
       summary: 'Get Countries'
@@ -2329,7 +2443,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 2
+                  example: 7
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2382,7 +2496,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 2
+                  example: 16
               required:
                 - user_id
   /api/v1/user/report:
@@ -2429,15 +2543,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: asperiores
+                  example: earum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: rem
+                  example: eum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: enim
+                  example: quae
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -2513,7 +2627,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 12
+        example: 18
         required: true
         schema:
           type: integer

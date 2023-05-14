@@ -236,6 +236,17 @@ Only owner can call this method</a>
                                             <a href="#merchant-GETapi-v1-merchant-offers--offer_id-">Get Offer By ID</a>
                                         </li>
                                                                     </ul>
+                                                                                <li class="tocify-item level-2" data-unique="merchant-merchant-categories">
+                                <a href="#merchant-merchant-categories">Merchant Categories</a>
+                            </li>
+                                                            <ul id="tocify-subheader-merchant-merchant-categories" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant_categories">
+                                            <a href="#merchant-GETapi-v1-merchant_categories">Get popular Merchant Categories</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant_categories--offer_id-">
+                                            <a href="#merchant-GETapi-v1-merchant_categories--offer_id-">Get Merchant Categories by offer id</a>
+                                        </li>
+                                                                    </ul>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-other" class="tocify-header">
@@ -414,7 +425,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "is_cover=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpPd1TLq" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php3ajE5I" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -556,7 +567,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpPd1TLq</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php3ajE5I</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
@@ -600,7 +611,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpTGvnRQ" </code></pre></div>
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfrUBk6" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -726,7 +737,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpTGvnRQ</code></p>
+<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfrUBk6</code></p>
         </div>
         </form>
 
@@ -1241,7 +1252,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"vero\"
+        \"in\"
     ],
     \"category_ids\": [
         1,
@@ -1278,7 +1289,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "vero"
+        "in"
     ],
     "category_ids": [
         1,
@@ -2016,8 +2027,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php8g5rOp" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNRiq9f" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpoFBeUv" \
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpA50ht5" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2228,7 +2239,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php8g5rOp</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpoFBeUv</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
@@ -2239,7 +2250,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNRiq9f</code></p>
+<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpA50ht5</code></p>
         </div>
         </form>
 
@@ -2415,10 +2426,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"article_id\": 4,
+    \"article_id\": 10,
     \"reason\": \"Spam\",
-    \"violation_type\": \"natus\",
-    \"violation_level\": \"et\",
+    \"violation_type\": \"omnis\",
+    \"violation_level\": \"dolore\",
     \"article\": 1
 }"
 </code></pre></div>
@@ -2436,10 +2447,10 @@ const headers = {
 };
 
 let body = {
-    "article_id": 4,
+    "article_id": 10,
     "reason": "Spam",
-    "violation_type": "natus",
-    "violation_level": "et",
+    "violation_type": "omnis",
+    "violation_level": "dolore",
     "article": 1
 };
 
@@ -2563,10 +2574,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="article_id"                data-endpoint="POSTapi-v1-articles-report"
-               value="4"
+               value="10"
                data-component="body">
     <br>
-<p>Example: <code>4</code></p>
+<p>Example: <code>10</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
@@ -2585,10 +2596,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-articles-report"
-               value="natus"
+               value="omnis"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>natus</code></p>
+<p>The violation type of this report Example: <code>omnis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -2596,10 +2607,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-articles-report"
-               value="et"
+               value="dolore"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>et</code></p>
+<p>The violation level of this report Example: <code>dolore</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
@@ -3392,7 +3403,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/debitis" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/quibusdam" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3409,7 +3420,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/replies/debitis"
+    "https://funhub-mobile-backend.test/api/v1/comments/replies/quibusdam"
 );
 
 const headers = {
@@ -3542,10 +3553,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="debitis"
+               value="quibusdam"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>debitis</code></p>
+<p>The ID of the comment. Example: <code>quibusdam</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3796,8 +3807,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"comment_id\": 1,
     \"reason\": \"Spam\",
-    \"violation_level\": \"et\",
-    \"violation_type\": \"deserunt\"
+    \"violation_level\": \"recusandae\",
+    \"violation_type\": \"ut\"
 }"
 </code></pre></div>
 
@@ -3816,8 +3827,8 @@ const headers = {
 let body = {
     "comment_id": 1,
     "reason": "Spam",
-    "violation_level": "et",
-    "violation_type": "deserunt"
+    "violation_level": "recusandae",
+    "violation_type": "ut"
 };
 
 fetch(url, {
@@ -3962,10 +3973,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-comments-report"
-               value="et"
+               value="recusandae"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>et</code></p>
+<p>The violation level of this report Example: <code>recusandae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -3973,10 +3984,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-comments-report"
-               value="deserunt"
+               value="ut"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>deserunt</code></p>
+<p>The violation type of this report Example: <code>ut</code></p>
         </div>
         </form>
 
@@ -4466,7 +4477,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/19" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/9" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4479,7 +4490,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/19"
+    "https://funhub-mobile-backend.test/api/v1/comments/9"
 );
 
 const headers = {
@@ -4613,10 +4624,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="19"
+               value="9"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>19</code></p>
+<p>The ID of the comment. Example: <code>9</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -7848,7 +7859,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/id?offer_id=1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/sed?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7856,7 +7867,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/id"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/sed"
 );
 
 const params = {
@@ -7976,10 +7987,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="id"
+               value="sed"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>id</code></p>
+<p>The ID of the offer. Example: <code>sed</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -7994,6 +8005,394 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Offer ID. Example: <code>1</code></p>
             </div>
                 </form>
+
+                                <h2 id="merchant-merchant-categories">Merchant Categories</h2>
+                                                    <h2 id="merchant-GETapi-v1-merchant_categories">Get popular Merchant Categories</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-merchant_categories">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_categories" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"is_featured\": 1,
+    \"filter\": \"Filterable columns are: id, name, created_at, updated_at\",
+    \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
+    \"sort\": \"Sortable columns are: id, name, created_at, updated_at\",
+    \"order\": \"Sortable directions are: asc, desc\",
+    \"limit\": 10,
+    \"offset\": 0
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant_categories"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "is_featured": 1,
+    "filter": "Filterable columns are: id, name, created_at, updated_at",
+    "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+    "sort": "Sortable columns are: id, name, created_at, updated_at",
+    "order": "Sortable directions are: asc, desc",
+    "limit": 10,
+    "offset": 0
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-merchant_categories">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;categories&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-merchant_categories" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-merchant_categories"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant_categories"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-merchant_categories" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-merchant_categories">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-merchant_categories" data-method="GET"
+      data-path="api/v1/merchant_categories"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-merchant_categories', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-merchant_categories"
+                    onclick="tryItOut('GETapi-v1-merchant_categories');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-merchant_categories"
+                    onclick="cancelTryOut('GETapi-v1-merchant_categories');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-merchant_categories"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/merchant_categories</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-merchant_categories"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-merchant_categories"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-merchant_categories"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_featured</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="is_featured"                data-endpoint="GETapi-v1-merchant_categories"
+               value="1"
+               data-component="body">
+    <br>
+<p>Is Featured Categories. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Filterable columns are: id, name, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Filter. Example: <code>Filterable columns are: id, name, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter_value</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter_value"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+               data-component="body">
+    <br>
+<p>Value to Filter. Example: <code>Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>sort</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="sort"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Sortable columns are: id, name, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Sort. Example: <code>Sortable columns are: id, name, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="order"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Sortable directions are: asc, desc"
+               data-component="body">
+    <br>
+<p>Direction to Sort. Example: <code>Sortable directions are: asc, desc</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-merchant_categories"
+               value="10"
+               data-component="body">
+    <br>
+<p>Per Page Limit Override. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="offset"                data-endpoint="GETapi-v1-merchant_categories"
+               value="0"
+               data-component="body">
+    <br>
+<p>Offset Override. Example: <code>0</code></p>
+        </div>
+        </form>
+
+                    <h2 id="merchant-GETapi-v1-merchant_categories--offer_id-">Get Merchant Categories by offer id</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-merchant_categories--offer_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_categories/1" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant_categories/1"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-merchant_categories--offer_id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;categories&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-merchant_categories--offer_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-merchant_categories--offer_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant_categories--offer_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-merchant_categories--offer_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-merchant_categories--offer_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-merchant_categories--offer_id-" data-method="GET"
+      data-path="api/v1/merchant_categories/{offer_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-merchant_categories--offer_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-merchant_categories--offer_id-"
+                    onclick="tryItOut('GETapi-v1-merchant_categories--offer_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-merchant_categories--offer_id-"
+                    onclick="cancelTryOut('GETapi-v1-merchant_categories--offer_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-merchant_categories--offer_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/merchant_categories/{offer_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>offer_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="offer_id"                data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the merchant offer id. Example: <code>1</code></p>
+            </div>
+                    </form>
 
                 <h1 id="other">Other</h1>
 
@@ -8418,7 +8817,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 2
+    \"user_id\": 7
 }"
 </code></pre></div>
 
@@ -8435,7 +8834,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 2
+    "user_id": 7
 };
 
 fetch(url, {
@@ -8553,10 +8952,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="2"
+               value="7"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>2</code></p>
+<p>The id of the user to follow Example: <code>7</code></p>
         </div>
         </form>
 
@@ -8579,7 +8978,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 2
+    \"user_id\": 16
 }"
 </code></pre></div>
 
@@ -8596,7 +8995,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 2
+    "user_id": 16
 };
 
 fetch(url, {
@@ -8714,10 +9113,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="2"
+               value="16"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>2</code></p>
+<p>The id of the user to unfollow Example: <code>16</code></p>
         </div>
         </form>
 
@@ -8874,9 +9273,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"user_id\": 1,
-    \"reason\": \"asperiores\",
-    \"violation_level\": \"rem\",
-    \"violation_type\": \"enim\",
+    \"reason\": \"earum\",
+    \"violation_level\": \"eum\",
+    \"violation_type\": \"quae\",
     \"also_block_user\": true
 }"
 </code></pre></div>
@@ -8895,9 +9294,9 @@ const headers = {
 
 let body = {
     "user_id": 1,
-    "reason": "asperiores",
-    "violation_level": "rem",
-    "violation_type": "enim",
+    "reason": "earum",
+    "violation_level": "eum",
+    "violation_type": "quae",
     "also_block_user": true
 };
 
@@ -9032,10 +9431,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-report"
-               value="asperiores"
+               value="earum"
                data-component="body">
     <br>
-<p>Example: <code>asperiores</code></p>
+<p>Example: <code>earum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -9043,10 +9442,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-user-report"
-               value="rem"
+               value="eum"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>rem</code></p>
+<p>The violation level of this report Example: <code>eum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -9054,10 +9453,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-user-report"
-               value="enim"
+               value="quae"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>enim</code></p>
+<p>The violation type of this report Example: <code>quae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>also_block_user</code></b>&nbsp;&nbsp;
@@ -9262,7 +9661,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/user/12" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/18" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9270,7 +9669,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/user/12"
+    "https://funhub-mobile-backend.test/api/v1/user/18"
 );
 
 const headers = {
@@ -9384,10 +9783,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="GETapi-v1-user--user_id-"
-               value="12"
+               value="18"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>12</code></p>
+<p>The ID of the user. Example: <code>18</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -10084,7 +10483,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpz0f24w" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpt2bZW7" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -10221,7 +10620,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpz0f24w</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpt2bZW7</code></p>
         </div>
         </form>
 

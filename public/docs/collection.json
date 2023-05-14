@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "3852aa50-7881-4965-b8f7-e85d4c56e7f3",
+        "_postman_id": "8e545eb8-f8ab-480d-9b66-8f5d124b3875",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"vero\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"in\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -490,7 +490,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":4,\"reason\":\"Spam\",\"violation_type\":\"natus\",\"violation_level\":\"et\",\"article\":1}"
+                                    "raw": "{\"article_id\":10,\"reason\":\"Spam\",\"violation_type\":\"omnis\",\"violation_level\":\"dolore\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -719,7 +719,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "debitis",
+                                            "value": "quibusdam",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -819,7 +819,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"et\",\"violation_type\":\"deserunt\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"recusandae\",\"violation_type\":\"ut\"}"
                                 },
                                 "description": ""
                             },
@@ -944,7 +944,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "19",
+                                            "value": "9",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1801,7 +1801,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "id",
+                                            "value": "sed",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1826,6 +1826,99 @@
                                     "code": 200,
                                     "body": "{\n\"offer\": {}\n}",
                                     "name": "success"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Merchant Categories",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get popular Merchant Categories",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/merchant_categories",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant_categories"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"is_featured\":1,\"filter\":\"Filterable columns are: id, name, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"categories\": []\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get Merchant Categories by offer id",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/merchant_categories\/:offer_id",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant_categories\/:offer_id",
+                                    "variable": [
+                                        {
+                                            "id": "offer_id",
+                                            "key": "offer_id",
+                                            "value": "1",
+                                            "description": "The id of the merchant offer id."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"categories\": []\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 404,
+                                    "body": "",
+                                    "name": "Not Found"
                                 }
                             ]
                         }
@@ -1977,7 +2070,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":2}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -2018,7 +2111,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":2}"
+                                    "raw": "{\"user_id\":16}"
                                 },
                                 "description": ""
                             },
@@ -2103,7 +2196,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"asperiores\",\"violation_level\":\"rem\",\"violation_type\":\"enim\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"earum\",\"violation_level\":\"eum\",\"violation_type\":\"quae\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2183,7 +2276,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "12",
+                                    "value": "18",
                                     "description": "The ID of the user."
                                 },
                                 {

@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1fEZvP6cbheaV8a5d6Dgk43'
+      - 'Bearer 3caZVPf6ga5veh1k68dEDb4'
     controller: null
     method: null
     route: null
@@ -200,7 +200,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hED31ekabZcda6gv564Vf8P'
+      - 'Bearer akafdb4P685e1gD3vhVZ6Ec'
     controller: null
     method: null
     route: null
@@ -277,7 +277,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZDaEdk53fe6461aVcbPvh8g'
+      - 'Bearer 36b64ZchDkgd1E8fPeaVav5'
     controller: null
     method: null
     route: null
@@ -304,11 +304,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: id
+        example: sed
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: id
+      offer_id: sed
     queryParameters:
       offer_id:
         name: offer_id
@@ -336,7 +336,169 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZkhbVf318D6d5Pga4ecva6E'
+      - 'Bearer b5Dvg4hZVPf6a83kE6e1dac'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant_categories
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Categories'
+      subgroupDescription: ''
+      title: 'Get popular Merchant Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      is_featured:
+        name: is_featured
+        description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      is_featured: 1
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V5abcvg3hP48fkDda6ZEe61'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchant_categories/{offer_id}'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Categories'
+      subgroupDescription: ''
+      title: 'Get Merchant Categories by offer id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The id of the merchant offer id.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      offer_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hf6Ea6Vgak1c4d3D85eZvbP'
     controller: null
     method: null
     route: null
