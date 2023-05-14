@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserFollowingController extends Controller
@@ -24,7 +25,7 @@ class UserFollowingController extends Controller
     public function follow(Request $request)
     {
         // check if user already following user or not
-        if (auth()->user()->whereRelation('followings', 'following_id', $request->user_id)->exists()) {
+        if (auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
                 'message' => 'You are already following this user'
             ], 400);
@@ -54,7 +55,7 @@ class UserFollowingController extends Controller
     public function unfollow(Request $request)
     {
         // check if user already following user or not
-        if (!auth()->user()->whereRelation('followings', 'following_id', $request->user_id)->exists()) {
+        if (!auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
                 'message' => 'You are not following this user'
             ], 400);

@@ -41,6 +41,7 @@ class MerchantOfferResource extends JsonResource
                 'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+                'views' => $this->views->count()
             ],
             'my_interactions' => [
                 'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),

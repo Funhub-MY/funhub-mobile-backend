@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Closure;
+use Filament\Forms\Components\Select;
 
 class ArticleResource extends Resource
 {
@@ -180,6 +181,41 @@ class ArticleResource extends Resource
                                 ->multiple()
                                 ->searchable()
                                 ->placeholder('Select categories...'),
+                        ]),
+
+                        // sub category using parent_id
+                        Forms\Components\Section::make('Sub Categories')->schema([
+                            Forms\Components\Select::make('sub_categories')
+                                ->label('')
+                                ->relationship('sub_categories', 'name')->createOptionForm([
+                                    // select parent
+                                    Select::make('parent_id')
+                                        ->label('Parent Category')
+                                        ->options(ArticleCategory::whereNull('parent_id')->get()->pluck('name', 'id')->toArray())
+                                        ->required()
+                                        ->rules('required'),
+
+                                    Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->placeholder('Sub Category name'),
+                                    // slug
+                                    Forms\Components\TextInput::make('slug')
+                                        ->required()
+                                        ->placeholder('Sub Category slug')
+                                        ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
+                                    Forms\Components\RichEditor::make('description')
+                                        ->placeholder('Sub Category description'),
+                                    // is_featured
+                                    Forms\Components\Toggle::make('is_featured')
+                                        ->label('Featured on Home Page?')
+                                        ->default(false),
+                                    // hidden user id is logged in user
+                                    Forms\Components\Hidden::make('user_id')
+                                        ->default(fn () => auth()->id()),
+                                ])
+                                ->multiple()
+                                ->searchable()
+                                ->placeholder('Select sub categories...'),
                         ]),
 
                         Forms\Components\Section::make('Tags')->schema([

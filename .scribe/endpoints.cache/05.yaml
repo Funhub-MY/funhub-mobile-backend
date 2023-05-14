@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D6fahb5vdck36VEPga1e84Z'
+      - 'Bearer 1fEZvP6cbheaV8a5d6Dgk43'
     controller: null
     method: null
     route: null
@@ -202,7 +202,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D6E3P68eacgk5hVd41vbaZf'
+      - 'Bearer hED31ekabZcda6gv564Vf8P'
     controller: null
     method: null
     route: null
@@ -279,7 +279,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZ35b1evEh6fdD8kPca46aV'
+      - 'Bearer ZDaEdk53fe6461aVcbPvh8g'
     controller: null
     method: null
     route: null
@@ -306,11 +306,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: repellat
+        example: id
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: repellat
+      offer_id: id
     queryParameters:
       offer_id:
         name: offer_id
@@ -338,7 +338,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4bh6EDZPvVfagac65k8ed31'
+      - 'Bearer ZkhbVf318D6d5Pga4ecva6E'
     controller: null
     method: null
     route: null

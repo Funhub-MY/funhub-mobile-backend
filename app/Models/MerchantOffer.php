@@ -125,6 +125,11 @@ class MerchantOffer extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function views()
+    {
+        return $this->morphMany(View::class, 'viewable');
+    }
+
     /**
      * Scope a query to only include published offers.
      */

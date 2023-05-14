@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\SelectColumn;
+use Illuminate\Support\Collection;
 
 class UserResource extends Resource
 {
@@ -57,6 +60,25 @@ class UserResource extends Resource
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->rules( 'min:8', 'max:255'),
+
+                        // status
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                1 => 'Active',
+                                2 => 'Suspended',
+                            ])
+                            ->default(1)
+                            ->required(),
+
+                        // suspended until
+                        Forms\Components\DateTimePicker::make('suspended_until')
+                            ->afterStateHydrated(function ($component, $state) {
+                                // if this is set ensure status is Suspended
+                                if ($state) {
+                                    $component->parent()->components->status->state(2);
+                                }
+                            })
+                            ->rules('nullable', 'date'),
 
                         Forms\Components\DateTimePicker::make('email_verified_at')
                             ->rules('nullable', 'date'),
@@ -154,6 +176,18 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make(name: 'name')->sortable()->searchable(),
+                // status
+                Tables\Columns\BadgeColumn::make('status')
+                    ->enum([
+                        1 => 'Active',
+                        2 => 'Suspended',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('full_phone_no')->label('Phone No'),
                 Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
@@ -167,6 +201,18 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkAction::make('Unsuspend User')
+                    ->action(function (Collection $records) {
+                        $records->each(function (User $record) {
+                            $record->update(['status' => User::STATUS_ACTIVE]);
+                        });
+                    })->requiresConfirmation(),
+                Tables\Actions\BulkAction::make('Suspend User')
+                    ->action(function (Collection $records) {
+                        $records->each(function (User $record) {
+                            $record->update(['status' => User::STATUS_SUSPENDED]);
+                        });
+                    })->requiresConfirmation(),
             ]);
     }
 

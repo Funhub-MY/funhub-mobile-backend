@@ -29,7 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
     /**
      * Authenticated routes
      */
-    Route::group(['middleware' => ['auth:sanctum']],  function() {
+    Route::group(['middleware' => ['auth:sanctum', 'checkStatus']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
 
@@ -68,6 +68,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/follow', [\App\Http\Controllers\Api\UserFollowingController::class, 'follow']);
         Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
         Route::post('user/report', [\App\Http\Controllers\Api\UserController::class, 'postReportUser']);
+        Route::post('user/block', [\App\Http\Controllers\Api\UserController::class, 'postBlockUser']);
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {
@@ -91,6 +92,15 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/gender', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveGender']);
             Route::post('/location', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveLocation']);
             Route::post('/job-title', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveJobTitle']);
+        });
+
+        Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
+
+
+        // Views
+        Route::prefix('/views')->group(function () {
+           Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);
+           Route::get('/{type}/{id}', [\App\Http\Controllers\Api\ViewController::class, 'getViews']);
         });
     });
 });

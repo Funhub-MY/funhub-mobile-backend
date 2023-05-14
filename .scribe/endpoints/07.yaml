@@ -1,16 +1,16 @@
-name: Other
+name: View
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v1/countries
+      - POST
+    uri: api/v1/views
     metadata:
-      groupName: Other
+      groupName: View
       groupDescription: ''
-      subgroup: Country
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get Countries'
+      title: 'Record view for viewable'
       description: ''
       authenticated: true
       custom: []
@@ -22,15 +22,31 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      viewable_type:
+        name: viewable_type
+        description: 'The type of the viewable.'
+        required: true
+        example: article/comment/merchant_offer
+        type: string
+        custom: []
+      viewable_id:
+        name: viewable_id
+        description: 'The id of the viewable.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      viewable_type: article/comment/merchant_offer
+      viewable_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          ["id" => 1, "name" => "Nigeria", "code" => "NG"],
+          "message": "View recorded"
           }
         headers: []
         description: success
@@ -39,7 +55,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ha8vf6ebDk45VEPad361gZc'
+      - 'Bearer Dbk6EaV5eaPvf864Zg1dch3'
     controller: null
     method: null
     route: null
@@ -47,13 +63,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/states
+    uri: 'api/v1/views/{type}/{id}'
     metadata:
-      groupName: Other
+      groupName: View
       groupDescription: ''
-      subgroup: State
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get States'
+      title: 'Get views for viewable type'
       description: ''
       authenticated: true
       custom: []
@@ -61,8 +77,24 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      type:
+        name: type
+        description: 'The type of the viewable.'
+        required: true
+        example: article/comment/merchant_offer
+        type: string
+        custom: []
+      id:
+        name: id
+        description: 'The id of the viewable.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      type: article/comment/merchant_offer
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -73,7 +105,8 @@ endpoints:
         status: 200
         content: |-
           {
-          ["id" => 1, "name" => "Abia", "code" => "AB", "country_id" => 1],
+          "views": [],
+          "total": 0
           }
         headers: []
         description: success
@@ -82,7 +115,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h6EfdDvkV13c84gPe5aaZ6b'
+      - 'Bearer eE6V8bZ415kvDdfg6haPc3a'
     controller: null
     method: null
     route: null

@@ -124,11 +124,16 @@ class Article extends Model implements HasMedia
         return $this->belongsToMany(ArticleImport::class, 'articles_article_imports');
     }
 
+    public function views()
+    {
+        return $this->morphMany(View::class, 'viewable');
+    }
+
     /**
      * Scope a query to only include published articles.
      */
     public function scopePublished(Builder $query): void
     {
-        $query->where('status', self::STATUS_PUBLISHED);
+         $query->where('status', self::STATUS_PUBLISHED);
     }
 }

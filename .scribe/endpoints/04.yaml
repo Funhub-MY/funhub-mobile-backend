@@ -39,7 +39,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cadkaZ1364PDEbh6e5gV8vf'
+      - 'Bearer gVae6vb1Pf4hZ5aD6kd3Ec8'
     controller: null
     method: null
     route: null
@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EZ6b6kDh5da8a3c1v4feVPg'
+      - 'Bearer 6dc48gak6aPZfE3De5Vhvb1'
     controller: null
     method: null
     route: null
@@ -113,11 +113,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 16
+        example: 2
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 16
+      user_id: 2
     fileParameters: []
     responses:
       -
@@ -139,7 +139,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6d4vk6hbgE3a1fVa85ZDPce'
+      - 'Bearer bd8Vge5h4Zva6EkPcaf1D36'
     controller: null
     method: null
     route: null
@@ -170,11 +170,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 20
+        example: 2
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 20
+      user_id: 2
     fileParameters: []
     responses:
       -
@@ -196,7 +196,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 53bZEc48afkdgPha6D6v1eV'
+      - 'Bearer 1ea56akDd3bc6Z4v8VEPhgf'
     controller: null
     method: null
     route: null
@@ -234,28 +234,36 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: ratione
+        example: asperiores
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: atque
+        example: rem
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: et
+        example: enim
         type: required
+        custom: []
+      also_block_user:
+        name: also_block_user
+        description: 'optional Whether to block the user or not.'
+        required: false
+        example: true
+        type: boolean
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: ratione
-      violation_level: atque
-      violation_type: et
+      reason: asperiores
+      violation_level: rem
+      violation_type: enim
+      also_block_user: true
     fileParameters: []
     responses:
       -
@@ -283,7 +291,125 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cg6DZ8bd6aEVv51h4eakfP3'
+      - 'Bearer cbdZ5fv1V8egaPk3a4E6Dh6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/block
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Block a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: 'optional The reason for blocking the user.'
+        required: false
+        example: Spam
+        type: string
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      reason: Spam
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User blocked",
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a1hega56fPkc43VdZDv8Eb6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/user/{user_id}'
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+      user:
+        name: user
+        description: 'The id of the user.'
+        required: true
+        example: '1'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      user_id: 12
+      user: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8VP6b3aDZ1g4dv5kaEhef6c'
     controller: null
     method: null
     route: null

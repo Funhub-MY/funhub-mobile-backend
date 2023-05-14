@@ -230,6 +230,13 @@ class User extends Authenticatable implements HasMedia
         return $this->morphMany(Reports::class, 'reportable');
     }
 
+    // users that this user has blocked
+    public function usersBlocked()
+    {
+        return $this->morphMany(UserBlock::class, 'blockable')
+            ->where('blockable_type', User::class);
+    }
+
     /**
      * Get the user's point balance
      */

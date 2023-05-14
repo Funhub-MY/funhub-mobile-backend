@@ -132,8 +132,8 @@ paths:
                 - video
   /api/v1/articles/my_articles:
     get:
-      summary: 'Get Articles for Logged in user (for Profile Page)'
-      operationId: getArticlesForLoggedInUserforProfilePage
+      summary: 'Get Articles by User ID or Logged In User'
+      operationId: getArticlesByUserIDOrLoggedInUser
       description: ''
       parameters:
         -
@@ -160,6 +160,10 @@ paths:
             schema:
               type: object
               properties:
+                user_id:
+                  type: integer
+                  description: 'optional Load Spciefic User Articles.'
+                  example: 1
                 published_only:
                   type: boolean
                   description: 'optional Filter by published articles.'
@@ -190,8 +194,8 @@ paths:
                   example: 0
   /api/v1/articles/my_bookmarks:
     get:
-      summary: 'Get My Bookmarked Articles'
-      operationId: getMyBookmarkedArticles
+      summary: 'Get Bookmarked Articles by User ID or Logged In User'
+      operationId: getBookmarkedArticlesByUserIDOrLoggedInUser
       description: ''
       parameters:
         -
@@ -218,6 +222,10 @@ paths:
             schema:
               type: object
               properties:
+                user_id:
+                  type: integer
+                  description: 'optional Load Spciefic User Bookmarked Articles.'
+                  example: 1
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -276,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ut
+                    - vero
                   items:
                     type: string
                 category_ids:
@@ -645,7 +653,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 4
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -653,11 +661,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: earum
+                  example: natus
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: numquam
+                  example: et
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -961,7 +969,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: doloribus
+        example: debitis
         required: true
         schema:
           type: string
@@ -1056,11 +1064,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: numquam
+                  example: et
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: explicabo
+                  example: deserunt
               required:
                 - comment_id
                 - reason
@@ -1331,7 +1339,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 9
+        example: 19
         required: true
         schema:
           type: integer
@@ -2165,7 +2173,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: repellat
+        example: id
         required: true
         schema:
           type: string
@@ -2321,7 +2329,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 16
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2374,7 +2382,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 20
+                  example: 2
               required:
                 - user_id
   /api/v1/user/report:
@@ -2421,18 +2429,102 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: ratione
+                  example: asperiores
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: atque
+                  example: rem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: enim
+                also_block_user:
+                  type: boolean
+                  description: 'optional Whether to block the user or not.'
+                  example: true
               required:
                 - user_id
                 - reason
+  /api/v1/user/block:
+    post:
+      summary: 'Block a user'
+      operationId: blockAUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"User blocked\",\n}"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'The id of the user.'
+                  example: 1
+                reason:
+                  type: string
+                  description: 'optional The reason for blocking the user.'
+                  example: Spam
+              required:
+                - user_id
+  '/api/v1/user/{user_id}':
+    get:
+      summary: 'Get a user'
+      operationId: getAUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": {\n}"
+      tags:
+        - User
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'The ID of the user.'
+        example: 12
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: user
+        description: 'The id of the user.'
+        example: '1'
+        required: true
+        schema:
+          type: string
   /api/v1/user/settings:
     get:
       summary: 'Get settings of logged in user'
@@ -2948,7 +3040,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -3061,6 +3153,101 @@ paths:
                   example: 'Software Engineer'
               required:
                 - job_title
+  /api/v1/views:
+    post:
+      summary: 'Record view for viewable'
+      operationId: recordViewForViewable
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'View recorded'
+                properties:
+                  message:
+                    type: string
+                    example: 'View recorded'
+      tags:
+        - View
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                viewable_type:
+                  type: string
+                  description: 'The type of the viewable.'
+                  example: article/comment/merchant_offer
+                viewable_id:
+                  type: integer
+                  description: 'The id of the viewable.'
+                  example: 1
+              required:
+                - viewable_type
+                - viewable_id
+  '/api/v1/views/{type}/{id}':
+    get:
+      summary: 'Get views for viewable type'
+      operationId: getViewsForViewableType
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  views: []
+                  total: 0
+                properties:
+                  views:
+                    type: array
+                    example: []
+                  total:
+                    type: integer
+                    example: 0
+      tags:
+        - View
+    parameters:
+      -
+        in: path
+        name: type
+        description: 'The type of the viewable.'
+        example: article/comment/merchant_offer
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: id
+        description: 'The id of the viewable.'
+        example: 1
+        required: true
+        schema:
+          type: integer
 tags:
   -
     name: Article
@@ -3082,6 +3269,9 @@ tags:
     description: ''
   -
     name: 'User Settings'
+    description: ''
+  -
+    name: View
     description: ''
 components:
   securitySchemes:

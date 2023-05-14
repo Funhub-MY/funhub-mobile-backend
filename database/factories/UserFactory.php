@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Country;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -31,6 +32,7 @@ class UserFactory extends Factory
             'job_title' => fake()->jobTitle(),
             'password' => Hash::make('abcd1234'), // password
             'remember_token' => Str::random(10),
+            'status' => User::STATUS_ACTIVE,
         ];
     }
 

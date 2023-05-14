@@ -33,4 +33,9 @@ class ArticleCategory extends Model implements HasMedia
     {
         return $this->belongsTo(User::class);
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(ArticleCategory::class, 'parent_id');
+    }
 }

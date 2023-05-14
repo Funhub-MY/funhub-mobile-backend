@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\UserFollowing;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
@@ -86,17 +87,32 @@ class UserFollowingTest extends TestCase
     {
         $users = User::factory()->count(10)->create();
 
-        // attach followers to $this->user
-        $this->user->followers()->attach($users);
+        // make users follow $this->user
+        foreach ($users as $user) {
+            $this->actingAs($user);
+            $response = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $this->user->id,
+            ]);
+        }
+
+        // revert back to acting as this user
+        $this->actingAs($this->user);
 
         $response = $this->getJson('/api/v1/user/followers');
-
-        Log::info($response->json());
 
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data'
             ]);
+
+        // assert should be 10 followers
+        $this->assertCount(10, $response->json()['data']);
+
+        // check if the followers are the same as the users
+        $this->assertEquals(
+            $users->pluck('id')->toArray(), 
+            collect($response->json()['data'])->pluck('id')->toArray()
+        );
     }
 
     /**
@@ -105,17 +121,36 @@ class UserFollowingTest extends TestCase
      */
     public function testGetFollowingsOfLoggedInUser()
     {
+        // create 10 users for logged in user to follow
         $users = User::factory()->count(10)->create();
 
         // attach followings to $this->user
-        $this->user->followings()->attach($users);
+        foreach ($users as $user) {
+            // acting as logged in user, follow each of the users created
+            $response = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $user->id,
+            ]);
+        }
 
         $response = $this->getJson('/api/v1/user/followings');
-
 
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data'
             ]);
+        
+        // assert should be 10 followings
+        $this->assertCount(10, $response->json()['data']);
+
+        // check if followings of logged in user id are same as the users id
+        $this->assertEquals(
+            $users->pluck('id')->toArray(), 
+            collect($response->json()['data'])->pluck('id')->toArray()
+        );
+
+        // ensure json data each user is_following is true
+        foreach ($response->json()['data'] as $user) {
+            $this->assertTrue($user['is_following']);
+        }
     }
 }
