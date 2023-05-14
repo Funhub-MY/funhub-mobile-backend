@@ -229,11 +229,8 @@ class MerchantOfferController extends Controller
         $query = MerchantOffer::whereHas('interactions', function ($query) {
             $query->where('user_id', auth()->user()->id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
-        })->published()
-            ->whereDoesntHave('hiddenUsers', function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            });
-
+        })->published();
+        
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'interactions', 'media', 'categories')
