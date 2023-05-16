@@ -142,6 +142,20 @@ return [
         'driver' => 'file',
         // 'store'  => 'redis',
     ],
+    /*
+        |--------------------------------------------------------------------------
+        | News Feed Provider URL
+        |--------------------------------------------------------------------------
+        |
+        | This stores all the news feed url.
+        | If there is any changes on the url, we can change it here.
+        |
+    */
+    'news_feed_provider_url' => [
+        'https://www.goodymy.com/feed',
+        'https://www.goody25.com/feed',
+        'https://www.moretify.com/feed'
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -194,7 +208,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\TelescopeServiceProvider::class,
+        // App\Providers\TelescopeServiceProvider::class,
 
     ],
 
@@ -213,4 +227,23 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Site Settings
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'rate_limit' => env('RATE_LIMIT', 60),
+
+    'paginate_per_page' => env('PAGINATE_PER_PAGE', 10),
+    'max_images_per_article' => env('MAX_IMAGES_PER_ARTICLE', 9),
+    'max_size_per_image_kb' => env('MAX_SIZE_PER_IMAGE_KB',  1024 * 1024 * 5),
+    'max_size_per_video_kb' => env('MAX_SIZE_PER_VIDEO_KB',  1024 * 1024 * 500),
+    'default_user_media_collection' => 'user_uploads',
+
+    'ios_app_store_link' => env('IOS_APP_STORE_LINK', ''),
+    'android_play_store_link' => env('ANDROID_PLAY_STORE_LINK', ''),
+    'ios_deep_link' => env('IOS_DEEP_LINK', ''),
+    'android_deep_link' => env('ANDROID_DEEP_LINK', ''),
 ];

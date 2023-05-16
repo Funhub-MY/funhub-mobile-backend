@@ -1,17 +1,17 @@
-name: Endpoints
+name: Authentication
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/login
+    uri: api/v1/sendOtp
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: Login
-      description: 'Login user into the system with email and password and returns user''s token used for API authentication'
+      title: 'Send OTP'
+      description: 'Send SMS OTP to phone number'
       authenticated: false
       custom: []
     headers:
@@ -22,23 +22,92 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      email:
-        name: email
-        description: 'The email address of the user.  (john@example.com)'
+      country_code:
+        name: country_code
+        description: "The country code of user's phone number."
         required: true
-        example: issac81@example.org
+        example: '60'
         type: string
         custom: []
-      password:
-        name: password
-        description: 'The password of the user. (min 8 characters)'
+      phone_no:
+        name: phone_no
+        description: 'The Phone No of the user.'
         required: true
-        example: 0xT4HqKfcv@iB)Cp0
+        example: '1234567890'
         type: string
         custom: []
     cleanBodyParameters:
-      email: issac81@example.org
-      password: 0xT4HqKfcv@iB)Cp0
+      country_code: '60'
+      phone_no: '1234567890'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "message": "OTP Sent!"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/verifyOtp
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Verify OTP'
+      description: 'Login user into the system with OTP'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      country_code:
+        name: country_code
+        description: "The country code of user's phone number."
+        required: true
+        example: '60'
+        type: string
+        custom: []
+      phone_no:
+        name: phone_no
+        description: 'The Phone No of the user.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+      otp:
+        name: otp
+        description: "The OTP sent to user's phone number."
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      country_code: '60'
+      phone_no: '1234567890'
+      otp: '123456'
     fileParameters: []
     responses:
       -
@@ -62,7 +131,7 @@ endpoints:
         custom: []
       -
         status: 422
-        content: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
         headers: []
         description: 'Invalid Form Fields'
         custom: []
@@ -75,52 +144,14 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v1/login/{provider}'
+    uri: api/v1/loginWithPassword
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Login with Password'
       description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      provider:
-        name: provider
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        custom: []
-    cleanUrlParameters:
-      provider: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/register/email
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Register with Email'
-      description: 'Register user with email and password'
       authenticated: false
       custom: []
     headers:
@@ -131,31 +162,123 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      name:
-        name: name
-        description: 'The name of the user.  (John Smith)'
+      country_code:
+        name: country_code
+        description: 'Country code of phone number.'
         required: true
-        example: praesentium
+        example: '60'
         type: string
         custom: []
-      email:
-        name: email
-        description: 'The email address of the user.  (john@example.com)'
+      phone_no:
+        name: phone_no
+        description: 'Phone number.'
         required: true
-        example: mswaniawski@example.com
+        example: '1234567890'
         type: string
         custom: []
       password:
         name: password
-        description: 'The password of the user. (min 8 characters)'
+        description: Password.
         required: true
-        example: 'uv(q+m*A.@7,Wb/XQ"'
+        example: abcd1234
         type: string
         custom: []
     cleanBodyParameters:
-      name: praesentium
-      email: mswaniawski@example.com
-      password: 'uv(q+m*A.@7,Wb/XQ"'
+      country_code: '60'
+      phone_no: '1234567890'
+      password: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "user": {},
+           "token": "auth_token"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Invalid Credentials"}'
+        headers: []
+        description: 'Invalid Credentials'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/register/otp
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Register with OTP'
+      description: 'Register user with OTP'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      country_code:
+        name: country_code
+        description: "The country code of user's phone number."
+        required: true
+        example: '60'
+        type: string
+        custom: []
+      phone_no:
+        name: phone_no
+        description: 'The Phone No of the user.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+      otp:
+        name: otp
+        description: "The OTP sent to user's phone number."
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+      name:
+        name: name
+        description: 'The name of the use.'
+        required: true
+        example: 'John Smith'
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+    cleanBodyParameters:
+      country_code: '60'
+      phone_no: '1234567890'
+      otp: '123456'
+      name: 'John Smith'
+      password: abcd1234
     fileParameters: []
     responses:
       -
@@ -173,7 +296,7 @@ endpoints:
         custom: []
       -
         status: 422
-        content: '{"errors": ["email": ["The email field is required."], "password": ["The password field is required."] ]}'
+        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
         headers: []
         description: 'Invalid Form Fields'
         custom: []
@@ -186,33 +309,33 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v1/register/{provider}'
+    uri: api/v1/login/facebook
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
-      description: ''
+      title: 'Login with Facebook'
+      description: 'Login user with Facebook'
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      provider:
-        name: provider
-        description: ''
-        required: true
-        example: eum
-        type: string
-        custom: []
-    cleanUrlParameters:
-      provider: eum
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      access_token:
+        name: access_token
+        description: 'The access token of the user from Facebook.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      access_token: '1234567890'
     fileParameters: []
     responses: []
     responseFields: []
@@ -224,17 +347,113 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/login/google
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login with Google'
+      description: 'Login user with Google'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      access_token:
+        name: access_token
+        description: 'The access token of the user from Google.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      access_token: '1234567890'
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/login/social
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login with Social (via Firebase Auth)'
+      description: 'Login user with Social'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      access_token:
+        name: access_token
+        description: 'Firebase Auth Token ().'
+        required: true
+        example: "'ey271236...'"
+        type: string
+        custom: []
+    cleanBodyParameters:
+      access_token: "'ey271236...'"
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "user": {
+              id: 1,
+              name: "John Smith"
+           },
+           "token": "AuthenticationTokenHere"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Invalid Token" ]}'
+        headers: []
+        description: 'Invalid Token'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/logout
     metadata:
-      groupName: Endpoints
+      groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
       title: Logout
       description: 'Log User Out and destroy any active tokens of user'
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -258,7 +477,92 @@ endpoints:
         description: 'Access Denied'
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VZceh1E354gDkda6b86Pvaf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/complete-profile
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Complete Profile'
+      description: 'Complete user profile after registration'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the use.'
+        required: true
+        example: 'John Smith'
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'The email of the user.'
+        required: true
+        example: john@example.com
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The password of the user(social login do not need to provide).'
+        required: false
+        example: abcd1234
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: 'John Smith'
+      email: john@example.com
+      password: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message" : "Profile Updated"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Please verify your phone number first" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gbkfV3EDchePa645v681dZa'
     controller: null
     method: null
     route: null

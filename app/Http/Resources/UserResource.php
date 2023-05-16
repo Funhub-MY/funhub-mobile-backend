@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends ResourceCollection
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource collection into an array.
@@ -17,6 +17,16 @@ class UserResource extends ResourceCollection
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'username' => $this->username,
+            'auth_provider' => $this->auth_provider,
+            'avatar' => $this->avatar_url,
+            'avatar_thumb' => $this->avatar_thumb_url,
+            'articles_published_count' => $this->articles()->published()->count(),
+            'following_count' => $this->followings()->count(),
+            'followers_count' => $this->followers()->count(),
+            'has_completed_profile' => $this->has_completed_profile,
+            'point_balance' => $this->point_balance,
+            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false
         ];
     }
 }

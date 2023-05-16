@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\ShareableLink;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class ShareableLinkController extends Controller
+{
+    /**
+     * Load link then determine user-agent only create deep link to push to app
+     */
+    public function load($link)
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+        if ($link == null || $userAgent == null) {
+            Log::info('Link or user-agent is null', [
+                'link' => $link,
+                'user-agent' => $userAgent
+            ]);
+            return abort(404);
+        }
+
+        // trim whitespace
+        $link = trim($link);
+        // remove any commas or symbols
+        $link = preg_replace('/[^A-Za-z0-9\-]/', '', $link);
+
+        // check if link exists
+        $shareableLink = ShareableLink::where('link', $link)->first();
+        if ($shareableLink == null) {
+            Log::info('Shareable link is null', [
+                'link' => $link,
+                'shareable_link' => $shareableLink,
+            ]);
+            return abort(404);
+        }
+
+        // get link structure
+        $linkStructure = $this->generateLinkStructure($shareableLink);
+
+        // check if user-agent is mobile
+        // preg match user header is mobile device
+
+        if (preg_match('/iPhone|iPod|iPad/', $userAgent) || preg_match('/Android/', $userAgent)) {
+            if (preg_match('/Android/', $userAgent)) {
+                  // eg. flutter://flutter.dev?article_id=1
+                  Log::info('Redirecting to android deep link', [
+                    'link' => config('app.android_deep_link').'?'.$linkStructure,
+                    'user-agent' => $userAgent,
+                ]);
+                return redirect(config('app.android_deep_link').'?'.$linkStructure);
+            } else if (preg_match('/iPhone|iPod|iPad/', $userAgent)){
+                // eg. flutter://flutter.dev?article_id=1
+                Log::info('Redirecting to ios deep link', [
+                    'link' => config('app.ios_deep_link').'?'.$linkStructure,
+                    'user-agent' => $userAgent,
+                ]);
+                return redirect(config('app.ios_deep_link').'?'.$linkStructure);
+            }
+        } else {
+            Log::info('Redirecting to web view', [
+                'link' => config('app.web_view').'?'.$linkStructure,
+                'user-agent' => $userAgent,
+            ]);
+            // detect if ios redirect to app store, else redirec to play store
+            if (preg_match('/Android/', $userAgent)) {
+                return redirect(config('app.android_play_store_link'));
+            } else {
+                return redirect(config('app.ios_app_store_link'));
+            }
+
+            // TODO: web view choose app store
+        }
+
+        return abort(404);
+    }
+
+    /**
+     * Generate Link Param structure based on model_id and model_type
+     */
+    private function generateLinkStructure(ShareableLink $link)
+    {
+        // convert model_type App\Models\Article to article_id
+        $modelIdStructure = strtolower(str_replace('App\Models\\', '', $link->model_type)).'_id';
+
+        // eg. article
+        return $modelIdStructure . '=' . $link->model_id;
+    }
+}

@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Country;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -21,9 +24,23 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => bcrypt('abcd1234'), // password
+            'otp_verified_at' => now(),
+            'phone_no' => fake()->randomNumber(9),
+            'phone_country_code' => '60',
+            'bio' => fake()->paragraph(1),
+            'gender' => fake()->randomElement(['male', 'female']),
+            'job_title' => fake()->jobTitle(),
+            'password' => Hash::make('abcd1234'), // password
             'remember_token' => Str::random(10),
+            'status' => User::STATUS_ACTIVE,
         ];
+    }
+
+    public function otpVerified()
+    {
+        return $this->state(fn (array $attributes) => [
+            'otp_verified_at' => now(),
+        ]);
     }
 
     /**

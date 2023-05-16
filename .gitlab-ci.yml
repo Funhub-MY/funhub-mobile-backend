@@ -1,0 +1,62 @@
+
+default:
+  image: lorisleiva/laravel-docker:8.2
+services:
+  - mysql:latest
+
+stages:
+  - build
+  - test
+
+variables:
+  MYSQL_DATABASE: ci
+  MYSQL_ROOT_PASSWORD: cipass
+
+cache:
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+  paths:
+    - vendor
+    - node_modules
+    - public
+
+building:
+  stage: build
+  script:
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    - php -r "unlink('composer-setup.php');"
+    - php /usr/local/bin/composer -V
+    - php /usr/local/bin/composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+    - cp .env.gitlab .env
+    - php artisan migrate --seed
+    - php artisan key:generate
+    - php artisan optimize
+    
+  artifacts:
+    paths:
+      - vendor/
+      - node_modules/
+      - .env
+
+testing:
+  stage: test
+  script:
+    - ./vendor/bin/pest
+
+# deploy_staging:
+#   stage: deploy
+#   script:
+#     - curl --location --request POST $STAGING_DEPLOY_URI
+#   only:
+#     - master
+#   environment:
+#     name: staging
+
+# deploy_production:
+#   stage: deploy
+#   script:
+#     - curl --location --request POST $PRODUCTION_DEPLOY_URI
+#   only:
+#     - production
+#   environment:
+#     name: production

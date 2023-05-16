@@ -21,6 +21,18 @@ return [
         'scheme' => 'https',
     ],
 
+    'facebook' => [
+        'client_id' => env('FACEBOOK_KEY'),
+        'client_secret' => env('FACEBOOK_SECRET'),
+        'redirect' => 'https://funhub-backend.dev.com/auth/facebook/callback'
+    ],
+    // google redirect cannot use .test as domain. need to use top level domain such as .org, .com etc.
+    'google' => [
+        'client_id' => env('GOOGLE_KEY'),
+        'client_secret' => env('GOOGLE_SECRET'),
+        'redirect' => 'https://funhub-backend.dev.com/auth/google/callback'
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
@@ -31,4 +43,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'movider' => [
+        'key' => env('MOVIDER_KEY'),
+        'secret' => env('MOVIDER_SECRET'),
+        'api_url' => env('MOVIDER_API', 'https://api.movider.co/v1/sms'),
+    ]
 ];
