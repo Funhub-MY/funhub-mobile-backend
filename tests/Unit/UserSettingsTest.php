@@ -1,278 +1,198 @@
 <?php
-namespace Tests\Unit;
 
-use Tests\TestCase;
-use App\Models\UserSetting;
-use App\Models\User;
 use App\Models\ArticleCategory;
 use App\Models\Country;
 use App\Models\State;
-use Laravel\Sanctum\Sanctum;
+use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
-use function PHPSTORM_META\map;
+uses(RefreshDatabase::class);
 
-class UserSettingsTest extends TestCase
-{
-    use RefreshDatabase;
-    protected $user;
+beforeEach(function () {
+    $this->user = User::factory()->create();
+    Sanctum::actingAs($this->user, ['*']);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->refreshDatabase();
+test('get user settings', function () {
+    $response = $this->getJson('/api/v1/user/settings');
 
-        // mock log in user get token
-        $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user,['*']);
-    }
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'name',
+            'username',
+            'email',
+            'dob',
+            'gender',
+            'bio',
+            'job_title',
+            'country_id',
+            'state_id',
+            'avatar',
+            'avatar_thumb',
+            'category_ids'
+        ]);
+});
 
-    /**
-     * Test Get User Settings
-     * /api/v1/user/settings
-     */
-    public function testGetSettings()
-    {
-        // get user settings
-        $response = $this->getJson('/api/v1/user/settings');
+test('assign categories to a user', function () {
+    $articleCategory = ArticleCategory::factory()->count(10)->create();
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'name',
-                'username',
-                'email',
-                'dob',
-                'gender',
-                'bio',
-                'job_title',
-                'country_id',
-                'state_id',
-                'avatar',
-                'avatar_thumb',
-                'category_ids'
-            ]);
-    }
+    $response = $this->postJson('/api/v1/user/settings/article_categories', [
+        'category_ids' => $articleCategory->pluck('id')->toArray()
+    ]);
 
-    /**
-     * Test assign categories to a user
-     * /api/v1/user/settings/article_categories
-     */
-    public function testAssignCategoriesToAUser()
-    {
-        // create article category first
-        $articleCategory = ArticleCategory::factory()->count(10)->create();
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
+        ]);
+});
 
-        // assign categories to a user
-        $response = $this->postJson('/api/v1/user/settings/article_categories', [
-            'category_ids' => $articleCategory->pluck('id')->toArray()
+test('upload user avatar', function () {
+    $response = $this->postJson('/api/v1/user/settings/avatar/upload', [
+        'avatar' => UploadedFile::fake()->image('avatar.jpg')
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message', 'avatar', 'avatar_thumb'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
-    }
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'avatar' => $response->json('avatar_id'),
+    ]);
+});
 
-    /**
-     * Test Upload user avatar
-     * /api/v1/user/settings/avatar/upload
-     */
-    public function testUploadUserAvatar()
-    {
-        // upload user avatar
-        $response = $this->postJson('/api/v1/user/settings/avatar/upload', [
-            'avatar' => UploadedFile::fake()->image('avatar.jpg')
+test('save email', function () {
+    $response = $this->postJson('/api/v1/user/settings/email', [
+        'email' => 'test123@gmail.com'
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message', 'avatar', 'avatar_thumb'
-            ]);
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'email' => 'test123@gmail.com',
+    ]);
+});
 
-        // assert database of user avatar column is populated
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'avatar' => $response->json('avatar_id'),
-        ]);
-    }
+test('save name', function () {
+    $response = $this->postJson('/api/v1/user/settings/name', [
+        'name' => 'test123'
+    ]);
 
-    /**
-     * Test Save Email
-     * /api/v1/user/settings/email
-     */
-    public function testSaveEmail()
-    {
-        // save email
-        $response = $this->postJson('/api/v1/user/settings/email', [
-            'email' => 'test123@gmail.com'
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'name' => 'test123',
+    ]);
+});
 
-        // assert database of user email column is populated
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'email' => 'test123@gmail.com',
-        ]);
-    }
+test('save bio', function () {
+    $bio = fake()->paragraph(3);
 
-    /**
-     * Test Save Name
-     * /api/v1/user/settings/name
-     */
-    public function testSaveName()
-    {
-        // save name
-        $response = $this->postJson('/api/v1/user/settings/name', [
-            'name' => 'test123'
+    $response = $this->postJson('/api/v1/user/settings/bio', [
+        'bio' => $bio
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'bio' => $bio,
+    ]);
+});
 
-        // assert database of user name column is populated
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'name' => 'test123',
-        ]);
-    }
+test('save date of birth', function () {
+    $date = [
+        'year' => 1990,
+        'month' => fake()->date('m'),
+        'day' => fake()->date('d'),
+    ];
 
-    /**
-     * Test Save Bio
-     * /api/v1/user/settings/bio
-     */
-    public function testSaveBio()
-    {
-        $bio = fake()->paragraph(3);
-        // save bio
-        $response = $this->postJson('/api/v1/user/settings/bio', [
-            'bio' => $bio
-        ]);
+    $response = $this->postJson('/api/v1/user/settings/dob', [
+        'year' =>  (int) $date['year'],
+        'month' => (int) $date['month'],
+        'day' => (int) $date['day'],
+    ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
-
-        // assert database of user bio column is populated
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'bio' => $bio,
-        ]);
-    }
-
-    /**
-     * Test Save Date of Birth
-     * /api/v1/user/settings/dob 
-     */
-    public function testSaveDob()
-    {
-        $date = [
-            'year' => 1990,
-            'month' => fake()->date('m'),
-            'day' => fake()->date('d'),
-        ];
-        // save dob
-        $response = $this->postJson('/api/v1/user/settings/dob', [
-            'year' =>  (int) $date['year'],
-            'month' => (int) $date['month'],
-            'day' => (int) $date['day'],
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'dob' => $date['year'].'-'.$date['month'].'-'.$date['day'],
+    ]);
+});
 
-        // assert database of user dob column is populated
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'dob' => $date['year'].'-'.$date['month'].'-'.$date['day'],
-        ]);
-    }
+test('save gender', function () {
+    $response = $this->postJson('/api/v1/user/settings/gender', [
+        'gender' => 'male'
+    ]);
 
-    /**
-     * Test Save Gender
-     * /api/v1/user/settings/gender
-     */
-    public function testSaveGender()
-    {
-        $response = $this->postJson('/api/v1/user/settings/gender', [
-            'gender' => 'male'
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
-    
-        // assert database
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'gender' => 'male'
-        ]);
-    }
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'gender' => 'male'
+    ]);
+});
 
-    /**
-     * Test Save Job Title
-     * /api/v1/user/settings/job_title
-     */
-    public function testSaveJobTitle()
-    {
-        $response = $this->postJson('/api/v1/user/settings/job-title', [
-            'job_title' => 'Software Engineer'
+test('save job title', function () {
+    $response = $this->postJson('/api/v1/user/settings/job-title', [
+        'job_title' => 'Software Engineer'
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
-    
-        // assert database
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'job_title' => 'Software Engineer'
-        ]);
-    }
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'job_title' => 'Software Engineer'
+    ]);
+});
 
-    /**
-     * Test Save Location
-     * /api/v1/user/settings/location
-     */
-    public function testSaveLocation()
-    {
-        // seed countries
-        $this->seed('CountriesTableSeeder');
+test('save location', function () {
+    $this->seed('CountriesTableSeeder');
+    $this->seed('StatesTableSeeder');
 
-        // seed states
-        $this->seed('StatesTableSeeder');
+    $country = Country::where('code', 'MY')->first();
+    $state = State::where('country_id', $country->id)->first();
 
-        // get Malaysia country id
-        $country = \App\Models\Country::where('code', 'MY')->first();
-        $state = \App\Models\State::where('country_id', $country->id)->first();
-        // post to save location
-        $response = $this->postJson('/api/v1/user/settings/location', [
-            'country_id' => $country->id,
-            'state_id' => $state->id,
+    $response = $this->postJson('/api/v1/user/settings/location', [
+        'country_id' => $country->id,
+        'state_id' => $state->id,
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'message'
-            ]);
-
-        // assert database
-        $this->assertDatabaseHas('users', [
-            'id' => $this->user->id,
-            'country_id' => $country->id,
-            'state_id' => $state->id,
-        ]);
-    }
-}
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'country_id' => $country->id,
+        'state_id' => $state->id,
+    ]);
+});
