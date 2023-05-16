@@ -19,11 +19,7 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'parent_id' => $this->parent_id,
             'commentable_id' => $this->commentable_id,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'avatar' => $this->user->avatar_url,
-            ],
+            'user' => new UserResource($this->user),
             'counts' => [
                 'likes' => $this->likes->count(),
                 'replies' => $this->replies->count(),
