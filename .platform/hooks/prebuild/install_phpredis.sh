@@ -8,7 +8,7 @@
 # For Predis, this extension is not necessarily needed.
 # Enabled by default since it's latest Laravel version's default driver.
 
-sudo yum -y install php-redis
+# sudo yum -y install php-redis
 
 # For PHP 8.0+, you can use the pecl command to install it. You may disable the previous command.
 
