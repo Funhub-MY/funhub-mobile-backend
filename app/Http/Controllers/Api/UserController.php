@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -31,14 +32,27 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get a user
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
+     * 
+     * @group User
+     * @urlParam user required The id of the user. Example: 1
+     * @response scenario=success {
+     * "data": {
+     * }
+     * 
      */
     public function show(User $user)
     {
-        //
+        // ensure user is not blocked 
+        if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
+            return response()->json([
+                'message' => 'You are blocked by user'
+            ], 403);
+        }
+        return new \App\Http\Resources\UserResource($user);
     }
 
     /**
@@ -76,6 +90,7 @@ class UserController extends Controller
      * @bodyPara3m reason string required The reason for reporting the comment. Example: Spam
      * @bodyParam violation_type required The violation type of this report
      * @bodyParam violation_level required The violation level of this report
+     * @bodyParam also_block_user boolean optional Whether to block the user or not. Example: true
      * @response scenario=success {
      * "message": "Comment reported",
      * }
@@ -100,11 +115,67 @@ class UserController extends Controller
                 'violation_level' => request('violation_level'),
                 'violation_type' => request('violation_type'),
             ]);
+
+            // block user if also_block_user is true
+            if (request('also_block_user')) {
+                // create block
+                UserBlock::firstOrNew([
+                    'user_id' => auth()->id(),
+                    'blockable_type' => User::class,
+                    'blockable_id' => $user->id
+                ],[
+                    'user_id' => auth()->id(),
+                    'blockable_type' => User::class,
+                    'blockable_id' => $user->id
+                ]);
+            }
         } else {
             return response()->json(['message' => 'You have already reported this comment'], 422);
         }
 
         return response()->json(['message' => 'Comment reported']);
+    }
+
+    /**
+     * Block a user
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return JsonResponse
+     * 
+     * @group User
+     * @subgroup Blocks
+     * @bodyParam user_id integer required The id of the user. Example: 1
+     * @bodyParam reason string optional The reason for blocking the user. Example: Spam
+     * @response scenario=success {
+     * "message": "User blocked",
+     * }
+     */
+    public function postBlockUser(Request $request) 
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+            'reason' => 'string'
+        ]);
+
+        $userToBlock = User::where('id', request('user_id'))->firstOrFail();
+
+        $userBlockedByMe = UserBlock::where('user_id', auth()->id())
+            ->where('blockable_type', User::class)
+            ->where('blockable_id', $userToBlock->id)
+            ->first();
+
+        if (!$userBlockedByMe) {
+            // create block
+            UserBlock::create([
+                'user_id' => auth()->id(),
+                'blockable_type' => User::class,
+                'blockable_id' => $userToBlock->id
+            ]);
+
+            return response()->json(['message' => 'User blocked']);
+        } else {
+            return response()->json(['message' => 'You have already blocked this user'], 422);
+        }
     }
 
 }

@@ -38,6 +38,9 @@ class MerchantOffer extends Model implements HasMedia
         'sku'
     ];
 
+    const CLAIM_SUCCESS = 1;
+    const CLAIM_FAILED = 2;
+
     /**
      * Search Setup
      */
@@ -98,6 +101,17 @@ class MerchantOffer extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function interactions()
+    {
+        return $this->morphMany(Interaction::class, 'interactable');
+    }
+    
+    public function likes()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+            ->where('type', Interaction::TYPE_LIKE);
+    }
+
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
@@ -109,6 +123,11 @@ class MerchantOffer extends Model implements HasMedia
     {
         return $this->belongsToMany(MerchantCategory::class, 'merchant_category_merchant_offer')
             ->withTimestamps();
+    }
+
+    public function views()
+    {
+        return $this->morphMany(View::class, 'viewable');
     }
 
     /**
@@ -124,6 +143,6 @@ class MerchantOffer extends Model implements HasMedia
      */
     public function getClaimedQuantityAttribute()
     {
-        return $this->claims()->wherePivot('status', 'claimed')->count();
+        return $this->claims()->wherePivot('status', self::CLAIM_SUCCESS)->count();
     }
 }

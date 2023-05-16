@@ -22,6 +22,9 @@ class User extends Authenticatable implements HasMedia
     const USER_AVATAR = 'user_avatar';
     const USER_UPLOADS = 'user_uploads';
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_SUSPENDED = 2;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -227,6 +230,13 @@ class User extends Authenticatable implements HasMedia
         return $this->morphMany(Reports::class, 'reportable');
     }
 
+    // users that this user has blocked
+    public function usersBlocked()
+    {
+        return $this->morphMany(UserBlock::class, 'blockable')
+            ->where('blockable_type', User::class);
+    }
+
     /**
      * Get the user's point balance
      */
@@ -303,7 +313,7 @@ class User extends Authenticatable implements HasMedia
                 $this->attributes['username'] = $username;
             } else {
                 // random 6 character username with 3 numbers
-                $this->attributes['username'] = strtolower( Str . rand(100, 999));
+                $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
             }
         }
     }

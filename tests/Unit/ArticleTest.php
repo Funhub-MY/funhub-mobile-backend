@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\User;
+use App\Models\View;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -279,6 +280,65 @@ class ArticleTest extends TestCase
 
         $this->assertEquals(5, $response->json('meta.total'));
     }
+
+    /**
+     * Article get articles by user id
+     * /api/v1/my_articles
+     */
+   public function testGetMyArticlesByUserId()
+   {
+        // create a new user
+        $user = User::factory()->create();
+
+        // create ten articles by a user
+        $articles = Article::factory()
+            ->count(10)
+            ->published()
+            ->create([
+                'user_id' => $user->id,
+            ]);
+
+        // get my_articles by user id
+        $response = $this->getJson('/api/v1/articles/my_articles?user_id='.$user->id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        // assert is 10 articles
+        $this->assertEquals(10, $response->json('meta.total'));
+   }
+
+   public function testGetMyBookmarkedArticlesByUserId()
+   {
+        // create a new user
+        $user = User::factory()->create();
+
+        // create ten articles by logged in user so $user can bookmark
+        $articles = Article::factory()
+            ->count(10)
+            ->published()
+            ->create([
+                'user_id' => $this->user->id,
+            ]);
+
+        // bookmark each articles
+        foreach ($articles as $article) {
+            // bookmark articles by logged in user
+            $response = $this->postJson('/api/v1/interactions', [
+                'interactable' => 'article',
+                'type' => 'bookmark',
+                'id' => $article->id,
+            ]);
+
+            // assert json response
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'interaction',
+                ]);
+        }
+   }
 
     /**
      * Articles create article by logged in user without images
@@ -725,5 +785,43 @@ class ArticleTest extends TestCase
 
         // check there's 20 items in meta.total
         $this->assertEquals(20, $response->json('meta.total'));
+    }
+
+    /**
+     * Test View Article and get view count
+     * /api/v1/articles/{article}
+     */
+    public function testViewArticle()
+    {
+        // create ten users 
+        $users = User::factory()->count(10)->create();
+
+        // create a new article
+        $article = Article::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        // each user view article
+        foreach($users as $user) {
+            $this->actingAs($user);
+            $response = $this->postJson('/api/v1/views', [
+                'viewable_type' => 'article',
+                'viewable_id' => $article->id,
+            ]);
+
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+        }
+
+        // switch back to $this->user
+        $this->actingAs($this->user);
+
+        // article refresh
+        $article->refresh();
+
+        // check article view count
+        $this->assertEquals(count($users), $article->views->count());
     }
 }

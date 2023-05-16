@@ -6,6 +6,7 @@ use App\Filament\Resources\InteractionResource\Pages;
 use App\Filament\Resources\InteractionResource\RelationManagers;
 use App\Models\Article;
 use App\Models\Interaction;
+use App\Models\MerchantOffer;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -52,6 +53,7 @@ class InteractionResource extends Resource
                     ->types([
                         // TODO:: at the moment there is only 1 type.
                         Forms\Components\MorphToSelect\Type::make(Article::class)->titleColumnName('title'),
+                        Forms\Components\MorphToSelect\Type::make(MerchantOffer::class)->titleColumnName('name'),
                     ])
                     ->label('Type'),
             ]);

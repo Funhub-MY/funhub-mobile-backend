@@ -36,6 +36,7 @@ class ArticleResource extends JsonResource
                 'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+                'views' => $this->views->count()
             ],
             'my_interactions' => [
                 'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),
@@ -46,6 +47,7 @@ class ArticleResource extends JsonResource
             'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
             'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
             'lang' => $this->lang,
+            'is_imported' => $this->imports()->exists(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),

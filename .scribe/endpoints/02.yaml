@@ -69,7 +69,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gDdca3fZ1vPekbaV56hE648'
+      - 'Bearer kd61vDa83EPc5gZhbaf64eV'
     controller: null
     method: null
     route: null
@@ -123,7 +123,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v8g1ae6ak3Zdcb45PfhDV6E'
+      - 'Bearer 6h54aacv3E1DgZke6dfb8VP'
     controller: null
     method: null
     route: null
@@ -137,7 +137,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Articles for Logged in user (for Profile Page)'
+      title: 'Get Articles by User ID or Logged In User'
       description: ''
       authenticated: true
       custom: []
@@ -150,6 +150,13 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      user_id:
+        name: user_id
+        description: 'optional Load Spciefic User Articles.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
       published_only:
         name: published_only
         description: 'optional Filter by published articles.'
@@ -200,6 +207,7 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
+      user_id: 1
       published_only: true
       filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
@@ -226,7 +234,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 86aDfgcZdvE653Ph4bVek1a'
+      - 'Bearer e3gVv518aDPh6kdfb4aE6cZ'
     controller: null
     method: null
     route: null
@@ -240,7 +248,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get My Bookmarked Articles'
+      title: 'Get Bookmarked Articles by User ID or Logged In User'
       description: ''
       authenticated: true
       custom: []
@@ -253,6 +261,13 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      user_id:
+        name: user_id
+        description: 'optional Load Spciefic User Bookmarked Articles.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
       filter:
         name: filter
         description: 'Column to Filter.'
@@ -296,6 +311,7 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
+      user_id: 1
       filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
@@ -321,7 +337,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cgkPZ1D3he6a6bVE48dva5f'
+      - 'Bearer acd5gbEPeh6V3D6vZf8k41a'
     controller: null
     method: null
     route: null
@@ -353,7 +369,7 @@ endpoints:
         description: 'optional Article Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - dicta
+          - repellendus
         type: 'string[]'
         custom: []
       category_ids:
@@ -434,7 +450,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       article_ids:
-        - dicta
+        - repellendus
       category_ids:
         - 1
         - 2
@@ -470,7 +486,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer faPDhva4651Vc6d8Ze3bEkg'
+      - 'Bearer D4adh3a58bfePE1cgkV66vZ'
     controller: null
     method: null
     route: null
@@ -617,7 +633,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1V3aEeD4gvZPb8d6khc65fa'
+      - 'Bearer 5Zh3dP66ekc8baEVvfDa14g'
     controller: null
     method: null
     route: null
@@ -674,7 +690,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3ZPea6hk1f8654dvDcgaEbV'
+      - 'Bearer 6dhEacbVDg16Pv8ae54Zk3f'
     controller: null
     method: null
     route: null
@@ -794,7 +810,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5f4g6e86adZ1hbvDVkEcaP3'
+      - 'Bearer Eg486vk6fDPbhe51ca3adZV'
     controller: null
     method: null
     route: null
@@ -851,7 +867,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gP14aZkv35b8V6dE6hDecfa'
+      - 'Bearer 1fg68EVaPhb354aDedvZk6c'
     controller: null
     method: null
     route: null
@@ -882,7 +898,7 @@ endpoints:
         name: article_id
         description: ''
         required: true
-        example: 2
+        example: 16
         type: integer
         custom: []
       reason:
@@ -896,14 +912,14 @@ endpoints:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: quisquam
+        example: eum
         type: required
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: accusamus
+        example: necessitatibus
         type: required
         custom: []
       article:
@@ -914,10 +930,10 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
-      article_id: 2
+      article_id: 16
       reason: Spam
-      violation_type: quisquam
-      violation_level: accusamus
+      violation_type: eum
+      violation_level: necessitatibus
       article: 1
     fileParameters: []
     responses:
@@ -946,7 +962,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 48a3dvkfg1e6hVZP5caEb6D'
+      - 'Bearer Ekgcfa6Va1Z3h4Db5dPev68'
     controller: null
     method: null
     route: null
@@ -1043,7 +1059,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ea3c8dEa1h46V5gPbZ6fvkD'
+      - 'Bearer a53Pbc6k6fZVEge84a1hvDd'
     controller: null
     method: null
     route: null
@@ -1100,7 +1116,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36aZDe1dgh8ak4EPfc5V6bv'
+      - 'Bearer ekD1vabE5f3aVP4dhZg866c'
     controller: null
     method: null
     route: null
@@ -1205,7 +1221,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bDPea5a163VfZdEg8vkch4'
+      - 'Bearer 4Vaed8hkvb6EacDP356g1fZ'
     controller: null
     method: null
     route: null
@@ -1262,7 +1278,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Db3daPcEhV8g4kf656vaeZ1'
+      - 'Bearer ag1DchPd5k6vZVEf483ea6b'
     controller: null
     method: null
     route: null
@@ -1289,11 +1305,11 @@ endpoints:
         name: comment_id
         description: 'The ID of the comment.'
         required: true
-        example: quia
+        example: quisquam
         type: string
         custom: []
     cleanUrlParameters:
-      comment_id: quia
+      comment_id: quisquam
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1367,7 +1383,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1f8aVhD64d6kvbcPge5aEZ3'
+      - 'Bearer dkaf3v5ac86ge6b1VhEZPD4'
     controller: null
     method: null
     route: null
@@ -1424,7 +1440,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1kvD6gc8P36aEZdheVfa54b'
+      - 'Bearer P4ah3bV51D8k66cEadeZvfg'
     controller: null
     method: null
     route: null
@@ -1469,21 +1485,21 @@ endpoints:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: recusandae
+        example: tempore
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: natus
+        example: dignissimos
         type: required
         custom: []
     cleanBodyParameters:
       comment_id: 1
       reason: Spam
-      violation_level: recusandae
-      violation_type: natus
+      violation_level: tempore
+      violation_type: dignissimos
     fileParameters: []
     responses:
       -
@@ -1511,7 +1527,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kbfhe5631Zg4DVavPdEca86'
+      - 'Bearer 6d58aEPvh4VgbeZDc1kf36a'
     controller: null
     method: null
     route: null
@@ -1636,7 +1652,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68aE63ZVcvePfab5d4Dg1hk'
+      - 'Bearer 6vkEh58D61aePa4Zdg3fbcV'
     controller: null
     method: null
     route: null
@@ -1723,7 +1739,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 54d6PE68DV13ebvgckaaZhf'
+      - 'Bearer 5gVakdP466h1fZ8EDcvabe3'
     controller: null
     method: null
     route: null
@@ -1750,11 +1766,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: 16
+        example: 13
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 13
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1802,7 +1818,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3Ea16gD8Zh4bakce5fPV6vd'
+      - 'Bearer df3ghaDcZ6V58v14kbae6EP'
     controller: null
     method: null
     route: null
@@ -1874,7 +1890,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E8V1v6aZkDd365fcag4ePbh'
+      - 'Bearer avbZV58P413hedcaEfkD66g'
     controller: null
     method: null
     route: null
@@ -1916,307 +1932,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D8haPf351Zbak4e6Vc6vEdg'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/interactions
-    metadata:
-      groupName: Article
-      groupDescription: ''
-      subgroup: Interactions
-      subgroupDescription: ''
-      title: 'Get interactions on a interactable type (eg. Articles)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: article
-        type: string
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      filter:
-        name: filter
-        description: 'Column to Filter.'
-        required: false
-        example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-        type: string
-        custom: []
-      filter_value:
-        name: filter_value
-        description: 'Value to Filter.'
-        required: false
-        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-        type: string
-        custom: []
-      sort:
-        name: sort
-        description: 'Column to Sort.'
-        required: false
-        example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-        type: string
-        custom: []
-      order:
-        name: order
-        description: 'Direction to Sort.'
-        required: false
-        example: 'Sortable directions are: asc, desc'
-        type: string
-        custom: []
-      limit:
-        name: limit
-        description: 'Per Page Limit Override.'
-        required: false
-        example: 10
-        type: integer
-        custom: []
-      offset:
-        name: offset
-        description: 'Offset Override.'
-        required: false
-        example: 0
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      interactable: article
-      id: 1
-      filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-      order: 'Sortable directions are: asc, desc'
-      limit: 10
-      offset: 0
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 404
-        content: ''
-        headers: []
-        description: 'Not Found'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6a1VD354deEfZv6b8gkPcha'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/interactions
-    metadata:
-      groupName: Article
-      groupDescription: ''
-      subgroup: Interactions
-      subgroupDescription: ''
-      title: 'Create an interaction for interactable type'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: article
-        type: string
-        custom: []
-      type:
-        name: type
-        description: 'The type of interaction.'
-        required: true
-        example: 'like,dislike,share,bookmark'
-        type: string
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable (eg. Article ID).'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      interactable: article
-      type: 'like,dislike,share,bookmark'
-      id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "interaction": {}
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer cEVkPeZ6hav438g561bdafD'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/interactions/{id}'
-    metadata:
-      groupName: Article
-      groupDescription: ''
-      subgroup: Interactions
-      subgroupDescription: ''
-      title: 'Show one interaction by ID'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The id of the interaction.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer akb63PD1Z8vVadegf564cEh'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/v1/interactions/{id}'
-    metadata:
-      groupName: Article
-      groupDescription: ''
-      subgroup: Interactions
-      subgroupDescription: ''
-      title: |-
-        Remove Interaction By ID
-        Only owner can call this method
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The id of the interaction.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Interaction deleted"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 404
-        content: "{['message' => 'Interaction not found']}"
-        headers: []
-        description: 'Not Found'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 46DveZ1g3cd85faVbha6EPk'
+      - 'Bearer 651hae3dvDaZg6VPc8Ebk4f'
     controller: null
     method: null
     route: null

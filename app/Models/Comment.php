@@ -62,6 +62,11 @@ class Comment extends Model
         return $this->hasMany(CommentLike::class);
     }
 
+    public function views()
+    {
+        return $this->morphMany(View::class, 'viewable');
+    }
+
     /**
      * Scopes
      */

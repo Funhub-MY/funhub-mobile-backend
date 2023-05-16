@@ -15,6 +15,15 @@ class MerchantCategory extends Model implements HasMedia
         'id'
     ];
 
+    // filterables
+    const FILTERABLE = [
+        'id',
+        'name',
+        'created_at',
+        'updated_at'
+    ];
+    
+
     public function user()
     {
         return $this->belongsTo(User::class);

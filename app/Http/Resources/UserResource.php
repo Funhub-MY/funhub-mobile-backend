@@ -21,10 +21,12 @@ class UserResource extends JsonResource
             'auth_provider' => $this->auth_provider,
             'avatar' => $this->avatar_url,
             'avatar_thumb' => $this->avatar_thumb_url,
+            'articles_published_count' => $this->articles()->published()->count(),
             'following_count' => $this->followings()->count(),
             'followers_count' => $this->followers()->count(),
             'has_completed_profile' => $this->has_completed_profile,
-            'is_following' => (auth()->user()) ? auth()->user()->whereRelation('followings', 'following_id', $this->id)->exists() : false
+            'point_balance' => $this->point_balance,
+            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false
         ];
     }
 }

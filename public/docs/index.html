@@ -79,10 +79,10 @@
                                 <a href="#article-POSTapi-v1-articles-video-upload">Upload Video for Article</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles-my_articles">
-                                <a href="#article-GETapi-v1-articles-my_articles">Get Articles for Logged in user (for Profile Page)</a>
+                                <a href="#article-GETapi-v1-articles-my_articles">Get Articles by User ID or Logged In User</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles-my_bookmarks">
-                                <a href="#article-GETapi-v1-articles-my_bookmarks">Get My Bookmarked Articles</a>
+                                <a href="#article-GETapi-v1-articles-my_bookmarks">Get Bookmarked Articles by User ID or Logged In User</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles">
                                 <a href="#article-GETapi-v1-articles">Get Articles for Logged in user (for Home Page)</a>
@@ -158,24 +158,6 @@
                                             <a href="#article-DELETEapi-v1-comments--id-">Remove comment by ID. (Only owner of comment can delete)</a>
                                         </li>
                                                                     </ul>
-                                                                                <li class="tocify-item level-2" data-unique="article-interactions">
-                                <a href="#article-interactions">Interactions</a>
-                            </li>
-                                                            <ul id="tocify-subheader-article-interactions" class="tocify-subheader">
-                                                                            <li class="tocify-item level-3" data-unique="article-GETapi-v1-interactions">
-                                            <a href="#article-GETapi-v1-interactions">Get interactions on a interactable type (eg. Articles)</a>
-                                        </li>
-                                                                            <li class="tocify-item level-3" data-unique="article-POSTapi-v1-interactions">
-                                            <a href="#article-POSTapi-v1-interactions">Create an interaction for interactable type</a>
-                                        </li>
-                                                                            <li class="tocify-item level-3" data-unique="article-GETapi-v1-interactions--id-">
-                                            <a href="#article-GETapi-v1-interactions--id-">Show one interaction by ID</a>
-                                        </li>
-                                                                            <li class="tocify-item level-3" data-unique="article-DELETEapi-v1-interactions--id-">
-                                            <a href="#article-DELETEapi-v1-interactions--id-">Remove Interaction By ID
-Only owner can call this method</a>
-                                        </li>
-                                                                    </ul>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-authentication" class="tocify-header">
@@ -212,6 +194,26 @@ Only owner can call this method</a>
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-interactions" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="interactions">
+                    <a href="#interactions">Interactions</a>
+                </li>
+                                    <ul id="tocify-subheader-interactions" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="interactions-GETapi-v1-interactions">
+                                <a href="#interactions-GETapi-v1-interactions">Get interactions on a interactable type (eg. Articles)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="interactions-POSTapi-v1-interactions">
+                                <a href="#interactions-POSTapi-v1-interactions">Create an interaction for interactable type</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="interactions-GETapi-v1-interactions--id-">
+                                <a href="#interactions-GETapi-v1-interactions--id-">Show one interaction by ID</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="interactions-DELETEapi-v1-interactions--id-">
+                                <a href="#interactions-DELETEapi-v1-interactions--id-">Remove Interaction By ID
+Only owner can call this method</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-merchant" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="merchant">
                     <a href="#merchant">Merchant</a>
@@ -221,6 +223,9 @@ Only owner can call this method</a>
                                 <a href="#merchant-merchant-offers">Merchant Offers</a>
                             </li>
                                                             <ul id="tocify-subheader-merchant-merchant-offers" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant-offers-my_bookmarks">
+                                            <a href="#merchant-GETapi-v1-merchant-offers-my_bookmarks">Get My Bookmarked Merchant Offers</a>
+                                        </li>
                                                                             <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant-offers">
                                             <a href="#merchant-GETapi-v1-merchant-offers">Get Offers</a>
                                         </li>
@@ -229,6 +234,17 @@ Only owner can call this method</a>
                                         </li>
                                                                             <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant-offers--offer_id-">
                                             <a href="#merchant-GETapi-v1-merchant-offers--offer_id-">Get Offer By ID</a>
+                                        </li>
+                                                                    </ul>
+                                                                                <li class="tocify-item level-2" data-unique="merchant-merchant-categories">
+                                <a href="#merchant-merchant-categories">Merchant Categories</a>
+                            </li>
+                                                            <ul id="tocify-subheader-merchant-merchant-categories" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant_categories">
+                                            <a href="#merchant-GETapi-v1-merchant_categories">Get popular Merchant Categories</a>
+                                        </li>
+                                                                            <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant_categories--offer_id-">
+                                            <a href="#merchant-GETapi-v1-merchant_categories--offer_id-">Get Merchant Categories by offer id</a>
                                         </li>
                                                                     </ul>
                                                                         </ul>
@@ -266,7 +282,7 @@ Only owner can call this method</a>
                             </li>
                                                             <ul id="tocify-subheader-user-followings" class="tocify-subheader">
                                                                             <li class="tocify-item level-3" data-unique="user-GETapi-v1-user-followings">
-                                            <a href="#user-GETapi-v1-user-followings">Get all followings</a>
+                                            <a href="#user-GETapi-v1-user-followings">Get all followings of user id or logged in user</a>
                                         </li>
                                                                             <li class="tocify-item level-3" data-unique="user-POSTapi-v1-user-follow">
                                             <a href="#user-POSTapi-v1-user-follow">Follow another user</a>
@@ -280,7 +296,7 @@ Only owner can call this method</a>
                             </li>
                                                             <ul id="tocify-subheader-user-followers" class="tocify-subheader">
                                                                             <li class="tocify-item level-3" data-unique="user-GETapi-v1-user-followers">
-                                            <a href="#user-GETapi-v1-user-followers">Get all followers</a>
+                                            <a href="#user-GETapi-v1-user-followers">Get all followers of user id or logged in user</a>
                                         </li>
                                                                     </ul>
                                                                                 <li class="tocify-item level-2" data-unique="user-reports">
@@ -291,6 +307,17 @@ Only owner can call this method</a>
                                             <a href="#user-POSTapi-v1-user-report">Report a user</a>
                                         </li>
                                                                     </ul>
+                                                                                <li class="tocify-item level-2" data-unique="user-blocks">
+                                <a href="#user-blocks">Blocks</a>
+                            </li>
+                                                            <ul id="tocify-subheader-user-blocks" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="user-POSTapi-v1-user-block">
+                                            <a href="#user-POSTapi-v1-user-block">Block a user</a>
+                                        </li>
+                                                                    </ul>
+                                                                                <li class="tocify-item level-2" data-unique="user-GETapi-v1-user--user_id-">
+                                <a href="#user-GETapi-v1-user--user_id-">Get a user</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-user-settings" class="tocify-header">
@@ -333,6 +360,21 @@ Only owner can call this method</a>
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-view" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="view">
+                    <a href="#view">View</a>
+                </li>
+                                    <ul id="tocify-subheader-view" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="view-POSTapi-v1-views">
+                                <a href="#view-POSTapi-v1-views">Record view for viewable
+This is used for recording views for articles, comments, and merchant offers</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="view-GETapi-v1-views--type---id-">
+                                <a href="#view-GETapi-v1-views--type---id-">Get views for viewable type
+This is used for getting views for articles, comments, and merchant offers</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
             </div>
 
     <ul class="toc-footer" id="toc-footer">
@@ -342,7 +384,7 @@ Only owner can call this method</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: May 6, 2023</li>
+        <li>Last updated: May 14, 2023</li>
     </ul>
 </div>
 
@@ -385,7 +427,7 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "is_cover=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpj30pSH" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpJrCi9l" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -527,7 +569,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpj30pSH</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpJrCi9l</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
@@ -571,7 +613,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfYLip3" </code></pre></div>
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeMPzaj" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -697,11 +739,11 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfYLip3</code></p>
+<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeMPzaj</code></p>
         </div>
         </form>
 
-                    <h2 id="article-GETapi-v1-articles-my_articles">Get Articles for Logged in user (for Profile Page)</h2>
+                    <h2 id="article-GETapi-v1-articles-my_articles">Get Articles by User ID or Logged In User</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -720,6 +762,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
+    \"user_id\": 1,
     \"published_only\": true,
     \"filter\": \"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",
     \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
@@ -743,6 +786,7 @@ const headers = {
 };
 
 let body = {
+    "user_id": 1,
     "published_only": true,
     "filter": "Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at",
     "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
@@ -857,6 +901,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                                 <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="GETapi-v1-articles-my_articles"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Load Spciefic User Articles. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>published_only</code></b>&nbsp;&nbsp;
 <small>boolean</small>&nbsp;
 <i>optional</i> &nbsp;
@@ -945,7 +1000,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-                    <h2 id="article-GETapi-v1-articles-my_bookmarks">Get My Bookmarked Articles</h2>
+                    <h2 id="article-GETapi-v1-articles-my_bookmarks">Get Bookmarked Articles by User ID or Logged In User</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -964,6 +1019,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
+    \"user_id\": 1,
     \"filter\": \"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",
     \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
     \"sort\": \"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",
@@ -986,6 +1042,7 @@ const headers = {
 };
 
 let body = {
+    "user_id": 1,
     "filter": "Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at",
     "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
     "sort": "Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at",
@@ -1099,6 +1156,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                                 <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="GETapi-v1-articles-my_bookmarks"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Load Spciefic User Bookmarked Articles. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
@@ -1186,7 +1254,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"dicta\"
+        \"repellendus\"
     ],
     \"category_ids\": [
         1,
@@ -1223,7 +1291,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "dicta"
+        "repellendus"
     ],
     "category_ids": [
         1,
@@ -1961,8 +2029,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "status=0" \
     --form "tags[]=#tag1" \
     --form "categories[]=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDe1S7Z" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php7jR2Ur" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phplNtU4Y" \
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDXPn8z" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2173,7 +2241,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDe1S7Z</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phplNtU4Y</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
@@ -2184,7 +2252,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php7jR2Ur</code></p>
+<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDXPn8z</code></p>
         </div>
         </form>
 
@@ -2360,10 +2428,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"article_id\": 2,
+    \"article_id\": 16,
     \"reason\": \"Spam\",
-    \"violation_type\": \"quisquam\",
-    \"violation_level\": \"accusamus\",
+    \"violation_type\": \"eum\",
+    \"violation_level\": \"necessitatibus\",
     \"article\": 1
 }"
 </code></pre></div>
@@ -2381,10 +2449,10 @@ const headers = {
 };
 
 let body = {
-    "article_id": 2,
+    "article_id": 16,
     "reason": "Spam",
-    "violation_type": "quisquam",
-    "violation_level": "accusamus",
+    "violation_type": "eum",
+    "violation_level": "necessitatibus",
     "article": 1
 };
 
@@ -2508,10 +2576,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="article_id"                data-endpoint="POSTapi-v1-articles-report"
-               value="2"
+               value="16"
                data-component="body">
     <br>
-<p>Example: <code>2</code></p>
+<p>Example: <code>16</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
@@ -2530,10 +2598,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-articles-report"
-               value="quisquam"
+               value="eum"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>quisquam</code></p>
+<p>The violation type of this report Example: <code>eum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -2541,10 +2609,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-articles-report"
-               value="accusamus"
+               value="necessitatibus"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>accusamus</code></p>
+<p>The violation level of this report Example: <code>necessitatibus</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
@@ -3337,7 +3405,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/quia" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/quisquam" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3354,7 +3422,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/replies/quia"
+    "https://funhub-mobile-backend.test/api/v1/comments/replies/quisquam"
 );
 
 const headers = {
@@ -3487,10 +3555,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="quia"
+               value="quisquam"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>quia</code></p>
+<p>The ID of the comment. Example: <code>quisquam</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3741,8 +3809,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"comment_id\": 1,
     \"reason\": \"Spam\",
-    \"violation_level\": \"recusandae\",
-    \"violation_type\": \"natus\"
+    \"violation_level\": \"tempore\",
+    \"violation_type\": \"dignissimos\"
 }"
 </code></pre></div>
 
@@ -3761,8 +3829,8 @@ const headers = {
 let body = {
     "comment_id": 1,
     "reason": "Spam",
-    "violation_level": "recusandae",
-    "violation_type": "natus"
+    "violation_level": "tempore",
+    "violation_type": "dignissimos"
 };
 
 fetch(url, {
@@ -3907,10 +3975,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-comments-report"
-               value="recusandae"
+               value="tempore"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>recusandae</code></p>
+<p>The violation level of this report Example: <code>tempore</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -3918,10 +3986,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-comments-report"
-               value="natus"
+               value="dignissimos"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>natus</code></p>
+<p>The violation type of this report Example: <code>dignissimos</code></p>
         </div>
         </form>
 
@@ -4411,7 +4479,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/16" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/13" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4424,7 +4492,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/16"
+    "https://funhub-mobile-backend.test/api/v1/comments/13"
 );
 
 const headers = {
@@ -4558,10 +4626,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="16"
+               value="13"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>16</code></p>
+<p>The ID of the comment. Example: <code>13</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -4903,747 +4971,6 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="url">
     <br>
 <p>The id of the comment. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                                <h2 id="article-interactions">Interactions</h2>
-                                                    <h2 id="article-GETapi-v1-interactions">Get interactions on a interactable type (eg. Articles)</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-
-
-<span id="example-requests-GETapi-v1-interactions">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/interactions" \
-    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"interactable\": \"article\",
-    \"id\": 1,
-    \"filter\": \"Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",
-    \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
-    \"sort\": \"Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",
-    \"order\": \"Sortable directions are: asc, desc\",
-    \"limit\": 10,
-    \"offset\": 0
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions"
-);
-
-const headers = {
-    "Authorization": "Bearer {USER_TOKEN_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "interactable": "article",
-    "id": 1,
-    "filter": "Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at",
-    "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
-    "sort": "Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at",
-    "order": "Sortable directions are: asc, desc",
-    "limit": 10,
-    "offset": 0
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-interactions">
-            <blockquote>
-            <p>Example response (200, success):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
- &quot;data&quot;: [],
- &quot;links&quot;: {},
- &quot;meta&quot;: {
-    &quot;current_page&quot;: 1,
-  }
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (404, Not Found):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;"></code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-interactions" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-interactions"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-interactions" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-interactions">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-interactions" data-method="GET"
-      data-path="api/v1/interactions"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-interactions', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-interactions"
-                    onclick="tryItOut('GETapi-v1-interactions');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-interactions"
-                    onclick="cancelTryOut('GETapi-v1-interactions');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-interactions"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/interactions</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-interactions"
-               value="Bearer {USER_TOKEN_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Content-Type"                data-endpoint="GETapi-v1-interactions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Accept"                data-endpoint="GETapi-v1-interactions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="interactable"                data-endpoint="GETapi-v1-interactions"
-               value="article"
-               data-component="body">
-    <br>
-<p>The type of interactable. Example: <code>article</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               name="id"                data-endpoint="GETapi-v1-interactions"
-               value="1"
-               data-component="body">
-    <br>
-<p>The id of the interactable. Example: <code>1</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
-                <input type="text" style="display: none"
-               name="filter"                data-endpoint="GETapi-v1-interactions"
-               value="Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at"
-               data-component="body">
-    <br>
-<p>Column to Filter. Example: <code>Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>filter_value</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
-                <input type="text" style="display: none"
-               name="filter_value"                data-endpoint="GETapi-v1-interactions"
-               value="Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
-               data-component="body">
-    <br>
-<p>Value to Filter. Example: <code>Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>sort</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
-                <input type="text" style="display: none"
-               name="sort"                data-endpoint="GETapi-v1-interactions"
-               value="Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at"
-               data-component="body">
-    <br>
-<p>Column to Sort. Example: <code>Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>order</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
-<i>optional</i> &nbsp;
-                <input type="text" style="display: none"
-               name="order"                data-endpoint="GETapi-v1-interactions"
-               value="Sortable directions are: asc, desc"
-               data-component="body">
-    <br>
-<p>Direction to Sort. Example: <code>Sortable directions are: asc, desc</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
-                <input type="number" style="display: none"
-               name="limit"                data-endpoint="GETapi-v1-interactions"
-               value="10"
-               data-component="body">
-    <br>
-<p>Per Page Limit Override. Example: <code>10</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
-<i>optional</i> &nbsp;
-                <input type="number" style="display: none"
-               name="offset"                data-endpoint="GETapi-v1-interactions"
-               value="0"
-               data-component="body">
-    <br>
-<p>Offset Override. Example: <code>0</code></p>
-        </div>
-        </form>
-
-                    <h2 id="article-POSTapi-v1-interactions">Create an interaction for interactable type</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-
-
-<span id="example-requests-POSTapi-v1-interactions">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request POST \
-    "https://funhub-mobile-backend.test/api/v1/interactions" \
-    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json" \
-    --data "{
-    \"interactable\": \"article\",
-    \"type\": \"like,dislike,share,bookmark\",
-    \"id\": 1
-}"
-</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions"
-);
-
-const headers = {
-    "Authorization": "Bearer {USER_TOKEN_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-let body = {
-    "interactable": "article",
-    "type": "like,dislike,share,bookmark",
-    "id": 1
-};
-
-fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-POSTapi-v1-interactions">
-            <blockquote>
-            <p>Example response (200, success):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;interaction&quot;: {}
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (422):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{}</code>
- </pre>
-    </span>
-<span id="execution-results-POSTapi-v1-interactions" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-interactions"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-interactions"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-POSTapi-v1-interactions" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-interactions">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-POSTapi-v1-interactions" data-method="POST"
-      data-path="api/v1/interactions"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-interactions', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-interactions"
-                    onclick="tryItOut('POSTapi-v1-interactions');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-interactions"
-                    onclick="cancelTryOut('POSTapi-v1-interactions');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-interactions"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-black">POST</small>
-            <b><code>api/v1/interactions</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-interactions"
-               value="Bearer {USER_TOKEN_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Content-Type"                data-endpoint="POSTapi-v1-interactions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Accept"                data-endpoint="POSTapi-v1-interactions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
-        <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="interactable"                data-endpoint="POSTapi-v1-interactions"
-               value="article"
-               data-component="body">
-    <br>
-<p>The type of interactable. Example: <code>article</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="type"                data-endpoint="POSTapi-v1-interactions"
-               value="like,dislike,share,bookmark"
-               data-component="body">
-    <br>
-<p>The type of interaction. Example: <code>like,dislike,share,bookmark</code></p>
-        </div>
-                <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               name="id"                data-endpoint="POSTapi-v1-interactions"
-               value="1"
-               data-component="body">
-    <br>
-<p>The id of the interactable (eg. Article ID). Example: <code>1</code></p>
-        </div>
-        </form>
-
-                    <h2 id="article-GETapi-v1-interactions--id-">Show one interaction by ID</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-
-
-<span id="example-requests-GETapi-v1-interactions--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/interactions/1" \
-    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {USER_TOKEN_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-interactions--id-">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: *
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-interactions--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-interactions--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-interactions--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-interactions--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-interactions--id-" data-method="GET"
-      data-path="api/v1/interactions/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-interactions--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-interactions--id-"
-                    onclick="tryItOut('GETapi-v1-interactions--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-interactions--id-"
-                    onclick="cancelTryOut('GETapi-v1-interactions--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-interactions--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/interactions/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-interactions--id-"
-               value="Bearer {USER_TOKEN_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Content-Type"                data-endpoint="GETapi-v1-interactions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Accept"                data-endpoint="GETapi-v1-interactions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               name="id"                data-endpoint="GETapi-v1-interactions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The id of the interaction. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="article-DELETEapi-v1-interactions--id-">Remove Interaction By ID
-Only owner can call this method</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-
-
-<span id="example-requests-DELETEapi-v1-interactions--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request DELETE \
-    "https://funhub-mobile-backend.test/api/v1/interactions/1" \
-    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/interactions/1"
-);
-
-const headers = {
-    "Authorization": "Bearer {USER_TOKEN_KEY}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "DELETE",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-DELETEapi-v1-interactions--id-">
-            <blockquote>
-            <p>Example response (200, success):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Interaction deleted&quot;
-}</code>
- </pre>
-            <blockquote>
-            <p>Example response (404, Not Found):</p>
-        </blockquote>
-                <pre>
-
-<code class="language-json" style="max-height: 300px;">{[&#039;message&#039; =&gt; &#039;Interaction not found&#039;]}</code>
- </pre>
-    </span>
-<span id="execution-results-DELETEapi-v1-interactions--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-DELETEapi-v1-interactions--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-DELETEapi-v1-interactions--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-DELETEapi-v1-interactions--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-DELETEapi-v1-interactions--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-DELETEapi-v1-interactions--id-" data-method="DELETE"
-      data-path="api/v1/interactions/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-interactions--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-DELETEapi-v1-interactions--id-"
-                    onclick="tryItOut('DELETEapi-v1-interactions--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-DELETEapi-v1-interactions--id-"
-                    onclick="cancelTryOut('DELETEapi-v1-interactions--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-DELETEapi-v1-interactions--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-red">DELETE</small>
-            <b><code>api/v1/interactions/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-interactions--id-"
-               value="Bearer {USER_TOKEN_KEY}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Content-Type"                data-endpoint="DELETEapi-v1-interactions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-               name="Accept"                data-endpoint="DELETEapi-v1-interactions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               name="id"                data-endpoint="DELETEapi-v1-interactions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The id of the interaction. Example: <code>1</code></p>
             </div>
                     </form>
 
@@ -7123,12 +6450,977 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
+                <h1 id="interactions">Interactions</h1>
+
+    
+
+                                <h2 id="interactions-GETapi-v1-interactions">Get interactions on a interactable type (eg. Articles)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-interactions">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"interactable\": \"article,merchant_offer\",
+    \"id\": 1,
+    \"filter\": \"Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",
+    \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
+    \"sort\": \"Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at\",
+    \"order\": \"Sortable directions are: asc, desc\",
+    \"limit\": 10,
+    \"offset\": 0
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/interactions"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "interactable": "article,merchant_offer",
+    "id": 1,
+    "filter": "Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at",
+    "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+    "sort": "Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at",
+    "order": "Sortable directions are: asc, desc",
+    "limit": 10,
+    "offset": 0
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-interactions">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+ &quot;data&quot;: [],
+ &quot;links&quot;: {},
+ &quot;meta&quot;: {
+    &quot;current_page&quot;: 1,
+  }
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-interactions" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-interactions"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-interactions" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-interactions">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-interactions" data-method="GET"
+      data-path="api/v1/interactions"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-interactions', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-interactions"
+                    onclick="tryItOut('GETapi-v1-interactions');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-interactions"
+                    onclick="cancelTryOut('GETapi-v1-interactions');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-interactions"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/interactions</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-interactions"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-interactions"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-interactions"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="interactable"                data-endpoint="GETapi-v1-interactions"
+               value="article,merchant_offer"
+               data-component="body">
+    <br>
+<p>The type of interactable. Example: <code>article,merchant_offer</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="id"                data-endpoint="GETapi-v1-interactions"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the interactable. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter"                data-endpoint="GETapi-v1-interactions"
+               value="Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Filter. Example: <code>Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter_value</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter_value"                data-endpoint="GETapi-v1-interactions"
+               value="Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+               data-component="body">
+    <br>
+<p>Value to Filter. Example: <code>Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>sort</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="sort"                data-endpoint="GETapi-v1-interactions"
+               value="Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Sort. Example: <code>Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="order"                data-endpoint="GETapi-v1-interactions"
+               value="Sortable directions are: asc, desc"
+               data-component="body">
+    <br>
+<p>Direction to Sort. Example: <code>Sortable directions are: asc, desc</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-interactions"
+               value="10"
+               data-component="body">
+    <br>
+<p>Per Page Limit Override. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="offset"                data-endpoint="GETapi-v1-interactions"
+               value="0"
+               data-component="body">
+    <br>
+<p>Offset Override. Example: <code>0</code></p>
+        </div>
+        </form>
+
+                    <h2 id="interactions-POSTapi-v1-interactions">Create an interaction for interactable type</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-interactions">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/interactions" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"interactable\": \"article,merchant_offer\",
+    \"type\": \"like,dislike,share,bookmark\",
+    \"id\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/interactions"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "interactable": "article,merchant_offer",
+    "type": "like,dislike,share,bookmark",
+    "id": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-interactions">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;interaction&quot;: {}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-interactions" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-interactions"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-interactions"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-interactions" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-interactions">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-interactions" data-method="POST"
+      data-path="api/v1/interactions"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-interactions', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-interactions"
+                    onclick="tryItOut('POSTapi-v1-interactions');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-interactions"
+                    onclick="cancelTryOut('POSTapi-v1-interactions');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-interactions"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/interactions</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-interactions"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-interactions"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-interactions"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="interactable"                data-endpoint="POSTapi-v1-interactions"
+               value="article,merchant_offer"
+               data-component="body">
+    <br>
+<p>The type of interactable. Example: <code>article,merchant_offer</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="type"                data-endpoint="POSTapi-v1-interactions"
+               value="like,dislike,share,bookmark"
+               data-component="body">
+    <br>
+<p>The type of interaction. Example: <code>like,dislike,share,bookmark</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="id"                data-endpoint="POSTapi-v1-interactions"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the interactable (eg. Article ID). Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="interactions-GETapi-v1-interactions--id-">Show one interaction by ID</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-interactions--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions/1" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/interactions/1"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-interactions--id-">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+access-control-allow-origin: *
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Unauthenticated.&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-interactions--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-interactions--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-interactions--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-interactions--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-interactions--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-interactions--id-" data-method="GET"
+      data-path="api/v1/interactions/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-interactions--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-interactions--id-"
+                    onclick="tryItOut('GETapi-v1-interactions--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-interactions--id-"
+                    onclick="cancelTryOut('GETapi-v1-interactions--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-interactions--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/interactions/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-interactions--id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-interactions--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-interactions--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="id"                data-endpoint="GETapi-v1-interactions--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the interaction. Example: <code>1</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="interactions-DELETEapi-v1-interactions--id-">Remove Interaction By ID
+Only owner can call this method</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-DELETEapi-v1-interactions--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request DELETE \
+    "https://funhub-mobile-backend.test/api/v1/interactions/1" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/interactions/1"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "DELETE",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-DELETEapi-v1-interactions--id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Interaction deleted&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{[&#039;message&#039; =&gt; &#039;Interaction not found&#039;]}</code>
+ </pre>
+    </span>
+<span id="execution-results-DELETEapi-v1-interactions--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-DELETEapi-v1-interactions--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-DELETEapi-v1-interactions--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-DELETEapi-v1-interactions--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-DELETEapi-v1-interactions--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-DELETEapi-v1-interactions--id-" data-method="DELETE"
+      data-path="api/v1/interactions/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('DELETEapi-v1-interactions--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-DELETEapi-v1-interactions--id-"
+                    onclick="tryItOut('DELETEapi-v1-interactions--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-DELETEapi-v1-interactions--id-"
+                    onclick="cancelTryOut('DELETEapi-v1-interactions--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-DELETEapi-v1-interactions--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-red">DELETE</small>
+            <b><code>api/v1/interactions/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="DELETEapi-v1-interactions--id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="id"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the interaction. Example: <code>1</code></p>
+            </div>
+                    </form>
+
                 <h1 id="merchant">Merchant</h1>
 
     
 
                         <h2 id="merchant-merchant-offers">Merchant Offers</h2>
-                                                    <h2 id="merchant-GETapi-v1-merchant-offers">Get Offers</h2>
+                                                    <h2 id="merchant-GETapi-v1-merchant-offers-my_bookmarks">Get My Bookmarked Merchant Offers</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-merchant-offers-my_bookmarks">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/my_bookmarks" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"filter\": \"Filterable columns are:  id, name, description, available_at, available_until, sku\",
+    \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
+    \"sort\": \"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",
+    \"order\": \"Sortable directions are: asc, desc\",
+    \"limit\": 10,
+    \"offset\": 0
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/my_bookmarks"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "filter": "Filterable columns are:  id, name, description, available_at, available_until, sku",
+    "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+    "sort": "Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at",
+    "order": "Sortable directions are: asc, desc",
+    "limit": 10,
+    "offset": 0
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-merchant-offers-my_bookmarks">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+ &quot;data&quot;: [],
+ &quot;links&quot;: {},
+ &quot;meta&quot;: {
+    &quot;current_page&quot;: 1,
+  }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-merchant-offers-my_bookmarks" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-merchant-offers-my_bookmarks"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant-offers-my_bookmarks"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-merchant-offers-my_bookmarks" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-merchant-offers-my_bookmarks">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-merchant-offers-my_bookmarks" data-method="GET"
+      data-path="api/v1/merchant/offers/my_bookmarks"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-merchant-offers-my_bookmarks', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-merchant-offers-my_bookmarks"
+                    onclick="tryItOut('GETapi-v1-merchant-offers-my_bookmarks');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-merchant-offers-my_bookmarks"
+                    onclick="cancelTryOut('GETapi-v1-merchant-offers-my_bookmarks');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-merchant-offers-my_bookmarks"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/merchant/offers/my_bookmarks</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="Filterable columns are:  id, name, description, available_at, available_until, sku"
+               data-component="body">
+    <br>
+<p>Column to Filter. Example: <code>Filterable columns are:  id, name, description, available_at, available_until, sku</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter_value</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter_value"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+               data-component="body">
+    <br>
+<p>Value to Filter. Example: <code>Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>sort</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="sort"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Sort. Example: <code>Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="order"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="Sortable directions are: asc, desc"
+               data-component="body">
+    <br>
+<p>Direction to Sort. Example: <code>Sortable directions are: asc, desc</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="10"
+               data-component="body">
+    <br>
+<p>Per Page Limit Override. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="offset"                data-endpoint="GETapi-v1-merchant-offers-my_bookmarks"
+               value="0"
+               data-component="body">
+    <br>
+<p>Offset Override. Example: <code>0</code></p>
+        </div>
+        </form>
+
+                    <h2 id="merchant-GETapi-v1-merchant-offers">Get Offers</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -7569,7 +7861,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/asperiores?offer_id=1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/explicabo?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -7577,7 +7869,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/asperiores"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/explicabo"
 );
 
 const params = {
@@ -7697,10 +7989,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="asperiores"
+               value="explicabo"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>asperiores</code></p>
+<p>The ID of the offer. Example: <code>explicabo</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -7715,6 +8007,394 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Offer ID. Example: <code>1</code></p>
             </div>
                 </form>
+
+                                <h2 id="merchant-merchant-categories">Merchant Categories</h2>
+                                                    <h2 id="merchant-GETapi-v1-merchant_categories">Get popular Merchant Categories</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-merchant_categories">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_categories" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"is_featured\": 1,
+    \"filter\": \"Filterable columns are: id, name, created_at, updated_at\",
+    \"filter_value\": \"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",
+    \"sort\": \"Sortable columns are: id, name, created_at, updated_at\",
+    \"order\": \"Sortable directions are: asc, desc\",
+    \"limit\": 10,
+    \"offset\": 0
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant_categories"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "is_featured": 1,
+    "filter": "Filterable columns are: id, name, created_at, updated_at",
+    "filter_value": "Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+    "sort": "Sortable columns are: id, name, created_at, updated_at",
+    "order": "Sortable directions are: asc, desc",
+    "limit": 10,
+    "offset": 0
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-merchant_categories">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;categories&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-merchant_categories" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-merchant_categories"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant_categories"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-merchant_categories" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-merchant_categories">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-merchant_categories" data-method="GET"
+      data-path="api/v1/merchant_categories"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-merchant_categories', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-merchant_categories"
+                    onclick="tryItOut('GETapi-v1-merchant_categories');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-merchant_categories"
+                    onclick="cancelTryOut('GETapi-v1-merchant_categories');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-merchant_categories"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/merchant_categories</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-merchant_categories"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-merchant_categories"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-merchant_categories"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_featured</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="is_featured"                data-endpoint="GETapi-v1-merchant_categories"
+               value="1"
+               data-component="body">
+    <br>
+<p>Is Featured Categories. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Filterable columns are: id, name, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Filter. Example: <code>Filterable columns are: id, name, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>filter_value</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="filter_value"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+               data-component="body">
+    <br>
+<p>Value to Filter. Example: <code>Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>sort</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="sort"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Sortable columns are: id, name, created_at, updated_at"
+               data-component="body">
+    <br>
+<p>Column to Sort. Example: <code>Sortable columns are: id, name, created_at, updated_at</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>order</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="order"                data-endpoint="GETapi-v1-merchant_categories"
+               value="Sortable directions are: asc, desc"
+               data-component="body">
+    <br>
+<p>Direction to Sort. Example: <code>Sortable directions are: asc, desc</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-merchant_categories"
+               value="10"
+               data-component="body">
+    <br>
+<p>Per Page Limit Override. Example: <code>10</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>offset</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="offset"                data-endpoint="GETapi-v1-merchant_categories"
+               value="0"
+               data-component="body">
+    <br>
+<p>Offset Override. Example: <code>0</code></p>
+        </div>
+        </form>
+
+                    <h2 id="merchant-GETapi-v1-merchant_categories--offer_id-">Get Merchant Categories by offer id</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-merchant_categories--offer_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_categories/1" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant_categories/1"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-merchant_categories--offer_id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;categories&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;"></code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-merchant_categories--offer_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-merchant_categories--offer_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-merchant_categories--offer_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-merchant_categories--offer_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-merchant_categories--offer_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-merchant_categories--offer_id-" data-method="GET"
+      data-path="api/v1/merchant_categories/{offer_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-merchant_categories--offer_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-merchant_categories--offer_id-"
+                    onclick="tryItOut('GETapi-v1-merchant_categories--offer_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-merchant_categories--offer_id-"
+                    onclick="cancelTryOut('GETapi-v1-merchant_categories--offer_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-merchant_categories--offer_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/merchant_categories/{offer_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>offer_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="offer_id"                data-endpoint="GETapi-v1-merchant_categories--offer_id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the merchant offer id. Example: <code>1</code></p>
+            </div>
+                    </form>
 
                 <h1 id="other">Other</h1>
 
@@ -7989,7 +8669,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     
 
                         <h2 id="user-followings">Followings</h2>
-                                                    <h2 id="user-GETapi-v1-user-followings">Get all followings</h2>
+                                                    <h2 id="user-GETapi-v1-user-followings">Get all followings of user id or logged in user</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -8035,6 +8715,15 @@ fetch(url, {
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;followings&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;User not found&quot;
 }</code>
  </pre>
     </span>
@@ -8118,7 +8807,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="GETapi-v1-user-followings"
+               value="1"
+               data-component="url">
+    <br>
+<p>optional The id of the user, if not provided will use Logged In User ID. Example: <code>1</code></p>
+            </div>
+                    </form>
 
                     <h2 id="user-POSTapi-v1-user-follow">Follow another user</h2>
 
@@ -8139,7 +8840,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 18
+    \"user_id\": 9
 }"
 </code></pre></div>
 
@@ -8156,7 +8857,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 18
+    "user_id": 9
 };
 
 fetch(url, {
@@ -8274,10 +8975,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="18"
+               value="9"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>18</code></p>
+<p>The id of the user to follow Example: <code>9</code></p>
         </div>
         </form>
 
@@ -8300,7 +9001,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 8
+    \"user_id\": 4
 }"
 </code></pre></div>
 
@@ -8317,7 +9018,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 8
+    "user_id": 4
 };
 
 fetch(url, {
@@ -8435,15 +9136,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="8"
+               value="4"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>8</code></p>
+<p>The id of the user to unfollow Example: <code>4</code></p>
         </div>
         </form>
 
                                 <h2 id="user-followers">Followers</h2>
-                                                    <h2 id="user-GETapi-v1-user-followers">Get all followers</h2>
+                                                    <h2 id="user-GETapi-v1-user-followers">Get all followers of user id or logged in user</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -8489,6 +9190,15 @@ fetch(url, {
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;followers&quot;: []
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (404, Not Found):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;User not found&quot;
 }</code>
  </pre>
     </span>
@@ -8572,7 +9282,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="GETapi-v1-user-followers"
+               value="1"
+               data-component="url">
+    <br>
+<p>optional The id of the user, if not provided will use Logged In User ID. Example: <code>1</code></p>
+            </div>
+                    </form>
 
                                 <h2 id="user-reports">Reports</h2>
                                                     <h2 id="user-POSTapi-v1-user-report">Report a user</h2>
@@ -8595,9 +9317,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"user_id\": 1,
-    \"reason\": \"illo\",
-    \"violation_level\": \"velit\",
-    \"violation_type\": \"doloremque\"
+    \"reason\": \"cupiditate\",
+    \"violation_level\": \"provident\",
+    \"violation_type\": \"consequatur\",
+    \"also_block_user\": true
 }"
 </code></pre></div>
 
@@ -8615,9 +9338,10 @@ const headers = {
 
 let body = {
     "user_id": 1,
-    "reason": "illo",
-    "violation_level": "velit",
-    "violation_type": "doloremque"
+    "reason": "cupiditate",
+    "violation_level": "provident",
+    "violation_type": "consequatur",
+    "also_block_user": true
 };
 
 fetch(url, {
@@ -8751,10 +9475,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-report"
-               value="illo"
+               value="cupiditate"
                data-component="body">
     <br>
-<p>Example: <code>illo</code></p>
+<p>Example: <code>cupiditate</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -8762,10 +9486,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-user-report"
-               value="velit"
+               value="provident"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>velit</code></p>
+<p>The violation level of this report Example: <code>provident</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -8773,12 +9497,353 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-user-report"
-               value="doloremque"
+               value="consequatur"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>doloremque</code></p>
+<p>The violation type of this report Example: <code>consequatur</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>also_block_user</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+                <label data-endpoint="POSTapi-v1-user-report" style="display: none">
+            <input type="radio" name="also_block_user"
+                   value="true"
+                   data-endpoint="POSTapi-v1-user-report"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-user-report" style="display: none">
+            <input type="radio" name="also_block_user"
+                   value="false"
+                   data-endpoint="POSTapi-v1-user-report"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>optional Whether to block the user or not. Example: <code>true</code></p>
         </div>
         </form>
+
+                                <h2 id="user-blocks">Blocks</h2>
+                                                    <h2 id="user-POSTapi-v1-user-block">Block a user</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user-block">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/user/block" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"user_id\": 1,
+    \"reason\": \"Spam\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/user/block"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "user_id": 1,
+    "reason": "Spam"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user-block">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;User blocked&quot;,
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user-block" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user-block"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-block"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user-block" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user-block">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-user-block" data-method="POST"
+      data-path="api/v1/user/block"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user-block', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user-block"
+                    onclick="tryItOut('POSTapi-v1-user-block');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user-block"
+                    onclick="cancelTryOut('POSTapi-v1-user-block');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user-block"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user/block</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-user-block"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-user-block"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-user-block"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="POSTapi-v1-user-block"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the user. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="reason"                data-endpoint="POSTapi-v1-user-block"
+               value="Spam"
+               data-component="body">
+    <br>
+<p>optional The reason for blocking the user. Example: <code>Spam</code></p>
+        </div>
+        </form>
+
+                                        <h2 id="user-GETapi-v1-user--user_id-">Get a user</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-user--user_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/user/17" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/user/17"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-user--user_id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;data&quot;: {
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-user--user_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-user--user_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-user--user_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-user--user_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-user--user_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-user--user_id-" data-method="GET"
+      data-path="api/v1/user/{user_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-user--user_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-user--user_id-"
+                    onclick="tryItOut('GETapi-v1-user--user_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-user--user_id-"
+                    onclick="cancelTryOut('GETapi-v1-user--user_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-user--user_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/user/{user_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-user--user_id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-user--user_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-user--user_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="GETapi-v1-user--user_id-"
+               value="17"
+               data-component="url">
+    <br>
+<p>The ID of the user. Example: <code>17</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="user"                data-endpoint="GETapi-v1-user--user_id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the user. Example: <code>1</code></p>
+            </div>
+                    </form>
 
                 <h1 id="user-settings">User Settings</h1>
 
@@ -9462,7 +10527,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfLi3Kp" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDk52oO" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -9599,7 +10664,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpfLi3Kp</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpDk52oO</code></p>
         </div>
         </form>
 
@@ -10134,7 +11199,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"gender\": \"female\"
+    \"gender\": \"male\"
 }"
 </code></pre></div>
 
@@ -10151,7 +11216,7 @@ const headers = {
 };
 
 let body = {
-    "gender": "female"
+    "gender": "male"
 };
 
 fetch(url, {
@@ -10261,10 +11326,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="gender"                data-endpoint="POSTapi-v1-user-settings-gender"
-               value="female"
+               value="male"
                data-component="body">
     <br>
-<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>female</code></p>
+<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>male</code></p>
         </div>
         </form>
 
@@ -10605,6 +11670,332 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Job title of the user. Example: <code>Software Engineer</code></p>
         </div>
         </form>
+
+                <h1 id="view">View</h1>
+
+    
+
+                                <h2 id="view-POSTapi-v1-views">Record view for viewable
+This is used for recording views for articles, comments, and merchant offers</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-views">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/views" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"viewable_type\": \"article\\/comment\\/merchant_offer\",
+    \"viewable_id\": 1
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/views"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "viewable_type": "article\/comment\/merchant_offer",
+    "viewable_id": 1
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-views">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;View recorded&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-views" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-views"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-views"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-views" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-views">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-views" data-method="POST"
+      data-path="api/v1/views"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-views', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-views"
+                    onclick="tryItOut('POSTapi-v1-views');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-views"
+                    onclick="cancelTryOut('POSTapi-v1-views');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-views"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/views</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-views"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-views"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-views"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>viewable_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="viewable_type"                data-endpoint="POSTapi-v1-views"
+               value="article/comment/merchant_offer"
+               data-component="body">
+    <br>
+<p>The type of the viewable. Example: <code>article/comment/merchant_offer</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>viewable_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="viewable_id"                data-endpoint="POSTapi-v1-views"
+               value="1"
+               data-component="body">
+    <br>
+<p>The id of the viewable. Example: <code>1</code></p>
+        </div>
+        </form>
+
+                    <h2 id="view-GETapi-v1-views--type---id-">Get views for viewable type
+This is used for getting views for articles, comments, and merchant offers</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-views--type---id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/1" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/1"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-views--type---id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;views&quot;: [],
+    &quot;total&quot;: 0
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-views--type---id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-views--type---id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-views--type---id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-views--type---id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-views--type---id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-views--type---id-" data-method="GET"
+      data-path="api/v1/views/{type}/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-views--type---id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-views--type---id-"
+                    onclick="tryItOut('GETapi-v1-views--type---id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-views--type---id-"
+                    onclick="cancelTryOut('GETapi-v1-views--type---id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-views--type---id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/views/{type}/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-views--type---id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-views--type---id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-views--type---id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="type"                data-endpoint="GETapi-v1-views--type---id-"
+               value="article/comment/merchant_offer"
+               data-component="url">
+    <br>
+<p>The type of the viewable. Example: <code>article/comment/merchant_offer</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="id"                data-endpoint="GETapi-v1-views--type---id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the viewable. Example: <code>1</code></p>
+            </div>
+                    </form>
 
             
 

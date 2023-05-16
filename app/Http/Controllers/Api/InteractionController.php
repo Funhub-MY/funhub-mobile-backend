@@ -19,16 +19,15 @@ class InteractionController extends Controller
 
     /**
      * Get interactions on a interactable type (eg. Articles)
-     *
+     * 
      * @param $type string
      * @param $id integer
      * @param Request $request
      * @return \Illuminate\Http\Response
-     *
-     * @group Article
-     * @subgroup Interactions
+     * 
+     * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
      * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -42,7 +41,7 @@ class InteractionController extends Controller
      *  "meta": {
      *     "current_page": 1,
      *   }
-     * }
+     * } 
      * @response status=404 scenario="Not Found"
     */
     public function index(Request $request)
@@ -81,7 +80,7 @@ class InteractionController extends Controller
         $data = $query->with('user')
             ->published()
             ->paginate(config('app.paginate_per_page'));
-
+        
         return InteractionResource::collection($data);
     }
 
@@ -90,11 +89,10 @@ class InteractionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     *
-     * @group Article
-     * @subgroup Interactions
+     * 
+     * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @response scenario=success {
@@ -167,9 +165,8 @@ class InteractionController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     *
-     * @group Article
-     * @subgroup Interactions
+     * 
+     * @group Interactions
      * @authenticated
      * @urlParam id integer required The id of the interaction. Example: 1
      */
@@ -186,18 +183,17 @@ class InteractionController extends Controller
     /**
      * Remove Interaction By ID
      * Only owner can call this method
-     *
+     * 
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     *
-     * @group Article
-     * @subgroup Interactions
+     * 
+     * @group Interactions
      * @authenticated
      * @urlParam id integer required The id of the interaction. Example: 1
      * @response scenario=success {
      * "message": "Interaction deleted"
      * }
-     *
+     * 
      * @response status=404 scenario="Not Found" {['message' => 'Interaction not found']}
      */
     public function destroy($id)

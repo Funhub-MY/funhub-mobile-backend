@@ -117,13 +117,14 @@ class ArticleController extends Controller
     }
 
     /**
-     * Get Articles for Logged in user (for Profile Page)
+     * Get Articles by User ID or Logged In User
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
      *
      * @group Article
      * @group Article
+     * @bodyParam user_id integer optional Load Spciefic User Articles. Example: 1
      * @bodyParam published_only boolean optional Filter by published articles. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -143,7 +144,21 @@ class ArticleController extends Controller
      */
     public function getMyArticles(Request $request)
     {
-        $query = Article::where('user_id', auth()->user()->id);
+        $user_id = auth()->user()->id;
+        if ($request->has('user_id')) { // check if 'user_id' is present in the request
+            $user = User::find($request->user_id);
+            if ($user) {
+                $user_id = $user->id;
+                // check if this user blocked authenticated user
+                if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
+                    return response()->json([
+                        'message' => 'You are not allowed to view this user articles'
+                    ], 403);
+                }
+            }
+        }
+
+        $query = Article::where('user_id', $user_id);
 
         if ($request->has('published_only')) {
             $query->where('status', Article::STATUS[1]);
@@ -158,12 +173,13 @@ class ArticleController extends Controller
     }
 
     /**
-     * Get My Bookmarked Articles
+     * Get Bookmarked Articles by User ID or Logged In User
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
      *
      * @group Article
+     * @bodyParam user_id integer optional Load Spciefic User Bookmarked Articles. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -182,12 +198,26 @@ class ArticleController extends Controller
      */
     public function getMyBookmarkedArticles(Request $request)
     {
-        $query = Article::whereHas('interactions', function ($query) {
-            $query->where('user_id', auth()->user()->id)
+        $user_id = auth()->user()->id;
+        if ($request->has('user_id')) { // check if 'user_id' is present in the request
+            // check if this user blocked authenticated user
+            $user = User::find($request->user_id);
+            if ($user) {
+                $user_id = $user->id;
+                if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
+                    return response()->json([
+                        'message' => 'You are not allowed to view this user articles'
+                    ], 403);
+                }
+            }
+        }
+        
+        $query = Article::whereHas('interactions', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
         })->published()
-            ->whereDoesntHave('hiddenUsers', function ($query) {
-                $query->where('user_id', auth()->user()->id);
+            ->whereDoesntHave('hiddenUsers', function ($query) use ($user_id){
+                $query->where('user_id', $user_id);
             });
 
         $this->buildQuery($query, $request);

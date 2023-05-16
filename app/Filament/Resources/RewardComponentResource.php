@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RewardComponentResource\Pages;
 use App\Filament\Resources\RewardComponentResource\RelationManagers;
+use App\Filament\Resources\RewardComponentResource\RelationManagers\RewardsRelationManager;
 use App\Models\RewardComponent;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -30,8 +31,8 @@ class RewardComponentResource extends Resource
             ->schema([
                 Select::make('reward')
                     ->relationship('rewards', 'name')
+                    ->multiple()
                     ->required(),
-
 
                 // name
                 Forms\Components\TextInput::make('name')
@@ -56,12 +57,6 @@ class RewardComponentResource extends Resource
     {
         return $table
             ->columns([
-                // belongs to reward
-                Tables\Columns\TextColumn::make('reward.name')
-                    ->label('Parent Reward')
-                    ->searchable()
-                    ->sortable(),
-                    
                 // name
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
@@ -86,7 +81,7 @@ class RewardComponentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RewardsRelationManager::class,
         ];
     }
     
@@ -97,5 +92,5 @@ class RewardComponentResource extends Resource
             'create' => Pages\CreateRewardComponent::route('/create'),
             'edit' => Pages\EditRewardComponent::route('/{record}/edit'),
         ];
-    }    
+    }
 }

@@ -221,4 +221,27 @@ class AuthTest extends TestCase
             'google_id' => $user->google_id
         ]);
     }
+
+    /**
+     * Test complete profile but user is suspended status is 0
+     */
+    public function testPostCompleteProfileWithSuspendedUser()
+    {
+        // create a user with google_id
+        $user = User::factory()->create([
+            'status' => User::STATUS_SUSPENDED,
+        ]);
+
+        // act as this user in session
+        $this->actingAs($user);
+
+        // complete profile
+        $response = $this->postJson('/api/v1/user/complete-profile', [
+            'name' => 'John Doe',
+            'email' => 'test@gmail.com',
+            'password' => 'abcd1234'
+        ]);
+        
+        $response->assertStatus(403);
+    }
 }
