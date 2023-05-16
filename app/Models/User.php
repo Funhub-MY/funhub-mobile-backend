@@ -13,8 +13,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Filament\Models\Contracts\FilamentUser;
 
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements HasMedia, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
 
@@ -52,6 +53,11 @@ class User extends Authenticatable implements HasMedia
         'auth_provider',
         'has_completed_profile'
     ];
+
+    public function canAccessFilament(): bool
+    {
+        return $this->hasRole('staff');
+    }
 
     /**
      * The attributes that should be cast.
