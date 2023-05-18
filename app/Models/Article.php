@@ -80,6 +80,13 @@ class Article extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function subCategories()
+    {
+        return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')
+            ->where('parent_id', '!=', null)
+            ->withTimestamps();
+    }
+
     public function tags()
     {
         return $this->belongsToMany(ArticleTag::class, 'articles_article_tags')

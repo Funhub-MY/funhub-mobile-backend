@@ -28,6 +28,7 @@ class ArticleController extends Controller
 
     /**
      * Get Articles for Logged in user (for Home Page)
+     * Note: user's own posts will not show up on home page
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -59,6 +60,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
+            ->where('user_id', '!=', auth()->user()->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });

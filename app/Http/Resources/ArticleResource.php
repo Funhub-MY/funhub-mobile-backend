@@ -24,6 +24,7 @@ class ArticleResource extends JsonResource
             'body' => $this->body,
             'user' => new UserResource($this->user),
             'categories' => ArticleCategoryResource::collection($this->categories),
+            'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
             'media' => MediaResource::collection($this->media),
             // get cover where medialibrary media is_cover custom property is true
             'cover' => $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first(),

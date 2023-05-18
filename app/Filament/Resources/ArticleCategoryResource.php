@@ -6,6 +6,7 @@ use App\Filament\Resources\ArticleCategoryResource\Pages;
 use App\Filament\Resources\ArticleCategoryResource\RelationManagers;
 use App\Models\ArticleCategory;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -34,6 +35,14 @@ class ArticleCategoryResource extends Resource
                     ->required()
                     ->lazy()
                     ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+                    
+                // add parent category relationship
+                Forms\Components\Select::make('parent_id')
+                    ->searchable()
+                    ->relationship('parent', 'name')
+                    ->nullable()
+                    ->columnSpan('full'),
+                
                 // is featured boolean
                 Forms\Components\Toggle::make('is_featured')
                     ->label('Is Featured On Homepage?')
@@ -60,7 +69,13 @@ class ArticleCategoryResource extends Resource
         return $table
             ->columns([
                 // Tables\Columns\SpatieMediaLibraryImageColumn::make('image')->collection('article_category_cover')->label('Image'),
+
+                // add parent category relationship
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+
+                Tables\Columns\TextColumn::make('parent.name')->label('Parent Category')
+                    ->sortable()->searchable(),
+                    
                 // is_featured
                 Tables\Columns\ToggleColumn::make('is_featured')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('description')->sortable()->searchable()->html(),
