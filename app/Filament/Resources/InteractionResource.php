@@ -64,6 +64,7 @@ class InteractionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->searchable()
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('type')
                     ->enum([
@@ -84,8 +85,7 @@ class InteractionResource extends Resource
                         'success' => static fn ($state): bool => $state === 1,
                         'danger' => static fn ($state): bool => $state === 2,
                     ]),
-                Tables\Columns\TextColumn::make('created_at'),
-                Tables\Columns\TextColumn::make('updated_at'),
+                Tables\Columns\TextColumn::make('created_at')->sortable(),
             ])
             ->filters([
                 //

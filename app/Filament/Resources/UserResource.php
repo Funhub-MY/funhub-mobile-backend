@@ -191,7 +191,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('full_phone_no')->label('Phone No'),
                 Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()
             ])
             ->filters([
                 //
