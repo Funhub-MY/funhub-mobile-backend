@@ -57,6 +57,12 @@ class ArticleImportResource extends Resource
     {
         return $table
             ->columns([
+                // time stamp
+                Tables\Columns\TextColumn::make('last_run_at')
+                    ->format(function ($value) {
+                        return $value->diffForHumans();
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('rss_channel.channel_name'),
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(ArticleImport::STATUS)

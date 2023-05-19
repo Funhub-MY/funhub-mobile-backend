@@ -14,6 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable implements HasMedia, FilamentUser
 {
@@ -305,21 +306,33 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         $this->attributes['name'] = $value;
 
         if (!$this->username) {
-            // check if english language
-            if (preg_match('/[a-zA-Z]/', $value)) {
-                // only allow 9 character length max for username
-                // check if username exists, if yes pad number
-                $username = strtolower(substr($value, 0, 9));
-                $user = User::where('username', $username)->first();
-                if ($user) {
-                    $username = $username . rand(1, 9);
+            try {
+                // check if english language
+                if (preg_match('/[a-zA-Z]/', $value)) {
+                    // only allow 9 character length max for username
+                    // check if username exists, if yes pad number
+                    $username = strtolower(substr($value, 0, 9));
+                    $user = User::where('username', $username)->first();
+                    if ($user) {
+                        $username = $username . rand(1, 9);
+                    }
+                    // remove any empty space
+                    $username = str_replace(' ', '', $username);
+                    $this->attributes['username'] = $username;
+                } else {
+                    // random 6 character username with 3 numbers
+                    $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
                 }
-                // remove any empty space
-                $username = str_replace(' ', '', $username);
-                $this->attributes['username'] = $username;
-            } else {
-                // random 6 character username with 3 numbers
-                $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
+            } catch (\Throwable $th) {
+                Log::error('[Error] Username invalid when set name attribute ', [
+                    'name' => $value,
+                    'username' => $this->username,
+                    'error' => $th->getMessage()
+                ]);
+
+                // use random 6 character username with 3 numbers
+                 $this->attributes['username'] = strtolower( Str::random(6) . rand(100, 999));
+                //throw $th;
             }
         }
     }
