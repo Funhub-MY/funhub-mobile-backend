@@ -6,6 +6,7 @@ use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Form;
@@ -28,7 +29,11 @@ class ArticleResource extends Resource
     protected static ?string $navigationGroup = 'Articles';
 
     protected static ?int $navigationSort = 1;
-
+    
+    protected function getTableQuery(): Builder
+    {
+        return Article::query();
+    }
 
     public static function form(Form $form): Form
     {
@@ -246,12 +251,15 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
+                // id column
+                Tables\Columns\TextColumn::make('id')->sortable()->searchable(),
                 // date created at
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d/m/Y H:ia')
                     ->sortable()
                     ->label('Created At')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
+                    ->limit(30)
                     ->sortable()->searchable(),
                 // change status directly togglecolumn
                 Tables\Columns\ToggleColumn::make('status')
@@ -259,7 +267,8 @@ class ArticleResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(50),
                  Tables\Columns\BadgeColumn::make('status')
                     ->enum(Article::STATUS)
                     ->colors([
@@ -287,7 +296,7 @@ class ArticleResource extends Resource
                 Tables\Filters\SelectFilter::make('user_id')
                     ->label('Created By')
                     ->searchable()
-                    ->options(fn () => Article::query()->withoutGlobalScope(SoftDeletingScope::class)->get()->pluck('user.name', 'user_id'))
+                    ->options(fn () => User::select('id', 'name')->get()->pluck('name', 'id')->toArray())
                     ->placeholder('All'),
                 // filter by status
                 Tables\Filters\SelectFilter::make('status')
