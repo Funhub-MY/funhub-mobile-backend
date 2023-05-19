@@ -308,7 +308,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         if (!$this->username) {
             try {
                 // check if english language
-                if (preg_match('/[a-zA-Z]/', $value)) {
+                if (preg_match('/^[a-zA-Z]+$/', $value)) {
                     // only allow 9 character length max for username
                     // check if username exists, if yes pad number
                     $username = strtolower(substr($value, 0, 9));
