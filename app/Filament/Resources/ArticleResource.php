@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Closure;
 use Filament\Forms\Components\Select;
+use Filament\Forms\FormsComponent;
 
 class ArticleResource extends Resource
 {
@@ -44,6 +45,11 @@ class ArticleResource extends Resource
                         Forms\Components\Card::make()->schema([
                             Forms\Components\Hidden::make('user_id')
                                 ->default(fn () => auth()->id()),
+                            
+                            // default set source to backend because we need to flag it for flutter side to determine to use html or not
+                            Forms\Components\Hidden::make('source')
+                                ->default('backend'),
+
                             Forms\Components\TextInput::make('title')
                                 ->required()
                                 ->lazy(),
