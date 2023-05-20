@@ -49,6 +49,7 @@ class ArticleResource extends JsonResource
             'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
             'lang' => $this->lang,
             'is_imported' => $this->imports()->exists(),
+            'source' => $this->source,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
