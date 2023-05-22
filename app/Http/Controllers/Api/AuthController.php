@@ -464,12 +464,14 @@ class AuthController extends Controller
         $token = $request->input('access_token');
         $firebase_auth = Firebase::auth();
         // get verify ID, wrap it in a try catch.
+
         try {
             $verified_id = $firebase_auth->verifyIdToken($token);
         } catch (FailedToVerifyToken $e) {
             Log::error($e->getMessage());
             return response()->json(['message' => 'Invalid Token'], 422);
         }
+
         // as this point, the auth should be verified at firebase.
         $uid = $verified_id->claims()->get('sub');
         if ($uid) {
@@ -477,11 +479,24 @@ class AuthController extends Controller
         } else {
             return response()->json(['message' => 'Invalid Token'], 422);
         }
+
+        $socialid = null;
+        if ($firebase_user->providerData[0]->providerId == 'google.com') {
+            $socialid = $firebase_user->providerData[0]->uid;
+        } else {
+            // need to get facebook_id.
+            $socialid = $firebase_user->uid; // use uid at the moment.
+        }
+
         //check if the user already exists in the database
-        $user = User::where('email', $firebase_user->email)->first();
+        $user = User::where('google_id', $socialid)
+            ->orWhere('facebook_id', $socialid)
+            ->first();
+
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
             $user = new User();
+
             if ($firebase_user->displayName == null || $firebase_user->displayName == '') {
                 $pattern = '/(.*)@.*$/';
                 preg_match($pattern, $firebase_user->email, $matches);
@@ -491,6 +506,7 @@ class AuthController extends Controller
             } else {
                 $user->name = $firebase_user->displayName;
             }
+
             $user->email = $firebase_user->email;
             if ($firebase_user->providerData[0]->providerId == 'google.com') {
                 $user->google_id = $firebase_user->providerData[0]->uid;
@@ -500,6 +516,7 @@ class AuthController extends Controller
             }
             $user->save();
         }
+
         //log the new user in
         auth()->login($user);
         $sanctumToken = $user->createToken('authToken');
