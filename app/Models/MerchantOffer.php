@@ -28,6 +28,9 @@ class MerchantOffer extends Model implements HasMedia
         1 => 'Published',
     ];
 
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+
     // filterables
     const FILTERABLE = [
         'id',
@@ -70,6 +73,7 @@ class MerchantOffer extends Model implements HasMedia
                     'name' => $this->user->name,
                 ],
             ],
+            'status' => $this->status,
             'name' => $this->name,
             'description' => $this->description,
             'unit_price' => $this->unit_price,
@@ -85,6 +89,10 @@ class MerchantOffer extends Model implements HasMedia
         ];
     }
 
+    public function shouldBeSearchable(): bool
+    {
+        return $this->status === self::STATUS_PUBLISHED;
+    }
 
     public function merchant()
     {
