@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d643Ec1aZaegV6fhvkDP58b'
+      - 'Bearer EDgka6faZ31Vbe64cdPvh58'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vfv3ahD1cg6Za4EPdk865eb'
+      - 'Bearer hPd6f3kVeEZD6a1avbgc854'
     controller: null
     method: null
     route: null
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bDcPh86gv4Vda5ae6Efk3Z1'
+      - 'Bearer aPbEa66e1V843hfDdZ5gkvc'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 4
+        example: 9
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 4
+      user_id: 9
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DPEda6b64Vc1Z85fahevkg3'
+      - 'Bearer vZPg3be8DafV664h1Ekc5da'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: cupiditate
+        example: quis
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: provident
+        example: dolores
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: consequatur
+        example: corporis
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: cupiditate
-      violation_level: provident
-      violation_type: consequatur
+      reason: quis
+      violation_level: dolores
+      violation_type: corporis
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fcg36Z1edk6VE5ba4hPD8av'
+      - 'Bearer Pfv6k4cD1ah3bd5VEZga6e8'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kfa6V5cEPD481dZga3hbe6v'
+      - 'Bearer 46e6Df5avPaVb1Z3E8dchkg'
     controller: null
     method: null
     route: null
@@ -405,7 +405,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 17
+        example: 2
         type: integer
         custom: []
       user:
@@ -416,7 +416,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
-      user_id: 17
+      user_id: 2
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -437,7 +437,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bZgPh18ved6V5a4ca3EDf6k'
+      - 'Bearer D4ahVZ61gaEvb83ceP6dkf5'
     controller: null
     method: null
     route: null

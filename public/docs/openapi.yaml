@@ -252,8 +252,8 @@ paths:
                   example: 0
   /api/v1/articles:
     get:
-      summary: 'Get Articles for Logged in user (for Home Page)'
-      operationId: getArticlesForLoggedInUserforHomePage
+      summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
+      operationId: getArticlesForLoggedInUserforHomePageNoteUsersOwnPostsWillNotShowUpOnHomePage
       description: ''
       parameters:
         -
@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - repellendus
+                    - animi
                   items:
                     type: string
                 category_ids:
@@ -538,6 +538,10 @@ paths:
                   type: integer
                   description: 'The status of the article, change this to 0 to unpublish.'
                   example: 0
+                title:
+                  type: string
+                  description: 'The title of the article, will regenerate slug.'
+                  example: 'This is a title'
                 tags:
                   type: array
                   description: 'The tags of the article.'
@@ -565,6 +569,7 @@ paths:
               required:
                 - body
                 - status
+                - title
     delete:
       summary: 'Remove article by ID. (Only owner of article can delete)'
       operationId: removeArticleByIDOnlyOwnerOfArticleCanDelete
@@ -653,7 +658,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 14
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -661,11 +666,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: eum
+                  example: hic
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: necessitatibus
+                  example: itaque
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -969,7 +974,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quisquam
+        example: at
         required: true
         schema:
           type: string
@@ -1064,11 +1069,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: tempore
+                  example: velit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dignissimos
+                  example: aut
               required:
                 - comment_id
                 - reason
@@ -1339,7 +1344,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 13
+        example: 12
         required: true
         schema:
           type: integer
@@ -2173,7 +2178,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: explicabo
+        example: quia
         required: true
         schema:
           type: string
@@ -2337,6 +2342,102 @@ paths:
                 example: "{\n[\"id\" => 1, \"name\" => \"Abia\", \"code\" => \"AB\", \"country_id\" => 1],\n}"
       tags:
         - Other
+  /api/v1/points/balance:
+    get:
+      summary: 'Get the point balance of the user.'
+      operationId: getThePointBalanceOfTheUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  balance: 100
+                properties:
+                  balance:
+                    type: integer
+                    example: 100
+      tags:
+        - Point
+  /api/v1/points/components/balance:
+    get:
+      summary: 'Get the point component balance of the user.'
+      operationId: getThePointComponentBalanceOfTheUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  type: egg
+                  balance: 100
+                properties:
+                  type:
+                    type: string
+                    example: egg
+                  balance:
+                    type: integer
+                    example: 100
+      tags:
+        - Point
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: 'The type of point component.'
+                  example: egg
+              required:
+                - type
+  /api/v1/points/rewards:
+    get:
+      summary: 'Get Rewards Available.'
+      operationId: getRewardsAvailable
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"rewards\": [\n{\n\"id\": 1,\n\"name\": \"Funhub\",\n\"description\": \"Funhub\",\n\"components\": [],\n}\n]"
+      tags:
+        - Point
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -2550,7 +2651,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 4
+                  example: 9
               required:
                 - user_id
   /api/v1/user/report:
@@ -2597,15 +2698,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: cupiditate
+                  example: quis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: provident
+                  example: dolores
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: consequatur
+                  example: corporis
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -2681,7 +2782,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 17
+        example: 2
         required: true
         schema:
           type: integer
@@ -3431,6 +3532,9 @@ tags:
     description: ''
   -
     name: Other
+    description: ''
+  -
+    name: Point
     description: ''
   -
     name: User

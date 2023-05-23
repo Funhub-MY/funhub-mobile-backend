@@ -87,6 +87,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         ];
     }
 
+    public function shouldBeSearchable() : bool
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
     /**
      * Spatia Media conversions for thumbnail
      */

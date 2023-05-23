@@ -261,28 +261,14 @@ class ArticleController extends Controller
         $user = auth()->user();
 
         // slug
-        // regex detect if non-latin characters exists in $request->title
         $slug = '';
-        if (preg_match('/[^\x20-\x7E]/', $request->title)) {
-            // Check if the string contains Chinese characters
-            if (preg_match("/\p{Han}/u", $request->title)) {
-                // If the string contains Chinese characters, keep them in the slug
-                $slug = preg_replace('/[^\p{Han}\s]+/u', '-', $request->title);
-            } else {
-                // If the string doesn't contain Chinese characters, transliterate it to ASCII and replace non-alphanumeric characters with a dash
-                $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $slug);
-                $slug = preg_replace('/[^\w\s]+/', '-', $slug);
-            }
-
-            // Replace spaces and multiple dashes with a single dash
-            $slug = preg_replace('/\s+/', '-', $slug);
-            $slug = preg_replace('/-+/', '-', $slug);
-            // Convert the string to lowercase
-            $slug = strtolower($slug);
-        } else {
-            // use normal way
+        if (preg_match('/^[a-zA-Z]+$/', $request->title)) {
+            // english alphabets
             $slug = Str::slug($request->title);
-        }
+        } else {
+            // use random 10 characters mixed with numbers for slug
+            $slug = strtolower(Str::random(12));
+        } 
 
         $article = Article::create([
             'title' => $request->title,
@@ -376,6 +362,7 @@ class ArticleController extends Controller
      *
      * @group Article
      * @urlParam id integer required The id of the article. Example: 1
+     * @bodyParam title string required The title of the article, will regenerate slug. Example: This is a title
      * @bodyParam body string required The body of the article. Example: This is a comment
      * @bodyParam status integer required The status of the article, change this to 0 to unpublish. Example: 0 is Draft,1 is Published
      * @bodyParam tags array The tags of the article. Example: ["#tag1", "#tag2"]
@@ -396,8 +383,23 @@ class ArticleController extends Controller
             ->first();
 
         if ($article) {
+            // slug
+            $slug = '';
+            if ($request->has('title')) {
+                // generate slug
+                if (preg_match('/^[a-zA-Z]+$/', $request->title)) {
+                    // english alphabets
+                    $slug = Str::slug($request->title);
+                } else {
+                    // use random 10 characters mixed with numbers for slug
+                    $slug = strtolower(Str::random(12));
+                } 
+            }
 
+            // updates
             $article->update([
+                'title' => ($request->title) ? $request->title : $article->title,
+                'slug' => ($slug) ? $slug : $article->slug,
                 'body' => $request->body,
                 'status' => $request->status,
             ]);
