@@ -57,6 +57,7 @@ class Article extends Model implements HasMedia
         return [
             'id' => (int) $this->id,
             'title' => $this->title,
+            'body' => $this->body,
             'thumbnail' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
             'type' => $this->type,
             'categories' => $this->categories->pluck('id', 'name'),
