@@ -71,6 +71,11 @@ class Article extends Model implements HasMedia
         ];
     }
 
+    public function shouldBeSearchable(): bool
+    {
+        return $this->status === self::STATUS_PUBLISHED;
+    }
+
     /**
      * Relationships
      */
