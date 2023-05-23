@@ -68,6 +68,14 @@ class Article extends Model implements HasMedia
             'gallery' => $this->getMedia(self::MEDIA_COLLECTION_NAME)->map(function ($media) {
                 return $media->getUrl();
             }),
+            'count' => [
+                'comments' => $this->comments->count(),
+                'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
+                'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
+                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
+                'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+                'views' => $this->views->count()
+            ],
         ];
     }
 
