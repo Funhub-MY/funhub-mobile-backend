@@ -62,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kEha14d5g8vaZ6e3DcV6Pbf'
+      - 'Bearer ahcE6f5b6dkvgVa81D3P4Ze'
     controller: null
     method: null
     route: null
@@ -120,7 +120,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fkZD4v8abE56a1hgPd36eVc'
+      - 'Bearer hkZa4c8a1Pf6EV3eb6D5dvg'
     controller: null
     method: null
     route: null
@@ -178,7 +178,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e514Pbgdvfch68ZkaVED6a3'
+      - 'Bearer 5afaDkV6Pg63hbd1EveZ84c'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a5abde1E3vf4V8c6h6kgZDP'
+      - 'Bearer EPkavVh5b1f66cead3Dg48Z'
     controller: null
     method: null
     route: null
@@ -301,7 +301,66 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PEavhDZ1d6efg4cVa358kb6'
+      - 'Bearer 3Pfadv6b48eh5acVkZg16ED'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/cover/upload
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload or Update User Cover'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      cover:
+        name: cover
+        description: 'One image file to upload.'
+        required: true
+        example: null
+        type: file
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      cover: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Cover uploaded",
+          "cover": "url",
+          "cover_thumb": "url"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v1DVd8P66eabfh34kZa5Egc'
     controller: null
     method: null
     route: null
@@ -359,7 +418,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer adc6vEe63hVg1k4aDP8Z5fb'
+      - 'Bearer gbc8fhZdakvaE146653ePVD'
     controller: null
     method: null
     route: null
@@ -417,7 +476,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DagVb48v16Z3fed5EPcah6k'
+      - 'Bearer hPdkcbDv6aZgEe56fa8V341'
     controller: null
     method: null
     route: null
@@ -491,7 +550,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P6186a35v4dkVfcaZghDEbe'
+      - 'Bearer h36EfZb5de8v61aDagkVc4P'
     controller: null
     method: null
     route: null
@@ -543,7 +602,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b41Dvh5Zka68VcPf3ga6Ede'
+      - 'Bearer P3evhZ51cDaa46bg8VEf6kd'
     controller: null
     method: null
     route: null
@@ -610,7 +669,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f5dEv8abeZDh16k3a46gVPc'
+      - 'Bearer 356kbcageVf8da6DZhv14PE'
     controller: null
     method: null
     route: null
@@ -668,7 +727,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ae1c8VP5gv43E6hZa6fDbkd'
+      - 'Bearer P6ae35dZ16fkDEag4Vh8vcb'
     controller: null
     method: null
     route: null

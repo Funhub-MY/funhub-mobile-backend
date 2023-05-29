@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,6 +16,7 @@ use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable implements HasMedia, FilamentUser
 {
@@ -52,7 +54,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         'avatar_thumb_url',
         'point_balance',
         'auth_provider',
-        'has_completed_profile'
+        'has_completed_profile',
+        'cover_url',
     ];
 
     public function canAccessFilament(): bool
@@ -284,6 +287,21 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     }
 
     /**
+     * Get user cover
+     * 
+     * @return string
+     */
+    public function getCoverUrlAttribute()
+    {
+        $cover = $this->getMedia('cover')->first();
+        if ($cover) {
+            return $cover->getUrl();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Get user avatar thumbnail
      *
      * @return string
@@ -368,5 +386,28 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         } else {
             return $this->name && $this->email;
         }
+    }
+
+    /**
+     * Phone No attribute mutator
+     */
+    protected function phoneNo(): Attribute
+    {
+        return Attribute::make(
+            // set if phone_no start with zero remove it
+            set: fn (string $value) => $value = ltrim($value, '0'),
+        );
+    }
+
+    /**
+     * Get Point Component balance
+     * 
+     * @param RewardComponent $component  
+     */
+    public function getPointComponentBalance($component) 
+    {
+        return $this->pointComponentsLedger()->where('pointable_type', RewardComponent::class)
+            ->where('pointable_id', $component->id)
+            ->orderBy('id', 'desc')->first()->balance ?? 0;
     }
 }

@@ -35,4 +35,10 @@ class Mission extends Model implements HasMedia
     {
         return $this->belongsToMany(User::class, 'missions_users');
     }
+
+    // scope enabled
+    public function scopeEnabled($query)
+    {
+        return $query->where('enabled', true);
+    }
 }

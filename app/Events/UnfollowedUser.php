@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Article;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,29 +11,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ArticleCreated
+class UnfollowedUser
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $article;
-
+    public $user, $unfollowedUser;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Article $article)
+    public function __construct(User $user, User $unfollowedUser)
     {
-        $this->article = $article;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
+        $this->user = $user;
+        $this->unfollowedUser = $unfollowedUser;
     }
 }

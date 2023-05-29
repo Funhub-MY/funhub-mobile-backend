@@ -90,6 +90,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
             Route::post('/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
             Route::post('/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);
+            // cover upload
+            Route::post('/cover/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadCover']);
             Route::post('/username', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveUsername']);
             Route::post('/bio', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveBio']);
             Route::post('/dob', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveDob']);
@@ -105,6 +107,19 @@ Route::group(['prefix' => 'v1'], function () {
         Route::prefix('/views')->group(function () {
            Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);
            Route::get('/{type}/{id}', [\App\Http\Controllers\Api\ViewController::class, 'getViews']);
+        });
+
+        // Points & Rewards
+        Route::prefix('/points')->group(function () {
+            Route::get('/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointBalance']);
+            Route::get('/components/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentBalance']);
+            Route::get('/rewards', [\App\Http\Controllers\Api\PointController::class, 'getRewards']);
+            Route::post('/reward_combine', [\App\Http\Controllers\Api\PointController::class, 'postCombinePoints']);
+        });
+
+        // Missions
+        Route::prefix('/missions')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\MissionController::class, 'index']);
         });
     });
 });

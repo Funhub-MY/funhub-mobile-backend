@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - animi
+                    - dolores
                   items:
                     type: string
                 category_ids:
@@ -658,7 +658,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 20
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -666,11 +666,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: hic
+                  example: velit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: itaque
+                  example: accusamus
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -974,7 +974,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: at
+        example: magnam
         required: true
         schema:
           type: string
@@ -1069,11 +1069,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: velit
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: aut
+                  example: aspernatur
               required:
                 - comment_id
                 - reason
@@ -1344,7 +1344,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 12
+        example: 13
         required: true
         schema:
           type: integer
@@ -2178,7 +2178,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: quia
+        example: alias
         required: true
         schema:
           type: string
@@ -2296,6 +2296,69 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/missions:
+    get:
+      summary: 'Get all missions available.'
+      operationId: getAllMissionsAvailable
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      name: 'Mission 1'
+                      description: 'Mission 1'
+                      event: 'Like Article'
+                      reward: Egg
+                      reward_quantity: 1
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'Mission 1'
+                        description: 'Mission 1'
+                        event: 'Like Article'
+                        reward: Egg
+                        reward_quantity: 1
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'Mission 1'
+                        description:
+                          type: string
+                          example: 'Mission 1'
+                        event:
+                          type: string
+                          example: 'Like Article'
+                        reward:
+                          type: string
+                          example: Egg
+                        reward_quantity:
+                          type: integer
+                          example: 1
+      tags:
+        - Mission
   /api/v1/countries:
     get:
       summary: 'Get Countries'
@@ -2438,6 +2501,40 @@ paths:
                 example: "{\n\"rewards\": [\n{\n\"id\": 1,\n\"name\": \"Funhub\",\n\"description\": \"Funhub\",\n\"components\": [],\n}\n]"
       tags:
         - Point
+  /api/v1/points/reward_combine:
+    post:
+      summary: 'Combine Points Component to Form a Reward'
+      operationId: combinePointsComponentToFormAReward
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Point
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reward_id:
+                  type: integer
+                  description: 'The id of the reward.'
+                  example: 1
+                quantity:
+                  type: integer
+                  description: 'The quantity of the reward to form.'
+                  example: 1
+              required:
+                - reward_id
+                - quantity
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -2598,7 +2695,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 9
+                  example: 7
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2651,7 +2748,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 12
               required:
                 - user_id
   /api/v1/user/report:
@@ -2698,15 +2795,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quis
+                  example: beatae
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolores
+                  example: optio
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: corporis
+                  example: et
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3086,6 +3183,67 @@ paths:
                   description: 'One image file to upload.'
               required:
                 - avatar
+  /api/v1/user/settings/cover/upload:
+    post:
+      summary: 'Upload or Update User Cover'
+      operationId: uploadOrUpdateUserCover
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Cover uploaded'
+                  cover: url
+                  cover_thumb: url
+                properties:
+                  message:
+                    type: string
+                    example: 'Cover uploaded'
+                  cover:
+                    type: string
+                    example: url
+                  cover_thumb:
+                    type: string
+                    example: url
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                cover:
+                  type: string
+                  format: binary
+                  description: 'One image file to upload.'
+              required:
+                - cover
   /api/v1/user/settings/username:
     post:
       summary: 'Update User Username'
@@ -3529,6 +3687,9 @@ tags:
     description: ''
   -
     name: Merchant
+    description: ''
+  -
+    name: Mission
     description: ''
   -
     name: Other
