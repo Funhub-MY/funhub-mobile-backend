@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'auth_provider' => $this->auth_provider,
             'avatar' => $this->avatar_url,
             'avatar_thumb' => $this->avatar_thumb_url,
+            'cover' => $this->cover_url,
             'articles_published_count' => $this->articles()->published()->count(),
             'following_count' => $this->followings()->count(),
             'followers_count' => $this->followers()->count(),

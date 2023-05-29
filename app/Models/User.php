@@ -52,7 +52,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         'avatar_thumb_url',
         'point_balance',
         'auth_provider',
-        'has_completed_profile'
+        'has_completed_profile',
+        'cover_url',
     ];
 
     public function canAccessFilament(): bool
@@ -280,6 +281,21 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             return $avatar->getUrl();
         } else {
             return 'https://ui-avatars.com/api/?name=' . $this->name;
+        }
+    }
+
+    /**
+     * Get user cover
+     * 
+     * @return string
+     */
+    public function getCoverUrlAttribute()
+    {
+        $cover = $this->getMedia('cover')->first();
+        if ($cover) {
+            return $cover->getUrl();
+        } else {
+            return null;
         }
     }
 
