@@ -369,4 +369,16 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             return $this->name && $this->email;
         }
     }
+
+    /**
+     * Get Point Component balance
+     * 
+     * @param RewardComponent $component  
+     */
+    public function getPointComponentBalance($component) 
+    {
+        return $this->pointComponentsLedger()->where('pointable_type', RewardComponent::class)
+            ->where('pointable_id', $component->id)
+            ->orderBy('id', 'desc')->first()->balance ?? 0;
+    }
 }

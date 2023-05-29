@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "d83ba253-f009-49d1-a28d-abf8592a8207",
+        "_postman_id": "310cac16-1e12-43fe-9937-38a684bb2aaa",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"animi\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"dolores\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":14,\"reason\":\"Spam\",\"violation_type\":\"hic\",\"violation_level\":\"itaque\",\"article\":1}"
+                                    "raw": "{\"article_id\":20,\"reason\":\"Spam\",\"violation_type\":\"velit\",\"violation_level\":\"accusamus\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -725,7 +725,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "at",
+                                            "value": "magnam",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -825,7 +825,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"velit\",\"violation_type\":\"aut\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"qui\",\"violation_type\":\"aspernatur\"}"
                                 },
                                 "description": ""
                             },
@@ -950,7 +950,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "13",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1807,7 +1807,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "quia",
+                                            "value": "alias",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1927,6 +1927,44 @@
                                     "name": "Not Found"
                                 }
                             ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Mission",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get all missions available.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/missions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/missions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n   {\n    \"id\": 1,\n    \"name\": \"Mission 1\",\n    \"description\": \"Mission 1\",\n    \"event\": \"Like Article\",\n    \"reward\": \"Egg\",\n    \"reward_quantity\": 1\n   }\n]\n}",
+                            "name": "success"
                         }
                     ]
                 }
@@ -2116,6 +2154,34 @@
                             "name": "success"
                         }
                     ]
+                },
+                {
+                    "name": "Combine Points Component to Form a Reward",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/points\/reward_combine",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/points\/reward_combine"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"reward_id\":1,\"quantity\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
                 }
             ]
         },
@@ -2195,7 +2261,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -2236,7 +2302,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -2335,7 +2401,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"quis\",\"violation_level\":\"dolores\",\"violation_type\":\"corporis\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"beatae\",\"violation_level\":\"optio\",\"violation_type\":\"et\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2659,6 +2725,53 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"message\": \"Avatar uploaded\",\n\"avatar\": \"url\",\n\"avatar_thumb\": \"url\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload or Update User Cover",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/cover\/upload",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/cover\/upload"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "cover",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Cover uploaded\",\n\"cover\": \"url\",\n\"cover_thumb\": \"url\"\n}",
                             "name": "success"
                         },
                         {

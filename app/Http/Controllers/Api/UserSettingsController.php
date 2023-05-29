@@ -391,5 +391,57 @@ class UserSettingsController extends Controller
             'avatar_thumb' => $uploadedAvatar->getUrl('thumb'),
         ]);
     }
+
+    /**
+     * Upload or Update User Cover
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam cover file required One image file to upload.
+     * @response status=200 scenario="success" {
+     * "message": "Cover uploaded",
+     * "cover": "url",
+     * "cover_thumb": "url"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postUploadCover(Request $request)
+    {
+        // image files support jpeg and common phone uploaded files and maximum of 10MB
+        $request->validate([
+            'cover' => 'required|image|mimes:jpeg,png,jpg|max:10000',
+        ]);
+
+        $user = auth()->user();
+
+        // check if user has profile picture
+        if ($user->avatar) {
+            // delete old profile picture
+            $user->cover = null;
+            $user->save();
+
+            // delete from spatie media library as well
+            $user->clearMediaCollection('cover');
+        }
+
+        // upload new profile picture
+        $uploadedCover = $user->addMedia($request->cover)
+            ->toMediaCollection('cover',
+                (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
+            );
+            
+
+        // save user avatar id
+        $user->cover = $uploadedCover->id;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Cover uploaded',
+            'cover_id' => $uploadedCover->id,
+            'cover' => $uploadedCover->getUrl(),
+        ]);
+    }
     
 }
