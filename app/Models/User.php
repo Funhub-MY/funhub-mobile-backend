@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,6 +16,7 @@ use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable implements HasMedia, FilamentUser
 {
@@ -384,6 +386,17 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         } else {
             return $this->name && $this->email;
         }
+    }
+
+    /**
+     * Phone No attribute mutator
+     */
+    protected function phoneNo(): Attribute
+    {
+        return Attribute::make(
+            // set if phone_no start with zero remove it
+            set: fn (string $value) => $value = ltrim($value, '0'),
+        );
     }
 
     /**
