@@ -178,4 +178,28 @@ class UserController extends Controller
         }
     }
 
+
+    /**
+     * Get Users By IDs
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return JsonResponse
+     * 
+     * @group User
+     * @urlParam user_ids required The ids of the users. Example: [1,2,3]
+     * @response scenario=success {
+     * "data": {
+     * }
+     * }
+     */
+    public function getUsersByIds(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required',
+        ]);
+
+        $users = User::whereIn('id', request('user_ids'))->get();
+
+        return \App\Http\Resources\UserResource::collection($users);
+    }
 }

@@ -100,8 +100,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/job-title', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveJobTitle']);
         });
 
+        // TODO: secure this route
+        Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
-
 
         // Views
         Route::prefix('/views')->group(function () {
