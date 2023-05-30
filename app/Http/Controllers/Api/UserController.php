@@ -186,7 +186,7 @@ class UserController extends Controller
      * @return JsonResponse
      * 
      * @group User
-     * @urlParam user_ids required The ids of the users. Example: [1,2,3]
+     * @urlParam user_ids required The ids of the users. Example: 1,2,3
      * @response scenario=success {
      * "data": {
      * }
@@ -198,7 +198,10 @@ class UserController extends Controller
             'user_ids' => 'required',
         ]);
 
-        $users = User::whereIn('id', request('user_ids'))->get();
+        // explode comma
+        $user_ids = explode(',', request()->input('user_ids'));
+
+        $users = User::whereIn('id', $user_ids)->get();
 
         return \App\Http\Resources\UserResource::collection($users);
     }
