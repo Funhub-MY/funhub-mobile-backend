@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptas
+                    - nostrum
                   items:
                     type: string
                 category_ids:
@@ -658,7 +658,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 10
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -666,11 +666,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dolore
+                  example: illum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: deserunt
+                  example: eum
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -974,7 +974,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: possimus
+        example: quia
         required: true
         schema:
           type: string
@@ -1069,11 +1069,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: est
+                  example: velit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: asperiores
+                  example: excepturi
               required:
                 - comment_id
                 - reason
@@ -1344,7 +1344,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 13
+        example: 12
         required: true
         schema:
           type: integer
@@ -2178,7 +2178,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: nihil
+        example: animi
         required: true
         schema:
           type: string
@@ -2359,6 +2359,98 @@ paths:
                           example: 1
       tags:
         - Mission
+  /api/v1/user/settings/fcm-token:
+    post:
+      summary: 'Update user fcm token'
+      operationId: updateUserFcmToken
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fcm_token:
+                  type: string
+                  description: 'The fcm token of the user.'
+                  example: '1'
+              required:
+                - fcm_token
+  /api/v1/notifications:
+    get:
+      summary: "Get latest notifications of the user\nOrdered by latest one first"
+      operationId: getLatestNotificationsOfTheUserOrderedByLatestOneFirst
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n{\n   \"id\": 1,\n   \"message\" : \"A commented on your Article\",\n   \"object\" : \"article\",\n   \"object_id\" : 1,\n   \"link_to_url\" : \"http://localhost:8000/articles/1\",\n   \"link_to_object\" : \"article\",\n   \"action\" : \"comment\",\n   \"from\" : \"user\",\n   \"from_id\" : 1,\n   \"created_at_raw\" : \"2021-08-04T07:00:00.000000Z\",\n   \"created_at\" : \"1 day ago\"\n}\n]"
+      tags:
+        - Notifications
+  /api/v1/notifications/mark_all_as_read:
+    post:
+      summary: 'Mark all notifications as read'
+      operationId: markAllNotificationsAsRead
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Notifications marked as read.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Notifications marked as read.'
+      tags:
+        - Notifications
   /api/v1/countries:
     get:
       summary: 'Get Countries'
@@ -2695,7 +2787,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 13
+                  example: 8
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2748,7 +2840,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 13
+                  example: 10
               required:
                 - user_id
   /api/v1/user/report:
@@ -2795,15 +2887,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: velit
+                  example: nisi
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: minus
+                  example: voluptas
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: expedita
+                  example: aut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -2889,7 +2981,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: consequatur
+                  example: autem
               required:
                 - user_ids
     parameters:
@@ -2897,7 +2989,7 @@ paths:
         in: path
         name: user_ids
         description: 'The ids of the users.'
-        example: '[1,2,3]'
+        example: '1,2,3'
         required: true
         schema:
           type: string
@@ -2929,7 +3021,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 12
+        example: 18
         required: true
         schema:
           type: integer
@@ -3740,6 +3832,9 @@ tags:
     description: ''
   -
     name: Mission
+    description: ''
+  -
+    name: Notifications
     description: ''
   -
     name: Other

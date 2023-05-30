@@ -138,6 +138,11 @@ class CommentController extends Controller
 
         event(new \App\Events\CommentCreated($comment)); // fires event
 
+        // if commentable has user
+        if ($comment->commentable->user) {
+            $comment->commentable->user->notify(new \App\Notifications\Commented($comment)); // send notification
+        }
+
         return response()->json([
             'comment' => CommentResource::make($comment),
         ]);

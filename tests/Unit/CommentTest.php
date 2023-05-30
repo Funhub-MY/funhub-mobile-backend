@@ -8,7 +8,9 @@ use App\Models\Comment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\User;
+use App\Notifications\Commented;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class CommentTest extends TestCase
 {
@@ -300,5 +302,37 @@ class CommentTest extends TestCase
             'comment_id' => $comment->id,
             'user_id' => $this->user->id,
         ]);
+    }
+
+    /**
+     * Test Comment Notification
+     */
+    public function testCommentNotification()
+    {
+        Notification::fake();
+
+        // create a fake user
+        $user = User::factory()->create();
+
+        // create new article
+        $article = Article::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        // create a reply with logged in user
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'test reply to comment'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'comment'
+            ]);
+
+        Notification::assertSentTo(
+            [$user], Commented::class
+        );
     }
 }

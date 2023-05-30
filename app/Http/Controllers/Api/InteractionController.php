@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
+use App\Notifications\ArticleInteracted;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -154,6 +155,11 @@ class InteractionController extends Controller
         }
 
         event(new InteractionCreated($interaction));
+
+        // notify user of interactable
+        if ($request->interactable == Article::class) {
+            $interaction->interactable->user->notify(new ArticleInteracted($interaction));
+        }
 
         return response()->json([
             'interaction' => new InteractionResource($interaction),

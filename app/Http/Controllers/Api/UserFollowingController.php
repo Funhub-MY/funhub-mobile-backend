@@ -36,7 +36,12 @@ class UserFollowingController extends Controller
         // logged in user follow anothe user
         auth()->user()->followings()->attach($request->user_id);
 
-        event(new FollowedUser(auth()->user(), User::find($request->user_id)));
+        $followedUser = User::find($request->user_id);
+        event(new FollowedUser(auth()->user(), $followedUser));
+        
+        if ($followedUser) {
+            $followedUser->notify(new \App\Notifications\UserFollowed(auth()->user()));
+        }
 
         return response()->json([
             'message' => 'You are now following this user'

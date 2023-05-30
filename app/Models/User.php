@@ -62,6 +62,16 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return $this->hasRole('staff');
     }
+    
+    /**
+     * Specifies the user's FCM token
+     *
+     * @return string|array
+     */
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
 
     /**
      * The attributes that should be cast.
@@ -71,6 +81,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
 
     /**
      * Search Setup

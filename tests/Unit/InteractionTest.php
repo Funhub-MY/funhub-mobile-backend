@@ -8,6 +8,8 @@ use App\Models\Interaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\User;
+use App\Notifications\ArticleInteracted;
+use Illuminate\Support\Facades\Notification;
 
 class InteractionTest extends TestCase
 {
@@ -93,7 +95,7 @@ class InteractionTest extends TestCase
         // create interaction
         $response = $this->postJson('/api/v1/interactions', [
             'id' => $article->id,
-            'interactable' => Article::class,
+            'interactable' => 'article',
             'type' => 'like',
         ]);
 
@@ -213,5 +215,38 @@ class InteractionTest extends TestCase
             'link' => $interaction->shareableLink->first()->link,
             'user_id' => $this->user->id,
         ]);
+    }
+
+    /**
+     * Test Interaction Notification
+     */
+    public function testInteractionNotification()
+    {
+        Notification::fake();
+
+        // create a fake user
+        $user = User::factory()->create();
+
+        // create new article
+        $article = Article::factory()->create([
+            'user_id' => $user->id,
+        ]);
+
+        // create interaction by logged in user on $user's article
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $article->id,
+            'interactable' => 'article',
+            'type' => 'like',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'interaction'
+            ]);
+
+        // check notification
+        Notification::assertSentTo(
+            [$user], ArticleInteracted::class
+        );
     }
 }

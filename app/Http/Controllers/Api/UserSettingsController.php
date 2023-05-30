@@ -443,5 +443,23 @@ class UserSettingsController extends Controller
             'cover' => $uploadedCover->getUrl(),
         ]);
     }
-    
+
+    /**
+     * Update user fcm token
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return JsonResponse
+     * 
+     * @group Notifications
+     * @bodyParam fcm_token string required The fcm token of the user. Example: 1
+     * @response scenario=success {
+     * "success": true
+     * }
+     */
+    public function postSaveFcmToken(Request $request){
+        $request->user()->update(['fcm_token'=>$request->fcm_token]);
+        return response()->json([
+            'success'=> true
+        ]);
+    }
 }

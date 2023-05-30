@@ -98,6 +98,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/gender', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveGender']);
             Route::post('/location', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveLocation']);
             Route::post('/job-title', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveJobTitle']);
+
+            Route::post('/fcm-token', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveFcmToken']);
         });
 
         // TODO: secure this route
@@ -121,6 +123,12 @@ Route::group(['prefix' => 'v1'], function () {
         // Missions
         Route::prefix('/missions')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MissionController::class, 'index']);
+        });
+
+        // Notifications
+        Route::prefix('/notifications')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\NotificationController::class, 'getNotifications']);
+            Route::post('/mark_all_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkUnreadNotificationAsRead']);
         });
     });
 });
