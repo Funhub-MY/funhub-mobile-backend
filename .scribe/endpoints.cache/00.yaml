@@ -444,6 +444,118 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/reset-password-send-otp
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Reset Password Send NEW OTP (Step 1)'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      phone_no:
+        name: phone_no
+        description: 'The phone no of the user.'
+        required: true
+        example: '0123456789'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      phone_no: '0123456789'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status": "success",
+          "message": "OTP sent successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/reset-password
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Reset Password with OTP (Step 2)'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      phone_no:
+        name: phone_no
+        description: 'The phone no of the user.'
+        required: true
+        example: '0123456789'
+        type: string
+        custom: []
+      new_password:
+        name: new_password
+        description: 'The new password of the user.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+      otp:
+        name: otp
+        description: 'The otp of the user.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      phone_no: '0123456789'
+      new_password: '123456'
+      otp: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "status": "success",
+          "message": "Password reset successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/logout
     metadata:
       groupName: Authentication
@@ -482,7 +594,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer caD6vk541bZfadP6gh83EVe'
+      - 'Bearer DaV1deZbfkv645Ea6ghPc83'
     controller: null
     method: null
     route: null
@@ -564,7 +676,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f64kP56dagZ3b1EaecDvh8V'
+      - 'Bearer 3agk6VDe1Pfdc6b4vh8a5ZE'
     controller: null
     method: null
     route: null

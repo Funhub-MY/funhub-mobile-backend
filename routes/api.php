@@ -26,6 +26,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
     Route::post('login/social', [\App\Http\Controllers\Api\AuthController::class, 'socialLogin']);
     
+    // forgot password
+    Route::post('reset-password-send-otp', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordSendOtp']);
+    Route::post('reset-password', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordWithOtp']);
     /**
      * Authenticated routes
      */
