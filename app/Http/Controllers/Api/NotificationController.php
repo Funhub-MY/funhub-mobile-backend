@@ -17,6 +17,7 @@ class NotificationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group Notifications
+     * @bodyParam per_page int The number of items per page. Example: 10
      * @response scenario=success {
      * "data": [
      * {
@@ -35,13 +36,13 @@ class NotificationController extends Controller
      * ]
      *
      */
-    public function getNotifications()
+    public function getNotifications(Request $request)
     {
         // get user database notifications
         $notifications = auth()->user()->notifications()
         ->orderBy('created_at', 'desc')
         ->paginate(
-            config('app.paginate_per_page')
+            $request->input('per_page', config('app.paginate_per_page')),
         );
 
         // get all user ids from current load

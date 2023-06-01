@@ -22,14 +22,8 @@ class NotificationResource extends JsonResource
             'link_to_url' => $this->data['link_to_url'] ?? null,
             'link_to_object' => $this->data['link_to_object'] ?? null,
             'action' => $this->data['action'] ?? null,
-            'from_user' => [
-                'id' => $this->from_user->id,
-                'name' => $this->from_user->name,
-                'username' => $this->from_user->username,
-                'avatar' => $this->from_user->avatar_url,
-                'avatar_thumb' => $this->from_user->avatar_thumb_url,
-                'is_following' => $this->from_user->is_following
-            ],
+            'from_user' => new UserResource($this->data['from_user']) ?? null,
+            'is_read' => $this->read_at ? true : false,
             'created_at_raw' => $this->created_at,
             'created_at' => $this->created_at->diffForHumans(),
         ];

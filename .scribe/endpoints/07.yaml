@@ -47,7 +47,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pc5ak3V8ve1bZa6hEDgf4d6'
+      - 'Bearer Zkav3V51dbgcaP4fEh66eD8'
     controller: null
     method: null
     route: null
@@ -75,8 +75,16 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      per_page:
+        name: per_page
+        description: 'The number of items per page.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      per_page: 10
     fileParameters: []
     responses:
       -
@@ -105,7 +113,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6fdvEaZP1cakhgDV456be38'
+      - 'Bearer dD548V6P16k3gfabZaEvech'
     controller: null
     method: null
     route: null
@@ -148,7 +156,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f8aVgba64Dvck5P6dZhE3e1'
+      - 'Bearer Va5D8edgPEc46Zv6k31hfab'
     controller: null
     method: null
     route: null
