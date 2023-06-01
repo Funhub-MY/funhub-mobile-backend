@@ -62,7 +62,7 @@ class Newfollower extends Notification
             'object_id' => $this->follower->id, // record id
             'link_to_url' => false,
             'link_to' => $this->follower->id, // if link to url false, means get link_to_object
-            'link_to_object' => $this->follower, // if link to url false, means get link_to_object
+            'link_to_object' => $this->follower->id, // if link to url false, means get link_to_object
             'action' => 'followed',
             'from' => $this->follower->name,
             'from_id' => $this->follower->id,
