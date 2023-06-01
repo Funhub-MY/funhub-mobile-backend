@@ -3,28 +3,29 @@
 namespace App\Notifications;
 
 use App\Models\User;
-use App\Models\UserFollowing;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 
-class UserFollowed extends Notification
+class Newfollower extends Notification
 {
     use Queueable;
-    protected $user;
+    protected $follower;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $follower)
     {
-        $this->user = $user;
-        //
+
+        $this->follower = $follower;
+        Log::info('You have new follower ID: ' . $this->follower->id);
     }
 
     /**
@@ -41,12 +42,12 @@ class UserFollowed extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-        ->setData(['follower_id' => $this->user->id])
+        ->setData(['follower_id' => $this->follower->id])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create())
         ->setTitle(
            'New Follower'
         )
-        ->setBody($this->user->name . ' followed you');
+        ->setBody($this->follower->name . ' followed you');
     }
 
     /**
@@ -58,15 +59,15 @@ class UserFollowed extends Notification
     public function toArray($notifiable)
     {
         return [
-            'object' => get_class($this->user), // UserFollowing model
-            'object_id' => $this->user->id, // record id
+            'object' => get_class($this->follower), // UserFollowing model
+            'object_id' => $this->follower->id, // record id
             'link_to_url' => false,
-            'link_to' => $this->user->id, // if link to url false, means get link_to_object
-            'link_to_object' => $this->user, // if link to url false, means get link_to_object
+            'link_to' => $this->follower->id, // if link to url false, means get link_to_object
+            'link_to_object' => $this->follower, // if link to url false, means get link_to_object
             'action' => 'followed',
-            'from' => $this->user->name,
-            'from_id' => $this->user->id,
-            'message' => $this->user->name . ' followed you'
+            'from' => $this->follower->name,
+            'from_id' => $this->follower->id,
+            'message' => $this->follower->name . ' followed you'
         ];
     }
 }

@@ -57,13 +57,10 @@ class NotificationTest extends TestCase
 
         // get notifications
         $response = $this->getJson('/api/v1/notifications');
-
         // check if response 200
         $response->assertStatus(200);
-
         // get total should be 3
         $this->assertEquals(3, $response->json('meta.total'));
-
         // check foreach data['from_id'] should be in $users
         foreach ($response->json('data') as $notification) {
             $this->assertTrue(in_array($notification['from_user']['id'], $users->pluck('id')->toArray()));
