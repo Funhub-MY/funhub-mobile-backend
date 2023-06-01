@@ -246,7 +246,10 @@ class InteractionTest extends TestCase
 
         // check notification
         Notification::assertSentTo(
-            [$user], ArticleInteracted::class
+            [$user], ArticleInteracted::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels);
+            }
         );
     }
 }

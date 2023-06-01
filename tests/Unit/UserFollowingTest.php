@@ -235,7 +235,10 @@ class UserFollowingTest extends TestCase
         ]);
 
         Notification::assertSentTo(
-            [$user], UserFollowed::class
+            [$user], UserFollowed::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels);
+            }
         );
     }
 }

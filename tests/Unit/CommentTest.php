@@ -332,7 +332,10 @@ class CommentTest extends TestCase
             ]);
 
         Notification::assertSentTo(
-            [$user], Commented::class
+            [$user], Commented::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels);
+            }
         );
     }
 }

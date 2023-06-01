@@ -7,6 +7,7 @@ use App\Events\UnfollowedUser;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
 
 class UserFollowingController extends Controller
@@ -40,7 +41,7 @@ class UserFollowingController extends Controller
         event(new FollowedUser(auth()->user(), $followedUser));
         
         if ($followedUser) {
-            $followedUser->notify(new \App\Notifications\UserFollowed(auth()->user()));
+            $followedUser->notify(new UserFollowed(auth()->user()));
         }
 
         return response()->json([
