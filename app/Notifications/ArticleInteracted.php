@@ -42,11 +42,10 @@ class ArticleInteracted extends Notification
     {
         return FcmMessage::create()
             ->setData(['interaction_id' => (string) $this->interaction->id, 'interaction_user' => (string) $this->interaction->user->id])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create())
-            ->setTitle(
-               'New '.$this->getAction()
-            )
-            ->setBody($this->interaction->user->name .' '. $this->getAction().' your "' . $this->interaction->interactable->title.'"');
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle( 'New '.$this->getAction())
+                ->setBody($this->interaction->user->name .' '. $this->getAction().' your "' . $this->interaction->interactable->title.'"')
+            );
     }
     
     /**

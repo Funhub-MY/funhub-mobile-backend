@@ -41,11 +41,10 @@ class Commented extends Notification
     {
         return FcmMessage::create()
             ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create())
-            ->setTitle(
-               'New Comment'
-            )
-            ->setBody( $this->comment->user->name . ' commented on your article "' . $this->comment->article->title.'"');
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle('New Comment')
+                ->setBody( $this->comment->user->name . ' commented on your article "' . $this->comment->article->title.'"')
+            );
     }
     
     /**
