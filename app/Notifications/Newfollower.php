@@ -42,7 +42,7 @@ class Newfollower extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-        ->setData(['follower_id' => $this->follower->id])
+        ->setData(['follower_id' => (string) $this->follower->id])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create())
         ->setTitle(
            'New Follower'

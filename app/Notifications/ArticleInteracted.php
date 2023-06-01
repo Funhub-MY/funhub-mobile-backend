@@ -41,7 +41,7 @@ class ArticleInteracted extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-            ->setData(['interaction_id' => $this->interaction->id, 'interaction_user' => $this->interaction->user->id])
+            ->setData(['interaction_id' => (string) $this->interaction->id, 'interaction_user' => (string) $this->interaction->user->id])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create())
             ->setTitle(
                'New '.$this->getAction()

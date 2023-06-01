@@ -40,7 +40,7 @@ class Commented extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-            ->setData(['comment_id' => $this->comment->id, 'commentor_id' => $this->comment->user->id])
+            ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create())
             ->setTitle(
                'New Comment'
