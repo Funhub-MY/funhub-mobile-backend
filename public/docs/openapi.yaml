@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - nostrum
+                    - provident
                   items:
                     type: string
                 category_ids:
@@ -658,7 +658,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 18
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -666,11 +666,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: illum
+                  example: atque
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: eum
+                  example: iure
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -974,7 +974,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quia
+        example: quas
         required: true
         schema:
           type: string
@@ -1069,11 +1069,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: velit
+                  example: sunt
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: excepturi
+                  example: facere
               required:
                 - comment_id
                 - reason
@@ -1344,10 +1344,10 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 12
+        example: doloremque
         required: true
         schema:
-          type: integer
+          type: string
   /api/v1/sendOtp:
     post:
       summary: 'Send OTP'
@@ -1661,6 +1661,94 @@ paths:
                   example: "'ey271236...'"
               required:
                 - access_token
+      security: []
+  /api/v1/reset-password-send-otp:
+    post:
+      summary: 'Reset Password Send NEW OTP (Step 1)'
+      operationId: resetPasswordSendNEWOTPStep1
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'OTP sent successfully'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'OTP sent successfully'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_no:
+                  type: string
+                  description: 'The phone no of the user.'
+                  example: '0123456789'
+              required:
+                - phone_no
+      security: []
+  /api/v1/reset-password:
+    post:
+      summary: 'Reset Password with OTP (Step 2)'
+      operationId: resetPasswordWithOTPStep2
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'Password reset successfully'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Password reset successfully'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_no:
+                  type: string
+                  description: 'The phone no of the user.'
+                  example: '0123456789'
+                new_password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: '123456'
+                otp:
+                  type: string
+                  description: 'The otp of the user.'
+                  example: '123456'
+              required:
+                - phone_no
+                - new_password
+                - otp
       security: []
   /api/v1/logout:
     post:
@@ -2178,7 +2266,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: animi
+        example: suscipit
         required: true
         schema:
           type: string
@@ -2402,8 +2490,8 @@ paths:
                 - fcm_token
   /api/v1/notifications:
     get:
-      summary: "Get latest notifications of the user\nOrdered by latest one first"
-      operationId: getLatestNotificationsOfTheUserOrderedByLatestOneFirst
+      summary: "Get latest notifications of the user\nOrdered by latest one"
+      operationId: getLatestNotificationsOfTheUserOrderedByLatestOne
       description: ''
       parameters:
         -
@@ -2423,6 +2511,17 @@ paths:
                 example: "{\n\"data\": [\n{\n   \"id\": 1,\n   \"message\" : \"A commented on your Article\",\n   \"object\" : \"article\",\n   \"object_id\" : 1,\n   \"link_to_url\" : \"http://localhost:8000/articles/1\",\n   \"link_to_object\" : \"article\",\n   \"action\" : \"comment\",\n   \"from\" : \"user\",\n   \"from_id\" : 1,\n   \"created_at_raw\" : \"2021-08-04T07:00:00.000000Z\",\n   \"created_at\" : \"1 day ago\"\n}\n]"
       tags:
         - Notifications
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                per_page:
+                  type: integer
+                  description: 'The number of items per page.'
+                  example: 10
   /api/v1/notifications/mark_all_as_read:
     post:
       summary: 'Mark all notifications as read'
@@ -2787,7 +2886,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 8
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2840,7 +2939,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 10
+                  example: 7
               required:
                 - user_id
   /api/v1/user/report:
@@ -2887,15 +2986,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: nisi
+                  example: aut
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptas
+                  example: pariatur
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: aut
+                  example: minima
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -2981,7 +3080,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: autem
+                  example: repellendus
               required:
                 - user_ids
     parameters:
@@ -3021,7 +3120,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 18
+        example: 12
         required: true
         schema:
           type: integer

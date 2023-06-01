@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "7a1c4a47-f308-4fbf-a9fc-b0a42ec3f21c",
+        "_postman_id": "7958c101-6b7c-484f-b82e-609dee0bd1b9",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"nostrum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"provident\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":10,\"reason\":\"Spam\",\"violation_type\":\"illum\",\"violation_level\":\"eum\",\"article\":1}"
+                                    "raw": "{\"article_id\":18,\"reason\":\"Spam\",\"violation_type\":\"atque\",\"violation_level\":\"iure\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -725,7 +725,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "quia",
+                                            "value": "quas",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -825,7 +825,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"velit\",\"violation_type\":\"excepturi\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"sunt\",\"violation_type\":\"facere\"}"
                                 },
                                 "description": ""
                             },
@@ -950,7 +950,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "doloremque",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1384,6 +1384,82 @@
                     ]
                 },
                 {
+                    "name": "Reset Password Send NEW OTP (Step 1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/reset-password-send-otp",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/reset-password-send-otp"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"phone_no\":\"0123456789\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\": \"success\",\n\"message\": \"OTP sent successfully\"\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Reset Password with OTP (Step 2)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/reset-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/reset-password"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"phone_no\":\"0123456789\",\"new_password\":\"123456\",\"otp\":\"123456\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\": \"success\",\n\"message\": \"Password reset successfully\"\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Logout",
                     "request": {
                         "url": {
@@ -1807,7 +1883,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "animi",
+                                            "value": "suscipit",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2010,7 +2086,7 @@
                     ]
                 },
                 {
-                    "name": "Get latest notifications of the user\nOrdered by latest one first",
+                    "name": "Get latest notifications of the user\nOrdered by latest one",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -2029,7 +2105,10 @@
                                 "value": "application\/json"
                             }
                         ],
-                        "body": null,
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"per_page\":10}"
+                        },
                         "description": ""
                     },
                     "response": [
@@ -2366,7 +2445,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":8}"
+                                    "raw": "{\"user_id\":2}"
                                 },
                                 "description": ""
                             },
@@ -2407,7 +2486,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -2506,7 +2585,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"nisi\",\"violation_level\":\"voluptas\",\"violation_type\":\"aut\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"aut\",\"violation_level\":\"pariatur\",\"violation_type\":\"minima\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2604,7 +2683,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"autem\"}"
+                            "raw": "{\"user_ids\":\"repellendus\"}"
                         },
                         "description": ""
                     },
@@ -2629,7 +2708,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "18",
+                                    "value": "12",
                                     "description": "The ID of the user."
                                 },
                                 {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f8f5adef2f7107de9242992044bae4b",
+    "content-hash": "6fd64f086981e23f2c0e2a4d1a777212",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -10026,16 +10026,16 @@
         },
         {
             "name": "knuckleswtf/scribe",
-            "version": "4.21.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/knuckleswtf/scribe.git",
-                "reference": "4cf022bd8834158dfb97def0e4b22f7f1b2cd779"
+                "reference": "39f57d875b949c1ec8ba2048bc1bfec4b031ddf1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knuckleswtf/scribe/zipball/4cf022bd8834158dfb97def0e4b22f7f1b2cd779",
-                "reference": "4cf022bd8834158dfb97def0e4b22f7f1b2cd779",
+                "url": "https://api.github.com/repos/knuckleswtf/scribe/zipball/39f57d875b949c1ec8ba2048bc1bfec4b031ddf1",
+                "reference": "39f57d875b949c1ec8ba2048bc1bfec4b031ddf1",
                 "shasum": ""
             },
             "require": {
@@ -10076,6 +10076,7 @@
                 "symfony/css-selector": "^5.4|^6.0",
                 "symfony/dom-crawler": "^5.4|^6.0"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -10109,7 +10110,7 @@
             ],
             "support": {
                 "issues": "https://github.com/knuckleswtf/scribe/issues",
-                "source": "https://github.com/knuckleswtf/scribe/tree/4.21.0"
+                "source": "https://github.com/knuckleswtf/scribe/tree/master"
             },
             "funding": [
                 {
@@ -10117,7 +10118,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-05-29T15:50:25+00:00"
+            "time": "2023-05-31T17:57:43+00:00"
         },
         {
             "name": "laravel/pint",
@@ -12851,7 +12852,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "knuckleswtf/scribe": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
