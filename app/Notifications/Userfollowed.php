@@ -14,7 +14,6 @@ use NotificationChannels\Fcm\FcmMessage;
 class UserFollowed extends Notification
 {
     use Queueable;
-
     protected $user;
 
     /**
