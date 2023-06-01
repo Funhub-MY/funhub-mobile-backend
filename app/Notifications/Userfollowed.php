@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 
-class Userfollowed extends Notification
+class UserFollowed extends Notification
 {
     use Queueable;
 

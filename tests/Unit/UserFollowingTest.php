@@ -235,7 +235,7 @@ class UserFollowingTest extends TestCase
         ]);
 
         Notification::assertSentTo(
-            [$user], Userfollowed::class
+            [$user], UserFollowed::class
         );
     }
 }
