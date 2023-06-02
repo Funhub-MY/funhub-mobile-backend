@@ -587,20 +587,11 @@ class AuthController extends Controller
             ]);
 
             // send otp to user
-            $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
-
-            // return response
-            if ($success) {
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'OTP sent successfully'
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to send OTP'
-                ], 500);
-            }
+            $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP sent successfully'
+            ], 200);
         }
     }
 
