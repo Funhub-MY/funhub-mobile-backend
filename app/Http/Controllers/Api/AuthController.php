@@ -540,4 +540,123 @@ class AuthController extends Controller
     {
         $user = Socialite::driver('google')->user();
     }
+
+    /**
+     * Reset Password Send NEW OTP (Step 1)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Authentication
+     * @unauthenticated
+     *
+     * @bodyParam phone_no string required The phone no of the user. Example: 0123456789
+     * @response scenario=success {
+     * "status": "success",
+     * "message": "OTP sent successfully"
+     * }
+     * 
+     */
+    public function postResetPasswordSendOtp(Request $request) {
+        $this->validate($request, [
+            'phone_no' => 'required'
+        ]);
+        // remove left 0 from phone_no if there is
+        $phone_no = ltrim($request->input('phone_no'), '0');
+        // get user by phone no
+        $user = User::where('phone_no', $phone_no)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        } else {
+             // reject if user is logged in using google/facebook
+             if ($user->google_id || $user->facebook_id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unable to reset password for google/facebook account'
+                ], 400);
+            }
+
+            // create a new otp
+            $otp = rand(100000, 999999);
+            $user->update([
+                'otp' => $otp,
+                'otp_expiry' => now()->addMinutes(1),
+            ]);
+
+            // send otp to user
+            $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OTP sent successfully'
+            ], 200);
+        }
+    }
+
+    /**
+     * Reset Password with OTP (Step 2)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Authentication
+     * @unauthenticated
+     *
+     * @bodyParam phone_no string required The phone no of the user. Example: 0123456789
+     * @bodyParam new_password string required The new password of the user. Example: 123456
+     * @bodyParam otp string required The otp of the user. Example: 123456
+     * @response scenario=success {
+     * "status": "success",
+     * "message": "Password reset successfully"
+     * }
+     */
+    public function postResetPasswordWithOtp(Request $request) {
+        $this->validate($request, [
+            'phone_no' => 'required',
+            'new_password' => 'required',
+            'otp' => 'required',
+        ]);
+
+        // find user by phone number
+        $phone_no = ltrim($request->input('phone_no'), '0');
+        // get user by phone no
+        $user = User::where('phone_no', $phone_no)
+            ->where('otp', $request->input('otp'))
+            ->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
+        } else {
+            // reject if user is logged in using google/facebook
+            if ($user->google_id || $user->facebook_id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unable to reset password for google/facebook account'
+                ], 400);
+            }
+            // user is found, check if otp is expired
+            if ($user->otp_expiry < now()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'OTP expired, please request again.'
+                ], 400);
+            } else {
+                // otp is not expired, update user password
+                $user->update([
+                    'password' => Hash::make($request->input('new_password')),
+                    'otp' => null,
+                    'otp_expiry' => null,
+                ]);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Password updated successfully'
+                ], 200);
+            }
+        }
+    }
 }

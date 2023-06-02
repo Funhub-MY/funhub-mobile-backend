@@ -1,0 +1,197 @@
+name: Point
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/balance
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the point balance of the user.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "balance": 100
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fc6EgbPD63kZVaehda58v41'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/components/balance
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the point component balance of the user.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      type:
+        name: type
+        description: 'The type of point component.'
+        required: true
+        example: egg
+        type: string
+        custom: []
+    cleanBodyParameters:
+      type: egg
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "type": "egg",
+          "balance": 100
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4k1hae6DdV85cEZfv6b3Pag'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/rewards
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Rewards Available.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "rewards": [
+          {
+          "id": 1,
+          "name": "Funhub",
+          "description": "Funhub",
+          "components": [],
+          }
+          ]
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8Df5bPvdea6EZk61cgh43aV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/points/reward_combine
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Combine Points Component to Form a Reward'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reward_id:
+        name: reward_id
+        description: 'The id of the reward.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      quantity:
+        name: quantity
+        description: 'The quantity of the reward to form.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      reward_id: 1
+      quantity: 1
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 46vceh3PDa1aE58f6bZgdVk'
+    controller: null
+    method: null
+    route: null
+    custom: []

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\FollowedUser;
+use App\Events\UnfollowedUser;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
 
 class UserFollowingController extends Controller
@@ -33,6 +36,10 @@ class UserFollowingController extends Controller
 
         // logged in user follow anothe user
         auth()->user()->followings()->attach($request->user_id);
+
+        $followedUser = User::find($request->user_id);
+        event(new FollowedUser(auth()->user(), $followedUser));
+        $followedUser->notify(new \App\Notifications\Newfollower(auth()->user()));
 
         return response()->json([
             'message' => 'You are now following this user'
@@ -63,6 +70,8 @@ class UserFollowingController extends Controller
 
         // logged in user unfollow anothe user
         auth()->user()->followings()->detach($request->user_id);
+
+        event(new UnfollowedUser(auth()->user(), User::find($request->user_id)));
 
         return response()->json([
             'message' => 'You are now unfollowing this user'

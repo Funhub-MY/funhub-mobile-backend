@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Http\Resources\Article;
+use App\Models\Article;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

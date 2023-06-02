@@ -5,9 +5,12 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\UserFollowing;
+use App\Notifications\Newfollower;
+use App\Notifications\Userfollowed;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * Test User Following
@@ -214,6 +217,28 @@ class UserFollowingTest extends TestCase
         $this->assertEquals(
             $user->id, 
             collect($response->json()['data'])->pluck('id')->first()
+        );
+    }
+
+    /**
+     * Test Following Notification
+     */
+    public function testFollowingNotification()
+    {
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        // logged in user follow $user
+        $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        Notification::assertSentTo(
+            [$user], Newfollower::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels);
+            }
         );
     }
 }

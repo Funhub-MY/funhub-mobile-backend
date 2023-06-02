@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "d83ba253-f009-49d1-a28d-abf8592a8207",
+        "_postman_id": "60baf0cc-0b0a-4d8f-8504-751c7d0dbd23",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"animi\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"aut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":14,\"reason\":\"Spam\",\"violation_type\":\"hic\",\"violation_level\":\"itaque\",\"article\":1}"
+                                    "raw": "{\"article_id\":4,\"reason\":\"Spam\",\"violation_type\":\"et\",\"violation_level\":\"sunt\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -725,7 +725,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "at",
+                                            "value": "rerum",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -825,7 +825,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"velit\",\"violation_type\":\"aut\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"non\",\"violation_type\":\"exercitationem\"}"
                                 },
                                 "description": ""
                             },
@@ -950,7 +950,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "12",
+                                            "value": "similique",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1384,6 +1384,82 @@
                     ]
                 },
                 {
+                    "name": "Reset Password Send NEW OTP (Step 1)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/reset-password-send-otp",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/reset-password-send-otp"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"phone_no\":\"0123456789\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\": \"success\",\n\"message\": \"OTP sent successfully\"\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Reset Password with OTP (Step 2)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/reset-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/reset-password"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"phone_no\":\"0123456789\",\"new_password\":\"123456\",\"otp\":\"123456\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"status\": \"success\",\n\"message\": \"Password reset successfully\"\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Logout",
                     "request": {
                         "url": {
@@ -1807,7 +1883,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "quia",
+                                            "value": "culpa",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -1927,6 +2003,152 @@
                                     "name": "Not Found"
                                 }
                             ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Mission",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get all missions available.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/missions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/missions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n   {\n    \"id\": 1,\n    \"name\": \"Mission 1\",\n    \"description\": \"Mission 1\",\n    \"event\": \"Like Article\",\n    \"reward\": \"Egg\",\n    \"reward_quantity\": 1\n   }\n]\n}",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Notifications",
+            "description": "",
+            "item": [
+                {
+                    "name": "Update user fcm token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/fcm-token",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/fcm-token"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"fcm_token\":\"1\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"success\": true\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get latest notifications of the user\nOrdered by latest one",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/notifications",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/notifications"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"per_page\":10}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n{\n   \"id\": 1,\n   \"message\" : \"A commented on your Article\",\n   \"object\" : \"article\",\n   \"object_id\" : 1,\n   \"link_to_url\" : \"http:\/\/localhost:8000\/articles\/1\",\n   \"link_to_object\" : \"article\",\n   \"action\" : \"comment\",\n   \"from\" : \"user\",\n   \"from_id\" : 1,\n   \"created_at_raw\" : \"2021-08-04T07:00:00.000000Z\",\n   \"created_at\" : \"1 day ago\"\n}\n]",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Mark all notifications as read",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/notifications\/mark_all_as_read",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/notifications\/mark_all_as_read"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Notifications marked as read.\"\n}",
+                            "name": "success"
                         }
                     ]
                 }
@@ -2116,6 +2338,34 @@
                             "name": "success"
                         }
                     ]
+                },
+                {
+                    "name": "Combine Points Component to Form a Reward",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/points\/reward_combine",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/points\/reward_combine"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"reward_id\":1,\"quantity\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
                 }
             ]
         },
@@ -2195,7 +2445,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -2236,7 +2486,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":11}"
                                 },
                                 "description": ""
                             },
@@ -2335,7 +2585,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"quis\",\"violation_level\":\"dolores\",\"violation_type\":\"corporis\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"exercitationem\",\"violation_level\":\"rerum\",\"violation_type\":\"aut\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2404,6 +2654,49 @@
                     ]
                 },
                 {
+                    "name": "Get Users By IDs",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/users_by_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/users_by_id",
+                            "variable": [
+                                {
+                                    "id": "user_ids",
+                                    "key": "user_ids",
+                                    "value": "1%2C2%2C3",
+                                    "description": "The ids of the users."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"user_ids\":\"nostrum\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": {\n}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Get a user",
                     "request": {
                         "url": {
@@ -2415,7 +2708,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "2",
+                                    "value": "9",
                                     "description": "The ID of the user."
                                 },
                                 {
@@ -2670,6 +2963,53 @@
                     ]
                 },
                 {
+                    "name": "Upload or Update User Cover",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/cover\/upload",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/cover\/upload"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "cover",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Cover uploaded\",\n\"cover\": \"url\",\n\"cover_thumb\": \"url\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
                     "name": "Update User Username",
                     "request": {
                         "url": {
@@ -2814,7 +3154,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },
@@ -2906,6 +3246,47 @@
                             "code": 401,
                             "body": "{\"message\": \"Unauthenticated.\"}",
                             "name": "Unauthenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update user password (only for login with OTP)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/postUpdatePassword",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/postUpdatePassword"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"old_password\":\"abcd1234\",\"password\":\"abcd1234\",\"password_confirmation\":\"abcd1234\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Password updated\"\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}",
+                            "name": "validation error"
                         }
                     ]
                 }

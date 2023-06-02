@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - animi
+                    - aut
                   items:
                     type: string
                 category_ids:
@@ -658,7 +658,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 4
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -666,11 +666,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: hic
+                  example: et
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: itaque
+                  example: sunt
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -974,7 +974,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: at
+        example: rerum
         required: true
         schema:
           type: string
@@ -1069,11 +1069,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: velit
+                  example: non
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: aut
+                  example: exercitationem
               required:
                 - comment_id
                 - reason
@@ -1344,10 +1344,10 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: 12
+        example: similique
         required: true
         schema:
-          type: integer
+          type: string
   /api/v1/sendOtp:
     post:
       summary: 'Send OTP'
@@ -1661,6 +1661,94 @@ paths:
                   example: "'ey271236...'"
               required:
                 - access_token
+      security: []
+  /api/v1/reset-password-send-otp:
+    post:
+      summary: 'Reset Password Send NEW OTP (Step 1)'
+      operationId: resetPasswordSendNEWOTPStep1
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'OTP sent successfully'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'OTP sent successfully'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_no:
+                  type: string
+                  description: 'The phone no of the user.'
+                  example: '0123456789'
+              required:
+                - phone_no
+      security: []
+  /api/v1/reset-password:
+    post:
+      summary: 'Reset Password with OTP (Step 2)'
+      operationId: resetPasswordWithOTPStep2
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'Password reset successfully'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'Password reset successfully'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_no:
+                  type: string
+                  description: 'The phone no of the user.'
+                  example: '0123456789'
+                new_password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: '123456'
+                otp:
+                  type: string
+                  description: 'The otp of the user.'
+                  example: '123456'
+              required:
+                - phone_no
+                - new_password
+                - otp
       security: []
   /api/v1/logout:
     post:
@@ -2178,7 +2266,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: quia
+        example: culpa
         required: true
         schema:
           type: string
@@ -2296,6 +2384,172 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/missions:
+    get:
+      summary: 'Get all missions available.'
+      operationId: getAllMissionsAvailable
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    -
+                      id: 1
+                      name: 'Mission 1'
+                      description: 'Mission 1'
+                      event: 'Like Article'
+                      reward: Egg
+                      reward_quantity: 1
+                properties:
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'Mission 1'
+                        description: 'Mission 1'
+                        event: 'Like Article'
+                        reward: Egg
+                        reward_quantity: 1
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'Mission 1'
+                        description:
+                          type: string
+                          example: 'Mission 1'
+                        event:
+                          type: string
+                          example: 'Like Article'
+                        reward:
+                          type: string
+                          example: Egg
+                        reward_quantity:
+                          type: integer
+                          example: 1
+      tags:
+        - Mission
+  /api/v1/user/settings/fcm-token:
+    post:
+      summary: 'Update user fcm token'
+      operationId: updateUserFcmToken
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fcm_token:
+                  type: string
+                  description: 'The fcm token of the user.'
+                  example: '1'
+              required:
+                - fcm_token
+  /api/v1/notifications:
+    get:
+      summary: "Get latest notifications of the user\nOrdered by latest one"
+      operationId: getLatestNotificationsOfTheUserOrderedByLatestOne
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n{\n   \"id\": 1,\n   \"message\" : \"A commented on your Article\",\n   \"object\" : \"article\",\n   \"object_id\" : 1,\n   \"link_to_url\" : \"http://localhost:8000/articles/1\",\n   \"link_to_object\" : \"article\",\n   \"action\" : \"comment\",\n   \"from\" : \"user\",\n   \"from_id\" : 1,\n   \"created_at_raw\" : \"2021-08-04T07:00:00.000000Z\",\n   \"created_at\" : \"1 day ago\"\n}\n]"
+      tags:
+        - Notifications
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                per_page:
+                  type: integer
+                  description: 'The number of items per page.'
+                  example: 10
+  /api/v1/notifications/mark_all_as_read:
+    post:
+      summary: 'Mark all notifications as read'
+      operationId: markAllNotificationsAsRead
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Notifications marked as read.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Notifications marked as read.'
+      tags:
+        - Notifications
   /api/v1/countries:
     get:
       summary: 'Get Countries'
@@ -2438,6 +2692,40 @@ paths:
                 example: "{\n\"rewards\": [\n{\n\"id\": 1,\n\"name\": \"Funhub\",\n\"description\": \"Funhub\",\n\"components\": [],\n}\n]"
       tags:
         - Point
+  /api/v1/points/reward_combine:
+    post:
+      summary: 'Combine Points Component to Form a Reward'
+      operationId: combinePointsComponentToFormAReward
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Point
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reward_id:
+                  type: integer
+                  description: 'The id of the reward.'
+                  example: 1
+                quantity:
+                  type: integer
+                  description: 'The quantity of the reward to form.'
+                  example: 1
+              required:
+                - reward_id
+                - quantity
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -2598,7 +2886,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 9
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2651,7 +2939,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 11
               required:
                 - user_id
   /api/v1/user/report:
@@ -2698,15 +2986,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quis
+                  example: exercitationem
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolores
+                  example: rerum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: corporis
+                  example: aut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -2754,6 +3042,56 @@ paths:
                   example: Spam
               required:
                 - user_id
+  /api/v1/users_by_id:
+    get:
+      summary: 'Get Users By IDs'
+      operationId: getUsersByIDs
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: {  }
+                properties:
+                  data:
+                    type: object
+                    properties: []
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: string
+                  description: ''
+                  example: nostrum
+              required:
+                - user_ids
+    parameters:
+      -
+        in: path
+        name: user_ids
+        description: 'The ids of the users.'
+        example: '1,2,3'
+        required: true
+        schema:
+          type: string
   '/api/v1/user/{user_id}':
     get:
       summary: 'Get a user'
@@ -2782,7 +3120,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 2
+        example: 9
         required: true
         schema:
           type: integer
@@ -3086,6 +3424,67 @@ paths:
                   description: 'One image file to upload.'
               required:
                 - avatar
+  /api/v1/user/settings/cover/upload:
+    post:
+      summary: 'Upload or Update User Cover'
+      operationId: uploadOrUpdateUserCover
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Cover uploaded'
+                  cover: url
+                  cover_thumb: url
+                properties:
+                  message:
+                    type: string
+                    example: 'Cover uploaded'
+                  cover:
+                    type: string
+                    example: url
+                  cover_thumb:
+                    type: string
+                    example: url
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                cover:
+                  type: string
+                  format: binary
+                  description: 'One image file to upload.'
+              required:
+                - cover
   /api/v1/user/settings/username:
     post:
       summary: 'Update User Username'
@@ -3309,7 +3708,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -3422,6 +3821,64 @@ paths:
                   example: 'Software Engineer'
               required:
                 - job_title
+  /api/v1/user/settings/postUpdatePassword:
+    post:
+      summary: 'Update user password (only for login with OTP)'
+      operationId: updateUserPasswordonlyForLoginWithOTP
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Password updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Password updated'
+        422:
+          description: 'validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}"
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: 'The old password of the user.'
+                  example: abcd1234
+                password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: abcd1234
+                password_confirmation:
+                  type: string
+                  description: 'The new password confirmation of the user.'
+                  example: abcd1234
+              required:
+                - old_password
+                - password
+                - password_confirmation
   /api/v1/views:
     post:
       summary: "Record view for viewable\nThis is used for recording views for articles, comments, and merchant offers"
@@ -3529,6 +3986,12 @@ tags:
     description: ''
   -
     name: Merchant
+    description: ''
+  -
+    name: Mission
+    description: ''
+  -
+    name: Notifications
     description: ''
   -
     name: Other

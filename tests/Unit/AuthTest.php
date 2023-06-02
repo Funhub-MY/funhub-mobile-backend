@@ -244,4 +244,27 @@ class AuthTest extends TestCase
         
         $response->assertStatus(403);
     }
+
+    /**
+     * Test complete profile but user is suspended status is 0
+     * /api/v1/user/sendOtp
+     */
+    public function testSmsOtpWithWrongPhoneNo()
+    {
+        $response = $this->postJson('/api/v1/sendOtp', [
+            'country_code' => '60',
+            'phone_no' => '01234567890' // fake phone number with zero infront
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+        
+        // check database ahas this phone no without zero at front
+        $this->assertDatabaseHas('users', [
+            'phone_no' => '1234567890',
+            'phone_country_code' => '60'
+        ]);
+    }
 }

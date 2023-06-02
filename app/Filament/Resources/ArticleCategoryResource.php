@@ -18,7 +18,6 @@ use Spatie\MediaLibrary\HasMedia;
 
 class ArticleCategoryResource extends Resource
 {
-
     protected static ?string $model = ArticleCategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';

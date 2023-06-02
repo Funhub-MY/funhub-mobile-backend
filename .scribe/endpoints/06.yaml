@@ -62,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kEha14d5g8vaZ6e3DcV6Pbf'
+      - 'Bearer a8gPakf6DE15V34deb6Zvch'
     controller: null
     method: null
     route: null
@@ -120,7 +120,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fkZD4v8abE56a1hgPd36eVc'
+      - 'Bearer gaVP6ZvcdDhb3akE58f16e4'
     controller: null
     method: null
     route: null
@@ -178,7 +178,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e514Pbgdvfch68ZkaVED6a3'
+      - 'Bearer aed68gfZP6akEVh1bD4cv53'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a5abde1E3vf4V8c6h6kgZDP'
+      - 'Bearer 31f5hVEkZcde6bv64PaagD8'
     controller: null
     method: null
     route: null
@@ -301,7 +301,66 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PEavhDZ1d6efg4cVa358kb6'
+      - 'Bearer hVdeckaaD86bP31g5ZvE64f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/cover/upload
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload or Update User Cover'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      cover:
+        name: cover
+        description: 'One image file to upload.'
+        required: true
+        example: null
+        type: file
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      cover: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Cover uploaded",
+          "cover": "url",
+          "cover_thumb": "url"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ha663bk5Zvfcg14aDEVP8de'
     controller: null
     method: null
     route: null
@@ -359,7 +418,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer adc6vEe63hVg1k4aDP8Z5fb'
+      - 'Bearer 6aPD1Ekdfgv36ebZa8hV5c4'
     controller: null
     method: null
     route: null
@@ -417,7 +476,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DagVb48v16Z3fed5EPcah6k'
+      - 'Bearer 6hD6Pg8ebacfv3Zd15kE4aV'
     controller: null
     method: null
     route: null
@@ -491,7 +550,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P6186a35v4dkVfcaZghDEbe'
+      - 'Bearer ak1364gvfPVeZ65bD8hcaEd'
     controller: null
     method: null
     route: null
@@ -522,11 +581,11 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: male
+        example: female
         type: string
         custom: []
     cleanBodyParameters:
-      gender: male
+      gender: female
     fileParameters: []
     responses:
       -
@@ -543,7 +602,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b41Dvh5Zka68VcPf3ga6Ede'
+      - 'Bearer gEd1PavD56k6fcZebVa384h'
     controller: null
     method: null
     route: null
@@ -610,7 +669,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f5dEv8abeZDh16k3a46gVPc'
+      - 'Bearer Vv1DdEg56ka3c4bhaef86ZP'
     controller: null
     method: null
     route: null
@@ -668,7 +727,90 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ae1c8VP5gv43E6hZa6fDbkd'
+      - 'Bearer keDag65vZ6PE4bdfa13cVh8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/postUpdatePassword
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user password (only for login with OTP)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      old_password:
+        name: old_password
+        description: 'The old password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The new password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'The new password confirmation of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+    cleanBodyParameters:
+      old_password: abcd1234
+      password: abcd1234
+      password_confirmation: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Password updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "The given data was invalid.",
+          "errors": {
+          "old_password": [
+           "The old password is incorrect"
+          ],
+          "password": [
+          "The password confirmation does not match."
+          ]
+          }
+        headers: []
+        description: 'validation error'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5EbD3dvfhe1VP46ckg86Zaa'
     controller: null
     method: null
     route: null

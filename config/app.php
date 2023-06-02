@@ -246,4 +246,14 @@ return [
     'android_play_store_link' => env('ANDROID_PLAY_STORE_LINK', ''),
     'ios_deep_link' => env('IOS_DEEP_LINK', ''),
     'android_deep_link' => env('ANDROID_DEEP_LINK', ''),
+
+    'event_matrix' => [
+        'article_created' => 'Article Created',
+        'comment_created' => 'Comment Created',
+        'like_comment' => 'Liked a Comment',
+        'like_article' => 'Liked an Article',
+        'share_article' => 'Shared an Article',
+        'bookmark_an_article' => 'Bookmarked an Article',
+        'follow_a_user' => 'Followed a User',
+    ]
 ];

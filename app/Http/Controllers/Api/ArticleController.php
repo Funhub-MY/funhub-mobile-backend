@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\ArticleCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleImagesUploadRequest;
@@ -261,19 +262,13 @@ class ArticleController extends Controller
         $user = auth()->user();
 
         // slug
-        $slug = '';
-        if (preg_match('/^[a-zA-Z]+$/', $request->title)) {
-            // english alphabets
-            $slug = Str::slug($request->title);
-        } else {
-            // use random 10 characters mixed with numbers for slug
-            $slug = strtolower(Str::random(12));
-        } 
+        $slug = strtolower(Str::random(12));
 
         $article = Article::create([
             'title' => $request->title,
             'type' => $request->type,
             'slug' => $slug,
+            'source' => 'mobile',
             'excerpt' => ($request->excerpt) ?? null,
             'body' => $request->body,
             'status' => $request->status, // default is draft
@@ -320,6 +315,8 @@ class ArticleController extends Controller
             });
             $article->tags()->attach($tags);
         }
+
+        event(new ArticleCreated($article));
 
         return response()->json([
             'message' => 'Article created',
@@ -386,14 +383,7 @@ class ArticleController extends Controller
             // slug
             $slug = '';
             if ($request->has('title')) {
-                // generate slug
-                if (preg_match('/^[a-zA-Z]+$/', $request->title)) {
-                    // english alphabets
-                    $slug = Str::slug($request->title);
-                } else {
-                    // use random 10 characters mixed with numbers for slug
-                    $slug = strtolower(Str::random(12));
-                } 
+                $slug = strtolower(Str::random(12));
             }
 
             // updates

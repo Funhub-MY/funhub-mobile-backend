@@ -22,7 +22,7 @@ class Reward extends Model
     public function rewardComponents()
     {
         return $this->belongsToMany(RewardComponent::class, 'rewards_reward_components')
-            ->withPivot('points')
+            ->withPivot('points') // points required to form a reward
             ->withTimestamps();
     }
 }

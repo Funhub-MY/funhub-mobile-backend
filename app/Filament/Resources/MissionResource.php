@@ -49,13 +49,7 @@ class MissionResource extends Resource
                             // event select input
                             Select::make('event')
                                 ->label('Event')
-                                ->options([
-                                    'new_comment_added' => 'Added a Comment on an Article',
-                                    'new_article_created' => 'Created a new Article',
-                                    'liked_an_article' => 'Liked an Article',
-                                    'liked_a_comment' => 'Liked a Comment',
-                                    'claim_an_offer' => 'Claimed a Merchant Offer/Deal',
-                                ])
+                                ->options(config('app.event_matrix'))
                                 ->required()
                                 ->rules('required'),
                             
@@ -66,6 +60,23 @@ class MissionResource extends Resource
                                 ->required()
                                 ->default(1)
                                 ->rules('required', 'numeric', 'min:1'),
+
+                            // status 0 is disabled, 1 is enabled, default enabled
+                            Select::make('status')
+                                ->label('Status')
+                                ->options([
+                                    0 => 'Disabled',
+                                    1 => 'Enabled',
+                                ])
+                                ->default(1)
+                                ->required()
+                                ->rules('required'),
+
+                            // enabled_at datetime
+                            Forms\Components\DatePicker::make('enabled_at')
+                                ->label('Enabled At')
+                                ->nullable()
+                                ->helperText('If you choose a future date, mission only enabled at that point'),
 
                             // media gallery
                             Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')

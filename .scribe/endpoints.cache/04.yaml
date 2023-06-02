@@ -55,7 +55,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EDgka6faZ31Vbe64cdPvh58'
+      - 'Bearer E3648a6gvcbkadVP1ZfD5eh'
     controller: null
     method: null
     route: null
@@ -112,7 +112,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hPd6f3kVeEZD6a1avbgc854'
+      - 'Bearer a5bhvPf6EgZk8aV43cDe61d'
     controller: null
     method: null
     route: null
@@ -143,11 +143,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 9
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 9
+      user_id: 19
     fileParameters: []
     responses:
       -
@@ -169,7 +169,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aPbEa66e1V843hfDdZ5gkvc'
+      - 'Bearer Zcg6kb1Vfe8Pv6aaD54dEh3'
     controller: null
     method: null
     route: null
@@ -200,11 +200,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 9
+        example: 11
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 9
+      user_id: 11
     fileParameters: []
     responses:
       -
@@ -226,7 +226,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vZPg3be8DafV664h1Ekc5da'
+      - 'Bearer kvP6hE6DZVdce5g1baf8a43'
     controller: null
     method: null
     route: null
@@ -264,21 +264,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: quis
+        example: exercitationem
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: dolores
+        example: rerum
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: corporis
+        example: aut
         type: required
         custom: []
       also_block_user:
@@ -290,9 +290,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: quis
-      violation_level: dolores
-      violation_type: corporis
+      reason: exercitationem
+      violation_level: rerum
+      violation_type: aut
       also_block_user: true
     fileParameters: []
     responses:
@@ -321,7 +321,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pfv6k4cD1ah3bd5VEZga6e8'
+      - 'Bearer aekgcvaZV653PD1hf6dE8b4'
     controller: null
     method: null
     route: null
@@ -380,7 +380,67 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 46e6Df5avPaVb1Z3E8dchkg'
+      - 'Bearer h6d4V1D5fcave38PgE6kZab'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/users_by_id
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Users By IDs'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_ids:
+        name: user_ids
+        description: 'The ids of the users.'
+        required: true
+        example: '1,2,3'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      user_ids: '1,2,3'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_ids:
+        name: user_ids
+        description: ''
+        required: true
+        example: nostrum
+        type: string
+        custom: []
+    cleanBodyParameters:
+      user_ids: nostrum
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d6f13VEP4va8ec6Db5Zhakg'
     controller: null
     method: null
     route: null
@@ -407,7 +467,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 2
+        example: 9
         type: integer
         custom: []
       user:
@@ -418,7 +478,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
-      user_id: 2
+      user_id: 9
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -439,7 +499,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D4ahVZ61gaEvb83ceP6dkf5'
+      - 'Bearer g4bPde68v3hfkZaDac56E1V'
     controller: null
     method: null
     route: null
