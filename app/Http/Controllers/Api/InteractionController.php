@@ -157,7 +157,7 @@ class InteractionController extends Controller
         event(new InteractionCreated($interaction));
 
         // notify user of interactable is article and is like
-        if ($request->interactable == Article::class && $request->type == Interaction::TYPE_LIKE) {
+        if ($request->interactable == Article::class && $request->type == Interaction::TYPE_LIKE && $interaction->interactable->user->id != auth()->id()) {
             $interaction->interactable->user->notify(new ArticleInteracted($interaction));
         }
 

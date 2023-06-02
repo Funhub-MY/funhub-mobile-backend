@@ -138,8 +138,8 @@ class CommentController extends Controller
 
         event(new \App\Events\CommentCreated($comment)); // fires event
 
-        // if commentable has user
-        if ($comment->commentable->user) {
+        // if commentable has user and is not self, send notification
+        if ($comment->commentable->user && $comment->commentable->user->id != auth()->id()) {
             $comment->commentable->user->notify(new \App\Notifications\Commented($comment)); // send notification
         }
 
