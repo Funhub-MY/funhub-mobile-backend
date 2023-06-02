@@ -45,7 +45,7 @@ class Newfollower extends Notification
         ->setData(['follower_id' => (string) $this->follower->id])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('New Follower')
-            ->setBody($this->follower->name . ' followed you')
+            ->setBody($this->follower->name . '开始关注你了')
         );
     }
 
@@ -66,7 +66,7 @@ class Newfollower extends Notification
             'action' => 'followed',
             'from' => $this->follower->name,
             'from_id' => $this->follower->id,
-            'message' => $this->follower->name . ' followed you'
+            'message' => $this->follower->name . '开始关注你了'
         ];
     }
 }

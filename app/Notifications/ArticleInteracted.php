@@ -44,7 +44,7 @@ class ArticleInteracted extends Notification
             ->setData(['interaction_id' => (string) $this->interaction->id, 'interaction_user' => (string) $this->interaction->user->id])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle( 'New '.$this->getAction())
-                ->setBody($this->interaction->user->name .' '. $this->getAction().' your "' . $this->interaction->interactable->title.'"')
+                ->setBody($this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"')
             );
     }
     
@@ -65,7 +65,7 @@ class ArticleInteracted extends Notification
             'action' => $this->getAction(),
             'from' => $this->interaction->user->name,
             'from_id' => $this->interaction->user->id,
-            'message' => $this->interaction->user->name .' '. $this->getAction().' your "' . $this->interaction->interactable->title.'"',
+            'message' => $this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"',
         ];
     }
 
@@ -73,13 +73,13 @@ class ArticleInteracted extends Notification
     {
         switch($this->interaction->type) {
             case Interaction::TYPE_LIKE:
-                return 'liked';
-            case Interaction::TYPE_DISLIKE:
-                return 'disliked';
-            case Interaction::TYPE_SHARE:
-                return 'shared';
-            case Interaction::TYPE_BOOKMARK:
-                return 'bookmarked';
+                return '赞了';
+            // case Interaction::TYPE_DISLIKE:
+            //     return 'disliked';
+            // case Interaction::TYPE_SHARE:
+            //     return 'shared';
+            // case Interaction::TYPE_BOOKMARK:
+            //     return 'bookmarked';
             default:
                 return '';
         }

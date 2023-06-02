@@ -43,7 +43,7 @@ class Commented extends Notification
             ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment')
-                ->setBody( $this->comment->user->name . ' commented on your article "' . $this->comment->article->title.'"')
+                ->setBody( $this->comment->user->name . '留言在你的"' . $this->comment->article->title.'"')
             );
     }
     
@@ -64,7 +64,7 @@ class Commented extends Notification
             'action' => 'commented',
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
-            'message' => $this->comment->user->name . ' commented on your "' . $this->comment->commentable->title.'"',
+            'message' => $this->comment->user->name . '留言在你的"' . $this->comment->commentable->title.'"',
         ];
     }
 }
