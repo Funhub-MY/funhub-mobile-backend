@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 
-class Newfollower extends Notification
+class Newfollower extends Notification implements ShouldQueue
 {
     use Queueable;
     protected $follower;

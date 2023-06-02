@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 
-class Commented extends Notification
+class Commented extends Notification implements ShouldQueue
 {
     use Queueable;
 
