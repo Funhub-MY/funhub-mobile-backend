@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - provident
+                    - aut
                   items:
                     type: string
                 category_ids:
@@ -658,7 +658,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 4
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -666,11 +666,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: atque
+                  example: et
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: iure
+                  example: sunt
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -974,7 +974,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quas
+        example: rerum
         required: true
         schema:
           type: string
@@ -1069,11 +1069,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sunt
+                  example: non
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: facere
+                  example: exercitationem
               required:
                 - comment_id
                 - reason
@@ -1344,7 +1344,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: doloremque
+        example: similique
         required: true
         schema:
           type: string
@@ -2266,7 +2266,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: suscipit
+        example: culpa
         required: true
         schema:
           type: string
@@ -2886,7 +2886,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 2
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2939,7 +2939,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 7
+                  example: 11
               required:
                 - user_id
   /api/v1/user/report:
@@ -2986,15 +2986,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aut
+                  example: exercitationem
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: pariatur
+                  example: rerum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: minima
+                  example: aut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3080,7 +3080,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: repellendus
+                  example: nostrum
               required:
                 - user_ids
     parameters:
@@ -3120,7 +3120,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 12
+        example: 9
         required: true
         schema:
           type: integer
@@ -3708,7 +3708,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -3821,6 +3821,64 @@ paths:
                   example: 'Software Engineer'
               required:
                 - job_title
+  /api/v1/user/settings/postUpdatePassword:
+    post:
+      summary: 'Update user password (only for login with OTP)'
+      operationId: updateUserPasswordonlyForLoginWithOTP
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Password updated'
+                properties:
+                  message:
+                    type: string
+                    example: 'Password updated'
+        422:
+          description: 'validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}"
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: 'The old password of the user.'
+                  example: abcd1234
+                password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: abcd1234
+                password_confirmation:
+                  type: string
+                  description: 'The new password confirmation of the user.'
+                  example: abcd1234
+              required:
+                - old_password
+                - password
+                - password_confirmation
   /api/v1/views:
     post:
       summary: "Record view for viewable\nThis is used for recording views for articles, comments, and merchant offers"

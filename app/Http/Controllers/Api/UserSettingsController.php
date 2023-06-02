@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserSettingsController extends Controller
 {
@@ -460,6 +461,62 @@ class UserSettingsController extends Controller
         $request->user()->update(['fcm_token'=>$request->fcm_token]);
         return response()->json([
             'success'=> true
+        ]);
+    }
+
+    /**
+     * Update user password (only for login with OTP)
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group User Settings
+     * @bodyParam old_password string required The old password of the user. Example: abcd1234
+     * @bodyParam password string required The new password of the user. Example: abcd1234
+     * @bodyParam password_confirmation string required The new password confirmation of the user. Example: abcd1234
+     * @response status=200 scenario="success" {
+     * "message": "Password updated"
+     * }
+     * @response status=422 scenario="validation error" {
+     * "message": "The given data was invalid.",
+     * "errors": {
+     * "old_password": [
+     *  "The old password is incorrect"
+     * ],
+     * "password": [
+     * "The password confirmation does not match."
+     * ]
+     * }
+     */
+    public function postUpdatePassword (Request $request)
+    {
+        // only allow if user is not logged in with google or facebook
+        $user = auth()->user();
+
+        if ($user->google_id || $user->facebook_id) {
+            return response()->json([
+                'message' => 'You cannot change your password if you are logged in with Google or Facebook',
+            ], 403);
+        }
+
+        $request->validate([
+            'old_password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // check if old password is correct
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'message' => 'Old password is incorrect',
+            ], 422);
+        }
+
+        // update password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password updated',
         ]);
     }
 }

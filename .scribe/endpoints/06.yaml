@@ -62,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pec6aZEbhDg8d63fV4k51va'
+      - 'Bearer a8gPakf6DE15V34deb6Zvch'
     controller: null
     method: null
     route: null
@@ -120,7 +120,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Daa36ed8vbc5VkP4gf6hZE1'
+      - 'Bearer gaVP6ZvcdDhb3akE58f16e4'
     controller: null
     method: null
     route: null
@@ -178,7 +178,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1bDvec5PaVkf3Zha86Ed64g'
+      - 'Bearer aed68gfZP6akEVh1bD4cv53'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a845v6b1ZVDge6hEPadkfc3'
+      - 'Bearer 31f5hVEkZcde6bv64PaagD8'
     controller: null
     method: null
     route: null
@@ -301,7 +301,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36V1gakPa65be4ZdcDfh8vE'
+      - 'Bearer hVdeckaaD86bP31g5ZvE64f'
     controller: null
     method: null
     route: null
@@ -360,7 +360,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dfd8v4b63Va5ZehPEa61kcg'
+      - 'Bearer ha663bk5Zvfcg14aDEVP8de'
     controller: null
     method: null
     route: null
@@ -418,7 +418,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cEDZfPevab5ag634Vk81dh6'
+      - 'Bearer 6aPD1Ekdfgv36ebZa8hV5c4'
     controller: null
     method: null
     route: null
@@ -476,7 +476,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6586d4aekb1VZEv3hacDfgP'
+      - 'Bearer 6hD6Pg8ebacfv3Zd15kE4aV'
     controller: null
     method: null
     route: null
@@ -550,7 +550,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dv6hV8EkDaac3PZe16g45bf'
+      - 'Bearer ak1364gvfPVeZ65bD8hcaEd'
     controller: null
     method: null
     route: null
@@ -581,11 +581,11 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: male
+        example: female
         type: string
         custom: []
     cleanBodyParameters:
-      gender: male
+      gender: female
     fileParameters: []
     responses:
       -
@@ -602,7 +602,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P641DahVdegcZakEv63b85f'
+      - 'Bearer gEd1PavD56k6fcZebVa384h'
     controller: null
     method: null
     route: null
@@ -669,7 +669,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 18dZPahgbEVeac3f56D64vk'
+      - 'Bearer Vv1DdEg56ka3c4bhaef86ZP'
     controller: null
     method: null
     route: null
@@ -727,7 +727,90 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aaD63gVvhPeckZE6b18df54'
+      - 'Bearer keDag65vZ6PE4bdfa13cVh8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/postUpdatePassword
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user password (only for login with OTP)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      old_password:
+        name: old_password
+        description: 'The old password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'The new password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+      password_confirmation:
+        name: password_confirmation
+        description: 'The new password confirmation of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        custom: []
+    cleanBodyParameters:
+      old_password: abcd1234
+      password: abcd1234
+      password_confirmation: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Password updated"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "The given data was invalid.",
+          "errors": {
+          "old_password": [
+           "The old password is incorrect"
+          ],
+          "password": [
+          "The password confirmation does not match."
+          ]
+          }
+        headers: []
+        description: 'validation error'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5EbD3dvfhe1VP46ckg86Zaa'
     controller: null
     method: null
     route: null

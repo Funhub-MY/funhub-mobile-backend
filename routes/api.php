@@ -103,6 +103,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/job-title', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveJobTitle']);
 
             Route::post('/fcm-token', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveFcmToken']);
+
+            // Update password if user is logged in with phone no
+            Route::post('/postUpdatePassword', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdatePassword']);
         });
 
         // TODO: secure this route
