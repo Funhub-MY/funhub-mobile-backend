@@ -43,7 +43,7 @@ class Commented extends Notification implements ShouldQueue
             ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment')
-                ->setBody( $this->comment->user->name . '留言在你的"' . $this->comment->article->title.'"')
+                ->setBody( $this->comment->user->name . '留言在你的"' . $this->comment->commentable->title.'"')
             );
     }
     

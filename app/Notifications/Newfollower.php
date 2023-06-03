@@ -23,9 +23,7 @@ class Newfollower extends Notification implements ShouldQueue
      */
     public function __construct(User $follower)
     {
-
         $this->follower = $follower;
-        Log::info('You have new follower ID: ' . $this->follower->id);
     }
 
     /**
