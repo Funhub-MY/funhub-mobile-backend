@@ -38,7 +38,7 @@ class SetMediaHeightWidth extends Command
             if (str_contains($m->mime_type, 'image') && !$m->hasCustomProperty('width') && !$m->hasCustomProperty('height')) {
                 try {
                     // set custom_properties width and height
-                    $imageSize = getimagesize($m->getPath());
+                    $imageSize = getimagesize(($m->disk == 's3_public' ? $m->getFullUrl() : $m->getPath()));
     
                     // save the media width and height
                     Media::withoutEvents(function () use ($m, $imageSize) {

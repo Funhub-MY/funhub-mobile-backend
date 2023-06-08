@@ -29,7 +29,7 @@ class MediaListener
         if (str_contains($media->mime_type, 'image') && !$media->hasCustomProperty('width') && !$media->hasCustomProperty('height')) {
             try {
                  // getimagesize then save as custom properties withoutevents
-                $size = getimagesize($path);
+                 $size = getimagesize(($media->disk == 's3_public' ? $media->getFullUrl() : $media->getPath()));
                 
                 // model without events so wont infinite loop
                 Media::withoutEvents(function () use ($media, $size) {
