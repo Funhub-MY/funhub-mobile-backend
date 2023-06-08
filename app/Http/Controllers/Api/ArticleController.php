@@ -13,6 +13,7 @@ use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\Interaction;
 use App\Models\User;
+use App\Models\View;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -41,6 +42,7 @@ class ArticleController extends Controller
      * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      * @bodyParam following_only integer optional Filter by Articles by Users who logged in user is following. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -112,11 +114,54 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
+        // by default it will build recommendations, unless specifically turned off
+        // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
+        //     $this->buildRecommendations($query, $request);
+        // }
+
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Build Recommendations
+     *
+     * @param QueryBuilder $query
+     * @param Request $request
+     * @return void
+     */
+    private function buildRecommendations($query, $request)
+    {
+        // Get articles sorted by recent likes
+        $recentLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
+            ->orderBy('created_at', 'desc')
+            ->where('interactable_type', Article::class)
+            ->pluck('interactable_id')
+            ->toArray();
+
+        // Get articles sorted by recent views
+        $recentViewedArticles = View::orderBy('created_at', 'desc')
+            ->where('user_id', auth()->id())
+            ->where('viewable_type', Article::class)
+            ->pluck('viewable_id')
+            ->toArray();
+
+        // Get articles with Article Categories user interested in
+        $userCategories = auth()->user()->articleCategoriesInterests->pluck('id')->toArray();
+
+        $articleIds = array_unique(array_merge($recentLikedArticles, $recentViewedArticles));
+        
+        if (!empty($articleIds)) {
+            $query->whereIn('id', $articleIds)
+                ->orderByRaw("CASE
+                    WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 2
+                    WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 1
+                    ELSE 0
+                    END DESC");
+        } 
     }
 
     /**
@@ -417,7 +462,7 @@ class ArticleController extends Controller
                     }
                 });
             }
-
+            
             // sync category
             if ($request->has('categories')) {
                 // explode categories
@@ -501,6 +546,7 @@ class ArticleController extends Controller
         if (!is_array($request->images)) {
             // upload via spatie medialibrary
             // single image
+
             $uploaded = $user->addMedia($request->images)
                 ->withCustomProperties(['is_cover' => $request->is_cover])
                 ->toMediaCollection(
