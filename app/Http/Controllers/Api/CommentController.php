@@ -138,6 +138,11 @@ class CommentController extends Controller
 
         event(new \App\Events\CommentCreated($comment)); // fires event
 
+        if ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+            // if comment has parent and is not self, send notification to parent comment's user
+            $comment->parent->user->notify(new \App\Notifications\CommentReplied($comment)); // send notification
+        }
+
         // if commentable has user and is not self, send notification
         if ($comment->commentable->user && $comment->commentable->user->id != auth()->id()) {
             $comment->commentable->user->notify(new \App\Notifications\Commented($comment)); // send notification
@@ -356,6 +361,12 @@ class CommentController extends Controller
                 'user_id' => auth()->id(),
             ]);
             event(new \App\Events\CommentLiked($comment, true)); // fires event
+
+            if ($comment && $comment->user && $comment->user->id != auth()->id()) {
+                // send notification to user
+                $comment->user->notify(new \App\Notifications\CommentLiked($comment));
+            }
+
             return response()->json(['message' => 'Comment liked']);
         } else {
             // unlike

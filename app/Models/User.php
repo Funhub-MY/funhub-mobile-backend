@@ -406,7 +406,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return Attribute::make(
             // set if phone_no start with zero remove it
-            set: fn (string $value) => $value = ltrim($value, '0'),
+            set: fn (?string $value) => $value ? ltrim($value, '0') : null,
         );
     }
 
