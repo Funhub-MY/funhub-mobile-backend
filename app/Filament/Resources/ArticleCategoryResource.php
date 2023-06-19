@@ -46,10 +46,16 @@ class ArticleCategoryResource extends Resource
                 Forms\Components\Toggle::make('is_featured')
                     ->label('Is Featured On Homepage?')
                     ->columnSpan('full'),
+
+                // is active
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Is Active?')
+                    ->columnSpan('full'),
+
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
-                    
+
                 Forms\Components\SpatieMediaLibraryFileUpload::make('image')
                     ->collection('article_category_cover')
                     ->customProperties(['is_cover' => true])
@@ -77,6 +83,8 @@ class ArticleCategoryResource extends Resource
                     
                 // is_featured
                 Tables\Columns\ToggleColumn::make('is_featured')->sortable()->searchable(),
+                // is_active
+                Tables\Columns\ToggleColumn::make('is_active')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('description')->sortable()->searchable()->html(),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->sortable()->searchable(),

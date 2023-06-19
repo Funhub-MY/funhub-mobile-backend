@@ -35,7 +35,7 @@ class ArticleCategoryController extends Controller
     public function index(Request $request)
     {
          // get popular tags by article count
-         $query = ArticleCategory::withCount('articles')
+         $query = ArticleCategory::active()->withCount('articles')
             ->orderBy('articles_count', 'desc');
 
         // get is_featured only
@@ -66,7 +66,7 @@ class ArticleCategoryController extends Controller
      */
     public function getArticleCategoryByArticleId($article_id)
     {
-        $article = ArticleCategory::whereHas('articles', function ($query) use ($article_id) {
+        $article = ArticleCategory::active()->whereHas('articles', function ($query) use ($article_id) {
             $query->where('article_id', $article_id);
         })->paginate(config('app.paginate_per_page'));
         
