@@ -51,6 +51,33 @@ test('assign categories to a user', function () {
         ]);
 });
 
+// assign child categories to a user thats with parent 
+test('assign child categories to a user', function () {
+    $articleCategory = ArticleCategory::factory()->count(10)->create();
+
+    // create parent category
+    $parentCategory = ArticleCategory::factory()->create();
+
+    // assign to article category
+    $articleCategory->each(function ($category) use ($parentCategory) {
+        $category->parent()->associate($parentCategory);
+        $category->save();
+    });
+
+    $response = $this->postJson('/api/v1/user/settings/article_categories', [
+        'category_ids' => $articleCategory->pluck('id')->toArray()
+    ]);
+
+    // ensure category_ids are returned matches articleCategory->id and parentCategory->id
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
+        ])
+        ->assertJsonFragment([
+            'category_ids' => array_merge($articleCategory->pluck('id')->toArray(), [$parentCategory->id])
+        ]);
+});
+
 test('upload user avatar', function () {
     $response = $this->postJson('/api/v1/user/settings/avatar/upload', [
         'avatar' => UploadedFile::fake()->image('avatar.jpg')

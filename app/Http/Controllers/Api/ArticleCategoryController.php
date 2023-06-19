@@ -86,9 +86,11 @@ class ArticleCategoryController extends Controller
      * }
      * @response status=404 scenario="Not Found"
      */
-    public function getAll()
+    public function getAllCategories()
     {
-        $categories = ArticleCategory::active()->get();
+        $categories = ArticleCategory::active()
+            ->latest()
+            ->get();
         return ArticleCategoryResource::collection($categories);
     } 
 }

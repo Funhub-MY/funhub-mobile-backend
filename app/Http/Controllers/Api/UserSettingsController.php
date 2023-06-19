@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
+use App\Models\ArticleCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -330,6 +331,21 @@ class UserSettingsController extends Controller
             'category_ids' => 'required|array',
         ]);
 
+        // validate all category ids exists
+        $categories = ArticleCategory::whereIn('id', $request->category_ids)
+            ->get();
+
+        if ($categories->count() != count($request->category_ids)) {
+            return response()->json([
+                'message' => 'One or more article category ids not found',
+            ], 422);
+        }
+
+        // if the category has a parent_id add into category_ids as well
+        if ($categories->where('parent_id', '!=', null)->count()) {
+            $request->category_ids = array_merge($request->category_ids, $categories->where('parent_id', '!=', null)->pluck('parent_id')->toArray());
+        }
+    
         $user = auth()->user();
 
         // check if article category ids exists only sync

@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cE8h3ke6vf1P4Dag5adVbZ6'
+      - 'Bearer Za16abP4dfvgkVE385Dhc6e'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 54a8aE1v3gcPkhD6e6VdfbZ'
+      - 'Bearer 5k38gb6vhfa1EZeVa4c6DPd'
     controller: null
     method: null
     route: null
@@ -141,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 20
+        example: 6
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 20
+      user_id: 6
     fileParameters: []
     responses:
       -
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer akD64dh86c53gePEfZVvb1a'
+      - 'Bearer DZbPg18hV3k64aeac6v5Edf'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 14
+        example: 1
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 14
+      user_id: 1
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bZv5faca43e6EPVgkDd186h'
+      - 'Bearer a6E15Vafe6bhkZcDvdP843g'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: labore
+        example: id
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: architecto
+        example: esse
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: ea
+        example: mollitia
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: labore
-      violation_level: architecto
-      violation_type: ea
+      reason: id
+      violation_level: esse
+      violation_type: mollitia
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V6gd3ah5D1a8vEb64eZfkcP'
+      - 'Bearer g8456dZbPVvE61aea3hfDkc'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8kgeb43cP6Zaah1EVD56vfd'
+      - 'Bearer 8Dvf5Vcg4kaPea6h613ZbdE'
     controller: null
     method: null
     route: null
@@ -417,11 +417,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: repellendus
+        example: a
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: repellendus
+      user_ids: a
     fileParameters: []
     responses:
       -
@@ -438,7 +438,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c8fDZ56hgVva4kEa1ebd63P'
+      - 'Bearer fVEabhg8P66d4ke51Dv3cZa'
     controller: null
     method: null
     route: null
@@ -497,7 +497,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d341Z68fv5ba6kcVEPgDeah'
+      - 'Bearer 8EvhDa6453bVc6ad1PgfZke'
     controller: null
     method: null
     route: null
