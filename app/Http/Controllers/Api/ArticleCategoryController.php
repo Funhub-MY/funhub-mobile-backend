@@ -89,8 +89,9 @@ class ArticleCategoryController extends Controller
     public function getAllCategories()
     {
         $categories = ArticleCategory::active()
-            ->latest()
+            ->orderBy('parent_id', 'asc')
             ->get();
+            
         return ArticleCategoryResource::collection($categories);
     } 
 }
