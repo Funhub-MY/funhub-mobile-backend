@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\User;
 use Filament\Widgets\LineChartWidget;
+use Illuminate\Support\Facades\Cache;
 
 class UsersChart extends LineChartWidget
 {
@@ -17,16 +18,26 @@ class UsersChart extends LineChartWidget
     protected function getData(): array
     {
         // get User count across period of 12 months
-        $data = User::withoutGlobalScope(SoftDeletingScope::class)
-            ->where('created_at', '>=', now()->subMonths(12))
-            ->get()
-            ->groupBy(function ($user) {
-                return $user->created_at->format('M');
-            })
-            ->map(function ($user) {
-                return $user->count();
-            });
-    
+        $data = Cache::remember('users_count', 60 * 24, function () {
+            return User::withoutGlobalScope(SoftDeletingScope::class)
+                ->where('created_at', '>=', now()->subMonths(12))
+                ->get();
+        });
+
+        $data = $data ->groupBy(function ($user) {
+            return $user->created_at->format('M');
+        })->map(function ($user) {
+            return $user->count();
+        });
+
+        // fill in empty months with 0
+        $months = collect([
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ]);
+        $data = $months->mapWithKeys(function ($month) use ($data) {
+            return [$month => $data->get($month, 0)];
+        });
+
         return [
             'datasets' => [
                 [
@@ -34,7 +45,7 @@ class UsersChart extends LineChartWidget
                     'data' => $data->values(),
                 ],
             ],
-            'labels' => $data->keys(),
+            'labels' => $months->values(),
         ];
     }
 }
