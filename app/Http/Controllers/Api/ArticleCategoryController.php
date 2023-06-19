@@ -72,4 +72,23 @@ class ArticleCategoryController extends Controller
         
         return ArticleCategoryResource::collection($article);
     }
+
+    /**
+     * Get All Article Categories
+     * 
+     * @param $article_slug string
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Article
+     * @subgroup Article Categories
+     * @response scenario=success {
+     * "categories": []
+     * }
+     * @response status=404 scenario="Not Found"
+     */
+    public function getAll()
+    {
+        $categories = ArticleCategory::active()->get();
+        return ArticleCategoryResource::collection($categories);
+    } 
 }

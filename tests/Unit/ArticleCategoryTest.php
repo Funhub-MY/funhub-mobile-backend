@@ -70,4 +70,25 @@ class ArticleCategoryTest extends TestCase
             $this->assertEquals(true, $category['is_featured']);
         }
     }
+
+    /**
+     * Test get all categories (without pagination)
+     *
+     * @return void
+     */
+    public function testGetAllCategories()
+    {
+        // create article categories first
+        $articleCategories = ArticleCategory::factory()->count(5)->create();
+
+        // get article categories
+        $response = $this->getJson('/api/v1/article_categories/all');
+
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ])
+            ->assertJsonCount(5, 'data');
+    }
 }
