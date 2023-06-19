@@ -20,7 +20,7 @@ class ArticleCategoryResource extends JsonResource
             'slug' => $this->slug,
             'cover_media_id' => $this->cover_media_id,
             'is_child' => ($this->parent_id) ? true : false,
-            'parent' => ArticleCategoryResource::make($this->whenLoaded('parent')),
+            'parent' => ($this->parent_id) ? new ArticleCategoryResource($this->parent) : null,
             'is_featured' => $this->is_featured,
             'is_interested' => (auth()->user()) ? auth()->user()->articleCategoriesInterests()->where('article_category_id', $this->id)->exists() : false,
             'created_at' => $this->created_at,
