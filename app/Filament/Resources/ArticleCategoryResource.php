@@ -47,9 +47,9 @@ class ArticleCategoryResource extends Resource
                     ->label('Is Featured On Homepage?')
                     ->columnSpan('full'),
                 Forms\Components\TextInput::make('slug')
-                    ->disabled()
                     ->required()
                     ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
+                    
                 Forms\Components\SpatieMediaLibraryFileUpload::make('image')
                     ->collection('article_category_cover')
                     ->customProperties(['is_cover' => true])
