@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class ArticleCategory extends Model implements HasMedia
 {
@@ -37,5 +38,10 @@ class ArticleCategory extends Model implements HasMedia
     public function parent()
     {
         return $this->belongsTo(ArticleCategory::class, 'parent_id');
+    }
+
+    public function scopeActive(Builder $query): void
+    {
+        $query->where('is_active', true);
     }
 }

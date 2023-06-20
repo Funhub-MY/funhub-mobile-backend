@@ -35,7 +35,7 @@ class ArticleCategoryController extends Controller
     public function index(Request $request)
     {
          // get popular tags by article count
-         $query = ArticleCategory::withCount('articles')
+         $query = ArticleCategory::active()->withCount('articles')
             ->orderBy('articles_count', 'desc');
 
         // get is_featured only
@@ -66,10 +66,32 @@ class ArticleCategoryController extends Controller
      */
     public function getArticleCategoryByArticleId($article_id)
     {
-        $article = ArticleCategory::whereHas('articles', function ($query) use ($article_id) {
+        $article = ArticleCategory::active()->whereHas('articles', function ($query) use ($article_id) {
             $query->where('article_id', $article_id);
         })->paginate(config('app.paginate_per_page'));
         
         return ArticleCategoryResource::collection($article);
     }
+
+    /**
+     * Get All Article Categories
+     * 
+     * @param $article_slug string
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Article
+     * @subgroup Article Categories
+     * @response scenario=success {
+     * "categories": []
+     * }
+     * @response status=404 scenario="Not Found"
+     */
+    public function getAllCategories()
+    {
+        $categories = ArticleCategory::active()
+            ->orderBy('parent_id', 'asc')
+            ->get();
+            
+        return ArticleCategoryResource::collection($categories);
+    } 
 }

@@ -54,6 +54,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Article Categories
         Route::get('article_categories', \App\Http\Controllers\Api\ArticleCategoryController::class . '@index');
+        Route::get('article_categories/all', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getAllCategories');
         Route::get('article_categories/{article_id}', \App\Http\Controllers\Api\ArticleCategoryController::class . '@getArticleCategoryByArticleId');
 
         // Comments
