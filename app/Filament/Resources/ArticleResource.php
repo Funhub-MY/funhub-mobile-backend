@@ -190,7 +190,7 @@ class ArticleResource extends Resource
                                         ->default(fn () => auth()->id()),
                                 ])
                                 ->multiple()
-                                ->searchable()
+                                ->options(ArticleCategory::whereNull('parent_id')->get()->pluck('name', 'id')->toArray())
                                 ->placeholder('Select categories...'),
                         ]),
 
@@ -226,7 +226,7 @@ class ArticleResource extends Resource
                                         ->default(fn () => auth()->id()),
                                 ])
                                 ->multiple()
-                                ->searchable()
+                                ->options(ArticleCategory::whereNotNull('parent_id')->get()->pluck('name', 'id')->toArray())
                                 ->placeholder('Select sub categories...'),
                         ]),
 
@@ -308,6 +308,14 @@ class ArticleResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
                     ->options(Article::STATUS)
+                    ->placeholder('All'),
+                // filter by ArticleCategory
+                Tables\Filters\SelectFilter::make('categories')
+                    ->label('Categories')
+                    ->relationship('categories', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->options(fn () => ArticleCategory::select('id', 'name')->get()->pluck('name', 'id')->toArray())
                     ->placeholder('All'),
             ])
             ->actions([
