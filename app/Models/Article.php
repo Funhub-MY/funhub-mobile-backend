@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
+use Kingmaker\Illuminate\Eloquent\Relations\HasBelongsToManySelfRelation;
 
 class Article extends Model implements HasMedia
 {
@@ -96,8 +97,7 @@ class Article extends Model implements HasMedia
     public function subCategories()
     {
         return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')
-            ->where('parent_id', '!=', null)
-            ->withTimestamps();
+            ->where('parent_id', '!=', null);
     }
 
     public function tags()

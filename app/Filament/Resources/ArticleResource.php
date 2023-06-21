@@ -18,8 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Closure;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\FormsComponent;
+use Filament\Tables\Filters\Filter;
 
 class ArticleResource extends Resource
 {
@@ -63,6 +65,7 @@ class ArticleResource extends Resource
                             Forms\Components\Hidden::make('type')
                                 ->default(Article::TYPE[0])
                                 ->required(),
+                                
                             Forms\Components\RichEditor::make('body')
                                 ->required()
                                 ->placeholder('Write something...')
@@ -170,64 +173,69 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Categories')->schema([
                             Forms\Components\Select::make('categories')
                                 ->label('')
-                                ->relationship('categories', 'name')->createOptionForm([
-                                    Forms\Components\TextInput::make('name')
-                                        ->required()
-                                        ->placeholder('Category name'),
-                                    // slug
-                                    Forms\Components\TextInput::make('slug')
-                                        ->required()
-                                        ->placeholder('Category slug')
-                                        ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
-                                    Forms\Components\RichEditor::make('description')
-                                        ->placeholder('Category description'),
-                                    // is_featured
-                                    Forms\Components\Toggle::make('is_featured')
-                                        ->label('Featured on Home Page?')
-                                        ->default(false),
-                                    // hidden user id is logged in user
-                                    Forms\Components\Hidden::make('user_id')
-                                        ->default(fn () => auth()->id()),
-                                ])
+                                ->relationship('categories', 'name', fn (Builder $query) => $query->whereNull('parent_id'))
+                                // ->createOptionForm([
+                                //     Forms\Components\TextInput::make('name')
+                                //         ->required()
+                                //         ->placeholder('Category name'),
+                                //     // slug
+                                //     Forms\Components\TextInput::make('slug')
+                                //         ->required()
+                                //         ->placeholder('Category slug')
+                                //         ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
+                                //     Forms\Components\RichEditor::make('description')
+                                //         ->placeholder('Category description'),
+                                //     // is_featured
+                                //     Forms\Components\Toggle::make('is_featured')
+                                //         ->label('Featured on Home Page?')
+                                //         ->default(false),
+                                //     // hidden user id is logged in user
+                                //     Forms\Components\Hidden::make('user_id')
+                                //         ->default(fn () => auth()->id()),
+                                // ])
                                 ->multiple()
-                                ->options(ArticleCategory::whereNull('parent_id')->get()->pluck('name', 'id')->toArray())
+                                ->preload()
+                                ->reactive()
                                 ->placeholder('Select categories...'),
                         ]),
 
-
                         // sub category using parent_id
                         Forms\Components\Section::make('Sub Categories')->schema([
-                            Forms\Components\Select::make('sub_categories')
-                                ->label('')
-                                ->relationship('subCategories', 'name')->createOptionForm([
-                                    // select parent
-                                    Select::make('parent_id')
-                                        ->label('Parent Category')
-                                        ->options(ArticleCategory::whereNull('parent_id')->get()->pluck('name', 'id')->toArray())
-                                        ->required()
-                                        ->rules('required'),
-
-                                    Forms\Components\TextInput::make('name')
-                                        ->required()
-                                        ->placeholder('Sub Category name'),
-                                    // slug
-                                    Forms\Components\TextInput::make('slug')
-                                        ->required()
-                                        ->placeholder('Sub Category slug')
-                                        ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
-                                    Forms\Components\RichEditor::make('description')
-                                        ->placeholder('Sub Category description'),
-                                    // is_featured
-                                    Forms\Components\Toggle::make('is_featured')
-                                        ->label('Featured on Home Page?')
-                                        ->default(false),
-                                    // hidden user id is logged in user
-                                    Forms\Components\Hidden::make('user_id')
-                                        ->default(fn () => auth()->id()),
-                                ])
+                            Select::make('sub_categories')
                                 ->multiple()
                                 ->options(ArticleCategory::whereNotNull('parent_id')->get()->pluck('name', 'id')->toArray())
-                                ->placeholder('Select sub categories...'),
+
+                            // Forms\Components\Select::make('sub_categories')
+                            //     ->label('')
+                            //     ->relationship('subCategories', 'name', fn (Builder $query) => $query->whereNotNull('parent_id'))->createOptionForm([
+                            //         // select parent
+                            //         Select::make('parent_id')
+                            //             ->label('Parent Category')
+                            //             ->options(ArticleCategory::whereNull('parent_id')->get()->pluck('name', 'id')->toArray())
+                            //             ->required()
+                            //             ->rules('required'),
+
+                            //         Forms\Components\TextInput::make('name')
+                            //             ->required()
+                            //             ->placeholder('Sub Category name'),
+                            //         // slug
+                            //         Forms\Components\TextInput::make('slug')
+                            //             ->required()
+                            //             ->placeholder('Sub Category slug')
+                            //             ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
+                            //         Forms\Components\RichEditor::make('description')
+                            //             ->placeholder('Sub Category description'),
+                            //         // is_featured
+                            //         Forms\Components\Toggle::make('is_featured')
+                            //             ->label('Featured on Home Page?')
+                            //             ->default(false),
+                            //         // hidden user id is logged in user
+                            //         Forms\Components\Hidden::make('user_id')
+                            //             ->default(fn () => auth()->id()),
+                            //     ])
+                            //     ->multiple()
+                            //     ->preload()
+                            //     ->placeholder('Select sub categories...'),
                         ]),
 
                         Forms\Components\Section::make('Tags')->schema([
@@ -291,11 +299,28 @@ class ArticleResource extends Resource
                 //     ->sortable()
                 //     ->searchable(),
         
+                // likes count
+                Tables\Columns\TextColumn::make('likes_count')
+                    ->sortable()
+                    ->counts('likes')
+                    ->label('Likes'),
+
+                // comments count
+                Tables\Columns\TextColumn::make('comments_count')
+                    ->counts('comments')
+                    ->sortable()
+                    ->label('Comments'),
+
+                // view count
+                Tables\Columns\TextColumn::make('views_count')
+                    ->counts('views')
+                    ->sortable()
+                    ->label('Views'),
+
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d/m/Y')
                     ->sortable()
                     ->label('Publish At')
                     ->searchable(),
-             
             ])
             ->filters([
                 // filter by user
@@ -317,6 +342,23 @@ class ArticleResource extends Resource
                     ->searchable()
                     ->options(fn () => ArticleCategory::select('id', 'name')->get()->pluck('name', 'id')->toArray())
                     ->placeholder('All'),
+                // filter by Article created_at date range
+                Filter::make('created_at')
+                ->form([
+                    DatePicker::make('created_from'),
+                    DatePicker::make('created_until'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

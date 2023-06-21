@@ -73,34 +73,16 @@ class ArticleController extends Controller
             $query->where('type', 'video');
         }
 
-        // category_ids filter
         if ($request->has('category_ids')) {
-            // explode categories ids
-            $category_ids = explode(',', $request->category_ids);
-            if (count($category_ids) > 0) {
-                $query->whereHas('categories', function ($q) use ($category_ids) {
-                    $q->whereIn('article_categories.id', $category_ids);
-                });
-            }
+            $query->whereHas('categories', fn($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
         }
 
-        // article_ids filter
         if ($request->has('article_ids')) {
-            // explode article ids
-            $article_ids = explode(',', $request->article_ids);
-            if (count($article_ids) > 0) {
-                $query->whereIn('id', $article_ids);
-            }
+            $query->whereIn('id', explode(',', $request->article_ids));
         }
-        
-        // tag_ids filter
+
         if ($request->has('tag_ids')) {
-            $tag_ids = explode(',', $request->tag_ids);
-            if (count($tag_ids) > 0) {
-                $query->whereHas('tags', function ($q) use ($tag_ids) {
-                    $q->whereIn('article_tags.id', $tag_ids);
-                });
-            }
+            $query->whereHas('tags', fn($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
         }
 
         // get articles from users whose this auth user is following only
@@ -115,9 +97,9 @@ class ArticleController extends Controller
         $this->buildQuery($query, $request);
 
         // by default it will build recommendations, unless specifically turned off
-        if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
-            $this->buildRecommendations($query, $request);
-        }
+        // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
+        //     $this->buildRecommendations($query, $request);
+        // }
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
