@@ -200,6 +200,7 @@ class ArticleResource extends Resource
                         ]),
 
                         // sub category using parent_id
+                        // WHY using normal select instead relationshio select? see EditArticle due to subCategories are self joined and eloquent has problem sync self joined tables
                         Forms\Components\Section::make('Sub Categories')->schema([
                             Select::make('sub_categories')
                                 ->multiple()

@@ -25,7 +25,13 @@ class EditArticle extends EditRecord
 
         // link relation for subCategories
         if ($data['sub_categories']) {
-            
+            // only detach categories with parent_id (detaches all sub categories)
+            $record->categories->each(function ($category) use ($record) {
+                if ($category->parent_id) {
+                    $record->categories()->detach($category->id);
+                }
+            });
+            $record->subCategories()->attach($data['sub_categories']);
         }
         
         return $record;
