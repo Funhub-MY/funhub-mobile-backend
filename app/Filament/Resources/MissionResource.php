@@ -133,19 +133,18 @@ class MissionResource extends Resource
 
                 Tables\Columns\TextColumn::make('event')
                     ->searchable()
+                    ->formatStateUsing(fn (string $state): string => config('app.event_matrix')[$state] ?? $state)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('value')
+                    ->label('Criteria Value')
                     ->searchable()
                     ->sortable(),
 
                 // morph to missionable column
-                Tables\Columns\TextColumn::make('missionable')
-                    ->searchable()
-                    ->sortable()
-                    ->formatStateUsing(function ($value, $record) {
-                        return $record->missionable->name;
-                    }),
+                Tables\Columns\TextColumn::make('missionable.name')
+                    ->label('Rewards')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('reward_quantity')
                     ->searchable()

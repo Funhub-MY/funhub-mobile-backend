@@ -63,7 +63,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
-            ->where('user_id', '!=', auth()->user()->id)
+            // ->where('user_id', '!=', auth()->user()->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
@@ -73,34 +73,16 @@ class ArticleController extends Controller
             $query->where('type', 'video');
         }
 
-        // category_ids filter
         if ($request->has('category_ids')) {
-            // explode categories ids
-            $category_ids = explode(',', $request->category_ids);
-            if (count($category_ids) > 0) {
-                $query->whereHas('categories', function ($q) use ($category_ids) {
-                    $q->whereIn('article_categories.id', $category_ids);
-                });
-            }
+            $query->whereHas('categories', fn($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
         }
 
-        // article_ids filter
         if ($request->has('article_ids')) {
-            // explode article ids
-            $article_ids = explode(',', $request->article_ids);
-            if (count($article_ids) > 0) {
-                $query->whereIn('id', $article_ids);
-            }
+            $query->whereIn('id', explode(',', $request->article_ids));
         }
-        
-        // tag_ids filter
+
         if ($request->has('tag_ids')) {
-            $tag_ids = explode(',', $request->tag_ids);
-            if (count($tag_ids) > 0) {
-                $query->whereHas('tags', function ($q) use ($tag_ids) {
-                    $q->whereIn('article_tags.id', $tag_ids);
-                });
-            }
+            $query->whereHas('tags', fn($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
         }
 
         // get articles from users whose this auth user is following only
@@ -135,6 +117,7 @@ class ArticleController extends Controller
      */
     private function buildRecommendations($query, $request)
     {
+        $user = auth()->user();
         // Get articles sorted by recent likes
         $recentLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
             ->orderBy('created_at', 'desc')
@@ -148,20 +131,67 @@ class ArticleController extends Controller
             ->where('viewable_type', Article::class)
             ->pluck('viewable_id')
             ->toArray();
-
-        // Get articles with Article Categories user interested in
-        $userCategories = auth()->user()->articleCategoriesInterests->pluck('id')->toArray();
-
-        $articleIds = array_unique(array_merge($recentLikedArticles, $recentViewedArticles));
         
+        // Get articles liked by other users who liked the current article (excluding recentLikedArticles)
+        $collaborativeLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
+            ->whereIn('interactable_id', $recentLikedArticles)
+            ->where('interactable_type', Article::class)
+            ->where('user_id', '!=', auth()->id())
+            ->whereNotIn('interactable_id', $recentLikedArticles)
+            ->pluck('interactable_id')
+            ->toArray();
+
+        
+        // Get articles with Article Categories user interested in
+        $userCategories = $user->articleCategoriesInterests->pluck('id')->toArray();
+
+        $articleIds = array_unique(array_merge($recentLikedArticles, $recentViewedArticles, $collaborativeLikedArticles));
+
+        $numRecommendations = 10; // Specify the desired number of recommendations as minimum to use content filtering mixed with collaborative filtering
+
+        if (count($articleIds) < $numRecommendations) {
+            Log::info('Not enough recommendations found, getting articles by userCategories', [
+                'article_ids' => $articleIds,
+                'recentLikedArticles' => $recentLikedArticles,
+                'collaborativeLikedArticles' => $collaborativeLikedArticles,
+                'recentViewedArticles' => $recentViewedArticles,
+            ]);
+            // Get articles based on userCategories (content filtering)
+            $contentFilteredArticles = Article::whereHas('categories', function ($query) use ($userCategories) {
+                    $query->whereIn('article_categories.id', $userCategories);
+                })
+                ->whereNotIn('id', $articleIds)
+                ->pluck('id')
+                ->toArray();
+
+            $articleIds = array_unique(array_merge($articleIds, $contentFilteredArticles));
+        }
+
+        // Reduce occurrence of articles viewed more than 2 times
+        $viewedArticlesCount = array_count_values($recentViewedArticles);
+        $articleIds = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
+            return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
+        });
+
         if (!empty($articleIds)) {
+            Log::info('Recommendations found, getting articles by ids', [
+                'article_ids' => $articleIds,
+                'recentLikedArticles' => $recentLikedArticles,
+                'collaborativeLikedArticles' => $collaborativeLikedArticles,
+                'recentViewedArticles' => $recentViewedArticles,
+            ]);
             $query->whereIn('id', $articleIds)
                 ->orderByRaw("CASE
-                    WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 2
-                    WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 1
-                    ELSE 0
+                    WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 4
+                    WHEN articles.id IN (" . implode(',', $collaborativeLikedArticles) . ") THEN 3
+                    WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 2
+                    ELSE 1
                     END DESC");
-        } 
+        } else {
+            // finally if no article ids just get all articles by latest
+            Log::info('No recommendations found, getting all articles by latest');
+            $query->orderBy('created_at', 'desc');
+        }
     }
 
     /**
