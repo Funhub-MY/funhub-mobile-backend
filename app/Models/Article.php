@@ -91,13 +91,16 @@ class Article extends Model implements HasMedia
     public function categories()
     {
         return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')
+            ->where('parent_id', null)
             ->withTimestamps();
     }
 
+    // NOTE since this is a self-referencing relationship, sync will override categories! 
     public function subCategories()
     {
         return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')
-            ->where('parent_id', '!=', null);
+            ->where('parent_id', '!=', null)
+            ->withTimestamps();
     }
 
     public function tags()

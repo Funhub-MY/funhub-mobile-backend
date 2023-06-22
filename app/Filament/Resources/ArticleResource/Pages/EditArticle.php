@@ -31,7 +31,7 @@ class EditArticle extends EditRecord
                     $record->categories()->detach($category->id);
                 }
             });
-            $record->subCategories()->attach($data['sub_categories']);
+            $record->subCategories()->attach($data['sub_categories'], ['created_at' => now(), 'updated_at' => now()]);
         }
         
         return $record;

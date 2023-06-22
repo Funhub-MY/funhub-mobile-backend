@@ -203,6 +203,7 @@ class ArticleResource extends Resource
                         // WHY using normal select instead relationshio select? see EditArticle due to subCategories are self joined and eloquent has problem sync self joined tables
                         Forms\Components\Section::make('Sub Categories')->schema([
                             Select::make('sub_categories')
+                                ->label('')
                                 ->multiple()
                                 ->options(ArticleCategory::whereNotNull('parent_id')->get()->pluck('name', 'id')->toArray())
 
