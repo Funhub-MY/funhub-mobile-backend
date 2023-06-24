@@ -23,6 +23,55 @@ class PointController extends Controller
     }
 
     /**
+     * Get the point & point components balance of the logged in user.
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Point
+     * @response scenario=success {
+     * "point_balance": 100,
+     * "point_components": {
+     *    "egg": 100,
+     *    "bread": 100,
+     *    "butter": 100,
+     *    "jam": 100,
+     *    "milk": 100
+     * }
+     * }
+     */
+    public function getPointsBalanceByUser()
+    {
+        $user = auth()->user();
+
+        $point = PointLedger::where('user_id', $user->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        // get current available reward components
+        $rewardComponents = RewardComponent::all();
+        // map name as key and balance as value
+        $pointComponents = [];
+        foreach($rewardComponents as $component) {
+            $balance = PointComponentLedger::where('user_id', $user->id)
+                ->where('component_type', RewardComponent::class)
+                ->where('component_id', $component->id)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($balance) {
+                $pointComponents[$component->name] = $balance->balance;
+            } else {
+                $pointComponents[$component->name] = 0;
+            }
+        }
+
+        return response()->json([
+            'point_balance' => $point ? $point->balance : 0,
+            'point_components' => $pointComponents
+        ]);
+    }
+
+    /**
      * Get the point balance of the user.
      * 
      * @param \Illuminate\Http\Request $request

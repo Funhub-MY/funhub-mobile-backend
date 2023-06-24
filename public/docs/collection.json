@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "bc58cbfb-216a-4a2e-8349-9c8a099ba2cf",
+        "_postman_id": "9c0847f8-e87d-4371-a322-14362d5236be",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"commodi\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"suscipit\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":16,\"reason\":\"Spam\",\"violation_type\":\"veniam\",\"violation_level\":\"tempore\",\"article\":1}"
+                                    "raw": "{\"article_id\":9,\"reason\":\"Spam\",\"violation_type\":\"minus\",\"violation_level\":\"aut\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -763,7 +763,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "ut",
+                                            "value": "earum",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -863,7 +863,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"voluptas\",\"violation_type\":\"corrupti\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ipsam\",\"violation_type\":\"incidunt\"}"
                                 },
                                 "description": ""
                             },
@@ -988,7 +988,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "asperiores",
+                                            "value": "accusamus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1921,7 +1921,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "sit",
+                                            "value": "quisquam",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2279,6 +2279,38 @@
             "description": "",
             "item": [
                 {
+                    "name": "Get the point & point components balance of the logged in user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/points\/my_balance\/all",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/points\/my_balance\/all"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"point_balance\": 100,\n\"point_components\": {\n   \"egg\": 100,\n   \"bread\": 100,\n   \"butter\": 100,\n   \"jam\": 100,\n   \"milk\": 100\n}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Get the point balance of the user.",
                     "request": {
                         "url": {
@@ -2483,7 +2515,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":6}"
+                                    "raw": "{\"user_id\":11}"
                                 },
                                 "description": ""
                             },
@@ -2524,7 +2556,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":15}"
                                 },
                                 "description": ""
                             },
@@ -2623,7 +2655,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"id\",\"violation_level\":\"esse\",\"violation_type\":\"mollitia\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"non\",\"violation_level\":\"fugit\",\"violation_type\":\"voluptatem\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2721,7 +2753,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"a\"}"
+                            "raw": "{\"user_ids\":\"in\"}"
                         },
                         "description": ""
                     },

@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - commodi
+                    - suscipit
                   items:
                     type: string
                 category_ids:
@@ -662,7 +662,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 9
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -670,11 +670,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: veniam
+                  example: minus
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: tempore
+                  example: aut
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1013,7 +1013,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ut
+        example: earum
         required: true
         schema:
           type: string
@@ -1108,11 +1108,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptas
+                  example: ipsam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: corrupti
+                  example: incidunt
               required:
                 - comment_id
                 - reason
@@ -1383,7 +1383,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: asperiores
+        example: accusamus
         required: true
         schema:
           type: string
@@ -2305,7 +2305,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: sit
+        example: quisquam
         required: true
         schema:
           type: string
@@ -2635,6 +2635,58 @@ paths:
                 example: "{\n[\"id\" => 1, \"name\" => \"Abia\", \"code\" => \"AB\", \"country_id\" => 1],\n}"
       tags:
         - Other
+  /api/v1/points/my_balance/all:
+    get:
+      summary: 'Get the point & point components balance of the logged in user.'
+      operationId: getThePointPointComponentsBalanceOfTheLoggedInUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  point_balance: 100
+                  point_components:
+                    egg: 100
+                    bread: 100
+                    butter: 100
+                    jam: 100
+                    milk: 100
+                properties:
+                  point_balance:
+                    type: integer
+                    example: 100
+                  point_components:
+                    type: object
+                    properties:
+                      egg:
+                        type: integer
+                        example: 100
+                      bread:
+                        type: integer
+                        example: 100
+                      butter:
+                        type: integer
+                        example: 100
+                      jam:
+                        type: integer
+                        example: 100
+                      milk:
+                        type: integer
+                        example: 100
+      tags:
+        - Point
   /api/v1/points/balance:
     get:
       summary: 'Get the point balance of the user.'
@@ -2925,7 +2977,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 11
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2978,7 +3030,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 1
+                  example: 15
               required:
                 - user_id
   /api/v1/user/report:
@@ -3025,15 +3077,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: id
+                  example: non
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: esse
+                  example: fugit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: mollitia
+                  example: voluptatem
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3119,7 +3171,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: a
+                  example: in
               required:
                 - user_ids
     parameters:

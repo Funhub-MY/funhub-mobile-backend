@@ -4,6 +4,56 @@ endpoints:
   -
     httpMethods:
       - GET
+    uri: api/v1/points/my_balance/all
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the point & point components balance of the logged in user.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "point_balance": 100,
+          "point_components": {
+             "egg": 100,
+             "bread": 100,
+             "butter": 100,
+             "jam": 100,
+             "milk": 100
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 13ebkcdg64E6P5VaahZDv8f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
     uri: api/v1/points/balance
     metadata:
       groupName: Point
@@ -39,7 +89,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4Zahv61eP5dVkD3E6f8bgac'
+      - 'Bearer 6a84vg5feZPV16E3cdaDkbh'
     controller: null
     method: null
     route: null
@@ -91,7 +141,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cD18hfgVkbdeP3aaEZv6654'
+      - 'Bearer cPVDad6fkbv3h45gZe68a1E'
     controller: null
     method: null
     route: null
@@ -140,7 +190,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VEbZv653dechafg8k16PD4a'
+      - 'Bearer 5VPhkD6eagac8d36fZb1vE4'
     controller: null
     method: null
     route: null
@@ -190,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3d4b1hfkaaD6E5cePvVg86Z'
+      - 'Bearer v6Pf4Z13aVdkhDc5ag6Ebe8'
     controller: null
     method: null
     route: null

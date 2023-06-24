@@ -121,8 +121,9 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Points & Rewards
         Route::prefix('/points')->group(function () {
-            Route::get('/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointBalance']);
-            Route::get('/components/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentBalance']);
+            Route::get('/my_balance/all', [\App\Http\Controllers\Api\PointController::class, 'getPointsBalanceByUser']);
+            Route::get('/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointBalance']); // Main Reward only
+            Route::get('/components/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentBalance']); // Component only
             Route::get('/rewards', [\App\Http\Controllers\Api\PointController::class, 'getRewards']);
             Route::post('/reward_combine', [\App\Http\Controllers\Api\PointController::class, 'postCombinePoints']);
         });
