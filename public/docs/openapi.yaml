@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - suscipit
+                    - repellendus
                   items:
                     type: string
                 category_ids:
@@ -662,7 +662,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 9
+                  example: 6
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -670,11 +670,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: minus
+                  example: quod
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: ut
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1013,7 +1013,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: earum
+        example: aut
         required: true
         schema:
           type: string
@@ -1108,11 +1108,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ipsam
+                  example: est
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: incidunt
+                  example: impedit
               required:
                 - comment_id
                 - reason
@@ -1383,7 +1383,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: accusamus
+        example: dignissimos
         required: true
         schema:
           type: string
@@ -2305,7 +2305,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: quisquam
+        example: ea
         required: true
         schema:
           type: string
@@ -2652,39 +2652,10 @@ paths:
         200:
           description: success
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                example:
-                  point_balance: 100
-                  point_components:
-                    egg: 100
-                    bread: 100
-                    butter: 100
-                    jam: 100
-                    milk: 100
-                properties:
-                  point_balance:
-                    type: integer
-                    example: 100
-                  point_components:
-                    type: object
-                    properties:
-                      egg:
-                        type: integer
-                        example: 100
-                      bread:
-                        type: integer
-                        example: 100
-                      butter:
-                        type: integer
-                        example: 100
-                      jam:
-                        type: integer
-                        example: 100
-                      milk:
-                        type: integer
-                        example: 100
+                type: string
+                example: "{\n\"point_balance\": { \"id\": 1, \"name\": 'Funhub', thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100 },\n\"point_components\": {[\n  {\"id\": 1, \"name\": \"rice\", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 2, \"name\": \"egg\", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 3, \"name\": \"vegetable\", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 4, \"name\": \"meat\", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 5, \"name\": \"fish\", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n]}\n}"
       tags:
         - Point
   /api/v1/points/balance:
@@ -2977,7 +2948,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 11
+                  example: 6
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3030,7 +3001,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 7
               required:
                 - user_id
   /api/v1/user/report:
@@ -3077,15 +3048,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: non
+                  example: id
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: fugit
+                  example: id
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptatem
+                  example: quis
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3171,7 +3142,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: in
+                  example: eum
               required:
                 - user_ids
     parameters:

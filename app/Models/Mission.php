@@ -39,6 +39,6 @@ class Mission extends Model implements HasMedia
     // scope enabled
     public function scopeEnabled($query)
     {
-        return $query->where('enabled', true);
+        return $query->where('status', 1);
     }
 }

@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "9c0847f8-e87d-4371-a322-14362d5236be",
+        "_postman_id": "0f64a0ca-ae1d-4c40-a818-d42fec0e57b6",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"suscipit\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"repellendus\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":9,\"reason\":\"Spam\",\"violation_type\":\"minus\",\"violation_level\":\"aut\",\"article\":1}"
+                                    "raw": "{\"article_id\":6,\"reason\":\"Spam\",\"violation_type\":\"quod\",\"violation_level\":\"ut\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -763,7 +763,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "earum",
+                                            "value": "aut",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -863,7 +863,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ipsam\",\"violation_type\":\"incidunt\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"est\",\"violation_type\":\"impedit\"}"
                                 },
                                 "description": ""
                             },
@@ -988,7 +988,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "accusamus",
+                                            "value": "dignissimos",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1921,7 +1921,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "quisquam",
+                                            "value": "ea",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2305,7 +2305,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"point_balance\": 100,\n\"point_components\": {\n   \"egg\": 100,\n   \"bread\": 100,\n   \"butter\": 100,\n   \"jam\": 100,\n   \"milk\": 100\n}\n}",
+                            "body": "{\n\"point_balance\": { \"id\": 1, \"name\": 'Funhub', thumbnail_url: 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100 },\n\"point_components\": {[\n  {\"id\": 1, \"name\": \"rice\", thumbnail_url: 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 2, \"name\": \"egg\", thumbnail_url: 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 3, \"name\": \"vegetable\", thumbnail_url: 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 4, \"name\": \"meat\", thumbnail_url: 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 5, \"name\": \"fish\", thumbnail_url: 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n]}\n}",
                             "name": "success"
                         }
                     ]
@@ -2515,7 +2515,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":11}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -2556,7 +2556,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -2655,7 +2655,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"non\",\"violation_level\":\"fugit\",\"violation_type\":\"voluptatem\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"id\",\"violation_level\":\"id\",\"violation_type\":\"quis\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2753,7 +2753,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"in\"}"
+                            "raw": "{\"user_ids\":\"eum\"}"
                         },
                         "description": ""
                     },

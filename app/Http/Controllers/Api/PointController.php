@@ -29,19 +29,22 @@ class PointController extends Controller
      * 
      * @group Point
      * @response scenario=success {
-     * "point_balance": 100,
-     * "point_components": {
-     *    "egg": 100,
-     *    "bread": 100,
-     *    "butter": 100,
-     *    "jam": 100,
-     *    "milk": 100
-     * }
+     * "point_balance": { "id": 1, "name": 'Funhub', thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
+     * "point_components": {[
+     *   {"id": 1, "name": "rice", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 2, "name": "egg", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 3, "name": "vegetable", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 4, "name": "meat", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 5, "name": "fish", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     * ]}
      * }
      */
     public function getPointsBalanceByUser()
     {
         $user = auth()->user();
+
+        // reward
+        $reward = Reward::first();
 
         $point = PointLedger::where('user_id', $user->id)
             ->orderBy('id', 'desc')
@@ -59,14 +62,29 @@ class PointController extends Controller
                 ->first();
 
             if ($balance) {
-                $pointComponents[$component->name] = $balance->balance;
+                $pointComponents[] = [
+                    'id' => $component->id,
+                    'name' => $component->name,
+                    'thumbnail_url' => $component->thumbnail_url,
+                    'balance' => $balance->balance
+                ];
             } else {
-                $pointComponents[$component->name] = 0;
+                $pointComponents[$component->name] = [
+                    'id' => $component->id,
+                    'name' => $component->name,
+                    'thumbnail_url' => $component->thumbnail_url,
+                    'balance' => 0
+                ];
             }
         }
 
         return response()->json([
-            'point_balance' => $point ? $point->balance : 0,
+            'point_balance' => [
+                'id' => $reward->id,
+                'name' => $reward->name,
+                'thumbnail_url' => $reward->thumbnail_url,
+                'balance' => $point ? $point->balance : 0
+            ],
             'point_components' => $pointComponents
         ]);
     }
