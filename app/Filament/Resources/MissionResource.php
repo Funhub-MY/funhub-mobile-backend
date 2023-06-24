@@ -21,6 +21,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Closure;
+use Filament\Forms\Components\Textarea;
 
 class MissionResource extends Resource
 {
@@ -43,7 +44,7 @@ class MissionResource extends Resource
                             ->required()
                             ->rules('required', 'max:255'),
             
-                            RichEditor::make('description')
+                            Textarea::make('description')
                                 ->required(),
             
                             // event select input

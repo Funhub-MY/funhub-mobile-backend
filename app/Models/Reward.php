@@ -5,10 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Reward extends Model
+class Reward extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
+
+    const COLLECTION_NAME = 'rewards';
+
+    protected $appends = [
+        'thumbnail_url'
+    ];
 
     protected $guarded = [
         'id'
@@ -24,5 +32,10 @@ class Reward extends Model
         return $this->belongsToMany(RewardComponent::class, 'rewards_reward_components')
             ->withPivot('points') // points required to form a reward
             ->withTimestamps();
+    }
+
+    public function getThumbnailUrlAttribute()
+    {
+        return $this->getFirstMediaUrl(static::COLLECTION_NAME);
     }
 }
