@@ -69,7 +69,7 @@ class PointController extends Controller
                     'balance' => $balance->balance
                 ];
             } else {
-                $pointComponents[$component->name] = [
+                $pointComponents[] = [
                     'id' => $component->id,
                     'name' => $component->name,
                     'thumbnail_url' => $component->thumbnail_url,
