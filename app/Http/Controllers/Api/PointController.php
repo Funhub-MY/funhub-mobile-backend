@@ -29,13 +29,13 @@ class PointController extends Controller
      * 
      * @group Point
      * @response scenario=success {
-     * "point_balance": { "id": 1, "name": 'Funhub', thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
+     * "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
      * "point_components": {[
-     *   {"id": 1, "name": "rice", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-     *   {"id": 2, "name": "egg", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-     *   {"id": 3, "name": "vegetable", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-     *   {"id": 4, "name": "meat", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-     *   {"id": 5, "name": "fish", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 1, "name": "rice", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 2, "name": "egg", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 3, "name": "vegetable", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 4, "name": "meat", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 5, "name": "fish", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
      * ]}
      * }
      */

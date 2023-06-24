@@ -30,13 +30,13 @@ endpoints:
         status: 200
         content: |-
           {
-          "point_balance": { "id": 1, "name": 'Funhub', thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
+          "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
           "point_components": {[
-            {"id": 1, "name": "rice", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 2, "name": "egg", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 3, "name": "vegetable", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 4, "name": "meat", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 5, "name": "fish", thumbnail_url: 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 1, "name": "rice", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 2, "name": "egg", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 3, "name": "vegetable", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 4, "name": "meat", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 5, "name": "fish", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
           ]}
           }
         headers: []
@@ -46,7 +46,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v8edV63Zakhfg1c645DEabP'
+      - 'Bearer Zke6g4hfEdV3a8acPD1bv65'
     controller: null
     method: null
     route: null
@@ -89,7 +89,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PvhgE835ZbaDkc166defVa4'
+      - 'Bearer 8dgf46Z3kPDeVhbva15cEa6'
     controller: null
     method: null
     route: null
@@ -141,7 +141,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5EkP4cDdbhf6ge1V8vZ63aa'
+      - 'Bearer ka53hb68ePvd4cZ6gVDEf1a'
     controller: null
     method: null
     route: null
@@ -190,7 +190,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6cv4P6k83ab1dZeVfgE5haD'
+      - 'Bearer 6Edc8a4Pfb51hgvZe6Dka3V'
     controller: null
     method: null
     route: null
@@ -240,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6Vg3khPaZ1db46De58vfcE'
+      - 'Bearer vPh3Df5adcZE618e4kabg6V'
     controller: null
     method: null
     route: null
