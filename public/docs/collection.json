@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "0cc395f5-4074-4a28-b66b-834165777280",
+        "_postman_id": "0974ad5e-81f9-4bb5-a268-75f887810e83",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"aut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"corporis\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":19,\"reason\":\"Spam\",\"violation_type\":\"veritatis\",\"violation_level\":\"rerum\",\"article\":1}"
+                                    "raw": "{\"article_id\":18,\"reason\":\"Spam\",\"violation_type\":\"mollitia\",\"violation_level\":\"ut\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -763,7 +763,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "ab",
+                                            "value": "omnis",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -863,7 +863,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"autem\",\"violation_type\":\"ducimus\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"esse\",\"violation_type\":\"consequatur\"}"
                                 },
                                 "description": ""
                             },
@@ -988,7 +988,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "qui",
+                                            "value": "odio",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1921,7 +1921,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "voluptatem",
+                                            "value": "dolor",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2057,7 +2057,15 @@
                             "host": "{{baseUrl}}",
                             "path": "api\/v1\/missions",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/missions"
+                            "raw": "{{baseUrl}}\/api\/v1\/missions",
+                            "variable": [
+                                {
+                                    "id": "claimed_only",
+                                    "key": "claimed_only",
+                                    "value": "false",
+                                    "description": "boolean If set to true, only return missions rewards that has been claimed by user."
+                                }
+                            ]
                         },
                         "method": "GET",
                         "header": [
@@ -2550,7 +2558,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -2591,7 +2599,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -2690,7 +2698,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"maiores\",\"violation_level\":\"occaecati\",\"violation_type\":\"aliquid\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"dolorem\",\"violation_level\":\"autem\",\"violation_type\":\"consequatur\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2788,7 +2796,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"tenetur\"}"
+                            "raw": "{\"user_ids\":\"minus\"}"
                         },
                         "description": ""
                     },
@@ -3259,7 +3267,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

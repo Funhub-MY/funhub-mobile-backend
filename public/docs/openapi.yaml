@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - aut
+                    - corporis
                   items:
                     type: string
                 category_ids:
@@ -666,7 +666,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 19
+                  example: 18
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -674,11 +674,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: veritatis
+                  example: mollitia
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: rerum
+                  example: ut
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1017,7 +1017,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ab
+        example: omnis
         required: true
         schema:
           type: string
@@ -1112,11 +1112,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: autem
+                  example: esse
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ducimus
+                  example: consequatur
               required:
                 - comment_id
                 - reason
@@ -1387,7 +1387,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: qui
+        example: odio
         required: true
         schema:
           type: string
@@ -2309,7 +2309,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: voluptatem
+        example: dolor
         required: true
         schema:
           type: string
@@ -2450,6 +2450,21 @@ paths:
                 example: "{\n\"current_page\": 1,\n\"data\": [\n  {\n  \"id\": 1,\n  \"name\": \"Complete 10 missions\",\n  \"is_participating\": true,\n  \"description\": \"Complete 10 missions to earn a reward\",\n  \"event\": \"mission_completed\",\n  \"current_value\": 5,\n  \"value\": 10,\n  \"reward\": {\n      \"id\": 1,\n      \"name\": \"Egg\",\n      \"description\": \"egg\",\n      \"thumbnail_url\": \"https://example.com/egg.png\",\n  },\n  \"reward_quantity\": 1,\n  \"claimed\": false,\n  \"claimed_at\": null,\n  \"claimed_at_formatted\": null,\n  \"claimed_at_ago\": null\n }\n],\n\"first_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"from\": 1,\n\"last_page\": 1,\n\"last_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"next_page_url\": null,\n\"path\": \"http://localhost:8000/api/missions\",\n\"per_page\": 15,\n}"
       tags:
         - Mission
+    parameters:
+      -
+        in: path
+        name: claimed_only
+        description: 'Optional parameter. boolean If set to true, only return missions rewards that has been claimed by user.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'false'
   /api/v1/missions/complete:
     post:
       summary: 'Complete all missions or single mission'
@@ -2973,7 +2988,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3026,7 +3041,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 13
               required:
                 - user_id
   /api/v1/user/report:
@@ -3073,15 +3088,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: maiores
+                  example: dolorem
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: occaecati
+                  example: autem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: aliquid
+                  example: consequatur
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3167,7 +3182,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: tenetur
+                  example: minus
               required:
                 - user_ids
     parameters:
@@ -3795,7 +3810,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

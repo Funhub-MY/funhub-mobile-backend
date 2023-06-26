@@ -20,8 +20,16 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      claimed_only:
+        name: claimed_only
+        description: 'boolean If set to true, only return missions rewards that has been claimed by user.'
+        required: false
+        example: 'false'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      claimed_only: 'false'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -70,7 +78,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a68Va63Egbh4fe15ZcvkDPd'
+      - 'Bearer eVvP6cbkfEh1D8dg4Z63a5a'
     controller: null
     method: null
     route: null
@@ -128,7 +136,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v6PD861d3cEeafhVb54gkZa'
+      - 'Bearer Z514kaVah8g6eE6bv3cDPdf'
     controller: null
     method: null
     route: null

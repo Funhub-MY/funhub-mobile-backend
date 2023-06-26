@@ -29,7 +29,7 @@ class MissionController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * 
      * @group Mission
-     * @url_param claimed_only boolean If set to true, only return missions rewards that has been claimed by user. Example: false
+     * @urlParam claimed_only boolean If set to true, only return missions rewards that has been claimed by user. Example: false
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
