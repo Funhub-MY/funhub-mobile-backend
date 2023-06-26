@@ -42,8 +42,8 @@ class PointComponentService
     /**
      * Credit point
      * 
-     * @param $pointable
-     * @param $type
+     * @param $pointable    Object that causes this credit
+     * @param $type         Type of point component credited    
      * @param $user
      * @param $amount
      * @param $title

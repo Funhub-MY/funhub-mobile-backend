@@ -29,17 +29,17 @@ class EventServiceProvider extends ServiceProvider
             MediaListener::class,
         ],
 
-        // InteractionCreated::class => [
-        //     MissionEventListener::class,
-        // ],
+        InteractionCreated::class => [
+            MissionEventListener::class,
+        ],
 
-        // CommentCreated::class => [
-        //     MissionEventListener::class,
-        // ],
+        CommentCreated::class => [
+            MissionEventListener::class,
+        ],
 
-        // ArticleCreated::class => [
-        //     MissionEventListener::class,
-        // ],
+        ArticleCreated::class => [
+            MissionEventListener::class,
+        ],
     ];
 
     /**

@@ -255,5 +255,8 @@ return [
         'share_article' => 'Shared an Article',
         'bookmark_an_article' => 'Bookmarked an Article',
         'follow_a_user' => 'Followed a User',
-    ]
+    ],
+
+    'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
+    'recommended_article_cache_hours' => env('RECOMMENDED_ARTICLE_CACHE_HOURS', 2),
 ];

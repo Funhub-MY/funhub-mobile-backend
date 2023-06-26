@@ -43,6 +43,7 @@ class ArticleController extends Controller
      * @bodyParam following_only integer optional Filter by Articles by Users who logged in user is following. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
+     * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -98,7 +99,7 @@ class ArticleController extends Controller
 
         // by default it will build recommendations, unless specifically turned off
         // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
-        //     $this->buildRecommendations($query, $request);
+        //     $this->buildRecommendations($query, $request, ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1));
         // }
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
@@ -115,32 +116,49 @@ class ArticleController extends Controller
      * @param Request $request
      * @return void
      */
-    private function buildRecommendations($query, $request)
+    private function buildRecommendations($query, $request, $refresh = false)
     {
         $user = auth()->user();
+        $cacheHours = config('app.recommended_article_cache_hours');
+        
+        if ($refresh) {
+            // bust all caches so can be rebuilt
+            cache()->forget('recent_liked_articles_' . $user->id);
+            cache()->forget('recent_viewed_articles_' . $user->id);
+            cache()->forget('collaborative_liked_articles_' . $user->id);
+            cache()->forget('article_ids_recommended_' . $user->id);
+            cache()->forget('recommendations_seed_' . $user->id);
+        }
+
         // Get articles sorted by recent likes
-        $recentLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
-            ->orderBy('created_at', 'desc')
-            ->where('interactable_type', Article::class)
-            ->pluck('interactable_id')
-            ->toArray();
+        $recentLikedArticles = cache()->remember('recent_liked_articles_' . $user->id, 60 * 60 * $cacheHours, function () use ($user) {
+            return Interaction::where('type', Interaction::TYPE_LIKE)
+                ->where('user_id', $user->id)
+                ->where('interactable_type', Article::class)
+                ->orderBy('created_at', 'desc')
+                ->pluck('interactable_id')
+                ->toArray();
+        });
 
         // Get articles sorted by recent views
-        $recentViewedArticles = View::orderBy('created_at', 'desc')
-            ->where('user_id', auth()->id())
-            ->where('viewable_type', Article::class)
-            ->pluck('viewable_id')
-            ->toArray();
+        $recentViewedArticles = cache()->remember('recent_viewed_articles_' . $user->id, 60 * 60 * $cacheHours, function () use ($user) {
+            return View::where('user_id', $user->id)
+                ->where('viewable_type', Article::class)
+                ->orderBy('created_at', 'desc')
+                ->pluck('viewable_id')
+                ->toArray();
+        });
         
         // Get articles liked by other users who liked the current article (excluding recentLikedArticles)
-        $collaborativeLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
-            ->whereIn('interactable_id', $recentLikedArticles)
-            ->where('interactable_type', Article::class)
-            ->where('user_id', '!=', auth()->id())
-            ->whereNotIn('interactable_id', $recentLikedArticles)
-            ->pluck('interactable_id')
-            ->toArray();
-
+        $collaborativeLikedArticles = cache()->remember('collaborative_liked_articles_' . $user->id, 60 * 60 * $cacheHours, function () use ($user, $recentLikedArticles) {
+            return Interaction::where('type', Interaction::TYPE_LIKE)
+                ->where('user_id', '!=', $user->id)
+                ->where('interactable_type', Article::class)
+                ->whereIn('interactable_id', $recentLikedArticles)
+                ->orderBy('created_at', 'desc')
+                ->pluck('interactable_id')
+                ->toArray();
+        });
         
         // Get articles with Article Categories user interested in
         $userCategories = $user->articleCategoriesInterests->pluck('id')->toArray();
@@ -169,24 +187,32 @@ class ArticleController extends Controller
 
         // Reduce occurrence of articles viewed more than 2 times
         $viewedArticlesCount = array_count_values($recentViewedArticles);
-        $articleIds = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
-            return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
+        $articleIds = cache()->remember('article_ids_recommended_'.$user->id, 60 * 60 * $cacheHours, function () use ($articleIds, $viewedArticlesCount) {
+            $results = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
+                return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
+            });
+            return $results;
+        });
+
+        // generate recommendations seeder
+        $seed = cache()->remember('recommendations_seed_'.$user->id, 60 * 60 * $cacheHours, function () use ($user) {
+            return mt_rand();
         });
 
         if (!empty($articleIds)) {
-            Log::info('Recommendations found, getting articles by ids', [
-                'article_ids' => $articleIds,
-                'recentLikedArticles' => $recentLikedArticles,
-                'collaborativeLikedArticles' => $collaborativeLikedArticles,
-                'recentViewedArticles' => $recentViewedArticles,
-            ]);
-            $query->whereIn('id', $articleIds)
-                ->orderByRaw("CASE
-                    WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 4
-                    WHEN articles.id IN (" . implode(',', $collaborativeLikedArticles) . ") THEN 3
-                    WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 2
-                    ELSE 1
-                    END DESC");
+            if (!empty($recentLikedArticles) && !empty($collaborativeLikedArticles) && !empty($recentViewedArticles)) {
+                $query->whereIn('id', $articleIds)
+                    ->orderByRaw("CASE
+                        WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 4
+                        WHEN articles.id IN (" . implode(',', $collaborativeLikedArticles) . ") THEN 3
+                        WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 2
+                        ELSE 1
+                        END DESC")
+                    ->inRandomOrder($seed);
+            } else {
+                $query->orderBy('created_at', 'desc')
+                    ->inRandomOrder($seed);
+            }
         } else {
             // finally if no article ids just get all articles by latest
             Log::info('No recommendations found, getting all articles by latest');

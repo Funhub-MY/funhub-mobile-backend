@@ -50,7 +50,61 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer abDgP3Vv45E1kef8acdh6Z6'
+      - 'Bearer EDV1Pe6bh6kaf35Z8vad4cg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/missions/complete
+    metadata:
+      groupName: Mission
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Complete all missions or single mission'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      mission_id:
+        name: mission_id
+        description: 'The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      mission_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Mission(s) completed successfully.",
+          "completed_missions": [
+             1, 2
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3d5EZ6vegP18c6kfaahDb4V'
     controller: null
     method: null
     route: null

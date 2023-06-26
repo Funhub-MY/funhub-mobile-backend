@@ -18,8 +18,23 @@ class PointComponentLedger extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Morphs to Mission/Task that credited/debited this ledget
+     *
+     * @return MorphTo
+     */
     public function pointable()
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Morphs to Reward Component that Pointable rewarded
+     *
+     * @return MorphTo
+     */
+    public function component()
+    {
+        return $this->morphTo('component');
     }
 }

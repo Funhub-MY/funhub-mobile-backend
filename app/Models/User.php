@@ -247,7 +247,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function missionsParticipating()
     {
         return $this->belongsToMany(Mission::class, 'missions_users')
-            ->withPivot('is_completed', 'started_at', 'current_value')
+            ->withPivot('is_completed', 'started_at', 'current_value', 'completed_at')
             ->withTimestamps();
     }
     

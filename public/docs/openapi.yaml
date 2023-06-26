@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptates
+                    - quaerat
                   items:
                     type: string
                 category_ids:
@@ -316,6 +316,10 @@ paths:
                 build_recommendations:
                   type: boolean
                   description: 'optional Build Recommendations On or Off, On by Default.'
+                  example: true
+                refresh_recommendations:
+                  type: boolean
+                  description: 'optional Refresh Recommendations.'
                   example: true
                 filter:
                   type: string
@@ -662,7 +666,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 7
+                  example: 8
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -670,11 +674,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: eligendi
+                  example: facilis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolorum
+                  example: quidem
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1013,7 +1017,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: at
+        example: occaecati
         required: true
         schema:
           type: string
@@ -1108,11 +1112,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: rerum
+                  example: amet
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: modi
+                  example: labore
               required:
                 - comment_id
                 - reason
@@ -1383,7 +1387,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: nihil
+        example: vero
         required: true
         schema:
           type: string
@@ -2305,7 +2309,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: omnis
+        example: at
         required: true
         schema:
           type: string
@@ -2486,6 +2490,55 @@ paths:
                           example: 1
       tags:
         - Mission
+  /api/v1/missions/complete:
+    post:
+      summary: 'Complete all missions or single mission'
+      operationId: completeAllMissionsOrSingleMission
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Mission(s) completed successfully.'
+                  completed_missions:
+                    - 1
+                    - 2
+                properties:
+                  message:
+                    type: string
+                    example: 'Mission(s) completed successfully.'
+                  completed_missions:
+                    type: array
+                    example:
+                      - 1
+                      - 2
+                    items:
+                      type: integer
+      tags:
+        - Mission
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mission_id:
+                  type: integer
+                  description: 'The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed.'
+                  example: 1
   /api/v1/user/settings/fcm-token:
     post:
       summary: 'Update user fcm token'
@@ -2948,7 +3001,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 15
+                  example: 5
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3001,7 +3054,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 6
+                  example: 2
               required:
                 - user_id
   /api/v1/user/report:
@@ -3048,15 +3101,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: optio
+                  example: aperiam
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: minus
+                  example: reiciendis
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: nulla
+                  example: ad
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3142,7 +3195,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: officiis
+                  example: eaque
               required:
                 - user_ids
     parameters:
