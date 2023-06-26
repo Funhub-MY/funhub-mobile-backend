@@ -29,44 +29,59 @@ class MissionController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * 
      * @group Mission
+     * @url_param claimed_only boolean If set to true, only return missions rewards that has been claimed by user. Example: false
      * @response scenario=success {
-     * "all_missions_available": [],
-     * "missions_participating": [],
-     * "missions_completed_by_yet_to_claim": [],
-     * "missions_completed": []
+     * "current_page": 1,
+     * "data": [
+     *   {
+     *   "id": 1,
+     *   "name": "Complete 10 missions",
+     *   "is_participating": true,
+     *   "description": "Complete 10 missions to earn a reward",
+     *   "event": "mission_completed",
+     *   "current_value": 5,
+     *   "value": 10,
+     *   "reward": {
+     *       "id": 1,
+     *       "name": "Egg",
+     *       "description": "egg",
+     *       "thumbnail_url": "https://example.com/egg.png",
+     *   },
+     *   "reward_quantity": 1,
+     *   "claimed": false,
+     *   "claimed_at": null,
+     *   "claimed_at_formatted": null,
+     *   "claimed_at_ago": null
+     *  }
+     * ],
+     * "first_page_url": "http://localhost:8000/api/missions?page=1",
+     * "from": 1,
+     * "last_page": 1,
+     * "last_page_url": "http://localhost:8000/api/missions?page=1",
+     * "next_page_url": null,
+     * "path": "http://localhost:8000/api/missions",
+     * "per_page": 15,
      * }
      */
     public function index()
     {
-        // get all missions available
-        $missions = Mission::enabled()  
-            ->get();
+        // get all missions available with participants select only auth user
+        $query = Mission::enabled()
+            ->with(['participants' => function($query) {
+                $query->where('user_id', auth()->user()->id);
+            }])
+            ->orderBy('created_at', 'desc');
 
-        // missions im actively participating
-        $user = auth()->user();
-        $missionsParticipating = $user->missionsParticipating()
-            ->enabled()
-            ->wherePivot('is_completed', false)
-            ->get();
+        if (request()->has('claimed_only') && request()->claimed_only) {
+            $query->whereHas('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('is_completed', true);
+            });
+        }
 
-        $missionsCompletedByYetToClaim = $user->missionsParticipating()
-            ->enabled()
-            ->wherePivot('current_value' , '>=', DB::raw('missions.value'))
-            ->wherePivot('is_completed', false)
-            ->get();
+        $missions = $query->paginate(config('app.paginate_per_page'));
 
-        // missions completed
-        $missionsCompleted = $user->missionsParticipating()
-            ->enabled()
-            ->wherePivot('is_completed', true)
-            ->get();
-
-        return [
-            'all_missions_available' => MissionResource::collection($missions),
-            'missions_participating' => MissionResource::collection($missionsParticipating),
-            'missions_completed_by_yet_to_claim' => MissionResource::collection($missionsCompletedByYetToClaim),
-            'missions_completed' => MissionResource::collection($missionsCompleted)
-        ];
+        return MissionResource::collection($missions);
     }
     
     /**
@@ -190,5 +205,21 @@ class MissionController extends Controller
                  'reward_type' => 'none'
              ]);
           }
+    }
+
+    /**
+     * 
+     *
+     * @return void
+     */
+    public function getClaimableMissions()
+    {
+        $user = auth()->user();
+        $missions = $user->missionsParticipating()
+            ->wherePivot('current_value' , '>=', DB::raw('missions.value'))
+            ->wherePivot('is_completed', false)
+            ->get();
+
+        return MissionResource::collection($missions);
     }
 }

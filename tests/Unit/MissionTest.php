@@ -152,41 +152,53 @@ it('User can get missions, completed missions, participating missions and missio
     $response = $this->getJson('/api/v1/missions');
         expect($response->status())->toBe(200);
 
-    // expect response json have all_missions_available
-    expect($response->json('all_missions_available.*.id'))
+    // expect response json have missions with id $mission->id
+    expect($response->json('data.*.id'))
         ->toContain($mission->id);
 
-    // expect response json not have missions_participating
-    expect($response->json('missions_participating'))
-        ->toBeEmpty();
-
-    // expect response json not have missions_completed_by_yet_to_claim
-    expect($response->json('missions_completed_by_yet_to_claim'))
-        ->toBeEmpty();
-
-    // expect response json not have missions_completed
-    expect($response->json('missions_completed'))
-        ->toBeEmpty();
-
-    // user start comment on an article
-    $article = Article::factory()->create();
-
+    // start the mission by commenting
+    $articles = Article::factory()->count(1)->create();
     $response = $this->postJson('/api/v1/comments', [
-        'id' => $article->id,
+        'id' => $articles->first()->id,
         'type' => 'article',
         'body' => 'test comment',
         'parent_id' => null
-    ]);
+    ]); 
 
     $response = $this->getJson('/api/v1/missions');
         expect($response->status())->toBe(200);
-    
-    // expect missions participating have mission id
-    expect($response->json('missions_participating.*.id'))
+
+    // expect response json have missions with id $mission->id and participating = true
+    expect($response->json('data.*.id'))
         ->toContain($mission->id);
 
-    // expect response json not have missions_completed_by_yet_to_claim
-    expect($response->json('missions_completed_by_yet_to_claim'))
-        ->toBeEmpty();
+    $articles = Article::factory()->count(9)->create();
+    foreach ($articles as $article) {
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'test comment',
+            'parent_id' => null
+        ]); 
+    }
+
+    $response = $this->getJson('/api/v1/missions');
+        expect($response->status())->toBe(200);
+        
+    // expect response json to have is_participating true, andd current_value = 10
+    expect($response->json('data.*.is_participating'))
+        ->toContain(true);
+
+    expect($response->json('data.*.current_value'))
+        ->toContain(10);
+
+    // claim and query claimed_only
+    $response = $this->postJson('/api/v1/missions/complete', ['mission_id' => $mission->id]);
+
+    $response = $this->getJson('/api/v1/missions?claimed_only=true');
+        expect($response->status())->toBe(200);
+
+    expect($response->json('data.*.id'))
+        ->toContain($mission->id);
 });
 

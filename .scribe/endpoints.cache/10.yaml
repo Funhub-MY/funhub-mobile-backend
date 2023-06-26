@@ -32,10 +32,36 @@ endpoints:
         status: 200
         content: |-
           {
-          "all_missions_available": [],
-          "missions_participating": [],
-          "missions_completed_by_yet_to_claim": [],
-          "missions_completed": []
+          "current_page": 1,
+          "data": [
+            {
+            "id": 1,
+            "name": "Complete 10 missions",
+            "is_participating": true,
+            "description": "Complete 10 missions to earn a reward",
+            "event": "mission_completed",
+            "current_value": 5,
+            "value": 10,
+            "reward": {
+                "id": 1,
+                "name": "Egg",
+                "description": "egg",
+                "thumbnail_url": "https://example.com/egg.png",
+            },
+            "reward_quantity": 1,
+            "claimed": false,
+            "claimed_at": null,
+            "claimed_at_formatted": null,
+            "claimed_at_ago": null
+           }
+          ],
+          "first_page_url": "http://localhost:8000/api/missions?page=1",
+          "from": 1,
+          "last_page": 1,
+          "last_page_url": "http://localhost:8000/api/missions?page=1",
+          "next_page_url": null,
+          "path": "http://localhost:8000/api/missions",
+          "per_page": 15,
           }
         headers: []
         description: success
@@ -44,7 +70,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bD1VP8caZefvh46Ek6g5d3a'
+      - 'Bearer a68Va63Egbh4fe15ZcvkDPd'
     controller: null
     method: null
     route: null
@@ -102,7 +128,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b1c3gkehadZ5684Ev6afDVP'
+      - 'Bearer v6PD861d3cEeafhVb54gkZa'
     controller: null
     method: null
     route: null
