@@ -55,7 +55,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6k634Ddeag58PhabcZvVE1f'
+      - 'Bearer 8Vb356gcfE64kva1adePZhD'
     controller: null
     method: null
     route: null
@@ -112,7 +112,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aa5Dch1366Zge8fPvVd4bEk'
+      - 'Bearer adPgfb64E5eaZVhD18cv3k6'
     controller: null
     method: null
     route: null
@@ -169,7 +169,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36gkhc5a1fb46PZ8EVDadev'
+      - 'Bearer akvE8ZfgDb14cVd6h3aP56e'
     controller: null
     method: null
     route: null
@@ -200,11 +200,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 1
+        example: 16
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 1
+      user_id: 16
     fileParameters: []
     responses:
       -
@@ -226,7 +226,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4g6ad3DP1Ecvh8kf56VZaeb'
+      - 'Bearer 16hk5EPvaDVaZecd6fbg348'
     controller: null
     method: null
     route: null
@@ -264,21 +264,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: aut
+        example: perferendis
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: numquam
+        example: fugiat
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: ab
+        example: et
         type: required
         custom: []
       also_block_user:
@@ -290,9 +290,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: aut
-      violation_level: numquam
-      violation_type: ab
+      reason: perferendis
+      violation_level: fugiat
+      violation_type: et
       also_block_user: true
     fileParameters: []
     responses:
@@ -321,7 +321,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 58gdkfEvhaZ4D3aV6e1b6Pc'
+      - 'Bearer 3E6dkcaDfZbaVhevP54861g'
     controller: null
     method: null
     route: null
@@ -380,7 +380,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5af864DZavgb1kPce6Vdh3E'
+      - 'Bearer cheE41dakvPf35D68abZV6g'
     controller: null
     method: null
     route: null
@@ -419,11 +419,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: error
+        example: quas
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: error
+      user_ids: quas
     fileParameters: []
     responses:
       -
@@ -440,7 +440,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z61ab45e3aPfhVED6vgd8ck'
+      - 'Bearer PdVv356kfb816gEaZae4hDc'
     controller: null
     method: null
     route: null
@@ -499,7 +499,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8kd3bZP4VcEef1Da6v5a6gh'
+      - 'Bearer VkP4a8Dev31Zcgf65badh6E'
     controller: null
     method: null
     route: null

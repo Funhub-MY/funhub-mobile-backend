@@ -80,7 +80,11 @@ class MissionController extends Controller
      * "message": "Mission(s) completed successfully.",
      * "completed_missions": [
      *    1, 2
-     * ]
+     * ],
+     * "reward": {
+     *   "object": {},
+     *   "quantity": 1
+     * }
      * }
      * 
      */
@@ -115,7 +119,11 @@ class MissionController extends Controller
 
         return response()->json([
             'message' => 'Mission(s) completed successfully.',
-            'completed_missions' => $completed_missions
+            'completed_missions' => $completed_missions,
+            'reward' => [
+                'object' => $mission->missionable,
+                'quantity' => $mission->reward_quantity
+            ]
         ]);
     }
 

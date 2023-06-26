@@ -112,6 +112,12 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
     expect($this->user->missionsParticipating->first()->pivot->is_completed)
         ->toBe(1);
 
+    // expect response do contain reward.object and quantity
+    expect($response->json('reward.object.id'))->toBe($component->id);
+
+    // expect response do contain reward_quantity
+    expect($response->json('reward.quantity'))->toBe(1);
+
     // check if user have reward component credited
     $response = $this->getJson('/api/v1/points/my_balance/all');
         expect($response->status())->toBe(200);

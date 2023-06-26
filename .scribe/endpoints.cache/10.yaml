@@ -44,7 +44,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V415Z86k3af6agcvPhDEebd'
+      - 'Bearer bD1VP8caZefvh46Ek6g5d3a'
     controller: null
     method: null
     route: null
@@ -89,7 +89,11 @@ endpoints:
           "message": "Mission(s) completed successfully.",
           "completed_missions": [
              1, 2
-          ]
+          ],
+          "reward": {
+            "object": {},
+            "quantity": 1
+          }
           }
         headers: []
         description: success
@@ -98,7 +102,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vh34cD1Pa5E8kZd66Vebagf'
+      - 'Bearer b1c3gkehadZ5684Ev6afDVP'
     controller: null
     method: null
     route: null
