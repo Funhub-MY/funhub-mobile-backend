@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - quaerat
+                    - nisi
                   items:
                     type: string
                 category_ids:
@@ -666,7 +666,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 10
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -674,11 +674,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: facilis
+                  example: omnis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quidem
+                  example: corporis
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1017,7 +1017,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: occaecati
+        example: autem
         required: true
         schema:
           type: string
@@ -1112,11 +1112,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: amet
+                  example: exercitationem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: labore
+                  example: quo
               required:
                 - comment_id
                 - reason
@@ -1387,7 +1387,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: vero
+        example: molestiae
         required: true
         schema:
           type: string
@@ -2309,7 +2309,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: at
+        example: quia
         required: true
         schema:
           type: string
@@ -2448,46 +2448,23 @@ paths:
               schema:
                 type: object
                 example:
-                  data:
-                    -
-                      id: 1
-                      name: 'Mission 1'
-                      description: 'Mission 1'
-                      event: 'Like Article'
-                      reward: Egg
-                      reward_quantity: 1
+                  all_missions_available: []
+                  missions_participating: []
+                  missions_completed_by_yet_to_claim: []
+                  missions_completed: []
                 properties:
-                  data:
+                  all_missions_available:
                     type: array
-                    example:
-                      -
-                        id: 1
-                        name: 'Mission 1'
-                        description: 'Mission 1'
-                        event: 'Like Article'
-                        reward: Egg
-                        reward_quantity: 1
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 1
-                        name:
-                          type: string
-                          example: 'Mission 1'
-                        description:
-                          type: string
-                          example: 'Mission 1'
-                        event:
-                          type: string
-                          example: 'Like Article'
-                        reward:
-                          type: string
-                          example: Egg
-                        reward_quantity:
-                          type: integer
-                          example: 1
+                    example: []
+                  missions_participating:
+                    type: array
+                    example: []
+                  missions_completed_by_yet_to_claim:
+                    type: array
+                    example: []
+                  missions_completed:
+                    type: array
+                    example: []
       tags:
         - Mission
   /api/v1/missions/complete:
@@ -3001,7 +2978,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 5
+                  example: 1
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3054,7 +3031,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 2
+                  example: 1
               required:
                 - user_id
   /api/v1/user/report:
@@ -3101,15 +3078,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: aut
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: reiciendis
+                  example: numquam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ad
+                  example: ab
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3195,7 +3172,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: eaque
+                  example: error
               required:
                 - user_ids
     parameters:
@@ -3823,7 +3800,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:

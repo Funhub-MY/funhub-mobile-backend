@@ -32,16 +32,10 @@ endpoints:
         status: 200
         content: |-
           {
-          "data": [
-             {
-              "id": 1,
-              "name": "Mission 1",
-              "description": "Mission 1",
-              "event": "Like Article",
-              "reward": "Egg",
-              "reward_quantity": 1
-             }
-          ]
+          "all_missions_available": [],
+          "missions_participating": [],
+          "missions_completed_by_yet_to_claim": [],
+          "missions_completed": []
           }
         headers: []
         description: success
@@ -50,7 +44,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EDV1Pe6bh6kaf35Z8vad4cg'
+      - 'Bearer V415Z86k3af6agcvPhDEebd'
     controller: null
     method: null
     route: null
@@ -104,7 +98,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3d5EZ6vegP18c6kfaahDb4V'
+      - 'Bearer vh34cD1Pa5E8kZd66Vebagf'
     controller: null
     method: null
     route: null
