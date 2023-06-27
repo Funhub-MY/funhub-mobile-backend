@@ -196,11 +196,18 @@ it('User can get missions, completed missions, participating missions and missio
     // claim and query claimed_only
     $response = $this->postJson('/api/v1/missions/complete', ['mission_id' => $mission->id]);
 
-    $response = $this->getJson('/api/v1/missions?claimed_only=true');
-        expect($response->status())->toBe(200);
+    $response = $this->getJson('/api/v1/missions?claimed_only=1');
+    expect($response->status())->toBe(200);
 
     expect($response->json('data.*.id'))
         ->toContain($mission->id);
+
+    // claimed_only=0, mission should not exists
+    $response = $this->getJson('/api/v1/missions?claimed_only=0');
+        expect($response->status())->toBe(200);
+
+    expect($response->json('data.*.id'))
+        ->not->toContain($mission->id);
 });
 
 it('User can get latest claimable missions', function () {
