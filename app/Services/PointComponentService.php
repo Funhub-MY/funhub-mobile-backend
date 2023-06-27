@@ -32,7 +32,7 @@ class PointComponentService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->debit = true;
-        $pointLedger->balance = $user->point_balance - $amount;
+        $pointLedger->balance = $this->getBalanceByComponent($type, $user) - $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
@@ -61,10 +61,21 @@ class PointComponentService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->credit = true;
-        $pointLedger->balance = $user->point_balance + $amount;
+        $pointLedger->balance = $this->getBalanceByComponent($type, $user) + $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
         return $pointLedger;
+    }
+
+    public function getBalanceByComponent($user, $component)
+    {
+        $latest = PointComponentLedger::where('user_id', $user->id)
+            ->where('component_type', get_class($component))
+            ->where('component_id', $component->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        return $latest ? $latest->balance : 0;
     }
 }
