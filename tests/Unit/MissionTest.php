@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\RewardComponent;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -198,6 +199,41 @@ it('User can get missions, completed missions, participating missions and missio
     $response = $this->getJson('/api/v1/missions?claimed_only=true');
         expect($response->status())->toBe(200);
 
+    expect($response->json('data.*.id'))
+        ->toContain($mission->id);
+});
+
+it('User can get latest claimable missions', function () {
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+
+    // create a mission for article count to 10 and reward a component
+    $mission = Mission::factory()->create([
+        'name' => 'Comment on 1 article',
+        'description' => 'Comment on 1 article',
+        'event' => 'comment_created',
+        'value' => 1,
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'enabled' => 1,
+        'status' => 1,
+        'user_id' => $this->user->id
+    ]);
+
+    // start the mission by commenting
+    $articles = Article::factory()->count(1)->create();
+    $response = $this->postJson('/api/v1/comments', [
+        'id' => $articles->first()->id,
+        'type' => 'article',
+        'body' => 'test comment',
+        'parent_id' => null
+    ]); 
+    expect($response->status())->toBe(200);
+
+    $response = $this->getJson('/api/v1/missions/claimables');
+        expect($response->status())->toBe(200);
+
+    // expect response json have missions with id $mission->id
     expect($response->json('data.*.id'))
         ->toContain($mission->id);
 });

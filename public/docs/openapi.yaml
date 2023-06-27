@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - dicta
+                    - sit
                   items:
                     type: string
                 category_ids:
@@ -666,7 +666,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 8
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -674,11 +674,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sed
+                  example: qui
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: totam
+                  example: accusamus
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1017,7 +1017,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quae
+        example: ut
         required: true
         schema:
           type: string
@@ -1112,11 +1112,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quidem
+                  example: nihil
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: nulla
+                  example: repudiandae
               required:
                 - comment_id
                 - reason
@@ -1387,7 +1387,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: esse
+        example: sed
         required: true
         schema:
           type: string
@@ -2309,7 +2309,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: placeat
+        example: harum
         required: true
         schema:
           type: string
@@ -2526,7 +2526,7 @@ paths:
                   type: integer
                   description: 'The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed.'
                   example: 1
-  /api/v1/missions/claimable:
+  /api/v1/missions/claimables:
     get:
       summary: 'Get latest claimable missions'
       operationId: getLatestClaimableMissions
@@ -3011,7 +3011,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 14
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3064,7 +3064,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 5
+                  example: 3
               required:
                 - user_id
   /api/v1/user/report:
@@ -3111,15 +3111,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: commodi
+                  example: soluta
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: non
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: alias
+                  example: ullam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3205,7 +3205,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: sed
+                  example: cumque
               required:
                 - user_ids
     parameters:
@@ -3833,7 +3833,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

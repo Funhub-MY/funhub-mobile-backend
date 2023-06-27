@@ -228,7 +228,8 @@ class MissionController extends Controller
         $user = auth()->user();
         $missions = $user->missionsParticipating()
             ->wherePivot('current_value' , '>=', DB::raw('missions.value'))
-            ->wherePivot('is_completed', false)
+            ->wherePivot('completed_at', null)
+            ->orderByPivot('updated_at', 'desc')
             ->paginate(config('app.paginate_per_page'));
 
         return MissionResource::collection($missions);

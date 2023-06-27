@@ -160,8 +160,7 @@ class MissionEventListener
 
         // decrements only if the current value > 0
         if ($userMission->pivot->current_value > 0) {
-            $userMission->pivot->current_value -= $decrements;
-            $userMission->save();
+            $userMission->pivot->decrement('current_value', $decrements);
         }
     }
 
