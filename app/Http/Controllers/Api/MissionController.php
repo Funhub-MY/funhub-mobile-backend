@@ -77,10 +77,10 @@ class MissionController extends Controller
                 $query->where('user_id', auth()->user()->id)
                     ->where('is_completed', true);
             });
-        } else if (request()->has('claimed_only') && (!request()->claimed_only || request()->claimed_only == 0)) {
-            $query->whereHas('participants', function($query) {
+        } else {
+            $query->whereDoesntHave('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
-                    ->where('is_completed', false);
+                    ->where('is_completed', true);
             });
         }
 

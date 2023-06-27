@@ -203,7 +203,7 @@ it('User can get missions, completed missions, participating missions and missio
         ->toContain($mission->id);
 
     // claimed_only=0, mission should not exists
-    $response = $this->getJson('/api/v1/missions?claimed_only=0');
+    $response = $this->getJson('/api/v1/missions');
         expect($response->status())->toBe(200);
 
     expect($response->json('data.*.id'))
