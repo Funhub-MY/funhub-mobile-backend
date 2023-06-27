@@ -178,18 +178,16 @@ class PointController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group Point
-     * @bodyParam reward_id integer required The id of the reward. Example: 1
      * @bodyParam quantity integer required The quantity of the reward to form. Example: 1
      */
     public function postCombinePoints(Request $request)
     {
         $this->validate($request, [
-            'reward_id' => 'required|exists:rewards,id',
             'quantity' => 'required|integer'
         ]);
 
+        // get the first reward
         $reward = Reward::with('rewardComponents')
-            ->where('id', $request->reward_id)
             ->firstOrFail();
 
         if ($reward->rewardComponents->count() == 0) {
@@ -200,12 +198,17 @@ class PointController extends Controller
 
         foreach($reward->rewardComponents as $component) {
             if ($component->pivot->points * $request->quantity > $user->getPointComponentBalance($component)) {
-                return response()->json(['message' => 'User does not have enough points to form this reward'], 422);
+                return response()->json([
+                    'message' => 'User does not have enough points to form this reward',
+                    'component' => $component->name,
+                    'required_balance' => $component->pivot->points * $request->quantity,
+                ], 422);
             }
         }
 
         try {
             foreach($reward->rewardComponents as $component) {
+                // debit from point componenet
                 $this->pointComponentService->debit($reward, $component, $user->id, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward'. $reward->name);
             }
         } catch (\Exception $e) {
@@ -213,12 +216,13 @@ class PointController extends Controller
             return response()->json(['message' => 'Error while deducting points from user'], 422);
         }
 
+        // credit to reward
         $this->pointService->credit($reward, $user->id, $request->quantity, 'Reward Formed');
         Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
 
         return response()->json([
-            'latest_point_balance' => $user->point_balance(),
-             'message' => 'Reward Formed'
+            'point_balance' => $user->point_balance(),
+            'message' => 'Reward Formed'
         ]);
     }
 
