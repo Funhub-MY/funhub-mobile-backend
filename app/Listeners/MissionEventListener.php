@@ -128,7 +128,6 @@ class MissionEventListener
         
         if (!$userMission) {
             $user->missionsParticipating()->attach($mission->id, [
-                'is_completed' => $increments == $mission->value,
                 'started_at' => now(),
                 'current_value' => $increments
             ]);
