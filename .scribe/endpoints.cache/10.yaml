@@ -78,7 +78,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eVvP6cbkfEh1D8dg4Z63a5a'
+      - 'Bearer v15Z6aef8dVa4hDg3PEbkc6'
     controller: null
     method: null
     route: null
@@ -136,7 +136,56 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z514kaVah8g6eE6bv3cDPdf'
+      - 'Bearer VkZ4c16faED5gv63h8Pbaed'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/missions/claimable
+    metadata:
+      groupName: Mission
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get latest claimable missions'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+           {
+           "id": 1,
+           "name": "Mission 1",
+           ...
+           }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b4c3a5aEZgfD6edPk6h1V8v'
     controller: null
     method: null
     route: null

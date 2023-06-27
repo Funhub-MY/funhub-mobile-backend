@@ -208,9 +208,20 @@ class MissionController extends Controller
     }
 
     /**
-     * 
+     * Get latest claimable missions
      *
-     * @return void
+     * @return MissionResource
+     * 
+     * @group Mission
+     * @response scenario=success {
+     * "data": [
+     *  {
+     *  "id": 1,
+     *  "name": "Mission 1",
+     *  ...
+     *  }
+     * ]
+     * }
      */
     public function getClaimableMissions()
     {
@@ -218,7 +229,7 @@ class MissionController extends Controller
         $missions = $user->missionsParticipating()
             ->wherePivot('current_value' , '>=', DB::raw('missions.value'))
             ->wherePivot('is_completed', false)
-            ->get();
+            ->paginate(config('app.paginate_per_page'));
 
         return MissionResource::collection($missions);
     }

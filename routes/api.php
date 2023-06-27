@@ -132,6 +132,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::prefix('/missions')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MissionController::class, 'index']);
             Route::post('/complete', [\App\Http\Controllers\Api\MissionController::class, 'postCompleteMission']);
+            Route::get('/claimable', [\App\Http\Controllers\Api\MissionController::class, 'getClaimableMissions']);
         });
 
         // Notifications
