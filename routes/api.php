@@ -126,6 +126,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/components/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentBalance']); // Component only
             Route::get('/rewards', [\App\Http\Controllers\Api\PointController::class, 'getRewards']);
             Route::post('/reward_combine', [\App\Http\Controllers\Api\PointController::class, 'postCombinePoints']);
+
+            // ledgers
+            Route::get('/ledgers', [\App\Http\Controllers\Api\PointController::class, 'getPointLedger']);
+            Route::get('/components/ledgers', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentLedger']);
         });
 
         // Missions

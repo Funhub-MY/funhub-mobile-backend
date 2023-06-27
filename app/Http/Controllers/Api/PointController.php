@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PointComponentLedgerResource;
+use App\Http\Resources\PointLedgerResource;
 use App\Models\PointComponentLedger;
 use App\Models\PointLedger;
 use App\Models\Reward;
@@ -204,7 +206,7 @@ class PointController extends Controller
 
         try {
             foreach($reward->rewardComponents as $component) {
-                $this->pointComponentService->debit($reward, $component, $user->id, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward '. $reward->name);
+                $this->pointComponentService->debit($reward, $component, $user->id, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward'. $reward->name);
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage(), ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
@@ -249,5 +251,67 @@ class PointController extends Controller
         return response()->json([
             'rewards' => $rewards
         ]);
+    }
+
+    /**
+     * Get Point Ledger
+     *
+     * @param Request $request
+     * @return PointLedgerResource
+     * 
+     * @group Point
+     * @response scenario=success {
+     * "data": [
+     * {
+     *   "id": 1,
+     *   ...
+     * }
+     * ]
+     * }
+     */
+    public function getPointLedger(Request $request)
+    {
+        $user = $request->user();
+
+        $pointLedgers = PointLedger::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('paginate_per_page'));
+
+        return PointLedgerResource::collection($pointLedgers);
+    }
+
+    /**
+     * Get Point Component Ledgers)
+     *
+     * @param Request $request
+     * @return PointComponentLedgerResource
+     * 
+     * @group Point
+     * @urlParam filter_type string Type of Component (name). Example: egg
+     * @response scenario=success {
+     * "data": [
+     * {
+     *   "id": 1,
+     *   ...
+     * }
+     * ]
+     * }
+     */
+    public function getPointComponentLedger(Request $request)
+    {
+        $user = $request->user();
+
+        // get RewardComponent IDs by name
+        $componentIds = RewardComponent::where('name', $request->filter_type)->pluck('id');
+
+        $pointComponentLedgers = PointComponentLedger::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('paginate_per_page'))
+            ->when($request->filter_type, function ($query) use ($componentIds) {
+                return $query->where('component_type', RewardComponent::class)
+                    ->whereIn('component_id', $componentIds);
+            });
+
+        return PointComponentLedgerResource::collection($pointComponentLedgers);
     }
 }

@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dcaVPfE4D63Zga56vk8h1be'
+      - 'Bearer Vf3vePk5h8ba61Ed4cZD6ag'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ea5cvebfg36Pakh6D1VZd48'
+      - 'Bearer gk56v8ahbe46fPZ3Ec1DaVd'
     controller: null
     method: null
     route: null
@@ -141,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 14
+        example: 4
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 14
+      user_id: 4
     fileParameters: []
     responses:
       -
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bgP1fEa5ahced4D6683ZVvk'
+      - 'Bearer vk6Ve4h6ca1dPba85DfZg3E'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 3
+        example: 14
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 3
+      user_id: 14
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ED3eVh5v4a1cP86Zkb6agdf'
+      - 'Bearer 1fZheka6dDa3vVg5cb8E46P'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: soluta
+        example: voluptas
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: non
+        example: laudantium
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: ullam
+        example: ea
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: soluta
-      violation_level: non
-      violation_type: ullam
+      reason: voluptas
+      violation_level: laudantium
+      violation_type: ea
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4av16a5hk8bgDdVfeZPc63'
+      - 'Bearer 4kgb53ePf6DhEV1cZdva6a8'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4g1aDP6cdkhv5V8eEfaZ3b6'
+      - 'Bearer kPb6va6dcZ5fh1Ea3gVDe48'
     controller: null
     method: null
     route: null
@@ -417,11 +417,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: cumque
+        example: officiis
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: cumque
+      user_ids: officiis
     fileParameters: []
     responses:
       -
@@ -438,7 +438,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bf5PaVgekdvhZD43c8a61E6'
+      - 'Bearer 5EkhdbvP6c46a1VDeg3Z8af'
     controller: null
     method: null
     route: null
@@ -497,7 +497,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3dhV6bav54ka1ePEcD8fg6Z'
+      - 'Bearer 6aZe46v5DdP3b1EhgcaVf8k'
     controller: null
     method: null
     route: null

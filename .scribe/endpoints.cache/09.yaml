@@ -48,7 +48,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g3Vh4EvDfk86caPb5eZ6d1a'
+      - 'Bearer 5b6ZgVvDc1d836h4EakefPa'
     controller: null
     method: null
     route: null
@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6vV81deDgaZ6ack5fbh4E3P'
+      - 'Bearer ekb16aPVD3Zh5Eadc8g4vf6'
     controller: null
     method: null
     route: null
@@ -143,7 +143,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 63cP4kVgheva5E8Zfdb61Da'
+      - 'Bearer a1DfakV3g6ce4h5bd8EPv6Z'
     controller: null
     method: null
     route: null
@@ -192,7 +192,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gb64Vevfad65DEZ8hP1a3kc'
+      - 'Bearer 5vf6c8ekPaVg1bdhDZ3aE46'
     controller: null
     method: null
     route: null
@@ -242,7 +242,111 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZVE53ve8gfadP1a6bk6Dc4h'
+      - 'Bearer gPbkd84a1a3v5h6c6fVEZDe'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/ledgers
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Point Ledger'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+            "id": 1,
+            ...
+          }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 34dED8ZV5hvca1beakf66Pg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/components/ledgers
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Point Component Ledgers)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      filter_type:
+        name: filter_type
+        description: 'Type of Component (name).'
+        required: false
+        example: egg
+        type: string
+        custom: []
+    cleanUrlParameters:
+      filter_type: egg
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+            "id": 1,
+            ...
+          }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a58Z6fbhdVPkE3cgev4aD61'
     controller: null
     method: null
     route: null

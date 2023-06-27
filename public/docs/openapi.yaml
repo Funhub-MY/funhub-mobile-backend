@@ -284,7 +284,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - sit
+                    - necessitatibus
                   items:
                     type: string
                 category_ids:
@@ -666,7 +666,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 15
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -674,11 +674,11 @@ paths:
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: qui
+                  example: rerum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: accusamus
+                  example: sit
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1017,7 +1017,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ut
+        example: dolore
         required: true
         schema:
           type: string
@@ -1112,11 +1112,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: nihil
+                  example: rerum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: repudiandae
+                  example: natus
               required:
                 - comment_id
                 - reason
@@ -1387,7 +1387,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sed
+        example: unde
         required: true
         schema:
           type: string
@@ -2309,7 +2309,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: harum
+        example: unde
         required: true
         schema:
           type: string
@@ -2851,6 +2851,67 @@ paths:
               required:
                 - reward_id
                 - quantity
+  /api/v1/points/ledgers:
+    get:
+      summary: 'Get Point Ledger'
+      operationId: getPointLedger
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n{\n  \"id\": 1,\n  ...\n}\n]\n}"
+      tags:
+        - Point
+  /api/v1/points/components/ledgers:
+    get:
+      summary: 'Get Point Component Ledgers)'
+      operationId: getPointComponentLedgers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n{\n  \"id\": 1,\n  ...\n}\n]\n}"
+      tags:
+        - Point
+    parameters:
+      -
+        in: path
+        name: filter_type
+        description: 'Optional parameter. Type of Component (name).'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: egg
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -3011,7 +3072,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 4
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3064,7 +3125,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 3
+                  example: 14
               required:
                 - user_id
   /api/v1/user/report:
@@ -3111,15 +3172,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: soluta
+                  example: voluptas
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: non
+                  example: laudantium
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ullam
+                  example: ea
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3205,7 +3266,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: cumque
+                  example: officiis
               required:
                 - user_ids
     parameters:
