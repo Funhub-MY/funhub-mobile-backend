@@ -221,7 +221,7 @@ class PointController extends Controller
         Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
 
         return response()->json([
-            'point_balance' => $user->point_balance(),
+            'point_balance' => $user->point_balance,
             'message' => 'Reward Formed'
         ]);
     }
