@@ -197,7 +197,7 @@ class PointController extends Controller
         $user = $request->user();
 
         foreach($reward->rewardComponents as $component) {
-            if ($component->pivot->points * $request->quantity > $user->getPointComponentBalance($component)) {
+            if ($component->pivot->points * $request->quantity > $this->pointComponentService->getBalanceByComponent($user, $component)) {
                 return response()->json([
                     'message' => 'User does not have enough points to form this reward',
                     'component' => $component->name,
