@@ -209,7 +209,7 @@ class PointController extends Controller
         try {
             foreach($reward->rewardComponents as $component) {
                 // debit from point componenet
-                $this->pointComponentService->debit($reward, $component, $user->id, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward'. $reward->name);
+                $this->pointComponentService->debit($reward, $component, $user, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward'. $reward->name);
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage(), ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
@@ -217,7 +217,7 @@ class PointController extends Controller
         }
 
         // credit to reward
-        $this->pointService->credit($reward, $user->id, $request->quantity, 'Reward Formed');
+        $this->pointService->credit($reward, $user, $request->quantity, 'Reward Formed');
         Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
 
         return response()->json([
