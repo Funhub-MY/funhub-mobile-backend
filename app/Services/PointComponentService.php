@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\PointComponentLedger;
+use Illuminate\Support\Facades\Log;
 
 class PointComponentService
 {
@@ -75,6 +76,10 @@ class PointComponentService
             ->where('component_id', $component->id)
             ->orderBy('id', 'desc')
             ->first();
+
+        if(!$latest) {
+            Log::info('No latest point component ledger found for user '.$user->id.' and component '.$component->id);
+        }
 
         return $latest ? $latest->balance : 0;
     }
