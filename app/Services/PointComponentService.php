@@ -33,7 +33,7 @@ class PointComponentService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->debit = true;
-        $pointLedger->balance = $this->getBalanceByComponent($type, $user) - $amount;
+        $pointLedger->balance = $this->getBalanceByComponent($user, $type) - $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
@@ -62,7 +62,7 @@ class PointComponentService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->credit = true;
-        $pointLedger->balance = $this->getBalanceByComponent($type, $user) + $amount;
+        $pointLedger->balance = $this->getBalanceByComponent($user, $type) + $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
