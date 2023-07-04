@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Comment;
+use App\Models\Interaction;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class NotificationResource extends JsonResource
@@ -14,11 +16,20 @@ class NotificationResource extends JsonResource
      */
     public function toArray($request)
     {
+        // get article id if object is comment / interaction
+        $article_id = null;
+        if ($this->data['object'] == Comment::class) {
+            $article_id = $this->data['object']::find($this->data['object_id'])->commentable->id;
+        } else if ($this->data['object'] == Interaction::class) {
+            $article_id = $this->data['object']::find($this->data['object_id'])->interactable->id;
+        }
+
         return [
             'id' => $this->id,
             'message' => $this->data['message'] ?? null,
             'object' => $this->data['object'] ?? null,
             'object_id' => $this->data['object_id'] ?? null,
+            'article_id' => $article_id,
             'link_to_url' => $this->data['link_to_url'] ?? null,
             'link_to_object' => $this->data['link_to_object'] ?? null,
             'action' => $this->data['action'] ?? null,

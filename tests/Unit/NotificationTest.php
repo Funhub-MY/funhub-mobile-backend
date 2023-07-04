@@ -57,12 +57,19 @@ class NotificationTest extends TestCase
 
         // get notifications
         $response = $this->getJson('/api/v1/notifications');
+
         // check if response 200
         $response->assertStatus(200);
         // get total should be 3
         $this->assertEquals(3, $response->json('meta.total'));
         // check foreach data['from_id'] should be in $users
         foreach ($response->json('data') as $notification) {
+            // assert notification has article_id
+            $this->assertArrayHasKey('article_id', $notification);
+
+            // assert article_id = $article->id
+            $this->assertEquals($article->id, $notification['article_id']);
+
             $this->assertTrue(in_array($notification['from_user']['id'], $users->pluck('id')->toArray()));
         }
 
@@ -74,5 +81,7 @@ class NotificationTest extends TestCase
 
         // asset user unread notifications count is zero
         $this->assertEquals(0, $this->user->unreadNotifications()->count());
+
+
     }
 }
