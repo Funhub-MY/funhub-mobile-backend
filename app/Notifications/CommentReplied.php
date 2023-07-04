@@ -44,7 +44,8 @@ class CommentReplied extends Notification
             ->setData([
                 'comment_id' => (string) $this->comment->id,
                 'commentor_id' => (string) $this->comment->user->id, 
-                'parent_comment_id' => (string) $this->comment->parent->id
+                'parent_comment_id' => (string) $this->comment->parent->id,
+                'article_id' => (string) $this->comment->commentable->id,
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment Reply')

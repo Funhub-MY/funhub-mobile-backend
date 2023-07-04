@@ -40,7 +40,7 @@ class Commented extends Notification implements ShouldQueue
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-            ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id])
+            ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id, 'article_id' => (string) $this->comment->commentable->id])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment')
                 ->setBody( $this->comment->user->name . '留言在你的"' . $this->comment->commentable->title.'"')
