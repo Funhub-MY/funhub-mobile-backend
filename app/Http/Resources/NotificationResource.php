@@ -18,10 +18,15 @@ class NotificationResource extends JsonResource
     {
         // get article id if object is comment / interaction
         $article_id = null;
+        $article_type = null;
         if ($this->data['object'] == Comment::class) {
-            $article_id = $this->data['object']::find($this->data['object_id'])->commentable->id;
+            $article =  $this->data['object']::find($this->data['object_id'])->commentable;
+            $article_id = $article->id;
+            $article_type = $article->type;
         } else if ($this->data['object'] == Interaction::class) {
-            $article_id = $this->data['object']::find($this->data['object_id'])->interactable->id;
+            $article =  $this->data['object']::find($this->data['object_id'])->interactable;
+            $article_id = $article->id;
+            $article_type = $article->type;
         }
 
         return [
@@ -30,6 +35,7 @@ class NotificationResource extends JsonResource
             'object' => $this->data['object'] ?? null,
             'object_id' => $this->data['object_id'] ?? null,
             'article_id' => $article_id,
+            'article_type' => $article_type,
             'link_to_url' => $this->data['link_to_url'] ?? null,
             'link_to_object' => $this->data['link_to_object'] ?? null,
             'action' => $this->data['action'] ?? null,
