@@ -81,7 +81,46 @@ class NotificationTest extends TestCase
 
         // asset user unread notifications count is zero
         $this->assertEquals(0, $this->user->unreadNotifications()->count());
+    }
 
+    // Mark a single notification as read
+    public function testMarkSingleNotificationAsRead() {
+         // create an article with logged in user
+         $article = Article::factory()->create([
+            'user_id' => $this->user->id
+        ]);
 
+        // create three random users
+        $users = User::factory()->count(3)->create();
+
+        // each user interact "like" to article
+        foreach ($users as $user) {
+            $this->actingAs($user);
+
+            // each like will fire a ArticleInteracted Notification
+            $response = $this->postJson('/api/v1/interactions', [
+                'id' => $article->id,
+                'interactable' => 'article',
+                'type' => 'like',
+            ]);
+        }
+        
+        // revert to actingAs logged in user
+        $this->actingAs($this->user);
+
+        // get notifications
+        $response = $this->getJson('/api/v1/notifications');
+        $this->assertEquals(3, $response->json('meta.total'));
+
+        // mark first notification as read
+        $response = $this->postJson('/api/v1/notifications/mark_as_read', [
+            'notification_id' => $response->json('data')[0]['id']
+        ]);
+
+        // check if response 200
+        $response->assertStatus(200);
+
+        // asset user unread notifications count is 2
+        $this->assertEquals(2, $this->user->unreadNotifications()->count());
     }
 }

@@ -142,7 +142,8 @@ Route::group(['prefix' => 'v1'], function () {
         // Notifications
         Route::prefix('/notifications')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\NotificationController::class, 'getNotifications']);
-            Route::post('/mark_all_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkUnreadNotificationAsRead']);
+            Route::post('/mark_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkSingleUnreadNotificationAsRead']); // single
+            Route::post('/mark_all_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkUnreadNotificationAsRead']); // all unread
         });
     });
 });

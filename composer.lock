@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "38fb44114f07dc675dfe13a25af0b4db",
+    "content-hash": "4bfcc50aae16bc3bf3ea86331f7f62cf",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -5704,6 +5704,59 @@
                 }
             ],
             "time": "2023-02-08T01:06:31+00:00"
+        },
+        {
+            "name": "phpjuice/opencf",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpjuice/opencf.git",
+                "reference": "714128f1fb7ff07947cd34b1169c7cd612bd4ceb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpjuice/opencf/zipball/714128f1fb7ff07947cd34b1169c7cd612bd4ceb",
+                "reference": "714128f1fb7ff07947cd34b1169c7cd612bd4ceb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0|^8.1"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.18",
+                "phpstan/phpstan": "^0.12",
+                "squizlabs/php_codesniffer": "^3.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OpenCF\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohammed Elhaouari",
+                    "email": "phpjuice@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP implementation of the (Weighted Slopeone,Cosine, Weighted Cosine) rating-based collaborative filtering schemes.",
+            "keywords": [
+                "collaborative filtering",
+                "collaborative filtering engine",
+                "recommendation",
+                "recommender",
+                "weighted slope one"
+            ],
+            "support": {
+                "issues": "https://github.com/phpjuice/opencf/issues",
+                "source": "https://github.com/phpjuice/opencf"
+            },
+            "time": "2022-03-05T11:25:18+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
