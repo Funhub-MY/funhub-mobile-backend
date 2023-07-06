@@ -98,9 +98,9 @@ class ArticleController extends Controller
         $this->buildQuery($query, $request);
 
         // by default it will build recommendations, unless specifically turned off
-        if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
-            $this->buildRecommendations($query, $request, ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1));
-        }
+        // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
+        //     $this->buildRecommendations($query, $request, ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1));
+        // }
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
