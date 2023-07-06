@@ -46,6 +46,8 @@ class CommentReplied extends Notification
                 'commentor_id' => (string) $this->comment->user->id, 
                 'parent_comment_id' => (string) $this->comment->parent->id,
                 'article_id' => (string) $this->comment->commentable->id,
+                'article_type' => (string) $this->comment->commentable->type,
+                'action' => 'comment_replied'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment Reply')
