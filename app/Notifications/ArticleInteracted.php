@@ -68,7 +68,7 @@ class ArticleInteracted extends Notification implements ShouldQueue
             'link_to_url' => false,
             'link_to' => $this->interaction->interactable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->interaction->interactable_type, // if link to url false, means get link_to_object
-            'action' => $this->getAction(),
+            'action' => 'article_interacted',
             'from' => $this->interaction->user->name,
             'from_id' => $this->interaction->user->id,
             'message' => $this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"',
