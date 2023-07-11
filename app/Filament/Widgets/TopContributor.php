@@ -34,7 +34,6 @@ class TopContributor extends BaseWidget
                 ->sortable(),
             Tables\Columns\TextColumn::make('articles_count')
                 ->label('Articles Published')
-                ->searchable()
                 ->sortable(),
         ];
     }
