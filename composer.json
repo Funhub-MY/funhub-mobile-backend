@@ -10,6 +10,7 @@
         "aws/aws-sdk-php": "^3.263",
         "bezhansalleh/filament-shield": "^2.4",
         "bmatovu/laravel-xml": "^3.2",
+        "cheesegrits/filament-google-maps": "^1.0",
         "doctrine/dbal": "^3.6",
         "filament/filament": "^2.0",
         "filament/spatie-laravel-media-library-plugin": "^2.0",
@@ -85,7 +86,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",

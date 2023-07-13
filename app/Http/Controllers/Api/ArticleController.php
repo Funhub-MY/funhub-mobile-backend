@@ -99,7 +99,7 @@ class ArticleController extends Controller
 
         // by default it will build recommendations, unless specifically turned off
         // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
-        //     $this->buildRecommendations($query, $request, ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1));
+        //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
         // }
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
@@ -116,17 +116,22 @@ class ArticleController extends Controller
      * @param Request $request
      * @return void
      */
-    private function buildRecommendations($query, $request, $refresh = false)
+    private function buildRecommendations($query, $request, $refreshRecommendations = false, $bustCache = false)
     {
         $user = auth()->user();
         $cacheHours = config('app.recommended_article_cache_hours');
         
-        if ($refresh) {
+        if ($bustCache) {
             // bust all caches so can be rebuilt
             cache()->forget('recent_liked_articles_' . $user->id);
             cache()->forget('recent_viewed_articles_' . $user->id);
             cache()->forget('collaborative_liked_articles_' . $user->id);
             cache()->forget('article_ids_recommended_' . $user->id);
+            cache()->forget('recommendations_seed_' . $user->id);
+        } 
+
+        // if just refresh recommendations, then only bust recommendation seed
+        if ($refreshRecommendations) {
             cache()->forget('recommendations_seed_' . $user->id);
         }
 
@@ -164,7 +169,7 @@ class ArticleController extends Controller
         $userCategories = $user->articleCategoriesInterests->pluck('id')->toArray();
 
         $articleIds = array_unique(array_merge($recentLikedArticles, $recentViewedArticles, $collaborativeLikedArticles));
-
+        
         $numRecommendations = 10; // Specify the desired number of recommendations as minimum to use content filtering mixed with collaborative filtering
 
         if (count($articleIds) < $numRecommendations) {
@@ -186,38 +191,37 @@ class ArticleController extends Controller
         }
 
         // Reduce occurrence of articles viewed more than 2 times
-        $viewedArticlesCount = array_count_values($recentViewedArticles);
-        $articleIds = cache()->remember('article_ids_recommended_'.$user->id, 60 * 60 * $cacheHours, function () use ($articleIds, $viewedArticlesCount) {
-            $results = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
-                return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
-            });
-            return $results;
-        });
+        // $viewedArticlesCount = array_count_values($recentViewedArticles);
+        // $articleIds = cache()->remember('article_ids_recommended_'.$user->id, 60 * 60 * $cacheHours, function () use ($articleIds, $viewedArticlesCount) {
+        //     $results = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
+        //         return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
+        //     });
+        //     return $results;
+        // });
 
         // generate recommendations seeder
         $seed = cache()->remember('recommendations_seed_'.$user->id, 60 * 60 * $cacheHours, function () use ($user) {
             return mt_rand();
         });
 
+        Log::info('seed: ' . $seed);
+        Log::info('article_ids', ['article_ids' => $articleIds]);
+
         if (!empty($articleIds)) {
             if (!empty($recentLikedArticles) && !empty($collaborativeLikedArticles) && !empty($recentViewedArticles)) {
                 $query->whereIn('id', $articleIds)
-                    ->orderByRaw("CASE
-                        WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 4
-                        WHEN articles.id IN (" . implode(',', $collaborativeLikedArticles) . ") THEN 3
-                        WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 2
-                        ELSE 1
-                        END DESC")
-                    ->inRandomOrder($seed);
+                    ->inRandomOrder($seed)
+                    ->get();
             } else {
-                $query->orderBy('created_at', 'desc')
-                    ->inRandomOrder($seed);
+                $query->orderBy('created_at', 'desc');
             }
         } else {
             // finally if no article ids just get all articles by latest
             Log::info('No recommendations found, getting all articles by latest');
             $query->orderBy('created_at', 'desc');
         }
+
+        return $query;
     }
 
     /**
