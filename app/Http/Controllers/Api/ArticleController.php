@@ -357,7 +357,7 @@ class ArticleController extends Controller
      * @bodyParam images array The images IDs. Must first call upload images endpoint. Example: [1, 2]
      * @bodyParam video integer The video ID. Must first call upload videos endpoint. Example: 1
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
-     * @bodyParam array location The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
+     * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
      *
      * @response scenario=success {
      * "message": "Article updated",
