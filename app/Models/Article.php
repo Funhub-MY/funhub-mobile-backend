@@ -152,6 +152,11 @@ class Article extends Model implements HasMedia
         return $this->morphMany(View::class, 'viewable');
     }
 
+    public function location()
+    {
+        return $this->morphOne(Location::class, 'locatable');
+    }
+
     /**
      * Scope a query to only include published articles.
      */

@@ -111,7 +111,7 @@ class LocationResource extends Resource
                                     'city'   => '%L',
                                     'zip'    => '%z',
                                     'state'  => '%D',
-                                    'postcode' => '%z',
+                                    'zip_code' => '%z',
                                     'address' => '%n %S',
                                 ])
                                 ->mapControls([
@@ -130,8 +130,9 @@ class LocationResource extends Resource
                             Forms\Components\TextInput::make('address_2'),
                             Forms\Components\TextInput::make('city')
                                 ->required(),
-                            Forms\Components\TextInput::make('postcode')
+                            Forms\Components\TextInput::make('zip_code')
                                 ->rules('numeric')
+                                ->label('Postcode')
                                 ->required(),
                             Select::make('state_id')
                                 ->label('State')
@@ -139,6 +140,7 @@ class LocationResource extends Resource
                                 ->relationship('state', 'name'),
                             Select::make('country_id')
                                 ->label('Country')
+                                ->default(131)
                                 ->required()
                                 ->relationship('country', 'name'),
                         ])

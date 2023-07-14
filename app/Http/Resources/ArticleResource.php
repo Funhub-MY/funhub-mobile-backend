@@ -31,6 +31,7 @@ class ArticleResource extends JsonResource
             'tags' => $this->tags,
             'comments' => CommentResource::collection($this->comments),
             'interactions' => InteractionResource::collection($this->interactions),
+            'location' => ($this->location) ? new LocationResource($this->location) : null,
             'count' => [
                 'comments' => $this->comments_count ?? 0,
                 'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),

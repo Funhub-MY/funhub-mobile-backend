@@ -8,6 +8,8 @@ use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\User;
 use App\Models\View;
+use Database\Seeders\CountriesTableSeeder;
+use Database\Seeders\StatesTableSeeder;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -823,5 +825,86 @@ class ArticleTest extends TestCase
 
         // check article view count
         $this->assertEquals(count($users), $article->views->count());
+    }
+
+    /**
+     * Test Create Article with Location Tagged
+     * /api/v1/articles
+     */
+    public function testCreateArticleWithLocationTagged()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+         // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $article_id = $response->json('article.id');
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+
+        // get article by id
+        $response = $this->getJson('/api/v1/articles/'.$article_id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article' => [
+                    'location',
+                ]
+            ]);
+
+        // check location data is correct
+        $this->assertEquals('Test Location', $response->json('article.location.name'));
+        $this->assertEquals('Test Address', $response->json('article.location.address'));
+        $this->assertEquals('Test Address 2', $response->json('article.location.address_2'));
+        $this->assertEquals('Test City', $response->json('article.location.city'));
+        $this->assertEquals('Selangor', $response->json('article.location.state.name'));
+        $this->assertEquals('123456', $response->json('article.location.postcode'));
+        $this->assertEquals(4.0, $response->json('article.location.average_ratings'));
     }
 }

@@ -11,7 +11,10 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
+use App\Models\Country;
 use App\Models\Interaction;
+use App\Models\Location;
+use App\Models\State;
 use App\Models\User;
 use App\Models\View;
 use App\Traits\QueryBuilderTrait;
@@ -102,7 +105,7 @@ class ArticleController extends Controller
         //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
         // }
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
@@ -354,7 +357,7 @@ class ArticleController extends Controller
      * @bodyParam images array The images IDs. Must first call upload images endpoint. Example: [1, 2]
      * @bodyParam video integer The video ID. Must first call upload videos endpoint. Example: 1
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
-     *
+     * @bodyParam array location The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
      *
      * @response scenario=success {
      * "message": "Article updated",
@@ -421,12 +424,86 @@ class ArticleController extends Controller
             $article->tags()->attach($tags);
         }
 
+        // attach location with rating
+        if ($request->has('location')) {
+            try {
+                $loc = $this->createOrAttachLocation($article, $request->location);
+            } catch (\Exception $e) {
+                Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
+            }
+        }
+
         event(new ArticleCreated($article));
 
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
         ]);
+    }
+
+    /**
+     * Prep a Location Data
+     *
+     * @param Article $article
+     * @param array $locationData
+     * @return array
+     */
+    private function createOrAttachLocation($article, $locationData)
+    {
+        // check if lat and lng exists
+        $location = Location::where('lat', $locationData['lat'])
+            ->where('lng', $locationData['lng'])
+            ->first();
+
+        if ($location) {
+            // just attach to article with new ratings if there is
+            $article->location()->attach($location->id);
+        } else {
+            // create new location
+            $loc = [
+                'name' => $locationData['name'],
+                'lat' => $locationData['lat'],
+                'lng' => $locationData['lng'],
+                'address' => $locationData['address'] ?? '',
+                'address_2' => $locationData['address_2'] ?? '',
+                'zip_code' => $locationData['postcode'] ?? '',
+                'city' => $locationData['city'] ?? '',
+            ];
+
+            // find state by id if the locationdata state is integer else find by name
+            $state = null;
+            if (is_numeric($locationData['state'])) {
+                $state = State::where('id', $locationData['state'])->first();
+            } else {
+                $state = State::where('name', trim($locationData['state']))->first();
+            }
+
+            if ($state) {
+                $loc['state_id'] = $state->id;
+            
+                // find country by state id
+                $country = Country::where('id', $state->country_id)->first();
+                $loc['country_id'] = $country->id;
+            } else {
+                throw new \Exception('State not found');
+            }
+
+            $location = $article->location()->create($loc);
+        }
+
+        if ($location && $locationData['rating']) {
+            // create a location rating
+            $location->ratings()->create([
+                'rating' => $locationData['rating'],
+                'user_id' => auth()->id(),
+            ]);
+            
+            // recalculate average ratings
+            $location->average_ratings = $location->ratings()->avg('rating');
+            $location->save();
+        }
+
+        return $location;
     }
 
     /**
@@ -443,7 +520,7 @@ class ArticleController extends Controller
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
     public function show($id) {
-        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
