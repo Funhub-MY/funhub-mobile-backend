@@ -897,7 +897,6 @@ class ArticleTest extends TestCase
                     'location',
                 ]
             ]);
-
         // check location data is correct
         $this->assertEquals('Test Location', $response->json('article.location.name'));
         $this->assertEquals('Test Address', $response->json('article.location.address'));

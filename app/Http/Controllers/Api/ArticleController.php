@@ -502,7 +502,6 @@ class ArticleController extends Controller
             $location->average_ratings = $location->ratings()->avg('rating');
             $location->save();
         }
-
         return $location;
     }
 

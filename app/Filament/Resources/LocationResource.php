@@ -65,15 +65,6 @@ class LocationResource extends Resource
                                 ->nullable()
                                 ->placeholder('Select Merchant'),
 
-                            MorphToSelect::make('locatable')
-                                ->label('Attached to Article or Merchant Offer')
-                                ->searchable()
-                                ->required()
-                                ->types([
-                                    MorphToSelect\Type::make(Article::class)->titleColumnName('title'),
-                                    MorphToSelect\Type::make(MerchantOffer::class)->titleColumnName('name'),
-                                ]),
-
                             TextInput::make('phone_no')
                                 ->placeholder('+60123456789'),
 

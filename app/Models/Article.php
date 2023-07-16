@@ -154,7 +154,7 @@ class Article extends Model implements HasMedia
 
     public function location()
     {
-        return $this->morphOne(Location::class, 'locatable');
+        return $this->morphToMany(Location::class, 'locatable');
     }
 
     /**
