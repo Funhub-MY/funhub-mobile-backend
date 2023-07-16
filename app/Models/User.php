@@ -256,6 +256,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         return $this->morphMany(Reports::class, 'reportable');
     }
 
+    public function articlesTaggedIn()
+    {
+        return $this->belongsToMany(Article::class, 'articles_tagged_users', 'user_id', 'article_id')
+            ->withTimestamps();
+    }
+
     // users that this user has blocked
     public function usersBlocked()
     {

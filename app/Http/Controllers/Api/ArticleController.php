@@ -105,7 +105,7 @@ class ArticleController extends Controller
         //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
         // }
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
@@ -277,7 +277,7 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -333,7 +333,7 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -358,7 +358,8 @@ class ArticleController extends Controller
      * @bodyParam video integer The video ID. Must first call upload videos endpoint. Example: 1
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
      * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
-     *
+     * @bodyParam tagged_user_ids array The tagged users IDs. Example: [1, 2]
+     * 
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -371,6 +372,20 @@ class ArticleController extends Controller
 
         // slug
         $slug = strtolower(Str::random(12));
+
+        $taggedUsers = null;
+        // tag users in article
+        if ($request->has('tagged_user_ids')) {
+            // check if user's followers are in tagged user ids list
+            $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
+            if ($followers->count() != count($request->tagged_user_ids)) {
+                return response()->json([
+                    'message' => 'You can only tag your followers.',
+                ], 422);
+            }
+
+            $taggedUsers = User::whereIn('id', $request->tagged_user_ids)->get();
+        }
 
         $article = Article::create([
             'title' => $request->title,
@@ -431,6 +446,11 @@ class ArticleController extends Controller
             } catch (\Exception $e) {
                 Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
             }
+        }
+
+        // tag users in article
+        if ($taggedUsers) {
+            $article->taggedUsers()->attach($taggedUsers);
         }
 
         event(new ArticleCreated($article));
@@ -519,7 +539,7 @@ class ArticleController extends Controller
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
     public function show($id) {
-        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location')
+        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);

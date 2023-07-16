@@ -157,6 +157,12 @@ class Article extends Model implements HasMedia
         return $this->morphToMany(Location::class, 'locatable');
     }
 
+    public function taggedUsers()
+    {
+        return $this->belongsToMany(User::class, 'articles_tagged_users', 'article_id', 'user_id')
+            ->withTimestamps();
+    }
+
     /**
      * Scope a query to only include published articles.
      */

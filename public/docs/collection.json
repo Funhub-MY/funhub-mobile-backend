@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "c1885bf3-6d18-4550-8004-91b75a24be6e",
+        "_postman_id": "c75f78f8-9f06-456a-b8b5-16396815cee4",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -205,7 +205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"ut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"repudiandae\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -240,7 +240,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"video\":1,\"excerpt\":\"This is a excerpt of article\",\"location\":\"{\\\"lat\\\": 123, \\\"lng\\\": 123, \\\"name\\\": \\\"location name\\\", \\\"address\\\": \\\"location address\\\", \\\"address_2\\\" : \\\"\\\", \\\"city\\\": \\\"city\\\", \\\"state\\\": \\\"state name\\\/id\\\", \\\"postcode\\\": \\\"010000\\\", \\\"rating\\\": \\\"5\\\"}\"}"
+                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"video\":1,\"excerpt\":\"This is a excerpt of article\",\"location\":\"{\\\"lat\\\": 123, \\\"lng\\\": 123, \\\"name\\\": \\\"location name\\\", \\\"address\\\": \\\"location address\\\", \\\"address_2\\\" : \\\"\\\", \\\"city\\\": \\\"city\\\", \\\"state\\\": \\\"state name\\\/id\\\", \\\"postcode\\\": \\\"010000\\\", \\\"rating\\\": \\\"5\\\"}\",\"tagged_user_ids\":[1,2]}"
                         },
                         "description": ""
                     },
@@ -496,7 +496,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":13,\"reason\":\"Spam\",\"violation_type\":\"voluptatibus\",\"violation_level\":\"distinctio\",\"article\":1}"
+                                    "raw": "{\"article_id\":5,\"reason\":\"Spam\",\"violation_type\":\"sunt\",\"violation_level\":\"eius\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -763,7 +763,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "rerum",
+                                            "value": "aut",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -863,7 +863,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"qui\",\"violation_type\":\"ullam\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"voluptate\",\"violation_type\":\"esse\"}"
                                 },
                                 "description": ""
                             },
@@ -988,7 +988,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "recusandae",
+                                            "value": "saepe",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1921,7 +1921,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "iure",
+                                            "value": "laudantium",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2697,7 +2697,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -2738,7 +2738,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":20}"
+                                    "raw": "{\"user_id\":14}"
                                 },
                                 "description": ""
                             },
@@ -2837,7 +2837,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"recusandae\",\"violation_level\":\"est\",\"violation_type\":\"esse\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"expedita\",\"violation_level\":\"non\",\"violation_type\":\"beatae\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2935,7 +2935,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"aut\"}"
+                            "raw": "{\"user_ids\":\"eaque\"}"
                         },
                         "description": ""
                     },
@@ -2960,7 +2960,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "3",
+                                    "value": "7",
                                     "description": "The ID of the user."
                                 },
                                 {
@@ -3406,7 +3406,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"female\"}"
+                            "raw": "{\"gender\":\"male\"}"
                         },
                         "description": ""
                     },

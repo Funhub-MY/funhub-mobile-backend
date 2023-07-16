@@ -906,4 +906,79 @@ class ArticleTest extends TestCase
         $this->assertEquals('123456', $response->json('article.location.postcode'));
         $this->assertEquals(4.0, $response->json('article.location.average_ratings'));
     }
+
+    /**
+     * Test Create Article with followers tagged
+     * /api/v1/articles
+     */
+    public function testCreateArticleWithFollowersTagged()
+    {
+        // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        // create ten users who follow $this->user
+        $users = User::factory()->count(10)->create();
+        foreach($users as $user) {
+            $this->actingAs($user); // act as follower
+            $response = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $this->user->id, // follow global user
+            ]);
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+        }
+
+        // switch back to $this->user
+        $this->actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/user/followers');
+
+        // assert should be 10 followers
+        $this->assertCount(10, $response->json()['data']);
+
+        // create article with users tagged
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'tagged_user_ids' => $users->pluck('id')->toArray(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article'
+            ]);
+
+        // get article by id
+        $response = $this->getJson('/api/v1/articles/'.$response->json('article.id'));
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article' => [
+                    'tagged_users',
+                ]
+            ]);
+        
+        // loop each tagged_users check match with $users
+        foreach($response->json('article.tagged_users') as $tagged_user) {
+            $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
+        }
+    }
 }
