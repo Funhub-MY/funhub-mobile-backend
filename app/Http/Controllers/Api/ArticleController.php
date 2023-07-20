@@ -375,7 +375,7 @@ class ArticleController extends Controller
 
         $taggedUsers = null;
         // tag users in article
-        if ($request->has('tagged_user_ids')) {
+        if ($request->has('tagged_user_ids') && $request->tagged_user_ids !== 'null') {
             // check if user's followers are in tagged user ids list
             $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
             if ($followers->count() != count($request->tagged_user_ids)) {
@@ -440,7 +440,7 @@ class ArticleController extends Controller
         }
 
         // attach location with rating
-        if ($request->has('location')) {
+        if ($request->has('location') && $request->location !== 'null') {
             try {
                 $loc = $this->createOrAttachLocation($article, $request->location);
             } catch (\Exception $e) {
@@ -511,7 +511,7 @@ class ArticleController extends Controller
             $location = $article->location()->create($loc);
         }
 
-        if ($location && $locationData['rating']) {
+        if ($location && $locationData['rating'] &&  $locationData['rating'] != 0) {
             // create a location rating
             $location->ratings()->create([
                 'rating' => $locationData['rating'],
