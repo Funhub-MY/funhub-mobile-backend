@@ -41,6 +41,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);
 
         // Articles
+        Route::get('articles/cities', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleCities']);
+
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
         Route::post('articles/video-upload', [\App\Http\Controllers\Api\ArticleController::class, 'postVideoUpload']);

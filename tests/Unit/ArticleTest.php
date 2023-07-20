@@ -905,6 +905,18 @@ class ArticleTest extends TestCase
         $this->assertEquals('Selangor', $response->json('article.location.state.name'));
         $this->assertEquals('123456', $response->json('article.location.postcode'));
         $this->assertEquals(4.0, $response->json('article.location.average_ratings'));
+
+        // check if /api/articles/cities have one city
+        $response = $this->getJson('/api/v1/articles/cities');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'cities',
+            ]);
+
+        $this->assertCount(1, $response->json('cities'));
+
+        // assert city is Test City
+        $this->assertEquals('Test City', $response->json('cities.0'));
     }
 
     /**

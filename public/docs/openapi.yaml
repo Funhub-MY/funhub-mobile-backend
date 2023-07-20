@@ -1,12 +1,40 @@
 openapi: 3.0.3
 info:
-  title: FUNHUB
+  title: Funhub
   description: ''
   version: 1.0.0
 servers:
   -
-    url: 'https://funhub-mobile-backend.test'
+    url: 'http://localhost'
 paths:
+  /api/v1/articles/cities:
+    get:
+      summary: 'Get Article Cities (Unique)'
+      operationId: getArticleCitiesUnique
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  cities: []
+                properties:
+                  cities:
+                    type: array
+                    example: []
+      tags:
+        - Article
   /api/v1/articles/gallery:
     post:
       summary: 'Upload Images for Article'
@@ -284,7 +312,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - repudiandae
+                    - expedita
                   items:
                     type: string
                 category_ids:
@@ -678,19 +706,19 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 14
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
-                  example: Spam
+                  example: 'Spam     * @bodyParam violation_type required The violation type of this report'
                 violation_type:
-                  type: required
-                  description: 'The violation type of this report'
-                  example: sunt
+                  type: string
+                  description: ''
+                  example: omnis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: eius
+                  example: sit
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -698,6 +726,7 @@ paths:
               required:
                 - article_id
                 - reason
+                - violation_type
                 - article
   /api/v1/article_tags:
     get:
@@ -1029,7 +1058,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: aut
+        example: dolores
         required: true
         schema:
           type: string
@@ -1124,11 +1153,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptate
+                  example: id
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: esse
+                  example: iure
               required:
                 - comment_id
                 - reason
@@ -1399,7 +1428,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: saepe
+        example: velit
         required: true
         schema:
           type: string
@@ -2321,7 +2350,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: laudantium
+        example: iusto
         required: true
         schema:
           type: string
@@ -3120,7 +3149,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 7
+                  example: 6
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3173,7 +3202,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 14
+                  example: 4
               required:
                 - user_id
   /api/v1/user/report:
@@ -3220,15 +3249,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: expedita
+                  example: animi
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: non
+                  example: delectus
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: beatae
+                  example: ut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3314,7 +3343,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: eaque
+                  example: necessitatibus
               required:
                 - user_ids
     parameters:
@@ -3354,7 +3383,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 7
+        example: 1
         required: true
         schema:
           type: integer
@@ -3942,7 +3971,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

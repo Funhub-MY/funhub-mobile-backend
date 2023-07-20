@@ -821,8 +821,7 @@ class ArticleController extends Controller
      * @group Article
      * @subgroup Reports
      * @bodyParam article integer required The id of the article. Example: 1
-     * @bodyParam reason string required The reason for reporting the comment. Example: Spam
-     * @bodyParam violation_type required The violation type of this report
+     * @bodyParam reason string required The reason for reporting the comment. Example: Spam     * @bodyParam violation_type required The violation type of this report
      * @bodyParam violation_level required The violation level of this report
      * @response scenario=success {
      * "message": "Comment reported",
@@ -853,5 +852,31 @@ class ArticleController extends Controller
             return response()->json(['message' => 'You have already reported this comment'], 422);
         }
         return response()->json(['message' => 'Comment reported']);
+    }
+
+    /**
+     * Get Article Cities (Unique)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Article
+     * @response scenario=success {
+     * "cities": []
+     * }
+     */
+    public function getArticleCities()
+    {
+        // get all unique article->locations
+        $locationWithCity = Location::select('city')
+            ->orderBy('city', 'asc')
+            ->distinct()
+            ->get();
+
+        // get all unique cities into an array
+        $cities = $locationWithCity->pluck('city')->toArray();
+
+        return response()->json([
+            'cities' => $cities,
+        ]);
     }
 }
