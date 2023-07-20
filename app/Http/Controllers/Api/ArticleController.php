@@ -45,6 +45,10 @@ class ArticleController extends Controller
      * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      * @bodyParam following_only integer optional Filter by Articles by Users who logged in user is following. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam city string optional Filter by City. Example: Subang Jaya
+     * @bodyParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
+     * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -95,6 +99,23 @@ class ArticleController extends Controller
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
                 $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
+            });
+        }
+
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        // get articles by lat, lng
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            // get article where article->location lat,lng is within the radius
+            $query->whereHas('location', function ($query) use ($request, $radius) {
+                $query->selectRaw('( 6371 * acos( cos( radians(' . $request->lat . ') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(' . $request->lng . ') ) + sin( radians(' . $request->lat . ') ) * sin( radians( lat ) ) ) ) AS distance')
+                    ->havingRaw('distance < ' . $radius);
             });
         }
 

@@ -6,6 +6,8 @@ use Tests\TestCase;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
+use App\Models\Country;
+use App\Models\State;
 use App\Models\User;
 use App\Models\View;
 use Database\Seeders\CountriesTableSeeder;
@@ -992,5 +994,98 @@ class ArticleTest extends TestCase
         foreach($response->json('article.tagged_users') as $tagged_user) {
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
         }
+    }
+
+    /**
+     * Get articles by city
+     */
+    public function testGetArticlesByCity()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+        
+        // create 10 articles
+        $articles = Article::factory()->count(10)->published()
+            ->create([
+                'user_id' => $this->user->id,
+            ]);
+
+        // 3 cities of Klang valley
+        $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
+
+        $articles[0]->location()->create([
+            'name' => 'Test Location',
+            'address' => 'Test Address',
+            'lat' => 1.234,
+            'lng' => 1.234,
+            'address_2' => 'Test Address 2',
+            'city' => $cities[0], 
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '123456'
+        ]);
+
+        // attach remainder two location to each article
+        foreach($articles as $article) {
+            $article->location()->create([
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                // randomize cities
+                'city' => $cities[rand(1,2)],
+                'state_id' => State::where('name', 'Selangor')->first()->id,
+                'country_id' => Country::where('name', 'Malaysia')->first()->id,
+                'zip_code' => '123456'
+            ]);
+        }
+
+        // get articles by city
+        $response = $this->getJson('/api/v1/articles?city='.$cities[0]);
+        // assert data is 1 
+        $this->assertCount(1, $response->json('data'));
+
+        // check data first article id is the $articles[0]
+        $this->assertEquals($articles[0]->id, $response->json('data.0.id'));
+    }
+
+    /**
+     * Get articles within my lat, lng
+     */
+    public function testGetArticlesWithintMyLatLng()
+    {
+         // ensure countries and states are seeded first
+         $this->seed(CountriesTableSeeder::class);
+         $this->seed(StatesTableSeeder::class);
+         
+         // create 10 articles
+         $articles = Article::factory()->count(10)->published()
+             ->create([
+                 'user_id' => $this->user->id,
+             ]);
+ 
+         // 3 cities of Klang valley
+         $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
+         foreach($articles as $article) {
+            $article->location()->create([
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 3.0130517,
+                'lng' => 101.6199414,
+                'address_2' => 'Test Address 2',
+                'city' => $cities[0], 
+                'state_id' => State::where('name', 'Selangor')->first()->id,
+                'country_id' => Country::where('name', 'Malaysia')->first()->id,
+                'zip_code' => '123456'
+            ]);
+        }
+
+        // my location: 3.013814, 101.622510
+        $response = $this->getJson('/api/v1/articles?lat=3.013814&lng=101.622510');
+        
+        // assert data is 10 as its nearby
+        $this->assertCount(10, $response->json('data'));
     }
 }
