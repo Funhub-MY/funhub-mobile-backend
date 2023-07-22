@@ -312,7 +312,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - earum
+                    - sunt
                   items:
                     type: string
                 category_ids:
@@ -722,7 +722,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 4
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -730,11 +730,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: quasi
+                  example: sed
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: explicabo
+                  example: qui
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1074,7 +1074,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: fuga
+        example: autem
         required: true
         schema:
           type: string
@@ -1169,11 +1169,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quas
+                  example: fugiat
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: aut
+                  example: doloribus
               required:
                 - comment_id
                 - reason
@@ -1444,7 +1444,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: blanditiis
+        example: fugit
         required: true
         schema:
           type: string
@@ -2366,7 +2366,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: nostrum
+        example: atque
         required: true
         schema:
           type: string
@@ -3165,7 +3165,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 12
+                  example: 15
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3218,7 +3218,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 18
+                  example: 15
               required:
                 - user_id
   /api/v1/user/report:
@@ -3265,15 +3265,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: culpa
+                  example: et
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ipsum
+                  example: possimus
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: perspiciatis
+                  example: reiciendis
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3359,7 +3359,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: ipsa
               required:
                 - user_ids
     parameters:
@@ -3399,7 +3399,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 8
+        example: 7
         required: true
         schema:
           type: integer
@@ -3987,7 +3987,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
