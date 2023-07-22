@@ -7,7 +7,7 @@ servers:
   -
     url: 'https://funhub-mobile-backend.test'
 paths:
-  /api/v1/articles/cities:
+  /api/v1/article_cities:
     get:
       summary: 'Get Article Cities (Unique)'
       operationId: getArticleCitiesUnique
@@ -312,7 +312,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - sunt
+                    - sint
                   items:
                     type: string
                 category_ids:
@@ -722,7 +722,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 4
+                  example: 2
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -730,11 +730,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: sed
+                  example: dignissimos
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: sunt
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1074,7 +1074,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: autem
+        example: sed
         required: true
         schema:
           type: string
@@ -1169,11 +1169,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: fugiat
+                  example: numquam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: doloribus
+                  example: voluptates
               required:
                 - comment_id
                 - reason
@@ -1444,7 +1444,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: fugit
+        example: quae
         required: true
         schema:
           type: string
@@ -2366,7 +2366,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: atque
+        example: cupiditate
         required: true
         schema:
           type: string
@@ -3165,7 +3165,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 15
+                  example: 17
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3218,7 +3218,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 9
               required:
                 - user_id
   /api/v1/user/report:
@@ -3265,15 +3265,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: et
+                  example: iste
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: possimus
+                  example: aliquid
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: reiciendis
+                  example: enim
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3359,7 +3359,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: ipsa
+                  example: sit
               required:
                 - user_ids
     parameters:
@@ -3399,7 +3399,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 7
+        example: 4
         required: true
         schema:
           type: integer
@@ -3987,7 +3987,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
