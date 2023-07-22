@@ -909,7 +909,7 @@ class ArticleTest extends TestCase
         $this->assertEquals(4.0, $response->json('article.location.average_ratings'));
 
         // check if /api/articles/cities have one city
-        $response = $this->getJson('/api/v1/articles/cities');
+        $response = $this->getJson('/api/v1/article_cities');
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'cities',
