@@ -899,7 +899,7 @@ class ArticleController extends Controller
             $query->whereRaw('LOWER(city) LIKE ?', ['%' . trim(strtolower($request->search)) . '%']);
         }
 
-        $query->get();
+        $locationWithCity = $query->get();
 
         // get all unique cities into an array
         $cities = $locationWithCity->pluck('city')->toArray();
