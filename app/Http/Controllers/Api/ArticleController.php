@@ -878,6 +878,7 @@ class ArticleController extends Controller
     /**
      * Get Article Cities (Unique)
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group Article
@@ -886,7 +887,7 @@ class ArticleController extends Controller
      * "cities": []
      * }
      */
-    public function getArticleCities()
+    public function getArticleCities(Request $request)
     {
         // get all unique article->locations
         $query = Location::select('city')
