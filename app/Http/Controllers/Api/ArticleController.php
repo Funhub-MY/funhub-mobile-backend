@@ -881,6 +881,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group Article
+     * @urlParam search string optional Search for city. Example: "Kota"
      * @response scenario=success {
      * "cities": []
      * }
@@ -888,10 +889,16 @@ class ArticleController extends Controller
     public function getArticleCities()
     {
         // get all unique article->locations
-        $locationWithCity = Location::select('city')
+        $query = Location::select('city')
             ->orderBy('city', 'asc')
-            ->distinct()
-            ->get();
+            ->distinct();
+
+        if ($request->has('search')) {
+            // search by lowering and like
+            $query->whereRaw('LOWER(city) LIKE ?', ['%' . trim(strtolower($request->search)) . '%']);
+        }
+
+        $query->get();
 
         // get all unique cities into an array
         $cities = $locationWithCity->pluck('city')->toArray();
