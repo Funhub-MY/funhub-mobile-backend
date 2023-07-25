@@ -901,8 +901,8 @@ class ArticleController extends Controller
             ->distinct();
 
         if ($request->has('search')) {
-            // search by lowering and like
-            $query->whereRaw('LOWER(city) LIKE ?', ['%' . trim(strtolower($request->search)) . '%']);
+            // search by like
+            $query->where('city', 'like', '%' . $request->search . '%');
         }
 
         $locationWithCity = $query->get();
