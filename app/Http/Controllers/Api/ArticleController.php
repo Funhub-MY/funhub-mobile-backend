@@ -114,14 +114,13 @@ class ArticleController extends Controller
             $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
             // get article where article->location lat,lng is within the radius
             $query->whereHas('location', function ($query) use ($request, $radius) {
-                $query->selectRaw("latitude, longitude,
-                                ( 6371000 * acos( cos( radians(?) ) *
-                                cos( radians( latitude ) )
-                                * cos( radians( longitude ) - radians(?)
-                                ) + sin( radians(?) ) *
-                                sin( radians( latitude ) ) )
-                                ) AS distance", [$request->lat, $request->lng, $request->lat])
-                ->having("distance", "<", $radius);
+                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
+                    cos( radians( lat ) )
+                    * cos( radians( lng ) - radians(?)
+                    ) + sin( radians(?) ) *
+                    sin( radians( lat ) ) )
+                    ) AS distance', [$request->lat, $request->lng, $request->lat])
+                    ->havingRaw("distance < ?", [$radius]);
             });
         }
 

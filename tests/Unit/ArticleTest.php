@@ -1083,7 +1083,7 @@ class ArticleTest extends TestCase
         }
 
         // my location: 3.013814, 101.622510
-        $response = $this->getJson('/api/v1/articles?lat=3.013814&lng=101.622510');
+        $response = $this->getJson('/api/v1/articles?lat=3.013814&lng=101.622510&radius=10000');
         
         // assert data is 10 as its nearby
         $this->assertCount(10, $response->json('data'));
