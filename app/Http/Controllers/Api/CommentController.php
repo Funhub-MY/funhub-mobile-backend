@@ -62,18 +62,18 @@ class CommentController extends Controller
         $query = Comment::where('commentable_type', $request->commentable_type)
             ->where('commentable_id', $id);
 
-        if ($type == 'article') {
-            // if type is article, ensure article is published and user is not hidden by article owner
-            $query->whereHas('commentable', function ($query) use ($id) {
-                $query->published()
-                    ->where('id', $id)
-                    ->whereDoesntHave('hiddenUsers', function ($query) {
-                        $query->where('user_id', auth()->id());
-                    });
-            });
-        }
+        // if ($type == 'article') {
+        //     // if type is article, ensure article is published and user is not hidden by article owner
+        //     $query->whereHas('commentable', function ($query) use ($id) {
+        //         $query->published()
+        //             ->where('id', $id)
+        //             ->whereDoesntHave('hiddenUsers', function ($query) {
+        //                 $query->where('user_id', auth()->id());
+        //             });
+        //     });
+        // }
 
-        $this->buildQuery($query, $request);
+        // $this->buildQuery($query, $request);
 
         // with replies paginated and sorted latest first
         // with replies count
