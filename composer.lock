@@ -267,16 +267,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.276.5",
+            "version": "3.277.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "bd01bbc5ea4d62a070c7064a386bf0008871c6a5"
+                "reference": "c780e4fabaab2cce5fcd9748fd17cf82bb99207e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/bd01bbc5ea4d62a070c7064a386bf0008871c6a5",
-                "reference": "bd01bbc5ea4d62a070c7064a386bf0008871c6a5",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c780e4fabaab2cce5fcd9748fd17cf82bb99207e",
+                "reference": "c780e4fabaab2cce5fcd9748fd17cf82bb99207e",
                 "shasum": ""
             },
             "require": {
@@ -356,9 +356,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.276.5"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.277.0"
             },
-            "time": "2023-07-25T18:12:23+00:00"
+            "time": "2023-07-26T18:23:52+00:00"
         },
         {
             "name": "beste/clock",
@@ -3523,16 +3523,16 @@
         },
         {
             "name": "kreait/laravel-firebase",
-            "version": "5.2.0",
+            "version": "5.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kreait/laravel-firebase.git",
-                "reference": "210bc5488963462265c90fa2df8494a009089500"
+                "reference": "34ded0e81fd11f51c574a0c4c3a603555a796989"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kreait/laravel-firebase/zipball/210bc5488963462265c90fa2df8494a009089500",
-                "reference": "210bc5488963462265c90fa2df8494a009089500",
+                "url": "https://api.github.com/repos/kreait/laravel-firebase/zipball/34ded0e81fd11f51c574a0c4c3a603555a796989",
+                "reference": "34ded0e81fd11f51c574a0c4c3a603555a796989",
                 "shasum": ""
             },
             "require": {
@@ -3585,7 +3585,7 @@
             ],
             "support": {
                 "issues": "https://github.com/kreait/laravel-firebase/issues",
-                "source": "https://github.com/kreait/laravel-firebase/tree/5.2.0"
+                "source": "https://github.com/kreait/laravel-firebase/tree/5.3.0"
             },
             "funding": [
                 {
@@ -3593,7 +3593,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-30T11:24:10+00:00"
+            "time": "2023-07-26T12:25:45+00:00"
         },
         {
             "name": "laravel-notification-channels/fcm",
@@ -3655,16 +3655,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v9.52.11",
+            "version": "v9.52.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4b8fd76b4329fa706f1f9469406fba19822f7558"
+                "reference": "8bfd22be79f437fa335e70692e4e91ff40ce561d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4b8fd76b4329fa706f1f9469406fba19822f7558",
-                "reference": "4b8fd76b4329fa706f1f9469406fba19822f7558",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/8bfd22be79f437fa335e70692e4e91ff40ce561d",
+                "reference": "8bfd22be79f437fa335e70692e4e91ff40ce561d",
                 "shasum": ""
             },
             "require": {
@@ -3849,7 +3849,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-07-25T14:31:07+00:00"
+            "time": "2023-07-26T13:20:55+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -12257,16 +12257,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.26",
+            "version": "9.2.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "443bc6912c9bd5b409254a40f4b0f4ced7c80ea1"
+                "reference": "b0a88255cb70d52653d80c890bd7f38740ea50d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/443bc6912c9bd5b409254a40f4b0f4ced7c80ea1",
-                "reference": "443bc6912c9bd5b409254a40f4b0f4ced7c80ea1",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/b0a88255cb70d52653d80c890bd7f38740ea50d1",
+                "reference": "b0a88255cb70d52653d80c890bd7f38740ea50d1",
                 "shasum": ""
             },
             "require": {
@@ -12322,7 +12322,8 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.26"
+                "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.27"
             },
             "funding": [
                 {
@@ -12330,7 +12331,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-06T12:58:08+00:00"
+            "time": "2023-07-26T13:44:30+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",

@@ -71,7 +71,7 @@ class CommentController extends Controller
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
                     });
-            });
+            })->where('parent_id', null);
         }
 
         $this->buildQuery($query, $request);
@@ -86,7 +86,7 @@ class CommentController extends Controller
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
             ->published();
-        
+
         $data = $query->paginate(config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
