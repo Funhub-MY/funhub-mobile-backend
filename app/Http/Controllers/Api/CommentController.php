@@ -74,7 +74,7 @@ class CommentController extends Controller
             });
         }
 
-        // $this->buildQuery($query, $request);
+        $this->buildQuery($query, $request);
 
         // with replies paginated and sorted latest first
         // with replies count
