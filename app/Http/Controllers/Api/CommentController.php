@@ -64,8 +64,9 @@ class CommentController extends Controller
 
         if ($type == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
-            $query->whereHas('commentable', function ($query) {
+            $query->whereHas('commentable', function ($query) use ($id) {
                 $query->published()
+                    ->where('id', $id)
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
                     });
