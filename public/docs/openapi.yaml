@@ -327,7 +327,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - aut
+                    - sequi
                   items:
                     type: string
                 category_ids:
@@ -737,7 +737,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 11
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -745,11 +745,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: sed
+                  example: sit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolorum
+                  example: dolorem
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1089,7 +1089,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: est
+        example: enim
         required: true
         schema:
           type: string
@@ -1184,11 +1184,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: enim
+                  example: delectus
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ullam
+                  example: perferendis
               required:
                 - comment_id
                 - reason
@@ -1459,7 +1459,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: iure
+        example: voluptas
         required: true
         schema:
           type: string
@@ -1974,6 +1974,65 @@ paths:
               required:
                 - name
                 - email
+  /api/v1/interactions/users:
+    get:
+      summary: 'Get Users of Interaction'
+      operationId: getUsersOfInteraction
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                  links: {  }
+                  meta: {  }
+                properties:
+                  data:
+                    type: array
+                    example: []
+                  links:
+                    type: object
+                    properties: []
+                  meta:
+                    type: object
+                    properties: []
+      tags:
+        - Interactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: 'article,merchant_offer'
+                id:
+                  type: integer
+                  description: 'The id of the interactable.'
+                  example: 1
+                type:
+                  type: string
+                  description: 'The type of interaction.'
+                  example: 'like,dislike,share,bookmark'
+              required:
+                - interactable
+                - id
+                - type
   /api/v1/interactions:
     get:
       summary: 'Get interactions on a interactable type (eg. Articles)'
@@ -2381,7 +2440,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eveniet
+        example: sint
         required: true
         schema:
           type: string
@@ -3180,7 +3239,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 5
+                  example: 20
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3233,7 +3292,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 17
+                  example: 4
               required:
                 - user_id
   /api/v1/user/report:
@@ -3280,15 +3339,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: ex
+                  example: impedit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: occaecati
+                  example: quasi
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: tenetur
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3374,7 +3433,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: molestiae
+                  example: ipsam
               required:
                 - user_ids
     parameters:
@@ -3414,7 +3473,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 12
+        example: 8
         required: true
         schema:
           type: integer

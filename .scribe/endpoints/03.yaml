@@ -4,6 +4,76 @@ endpoints:
   -
     httpMethods:
       - GET
+    uri: api/v1/interactions/users
+    metadata:
+      groupName: Interactions
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Users of Interaction'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
+        description: 'The type of interactable.'
+        required: true
+        example: 'article,merchant_offer'
+        type: string
+        custom: []
+      id:
+        name: id
+        description: 'The id of the interactable.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      type:
+        name: type
+        description: 'The type of interaction.'
+        required: true
+        example: 'like,dislike,share,bookmark'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      interactable: 'article,merchant_offer'
+      id: 1
+      type: 'like,dislike,share,bookmark'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [],
+          "links": {},
+          "meta": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8k1Z4D66bdcVEvgae53aPhf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
     uri: api/v1/interactions
     metadata:
       groupName: Interactions
@@ -113,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer keh66PVg1E854vbdaZfaDc3'
+      - 'Bearer 8aVfb1c6d6Eh3vZkg4a5DPe'
     controller: null
     method: null
     route: null
@@ -186,7 +256,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z4f63cbePdah6EVva5g1Dk8'
+      - 'Bearer Vcfh81aP5k66eZ4D3vaEdgb'
     controller: null
     method: null
     route: null
@@ -237,7 +307,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gh3fbVEk6DPZdv46e8ca5a1'
+      - 'Bearer d5gvbfD46E1kZhaa63e8VcP'
     controller: null
     method: null
     route: null
@@ -296,7 +366,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v13dPeDbkVa45afZgEc8h66'
+      - 'Bearer e6bkP5DE1da8v3gVa64cfhZ'
     controller: null
     method: null
     route: null

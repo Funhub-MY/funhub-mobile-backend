@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3bv8fa6V5EdeDhgka146cPZ'
+      - 'Bearer fZekv4a3P651VcEgD8dabh6'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Pd5Vae8D3Za16vhcbkEf4g'
+      - 'Bearer Df3kh6Z6Pbaad58cv4geE1V'
     controller: null
     method: null
     route: null
@@ -141,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 5
+        example: 20
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 5
+      user_id: 20
     fileParameters: []
     responses:
       -
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fZePkE5bh61d8c43aVg6Dva'
+      - 'Bearer 43ahbvfZDk65E1VcagdeP68'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 17
+        example: 4
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 17
+      user_id: 4
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8PdZhe1gfvE3a6abkc546DV'
+      - 'Bearer 3D4VhPdb1a6vfk5a8ZgEc6e'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: ex
+        example: impedit
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: occaecati
+        example: quasi
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: et
+        example: tenetur
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: ex
-      violation_level: occaecati
-      violation_type: et
+      reason: impedit
+      violation_level: quasi
+      violation_type: tenetur
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8abPV61d436D5EgZahkfvce'
+      - 'Bearer 6E53ehkZgV84Pa1dD6facvb'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eaa86VkcPEdZ6f53h14gvbD'
+      - 'Bearer 4fVk6hgc86aa3PDbe5Zvd1E'
     controller: null
     method: null
     route: null
@@ -417,11 +417,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: molestiae
+        example: ipsam
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: molestiae
+      user_ids: ipsam
     fileParameters: []
     responses:
       -
@@ -438,7 +438,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DZV1hfakEcgv5eb6436a8dP'
+      - 'Bearer k6daVh8DvPa6bce35Eg4Z1f'
     controller: null
     method: null
     route: null
@@ -465,7 +465,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 12
+        example: 8
         type: integer
         custom: []
       user:
@@ -476,7 +476,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
-      user_id: 12
+      user_id: 8
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -497,7 +497,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v1dg68Z3ehaDEckV4ab56fP'
+      - 'Bearer ZdD8h6fP63ekVvab1a45cEg'
     controller: null
     method: null
     route: null

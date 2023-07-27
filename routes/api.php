@@ -66,6 +66,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
 
         // Interactions
+        Route::get('interactions/users', \App\Http\Controllers\Api\InteractionController::class . '@getUsersOfInteraction');
         Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
 
         // User Following/Followers
