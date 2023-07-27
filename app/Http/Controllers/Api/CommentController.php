@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Comment;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
@@ -77,15 +78,18 @@ class CommentController extends Controller
 
         // with replies paginated and sorted latest first
         // with replies count
-        $data = $query->with('user')
+        $query->with('user')
             ->with(['replies' => function ($query) use ($request) {
                 $query->latest()
                     ->paginate($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
             }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
-            ->published()
-            ->paginate(config('app.paginate_per_page'));
+            ->published();
+
+        Log::info($query->toSql());
+        
+        $data = $query->paginate(config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
     }
