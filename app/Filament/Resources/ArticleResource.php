@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
+use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\User;
@@ -397,6 +398,7 @@ class ArticleResource extends Resource
         return [
             RelationManagers\CommentsRelationManager::class,
             RelationManagers\InteractionsRelationManager::class,
+            RelationManagers\LocationsRelationManager::class,
         ];
     }
 

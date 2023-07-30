@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,7 +14,11 @@ class Location extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
+    protected $appends = ['full_address'];
+
     const MEDIA_COLLECTION_NAME = 'location_images';
+    const STATUS_PUBLISHED = 1;
+    const STATUS_DRAFT = 0;
 
     public function getLocationAttribute(): array
     {
@@ -56,6 +61,17 @@ class Location extends Model implements HasMedia
         return $this->morphTo();
     }
 
+    public function articles()
+    {
+        return $this->morphedByMany(Article::class, 'locatable');
+    }
+
+    public function merchantOffers()
+    {
+        return $this->morphedByMany(MerchantOffer::class, 'locatable');
+    }
+
+
     public function merchant()
     {
         return $this->belongsTo(Merchant::class);
@@ -74,5 +90,15 @@ class Location extends Model implements HasMedia
     public function ratings()
     {
         return $this->hasMany(LocationRating::class);
+    }
+
+    public function scopePublished(Builder $query): void
+    {
+         $query->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function getFullAddressAttribute(): string
+    {
+        return $this->address . ', ' . $this->city . ', ' . $this->state->name . ', ' . $this->country->name;
     }
 }

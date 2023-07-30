@@ -327,7 +327,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - sequi
+                    - ut
                   items:
                     type: string
                 category_ids:
@@ -737,7 +737,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 3
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -745,11 +745,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: sit
+                  example: dolor
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolorem
+                  example: voluptatem
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -1089,7 +1089,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: enim
+        example: magnam
         required: true
         schema:
           type: string
@@ -1184,11 +1184,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: delectus
+                  example: quis
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: perferendis
+                  example: ab
               required:
                 - comment_id
                 - reason
@@ -1459,7 +1459,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: voluptas
+        example: sunt
         required: true
         schema:
           type: string
@@ -2234,6 +2234,109 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/locations:
+    get:
+      summary: 'Get Locations'
+      operationId: getLocations
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Location
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'optional Search query.'
+                  example: '"KFC SS15"'
+                state_id:
+                  type: integer
+                  description: 'optional Filter by state id.'
+                  example: 1
+                country_id:
+                  type: integer
+                  description: 'optional Filter by country id.'
+                  example: 1
+                city:
+                  type: string
+                  description: 'optional Filter by city.'
+                  example: '"Subang Jaya"'
+                lat:
+                  type: number
+                  description: 'optional Latitude of User GeoLoc.'
+                  example: 3.073065
+                lng:
+                  type: number
+                  description: 'optional Longitude of User GeoLoc.'
+                  example: 101.607787
+                radius:
+                  type: integer
+                  description: 'optional Radius (KM) of search if lat,lng provided.'
+                  example: 10
+  '/api/v1/locations/{location_id}':
+    get:
+      summary: 'Get One Location'
+      operationId: getOneLocation
+      description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: {  }
+                properties:
+                  data:
+                    type: object
+                    properties: []
+      tags:
+        - Location
+    parameters:
+      -
+        in: path
+        name: location_id
+        description: 'The ID of the location.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: location
+        description: 'Location ID.'
+        example: '1'
+        required: true
+        schema:
+          type: string
   /api/v1/merchant/offers/my_bookmarks:
     get:
       summary: 'Get My Bookmarked Merchant Offers'
@@ -2440,7 +2543,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: sint
+        example: amet
         required: true
         schema:
           type: string
@@ -3292,7 +3395,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 4
+                  example: 8
               required:
                 - user_id
   /api/v1/user/report:
@@ -3339,15 +3442,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: impedit
+                  example: pariatur
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quasi
+                  example: rerum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: tenetur
+                  example: et
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3433,7 +3536,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: ipsam
+                  example: ad
               required:
                 - user_ids
     parameters:
@@ -3473,7 +3576,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 8
+        example: 3
         required: true
         schema:
           type: integer
@@ -4061,7 +4164,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -4336,6 +4439,9 @@ tags:
     description: ''
   -
     name: Interactions
+    description: ''
+  -
+    name: Location
     description: ''
   -
     name: Merchant

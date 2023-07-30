@@ -32,6 +32,8 @@ class LocationResource extends JsonResource
                 'id' => $this->country->id,
                 'name' => $this->country->name
             ],
+            'articles' => ($this->articles) ? ArticleResource::collection($this->articles) : [],
+            'merchant_offers' => ($this->merchant_offers) ? MerchantOfferResource::collection($this->merchant_offers) : [],
             'phone_no' => $this->phone_no,
             'average_ratings' => $this->average_ratings,
             'ratings' => ($this->ratings) ? LocationRatingResource::collection($this->ratings) : [],

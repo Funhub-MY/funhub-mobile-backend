@@ -148,5 +148,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/mark_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkSingleUnreadNotificationAsRead']); // single
             Route::post('/mark_all_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkUnreadNotificationAsRead']); // all unread
         });
+
+        Route::prefix('/locations')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\LocationController::class, 'index']);
+            Route::get('/{location}', [\App\Http\Controllers\Api\LocationController::class, 'show']);
+        });
     });
 });
