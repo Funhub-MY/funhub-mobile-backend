@@ -981,17 +981,15 @@ class ArticleTest extends TestCase
             ]);
 
         // get article by id
-        $response = $this->getJson('/api/v1/articles/'.$response->json('article.id'));
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id='.$response->json('article.id'));
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'article' => [
-                    'tagged_users',
-                ]
+                'data'
             ]);
         
         // loop each tagged_users check match with $users
-        foreach($response->json('article.tagged_users') as $tagged_user) {
+        foreach($response->json('data') as $tagged_user) {
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
         }
     }

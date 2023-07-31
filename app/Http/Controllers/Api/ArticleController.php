@@ -8,6 +8,7 @@ use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleImagesUploadRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
@@ -139,11 +140,50 @@ class ArticleController extends Controller
         //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
         // }
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Get Tagged users of article
+     *
+     * @param Request $request
+     * @return UserResource
+     * 
+     * @group Article
+     * @bodyParam article_id integer required Article Id. Example: 1
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     */
+    public function getTaggedUsersOfArticle(Request $request)
+    {
+        $this->validate($request, [
+            'article_id' => 'required',
+        ]);
+
+        // ensure user has access to this articles to load tagged users
+        $article = Article::published()->where('id', $request->article_id)
+            ->whereDoesntHave('hiddenUsers', function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            })->first();
+
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        $taggedUsers = $article->taggedUsers()->paginate(config('app.paginate_per_page'));
+
+        return UserResource::collection($taggedUsers);
     }
 
     /**

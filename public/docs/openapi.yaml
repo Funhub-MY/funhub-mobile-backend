@@ -293,6 +293,104 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+  /api/v1/articles/report:
+    post:
+      summary: 'Report an article'
+      operationId: reportAnArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment reported\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "You have already reported this comment" ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_id:
+                  type: integer
+                  description: ''
+                  example: 6
+                reason:
+                  type: string
+                  description: 'The reason for reporting the comment.'
+                  example: 'Spam     * @bodyParam violation_type required The violation type of this report'
+                violation_type:
+                  type: string
+                  description: ''
+                  example: et
+                violation_level:
+                  type: required
+                  description: 'The violation level of this report'
+                  example: voluptas
+                article:
+                  type: integer
+                  description: 'The id of the article.'
+                  example: 1
+              required:
+                - article_id
+                - reason
+                - violation_type
+                - article
+  /api/v1/articles/tagged_users:
+    get:
+      summary: 'Get Tagged users of article'
+      operationId: getTaggedUsersOfArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_id:
+                  type: integer
+                  description: 'Article Id.'
+                  example: 1
+              required:
+                - article_id
   /api/v1/articles:
     get:
       summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
@@ -327,7 +425,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ut
+                    - aliquam
                   items:
                     type: string
                 category_ids:
@@ -701,68 +799,6 @@ paths:
         required: true
         schema:
           type: integer
-  /api/v1/articles/report:
-    post:
-      summary: 'Report an article'
-      operationId: reportAnArticle
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-      responses:
-        200:
-          description: success
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n\"message\": \"Comment reported\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"message": "You have already reported this comment" ]}'
-      tags:
-        - Article
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                article_id:
-                  type: integer
-                  description: ''
-                  example: 9
-                reason:
-                  type: string
-                  description: 'The reason for reporting the comment.'
-                  example: 'Spam     * @bodyParam violation_type required The violation type of this report'
-                violation_type:
-                  type: string
-                  description: ''
-                  example: odio
-                violation_level:
-                  type: required
-                  description: 'The violation level of this report'
-                  example: veniam
-                article:
-                  type: integer
-                  description: 'The id of the article.'
-                  example: 1
-              required:
-                - article_id
-                - reason
-                - violation_type
-                - article
   /api/v1/article_tags:
     get:
       summary: 'Get popular tags'
@@ -1093,7 +1129,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: laboriosam
+        example: soluta
         required: true
         schema:
           type: string
@@ -1188,11 +1224,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: facere
+                  example: aliquam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: error
+                  example: inventore
               required:
                 - comment_id
                 - reason
@@ -1463,7 +1499,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: tempore
+        example: rerum
         required: true
         schema:
           type: string
@@ -2547,7 +2583,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: consequuntur
+        example: incidunt
         required: true
         schema:
           type: string
@@ -3346,7 +3382,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 13
+                  example: 20
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3399,7 +3435,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 18
+                  example: 1
               required:
                 - user_id
   /api/v1/user/report:
@@ -3446,15 +3482,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: et
+                  example: dolor
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quibusdam
+                  example: rem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: reiciendis
+                  example: et
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3540,7 +3576,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: fuga
+                  example: repudiandae
               required:
                 - user_ids
     parameters:
