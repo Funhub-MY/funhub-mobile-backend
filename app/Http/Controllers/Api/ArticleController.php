@@ -49,6 +49,7 @@ class ArticleController extends Controller
      * @bodyParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -121,6 +122,13 @@ class ArticleController extends Controller
                     sin( radians( lat ) ) )
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
                     ->havingRaw("distance < ?", [$radius]);
+            });
+        }
+
+        // location id
+        if ($request->has('location_id')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('id', $request->location_id);
             });
         }
 
