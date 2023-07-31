@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Comment;
 use App\Models\Interaction;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class NotificationResource extends JsonResource
 {
@@ -19,14 +20,23 @@ class NotificationResource extends JsonResource
         // get article id if object is comment / interaction
         $article_id = null;
         $article_type = null;
-        if ($this->data['object'] == Comment::class) {
-            $article =  $this->data['object']::find($this->data['object_id'])->commentable;
-            $article_id = $article->id;
-            $article_type = $article->type;
-        } else if ($this->data['object'] == Interaction::class) {
-            $article =  $this->data['object']::find($this->data['object_id'])->interactable;
-            $article_id = $article->id;
-            $article_type = $article->type;
+
+        $object = $this->data['object']::find($this->data['object_id']);
+        
+        if ($object) {
+            if ($this->data['object'] == Comment::class) {
+                $article =  $object->commentable;
+                if ($article) {
+                    $article_id = $article->id;
+                    $article_type = $article->type;
+                }
+            } else if ($this->data['object'] == Interaction::class) {
+                $article = $object->interactable;
+                if ($article) {
+                    $article_id = $article->id;
+                    $article_type = $article->type;
+                }
+            }
         }
 
         return [
