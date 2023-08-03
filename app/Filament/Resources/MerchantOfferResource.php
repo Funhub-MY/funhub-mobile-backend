@@ -17,6 +17,9 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Closure;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 
 class MerchantOfferResource extends Resource
 {
@@ -54,7 +57,17 @@ class MerchantOfferResource extends Resource
                                     ->rules('image'),
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
+
+                                Select::make('purchase_method')
+                                    ->label('Default Purchase Mode')
+                                    ->default('point')
+                                    ->options([
+                                        'point' => 'Funhub Point',
+                                        'fiat' => 'MYR',
+                                    ]),
+                                
                                 Forms\Components\TextInput::make('unit_price')
+                                    ->label('Funhub Point Cost')
                                     ->required()
                                     ->numeric()
                                     ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
@@ -63,7 +76,65 @@ class MerchantOfferResource extends Resource
                                         ->minValue(1)
                                         ->thousandsSeparator(',')
                                     ),
+
+                                 Fieldset::make('Point Pricing (MYR)')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('point_fiat_price')
+                                        ->label('Funhub Cost in MYR')
+                                        ->required()
+                                        ->numeric()
+                                        ->prefix('RM')
+                                        ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                            ->numeric()
+                                            ->decimalPlaces(2)
+                                            ->minValue(1)
+                                            ->thousandsSeparator(','),
+                                        ),
+                                    Forms\Components\TextInput::make('discounted_point_fiat_price')
+                                        ->label('Discounted Funhub Cost in MYR')
+                                        ->required()
+                                        ->numeric()
+                                        ->prefix('RM')
+                                        ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                            ->numeric()
+                                            ->decimalPlaces(2)
+                                            ->minValue(1)
+                                            ->thousandsSeparator(','),
+                                        ),
+
+                                    Hidden::make('currency')
+                                        ->default('MYR')
+                                        ->required(),
+                                ]),
+
+                                Fieldset::make('MYR Pricing')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('fiat_price')
+                                            ->label('MYR Cost')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('RM')
+                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(2)
+                                                ->minValue(1)
+                                                ->thousandsSeparator(','),
+                                            ),
+                                        Forms\Components\TextInput::make('discounted_fiat_price')
+                                            ->label('MYR Discounted Cost')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('RM')
+                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(2)
+                                                ->minValue(1)
+                                                ->thousandsSeparator(','),
+                                            ),
+                                ]),
+
                                 Forms\Components\TextInput::make('quantity')
+                                    ->label('Available Quantity')
                                     ->required()
                                     ->numeric()
                                     ->minValue(1),
