@@ -17,7 +17,7 @@ class ArticleResource extends JsonResource
      */
     public function toArray($request)
     {
-        $location = [];
+        $location = null;
         if ($this->has('location')) {
             $loc = $this->location->first();
             
