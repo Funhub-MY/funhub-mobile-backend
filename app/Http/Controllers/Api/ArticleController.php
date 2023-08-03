@@ -643,6 +643,7 @@ class ArticleController extends Controller
      * @bodyParam video file The video ID of the article.
      * @bodyParam tagged_user_ids array The tagged user IDs of the article. Example: [1, 2]
      * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
+     * 
      * @response scenario=success {
      * "message": "Article updated",
      * }
