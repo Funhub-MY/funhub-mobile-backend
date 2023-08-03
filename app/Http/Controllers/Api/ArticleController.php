@@ -713,15 +713,15 @@ class ArticleController extends Controller
             // sync category
             if ($request->has('categories')) {
                 // explode categories
-                $category_ids = explode(',', $request->categories);
+                $category_ids = $request->categories;
                 // check if category exists before sync
                 $categories = ArticleCategory::whereIn('id', $category_ids)->pluck('id');
                 $article->categories()->sync($categories);
             }
-
+    
             // sync tags
             if ($request->has('tags')) {
-                $tags = explode(',', $request->tags);
+                $tags = $request->tags;
                 $tags = array_map(function ($tag) {
                     return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
                 }, $tags);
