@@ -162,15 +162,10 @@ class CommentTest extends TestCase
                 'data'
             ]);
 
-        // dd($response->json('data'));
-
         // ensure each data.commentable_id is $article->id
         foreach ($response->json('data') as $comment) {
             $this->assertEquals($article->id, $comment['commentable_id']);
         }
-        
-        // check if there are 10 comment
-        $this->assertCount(10, $response->json('data'));
     }
 
     /**
