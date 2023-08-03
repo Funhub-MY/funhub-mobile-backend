@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Article;
 use App\Models\Interaction;
+use App\Models\Location;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
@@ -16,6 +17,17 @@ class ArticleResource extends JsonResource
      */
     public function toArray($request)
     {
+        $location = [];
+        if ($this->location) {
+            $articleOwnerRating = $this->location->ratings()->where('user_id', $this->user->id)->first();
+            $location = [
+                'id' => $this->location->id,
+                'name' => $this->location->name,
+                'address' => $this->location->full_address,
+                'article_owner_rating' => ($articleOwnerRating) ? $articleOwnerRating->rating : null,
+            ];
+        }
+
         return [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -31,7 +43,7 @@ class ArticleResource extends JsonResource
             'tags' => $this->tags,
             'comments' => CommentResource::collection($this->comments),
             'interactions' => InteractionResource::collection($this->interactions),
-            'location' => ($this->location) ? new LocationResource($this->location->first()) : null,
+            'location' => $location,
             // 'tagged_users' => UserResource::collection($this->taggedUsers),
             'count' => [
                 'comments' => $this->comments_count ?? 0,
