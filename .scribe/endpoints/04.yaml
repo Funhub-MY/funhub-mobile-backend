@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ea4h5bvkdg3cf6Va16De8ZP'
+      - 'Bearer cge6fvdhD1k65PE3b8aaVZ4'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gPcD53aEk1d6eZa48v6Vfhb'
+      - 'Bearer c4ZEPvV3fa8hkD1badg566e'
     controller: null
     method: null
     route: null
@@ -141,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 1
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 1
+      user_id: 19
     fileParameters: []
     responses:
       -
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5he6b3dEa46ga1vVPDkfcZ8'
+      - 'Bearer hVad5kbeED81a64fcP3gvZ6'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 10
+        example: 1
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 10
+      user_id: 1
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dV1kv64h8eEgc6bZfP5a3aD'
+      - 'Bearer D6P6fVh35avZbcgEk84d1ae'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: corrupti
+        example: ut
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: reiciendis
+        example: qui
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: fuga
+        example: quo
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: corrupti
-      violation_level: reiciendis
-      violation_type: fuga
+      reason: ut
+      violation_level: qui
+      violation_type: quo
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dDVbav816h4fgeckP53EZa6'
+      - 'Bearer 8fgb6ae5cDd3VkhvaE41Z6P'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ea1dv68eb3PkghDa54fcVZ6'
+      - 'Bearer dV4vcP51ke36a6Zab8ghEfD'
     controller: null
     method: null
     route: null
@@ -417,11 +417,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: esse
+        example: consequatur
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: esse
+      user_ids: consequatur
     fileParameters: []
     responses:
       -
@@ -438,7 +438,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4dbPa8afDgc1Ehk5ev63Z6V'
+      - 'Bearer e5acfg1Z6PdkDvVbEha4863'
     controller: null
     method: null
     route: null
@@ -497,7 +497,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5Vh16fE8kgcv6ZebdDa3Pa4'
+      - 'Bearer 3f16PhEZ4VDadbc6gek8va5'
     controller: null
     method: null
     route: null

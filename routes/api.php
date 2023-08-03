@@ -50,6 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/my_bookmarks', [\App\Http\Controllers\Api\ArticleController::class, 'getMyBookmarkedArticles']);
         Route::post('articles/report', [\App\Http\Controllers\Api\ArticleController::class, 'postReportArticle']);
         Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
+        Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
        
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         

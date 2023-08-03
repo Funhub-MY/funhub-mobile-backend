@@ -138,6 +138,12 @@ class MerchantOffer extends Model implements HasMedia
         return $this->morphMany(View::class, 'viewable');
     }
 
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'article_merchant_offer', 'merchant_offer_id', 'article_id')
+            ->withTimestamps();
+    }
+
     /**
      * Scope a query to only include published offers.
      */

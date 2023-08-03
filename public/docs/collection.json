@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "dfc4a34b-e767-4388-af1c-ff58c85adda6",
+        "_postman_id": "2736034a-dd38-445d-8db1-0083c125363a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":13,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"non\",\"violation_level\":\"dolores\",\"article\":1}"
+                                    "raw": "{\"article_id\":12,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"nisi\",\"violation_level\":\"harum\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -312,6 +312,52 @@
                     ]
                 },
                 {
+                    "name": "Get Article Merchant Offers",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/merchant_offers\/:article_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/merchant_offers\/:article_id",
+                            "variable": [
+                                {
+                                    "id": "article_id",
+                                    "key": "article_id",
+                                    "value": "34",
+                                    "description": "The ID of the article."
+                                },
+                                {
+                                    "id": "article",
+                                    "key": "article",
+                                    "value": "1",
+                                    "description": "The id of the article."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n{}\n]\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page",
                     "request": {
                         "url": {
@@ -333,7 +379,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"dignissimos\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -856,7 +902,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "non",
+                                            "value": "nobis",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -956,7 +1002,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"aspernatur\",\"violation_type\":\"numquam\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"placeat\",\"violation_type\":\"laudantium\"}"
                                 },
                                 "description": ""
                             },
@@ -1081,7 +1127,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dolore",
+                                            "value": "et",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1956,7 +2002,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "10",
+                                    "value": "13",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2136,7 +2182,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "dolores",
+                                            "value": "optio",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2912,7 +2958,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -2953,7 +2999,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -3052,7 +3098,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"corrupti\",\"violation_level\":\"reiciendis\",\"violation_type\":\"fuga\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"ut\",\"violation_level\":\"qui\",\"violation_type\":\"quo\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3150,7 +3196,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"esse\"}"
+                            "raw": "{\"user_ids\":\"consequatur\"}"
                         },
                         "description": ""
                     },

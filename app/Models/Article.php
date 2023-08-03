@@ -163,6 +163,12 @@ class Article extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function merchantOffers()
+    {
+        return $this->belongsToMany(MerchantOffer::class, 'articles_merchant_offers', 'article_id', 'merchant_offer_id')
+            ->withTimestamps();
+    }
+
     /**
      * Scope a query to only include published articles.
      */

@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 13
+                  example: 12
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: non
+                  example: nisi
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolores
+                  example: harum
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -391,6 +391,56 @@ paths:
                   example: 1
               required:
                 - article_id
+  '/api/v1/articles/merchant_offers/{article_id}':
+    get:
+      summary: 'Get Article Merchant Offers'
+      operationId: getArticleMerchantOffers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    - {  }
+                properties:
+                  data:
+                    type: array
+                    example:
+                      - []
+                    items:
+                      type: object
+                      properties: []
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The ID of the article.'
+        example: 34
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: article
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/articles:
     get:
       summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
@@ -425,7 +475,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - dignissimos
+                    - voluptatem
                   items:
                     type: string
                 category_ids:
@@ -1141,7 +1191,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: non
+        example: nobis
         required: true
         schema:
           type: string
@@ -1236,11 +1286,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aspernatur
+                  example: placeat
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: numquam
+                  example: laudantium
               required:
                 - comment_id
                 - reason
@@ -1511,7 +1561,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: dolore
+        example: et
         required: true
         schema:
           type: string
@@ -2377,7 +2427,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 10
+        example: 13
         required: true
         schema:
           type: integer
@@ -2595,7 +2645,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: dolores
+        example: optio
         required: true
         schema:
           type: string
@@ -3394,7 +3444,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 1
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3447,7 +3497,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 10
+                  example: 1
               required:
                 - user_id
   /api/v1/user/report:
@@ -3494,15 +3544,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: corrupti
+                  example: ut
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: reiciendis
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: fuga
+                  example: quo
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3588,7 +3638,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: esse
+                  example: consequatur
               required:
                 - user_ids
     parameters:

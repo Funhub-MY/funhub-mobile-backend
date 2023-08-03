@@ -8,6 +8,7 @@ use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleImagesUploadRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\MerchantOfferResource;
 use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
@@ -15,6 +16,7 @@ use App\Models\ArticleTag;
 use App\Models\Country;
 use App\Models\Interaction;
 use App\Models\Location;
+use App\Models\MerchantOffer;
 use App\Models\State;
 use App\Models\User;
 use App\Models\View;
@@ -586,11 +588,17 @@ class ArticleController extends Controller
         }
 
         if ($location && $locationData['rating'] &&  $locationData['rating'] != 0) {
-            // create a location rating
-            $location->ratings()->create([
-                'rating' => $locationData['rating'],
-                'user_id' => auth()->id(),
-            ]);
+            // if have ratings, update it, else create new
+            $rating = $location->ratings()->where('user_id', auth()->id())->first();
+            if ($rating) {
+                $rating->rating = $locationData['rating'];
+                $rating->save();
+            } else {
+                $location->ratings()->create([
+                    'user_id' => auth()->id(),
+                    'rating' => $locationData['rating'],
+                ]);
+            }
             
             // recalculate average ratings
             $location->average_ratings = $location->ratings()->avg('rating');
@@ -775,6 +783,28 @@ class ArticleController extends Controller
         // check if owner of Article
         $article = Article::where('id', $id)->where('user_id', auth()->id());
         if ($article->exists()) {
+            $article = $article->first();
+            // destroy ratings if article->location has ratings by this article owner
+            if ($article->first()->location) {
+                $article->first()->location->ratings()
+                    ->where('user_id', $article->first()->user_id)
+                    ->delete();
+            }
+
+            // we keep article categories and tags for other articles to use
+
+            // unattach all tagged users
+            $article->taggedUsers()->detach();
+
+            // unattach location from article
+            $article->location()->dissociate();
+
+            // delete article related media to save space
+            $article->getMedia(Article::MEDIA_COLLECTION_NAME)->each(function ($media) {
+                $media->delete();
+            });
+
+            // delete article
             $article->delete();
             return response()->json(['message' => 'Article deleted']);
         } else {
@@ -996,5 +1026,30 @@ class ArticleController extends Controller
         return response()->json([
             'cities' => $cities,
         ]);
+    }
+
+    /**
+     * Get Article Merchant Offers
+     *
+     * @param Request $request
+     * @param Article $article
+     * @return MerchantOfferResource
+     * 
+     * @group Article
+     * @urlParam article integer required The id of the article. Example: 1
+     * 
+     * @response scenario=success {
+     * "data": [
+     * {}
+     * ]
+     * }
+     */
+    public function getArticleMerchantOffers(Article $article)
+    {
+        $merchantOffers = $article->merchantOffers()
+            ->with('merchant')
+            ->paginate(config('app.paginate_per_page'));
+
+        return MerchantOfferResource::collection($merchantOffers);
     }
 }
