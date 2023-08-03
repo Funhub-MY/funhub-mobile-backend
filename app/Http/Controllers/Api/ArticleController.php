@@ -642,7 +642,7 @@ class ArticleController extends Controller
      * @bodyParam images file The images ID of the article.
      * @bodyParam video file The video ID of the article.
      * @bodyParam tagged_user_ids array The tagged user IDs of the article. Example: [1, 2]
-     *
+     * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -737,7 +737,20 @@ class ArticleController extends Controller
                 $article->taggedUsers()->sync($taggedUsers);
             }
 
-            return response()->json(['message' => 'Article updated']);
+            // attach location with rating
+            if ($request->has('location') && $request->location !== 'null') {
+                try {
+                    // delete article->location->ratings where user_id is current article->user_id
+                    $article->location->ratings()->where('user_id', $article->user_id)->delete();
+
+                    // create or attach new location with ratings
+                    $loc = $this->createOrAttachLocation($article, $request->location);
+                } catch (\Exception $e) {
+                    Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
+                }
+            }
+
+            return response()->json(['message' => 'Article updated', 'article' => $article]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
         }

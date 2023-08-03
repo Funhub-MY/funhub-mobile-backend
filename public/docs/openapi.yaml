@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: sint
+                  example: hic
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: facilis
+                  example: modi
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -425,7 +425,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - soluta
+                    - est
                   items:
                     type: string
                 category_ids:
@@ -755,6 +755,10 @@ paths:
                     - 2
                   items:
                     type: string
+                location:
+                  type: string
+                  description: 'The location of the article.'
+                  example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
               required:
                 - body
                 - status
@@ -1137,7 +1141,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: eaque
+        example: vel
         required: true
         schema:
           type: string
@@ -1232,11 +1236,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sit
+                  example: repellat
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: at
               required:
                 - comment_id
                 - reason
@@ -1507,7 +1511,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: omnis
+        example: reprehenderit
         required: true
         schema:
           type: string
@@ -2373,7 +2377,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 15
+        example: 3
         required: true
         schema:
           type: integer
@@ -2591,7 +2595,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: in
+        example: ea
         required: true
         schema:
           type: string
@@ -3390,7 +3394,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 12
+                  example: 16
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3443,7 +3447,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 10
+                  example: 3
               required:
                 - user_id
   /api/v1/user/report:
@@ -3490,15 +3494,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: dicta
+                  example: corrupti
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: illum
+                  example: rerum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: illo
+                  example: et
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3584,7 +3588,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: sint
+                  example: reprehenderit
               required:
                 - user_ids
     parameters:

@@ -922,10 +922,10 @@ class ArticleTest extends TestCase
     }
 
     /**
-     * Test Create Article with followers tagged
+     * Test Create & Update Article with followers tagged
      * /api/v1/articles
      */
-    public function testCreateArticleWithFollowersTagged()
+    public function testCreateUpdateArticleWithFollowersTagged()
     {
         // upload images first
          $response = $this->json('POST', '/api/v1/articles/gallery', [
@@ -993,7 +993,53 @@ class ArticleTest extends TestCase
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
         }
 
-        // edit
+        // edit tagged users id
+        // create new sets of users
+        $users = User::factory()->count(2)->create();
+        // ensure users is followers of $this->user
+        foreach($users as $user) {
+            $this->actingAs($user); // act as follower
+            $response = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $this->user->id, // follow global user
+            ]);
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+        }
+
+        // acting back to main logged in user
+        $this->actingAs($this->user); // act as follower
+
+        $response = $this->postJson('/api/v1/articles/'.$response->json('article.id'), [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'tagged_user_ids' => $users->pluck('id')->toArray(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article'
+            ]);
+
+        // check if article has users tagged
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id='.$response->json('article.id'));
+        $response->assertStatus(200)
+        ->assertJsonStructure([
+            'data'
+        ]);
+    
+        // loop each tagged_users check match with $users
+        foreach($response->json('data') as $tagged_user) {
+            $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
+        }
     }
 
     /**
