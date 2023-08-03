@@ -18,14 +18,19 @@ class ArticleResource extends JsonResource
     public function toArray($request)
     {
         $location = [];
-        if ($this->location) {
-            $articleOwnerRating = $this->location->ratings()->where('user_id', $this->user->id)->first();
-            $location = [
-                'id' => $this->location->id,
-                'name' => $this->location->name,
-                'address' => $this->location->full_address,
-                'article_owner_rating' => ($articleOwnerRating) ? $articleOwnerRating->rating : null,
-            ];
+        if ($this->has('location')) {
+            $loc = $this->location->first();
+            
+            // if artilce locaiton has ratings, get current article owner's ratings
+            if ($loc && $loc->has('ratings')) {
+                $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
+                $location = [
+                    'id' => $loc->id,
+                    'name' => $loc->name,
+                    'address' => $loc->full_address,
+                    'article_owner_rating' => ($articleOwnerRating) ? $articleOwnerRating->rating : null,
+                ];
+            }
         }
 
         return [

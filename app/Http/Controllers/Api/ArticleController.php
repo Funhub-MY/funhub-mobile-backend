@@ -140,7 +140,7 @@ class ArticleController extends Controller
         //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
         // }
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
@@ -351,7 +351,7 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -407,7 +407,7 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -613,7 +613,7 @@ class ArticleController extends Controller
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
     public function show($id) {
-        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'taggedUsers')
+        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);

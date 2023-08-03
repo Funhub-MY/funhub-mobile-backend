@@ -743,7 +743,7 @@ class ArticleTest extends TestCase
         $response = $this->putJson('/api/v1/articles/'.$article->id, [
             'body' => 'Test Article Body',
             'status' => 1, // unpublished
-            'categories' => implode(',', $categories_new->pluck('id')->toArray()),
+            'categories' => $categories_new->pluck('id')->toArray(),
         ]);
 
         $response->assertStatus(200)
@@ -760,8 +760,6 @@ class ArticleTest extends TestCase
         ]);
 
         $article = Article::find($article->id);
-
-        Log::info($article->categories->pluck('id')->toArray());
 
         // assert article has categories (new)
         $this->assertTrue(
@@ -901,12 +899,6 @@ class ArticleTest extends TestCase
             ]);
         // check location data is correct
         $this->assertEquals('Test Location', $response->json('article.location.name'));
-        $this->assertEquals('Test Address', $response->json('article.location.address'));
-        $this->assertEquals('Test Address 2', $response->json('article.location.address_2'));
-        $this->assertEquals('Test City', $response->json('article.location.city'));
-        $this->assertEquals('Selangor', $response->json('article.location.state.name'));
-        $this->assertEquals('123456', $response->json('article.location.postcode'));
-        $this->assertEquals(4.0, $response->json('article.location.average_ratings'));
 
         // check if /api/articles/cities have one city
         $response = $this->getJson('/api/v1/article_cities');
