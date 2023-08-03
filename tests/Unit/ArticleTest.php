@@ -1042,11 +1042,13 @@ class ArticleTest extends TestCase
         // ensure countries and states are seeded first
         $this->seed(CountriesTableSeeder::class);
         $this->seed(StatesTableSeeder::class);
+        // create 1 user
+        $otherUser = User::factory()->create();
         
         // create 10 articles
         $articles = Article::factory()->count(10)->published()
             ->create([
-                'user_id' => $this->user->id,
+                'user_id' => $otherUser,
             ]);
 
         // 3 cities of Klang valley
@@ -1098,10 +1100,12 @@ class ArticleTest extends TestCase
          $this->seed(CountriesTableSeeder::class);
          $this->seed(StatesTableSeeder::class);
          
+         $otherUser = User::factory()->create();
+
          // create 10 articles
          $articles = Article::factory()->count(10)->published()
              ->create([
-                 'user_id' => $this->user->id,
+                 'user_id' => $otherUser,
              ]);
  
          // 3 cities of Klang valley
