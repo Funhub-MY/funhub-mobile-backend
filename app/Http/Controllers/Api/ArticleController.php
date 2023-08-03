@@ -75,7 +75,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
-            // ->where('user_id', '!=', auth()->user()->id)
+            ->where('user_id', '!=', auth()->user()->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
