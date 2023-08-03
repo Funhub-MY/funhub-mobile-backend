@@ -641,6 +641,7 @@ class ArticleController extends Controller
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
      * @bodyParam images file The images ID of the article.
      * @bodyParam video file The video ID of the article.
+     * @bodyParam tagged_user_ids array The tagged user IDs of the article. Example: [1, 2]
      *
      * @response scenario=success {
      * "message": "Article updated",
@@ -655,6 +656,21 @@ class ArticleController extends Controller
             ->first();
 
         if ($article) {
+            $user = auth()->user();
+            $taggedUsers = null;
+            // tag users in article
+            if ($request->has('tagged_user_ids') && $request->tagged_user_ids !== 'null') {
+                // check if user's followers are in tagged user ids list
+                $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
+                if ($followers->count() != count($request->tagged_user_ids)) {
+                    return response()->json([
+                        'message' => 'You can only tag your followers.',
+                    ], 422);
+                }
+    
+                $taggedUsers = User::whereIn('id', $request->tagged_user_ids)->get();
+            }
+
             // slug
             $slug = '';
             if ($request->has('title')) {
@@ -715,6 +731,12 @@ class ArticleController extends Controller
                 });
                 $article->tags()->sync($tags);
             }
+
+            // tag users in article
+            if ($taggedUsers) {
+                $article->taggedUsers()->sync($taggedUsers);
+            }
+
             return response()->json(['message' => 'Article updated']);
         } else {
             return response()->json(['message' => 'Article not found'], 404);

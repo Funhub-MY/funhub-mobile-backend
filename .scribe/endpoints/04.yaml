@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aVve34bEkPZ8Dga5166dchf'
+      - 'Bearer 35ab6fvhd4a1VkgDEeP86cZ'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8d5E364VaPDk6h1cfvgZeba'
+      - 'Bearer 6kvh5b3Z4Ed1P6aeDVfg8ca'
     controller: null
     method: null
     route: null
@@ -141,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 20
+        example: 12
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 20
+      user_id: 12
     fileParameters: []
     responses:
       -
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6db4V1Zavf5EhDePka68c3'
+      - 'Bearer e4kc53V8D1EPvaa6b6hgZfd'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 1
+        example: 10
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 1
+      user_id: 10
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a8hZeDEb4vd1cfgP6ka563V'
+      - 'Bearer ca48EDPe31vZkVa6d6h5bgf'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: dolor
+        example: dicta
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: rem
+        example: illum
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: et
+        example: illo
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: dolor
-      violation_level: rem
-      violation_type: et
+      reason: dicta
+      violation_level: illum
+      violation_type: illo
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 46ahbed1acg3PE6Df5vk8ZV'
+      - 'Bearer aa5k1h6P6V4vgdc8ED3efZb'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ka3P16d65gcEZ4DvbhfaVe8'
+      - 'Bearer h4bVD8P6eaf1g6Z3dkcvaE5'
     controller: null
     method: null
     route: null
@@ -417,11 +417,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: repudiandae
+        example: sint
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: repudiandae
+      user_ids: sint
     fileParameters: []
     responses:
       -
@@ -438,7 +438,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ek6have8acV45b1PfD6dZ3g'
+      - 'Bearer 6dae614ghZ853kDVcEvbafP'
     controller: null
     method: null
     route: null
@@ -497,7 +497,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hPE6Zda6ba14v3gV8fDkce5'
+      - 'Bearer vcfP6a5gEa6Zb1DV384kdhe'
     controller: null
     method: null
     route: null

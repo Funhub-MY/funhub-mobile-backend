@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "79b2dcca-713f-48ac-b07a-19fff5c2aedd",
+        "_postman_id": "b28f19eb-9d5d-4d3f-8301-d6b1f40c5ed7",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":6,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"et\",\"violation_level\":\"voluptas\",\"article\":1}"
+                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"sint\",\"violation_level\":\"facilis\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -333,7 +333,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"aliquam\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"soluta\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -508,6 +508,18 @@
                                 },
                                 {
                                     "key": "categories[1]",
+                                    "value": 2,
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "tagged_user_ids[0]",
+                                    "value": 1,
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "tagged_user_ids[1]",
                                     "value": 2,
                                     "type": "text",
                                     "description": ""
@@ -838,7 +850,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "soluta",
+                                            "value": "eaque",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -938,7 +950,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"aliquam\",\"violation_type\":\"inventore\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"sit\",\"violation_type\":\"et\"}"
                                 },
                                 "description": ""
                             },
@@ -1063,7 +1075,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "rerum",
+                                            "value": "omnis",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1938,7 +1950,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "1",
+                                    "value": "15",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2118,7 +2130,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "incidunt",
+                                            "value": "in",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2894,7 +2906,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":20}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -2935,7 +2947,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -3034,7 +3046,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"dolor\",\"violation_level\":\"rem\",\"violation_type\":\"et\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"dicta\",\"violation_level\":\"illum\",\"violation_type\":\"illo\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3132,7 +3144,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"repudiandae\"}"
+                            "raw": "{\"user_ids\":\"sint\"}"
                         },
                         "description": ""
                     },
@@ -3603,7 +3615,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },
