@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ArticleResource\RelationManagers;
 
+use App\Models\MerchantOffer;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -9,6 +10,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\Action;
 
 class MerchantOffersRelationManager extends RelationManager
 {
@@ -43,7 +45,9 @@ class MerchantOffersRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Action::make('edit')
+                    ->url(fn (MerchantOffer $record): string => route('filament.resources.merchant-offers.edit', $record))
+                    ->openUrlInNewTab(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

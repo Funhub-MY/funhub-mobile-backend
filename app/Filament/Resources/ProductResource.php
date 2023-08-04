@@ -5,7 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -28,12 +33,79 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required(),
+                Forms\Components\Group::make()
+                    ->schema([
+                        Section::make('Product Detials')
+                            ->schema([
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('images')
+                                    ->label('Images')
+                                    ->multiple()
+                                    ->collection(Product::MEDIA_COLLECTION_NAME)
+                                    ->columnSpan('full')
+                                    ->customProperties(['is_cover' => false])
+                                    // disk is s3_public 
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    })
+                                    ->acceptedFileTypes(['image/*'])
+                                    ->maxFiles(20)
+                                    ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
+                                    ->rules('image'),
 
-                TextInput::make('description')
-                    ->required(),
-            ]);
+                                TextInput::make('name')
+                                    ->required(),
+
+                                TextInput::make('sku')
+                                    ->label('SKU')
+                                    ->required(),
+
+                                RichEditor::make('description')
+
+                                    ->required(),
+                            ])
+                    ])->columnSpan(['lg' => 2]),
+                Forms\Components\Group::make()
+                    ->schema([
+                        Section::make('Product Pricing and Inventory')
+                            ->schema([
+                                Fieldset::make('Pricing')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('unit_price')
+                                            ->label('Unit Price')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('RM')
+                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(2)
+                                                ->minValue(1)
+                                                ->thousandsSeparator(','),
+                                            ),
+                                        Forms\Components\TextInput::make('discount_price')
+                                            ->label('Discounted Unit Price')
+                                            ->required()
+                                            ->numeric()
+                                            ->prefix('RM')
+                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(2)
+                                                ->minValue(1)
+                                                ->thousandsSeparator(','),
+                                            ),
+                                    ]),
+                                    Checkbox::make('unlimited_supply')
+                                        ->reactive()
+                                        ->label('Keep Selling After Inventory Quantity Depleted')
+                                        ->default(false),
+
+                                    TextInput::make('quantity')
+                                        ->label('Current Quantity Available')
+                                        ->numeric()
+                            ])
+                ])->columnSpan(['lg' => 2]),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -43,7 +115,24 @@ class ProductResource extends Resource
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                
+                TextColumn::make('sku')
+                    ->searchable()
+                    ->label('SKU'),
+                TextColumn::make('unit_price')
+                    ->sortable()
+                    ->prefix('RM'),
+                TextColumn::make('discount_price')
+                    ->sortable()
+                    ->prefix('RM'),
+                TextColumn::make('quantity'),
+                Tables\Columns\BadgeColumn::make('status')
+                ->enum(Product::STATUS)
+                ->colors([
+                    'secondary' => 0,
+                    'success' => 1,
+                ])
+                ->sortable()
+                ->searchable(),
             ])
             ->filters([
                 //

@@ -10,7 +10,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
-
+    
+    const STATUS = [
+        0 => 'Draft',
+        1 => 'Published',
+        2 => 'Archived'
+    ];
     const MEDIA_COLLECTION_NAME = 'product_images';
 
     protected $guarded = ['id'];

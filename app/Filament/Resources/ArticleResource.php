@@ -399,6 +399,7 @@ class ArticleResource extends Resource
             RelationManagers\CommentsRelationManager::class,
             RelationManagers\InteractionsRelationManager::class,
             RelationManagers\LocationsRelationManager::class,
+            RelationManagers\MerchantOffersRelationManager::class,
         ];
     }
 

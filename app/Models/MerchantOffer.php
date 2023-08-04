@@ -140,7 +140,7 @@ class MerchantOffer extends Model implements HasMedia
 
     public function articles()
     {
-        return $this->belongsToMany(Article::class, 'article_merchant_offer', 'merchant_offer_id', 'article_id')
+        return $this->belongsToMany(Article::class, 'articles_merchant_offers', 'merchant_offer_id', 'article_id')
             ->withTimestamps();
     }
 

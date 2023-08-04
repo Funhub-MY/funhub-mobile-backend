@@ -9,7 +9,18 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    const STATUS = [
+        0 => 'Pending',
+        1 => 'Completed',
+        2 => 'Failed'
+    ];
+
     protected $guarded = ['id'];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 
     public function created_by()
     {
