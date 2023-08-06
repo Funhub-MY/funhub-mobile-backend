@@ -15,6 +15,21 @@ class MerchantOfferResource extends JsonResource
      */
     public function toArray($request)
     {
+        $location = null;
+        if ($this->has('location')) {
+            $loc = $this->location->first();
+            
+            // if artilce locaiton has ratings, get current article owner's ratings
+            if ($loc && $loc->has('ratings')) {
+                $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
+                $location = [
+                    'id' => $loc->id,
+                    'name' => $loc->name,
+                    'address' => $loc->full_address,
+                ];
+            }
+        }
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -42,6 +57,7 @@ class MerchantOfferResource extends JsonResource
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
             'interactions' => InteractionResource::collection($this->interactions),
+            'location' => $location,
             'count' => [
                 'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
