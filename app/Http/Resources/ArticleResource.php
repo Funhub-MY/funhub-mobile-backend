@@ -29,6 +29,8 @@ class ArticleResource extends JsonResource
                     'name' => $loc->name,
                     'address' => $loc->full_address,
                     'article_owner_rating' => ($articleOwnerRating) ? $articleOwnerRating->rating : null,
+                    'lat' => $loc->lat,
+                    'lng' => $loc->lng,
                 ];
             }
         }

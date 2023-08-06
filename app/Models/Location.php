@@ -71,7 +71,6 @@ class Location extends Model implements HasMedia
         return $this->morphedByMany(MerchantOffer::class, 'locatable');
     }
 
-
     public function merchant()
     {
         return $this->belongsTo(Merchant::class);
