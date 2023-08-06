@@ -85,7 +85,6 @@ class MerchantOfferController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-
         // get articles by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
