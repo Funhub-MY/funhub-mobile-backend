@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "2736034a-dd38-445d-8db1-0083c125363a",
+        "_postman_id": "bf85c518-0b9c-496e-8d10-c32f1a3bdc23",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":12,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"nisi\",\"violation_level\":\"harum\",\"article\":1}"
+                                    "raw": "{\"article_id\":7,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"dolorem\",\"violation_level\":\"sapiente\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -379,7 +379,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"ut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -902,7 +902,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "nobis",
+                                            "value": "sapiente",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1002,7 +1002,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"placeat\",\"violation_type\":\"laudantium\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ut\",\"violation_type\":\"architecto\"}"
                                 },
                                 "description": ""
                             },
@@ -1127,7 +1127,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "et",
+                                            "value": "excepturi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2002,7 +2002,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "13",
+                                    "value": "17",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2103,7 +2103,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -2182,7 +2182,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "optio",
+                                            "value": "eaque",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2958,7 +2958,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":14}"
                                 },
                                 "description": ""
                             },
@@ -2999,7 +2999,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -3098,7 +3098,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"ut\",\"violation_level\":\"qui\",\"violation_type\":\"quo\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"asperiores\",\"violation_level\":\"suscipit\",\"violation_type\":\"hic\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3196,7 +3196,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"consequatur\"}"
+                            "raw": "{\"user_ids\":\"adipisci\"}"
                         },
                         "description": ""
                     },

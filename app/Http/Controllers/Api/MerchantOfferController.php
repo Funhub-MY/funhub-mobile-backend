@@ -36,6 +36,11 @@ class MerchantOfferController extends Controller
      * @subgroup Merchant Offers
      *
      * @bodyParam category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam city string optional Filter by City. Example: Subang Jaya
+     * @bodyParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
+     * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -70,14 +75,44 @@ class MerchantOfferController extends Controller
             }
         }
         // ensure offer is valid/coming soon
-        $query->where(function ($query) {
-            $query->where('available_at', '<=', now())
-                ->where('available_until', '>=', now())
-                ->orWhere('available_at', '>=', now());
-        });
+        // $query->where(function ($query) {
+        //     $query->where('available_at', '<=', now())
+        //         ->where('available_until', '>=', now())
+        //         ->orWhere('available_at', '>=', now());
+        // });
         // order by latest first if no query sort order
         if (!$request->has('sort')) {
             $query->orderBy('created_at', 'desc');
+        }
+
+
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        // get articles by lat, lng
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            // get article where article->location lat,lng is within the radius
+            $query->whereHas('location', function ($query) use ($request, $radius) {
+                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
+                    cos( radians( lat ) )
+                    * cos( radians( lng ) - radians(?)
+                    ) + sin( radians(?) ) *
+                    sin( radians( lat ) ) )
+                    ) AS distance', [$request->lat, $request->lng, $request->lat])
+                    ->havingRaw("distance < ?", [$radius]);
+            });
+        }
+
+        // location id
+        if ($request->has('location_id')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('id', $request->location_id);
+            });
         }
 
         $this->buildQuery($query, $request);

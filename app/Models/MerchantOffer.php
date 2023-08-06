@@ -26,6 +26,7 @@ class MerchantOffer extends Model implements HasMedia
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',
+        2 => 'Archived'
     ];
 
     const STATUS_DRAFT = 0;

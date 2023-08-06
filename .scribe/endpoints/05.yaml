@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag36Db8fhE64ZPkca51Vvde'
+      - 'Bearer a1DvbEP65kgf8ZcdVae346h'
     controller: null
     method: null
     route: null
@@ -127,6 +127,41 @@ endpoints:
           - 2
           - 3
         type: 'string[]'
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
         custom: []
       filter:
         name: filter
@@ -175,6 +210,11 @@ endpoints:
         - 1
         - 2
         - 3
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
       filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
@@ -200,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6aV4av63bekD58Ed1PfhcgZ'
+      - 'Bearer gDde86cvaE6ah4fk1Z5VPb3'
     controller: null
     method: null
     route: null
@@ -277,7 +317,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vZ364Phd85f6Eab1ekgVacD'
+      - 'Bearer beP31gka4VEavdf8D5cZ6h6'
     controller: null
     method: null
     route: null
@@ -304,11 +344,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: optio
+        example: eaque
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: optio
+      offer_id: eaque
     queryParameters:
       offer_id:
         name: offer_id
@@ -336,7 +376,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6dv3Z6hebkgfV1E8caPa4D5'
+      - 'Bearer Dab36Pvkg6a84h5fe1ZVcEd'
     controller: null
     method: null
     route: null
@@ -441,7 +481,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer de48fhvc5gZ6kb6EPa3D1aV'
+      - 'Bearer Pa1af8bhd3eZ6kV465vEgcD'
     controller: null
     method: null
     route: null
@@ -498,7 +538,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kaZ66a3VcgdE1be5f8Dv4hP'
+      - 'Bearer f1ceVhDa6a3b8P6vd4gZE5k'
     controller: null
     method: null
     route: null
