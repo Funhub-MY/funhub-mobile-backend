@@ -11,6 +11,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -57,18 +58,23 @@ class ProductResource extends Resource
                                 TextInput::make('name')
                                     ->required(),
 
+                                Select::make('status')
+                                    ->options(Product::STATUS)
+                                    ->default(0)
+                                    ->required(),
+
                                 TextInput::make('sku')
                                     ->label('SKU')
+                                    ->unique()
                                     ->required(),
 
                                 RichEditor::make('description')
-
                                     ->required(),
                             ])
                     ])->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
                     ->schema([
-                        Section::make('Product Pricing and Inventory')
+                        Section::make('Product Pricing & Inventory')
                             ->schema([
                                 Fieldset::make('Pricing')
                                     ->schema([
@@ -102,6 +108,7 @@ class ProductResource extends Resource
 
                                     TextInput::make('quantity')
                                         ->label('Current Quantity Available')
+                                        ->default(0)
                                         ->numeric()
                             ])
                 ])->columnSpan(['lg' => 2]),

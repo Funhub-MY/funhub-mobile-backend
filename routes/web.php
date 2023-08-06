@@ -54,3 +54,4 @@ Route::get('/auth/facebook/callback',function () {
 // this call back is use for socialite callback only for unit test. not using at any place.
 Route::get('/auth/google/callback', [\App\Http\Controllers\Api\AuthController::class, 'googleCallBack']);
 
+Route::get('/payment/return', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);

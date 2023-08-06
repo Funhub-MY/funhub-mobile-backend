@@ -36,6 +36,11 @@ class MerchantOfferResource extends Resource
     {
         return $form
             ->schema([
+
+                Hidden::make('currency')
+                    ->default('MYR')
+                    ->required(),
+
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Card::make()
@@ -58,14 +63,39 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
 
+                                Forms\Components\TextInput::make('quantity')
+                                    ->label('Available Quantity')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(1),
+                                Forms\Components\TextInput::make('sku')
+                                    ->label('SKU')
+                                    ->required(),
+                                Forms\Components\DateTimePicker::make('available_at')
+                                    ->required()
+                                    ->minDate(now()->startOfDay()),
+                                Forms\Components\DateTimePicker::make('available_until')
+                                    ->required()
+                                    ->minDate(now()->startOfDay()),
+                                Forms\Components\Textarea::make('description')
+                                    ->rows(5)
+                                    ->cols(10)
+                                    ->columnSpan('full')
+                                    ->required(),
+                                
+                            ])->columns(2),
+
+                        Forms\Components\Card::make()
+                            ->schema([
                                 Select::make('purchase_method')
                                     ->label('Default Purchase Mode')
+                                    ->helperText('This will show as default when user purchasing.')
                                     ->default('point')
                                     ->options([
                                         'point' => 'Funhub Point',
                                         'fiat' => 'MYR',
                                     ]),
-                                
+
                                 Forms\Components\TextInput::make('unit_price')
                                     ->label('Funhub Point Cost')
                                     ->required()
@@ -77,7 +107,7 @@ class MerchantOfferResource extends Resource
                                         ->thousandsSeparator(',')
                                     ),
 
-                                 Fieldset::make('Point Pricing (MYR)')
+                                Fieldset::make('Point Pricing (MYR)')
                                     ->schema([
                                         Forms\Components\TextInput::make('point_fiat_price')
                                         ->label('Funhub Cost in MYR')
@@ -101,10 +131,6 @@ class MerchantOfferResource extends Resource
                                             ->minValue(1)
                                             ->thousandsSeparator(','),
                                         ),
-
-                                    Hidden::make('currency')
-                                        ->default('MYR')
-                                        ->required(),
                                 ]),
 
                                 Fieldset::make('MYR Pricing')
@@ -132,28 +158,7 @@ class MerchantOfferResource extends Resource
                                                 ->thousandsSeparator(','),
                                             ),
                                 ]),
-
-                                Forms\Components\TextInput::make('quantity')
-                                    ->label('Available Quantity')
-                                    ->required()
-                                    ->numeric()
-                                    ->minValue(1),
-                                Forms\Components\TextInput::make('sku')
-                                    ->label('SKU')
-                                    ->required(),
-                                Forms\Components\DateTimePicker::make('available_at')
-                                    ->required()
-                                    ->minDate(now()->startOfDay()),
-                                Forms\Components\DateTimePicker::make('available_until')
-                                    ->required()
-                                    ->minDate(now()->startOfDay()),
-                                Forms\Components\Textarea::make('description')
-                                    ->rows(5)
-                                    ->cols(10)
-                                    ->columnSpan('full')
-                                    ->required(),
-                                
-                            ])->columns(2),
+                            ])->columns(2)
                     ])->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
                     ->schema([
