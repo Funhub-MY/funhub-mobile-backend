@@ -21,7 +21,7 @@ class EditMerchantOffer extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        Log::info('mutateFormDataBeforeSave', $data);
+        $data['currency'] = 'MYR';
         return $data;
     }
 }

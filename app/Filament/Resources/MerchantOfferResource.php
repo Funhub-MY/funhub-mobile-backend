@@ -36,11 +36,6 @@ class MerchantOfferResource extends Resource
     {
         return $form
             ->schema([
-
-                Hidden::make('currency')
-                    ->default('MYR')
-                    ->required(),
-
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Card::make()
@@ -110,27 +105,27 @@ class MerchantOfferResource extends Resource
                                 Fieldset::make('Point Pricing (MYR)')
                                     ->schema([
                                         Forms\Components\TextInput::make('point_fiat_price')
-                                        ->label('Funhub Cost in MYR')
-                                        ->required()
-                                        ->numeric()
-                                        ->prefix('RM')
-                                        ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                            ->label('Funhub Cost in MYR')
+                                            ->required()
                                             ->numeric()
-                                            ->decimalPlaces(2)
-                                            ->minValue(1)
-                                            ->thousandsSeparator(','),
-                                        ),
+                                            ->prefix('RM')
+                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(2)
+                                                ->minValue(1)
+                                                ->thousandsSeparator(','),
+                                            ),
                                     Forms\Components\TextInput::make('discounted_point_fiat_price')
                                         ->label('Discounted Funhub Cost in MYR')
-                                        ->required()
-                                        ->numeric()
-                                        ->prefix('RM')
-                                        ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                            ->required()
                                             ->numeric()
-                                            ->decimalPlaces(2)
-                                            ->minValue(1)
-                                            ->thousandsSeparator(','),
-                                        ),
+                                            ->prefix('RM')
+                                            ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                                ->numeric()
+                                                ->decimalPlaces(2)
+                                                ->minValue(1)
+                                                ->thousandsSeparator(','),
+                                            ),
                                 ]),
 
                                 Fieldset::make('MYR Pricing')
@@ -261,6 +256,7 @@ class MerchantOfferResource extends Resource
         return [
             //RelationManagers\ClaimedByUsersRelationManager::class,
             RelationManagers\UsersRelationManager::class,
+            RelationManagers\LocationRelationManager::class,
         ];
     }
 

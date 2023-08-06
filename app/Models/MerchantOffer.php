@@ -144,6 +144,11 @@ class MerchantOffer extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function location()
+    {
+        return $this->morphToMany(Location::class, 'locatable');
+    }
+
     /**
      * Scope a query to only include published offers.
      */
