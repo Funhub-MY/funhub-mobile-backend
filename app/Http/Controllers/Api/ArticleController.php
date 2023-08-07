@@ -755,7 +755,7 @@ class ArticleController extends Controller
             if ($request->has('location') && $request->location !== 'null') {
                 try {
                     // delete article->location->ratings where user_id is current article->user_id
-                    $article->location->ratings()->where('user_id', $article->user_id)->delete();
+                    $article->location()->ratings()->where('user_id', $article->user_id)->delete();
 
                     // create or attach new location with ratings
                     $loc = $this->createOrAttachLocation($article, $request->location);
