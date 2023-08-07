@@ -22,6 +22,11 @@ class Product extends Model implements HasMedia
 
     protected $appends = ['thumbnail'];
 
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transactionable');
+    }
+
     public function created_by()
     {
         return $this->belongsTo(User::class, 'created_by_id');

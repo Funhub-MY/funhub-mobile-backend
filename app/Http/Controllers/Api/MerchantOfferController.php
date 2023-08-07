@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\MerchantOffer;
+use App\Services\Mpay;
 use App\Services\PointService;
+use App\Services\TransactionService;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -19,11 +21,12 @@ class MerchantOfferController extends Controller
 {
     use QueryBuilderTrait;
 
-    protected $pointService;
+    protected $pointService, $transactionService;
 
     public function __construct()
     {
         $this->pointService = new PointService();
+        $this->transactionService = new TransactionService();
     }
 
     /**
@@ -149,11 +152,29 @@ class MerchantOfferController extends Controller
      * @subgroup Merchant Offers
      * @bodyParam offer_id integer required Offer ID. Example: 1
      * @bodyParam quantity integer required Quantity. Example: 1
+     * @bodyParam payment_method string required Payment Method. Example: points/fiat
+     * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
      * @response scenario=success {
      * "message": "Offer Claimed"
      * }
      * @response scenario=insufficient_point_balance {
      * "message": "Insufficient Point Balance"
+     * }
+     * @response scenario=fiat_payment_mode {
+     * "message": "Redirect to gateway",
+     * "gateway_data": [
+     *      'url' => $this->url .'/payment/eCommerce',
+     *       'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+     *       'mid' => $this->mid,
+     *       'invno' => $invoice_no,
+     *       'capture_amt' => $amount,
+     *       'desc' => $desc,
+     *       'postURL' => $redirectUrl,
+     *       'phone' => $phoneNo,
+     *       'email' => $email,
+     *       'param' => $param,
+     *       'authorize' => 'authorize'
+     *   ];
      * }
      * @response scenario=offer_no_longer_valid {
      * "message": "Offer is no longer valid"
@@ -163,6 +184,8 @@ class MerchantOfferController extends Controller
     {
         $request->validate([
             'offer_id' => 'required|integer|exists:merchant_offers,id',
+            'payment_method' => 'required|in:points,fiat',
+            'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'quantity' => 'required|integer|min:1'
         ]);
 
@@ -172,6 +195,7 @@ class MerchantOfferController extends Controller
             ->with('merchant', 'merchant.user', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
+            ->where('quantity', '>=', $request->quantity)
             ->first();
 
         if (!$offer) {
@@ -186,32 +210,90 @@ class MerchantOfferController extends Controller
 
         // ensure user have enough point balance
         $user = request()->user();
-        if ($user->point_balance < $net_amount) {
-            return response()->json([
-                'message' => 'Insufficient Point Balance'
-            ], 422);
-        }
-        try {
-            // create claim by deducting user points with PointLedger and create a claim record
-            // use attach here, to attach the data with intermediate table.
-            // here mean, offer claim by the user with the offer data (pivots).
-            $offer->claims()->attach($user->id, [
-                // order no is CLAIM(YMd)
-                'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
-                'user_id' => $user->id,
-                'quantity' => $request->quantity,
-                'unit_price' => $offer->unit_price,
-                'total' => $offer->unit_price * $request->quantity,
-                'discount' => 0,
-                'tax' => 0,
-                'net_amount' => $net_amount,
-                'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
-            ]);
-            // debit from point ledger
-            $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
 
-            // fire event
-            event(new MerchantOfferClaimed($offer, $user));
+        try {
+            if ($request->payment_method == 'points') {
+                // check if enough points
+                if ($user->point_balance < $net_amount) {
+                    return response()->json([
+                        'message' => 'Insufficient Point Balance'
+                    ], 422);
+                }
+
+                // direct claim
+                $offer->claims()->attach($user->id, [
+                    // order no is CLAIM(YMd)
+                    'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
+                    'user_id' => $user->id,
+                    'quantity' => $request->quantity,
+                    'unit_price' => $offer->unit_price,
+                    'total' => $offer->unit_price * $request->quantity,
+                    'discount' => 0,
+                    'tax' => 0,
+                    'net_amount' => $net_amount,
+                    'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
+                ]); 
+
+                // debit from point ledger
+                $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
+
+                // reduce quantity
+                $offer->quantity = $offer->quantity - $request->quantity;
+                $offer->save();
+
+                // fire event
+                event(new MerchantOfferClaimed($offer, $user));
+            } else if($request->payment_method == 'fiat') {
+                // create payment transaction first, not yet claim
+                $transaction = $this->transactionService->create(
+                    $offer,
+                    $net_amount,
+                    config('app.default_payment_gateway'),
+                    $request->fiat_payment_method
+                );
+
+                // if gateway is mpay call mpay service generate Hash for frontend form
+                if ($transaction->gateway == 'mpay') {
+                    $mpayService = new \App\Services\Mpay(
+                        config('services.mpay.mid'),
+                        config('services.mpay.hash_key')
+                    );
+
+                    // generates required form post fields data for frontend(app) usages
+                    $mpayData = $mpayService->createTransaction(
+                        $transaction->transaction_no,
+                        $net_amount,
+                        'Purchase ' . $offer->name,
+                        url('/payment/return'),
+                        $user->full_phone_no ?? null,
+                        $user->email ?? null
+                    );
+                    
+                    // claim but with status await payment
+                    $offer->claims()->attach($user->id, [
+                        // order no is CLAIM(YMd)
+                        'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
+                        'user_id' => $user->id,
+                        'quantity' => $request->quantity,
+                        'unit_price' => $offer->unit_price,
+                        'total' => $offer->unit_price * $request->quantity,
+                        'discount' => 0,
+                        'tax' => 0,
+                        'net_amount' => $net_amount,
+                        'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
+                    ]); 
+
+                    // reduce quantity first if failed in PaymentController will release the quantity if failed
+                    $offer->quantity = $offer->quantity - $request->quantity;
+                    $offer->save();
+
+                    // Claim is not successful yet, return mpay data for app to redirect (post)
+                    return response()->json([
+                        'message' => 'Redirect to Gateway',
+                        'gateway_data' => $mpayData
+                    ], 200);
+                }
+            }
         } catch (\Exception $e) {
             Log::error($e->getMessage(), [
                 'offer_id' => $offer->id,

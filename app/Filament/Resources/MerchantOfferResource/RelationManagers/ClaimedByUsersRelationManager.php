@@ -45,7 +45,8 @@ class ClaimedByUsersRelationManager extends RelationManager
                 Forms\Components\Select::make('status')
                     ->options([
                         1 => 'Claimed',
-                        2 => 'Revoked'
+                        2 => 'Failed',
+                        3 => 'Await Payment'
                     ])
                     ->default(1)
                     ->required(),
@@ -61,7 +62,8 @@ class ClaimedByUsersRelationManager extends RelationManager
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum([
                         1 => 'Claimed',
-                        2 => 'Revoked',
+                        2 => 'Failed',
+                        3 => 'Await Payment'
                     ])
                     ->colors([
                         'success' => static fn ($state): bool => $state === 1,

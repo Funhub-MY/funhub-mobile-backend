@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1DvbEP65kgf8ZcdVae346h'
+      - 'Bearer d66ghEb5DfevP14VaZak83c'
     controller: null
     method: null
     route: null
@@ -240,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gDde86cvaE6ah4fk1Z5VPb3'
+      - 'Bearer fedhZE3V81aaPgDbcv56k46'
     controller: null
     method: null
     route: null
@@ -274,6 +274,20 @@ endpoints:
         example: 1
         type: integer
         custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: points/fiat
+        type: string
+        custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        custom: []
       quantity:
         name: quantity
         description: Quantity.
@@ -283,6 +297,8 @@ endpoints:
         custom: []
     cleanBodyParameters:
       offer_id: 1
+      payment_method: points/fiat
+      fiat_payment_method: fpx/card
       quantity: 1
     fileParameters: []
     responses:
@@ -308,6 +324,28 @@ endpoints:
         status: 200
         content: |-
           {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
           "message": "Offer is no longer valid"
           }
         headers: []
@@ -317,7 +355,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer beP31gka4VEavdf8D5cZ6h6'
+      - 'Bearer 4ahaeD8dbP63ZVvcf6Eg5k1'
     controller: null
     method: null
     route: null
@@ -344,11 +382,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: eaque
+        example: numquam
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: eaque
+      offer_id: numquam
     queryParameters:
       offer_id:
         name: offer_id
@@ -376,7 +414,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dab36Pvkg6a84h5fe1ZVcEd'
+      - 'Bearer vc1a5DPfda3g6kEe6Zh48bV'
     controller: null
     method: null
     route: null
@@ -481,7 +519,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pa1af8bhd3eZ6kV465vEgcD'
+      - 'Bearer 136gDc8PV5EhZkafavb6d4e'
     controller: null
     method: null
     route: null
@@ -538,7 +576,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f1ceVhDa6a3b8P6vd4gZE5k'
+      - 'Bearer kab8cVve4PE5h631ZaDd6gf'
     controller: null
     method: null
     route: null

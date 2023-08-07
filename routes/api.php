@@ -157,5 +157,11 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('/{location}', [\App\Http\Controllers\Api\LocationController::class, 'show']);
         });
+
+        Route::prefix('/transactions')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\TransactionController::class, 'index']);
+            Route::get('/transaction_no', [\App\Http\Controllers\Api\TransactionController::class, 'getTransactionByNumber']);
+            Route::get('/{transaction}', [\App\Http\Controllers\Api\TransactionController::class, 'show']);
+        });
     });
 });

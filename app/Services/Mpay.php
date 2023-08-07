@@ -33,7 +33,7 @@ class Mpay {
      * @param string $param         Merchant have to add in the delimiter “|” to separate each parameter value. Noted: “|” is “7C” in hexadecimal of ASCII code table.
      * @return void
      */
-    public function createTransaction(string $invoice_no, float $amount, string $desc, string $redirectUrl, string $phoneNo, string $email, $param = null)
+    public function createTransaction(string $invoice_no, float $amount, string $desc, string $redirectUrl, string $phoneNo = null, string $email = null, $param = null)
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
@@ -45,6 +45,7 @@ class Mpay {
         $amount = str_pad(number_format($amount, 2, '', ''), 12, '0', STR_PAD_LEFT);
 
         $data = [
+            'url' => $this->url .'/payment/eCommerce',
             'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
             'mid' => $this->mid,
             'invno' => $invoice_no,
@@ -57,19 +58,7 @@ class Mpay {
             'authorize' => 'authorize'
         ];
 
-        Log::info('Mpay create transaction', [
-            'url' => $this->url .'api/mpgs/capture',
-            'request' => $data
-        ]);
-
-        $response = Http::post($this->url .'api/mpgs/capture', $data);
-
-        if ($response->ok() || $response->status() === 200) {
-            // convert return json to array
-            return json_decode($response, true);
-        } else {
-            throw new \Exception('Failed to create transaction');
-        }
+        return $data;
     }
 
     /**
@@ -80,7 +69,7 @@ class Mpay {
      * @param float $amount
      * @return string
      */
-    private function generateHashForRequest($mid, $invoice_no, $amount)
+    public function generateHashForRequest($mid, $invoice_no, $amount)
     {
         // append hashKey,"Continue",mid,invoice_no,amount into a string and call gensecurehash
         $string = strval($this->hashKey) . 'Continue' . $mid . $invoice_no . strval($amount);
@@ -97,7 +86,7 @@ class Mpay {
      * @param float $amount
      * @return string
      */
-    private function generateHashForResponse($mid, $responseCode, $authCode, $invoice_no, $amount)
+    public function generateHashForResponse($mid, $responseCode, $authCode, $invoice_no, $amount)
     {
         // append hashkey,mid,responseocde,authcode,invoice_no,amount into a string and call gensecurehash
         $string = $this->hashKey . $mid . $responseCode . $authCode . $invoice_no . strval($amount);

@@ -118,6 +118,7 @@ class MerchantOfferTest extends TestCase
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $merchant_offer->id,
             'quantity' => 1,
+            'payment_method' => 'points'
         ]);
         // expired should return 422 with message.
         $response->assertStatus(422)
@@ -138,6 +139,7 @@ class MerchantOfferTest extends TestCase
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $merchant_offer->id,
             'quantity' => 1,
+            'payment_method' => 'points'
         ]);
         // expired should return 422 with message.
         $response->assertStatus(422)
@@ -173,6 +175,7 @@ class MerchantOfferTest extends TestCase
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $merchant_offer->id,
             'quantity' => 1,
+            'payment_method' => 'points'
         ]);
         $response->assertStatus(200)
             ->assertJsonStructure([

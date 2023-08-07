@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 7
+                  example: 1
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: dolorem
+                  example: aliquid
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sapiente
+                  example: quo
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -475,7 +475,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ut
+                    - amet
                   items:
                     type: string
                 category_ids:
@@ -1191,7 +1191,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: sapiente
+        example: architecto
         required: true
         schema:
           type: string
@@ -1286,11 +1286,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ut
+                  example: ullam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: architecto
+                  example: sit
               required:
                 - comment_id
                 - reason
@@ -1561,7 +1561,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: excepturi
+        example: id
         required: true
         schema:
           type: string
@@ -2427,7 +2427,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 17
+        example: 10
         required: true
         schema:
           type: integer
@@ -2615,12 +2615,21 @@ paths:
                   type: integer
                   description: 'Offer ID.'
                   example: 1
+                payment_method:
+                  type: string
+                  description: 'Payment Method.'
+                  example: points/fiat
+                fiat_payment_method:
+                  type: string
+                  description: 'required_if:payment_method,fiat Payment Method.'
+                  example: fpx/card
                 quantity:
                   type: integer
                   description: Quantity.
                   example: 1
               required:
                 - offer_id
+                - payment_method
                 - quantity
   '/api/v1/merchant/offers/{offer_id}':
     get:
@@ -2665,7 +2674,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eaque
+        example: numquam
         required: true
         schema:
           type: string
@@ -3304,6 +3313,116 @@ paths:
           present:
             summary: 'When the value is present'
             value: egg
+  /api/v1/transactions:
+    get:
+      summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
+      operationId: getAllMyTransactionsGetAllTransactionsOfCurrentLoggedInUsersPaginated
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Transaction
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date_from:
+                  type: string
+                  description: 'Date from'
+                  example: '2021-01-01'
+                date_to:
+                  type: string
+                  description: 'Date to'
+                  example: '2021-01-31'
+  /api/v1/transactions/transaction_no:
+    get:
+      summary: 'Get Transaction by Transaction Number'
+      operationId: getTransactionByTransactionNumber
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n data: {}\n}"
+      tags:
+        - Transaction
+  '/api/v1/transactions/{transaction_id}':
+    get:
+      summary: 'Get a Transaction By ID'
+      operationId: getATransactionByID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n data: {}\n}"
+      tags:
+        - Transaction
+    parameters:
+      -
+        in: path
+        name: transaction_id
+        description: 'The ID of the transaction.'
+        example: 7
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: transaction
+        description: 'Transaction ID'
+        example: '1'
+        required: true
+        schema:
+          type: string
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -3464,7 +3583,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 17
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3517,7 +3636,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 6
               required:
                 - user_id
   /api/v1/user/report:
@@ -3564,15 +3683,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: asperiores
+                  example: dolor
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: suscipit
+                  example: non
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: hic
+                  example: voluptas
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3658,7 +3777,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: adipisci
+                  example: vel
               required:
                 - user_ids
     parameters:
@@ -4579,6 +4698,9 @@ tags:
     description: ''
   -
     name: Point
+    description: ''
+  -
+    name: Transaction
     description: ''
   -
     name: User

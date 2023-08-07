@@ -135,6 +135,16 @@ class Article extends Model implements HasMedia
             ->where('type', Interaction::TYPE_LIKE);
     }
 
+    // public function relatedThroughCategory()
+    // {
+    //     return $this->hasManyRelatedThrough(ArticleCategory::class, 'articles_article_categories');
+    // }
+
+    // public function relatedThroughViews()
+    // {
+    //     return $this->hasManyRelatedThrough(View::class, 'user_id');
+    // }
+
     public function hiddenUsers()
     {
         return $this->belongsToMany(User::class, 'articles_hidden_users')

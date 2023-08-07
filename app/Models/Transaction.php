@@ -11,15 +11,19 @@ class Transaction extends Model
 
     const STATUS = [
         0 => 'Pending',
-        1 => 'Completed',
+        1 => 'Success',
         2 => 'Failed'
     ];
 
+    const STATUS_PENDING = 0;
+    const STATUS_SUCCESS = 1;
+    const STATUS_FAILED = 2;
+
     protected $guarded = ['id'];
 
-    public function product()
+    public function transactionable()
     {
-        return $this->belongsTo(Product::class);
+        return $this->morphTo('transactionable');
     }
 
     public function created_by()
