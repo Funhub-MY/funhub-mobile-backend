@@ -28,6 +28,7 @@ class UserResource extends JsonResource
             'following_count' => $this->followings()->count(),
             'followers_count' => $this->followers()->count(),
             'has_completed_profile' => $this->has_completed_profile,
+            'has_avatar' => $this->hasMedia('avatar'),
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
             'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false
