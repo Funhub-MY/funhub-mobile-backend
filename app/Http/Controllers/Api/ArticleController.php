@@ -137,6 +137,11 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
+        // if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
+        //     $query->relatedThroughViews()
+        //         ->relatedThroughCategory();
+        // }
+
         // by default it will build recommendations, unless specifically turned off
         // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
         //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
@@ -785,7 +790,7 @@ class ArticleController extends Controller
         if ($article->exists()) {
             $article = $article->first();
             // destroy ratings if article->location has ratings by this article owner
-            if ($article->first()->location) {
+            if ($article->first()->location && $article->first()->location->ratings()->where('user_id', $article->first()->user_id)->exists()) {
                 $article->first()->location->ratings()
                     ->where('user_id', $article->first()->user_id)
                     ->delete();
