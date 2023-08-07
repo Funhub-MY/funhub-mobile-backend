@@ -914,6 +914,77 @@ class ArticleTest extends TestCase
     }
 
     /**
+     * Test Delete Article with Location Tagged
+     */
+    public function testDeleteArticleWithLocationRating()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+         // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $article_id = $response->json('article.id');
+
+        // delete article
+        $response = $this->deleteJson('/api/v1/articles/'.$article_id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+            ]);
+
+        // check location still exists in system
+        $this->assertDatabaseHas('locations', [
+            'name' => 'Test Location',
+            'address' => 'Test Address',
+            'lat' => 1.234,
+            'lng' => 1.234,
+            'address_2' => 'Test Address 2',
+            'zip_code' => '123456',
+            'average_ratings' => null, 
+        ]);
+    }
+
+    /**
      * Test Create & Update Article with followers tagged
      * /api/v1/articles
      */

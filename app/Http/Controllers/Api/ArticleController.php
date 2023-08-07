@@ -790,19 +790,29 @@ class ArticleController extends Controller
         if ($article->exists()) {
             $article = $article->first();
             // destroy ratings if article->location has ratings by this article owner
-            if ($article->first()->location && $article->first()->location->ratings()->where('user_id', $article->first()->user_id)->exists()) {
-                $article->first()->location->ratings()
-                    ->where('user_id', $article->first()->user_id)
-                    ->delete();
+            if ($article->has('location')) {
+                $loc = $article->location->first();
+                // if artilce locaiton has ratings, get current article owner's ratings
+                if ($loc && $loc->has('ratings')) {
+                    $ratings = $loc->ratings()->where('user_id', $article->user_id)->get();
+                    // delete ratings
+                    if ($ratings->count()) {
+                        $ratings->each(function ($rating) {
+                            $rating->delete();
+                        });
+                        // update average ratings for location
+                        $loc->update([
+                            'average_ratings' => $loc->ratings()->avg('rating')
+                        ]);
+                    }
+                }
             }
-
-            // we keep article categories and tags for other articles to use
 
             // unattach all tagged users
             $article->taggedUsers()->detach();
 
             // unattach location from article
-            $article->location()->dissociate();
+            $article->location()->detach();
 
             // delete article related media to save space
             $article->getMedia(Article::MEDIA_COLLECTION_NAME)->each(function ($media) {
