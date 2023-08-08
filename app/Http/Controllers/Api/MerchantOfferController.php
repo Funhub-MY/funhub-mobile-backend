@@ -229,7 +229,7 @@ class MerchantOfferController extends Controller
         // ensure user have enough point balance
         $user = request()->user();
 
-        try {
+        // try {
             if ($request->payment_method == 'points')  {
 
                 $net_amount = $offer->unit_price * $request->quantity;
@@ -318,19 +318,19 @@ class MerchantOfferController extends Controller
                     ], 200);
                 }
             }
-        } catch (\Exception $e) {
-            Log::error($e->getMessage(), [
-                'offer_id' => $offer->id,
-                'user_id' => $user->id,
-                'quantity' => $request->quantity,
-                'unit_price' => $offer->unit_price,
-                'total' => $offer->unit_price * $request->quantity,
-            ]);
+        // } catch (\Exception $e) {
+        //     Log::error($e->getMessage(), [
+        //         'offer_id' => $offer->id,
+        //         'user_id' => $user->id,
+        //         'quantity' => $request->quantity,
+        //         'unit_price' => $offer->unit_price,
+        //         'total' => $offer->unit_price * $request->quantity,
+        //     ]);
 
-            return response()->json([
-                'message' => 'Failed to claim'
-            ], 422);
-        }
+        //     return response()->json([
+        //         'message' => 'Failed to claim'
+        //     ], 422);
+        // }
 
         // refresh offer with latest data
         $offer->refresh();
