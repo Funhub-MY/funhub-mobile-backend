@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36ceDa4vkgfha5P8VZbE6d1'
+      - 'Bearer d66ghEb5DfevP14VaZak83c'
     controller: null
     method: null
     route: null
@@ -129,6 +129,41 @@ endpoints:
           - 2
           - 3
         type: 'string[]'
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
         custom: []
       filter:
         name: filter
@@ -177,6 +212,11 @@ endpoints:
         - 1
         - 2
         - 3
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
       filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
@@ -202,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ckeDba6845g6f3aZh1EdVvP'
+      - 'Bearer fedhZE3V81aaPgDbcv56k46'
     controller: null
     method: null
     route: null
@@ -236,6 +276,20 @@ endpoints:
         example: 1
         type: integer
         custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: points/fiat
+        type: string
+        custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        custom: []
       quantity:
         name: quantity
         description: Quantity.
@@ -245,6 +299,8 @@ endpoints:
         custom: []
     cleanBodyParameters:
       offer_id: 1
+      payment_method: points/fiat
+      fiat_payment_method: fpx/card
       quantity: 1
     fileParameters: []
     responses:
@@ -270,6 +326,28 @@ endpoints:
         status: 200
         content: |-
           {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
           "message": "Offer is no longer valid"
           }
         headers: []
@@ -279,7 +357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5gv64aVkd8a6fc1DhZP3Ebe'
+      - 'Bearer 4ahaeD8dbP63ZVvcf6Eg5k1'
     controller: null
     method: null
     route: null
@@ -306,11 +384,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: sit
+        example: numquam
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: sit
+      offer_id: numquam
     queryParameters:
       offer_id:
         name: offer_id
@@ -338,7 +416,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vD8Zh56gfa6bdkVeaE13Pc4'
+      - 'Bearer vc1a5DPfda3g6kEe6Zh48bV'
     controller: null
     method: null
     route: null
@@ -443,7 +521,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hedgEcZ8P1v4D53b6kaVaf6'
+      - 'Bearer 136gDc8PV5EhZkafavb6d4e'
     controller: null
     method: null
     route: null
@@ -500,7 +578,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k63aEZcdeb5Vg681DahPv4f'
+      - 'Bearer kab8cVve4PE5h631ZaDd6gf'
     controller: null
     method: null
     route: null

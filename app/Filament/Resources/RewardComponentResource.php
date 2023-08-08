@@ -6,6 +6,7 @@ use App\Filament\Resources\RewardComponentResource\Pages;
 use App\Filament\Resources\RewardComponentResource\RelationManagers;
 use App\Filament\Resources\RewardComponentResource\RelationManagers\RewardsRelationManager;
 use App\Models\RewardComponent;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
@@ -29,10 +30,24 @@ class RewardComponentResource extends Resource
     {
         return $form
             ->schema([
+                
                 Select::make('reward')
                     ->relationship('rewards', 'name')
                     ->multiple()
                     ->required(),
+                
+                Forms\Components\SpatieMediaLibraryFileUpload::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->collection(RewardComponent::COLLECTION_NAME)
+                    // disk is s3_public 
+                    ->disk(function () {
+                        if (config('filesystems.default') === 's3') {
+                            return 's3_public';
+                        }
+                    })
+                    ->acceptedFileTypes(['image/*'])
+                    ->maxFiles(1)
+                    ->rules('image'),
 
                 // name
                 Forms\Components\TextInput::make('name')

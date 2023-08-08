@@ -5,6 +5,57 @@ description: ''
 endpoints:
   -
     httpMethods:
+      - GET
+    uri: api/v1/article_cities
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Article Cities (Unique)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      search:
+        name: search
+        description: 'optional Search for city.'
+        required: false
+        example: '"Kota"'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      search: '"Kota"'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "cities": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fa5bvadekDZEg6h83V1c46P'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - POST
     uri: api/v1/articles/gallery
     metadata:
@@ -71,7 +122,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ZcV8DhdeE4Pf6abva13kg6'
+      - 'Bearer gfc16d8VbZa6k53DEvhP4ea'
     controller: null
     method: null
     route: null
@@ -125,7 +176,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6kZe6P8v5hdgb1aV3E4cfDa'
+      - 'Bearer VabcPhe168avZ4E6k5f3dDg'
     controller: null
     method: null
     route: null
@@ -236,7 +287,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3Z1af6Pc4Vg6eEh5Ddbkav8'
+      - 'Bearer h6egk8Pd3E5vaZVaf1Dc4b6'
     controller: null
     method: null
     route: null
@@ -339,7 +390,218 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aVPcE6hkbg36Dva8f1eZ4d5'
+      - 'Bearer bk836VPEvDhfZaa5cd6g14e'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles/report
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Reports
+      subgroupDescription: ''
+      title: 'Report an article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      article_id:
+        name: article_id
+        description: ''
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: 'The reason for reporting the comment.'
+        required: true
+        example: 'Spam     * @bodyParam violation_type required The violation type of this report'
+        type: string
+        custom: []
+      violation_type:
+        name: violation_type
+        description: ''
+        required: true
+        example: aliquid
+        type: string
+        custom: []
+      violation_level:
+        name: violation_level
+        description: 'The violation level of this report'
+        required: false
+        example: quo
+        type: required
+        custom: []
+      article:
+        name: article
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      article_id: 1
+      reason: 'Spam     * @bodyParam violation_type required The violation type of this report'
+      violation_type: aliquid
+      violation_level: quo
+      article: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["article_id": ["The Article Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d6ehV348aa65EckbPfg1vZD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/articles/tagged_users
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Tagged users of article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      article_id:
+        name: article_id
+        description: 'Article Id.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      article_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V5E6vaakdhP3b86cD14fgZe'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/articles/merchant_offers/{article_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Article Merchant Offers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      article_id:
+        name: article_id
+        description: 'The ID of the article.'
+        required: true
+        example: 34
+        type: integer
+        custom: []
+      article:
+        name: article
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      article_id: 34
+      article: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {}
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 45gfa6cvDhVZ163eEa8dPkb'
     controller: null
     method: null
     route: null
@@ -373,7 +635,7 @@ endpoints:
         description: 'optional Article Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - commodi
+          - amet
         type: 'string[]'
         custom: []
       category_ids:
@@ -410,9 +672,51 @@ endpoints:
           - 3
         type: 'string[]'
         custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
       build_recommendations:
         name: build_recommendations
         description: 'optional Build Recommendations On or Off, On by Default.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+      refresh_recommendations:
+        name: refresh_recommendations
+        description: 'optional Refresh Recommendations.'
         required: false
         example: true
         type: boolean
@@ -461,7 +765,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       article_ids:
-        - commodi
+        - amet
       category_ids:
         - 1
         - 2
@@ -472,7 +776,13 @@ endpoints:
         - 1
         - 2
         - 3
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
       build_recommendations: true
+      refresh_recommendations: true
       filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
@@ -498,7 +808,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vhZd65eEgbD416aaVf3cPk8'
+      - 'Bearer 46d36Pchvk8Vg1afDEea5bZ'
     controller: null
     method: null
     route: null
@@ -601,6 +911,22 @@ endpoints:
         example: 'This is a excerpt of article'
         type: string
         custom: []
+      location:
+        name: location
+        description: 'The location of the article.'
+        required: false
+        example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+        type: string
+        custom: []
+      tagged_user_ids:
+        name: tagged_user_ids
+        description: 'The tagged users IDs.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
     cleanBodyParameters:
       title: 'This is a title'
       type: 'multimedia,text,video'
@@ -618,6 +944,10 @@ endpoints:
         - 2
       video: 1
       excerpt: 'This is a excerpt of article'
+      location: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+      tagged_user_ids:
+        - 1
+        - 2
     fileParameters: []
     responses:
       -
@@ -645,7 +975,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kafDv58EVZcg4316aP6ehdb'
+      - 'Bearer 3Z8d6ebVg4D5ahfv1aPE6kc'
     controller: null
     method: null
     route: null
@@ -702,7 +1032,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f3k68E5a1Z6cV4abPehvdgD'
+      - 'Bearer D4bdc5ZVaPk166vh83fgEae'
     controller: null
     method: null
     route: null
@@ -791,6 +1121,22 @@ endpoints:
         example: null
         type: file
         custom: []
+      tagged_user_ids:
+        name: tagged_user_ids
+        description: 'The tagged user IDs of the article.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      location:
+        name: location
+        description: 'The location of the article.'
+        required: false
+        example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+        type: string
+        custom: []
     cleanBodyParameters:
       body: 'This is a comment'
       status: 0
@@ -801,6 +1147,10 @@ endpoints:
       categories:
         - 1
         - 2
+      tagged_user_ids:
+        - 1
+        - 2
+      location: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
     fileParameters:
       images: null
       video: null
@@ -830,7 +1180,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 15gvhVa3DZdek6a8E6c4bPf'
+      - 'Bearer b1c5dhfZvP8D4k6ae3E6Vag'
     controller: null
     method: null
     route: null
@@ -887,102 +1237,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer av6E8g3Dbf1a5c6dk4PhVZe'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/articles/report
-    metadata:
-      groupName: Article
-      groupDescription: ''
-      subgroup: Reports
-      subgroupDescription: ''
-      title: 'Report an article'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      article_id:
-        name: article_id
-        description: ''
-        required: true
-        example: 16
-        type: integer
-        custom: []
-      reason:
-        name: reason
-        description: 'The reason for reporting the comment.'
-        required: true
-        example: Spam
-        type: string
-        custom: []
-      violation_type:
-        name: violation_type
-        description: 'The violation type of this report'
-        required: false
-        example: veniam
-        type: required
-        custom: []
-      violation_level:
-        name: violation_level
-        description: 'The violation level of this report'
-        required: false
-        example: tempore
-        type: required
-        custom: []
-      article:
-        name: article
-        description: 'The id of the article.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      article_id: 16
-      reason: Spam
-      violation_type: veniam
-      violation_level: tempore
-      article: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Comment reported",
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["article_id": ["The Article Id field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-      -
-        status: 422
-        content: '{"message": "You have already reported this comment" ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer aVvgkZPe8fhED6dba365c41'
+      - 'Bearer ZD8gv66aP1cdfhk3aE45Vbe'
     controller: null
     method: null
     route: null
@@ -1079,7 +1334,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3eD8fadPEV6avchk54g16bZ'
+      - 'Bearer EfkV566g4dv8aZPcDeb31ha'
     controller: null
     method: null
     route: null
@@ -1136,7 +1391,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8DZ3cEhf66d1veag4abk5VP'
+      - 'Bearer vckaDbZhdea8V3E66f5P41g'
     controller: null
     method: null
     route: null
@@ -1241,7 +1496,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZDka6bV4dEc1ge8f5aPv63h'
+      - 'Bearer cbDfh68ePag16VEa453Zkvd'
     controller: null
     method: null
     route: null
@@ -1290,7 +1545,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gVZ1aa36kehv4EPcbDf5d68'
+      - 'Bearer f6bEcZ83k6aVgdehva5D41P'
     controller: null
     method: null
     route: null
@@ -1347,7 +1602,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kfdP61VDEZehb8ac4vg3a56'
+      - 'Bearer 6PDebE5V43kc8df1vah6gaZ'
     controller: null
     method: null
     route: null
@@ -1374,11 +1629,11 @@ endpoints:
         name: comment_id
         description: 'The ID of the comment.'
         required: true
-        example: ut
+        example: architecto
         type: string
         custom: []
     cleanUrlParameters:
-      comment_id: ut
+      comment_id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1452,7 +1707,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer df38ebga61Z6Pcv5Dak4hVE'
+      - 'Bearer khDZe31d6af6ga4cVvb85PE'
     controller: null
     method: null
     route: null
@@ -1509,7 +1764,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vv46DgedaaZP8bhf156Ek3c'
+      - 'Bearer bPdDVaEZ6v156h8f4egakc3'
     controller: null
     method: null
     route: null
@@ -1554,21 +1809,21 @@ endpoints:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: voluptas
+        example: ullam
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: corrupti
+        example: sit
         type: required
         custom: []
     cleanBodyParameters:
       comment_id: 1
       reason: Spam
-      violation_level: voluptas
-      violation_type: corrupti
+      violation_level: ullam
+      violation_type: sit
     fileParameters: []
     responses:
       -
@@ -1596,7 +1851,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3ZhE8da56b1f4a6DVkgPecv'
+      - 'Bearer 6k83a4aVfehgEd5b6DcPvZ1'
     controller: null
     method: null
     route: null
@@ -1721,7 +1976,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E5a6D4b6vf1V3Ze8kPcdhag'
+      - 'Bearer VgvZ65fdebP8DkE46ca1ah3'
     controller: null
     method: null
     route: null
@@ -1808,7 +2063,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gbd8ea1E3Df54PV6Zvhca6k'
+      - 'Bearer Z8vcdaDb46k3gPV6eh51afE'
     controller: null
     method: null
     route: null
@@ -1835,11 +2090,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: asperiores
+        example: id
         type: string
         custom: []
     cleanUrlParameters:
-      id: asperiores
+      id: id
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1887,7 +2142,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vhaae6bvZdf4c3D8kEP1g56'
+      - 'Bearer vk8bVdD5ZhPgcf1eE36a46a'
     controller: null
     method: null
     route: null
@@ -1959,7 +2214,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1VdPD3aZakE5bvgf68c64he'
+      - 'Bearer hePVa3b4gEckdZ6Dva865f1'
     controller: null
     method: null
     route: null
@@ -2001,7 +2256,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VhE3gcv66fae5Z4PbdDk81a'
+      - 'Bearer PaeEkZ6Vag85hvc1d463bfD'
     controller: null
     method: null
     route: null

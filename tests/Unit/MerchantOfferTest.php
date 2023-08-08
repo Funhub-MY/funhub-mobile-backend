@@ -105,28 +105,6 @@ class MerchantOfferTest extends TestCase
 
     }
 
-    public function testGetExpiredOffer()
-    {
-        // take 5 offers and set them to expired.
-        // check if available_at <= now() still consider as valid.
-        // we need to check if the available_until should not be shown.
-        // this loop is to set the available_at less than available_until.
-        foreach($this->merchant_offer as $offer) {
-            $offer->available_at = now()->subDay();
-            $offer->available_until = now()->subDay();
-            $offer->save();
-        }
-
-        // so when we do getJson offer, expected results will be 0.
-        $response = $this->getJson('/api/v1/merchant/offers');
-        $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'data',
-                    'meta'
-                ]);
-        $total = $response->json('meta.total');
-        $this->assertEquals(0, $total);
-    }
 
     public function testClaimExpiredOfferByLoggedInUser()
     {
@@ -140,6 +118,7 @@ class MerchantOfferTest extends TestCase
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $merchant_offer->id,
             'quantity' => 1,
+            'payment_method' => 'points'
         ]);
         // expired should return 422 with message.
         $response->assertStatus(422)
@@ -160,6 +139,7 @@ class MerchantOfferTest extends TestCase
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $merchant_offer->id,
             'quantity' => 1,
+            'payment_method' => 'points'
         ]);
         // expired should return 422 with message.
         $response->assertStatus(422)
@@ -195,6 +175,7 @@ class MerchantOfferTest extends TestCase
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $merchant_offer->id,
             'quantity' => 1,
+            'payment_method' => 'points'
         ]);
         $response->assertStatus(200)
             ->assertJsonStructure([

@@ -41,7 +41,13 @@ class CommentLiked extends Notification implements ShouldQueue
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-            ->setData(['comment_id' => (string) $this->comment->id, 'commentor_id' => (string) $this->comment->user->id])
+            ->setData([
+                'comment_id' => (string) $this->comment->id, 
+                'commentor_id' => (string) $this->comment->user->id,
+                'article_id' => (string) $this->comment->commentable->id,
+                'article_type' => (string) $this->comment->commentable->type,
+                'action' => 'comment_liked'
+            ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment Like')
                 ->setBody( $this->comment->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"')
@@ -62,7 +68,7 @@ class CommentLiked extends Notification implements ShouldQueue
             'link_to_url' => false,
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
-            'action' => 'commented',
+            'action' => 'comment_liked',
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'message' => $this->comment->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"',

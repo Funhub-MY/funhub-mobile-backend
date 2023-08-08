@@ -6,8 +6,12 @@ use Tests\TestCase;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
+use App\Models\Country;
+use App\Models\State;
 use App\Models\User;
 use App\Models\View;
+use Database\Seeders\CountriesTableSeeder;
+use Database\Seeders\StatesTableSeeder;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -739,7 +743,7 @@ class ArticleTest extends TestCase
         $response = $this->putJson('/api/v1/articles/'.$article->id, [
             'body' => 'Test Article Body',
             'status' => 1, // unpublished
-            'categories' => implode(',', $categories_new->pluck('id')->toArray()),
+            'categories' => $categories_new->pluck('id')->toArray(),
         ]);
 
         $response->assertStatus(200)
@@ -756,8 +760,6 @@ class ArticleTest extends TestCase
         ]);
 
         $article = Article::find($article->id);
-
-        Log::info($article->categories->pluck('id')->toArray());
 
         // assert article has categories (new)
         $this->assertTrue(
@@ -823,5 +825,380 @@ class ArticleTest extends TestCase
 
         // check article view count
         $this->assertEquals(count($users), $article->views->count());
+    }
+
+    /**
+     * Test Create Article with Location Tagged
+     * /api/v1/articles
+     */
+    public function testCreateArticleWithLocationTagged()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+         // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $article_id = $response->json('article.id');
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+
+        // get article by id
+        $response = $this->getJson('/api/v1/articles/'.$article_id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article' => [
+                    'location',
+                ]
+            ]);
+        // check location data is correct
+        $this->assertEquals('Test Location', $response->json('article.location.name'));
+
+        // check if /api/articles/cities have one city
+        $response = $this->getJson('/api/v1/article_cities');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'cities',
+            ]);
+
+        $this->assertCount(1, $response->json('cities'));
+
+        // assert city is Test City
+        $this->assertEquals('Test City', $response->json('cities.0'));
+    }
+
+    /**
+     * Test Delete Article with Location Tagged
+     */
+    public function testDeleteArticleWithLocationRating()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+         // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $article_id = $response->json('article.id');
+
+        // delete article
+        $response = $this->deleteJson('/api/v1/articles/'.$article_id);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+            ]);
+
+        // check location still exists in system
+        $this->assertDatabaseHas('locations', [
+            'name' => 'Test Location',
+            'address' => 'Test Address',
+            'lat' => 1.234,
+            'lng' => 1.234,
+            'address_2' => 'Test Address 2',
+            'zip_code' => '123456',
+            'average_ratings' => null, 
+        ]);
+    }
+
+    /**
+     * Test Create & Update Article with followers tagged
+     * /api/v1/articles
+     */
+    public function testCreateUpdateArticleWithFollowersTagged()
+    {
+        // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        // create ten users who follow $this->user
+        $users = User::factory()->count(10)->create();
+        foreach($users as $user) {
+            $this->actingAs($user); // act as follower
+            $response = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $this->user->id, // follow global user
+            ]);
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+        }
+
+        // switch back to $this->user
+        $this->actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/user/followers');
+
+        // assert should be 10 followers
+        $this->assertCount(10, $response->json()['data']);
+
+        // create article with users tagged
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'tagged_user_ids' => $users->pluck('id')->toArray(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article'
+            ]);
+
+        // get article by id
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id='.$response->json('article.id'));
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+        
+        // loop each tagged_users check match with $users
+        foreach($response->json('data') as $tagged_user) {
+            $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
+        }
+
+        // edit tagged users id
+        // create new sets of users
+        $users = User::factory()->count(2)->create();
+        // ensure users is followers of $this->user
+        foreach($users as $user) {
+            $this->actingAs($user); // act as follower
+            $response = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $this->user->id, // follow global user
+            ]);
+            $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+        }
+
+        // acting back to main logged in user
+        $this->actingAs($this->user); // act as follower
+
+        $response = $this->postJson('/api/v1/articles/'.$response->json('article.id'), [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'tagged_user_ids' => $users->pluck('id')->toArray(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article'
+            ]);
+
+        // check if article has users tagged
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id='.$response->json('article.id'));
+        $response->assertStatus(200)
+        ->assertJsonStructure([
+            'data'
+        ]);
+    
+        // loop each tagged_users check match with $users
+        foreach($response->json('data') as $tagged_user) {
+            $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
+        }
+    }
+
+    /**
+     * Get articles by city
+     */
+    public function testGetArticlesByCity()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+        // create 1 user
+        $otherUser = User::factory()->create();
+        
+        // create 10 articles
+        $articles = Article::factory()->count(10)->published()
+            ->create([
+                'user_id' => $otherUser,
+            ]);
+
+        // 3 cities of Klang valley
+        $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
+
+        $articles[0]->location()->create([
+            'name' => 'Test Location',
+            'address' => 'Test Address',
+            'lat' => 1.234,
+            'lng' => 1.234,
+            'address_2' => 'Test Address 2',
+            'city' => $cities[0], 
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '123456'
+        ]);
+
+        // attach remainder two location to each article
+        foreach($articles as $article) {
+            $article->location()->create([
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                // randomize cities
+                'city' => $cities[rand(1,2)],
+                'state_id' => State::where('name', 'Selangor')->first()->id,
+                'country_id' => Country::where('name', 'Malaysia')->first()->id,
+                'zip_code' => '123456'
+            ]);
+        }
+
+        // get articles by city
+        $response = $this->getJson('/api/v1/articles?city='.$cities[0]);
+        // assert data is 1 
+        $this->assertCount(1, $response->json('data'));
+
+        // check data first article id is the $articles[0]
+        $this->assertEquals($articles[0]->id, $response->json('data.0.id'));
+    }
+
+    /**
+     * Get articles within my lat, lng
+     */
+    public function testGetArticlesWithintMyLatLng()
+    {
+         // ensure countries and states are seeded first
+         $this->seed(CountriesTableSeeder::class);
+         $this->seed(StatesTableSeeder::class);
+         
+         $otherUser = User::factory()->create();
+
+         // create 10 articles
+         $articles = Article::factory()->count(10)->published()
+             ->create([
+                 'user_id' => $otherUser,
+             ]);
+ 
+         // 3 cities of Klang valley
+         $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
+         foreach($articles as $article) {
+            $article->location()->create([
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 3.0130517,
+                'lng' => 101.6199414,
+                'address_2' => 'Test Address 2',
+                'city' => $cities[0], 
+                'state_id' => State::where('name', 'Selangor')->first()->id,
+                'country_id' => Country::where('name', 'Malaysia')->first()->id,
+                'zip_code' => '123456'
+            ]);
+        }
+
+        // my location: 3.013814, 101.622510
+        $response = $this->getJson('/api/v1/articles?lat=3.013814&lng=101.622510&radius=10000');
+        
+        // assert data is 10 as its nearby
+        $this->assertCount(10, $response->json('data'));
     }
 }

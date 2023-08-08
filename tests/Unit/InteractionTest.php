@@ -252,4 +252,35 @@ class InteractionTest extends TestCase
             }
         );
     }
+
+    /**
+     * /api/v1/interactions/users
+     */
+    public function testGetUsersOfInteractions()
+    {
+        // create new article
+        $article = Article::factory()->create();
+
+        // create interactions of like
+        $interactions = Interaction::factory()->count(5)->create([
+            'interactable_id' => $article->id,
+            'interactable_type' => Article::class,
+            'type' => Interaction::TYPE_LIKE,
+            'user_id' => $this->user->id,
+        ]);
+
+        // get users of interaction
+        $response = $this->getJson('/api/v1/interactions/users?id='.$article->id.'&interactable=article&type=like');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        //count if only one
+        $this->assertEquals(1, count($response->json('data')));
+
+         // check json data id is $this->user->id
+        $this->assertEquals($this->user->id, $response->json('data')[0]['id']);
+    }
 }

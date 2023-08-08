@@ -82,4 +82,39 @@ class NotificationController extends Controller
             'message' => 'Notifications marked as read.'
         ]);
     }
+
+    /**
+     * Mark a Single Notification as Read by Notification ID
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Notifications
+     * @bodyParam notification_id string required The notification id. Example: 058d0c3d-1028-4660-b905-7e30ad7eee9c
+     * @response scenario=success {
+     * "message": "Notification marked as read."
+     * }
+     */
+    public function postMarkSingleUnreadNotificationAsRead(Request $request)
+    {
+        $this->validate($request, [
+            'notification_id' => 'required',
+        ]);
+
+        $user = auth()->user();
+        
+        // get notification by notificaiton id
+        $notification = $user->notifications()->where('id', $request->notification_id)->first();
+        if (!$notification) {
+            return response()->json([
+                'message' => 'Notification not found.'
+            ], 404);
+        } else {
+            $notification->markAsRead();
+        }
+
+        return response()->json([
+            'message' => 'Notification marked as read.'
+        ]);
+    }
 }

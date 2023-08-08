@@ -7,6 +7,49 @@ servers:
   -
     url: 'https://funhub-mobile-backend.test'
 paths:
+  /api/v1/article_cities:
+    get:
+      summary: 'Get Article Cities (Unique)'
+      operationId: getArticleCitiesUnique
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  cities: []
+                properties:
+                  cities:
+                    type: array
+                    example: []
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: search
+        description: 'Optional parameter. optional Search for city.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '"Kota"'
   /api/v1/articles/gallery:
     post:
       summary: 'Upload Images for Article'
@@ -250,6 +293,154 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+  /api/v1/articles/report:
+    post:
+      summary: 'Report an article'
+      operationId: reportAnArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Comment reported\",\n}"
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "You have already reported this comment" ]}'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_id:
+                  type: integer
+                  description: ''
+                  example: 1
+                reason:
+                  type: string
+                  description: 'The reason for reporting the comment.'
+                  example: 'Spam     * @bodyParam violation_type required The violation type of this report'
+                violation_type:
+                  type: string
+                  description: ''
+                  example: aliquid
+                violation_level:
+                  type: required
+                  description: 'The violation level of this report'
+                  example: quo
+                article:
+                  type: integer
+                  description: 'The id of the article.'
+                  example: 1
+              required:
+                - article_id
+                - reason
+                - violation_type
+                - article
+  /api/v1/articles/tagged_users:
+    get:
+      summary: 'Get Tagged users of article'
+      operationId: getTaggedUsersOfArticle
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_id:
+                  type: integer
+                  description: 'Article Id.'
+                  example: 1
+              required:
+                - article_id
+  '/api/v1/articles/merchant_offers/{article_id}':
+    get:
+      summary: 'Get Article Merchant Offers'
+      operationId: getArticleMerchantOffers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data:
+                    - {  }
+                properties:
+                  data:
+                    type: array
+                    example:
+                      - []
+                    items:
+                      type: object
+                      properties: []
+      tags:
+        - Article
+    parameters:
+      -
+        in: path
+        name: article_id
+        description: 'The ID of the article.'
+        example: 34
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: article
+        description: 'The id of the article.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/articles:
     get:
       summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
@@ -284,7 +475,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - commodi
+                    - amet
                   items:
                     type: string
                 category_ids:
@@ -313,9 +504,33 @@ paths:
                     - 3
                   items:
                     type: string
+                city:
+                  type: string
+                  description: 'optional Filter by City.'
+                  example: 'Subang Jaya'
+                lat:
+                  type: number
+                  description: 'optional Filter by Lat of User (must provide lng).'
+                  example: 3.123456
+                lng:
+                  type: number
+                  description: 'optional Filter by Lng of User (must provide lat).'
+                  example: 101.123456
+                radius:
+                  type: integer
+                  description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+                  example: 10000
+                location_id:
+                  type: integer
+                  description: 'optional Filter by Location Id.'
+                  example: 1
                 build_recommendations:
                   type: boolean
                   description: 'optional Build Recommendations On or Off, On by Default.'
+                  example: true
+                refresh_recommendations:
+                  type: boolean
+                  description: 'optional Refresh Recommendations.'
                   example: true
                 filter:
                   type: string
@@ -441,6 +656,18 @@ paths:
                   type: string
                   description: 'The excerpt of the article.'
                   example: 'This is a excerpt of article'
+                location:
+                  type: string
+                  description: 'The location of the article.'
+                  example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+                tagged_user_ids:
+                  type: array
+                  description: 'The tagged users IDs.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
               required:
                 - title
                 - type
@@ -570,6 +797,18 @@ paths:
                   type: string
                   format: binary
                   description: 'The video ID of the article.'
+                tagged_user_ids:
+                  type: array
+                  description: 'The tagged user IDs of the article.'
+                  example:
+                    - 1
+                    - 2
+                  items:
+                    type: string
+                location:
+                  type: string
+                  description: 'The location of the article.'
+                  example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
               required:
                 - body
                 - status
@@ -622,67 +861,6 @@ paths:
         required: true
         schema:
           type: integer
-  /api/v1/articles/report:
-    post:
-      summary: 'Report an article'
-      operationId: reportAnArticle
-      description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
-      responses:
-        200:
-          description: success
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "{\n\"message\": \"Comment reported\",\n}"
-        422:
-          description: 'Invalid Form Fields'
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: '{"message": "You have already reported this comment" ]}'
-      tags:
-        - Article
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                article_id:
-                  type: integer
-                  description: ''
-                  example: 16
-                reason:
-                  type: string
-                  description: 'The reason for reporting the comment.'
-                  example: Spam
-                violation_type:
-                  type: required
-                  description: 'The violation type of this report'
-                  example: veniam
-                violation_level:
-                  type: required
-                  description: 'The violation level of this report'
-                  example: tempore
-                article:
-                  type: integer
-                  description: 'The id of the article.'
-                  example: 1
-              required:
-                - article_id
-                - reason
-                - article
   /api/v1/article_tags:
     get:
       summary: 'Get popular tags'
@@ -1013,7 +1191,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ut
+        example: architecto
         required: true
         schema:
           type: string
@@ -1108,11 +1286,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptas
+                  example: ullam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: corrupti
+                  example: sit
               required:
                 - comment_id
                 - reason
@@ -1383,7 +1561,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: asperiores
+        example: id
         required: true
         schema:
           type: string
@@ -1898,6 +2076,65 @@ paths:
               required:
                 - name
                 - email
+  /api/v1/interactions/users:
+    get:
+      summary: 'Get Users of Interaction'
+      operationId: getUsersOfInteraction
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                  links: {  }
+                  meta: {  }
+                properties:
+                  data:
+                    type: array
+                    example: []
+                  links:
+                    type: object
+                    properties: []
+                  meta:
+                    type: object
+                    properties: []
+      tags:
+        - Interactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interactable:
+                  type: string
+                  description: 'The type of interactable.'
+                  example: 'article,merchant_offer'
+                id:
+                  type: integer
+                  description: 'The id of the interactable.'
+                  example: 1
+                type:
+                  type: string
+                  description: 'The type of interaction.'
+                  example: 'like,dislike,share,bookmark'
+              required:
+                - interactable
+                - id
+                - type
   /api/v1/interactions:
     get:
       summary: 'Get interactions on a interactable type (eg. Articles)'
@@ -2099,6 +2336,109 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/locations:
+    get:
+      summary: 'Get Locations'
+      operationId: getLocations
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Location
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'optional Search query.'
+                  example: '"KFC SS15"'
+                state_id:
+                  type: integer
+                  description: 'optional Filter by state id.'
+                  example: 1
+                country_id:
+                  type: integer
+                  description: 'optional Filter by country id.'
+                  example: 1
+                city:
+                  type: string
+                  description: 'optional Filter by city.'
+                  example: '"Subang Jaya"'
+                lat:
+                  type: number
+                  description: 'optional Latitude of User GeoLoc.'
+                  example: 3.073065
+                lng:
+                  type: number
+                  description: 'optional Longitude of User GeoLoc.'
+                  example: 101.607787
+                radius:
+                  type: integer
+                  description: 'optional Radius (KM) of search if lat,lng provided.'
+                  example: 10
+  '/api/v1/locations/{location_id}':
+    get:
+      summary: 'Get One Location'
+      operationId: getOneLocation
+      description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: {  }
+                properties:
+                  data:
+                    type: object
+                    properties: []
+      tags:
+        - Location
+    parameters:
+      -
+        in: path
+        name: location_id
+        description: 'The ID of the location.'
+        example: 10
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: location
+        description: 'Location ID.'
+        example: '1'
+        required: true
+        schema:
+          type: string
   /api/v1/merchant/offers/my_bookmarks:
     get:
       summary: 'Get My Bookmarked Merchant Offers'
@@ -2192,6 +2532,26 @@ paths:
                     - 3
                   items:
                     type: string
+                city:
+                  type: string
+                  description: 'optional Filter by City.'
+                  example: 'Subang Jaya'
+                lat:
+                  type: number
+                  description: 'optional Filter by Lat of User (must provide lng).'
+                  example: 3.123456
+                lng:
+                  type: number
+                  description: 'optional Filter by Lng of User (must provide lat).'
+                  example: 101.123456
+                radius:
+                  type: integer
+                  description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+                  example: 10000
+                location_id:
+                  type: integer
+                  description: 'optional Filter by Location Id.'
+                  example: 1
                 filter:
                   type: string
                   description: 'Column to Filter.'
@@ -2255,12 +2615,21 @@ paths:
                   type: integer
                   description: 'Offer ID.'
                   example: 1
+                payment_method:
+                  type: string
+                  description: 'Payment Method.'
+                  example: points/fiat
+                fiat_payment_method:
+                  type: string
+                  description: 'required_if:payment_method,fiat Payment Method.'
+                  example: fpx/card
                 quantity:
                   type: integer
                   description: Quantity.
                   example: 1
               required:
                 - offer_id
+                - payment_method
                 - quantity
   '/api/v1/merchant/offers/{offer_id}':
     get:
@@ -2305,7 +2674,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: sit
+        example: numquam
         required: true
         schema:
           type: string
@@ -2440,50 +2809,109 @@ paths:
         200:
           description: success
           content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"current_page\": 1,\n\"data\": [\n  {\n  \"id\": 1,\n  \"name\": \"Complete 10 missions\",\n  \"is_participating\": true,\n  \"description\": \"Complete 10 missions to earn a reward\",\n  \"event\": \"mission_completed\",\n  \"current_value\": 5,\n  \"value\": 10,\n  \"reward\": {\n      \"id\": 1,\n      \"name\": \"Egg\",\n      \"description\": \"egg\",\n      \"thumbnail_url\": \"https://example.com/egg.png\",\n  },\n  \"reward_quantity\": 1,\n  \"claimed\": false,\n  \"claimed_at\": null,\n  \"claimed_at_formatted\": null,\n  \"claimed_at_ago\": null\n }\n],\n\"first_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"from\": 1,\n\"last_page\": 1,\n\"last_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"next_page_url\": null,\n\"path\": \"http://localhost:8000/api/missions\",\n\"per_page\": 15,\n}"
+      tags:
+        - Mission
+    parameters:
+      -
+        in: path
+        name: claimed_only
+        description: 'Optional parameter. boolean If set to true, only return missions rewards that has been claimed by user.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'false'
+  /api/v1/missions/complete:
+    post:
+      summary: 'Complete all missions or single mission'
+      operationId: completeAllMissionsOrSingleMission
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
             application/json:
               schema:
                 type: object
                 example:
-                  data:
-                    -
-                      id: 1
-                      name: 'Mission 1'
-                      description: 'Mission 1'
-                      event: 'Like Article'
-                      reward: Egg
-                      reward_quantity: 1
+                  message: 'Mission(s) completed successfully.'
+                  completed_missions:
+                    - 1
+                    - 2
+                  reward:
+                    object: {  }
+                    quantity: 1
                 properties:
-                  data:
+                  message:
+                    type: string
+                    example: 'Mission(s) completed successfully.'
+                  completed_missions:
                     type: array
                     example:
-                      -
-                        id: 1
-                        name: 'Mission 1'
-                        description: 'Mission 1'
-                        event: 'Like Article'
-                        reward: Egg
-                        reward_quantity: 1
+                      - 1
+                      - 2
                     items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 1
-                        name:
-                          type: string
-                          example: 'Mission 1'
-                        description:
-                          type: string
-                          example: 'Mission 1'
-                        event:
-                          type: string
-                          example: 'Like Article'
-                        reward:
-                          type: string
-                          example: Egg
-                        reward_quantity:
-                          type: integer
-                          example: 1
+                      type: integer
+                  reward:
+                    type: object
+                    properties:
+                      object:
+                        type: object
+                        properties: []
+                      quantity:
+                        type: integer
+                        example: 1
+      tags:
+        - Mission
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mission_id:
+                  type: integer
+                  description: 'The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed.'
+                  example: 1
+  /api/v1/missions/claimables:
+    get:
+      summary: 'Get latest claimable missions'
+      operationId: getLatestClaimableMissions
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n {\n \"id\": 1,\n \"name\": \"Mission 1\",\n ...\n }\n]\n}"
       tags:
         - Mission
   /api/v1/user/settings/fcm-token:
@@ -2561,6 +2989,47 @@ paths:
                   type: integer
                   description: 'The number of items per page.'
                   example: 10
+  /api/v1/notifications/mark_as_read:
+    post:
+      summary: 'Mark a Single Notification as Read by Notification ID'
+      operationId: markASingleNotificationAsReadByNotificationID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Notification marked as read.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Notification marked as read.'
+      tags:
+        - Notifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_id:
+                  type: string
+                  description: 'The notification id.'
+                  example: 058d0c3d-1028-4660-b905-7e30ad7eee9c
+              required:
+                - notification_id
   /api/v1/notifications/mark_all_as_read:
     post:
       summary: 'Mark all notifications as read'
@@ -2635,6 +3104,29 @@ paths:
                 example: "{\n[\"id\" => 1, \"name\" => \"Abia\", \"code\" => \"AB\", \"country_id\" => 1],\n}"
       tags:
         - Other
+  /api/v1/points/my_balance/all:
+    get:
+      summary: 'Get the point & point components balance of the logged in user.'
+      operationId: getThePointPointComponentsBalanceOfTheLoggedInUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"point_balance\": { \"id\": 1, \"name\": 'Funhub', \"thumbnail_url\": 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100 },\n\"point_components\": {[\n  {\"id\": 1, \"name\": \"rice\", \"thumbnail_url\": 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 2, \"name\": \"egg\", \"thumbnail_url\": 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 3, \"name\": \"vegetable\", \"thumbnail_url\": 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 4, \"name\": \"meat\", \"thumbnail_url\": 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n  {\"id\": 5, \"name\": \"fish\", \"thumbnail_url\": 'http://localhost:8000/storage/rewards/1/1.jpg', \"balance\": 100},\n]}\n}"
+      tags:
+        - Point
   /api/v1/points/balance:
     get:
       summary: 'Get the point balance of the user.'
@@ -2754,17 +3246,183 @@ paths:
             schema:
               type: object
               properties:
-                reward_id:
-                  type: integer
-                  description: 'The id of the reward.'
-                  example: 1
                 quantity:
                   type: integer
                   description: 'The quantity of the reward to form.'
                   example: 1
               required:
-                - reward_id
                 - quantity
+  /api/v1/points/ledgers:
+    get:
+      summary: 'Get Point Ledger'
+      operationId: getPointLedger
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n{\n  \"id\": 1,\n  ...\n}\n]\n}"
+      tags:
+        - Point
+  /api/v1/points/components/ledgers:
+    get:
+      summary: 'Get Point Component Ledgers)'
+      operationId: getPointComponentLedgers
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [\n{\n  \"id\": 1,\n  ...\n}\n]\n}"
+      tags:
+        - Point
+    parameters:
+      -
+        in: path
+        name: filter_type
+        description: 'Optional parameter. Type of Component (name).'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: egg
+  /api/v1/transactions:
+    get:
+      summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
+      operationId: getAllMyTransactionsGetAllTransactionsOfCurrentLoggedInUsersPaginated
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Transaction
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date_from:
+                  type: string
+                  description: 'Date from'
+                  example: '2021-01-01'
+                date_to:
+                  type: string
+                  description: 'Date to'
+                  example: '2021-01-31'
+  /api/v1/transactions/transaction_no:
+    get:
+      summary: 'Get Transaction by Transaction Number'
+      operationId: getTransactionByTransactionNumber
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n data: {}\n}"
+      tags:
+        - Transaction
+  '/api/v1/transactions/{transaction_id}':
+    get:
+      summary: 'Get a Transaction By ID'
+      operationId: getATransactionByID
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n data: {}\n}"
+      tags:
+        - Transaction
+    parameters:
+      -
+        in: path
+        name: transaction_id
+        description: 'The ID of the transaction.'
+        example: 7
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: transaction
+        description: 'Transaction ID'
+        example: '1'
+        required: true
+        schema:
+          type: string
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -2925,7 +3583,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 17
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -2978,7 +3636,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 1
+                  example: 6
               required:
                 - user_id
   /api/v1/user/report:
@@ -3025,15 +3683,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: id
+                  example: dolor
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: esse
+                  example: non
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: mollitia
+                  example: voluptas
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3119,7 +3777,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: a
+                  example: vel
               required:
                 - user_ids
     parameters:
@@ -3747,7 +4405,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -4024,6 +4682,9 @@ tags:
     name: Interactions
     description: ''
   -
+    name: Location
+    description: ''
+  -
     name: Merchant
     description: ''
   -
@@ -4037,6 +4698,9 @@ tags:
     description: ''
   -
     name: Point
+    description: ''
+  -
+    name: Transaction
     description: ''
   -
     name: User

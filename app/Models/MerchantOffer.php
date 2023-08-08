@@ -26,6 +26,7 @@ class MerchantOffer extends Model implements HasMedia
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',
+        2 => 'Archived'
     ];
 
     const STATUS_DRAFT = 0;
@@ -43,6 +44,7 @@ class MerchantOffer extends Model implements HasMedia
 
     const CLAIM_SUCCESS = 1;
     const CLAIM_FAILED = 2;
+    const CLAIM_AWAIT_PAYMENT = 3;
 
     /**
      * Search Setup
@@ -127,6 +129,11 @@ class MerchantOffer extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transactionable');
+    }
+
     public function categories()
     {
         return $this->belongsToMany(MerchantCategory::class, 'merchant_category_merchant_offer')
@@ -136,6 +143,17 @@ class MerchantOffer extends Model implements HasMedia
     public function views()
     {
         return $this->morphMany(View::class, 'viewable');
+    }
+
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'articles_merchant_offers', 'merchant_offer_id', 'article_id')
+            ->withTimestamps();
+    }
+
+    public function location()
+    {
+        return $this->morphToMany(Location::class, 'locatable');
     }
 
     /**
@@ -152,5 +170,12 @@ class MerchantOffer extends Model implements HasMedia
     public function getClaimedQuantityAttribute()
     {
         return $this->claims()->wherePivot('status', self::CLAIM_SUCCESS)->count();
+    }
+
+    public function scopeSuccessClaimed(Builder $query)
+    {
+        $query->whereHas('claims', function ($query) {
+            $query->wherePivot('status', self::CLAIM_SUCCESS);
+        });
     }
 }

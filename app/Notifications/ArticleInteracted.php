@@ -41,7 +41,13 @@ class ArticleInteracted extends Notification implements ShouldQueue
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-            ->setData(['interaction_id' => (string) $this->interaction->id, 'interaction_user' => (string) $this->interaction->user->id])
+            ->setData([
+                'interaction_id' => (string) $this->interaction->id,
+                'interaction_user' => (string) $this->interaction->user->id, 
+                'article_id' => (string) $this->interaction->interactable->id,
+                'article_type' => (string) $this->interaction->interactable->type,
+                'action' => 'article_interacted'
+            ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle( 'New '.$this->getAction())
                 ->setBody($this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"')
@@ -62,7 +68,7 @@ class ArticleInteracted extends Notification implements ShouldQueue
             'link_to_url' => false,
             'link_to' => $this->interaction->interactable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->interaction->interactable_type, // if link to url false, means get link_to_object
-            'action' => $this->getAction(),
+            'action' => 'article_interacted',
             'from' => $this->interaction->user->name,
             'from_id' => $this->interaction->user->id,
             'message' => $this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"',

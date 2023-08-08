@@ -40,7 +40,10 @@ class Newfollower extends Notification implements ShouldQueue
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-        ->setData(['follower_id' => (string) $this->follower->id])
+        ->setData([
+            'follower_id' => (string) $this->follower->id,
+            'action' => 'new_follower'
+        ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('New Follower')
             ->setBody($this->follower->name . '开始关注你了')

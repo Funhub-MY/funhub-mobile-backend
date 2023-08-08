@@ -15,6 +15,23 @@ class MerchantOfferResource extends JsonResource
      */
     public function toArray($request)
     {
+        $location = null;
+        if ($this->has('location')) {
+            $loc = $this->location->first();
+            
+            // if artilce locaiton has ratings, get current article owner's ratings
+            if ($loc && $loc->has('ratings')) {
+                $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
+                $location = [
+                    'id' => $loc->id,
+                    'name' => $loc->name,
+                    'address' => $loc->full_address,
+                    'lat' => floatval($loc->lat),
+                    'lng' => floatval($loc->lng),
+                ];
+            }
+        }
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -30,13 +47,19 @@ class MerchantOfferResource extends JsonResource
             ],
             'name' => $this->name,
             'description' => $this->description,
-            'unit_price' => $this->unit_price,
+            'point_cost' => floatval($this->unit_price),
+            'point_fiat_price' => floatval($this->point_fiat_price),
+            'discounted_point_fiat_price' => floatval($this->discounted_point_fiat_price),
+            'fiat_price' => floatval($this->fiat_price),
+            'discounted_fiat_price' => floatval($this->discounted_fiat_price),
+            'default_purchase_method' => $this->purchase_method,
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
             'interactions' => InteractionResource::collection($this->interactions),
+            'location' => $location,
             'count' => [
                 'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),

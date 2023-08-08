@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "bc58cbfb-216a-4a2e-8349-9c8a099ba2cf",
+        "_postman_id": "7fabe034-9c31-45d9-aad8-577736fb828c",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -19,6 +19,46 @@
             "name": "Article",
             "description": "",
             "item": [
+                {
+                    "name": "Get Article Cities (Unique)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/article_cities",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/article_cities",
+                            "variable": [
+                                {
+                                    "id": "search",
+                                    "key": "search",
+                                    "value": "%22Kota%22",
+                                    "description": "optional Search for city."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"cities\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
                 {
                     "name": "Upload Images for Article",
                     "request": {
@@ -184,6 +224,140 @@
                     ]
                 },
                 {
+                    "name": "Reports",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Report an article",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/articles\/report",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/articles\/report"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"article_id\":1,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"aliquid\",\"violation_level\":\"quo\",\"article\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Comment reported\",\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"article_id\": [\"The Article Id field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"message\": \"You have already reported this comment\" ]}",
+                                    "name": "Invalid Form Fields"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Tagged users of article",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/tagged_users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/tagged_users"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"article_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Article Merchant Offers",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/merchant_offers\/:article_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/merchant_offers\/:article_id",
+                            "variable": [
+                                {
+                                    "id": "article_id",
+                                    "key": "article_id",
+                                    "value": "34",
+                                    "description": "The ID of the article."
+                                },
+                                {
+                                    "id": "article",
+                                    "key": "article",
+                                    "value": "1",
+                                    "description": "The id of the article."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n{}\n]\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page",
                     "request": {
                         "url": {
@@ -205,7 +379,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"commodi\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"build_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"amet\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -240,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"video\":1,\"excerpt\":\"This is a excerpt of article\"}"
+                            "raw": "{\"title\":\"This is a title\",\"type\":\"multimedia,text,video\",\"body\":\"This is a caption or body of article\",\"status\":0,\"published_at\":\"2021-02-21 12:00:00\",\"categories\":[1,2],\"tags\":[\"#tag1\",\"#tag2\"],\"images\":[1,2],\"video\":1,\"excerpt\":\"This is a excerpt of article\",\"location\":\"{\\\"lat\\\": 123, \\\"lng\\\": 123, \\\"name\\\": \\\"location name\\\", \\\"address\\\": \\\"location address\\\", \\\"address_2\\\" : \\\"\\\", \\\"city\\\": \\\"city\\\", \\\"state\\\": \\\"state name\\\/id\\\", \\\"postcode\\\": \\\"010000\\\", \\\"rating\\\": \\\"5\\\"}\",\"tagged_user_ids\":[1,2]}"
                         },
                         "description": ""
                     },
@@ -385,6 +559,24 @@
                                     "description": ""
                                 },
                                 {
+                                    "key": "tagged_user_ids[0]",
+                                    "value": 1,
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "tagged_user_ids[1]",
+                                    "value": 2,
+                                    "type": "text",
+                                    "description": ""
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "{\"lat\": 123, \"lng\": 123, \"name\": \"location name\", \"address\": \"location address\", \"address_2\" : \"\", \"city\": \"city\", \"state\": \"state name\/id\", \"postcode\": \"010000\", \"rating\": \"5\"}",
+                                    "type": "text",
+                                    "description": "The location of the article."
+                                },
+                                {
                                     "key": "images",
                                     "src": [],
                                     "type": "file"
@@ -467,59 +659,6 @@
                             "code": 404,
                             "body": "{\"message\": \"Article not found\"}",
                             "name": "Not Found"
-                        }
-                    ]
-                },
-                {
-                    "name": "Reports",
-                    "description": "",
-                    "item": [
-                        {
-                            "name": "Report an article",
-                            "request": {
-                                "url": {
-                                    "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/articles\/report",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/articles\/report"
-                                },
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Content-Type",
-                                        "value": "application\/json"
-                                    },
-                                    {
-                                        "key": "Accept",
-                                        "value": "application\/json"
-                                    }
-                                ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\"article_id\":16,\"reason\":\"Spam\",\"violation_type\":\"veniam\",\"violation_level\":\"tempore\",\"article\":1}"
-                                },
-                                "description": ""
-                            },
-                            "response": [
-                                {
-                                    "header": [],
-                                    "code": 200,
-                                    "body": "{\n\"message\": \"Comment reported\",\n}",
-                                    "name": "success"
-                                },
-                                {
-                                    "header": [],
-                                    "code": 422,
-                                    "body": "{\"errors\": [\"article_id\": [\"The Article Id field is required.\"] ]}",
-                                    "name": "Invalid Form Fields"
-                                },
-                                {
-                                    "header": [],
-                                    "code": 422,
-                                    "body": "{\"message\": \"You have already reported this comment\" ]}",
-                                    "name": "Invalid Form Fields"
-                                }
-                            ]
                         }
                     ]
                 },
@@ -763,7 +902,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "ut",
+                                            "value": "architecto",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -863,7 +1002,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"voluptas\",\"violation_type\":\"corrupti\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ullam\",\"violation_type\":\"sit\"}"
                                 },
                                 "description": ""
                             },
@@ -988,7 +1127,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "asperiores",
+                                            "value": "id",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1595,6 +1734,41 @@
             "description": "",
             "item": [
                 {
+                    "name": "Get Users of Interaction",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/interactions\/users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/interactions\/users"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"interactable\":\"article,merchant_offer\",\"id\":1,\"type\":\"like,dislike,share,bookmark\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [],\n\"links\": {},\n\"meta\": {\n}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Get interactions on a interactable type (eg. Articles)",
                     "request": {
                         "url": {
@@ -1778,6 +1952,93 @@
             ]
         },
         {
+            "name": "Location",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get Locations",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/locations",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/locations"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get One Location",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/locations\/:location_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/locations\/:location_id",
+                            "variable": [
+                                {
+                                    "id": "location_id",
+                                    "key": "location_id",
+                                    "value": "10",
+                                    "description": "The ID of the location."
+                                },
+                                {
+                                    "id": "location",
+                                    "key": "location",
+                                    "value": "1",
+                                    "description": "Location ID."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Locaiton will auto load state, coutry, articles, merchant offers, ratings"
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": {\n}\n}",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Merchant",
             "description": "",
             "item": [
@@ -1842,7 +2103,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -1877,7 +2138,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"offer_id\":1,\"quantity\":1}"
+                                    "raw": "{\"offer_id\":1,\"payment_method\":\"points\\\/fiat\",\"fiat_payment_method\":\"fpx\\\/card\",\"quantity\":1}"
                                 },
                                 "description": ""
                             },
@@ -1893,6 +2154,12 @@
                                     "code": 200,
                                     "body": "{\n\"message\": \"Insufficient Point Balance\"\n}",
                                     "name": "insufficient_point_balance"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Redirect to gateway\",\n\"gateway_data\": [\n     'url' => $this->url .'\/payment\/eCommerce',\n      'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),\n      'mid' => $this->mid,\n      'invno' => $invoice_no,\n      'capture_amt' => $amount,\n      'desc' => $desc,\n      'postURL' => $redirectUrl,\n      'phone' => $phoneNo,\n      'email' => $email,\n      'param' => $param,\n      'authorize' => 'authorize'\n  ];\n}",
+                                    "name": "fiat_payment_mode"
                                 },
                                 {
                                     "header": [],
@@ -1921,7 +2188,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "sit",
+                                            "value": "numquam",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -2057,7 +2324,15 @@
                             "host": "{{baseUrl}}",
                             "path": "api\/v1\/missions",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/missions"
+                            "raw": "{{baseUrl}}\/api\/v1\/missions",
+                            "variable": [
+                                {
+                                    "id": "claimed_only",
+                                    "key": "claimed_only",
+                                    "value": "false",
+                                    "description": "boolean If set to true, only return missions rewards that has been claimed by user."
+                                }
+                            ]
                         },
                         "method": "GET",
                         "header": [
@@ -2077,7 +2352,74 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\n\"data\": [\n   {\n    \"id\": 1,\n    \"name\": \"Mission 1\",\n    \"description\": \"Mission 1\",\n    \"event\": \"Like Article\",\n    \"reward\": \"Egg\",\n    \"reward_quantity\": 1\n   }\n]\n}",
+                            "body": "{\n\"current_page\": 1,\n\"data\": [\n  {\n  \"id\": 1,\n  \"name\": \"Complete 10 missions\",\n  \"is_participating\": true,\n  \"description\": \"Complete 10 missions to earn a reward\",\n  \"event\": \"mission_completed\",\n  \"current_value\": 5,\n  \"value\": 10,\n  \"reward\": {\n      \"id\": 1,\n      \"name\": \"Egg\",\n      \"description\": \"egg\",\n      \"thumbnail_url\": \"https:\/\/example.com\/egg.png\",\n  },\n  \"reward_quantity\": 1,\n  \"claimed\": false,\n  \"claimed_at\": null,\n  \"claimed_at_formatted\": null,\n  \"claimed_at_ago\": null\n }\n],\n\"first_page_url\": \"http:\/\/localhost:8000\/api\/missions?page=1\",\n\"from\": 1,\n\"last_page\": 1,\n\"last_page_url\": \"http:\/\/localhost:8000\/api\/missions?page=1\",\n\"next_page_url\": null,\n\"path\": \"http:\/\/localhost:8000\/api\/missions\",\n\"per_page\": 15,\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Complete all missions or single mission",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/missions\/complete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/missions\/complete"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"mission_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Mission(s) completed successfully.\",\n\"completed_missions\": [\n   1, 2\n],\n\"reward\": {\n  \"object\": {},\n  \"quantity\": 1\n}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get latest claimable missions",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/missions\/claimables",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/missions\/claimables"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n {\n \"id\": 1,\n \"name\": \"Mission 1\",\n ...\n }\n]\n}",
                             "name": "success"
                         }
                     ]
@@ -2154,6 +2496,41 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"data\": [\n{\n   \"id\": 1,\n   \"message\" : \"A commented on your Article\",\n   \"object\" : \"article\",\n   \"object_id\" : 1,\n   \"link_to_url\" : \"http:\/\/localhost:8000\/articles\/1\",\n   \"link_to_object\" : \"article\",\n   \"action\" : \"comment\",\n   \"from\" : \"user\",\n   \"from_id\" : 1,\n   \"created_at_raw\" : \"2021-08-04T07:00:00.000000Z\",\n   \"created_at\" : \"1 day ago\"\n}\n]",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Mark a Single Notification as Read by Notification ID",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/notifications\/mark_as_read",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/notifications\/mark_as_read"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"notification_id\":\"058d0c3d-1028-4660-b905-7e30ad7eee9c\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Notification marked as read.\"\n}",
                             "name": "success"
                         }
                     ]
@@ -2279,6 +2656,38 @@
             "description": "",
             "item": [
                 {
+                    "name": "Get the point & point components balance of the logged in user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/points\/my_balance\/all",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/points\/my_balance\/all"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"point_balance\": { \"id\": 1, \"name\": 'Funhub', \"thumbnail_url\": 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100 },\n\"point_components\": {[\n  {\"id\": 1, \"name\": \"rice\", \"thumbnail_url\": 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 2, \"name\": \"egg\", \"thumbnail_url\": 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 3, \"name\": \"vegetable\", \"thumbnail_url\": 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 4, \"name\": \"meat\", \"thumbnail_url\": 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n  {\"id\": 5, \"name\": \"fish\", \"thumbnail_url\": 'http:\/\/localhost:8000\/storage\/rewards\/1\/1.jpg', \"balance\": 100},\n]}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Get the point balance of the user.",
                     "request": {
                         "url": {
@@ -2399,11 +2808,202 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reward_id\":1,\"quantity\":1}"
+                            "raw": "{\"quantity\":1}"
                         },
                         "description": ""
                     },
                     "response": []
+                },
+                {
+                    "name": "Get Point Ledger",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/points\/ledgers",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/points\/ledgers"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n{\n  \"id\": 1,\n  ...\n}\n]\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Point Component Ledgers)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/points\/components\/ledgers",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/points\/components\/ledgers",
+                            "variable": [
+                                {
+                                    "id": "filter_type",
+                                    "key": "filter_type",
+                                    "value": "egg",
+                                    "description": "Type of Component (name)."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"data\": [\n{\n  \"id\": 1,\n  ...\n}\n]\n}",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Transaction",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get all my transactions\nGet all transactions of current logged in users paginated",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/transactions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/transactions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"date_from\":\"2021-01-01\",\"date_to\":\"2021-01-31\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Transaction by Transaction Number",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/transactions\/transaction_no",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/transactions\/transaction_no"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n data: {}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get a Transaction By ID",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/transactions\/:transaction_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/transactions\/:transaction_id",
+                            "variable": [
+                                {
+                                    "id": "transaction_id",
+                                    "key": "transaction_id",
+                                    "value": "7",
+                                    "description": "The ID of the transaction."
+                                },
+                                {
+                                    "id": "transaction",
+                                    "key": "transaction",
+                                    "value": "1",
+                                    "description": "Transaction ID"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n data: {}\n}",
+                            "name": "success"
+                        }
+                    ]
                 }
             ]
         },
@@ -2483,7 +3083,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":6}"
+                                    "raw": "{\"user_id\":17}"
                                 },
                                 "description": ""
                             },
@@ -2524,7 +3124,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -2623,7 +3223,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"id\",\"violation_level\":\"esse\",\"violation_type\":\"mollitia\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"dolor\",\"violation_level\":\"non\",\"violation_type\":\"voluptas\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -2721,7 +3321,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"a\"}"
+                            "raw": "{\"user_ids\":\"vel\"}"
                         },
                         "description": ""
                     },
@@ -3192,7 +3792,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

@@ -122,21 +122,25 @@ class MissionEventListener
         $mission = Mission::where('event', $eventType)->where('enabled', true)->first();
         if (!$mission) return;
 
-        $userMission = $user->missionsParticipating()->where('is_completed', false)->where('mission_id', $mission->id)->first();
+        $userMission = $user->missionsParticipating()->where('is_completed', false)
+            ->where('mission_id', $mission->id)
+            ->first();
+        
         if (!$userMission) {
             $user->missionsParticipating()->attach($mission->id, [
-                'is_completed' => $increments == $mission->value,
                 'started_at' => now(),
                 'current_value' => $increments
             ]);
             if ($increments == $mission->value) $this->disburseRewards($mission, $user);
-        } else if (!$userMission->is_completed) {
-            $userMission->current_value += $increments;
-            if ($userMission->current_value >= $mission->value) {
-                $userMission->is_completed = true;
+        } else if (!$userMission->pivot->is_completed) {
+
+            // increment pivot->current_value
+            $userMission->pivot->increment('current_value', $increments);
+
+            if ($userMission->pivot->current_value >= $mission->value) {
+                // $userMission->pivot->is_completed = true;
                 $this->disburseRewards($mission, $user);
             }
-            $userMission->save();
         }
     }
 
@@ -154,9 +158,8 @@ class MissionEventListener
         if (!$userMission) return;
 
         // decrements only if the current value > 0
-        if ($userMission->current_value > 0) {
-            $userMission->current_value -= $decrements;
-            $userMission->save();
+        if ($userMission->pivot->current_value > 0) {
+            $userMission->pivot->decrement('current_value', $decrements);
         }
     }
 
@@ -165,28 +168,31 @@ class MissionEventListener
      */
     private function disburseRewards($mission, $user)
     {
-        // depending on mission->missionable_type to reward
-        $missionableType = $mission->missionable_type;
-        $missionableId = $mission->missionable_id;
+        // only auto disburse if system set to auto disburse true
+        if (config('app.auto_disburse_reward')) {
+             // depending on mission->missionable_type to reward
+            $missionableType = $mission->missionable_type;
+            $missionableId = $mission->missionable_id;
 
-        if ($missionableType == Reward::class) {
-            // reward point via pointService
-            $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
-            Log::info('Mission Completed and Disbursed Reward', [
-                'mission' => $mission->id,
-                'user' => $user->id,
-                'reward_type' => 'point',
-                'reward' => $mission->reward_quantity
-            ]);
-        } else if ($missionableType == RewardComponent::class) {
-            // reward point via pointComponentService
-            $this->pointComponentService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
-            Log::info('Mission Completed and Disbursed Reward', [
-                'mission' => $mission->id,
-                'user' => $user->id,
-                'reward_type' => 'point component',
-                'reward' => $mission->reward_quantity
-            ]);
+            if ($missionableType == Reward::class) {
+                // reward point via pointService
+                $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
+                Log::info('Mission Completed and Disbursed Reward', [
+                    'mission' => $mission->id,
+                    'user' => $user->id,
+                    'reward_type' => 'point',
+                    'reward' => $mission->reward_quantity
+                ]);
+            } else if ($missionableType == RewardComponent::class) {
+                // reward point via pointComponentService
+                $this->pointComponentService->credit($mission, $missionableType, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
+                Log::info('Mission Completed and Disbursed Reward', [
+                    'mission' => $mission->id,
+                    'user' => $user->id,
+                    'reward_type' => 'point component',
+                    'reward' => $mission->reward_quantity
+                ]);
+            }
         }
     }
 }

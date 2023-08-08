@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PointComponentLedgerResource;
+use App\Http\Resources\PointLedgerResource;
 use App\Models\PointComponentLedger;
 use App\Models\PointLedger;
 use App\Models\Reward;
@@ -20,6 +22,73 @@ class PointController extends Controller
     {
         $this->pointService = $pointService;
         $this->pointComponentService = $pointComponentService;
+    }
+
+    /**
+     * Get the point & point components balance of the logged in user.
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Point
+     * @response scenario=success {
+     * "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
+     * "point_components": {[
+     *   {"id": 1, "name": "rice", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 2, "name": "egg", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 3, "name": "vegetable", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 4, "name": "meat", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     *   {"id": 5, "name": "fish", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+     * ]}
+     * }
+     */
+    public function getPointsBalanceByUser()
+    {
+        $user = auth()->user();
+
+        // reward
+        $reward = Reward::first();
+
+        $point = PointLedger::where('user_id', $user->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        // get current available reward components
+        $rewardComponents = RewardComponent::all();
+        // map name as key and balance as value
+        $pointComponents = [];
+        foreach($rewardComponents as $component) {
+            $balance = PointComponentLedger::where('user_id', $user->id)
+                ->where('component_type', RewardComponent::class)
+                ->where('component_id', $component->id)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($balance) {
+                $pointComponents[] = [
+                    'id' => $component->id,
+                    'name' => $component->name,
+                    'thumbnail_url' => $component->thumbnail_url,
+                    'balance' => $balance->balance
+                ];
+            } else {
+                $pointComponents[] = [
+                    'id' => $component->id,
+                    'name' => $component->name,
+                    'thumbnail_url' => $component->thumbnail_url,
+                    'balance' => 0
+                ];
+            }
+        }
+
+        return response()->json([
+            'point_balance' => [
+                'id' => $reward->id,
+                'name' => $reward->name,
+                'thumbnail_url' => $reward->thumbnail_url,
+                'balance' => $point ? $point->balance : 0
+            ],
+            'point_components' => $pointComponents
+        ]);
     }
 
     /**
@@ -109,18 +178,16 @@ class PointController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group Point
-     * @bodyParam reward_id integer required The id of the reward. Example: 1
      * @bodyParam quantity integer required The quantity of the reward to form. Example: 1
      */
     public function postCombinePoints(Request $request)
     {
         $this->validate($request, [
-            'reward_id' => 'required|exists:rewards,id',
             'quantity' => 'required|integer'
         ]);
 
+        // get the first reward
         $reward = Reward::with('rewardComponents')
-            ->where('id', $request->reward_id)
             ->firstOrFail();
 
         if ($reward->rewardComponents->count() == 0) {
@@ -130,26 +197,32 @@ class PointController extends Controller
         $user = $request->user();
 
         foreach($reward->rewardComponents as $component) {
-            if ($component->pivot->points * $request->quantity > $user->getPointComponentBalance($component)) {
-                return response()->json(['message' => 'User does not have enough points to form this reward'], 422);
+            if ($component->pivot->points * $request->quantity > $this->pointComponentService->getBalanceByComponent($user, $component)) {
+                return response()->json([
+                    'message' => 'User does not have enough points to form this reward',
+                    'component' => $component->name,
+                    'required_balance' => $component->pivot->points * $request->quantity,
+                ], 422);
             }
         }
 
         try {
             foreach($reward->rewardComponents as $component) {
-                $this->pointComponentService->debit($reward, $component, $user->id, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward '. $reward->name);
+                // debit from point componenet
+                $this->pointComponentService->debit($reward, $component, $user, $component->pivot->points * $request->quantity, 'Debit for combining to form Reward'. $reward->name);
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage(), ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
             return response()->json(['message' => 'Error while deducting points from user'], 422);
         }
 
-        $this->pointService->credit($reward, $user->id, $request->quantity, 'Reward Formed');
+        // credit to reward
+        $this->pointService->credit($reward, $user, $request->quantity, 'Reward Formed');
         Log::info('Reward Formed', ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
 
         return response()->json([
-            'latest_point_balance' => $user->point_balance(),
-             'message' => 'Reward Formed'
+            'point_balance' => $user->point_balance,
+            'message' => 'Reward Formed'
         ]);
     }
 
@@ -182,5 +255,67 @@ class PointController extends Controller
         return response()->json([
             'rewards' => $rewards
         ]);
+    }
+
+    /**
+     * Get Point Ledger
+     *
+     * @param Request $request
+     * @return PointLedgerResource
+     * 
+     * @group Point
+     * @response scenario=success {
+     * "data": [
+     * {
+     *   "id": 1,
+     *   ...
+     * }
+     * ]
+     * }
+     */
+    public function getPointLedger(Request $request)
+    {
+        $user = $request->user();
+
+        $pointLedgers = PointLedger::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('paginate_per_page'));
+
+        return PointLedgerResource::collection($pointLedgers);
+    }
+
+    /**
+     * Get Point Component Ledgers)
+     *
+     * @param Request $request
+     * @return PointComponentLedgerResource
+     * 
+     * @group Point
+     * @urlParam filter_type string Type of Component (name). Example: egg
+     * @response scenario=success {
+     * "data": [
+     * {
+     *   "id": 1,
+     *   ...
+     * }
+     * ]
+     * }
+     */
+    public function getPointComponentLedger(Request $request)
+    {
+        $user = $request->user();
+
+        // get RewardComponent IDs by name
+        $componentIds = RewardComponent::where('name', $request->filter_type)->pluck('id');
+
+        $pointComponentLedgers = PointComponentLedger::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('paginate_per_page'))
+            ->when($request->filter_type, function ($query) use ($componentIds) {
+                return $query->where('component_type', RewardComponent::class)
+                    ->whereIn('component_id', $componentIds);
+            });
+
+        return PointComponentLedgerResource::collection($pointComponentLedgers);
     }
 }

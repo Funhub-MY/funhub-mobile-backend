@@ -135,6 +135,16 @@ class Article extends Model implements HasMedia
             ->where('type', Interaction::TYPE_LIKE);
     }
 
+    // public function relatedThroughCategory()
+    // {
+    //     return $this->hasManyRelatedThrough(ArticleCategory::class, 'articles_article_categories');
+    // }
+
+    // public function relatedThroughViews()
+    // {
+    //     return $this->hasManyRelatedThrough(View::class, 'user_id');
+    // }
+
     public function hiddenUsers()
     {
         return $this->belongsToMany(User::class, 'articles_hidden_users')
@@ -150,6 +160,23 @@ class Article extends Model implements HasMedia
     public function views()
     {
         return $this->morphMany(View::class, 'viewable');
+    }
+
+    public function location()
+    {
+        return $this->morphToMany(Location::class, 'locatable');
+    }
+
+    public function taggedUsers()
+    {
+        return $this->belongsToMany(User::class, 'articles_tagged_users', 'article_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    public function merchantOffers()
+    {
+        return $this->belongsToMany(MerchantOffer::class, 'articles_merchant_offers', 'article_id', 'merchant_offer_id')
+            ->withTimestamps();
     }
 
     /**

@@ -33,12 +33,14 @@ class Mission extends Model implements HasMedia
 
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'missions_users');
+        return $this->belongsToMany(User::class, 'missions_users')
+            ->withPivot('is_completed', 'started_at', 'current_value', 'completed_at')
+            ->withTimestamps();
     }
 
     // scope enabled
     public function scopeEnabled($query)
     {
-        return $query->where('enabled', true);
+        return $query->where('status', 1);
     }
 }

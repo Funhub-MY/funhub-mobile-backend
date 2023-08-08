@@ -8,10 +8,16 @@ use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleImagesUploadRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
+use App\Http\Resources\MerchantOfferResource;
+use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
+use App\Models\Country;
 use App\Models\Interaction;
+use App\Models\Location;
+use App\Models\MerchantOffer;
+use App\Models\State;
 use App\Models\User;
 use App\Models\View;
 use App\Traits\QueryBuilderTrait;
@@ -42,7 +48,13 @@ class ArticleController extends Controller
      * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      * @bodyParam following_only integer optional Filter by Articles by Users who logged in user is following. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam city string optional Filter by City. Example: Subang Jaya
+     * @bodyParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
+     * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
+     * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
@@ -63,7 +75,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
-            // ->where('user_id', '!=', auth()->user()->id)
+            ->where('user_id', '!=', auth()->user()->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
@@ -94,18 +106,91 @@ class ArticleController extends Controller
             });
         }
 
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        // get articles by lat, lng
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            // get article where article->location lat,lng is within the radius
+            $query->whereHas('location', function ($query) use ($request, $radius) {
+                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
+                    cos( radians( lat ) )
+                    * cos( radians( lng ) - radians(?)
+                    ) + sin( radians(?) ) *
+                    sin( radians( lat ) ) )
+                    ) AS distance', [$request->lat, $request->lng, $request->lat])
+                    ->havingRaw("distance < ?", [$radius]);
+            });
+        }
+
+        // location id
+        if ($request->has('location_id')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('id', $request->location_id);
+            });
+        }
+
         $this->buildQuery($query, $request);
+
+        // if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
+        //     $query->relatedThroughViews()
+        //         ->relatedThroughCategory();
+        // }
 
         // by default it will build recommendations, unless specifically turned off
         // if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
-        //     $this->buildRecommendations($query, $request);
+        //     $query = $this->buildRecommendations($query, $request->all(), ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1), ($request->has('bust_cache') && $request->bust_cache == 1));
         // }
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Get Tagged users of article
+     *
+     * @param Request $request
+     * @return UserResource
+     * 
+     * @group Article
+     * @bodyParam article_id integer required Article Id. Example: 1
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     */
+    public function getTaggedUsersOfArticle(Request $request)
+    {
+        $this->validate($request, [
+            'article_id' => 'required',
+        ]);
+
+        // ensure user has access to this articles to load tagged users
+        $article = Article::published()->where('id', $request->article_id)
+            ->whereDoesntHave('hiddenUsers', function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            })->first();
+
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        $taggedUsers = $article->taggedUsers()->paginate(config('app.paginate_per_page'));
+
+        return UserResource::collection($taggedUsers);
     }
 
     /**
@@ -115,38 +200,60 @@ class ArticleController extends Controller
      * @param Request $request
      * @return void
      */
-    private function buildRecommendations($query, $request)
+    private function buildRecommendations($query, $request, $refreshRecommendations = false, $bustCache = false)
     {
         $user = auth()->user();
+        $cacheHours = config('app.recommended_article_cache_hours');
+        
+        if ($bustCache) {
+            // bust all caches so can be rebuilt
+            cache()->forget('recent_liked_articles_' . $user->id);
+            cache()->forget('recent_viewed_articles_' . $user->id);
+            cache()->forget('collaborative_liked_articles_' . $user->id);
+            cache()->forget('article_ids_recommended_' . $user->id);
+            cache()->forget('recommendations_seed_' . $user->id);
+        } 
+
+        // if just refresh recommendations, then only bust recommendation seed
+        if ($refreshRecommendations) {
+            cache()->forget('recommendations_seed_' . $user->id);
+        }
+
         // Get articles sorted by recent likes
-        $recentLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
-            ->orderBy('created_at', 'desc')
-            ->where('interactable_type', Article::class)
-            ->pluck('interactable_id')
-            ->toArray();
+        $recentLikedArticles = cache()->remember('recent_liked_articles_' . $user->id, 60 * 60 * $cacheHours, function () use ($user) {
+            return Interaction::where('type', Interaction::TYPE_LIKE)
+                ->where('user_id', $user->id)
+                ->where('interactable_type', Article::class)
+                ->orderBy('created_at', 'desc')
+                ->pluck('interactable_id')
+                ->toArray();
+        });
 
         // Get articles sorted by recent views
-        $recentViewedArticles = View::orderBy('created_at', 'desc')
-            ->where('user_id', auth()->id())
-            ->where('viewable_type', Article::class)
-            ->pluck('viewable_id')
-            ->toArray();
+        $recentViewedArticles = cache()->remember('recent_viewed_articles_' . $user->id, 60 * 60 * $cacheHours, function () use ($user) {
+            return View::where('user_id', $user->id)
+                ->where('viewable_type', Article::class)
+                ->orderBy('created_at', 'desc')
+                ->pluck('viewable_id')
+                ->toArray();
+        });
         
         // Get articles liked by other users who liked the current article (excluding recentLikedArticles)
-        $collaborativeLikedArticles = Interaction::where('type', Interaction::TYPE_LIKE)
-            ->whereIn('interactable_id', $recentLikedArticles)
-            ->where('interactable_type', Article::class)
-            ->where('user_id', '!=', auth()->id())
-            ->whereNotIn('interactable_id', $recentLikedArticles)
-            ->pluck('interactable_id')
-            ->toArray();
-
+        $collaborativeLikedArticles = cache()->remember('collaborative_liked_articles_' . $user->id, 60 * 60 * $cacheHours, function () use ($user, $recentLikedArticles) {
+            return Interaction::where('type', Interaction::TYPE_LIKE)
+                ->where('user_id', '!=', $user->id)
+                ->where('interactable_type', Article::class)
+                ->whereIn('interactable_id', $recentLikedArticles)
+                ->orderBy('created_at', 'desc')
+                ->pluck('interactable_id')
+                ->toArray();
+        });
         
         // Get articles with Article Categories user interested in
         $userCategories = $user->articleCategoriesInterests->pluck('id')->toArray();
 
         $articleIds = array_unique(array_merge($recentLikedArticles, $recentViewedArticles, $collaborativeLikedArticles));
-
+        
         $numRecommendations = 10; // Specify the desired number of recommendations as minimum to use content filtering mixed with collaborative filtering
 
         if (count($articleIds) < $numRecommendations) {
@@ -168,30 +275,37 @@ class ArticleController extends Controller
         }
 
         // Reduce occurrence of articles viewed more than 2 times
-        $viewedArticlesCount = array_count_values($recentViewedArticles);
-        $articleIds = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
-            return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
+        // $viewedArticlesCount = array_count_values($recentViewedArticles);
+        // $articleIds = cache()->remember('article_ids_recommended_'.$user->id, 60 * 60 * $cacheHours, function () use ($articleIds, $viewedArticlesCount) {
+        //     $results = array_filter($articleIds, function ($articleId) use ($viewedArticlesCount) {
+        //         return !isset($viewedArticlesCount[$articleId]) || $viewedArticlesCount[$articleId] <= 2;
+        //     });
+        //     return $results;
+        // });
+
+        // generate recommendations seeder
+        $seed = cache()->remember('recommendations_seed_'.$user->id, 60 * 60 * $cacheHours, function () use ($user) {
+            return mt_rand();
         });
 
+        Log::info('seed: ' . $seed);
+        Log::info('article_ids', ['article_ids' => $articleIds]);
+
         if (!empty($articleIds)) {
-            Log::info('Recommendations found, getting articles by ids', [
-                'article_ids' => $articleIds,
-                'recentLikedArticles' => $recentLikedArticles,
-                'collaborativeLikedArticles' => $collaborativeLikedArticles,
-                'recentViewedArticles' => $recentViewedArticles,
-            ]);
-            $query->whereIn('id', $articleIds)
-                ->orderByRaw("CASE
-                    WHEN articles.id IN (" . implode(',', $recentLikedArticles) . ") THEN 4
-                    WHEN articles.id IN (" . implode(',', $collaborativeLikedArticles) . ") THEN 3
-                    WHEN articles.id IN (" . implode(',', $recentViewedArticles) . ") THEN 2
-                    ELSE 1
-                    END DESC");
+            if (!empty($recentLikedArticles) && !empty($collaborativeLikedArticles) && !empty($recentViewedArticles)) {
+                $query->whereIn('id', $articleIds)
+                    ->inRandomOrder($seed)
+                    ->get();
+            } else {
+                $query->orderBy('created_at', 'desc');
+            }
         } else {
             // finally if no article ids just get all articles by latest
             Log::info('No recommendations found, getting all articles by latest');
             $query->orderBy('created_at', 'desc');
         }
+
+        return $query;
     }
 
     /**
@@ -244,7 +358,7 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -300,7 +414,7 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -324,8 +438,9 @@ class ArticleController extends Controller
      * @bodyParam images array The images IDs. Must first call upload images endpoint. Example: [1, 2]
      * @bodyParam video integer The video ID. Must first call upload videos endpoint. Example: 1
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
-     *
-     *
+     * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
+     * @bodyParam tagged_user_ids array The tagged users IDs. Example: [1, 2]
+     * 
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -338,6 +453,20 @@ class ArticleController extends Controller
 
         // slug
         $slug = strtolower(Str::random(12));
+
+        $taggedUsers = null;
+        // tag users in article
+        if ($request->has('tagged_user_ids') && $request->tagged_user_ids !== 'null') {
+            // check if user's followers are in tagged user ids list
+            $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
+            if ($followers->count() != count($request->tagged_user_ids)) {
+                return response()->json([
+                    'message' => 'You can only tag your followers.',
+                ], 422);
+            }
+
+            $taggedUsers = User::whereIn('id', $request->tagged_user_ids)->get();
+        }
 
         $article = Article::create([
             'title' => $request->title,
@@ -391,12 +520,96 @@ class ArticleController extends Controller
             $article->tags()->attach($tags);
         }
 
+        // attach location with rating
+        if ($request->has('location') && $request->location !== 'null') {
+            try {
+                $loc = $this->createOrAttachLocation($article, $request->location);
+            } catch (\Exception $e) {
+                Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
+            }
+        }
+
+        // tag users in article
+        if ($taggedUsers) {
+            $article->taggedUsers()->attach($taggedUsers);
+        }
+
         event(new ArticleCreated($article));
 
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
         ]);
+    }
+
+    /**
+     * Prep a Location Data
+     *
+     * @param Article $article
+     * @param array $locationData
+     * @return array
+     */
+    private function createOrAttachLocation($article, $locationData)
+    {
+        // check if lat and lng exists
+        $location = Location::where('lat', $locationData['lat'])
+            ->where('lng', $locationData['lng'])
+            ->first();
+
+        if ($location) {
+            // just attach to article with new ratings if there is
+            $article->location()->attach($location->id);
+        } else {
+            // create new location
+            $loc = [
+                'name' => $locationData['name'],
+                'lat' => $locationData['lat'],
+                'lng' => $locationData['lng'],
+                'address' => $locationData['address'] ?? '',
+                'address_2' => $locationData['address_2'] ?? '',
+                'zip_code' => $locationData['postcode'] ?? '',
+                'city' => $locationData['city'] ?? '',
+            ];
+
+            // find state by id if the locationdata state is integer else find by name
+            $state = null;
+            if (is_numeric($locationData['state'])) {
+                $state = State::where('id', $locationData['state'])->first();
+            } else {
+                $state = State::where('name', trim($locationData['state']))->first();
+            }
+
+            if ($state) {
+                $loc['state_id'] = $state->id;
+            
+                // find country by state id
+                $country = Country::where('id', $state->country_id)->first();
+                $loc['country_id'] = $country->id;
+            } else {
+                throw new \Exception('State not found');
+            }
+
+            $location = $article->location()->create($loc);
+        }
+
+        if ($location && $locationData['rating'] &&  $locationData['rating'] != 0) {
+            // if have ratings, update it, else create new
+            $rating = $location->ratings()->where('user_id', auth()->id())->first();
+            if ($rating) {
+                $rating->rating = $locationData['rating'];
+                $rating->save();
+            } else {
+                $location->ratings()->create([
+                    'user_id' => auth()->id(),
+                    'rating' => $locationData['rating'],
+                ]);
+            }
+            
+            // recalculate average ratings
+            $location->average_ratings = $location->ratings()->avg('rating');
+            $location->save();
+        }
+        return $location;
     }
 
     /**
@@ -413,7 +626,7 @@ class ArticleController extends Controller
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
     public function show($id) {
-        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags')
+        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -441,7 +654,9 @@ class ArticleController extends Controller
      * @bodyParam categories array The categories ID of the article. Example: [1, 2]
      * @bodyParam images file The images ID of the article.
      * @bodyParam video file The video ID of the article.
-     *
+     * @bodyParam tagged_user_ids array The tagged user IDs of the article. Example: [1, 2]
+     * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
+     * 
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -455,6 +670,21 @@ class ArticleController extends Controller
             ->first();
 
         if ($article) {
+            $user = auth()->user();
+            $taggedUsers = null;
+            // tag users in article
+            if ($request->has('tagged_user_ids') && $request->tagged_user_ids !== 'null') {
+                // check if user's followers are in tagged user ids list
+                $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
+                if ($followers->count() != count($request->tagged_user_ids)) {
+                    return response()->json([
+                        'message' => 'You can only tag your followers.',
+                    ], 422);
+                }
+    
+                $taggedUsers = User::whereIn('id', $request->tagged_user_ids)->get();
+            }
+
             // slug
             $slug = '';
             if ($request->has('title')) {
@@ -496,15 +726,15 @@ class ArticleController extends Controller
             // sync category
             if ($request->has('categories')) {
                 // explode categories
-                $category_ids = explode(',', $request->categories);
+                $category_ids = $request->categories;
                 // check if category exists before sync
                 $categories = ArticleCategory::whereIn('id', $category_ids)->pluck('id');
                 $article->categories()->sync($categories);
             }
-
+    
             // sync tags
             if ($request->has('tags')) {
-                $tags = explode(',', $request->tags);
+                $tags = $request->tags;
                 $tags = array_map(function ($tag) {
                     return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
                 }, $tags);
@@ -515,7 +745,29 @@ class ArticleController extends Controller
                 });
                 $article->tags()->sync($tags);
             }
-            return response()->json(['message' => 'Article updated']);
+
+            // tag users in article
+            if ($taggedUsers) {
+                $article->taggedUsers()->sync($taggedUsers);
+            }
+
+            // attach location with rating
+            if ($request->has('location') && $request->location !== 'null') {
+                try {
+                    // delete article->location->ratings where user_id is current article->user_id
+                    $location = $article->location->first();
+                    if ($location && $location->has('ratings')) {
+                        $location->ratings()->where('user_id', $article->user_id)->delete();
+                    }
+
+                    // create or attach new location with ratings
+                    $loc = $this->createOrAttachLocation($article, $request->location);
+                } catch (\Exception $e) {
+                    Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
+                }
+            }
+
+            return response()->json(['message' => 'Article updated', 'article' => $article]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
         }
@@ -539,6 +791,38 @@ class ArticleController extends Controller
         // check if owner of Article
         $article = Article::where('id', $id)->where('user_id', auth()->id());
         if ($article->exists()) {
+            $article = $article->first();
+            // destroy ratings if article->location has ratings by this article owner
+            if ($article->has('location')) {
+                $loc = $article->location->first();
+                // if artilce locaiton has ratings, get current article owner's ratings
+                if ($loc && $loc->has('ratings')) {
+                    $ratings = $loc->ratings()->where('user_id', $article->user_id)->get();
+                    // delete ratings
+                    if ($ratings->count()) {
+                        $ratings->each(function ($rating) {
+                            $rating->delete();
+                        });
+                        // update average ratings for location
+                        $loc->update([
+                            'average_ratings' => $loc->ratings()->avg('rating')
+                        ]);
+                    }
+                }
+            }
+
+            // unattach all tagged users
+            $article->taggedUsers()->detach();
+
+            // unattach location from article
+            $article->location()->detach();
+
+            // delete article related media to save space
+            $article->getMedia(Article::MEDIA_COLLECTION_NAME)->each(function ($media) {
+                $media->delete();
+            });
+
+            // delete article
             $article->delete();
             return response()->json(['message' => 'Article deleted']);
         } else {
@@ -695,8 +979,7 @@ class ArticleController extends Controller
      * @group Article
      * @subgroup Reports
      * @bodyParam article integer required The id of the article. Example: 1
-     * @bodyParam reason string required The reason for reporting the comment. Example: Spam
-     * @bodyParam violation_type required The violation type of this report
+     * @bodyParam reason string required The reason for reporting the comment. Example: Spam     * @bodyParam violation_type required The violation type of this report
      * @bodyParam violation_level required The violation level of this report
      * @response scenario=success {
      * "message": "Comment reported",
@@ -727,5 +1010,64 @@ class ArticleController extends Controller
             return response()->json(['message' => 'You have already reported this comment'], 422);
         }
         return response()->json(['message' => 'Comment reported']);
+    }
+
+    /**
+     * Get Article Cities (Unique)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Article
+     * @urlParam search string optional Search for city. Example: "Kota"
+     * @response scenario=success {
+     * "cities": []
+     * }
+     */
+    public function getArticleCities(Request $request)
+    {
+        // get all unique article->locations
+        $query = Location::select('city')
+            ->orderBy('city', 'asc')
+            ->distinct();
+
+        if ($request->has('search')) {
+            // search by like
+            $query->where('city', 'like', '%' . $request->search . '%');
+        }
+
+        $locationWithCity = $query->get();
+
+        // get all unique cities into an array
+        $cities = $locationWithCity->pluck('city')->toArray();
+
+        return response()->json([
+            'cities' => $cities,
+        ]);
+    }
+
+    /**
+     * Get Article Merchant Offers
+     *
+     * @param Request $request
+     * @param Article $article
+     * @return MerchantOfferResource
+     * 
+     * @group Article
+     * @urlParam article integer required The id of the article. Example: 1
+     * 
+     * @response scenario=success {
+     * "data": [
+     * {}
+     * ]
+     * }
+     */
+    public function getArticleMerchantOffers(Article $article)
+    {
+        $merchantOffers = $article->merchantOffers()
+            ->with('merchant')
+            ->paginate(config('app.paginate_per_page'));
+
+        return MerchantOfferResource::collection($merchantOffers);
     }
 }

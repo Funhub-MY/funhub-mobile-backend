@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\PointComponentLedger;
+use Illuminate\Support\Facades\Log;
 
 class PointComponentService
 {
@@ -32,7 +33,7 @@ class PointComponentService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->debit = true;
-        $pointLedger->balance = $user->point_balance - $amount;
+        $pointLedger->balance = $this->getBalanceByComponent($user, $type) - $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
@@ -42,8 +43,8 @@ class PointComponentService
     /**
      * Credit point
      * 
-     * @param $pointable
-     * @param $type
+     * @param $pointable    Object that causes this credit
+     * @param $type         Type of point component credited    
      * @param $user
      * @param $amount
      * @param $title
@@ -61,10 +62,25 @@ class PointComponentService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->credit = true;
-        $pointLedger->balance = $user->point_balance + $amount;
+        $pointLedger->balance = $this->getBalanceByComponent($user, $type) + $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
         return $pointLedger;
+    }
+
+    public function getBalanceByComponent($user, $component)
+    {
+        $latest = PointComponentLedger::where('user_id', $user->id)
+            ->where('component_type', get_class($component))
+            ->where('component_id', $component->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if(!$latest) {
+            Log::info('No latest point component ledger found for user '.$user->id.' and component '.$component->id);
+        }
+
+        return $latest ? $latest->balance : 0;
     }
 }

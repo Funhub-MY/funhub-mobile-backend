@@ -44,7 +44,10 @@ class CommentReplied extends Notification
             ->setData([
                 'comment_id' => (string) $this->comment->id,
                 'commentor_id' => (string) $this->comment->user->id, 
-                'parent_comment_id' => (string) $this->comment->parent->id
+                'parent_comment_id' => (string) $this->comment->parent->id,
+                'article_id' => (string) $this->comment->commentable->id,
+                'article_type' => (string) $this->comment->commentable->type,
+                'action' => 'comment_replied'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('New Comment Reply')
@@ -66,7 +69,7 @@ class CommentReplied extends Notification
             'link_to_url' => false,
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
-            'action' => 'commented',
+            'action' => 'comment_replied',
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'message' => $this->comment->user->name . '回复了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"',

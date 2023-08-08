@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RewardResource\Pages;
 use App\Filament\Resources\RewardResource\RelationManagers;
 use App\Models\Reward;
+use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -30,6 +32,19 @@ class RewardResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\SpatieMediaLibraryFileUpload::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->collection(Reward::COLLECTION_NAME)
+                    // disk is s3_public 
+                    ->disk(function () {
+                        if (config('filesystems.default') === 's3') {
+                            return 's3_public';
+                        }
+                    })
+                    ->acceptedFileTypes(['image/*'])
+                    ->maxFiles(1)
+                    ->rules('image'),
+
                 TextInput::make('name')
                     ->required(),
 

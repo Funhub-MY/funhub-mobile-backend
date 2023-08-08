@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Comment;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
@@ -64,27 +65,29 @@ class CommentController extends Controller
 
         if ($type == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
-            $query->whereHas('commentable', function ($query) {
+            $query->whereHas('commentable', function ($query) use ($id) {
                 $query->published()
+                    ->where('id', $id)
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
                     });
-            });
+            })->where('parent_id', null);
         }
 
         $this->buildQuery($query, $request);
 
         // with replies paginated and sorted latest first
         // with replies count
-        $data = $query->with('user')
+        $query->with('user')
             ->with(['replies' => function ($query) use ($request) {
                 $query->latest()
                     ->paginate($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
             }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
-            ->published()
-            ->paginate(config('app.paginate_per_page'));
+            ->published();
+
+        $data = $query->paginate(config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
     }

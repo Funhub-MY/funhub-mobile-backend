@@ -136,8 +136,17 @@ class CommentTest extends TestCase
     {
         // create new article
         $article = Article::factory()->create();
+        $otherArticle = Article::factory()->create();
+
         $comments = Comment::factory()->count(10)->create([
             'commentable_id' => $article->id,
+            'commentable_type' => Article::class,
+            'user_id' => $this->user->id,
+        ]);
+
+        // create subsequent unrelated comments on another article
+        Comment::factory()->count(10)->create([
+            'commentable_id' => $otherArticle->id,
             'commentable_type' => Article::class,
             'user_id' => $this->user->id,
         ]);
@@ -152,9 +161,11 @@ class CommentTest extends TestCase
             ->assertJsonStructure([
                 'data'
             ]);
-        
-        // check if there are 10 comment
-        $this->assertCount(10, $response->json('data'));
+
+        // ensure each data.commentable_id is $article->id
+        foreach ($response->json('data') as $comment) {
+            $this->assertEquals($article->id, $comment['commentable_id']);
+        }
     }
 
     /**

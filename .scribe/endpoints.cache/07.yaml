@@ -49,7 +49,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V1v6adZ5bPfeaE3ck6h4gD8'
+      - 'Bearer ag38fEPh6dbac56vZkDe14V'
     controller: null
     method: null
     route: null
@@ -115,7 +115,58 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fhbVc4vkP18DgE53adZ66ea'
+      - 'Bearer 1hafc4b6aD56VPdk3e8EZgv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/notifications/mark_as_read
+    metadata:
+      groupName: Notifications
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark a Single Notification as Read by Notification ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      notification_id:
+        name: notification_id
+        description: 'The notification id.'
+        required: true
+        example: 058d0c3d-1028-4660-b905-7e30ad7eee9c
+        type: string
+        custom: []
+    cleanBodyParameters:
+      notification_id: 058d0c3d-1028-4660-b905-7e30ad7eee9c
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Notification marked as read."
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cda5fek3b41ahvZE8PDgV66'
     controller: null
     method: null
     route: null
@@ -158,7 +209,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EhgPafbcZ16ke63Ddv5V48a'
+      - 'Bearer 4acdahZD3E6561bfvVP8egk'
     controller: null
     method: null
     route: null

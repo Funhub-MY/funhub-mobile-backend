@@ -247,13 +247,19 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function missionsParticipating()
     {
         return $this->belongsToMany(Mission::class, 'missions_users')
-            ->withPivot('is_completed', 'started_at', 'current_value')
+            ->withPivot('is_completed', 'started_at', 'current_value', 'completed_at')
             ->withTimestamps();
     }
     
     public function reports()
     {
         return $this->morphMany(Reports::class, 'reportable');
+    }
+
+    public function articlesTaggedIn()
+    {
+        return $this->belongsToMany(Article::class, 'articles_tagged_users', 'user_id', 'article_id')
+            ->withTimestamps();
     }
 
     // users that this user has blocked

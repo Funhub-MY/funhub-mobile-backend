@@ -47,5 +47,12 @@ return [
         'key' => env('MOVIDER_KEY'),
         'secret' => env('MOVIDER_SECRET'),
         'api_url' => env('MOVIDER_API', 'https://api.movider.co/v1/sms'),
-    ]
+    ],
+
+    'mpay' => [
+        'uat_url' => env('MPAY_UAT_URL', 'https://pcimdex.mpay.my/mdex2/'),
+        'prod_url' => env('MPAY_PROD_URL', ' https://mpaypayment.mpay.my/mdex/'),
+        'mid' => env('MPAY_MID'),
+        'hash_key' => env('MPAY_HASH_KEY'),
+    ] 
 ];

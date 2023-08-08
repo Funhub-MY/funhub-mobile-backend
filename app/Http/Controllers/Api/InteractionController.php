@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Events\InteractionCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InteractionResource;
+use App\Http\Resources\UserResource;
 use App\Models\Article;
+use App\Models\Comment;
 use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
+use App\Models\User;
 use App\Notifications\ArticleInteracted;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
@@ -214,5 +217,66 @@ class InteractionController extends Controller
         } else {
             return response()->json(['message' => 'Interaction not found'], 404);
         }
+    }
+
+    /**
+     * Get Users of Interaction
+     *
+     * @param Request $request
+     * @return UserResource
+     * 
+     * @group Interactions
+     * @authenticated
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
+     * @bodyParam id integer required The id of the interactable. Example: 1
+     * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
+     * 
+     * @response scenario=success {
+     * "data": [],
+     * "links": {},
+     * "meta": {
+     * }
+     * }
+     */
+    public function getUsersOfInteraction(Request $request)
+    {
+        $this->validate($request, [
+            'interactable' => 'required|string',
+            'id' => 'required|integer',
+            'type' => 'required|string|in:like,dislike,share,bookmark',
+        ]);
+
+        if ($request->interactable == 'article') {
+            $request->merge(['interactable' => Article::class]);
+        }
+        if ($request->interactable == 'merchant_offer') {
+            $request->merge(['interactable' => MerchantOffer::class]);
+        }
+        if ($request->interactable == 'comment') {
+            $request->merge(['interactable' => Comment::class]);
+        }
+
+        switch($request->type) {
+            case 'like':
+                $request->merge(['type' => Interaction::TYPE_LIKE]);
+                break;
+            case 'dislike':
+                $request->merge(['type' => Interaction::TYPE_DISLIKE]);
+                break;
+            case 'share':
+                $request->merge(['type' => Interaction::TYPE_SHARE]);
+                break;
+            case 'bookmark':
+                $request->merge(['type' => Interaction::TYPE_BOOKMARK]);
+                break;
+        }
+
+        $users = User::whereHas('interactions', function ($query) use ($request) {
+            $query->where('interactable_type', $request->interactable)
+                ->where('interactable_id', $request->id)
+                ->where('type', $request->type);
+        })->paginate(config('app.paginate_per_page'));
+
+        return UserResource::collection($users);
     }
 }

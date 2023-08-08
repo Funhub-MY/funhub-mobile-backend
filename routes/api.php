@@ -41,13 +41,19 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);
 
         // Articles
+        Route::get('article_cities', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleCities']);
+
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
         Route::post('articles/video-upload', [\App\Http\Controllers\Api\ArticleController::class, 'postVideoUpload']);
         Route::get('articles/my_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getMyArticles']);
         Route::get('articles/my_bookmarks', [\App\Http\Controllers\Api\ArticleController::class, 'getMyBookmarkedArticles']);
-        Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         Route::post('articles/report', [\App\Http\Controllers\Api\ArticleController::class, 'postReportArticle']);
+        Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
+        Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
+       
+        Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
+        
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
         Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
@@ -64,6 +70,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
 
         // Interactions
+        Route::get('interactions/users', \App\Http\Controllers\Api\InteractionController::class . '@getUsersOfInteraction');
         Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
 
         // User Following/Followers
@@ -121,21 +128,40 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Points & Rewards
         Route::prefix('/points')->group(function () {
-            Route::get('/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointBalance']);
-            Route::get('/components/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentBalance']);
+            Route::get('/my_balance/all', [\App\Http\Controllers\Api\PointController::class, 'getPointsBalanceByUser']);
+            Route::get('/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointBalance']); // Main Reward only
+            Route::get('/components/balance', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentBalance']); // Component only
             Route::get('/rewards', [\App\Http\Controllers\Api\PointController::class, 'getRewards']);
             Route::post('/reward_combine', [\App\Http\Controllers\Api\PointController::class, 'postCombinePoints']);
+
+            // ledgers
+            Route::get('/ledgers', [\App\Http\Controllers\Api\PointController::class, 'getPointLedger']);
+            Route::get('/components/ledgers', [\App\Http\Controllers\Api\PointController::class, 'getPointComponentLedger']);
         });
 
         // Missions
         Route::prefix('/missions')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MissionController::class, 'index']);
+            Route::post('/complete', [\App\Http\Controllers\Api\MissionController::class, 'postCompleteMission']);
+            Route::get('/claimables', [\App\Http\Controllers\Api\MissionController::class, 'getClaimableMissions']);
         });
 
         // Notifications
         Route::prefix('/notifications')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\NotificationController::class, 'getNotifications']);
-            Route::post('/mark_all_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkUnreadNotificationAsRead']);
+            Route::post('/mark_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkSingleUnreadNotificationAsRead']); // single
+            Route::post('/mark_all_as_read', [\App\Http\Controllers\Api\NotificationController::class, 'postMarkUnreadNotificationAsRead']); // all unread
+        });
+
+        Route::prefix('/locations')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\LocationController::class, 'index']);
+            Route::get('/{location}', [\App\Http\Controllers\Api\LocationController::class, 'show']);
+        });
+
+        Route::prefix('/transactions')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\TransactionController::class, 'index']);
+            Route::get('/transaction_no', [\App\Http\Controllers\Api\TransactionController::class, 'getTransactionByNumber']);
+            Route::get('/{transaction}', [\App\Http\Controllers\Api\TransactionController::class, 'show']);
         });
     });
 });
