@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d66ghEb5DfevP14VaZak83c'
+      - 'Bearer 6VZ3av1cab54dhEgDf6ek8P'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fedhZE3V81aaPgDbcv56k46'
+      - 'Bearer ab6eZdPE4DkVha1gcf386v5'
     controller: null
     method: null
     route: null
@@ -357,7 +357,50 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4ahaeD8dbP63ZVvcf6Eg5k1'
+      - 'Bearer 66deakD5faV1ZhcE8v43bPg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/my_claimed_offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get My Merchant Offers (Logged in User)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d6cDgefk38E5Vh6Z1Pvbaa4'
     controller: null
     method: null
     route: null
@@ -384,11 +427,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: numquam
+        example: deleniti
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: numquam
+      offer_id: deleniti
     queryParameters:
       offer_id:
         name: offer_id
@@ -416,7 +459,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vc1a5DPfda3g6kEe6Zh48bV'
+      - 'Bearer VZ6f6PDva31hEkbdagc48e5'
     controller: null
     method: null
     route: null
@@ -521,7 +564,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 136gDc8PV5EhZkafavb6d4e'
+      - 'Bearer afkP8Zdbg6c4ev3DV1Eha65'
     controller: null
     method: null
     route: null
@@ -578,7 +621,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kab8cVve4PE5h631ZaDd6gf'
+      - 'Bearer 3EcZ815kadVfPa6vg4De6bh'
     controller: null
     method: null
     route: null

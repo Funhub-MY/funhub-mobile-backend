@@ -45,6 +45,11 @@ class MerchantOffer extends Model implements HasMedia
     const CLAIM_SUCCESS = 1;
     const CLAIM_FAILED = 2;
     const CLAIM_AWAIT_PAYMENT = 3;
+    const CLAIM_STATUS = [
+        self::CLAIM_SUCCESS => 'Success',
+        self::CLAIM_FAILED => 'Failed',
+        self::CLAIM_AWAIT_PAYMENT => 'Awaiting Payment'
+    ];
 
     /**
      * Search Setup
@@ -126,6 +131,13 @@ class MerchantOffer extends Model implements HasMedia
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
             ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withTimestamps();
+    }
+
+    public function instoreClaims()
+    {
+        return $this->belongsToMany(User::class, 'instore_claims_merchant_offers', 'merchant_offer_id', 'user_id')
+            ->withPivot('remarks')
             ->withTimestamps();
     }
 

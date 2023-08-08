@@ -254,7 +254,7 @@ class MerchantOfferResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //RelationManagers\ClaimedByUsersRelationManager::class,
+            // RelationManagers\ClaimedByUsersRelationManager::class,
             RelationManagers\UsersRelationManager::class,
             RelationManagers\LocationRelationManager::class,
         ];

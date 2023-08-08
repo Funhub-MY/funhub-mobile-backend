@@ -46,16 +46,17 @@ class Mpay {
 
         $data = [
             'url' => $this->url .'/payment/eCommerce',
-            'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
-            'mid' => $this->mid,
-            'invno' => $invoice_no,
-            'capture_amt' => $amount,
-            'desc' => $desc,
-            'postURL' => $redirectUrl,
-            'phone' => $phoneNo,
-            'email' => $email,
-            'param' => $param,
-            'authorize' => 'authorize'
+            'formData' => [
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param
+            ]
         ];
 
         return $data;

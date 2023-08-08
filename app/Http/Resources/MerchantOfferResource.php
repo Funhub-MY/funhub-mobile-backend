@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Interaction;
+use App\Models\MerchantOffer;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MerchantOfferResource extends JsonResource
@@ -32,6 +33,18 @@ class MerchantOfferResource extends JsonResource
             }
         }
 
+        $userClaims = $this->claims->where('user_id', auth()->user()->id)->first();
+        if ($userClaims) {
+            $userClaims = [
+                'id' => $userClaims->id,
+                'order_no' => $userClaims->order_no,
+                'quantity' => $userClaims->quantity,
+                'status' => MerchantOffer::CLAIM_STATUS[$userClaims->status],
+                'created_at' => $userClaims->created_at,
+                'created_at' => $userClaims->updated_at,
+            ];
+        }
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -58,6 +71,7 @@ class MerchantOfferResource extends JsonResource
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
+            'my_claim' => $userClaims, 
             'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,
             'count' => [

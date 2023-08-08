@@ -123,6 +123,27 @@ class MerchantOfferController extends Controller
     }
 
     /**
+     * Get My Merchant Offers (Logged in User)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getMyMerchantOffers()
+    {
+        // get merchant offers claimed by user
+        $merchantOffers = MerchantOffer::whereHas('claims', function ($query) {
+            $query->where('user_id', auth()->user()->id);
+        })->paginate(config('app.paginate_per_page'));
+
+        return MerchantOfferResource::collection($merchantOffers);
+    }
+
+    /**
      * Get Offer By ID
      *
      * @param MerchantOffer $merchantOffer
