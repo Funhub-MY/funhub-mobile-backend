@@ -32,6 +32,7 @@ class TransactionService {
             throw new \Exception('Transactionable model must have user_id attribute');
         }
 
+        $transaction = null;
         try {
             // ensure transaction_no is unique else re-generate, max tries 3
             $tries = 0;
@@ -46,6 +47,7 @@ class TransactionService {
                 'amount' => $amount,
                 'gateway' => $gateway,
                 'status' => Transaction::STATUS_PENDING,
+                'gateway_transaction_id' => 'N/A',
                 'payment_method' => $payment_method,
             ]);
 
