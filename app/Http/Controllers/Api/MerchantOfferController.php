@@ -205,14 +205,14 @@ class MerchantOfferController extends Controller
         }
 
         // calculate net amount
-        // TODO: future need add in discount, tax etc.
-        $net_amount = $offer->unit_price * $request->quantity;
-
         // ensure user have enough point balance
         $user = request()->user();
 
         try {
-            if ($request->payment_method == 'points') {
+            if ($request->payment_method == 'points')  {
+
+                $net_amount = $offer->unit_price * $request->quantity;
+
                 // check if enough points
                 if ($user->point_balance < $net_amount) {
                     return response()->json([
@@ -244,6 +244,9 @@ class MerchantOfferController extends Controller
                 // fire event
                 event(new MerchantOfferClaimed($offer, $user));
             } else if($request->payment_method == 'fiat') {
+
+                $net_amount = $offer->fiat_price * $request->quantity;
+
                 // create payment transaction first, not yet claim
                 $transaction = $this->transactionService->create(
                     $offer,
@@ -314,6 +317,13 @@ class MerchantOfferController extends Controller
             'message' => 'Claimed successfully',
             'offer' => new MerchantOfferResource($offer)
         ], 200);
+    }
+
+    public function getInstoreClaimLink(Request $request)
+    {
+        $this->validate($request, [
+            'offer_id' => 'required|exists:merchant_offers,id'
+        ]);
     }
 
     /**
