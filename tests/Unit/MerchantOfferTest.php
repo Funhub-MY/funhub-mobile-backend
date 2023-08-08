@@ -186,5 +186,21 @@ class MerchantOfferTest extends TestCase
         // check current user latest point ledger is debit or not.
         $user_point_ledgers = $this->loggedInUser->pointLedgers()->orderBy('id','desc')->first();
         $this->assertEquals(1, $user_point_ledgers->debit);
+
+        // check my offers are there or not in /merchant/offers/my_claimed_offers
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta'
+            ]);
+
+        // check each of my response.data matches $merchant_offer->id
+        foreach ($response->json('data') as $data) {
+            $this->assertEquals($merchant_offer->id, $data['id']);
+        }
+
+        // check count is 1
+        $this->assertEquals(1, $response->json('meta.total'));
     }
 }
