@@ -50,7 +50,7 @@ class Mpay {
                 'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
                 'mid' => $this->mid,
                 'invno' => $invoice_no,
-                'capture_amt' => $amount,
+                'amt' => $amount,
                 'desc' => $desc,
                 'postURL' => $redirectUrl,
                 'phone' => $phoneNo,
