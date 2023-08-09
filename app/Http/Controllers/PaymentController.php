@@ -32,7 +32,10 @@ class PaymentController extends Controller
             'request' => request()->all()
         ]);
 
-        if (!$request->has('mid') || !$request->has('invno') || !$request->has('responseCode') || !$request->has('invno')|| $request->has('securehash2')) {
+        if (!$request->has('mid')
+             || !$request->has('invno') 
+             || !$request->has('responseCode') 
+             || $request->has('securehash2')) {
             Log::error('Payment return failed', [
                 'error' => 'Missing required parameters',
                 'request' => request()->all()
@@ -64,7 +67,7 @@ class PaymentController extends Controller
                   // update transaction status to success first with gateway transaction id
                   $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
-                    'gateway_transaction_id' => $request->authCode,
+                    'gateway_transaction_id' => $request->mpay_ref_no,
                 ]);
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
@@ -119,7 +122,6 @@ class PaymentController extends Controller
      */
     protected function updateMerchantOfferTransaction($request, $transaction) 
     {
-        
         if ($request->responseCode == 0 || $request->responseCode == '0') {
             // update merchant claim by user
             MerchantOffer::where('id', $transaction->transactionable_id)->claims()->updateExistingPivot($transaction->user_id, [
