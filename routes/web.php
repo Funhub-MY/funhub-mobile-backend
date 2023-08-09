@@ -35,6 +35,8 @@ Route::get('/firebase/social/login', [\App\Http\Controllers\Api\AuthController::
 // Shareable link
 Route::get('/s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::class, 'load']);
 
+Route::post('/payment/return', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);
+
 // any route other than /s redirect to /admin/login
 Route::get('/{any}', function () {
     return redirect()->to('/admin/login');
@@ -53,5 +55,3 @@ Route::get('/auth/facebook/callback',function () {
 });
 // this call back is use for socialite callback only for unit test. not using at any place.
 Route::get('/auth/google/callback', [\App\Http\Controllers\Api\AuthController::class, 'googleCallBack']);
-
-Route::get('/payment/return', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);

@@ -265,8 +265,6 @@ class MerchantOfferController extends Controller
                 // fire event
                 event(new MerchantOfferClaimed($offer, $user));
             } else if($request->payment_method == 'fiat') {
-
-                
                 $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
 
                 // create payment transaction first, not yet claim
