@@ -28,15 +28,15 @@ class PaymentController extends Controller
      */
     public function paymentReturn(Request $request)
     {
+        Log::info('Payment return', [
+            'request' => request()->all()
+        ]);
+
         $this->validate($request, [
             'invno' => 'required',
             'responseCode' => 'required',
             'authCode' => 'required',
             'securehash2' => 'required'
-        ]);
-
-        Log::info('Payment return', [
-            'request' => request()->all()
         ]);
 
         // check if response has transaction_no
