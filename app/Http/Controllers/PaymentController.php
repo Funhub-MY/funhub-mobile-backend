@@ -32,17 +32,9 @@ class PaymentController extends Controller
             'request' => request()->all()
         ]);
 
-        $this->validate($request, [
-            'invno' => 'required',
-            'responseCode' => 'required',
-            'authCode' => 'required',
-            'securehash2' => 'required'
-        ]);
-
-        // check if response has transaction_no
-        if (!request()->has('invno')) {
+        if (!$request->has('mid') || !$request->has('invno') || !$request->has('responseCode') || !$request->has('invno')|| $request->has('securehash2')) {
             Log::error('Payment return failed', [
-                'error' => 'Transaction no not found',
+                'error' => 'Missing required parameters',
                 'request' => request()->all()
             ]);
             return 'Transaction Failed';
