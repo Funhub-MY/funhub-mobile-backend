@@ -90,7 +90,9 @@ class Mpay {
     public function generateHashForResponse($mid, $responseCode, $authCode, $invoice_no, $amount)
     {
         // append hashkey,mid,responseocde,authcode,invoice_no,amount into a string and call gensecurehash
-        $string =  $mid . $responseCode . $authCode . $invoice_no . strval($amount);
+        $string = $this->hashKey . $mid . strval($responseCode) . $authCode . $invoice_no . strval($amount);
+
+        Log::info('Response Hash String: ' . $string);
         return $this->secureHash->generateSecureHash($string);
     }
 }
