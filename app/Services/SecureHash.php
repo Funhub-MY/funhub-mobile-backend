@@ -32,7 +32,7 @@ class SecureHash {
      * @return string - the string for the resulting hash value
      */
     public static function generateSecureHash($originalString) {
-        return hash('sha256', $originalString, true);
+        return hash('sha256', $originalString);
         // $md = null;
         // $ba = null;
         
