@@ -37,7 +37,8 @@ class SecureHash {
         
         // create the md hash and ISO-8859-1 encode it
         try {
-            $md = hash('sha256', $originalString, true);
+            $encoded = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $originalString);
+            $md = hash('sha256', $encoded, true);
             $ba = array_values(unpack('C*', $md));
         } catch (Exception $e) {
             // won't happen
