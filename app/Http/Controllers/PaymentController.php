@@ -121,6 +121,8 @@ class PaymentController extends Controller
      */
     protected function validateSecureHash($mid, $responseCode, $authCode, $invoice_no, $amount)
     {
+        // $amount = str_pad(number_format($amount, 2, '', ''), 12, '0', STR_PAD_LEFT);
+
         $secureHash = $this->gateway->generateHashForResponse($mid, $responseCode, $authCode, $invoice_no, $amount);
         return $secureHash == request()->securehash2;
     }

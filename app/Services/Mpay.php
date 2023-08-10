@@ -93,6 +93,7 @@ class Mpay {
         $string = $this->hashKey . $mid . strval($responseCode) . $authCode . $invoice_no . strval($amount);
 
         Log::info('Response Hash String: ' . $string);
+        Log::info('Response Hash: ' . $this->secureHash->generateSecureHash($string));
         return $this->secureHash->generateSecureHash($string);
     }
 }
