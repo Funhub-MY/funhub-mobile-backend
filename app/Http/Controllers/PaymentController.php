@@ -71,7 +71,11 @@ class PaymentController extends Controller
                     'error' => 'Secure Hash validation failed',
                     'request' => request()->all()
                 ]);
-                return 'Transaction Failed - Secure Hash Validation Failed';
+                return view('payment-return', [
+                    'message' => 'Transaction Failed - Hash Validation Failed',
+                    'transaction_id' => $transaction->id,
+                    'success' => false
+                ]);
             }
             // check response code status
 
@@ -85,7 +89,13 @@ class PaymentController extends Controller
                     $this->updateMerchantOfferTransaction($request, $transaction);
                 }
 
-                return 'Transaction Success';
+                // return with js
+                // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
+                return view('payment-return', [
+                    'message' => 'Transaction Success',
+                    'transaction_id' => $transaction->id,
+                    'success' => true
+                ]);
             } else if ($request->responseCode == 'PE') { // pending
                 return 'Transaction Still Pending';
             } else { // failed
@@ -97,14 +107,23 @@ class PaymentController extends Controller
                     $this->updateMerchantOfferTransaction($request, $transaction);
                 }
 
-                return 'Transaction Failed';
+                return view('payment-return', [
+                    'message' => 'Transaction Failed',
+                    'transaction_id' => $transaction->id,
+                    'success' => false
+                ]);
             }
         } else {
             Log::error('Payment return failed', [
                 'error' => 'Transaction not found',
                 'request' => request()->all()
             ]);
-            return 'Transaction Failed';
+            
+            return view('payment-return', [
+                'message' => 'Transaction Failed - No transaction',
+                'transaction_id' => $transaction->id,
+                'success' => false
+            ]);
         }
 
     }
@@ -154,7 +173,7 @@ class PaymentController extends Controller
 
             Log::info('Updated Merchant Offer Claim to Success', [
                 'transaction' => $transaction->toArray(),
-                'merchant_offer' => $transaction->transactionable->toArray(),
+                'merchant_offer_id' => $transaction->transactionable_id,
             ]);
 
         } else if ($request->responseCode == 'PE') {
@@ -175,12 +194,12 @@ class PaymentController extends Controller
 
                     Log::info('Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
                         'transaction' => $transaction->toArray(),
-                        'merchant_offer' => $transaction->transactionable->toArray(),
+                        'merchant_offer_id' => $transaction->transactionable_id,
                     ]);
                 } catch (Exception $ex) {
                     Log::error('Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
                         'transaction' => $transaction->toArray(),
-                        'merchant_offer' => $transaction->transactionable->toArray(),
+                        'merchant_offer_id' => $transaction->transactionable_id,
                         'error' => $ex->getMessage()
                     ]);
                 }
