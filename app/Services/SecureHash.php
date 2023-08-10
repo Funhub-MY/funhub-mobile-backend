@@ -32,17 +32,18 @@ class SecureHash {
      * @return string - the string for the resulting hash value
      */
     public static function generateSecureHash($originalString) {
-        $md = null;
-        $ba = null;
+        return hash('sha256', $originalString, true);
+        // $md = null;
+        // $ba = null;
         
-        // create the md hash and ISO-8859-1 encode it
-        try {
-            $encoded = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $originalString);
-            $md = hash('sha256', $encoded, true);
-            $ba = str_split($md);
-        } catch (Exception $e) {
-            // won't happen
-        }
-        return self::hex($ba);
+        // // create the md hash and ISO-8859-1 encode it
+        // try {
+        //     $encoded = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $originalString);
+        //     $md = hash('sha256', $encoded, true);
+        //     $ba = str_split($md);
+        // } catch (Exception $e) {
+        //     // won't happen
+        // }
+        // return self::hex($ba);
     }
 }
