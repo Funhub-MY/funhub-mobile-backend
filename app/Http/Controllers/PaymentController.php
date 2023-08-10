@@ -61,11 +61,11 @@ class PaymentController extends Controller
         if ($transaction) {
             // has transaction validate secure hash first from mpay
             if (!$this->validateSecureHash(
-                config('services.mpay.mid'),
+                $request->mid,
                 $request->responseCode,
                 $request->authCode,
                 $request->invno,
-                $transaction->amount
+                $request->amt
             )) {
                 Log::error('Payment return failed', [
                     'error' => 'Secure Hash validation failed',
