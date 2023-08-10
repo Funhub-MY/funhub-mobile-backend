@@ -286,7 +286,7 @@ class MerchantOfferController extends Controller
                     $mpayData = $mpayService->createTransaction(
                         $transaction->transaction_no,
                         $net_amount,
-                        'Purchase ' . $offer->name,
+                        $transaction->transaction_no,
                         url('/payment/return'),
                         $user->full_phone_no ?? null,
                         $user->email ?? null

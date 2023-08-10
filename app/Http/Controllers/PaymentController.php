@@ -68,10 +68,10 @@ class PaymentController extends Controller
                 $transaction->amount
             )) {
                 Log::error('Payment return failed', [
-                    'error' => 'Secure hash validation failed',
+                    'error' => 'Secure Hash validation failed',
                     'request' => request()->all()
                 ]);
-                return 'Transaction Failed';
+                return 'Transaction Failed - Secure Hash Validation Failed';
             }
             // check response code status
 
