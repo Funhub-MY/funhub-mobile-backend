@@ -136,9 +136,19 @@ class PaymentController extends Controller
      */
     protected function updateMerchantOfferTransaction($request, $transaction) 
     {
+        // update merchant claim by user
+        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+
+        if (!$merchantOffer) {
+            Log::error('Payment return failed', [
+                'error' => 'Merchant Offer not found',
+                'request' => request()->all()
+            ]);
+            return 'Transaction Failed - Invalid Transaction ID';
+        }
+
         if ($request->responseCode == 0 || $request->responseCode == '0') {
-            // update merchant claim by user
-            MerchantOffer::where('id', $transaction->transactionable_id)->claims()->updateExistingPivot($transaction->user_id, [
+            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
                 'status' => \App\Models\MerchantOffer::CLAIM_SUCCESS
             ]);
 
@@ -151,7 +161,7 @@ class PaymentController extends Controller
             // still pending
         } else {
             // failed
-            MerchantOffer::where('id', $transaction->transactionable_id)->claims()->updateExistingPivot($transaction->user_id, [
+            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
             ]);
 
@@ -160,7 +170,6 @@ class PaymentController extends Controller
             $claim = MerchantOffer::where('id', $transaction->transactionable_id)->claims()->wherePivot('user_id', $transaction->user_id)->first();
             if ($claim) {
                 try {
-                    $merchantOffer = MerchantOffer::find($transaction->transactionable_id);
                     $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
                     $merchantOffer->save();
 
