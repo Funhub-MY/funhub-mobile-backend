@@ -121,7 +121,7 @@ class PaymentController extends Controller
             
             return view('payment-return', [
                 'message' => 'Transaction Failed - No transaction',
-                'transaction_id' => $transaction->id,
+                'transaction_id' => null,
                 'success' => false
             ]);
         }
