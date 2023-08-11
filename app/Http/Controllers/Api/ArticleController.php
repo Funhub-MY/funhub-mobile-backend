@@ -132,7 +132,7 @@ class ArticleController extends Controller
         // location id
         if ($request->has('location_id')) {
             $query->whereHas('location', function ($query) use ($request) {
-                $query->where('id', $request->location_id);
+                $query->where('locations.id', $request->location_id);
             });
         }
 
