@@ -130,7 +130,7 @@ class MerchantOffer extends Model implements HasMedia
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method')
             ->withTimestamps();
     }
 
