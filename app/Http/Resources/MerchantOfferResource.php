@@ -41,7 +41,17 @@ class MerchantOfferResource extends JsonResource
                 'quantity' => $userClaims->quantity,
                 'status' => MerchantOffer::CLAIM_STATUS[$userClaims->status],
                 'created_at' => $userClaims->created_at,
-                'created_at' => $userClaims->updated_at,
+                'updated_at' => $userClaims->updated_at,
+            ];
+        }
+
+        $userRedeems = $this->redeems->where('user_id', auth()->user()->id)->first();
+        if ($userRedeems) {
+            $userRedeems = [
+                'id' => $userRedeems->id,
+                'quantity' => $userRedeems->quantity,
+                'created_at' => $userRedeems->created_at,
+                'updated_at' => $userRedeems->updated_at,
             ];
         }
 

@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6VZ3av1cab54dhEgDf6ek8P'
+      - 'Bearer kZdvh8c54ea1ag6Vf3DPE6b'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ab6eZdPE4DkVha1gcf386v5'
+      - 'Bearer 8fhd46kPa5D6bcEag3Z1veV'
     controller: null
     method: null
     route: null
@@ -357,7 +357,78 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 66deakD5faV1ZhcE8v43bPg'
+      - 'Bearer d4k6bfVecZg83DPaE1va6h5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/redeem
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: |-
+        Redeem a Merchant Offer (In-Store)
+        This is when customer with claimed merchant offer wishes to redeem in store
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      offer_id:
+        name: offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      quantity:
+        name: quantity
+        description: 'Quantity to Redeem.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      redeem_code:
+        name: redeem_code
+        description: 'Redemption Code Provided by Merchant.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      offer_id: 1
+      quantity: 1
+      redeem_code: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redeemed successfully",
+          "offer": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VcDa5ZPdkfh6Ebve1a836g4'
     controller: null
     method: null
     route: null
@@ -400,7 +471,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6cDgefk38E5Vh6Z1Pvbaa4'
+      - 'Bearer DgPv8EbZ145c6Vehk63dafa'
     controller: null
     method: null
     route: null
@@ -427,11 +498,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: deleniti
+        example: assumenda
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: deleniti
+      offer_id: assumenda
     queryParameters:
       offer_id:
         name: offer_id
@@ -459,7 +530,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VZ6f6PDva31hEkbdagc48e5'
+      - 'Bearer 8fba64VDegEZakPhcv1d365'
     controller: null
     method: null
     route: null
@@ -564,7 +635,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afkP8Zdbg6c4ev3DV1Eha65'
+      - 'Bearer DgeVPfEZc4b6aa635hdk1v8'
     controller: null
     method: null
     route: null
@@ -621,7 +692,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3EcZ815kadVfPa6vg4De6bh'
+      - 'Bearer ga5hbE1kfZvca38D64Pd6Ve'
     controller: null
     method: null
     route: null

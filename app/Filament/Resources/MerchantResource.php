@@ -38,14 +38,14 @@ class MerchantResource extends Resource
                             ->required()
                             ->rules('required', 'max:255'),
 
-                        TextInput::make('claim_code')
+                        TextInput::make('redeem_code')
                             ->required()
-                            ->label('Cashier Claim Code (6 Digit)')
+                            ->label('Cashier Redeem Code (6 Digit)')
                             ->default(fn () => random_int(100000, 999999))
                             ->rules('digits:6')
                             ->numeric()
-                            ->unique(Merchant::class, 'claim_code', ignoreRecord: true)
-                            ->helperText('Used when cashier validates merchant offers, will be provided to user during offer claim in store.123'),
+                            ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
+                            ->helperText('Used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
 
                         Forms\Components\Select::make('user_id')
                             ->label('Attached To User Account')

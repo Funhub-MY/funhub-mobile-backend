@@ -127,10 +127,19 @@ class MerchantOffer extends Model implements HasMedia
             ->where('type', Interaction::TYPE_LIKE);
     }
 
+    // Claims are purchase of Merchant Offers
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method')
+            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method', 'transaction_no')
+            ->withTimestamps();
+    }
+
+    // Redeems are claims that are redeemed(consumed) in store
+    public function redeems()
+    {
+        return $this->belongsToMany(User::class, 'merchant_offer_claims_redemptions', 'merchant_offer_id', 'user_id')
+            ->withPivot(['transaction_id', 'quantity'])
             ->withTimestamps();
     }
 

@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('instore_claims_merchant_offers', function (Blueprint $table) {
-            $table->foreignId('user_id');
-            $table->foreignId('merchant_offer_id');
-            $table->text('description')->nullable();
+        Schema::create('merchant_offer_claims_redemptions', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('merchant_offer_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('transaction_id')->nullable();
+            $table->integer('quantity');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('instore_claims_merchant_offers');
+        Schema::dropIfExists('merchant_offer_claims_redemptions');
     }
 };

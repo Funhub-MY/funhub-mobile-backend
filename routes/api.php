@@ -86,6 +86,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/my_bookmarks', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyBookmarkedMerchantOffers']);
             Route::get('/', [\App\Http\Controllers\Api\MerchantOfferController::class, 'index']);
             Route::post('/claim', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postClaimOffer']);
+            Route::post('/redeem', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postRedeemOffer']);
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
