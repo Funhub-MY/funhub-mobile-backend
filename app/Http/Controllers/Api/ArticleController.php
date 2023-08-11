@@ -136,8 +136,6 @@ class ArticleController extends Controller
             });
         }
 
-        $this->buildQuery($query, $request);
-
         // by default it will build recommendations, unless specifically turned off
         if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
             $recommender = new ArticleRecommenderService(auth()->user());
@@ -154,6 +152,8 @@ class ArticleController extends Controller
 
             $query->whereIn('id', $scoredArticlesIds);
         }
+
+        $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags')

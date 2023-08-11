@@ -39,7 +39,7 @@ class ArticleRecommenderService
             ->map(function ($article) {
                 $affinity = $this->affinityScore($article);
                 $weight = $this->weightScore($article);
-                
+
                 return [
                     'id' => $article->id,
                     'score' => $affinity * $weight,
@@ -50,11 +50,17 @@ class ArticleRecommenderService
         $scored = $scored->sortByDesc('score');
 
         // Apply randomization  
-        $scoredIds = $scored->pluck('id')->random(100);
+        $scoredIds = $scored->pluck('id')->random($scored->count());
 
         return $scoredIds;
     }
 
+    /**
+     * Calculate affinity score for article
+     *
+     * @param Article $article
+     * @return float
+     */
     private function affinityScore($article) {
         $affinity = 0;
         if ($article->likes_count > 0) {
@@ -67,6 +73,12 @@ class ArticleRecommenderService
         return $affinity;
     }
   
+    /**
+     * Calculate weight score for article
+     *
+     * @param Article $article
+     * @return float
+     */
     private function weightScore($article) {
         $weight = $article->created_at->diffInDays(now());
         $weight += $article->comments()->where('created_at', '>', now()->subDay())->count();
