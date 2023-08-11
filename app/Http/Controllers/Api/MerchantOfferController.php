@@ -273,8 +273,8 @@ class MerchantOfferController extends Controller
                     $offer,
                     $net_amount,
                     config('app.default_payment_gateway'),
+                    $user->id,
                     $request->fiat_payment_method,
-                    $user->id
                 );
 
                 // if gateway is mpay call mpay service generate Hash for frontend form
