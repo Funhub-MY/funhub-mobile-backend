@@ -167,22 +167,27 @@ class PaymentController extends Controller
         }
 
         if ($request->responseCode == 0 || $request->responseCode == '0') {
-            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
+            $merchantOffer->claims()->updateExistingPivot([
                 'status' => \App\Models\MerchantOffer::CLAIM_SUCCESS
-            ]);
+            ], ['user_id' => $transaction->user_id, 'status' => \App\Models\MerchantOffer::CLAIM_AWAIT_PAYMENT]);
 
             Log::info('Updated Merchant Offer Claim to Success', [
-                'transaction' => $transaction->toArray(),
+                'transaction_id' => $transaction->id,
                 'merchant_offer_id' => $transaction->transactionable_id,
             ]);
 
         } else if ($request->responseCode == 'PE') {
             // still pending
+            Log::info('Updated Merchant Offer Claim Still Pending', [
+                'user_id' => $transaction->user_id,
+                'transaction_id' => $transaction->id,
+                'merchant_offer_id' => $transaction->transactionable_id,
+            ]);
         } else {
             // failed
-            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
+            $merchantOffer->claims()->updateExistingPivot([
                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
-            ]);
+            ], ['user_id' => $transaction->user_id, 'status' => \App\Models\MerchantOffer::CLAIM_AWAIT_PAYMENT]);
 
             // get current claims where pivot.user_id == $transaction->user_id and get the quantity in claims
             // add back in MerchantOffer
@@ -193,12 +198,12 @@ class PaymentController extends Controller
                     $merchantOffer->save();
 
                     Log::info('Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
-                        'transaction' => $transaction->toArray(),
+                        'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
                     ]);
                 } catch (Exception $ex) {
                     Log::error('Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
-                        'transaction' => $transaction->toArray(),
+                        'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
                         'error' => $ex->getMessage()
                     ]);
