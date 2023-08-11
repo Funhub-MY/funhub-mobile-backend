@@ -91,9 +91,6 @@ class Mpay {
     {
         // append hashkey,mid,responseocde,authcode,invoice_no,amount into a string and call gensecurehash
         $string = $this->hashKey . $mid . $responseCode . $authCode . $invoice_no . $amount;
-
-        Log::info('Response Hash String: ' . $string);
-        Log::info('Response Hash: ' . $this->secureHash->generateSecureHash($string));
         return $this->secureHash->generateSecureHash($string);
     }
 }

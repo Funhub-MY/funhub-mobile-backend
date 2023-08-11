@@ -77,7 +77,18 @@ class MerchantOfferResource extends Resource
                                     ->cols(10)
                                     ->columnSpan('full')
                                     ->required(),
-                                
+                                Forms\Components\Textarea::make('fine_print')
+                                    ->rows(5)
+                                    ->cols(10)
+                                    ->columnSpan('full'),
+                                Forms\Components\Textarea::make('redemption_policy')
+                                    ->rows(5)
+                                    ->cols(10)
+                                    ->columnSpan('full'),
+                                Forms\Components\Textarea::make('cancellation_policy') 
+                                    ->rows(5)
+                                    ->cols(10)
+                                    ->columnSpan('full'),
                             ])->columns(2),
 
                         Forms\Components\Card::make()
