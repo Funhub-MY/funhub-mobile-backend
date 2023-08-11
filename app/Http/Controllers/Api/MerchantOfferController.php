@@ -244,11 +244,12 @@ class MerchantOfferController extends Controller
                 // direct claim
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
-                    'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
+                    'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
                     'total' => $offer->unit_price * $request->quantity,
+                    'payment_method' => 'points',
                     'discount' => 0,
                     'tax' => 0,
                     'net_amount' => $net_amount,
@@ -272,7 +273,8 @@ class MerchantOfferController extends Controller
                     $offer,
                     $net_amount,
                     config('app.default_payment_gateway'),
-                    $request->fiat_payment_method
+                    $request->fiat_payment_method,
+                    $user->id
                 );
 
                 // if gateway is mpay call mpay service generate Hash for frontend form
@@ -295,11 +297,12 @@ class MerchantOfferController extends Controller
                     // claim but with status await payment
                     $offer->claims()->attach($user->id, [
                         // order no is CLAIM(YMd)
-                        'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
+                        'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
                         'user_id' => $user->id,
                         'quantity' => $request->quantity,
                         'unit_price' => $offer->unit_price,
                         'total' => $offer->unit_price * $request->quantity,
+                        'payment_method' => 'fiat',
                         'discount' => 0,
                         'tax' => 0,
                         'net_amount' => $net_amount,

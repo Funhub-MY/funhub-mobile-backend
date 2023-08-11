@@ -167,9 +167,9 @@ class PaymentController extends Controller
         }
 
         if ($request->responseCode == 0 || $request->responseCode == '0') {
-            $merchantOffer->claims()->updateExistingPivot([
+            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
                 'status' => \App\Models\MerchantOffer::CLAIM_SUCCESS
-            ], ['user_id' => $transaction->user_id, 'status' => \App\Models\MerchantOffer::CLAIM_AWAIT_PAYMENT]);
+            ]);
 
             Log::info('Updated Merchant Offer Claim to Success', [
                 'transaction_id' => $transaction->id,
@@ -185,9 +185,9 @@ class PaymentController extends Controller
             ]);
         } else {
             // failed
-            $merchantOffer->claims()->updateExistingPivot([
+            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
-            ], ['user_id' => $transaction->user_id, 'status' => \App\Models\MerchantOffer::CLAIM_AWAIT_PAYMENT]);
+            ]);
 
             // get current claims where pivot.user_id == $transaction->user_id and get the quantity in claims
             // add back in MerchantOffer

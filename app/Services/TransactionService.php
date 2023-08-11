@@ -12,11 +12,12 @@ class TransactionService {
      * @param Class $transactionable
      * @param Float $amount
      * @param string $gateway
+     * @param int $user_id
      * @param string $payment_method
      * @param string $transaction_no
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $payment_method = 'fpx', $transaction_no = null)
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $transaction_no = null)
     {
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
@@ -43,7 +44,7 @@ class TransactionService {
 
             $transaction = $transactionable->transactions()->create([
                 'transaction_no' => $transaction_no,
-                'user_id' => $transactionable->user_id,
+                'user_id' => $user_id,
                 'amount' => $amount,
                 'gateway' => $gateway,
                 'status' => Transaction::STATUS_PENDING,
