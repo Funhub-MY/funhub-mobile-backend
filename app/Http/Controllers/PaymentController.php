@@ -33,7 +33,7 @@ class PaymentController extends Controller
         ]);
 
         // check if request has {"result":null,"secureHash":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mid":"7860","responseCode":"XC","maskedPAN":null,"authCode":null,"amt":"150.00","invno":"2308106HLQ8S","responseDesc":"Seller Exchange Encryption Error","tranDate":"2023-08-09 12:05:04","paymentType":"FPX-B2C","securehash2":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mpay_ref_no":"REF007860021002"}
-        if (!$request->has('result') || !$request->has('secureHash') || !$request->has('mid') || !$request->has('responseCode') || !$request->has('authCode') || !$request->has('amt') || !$request->has('invno') || !$request->has('responseDesc') || !$request->has('tranDate') || !$request->has('paymentType') || !$request->has('securehash2') || !$request->has('mpay_ref_no')) {
+        if (!$request->has('result') || !$request->has('secureHash') || !$request->has('mid') || !$request->has('responseCode') || !$request->has('authCode') || !$request->has('amt') || !$request->has('invno') || !$request->has('responseDesc') || !$request->has('tranDate') || !$request->has('paymentType') || !$request->has('securehash2')) {
             Log::error('Payment return failed', [
                 'error' => 'Missingh parameter from request',
                 'missing' => [
@@ -48,7 +48,7 @@ class PaymentController extends Controller
                     'tranDate' => $request->has('tranDate'),
                     'paymentType' => $request->has('paymentType'),
                     'securehash2' => $request->has('securehash2'),
-                    'mpay_ref_no' => $request->has('mpay_ref_no')
+                    // 'mpay_ref_no' => $request->has('mpay_ref_no')
                 ],
                 'request' => request()->all()
             ]);
