@@ -110,13 +110,18 @@ class AuthController extends Controller
             'country_code' => 'required|string',
             'phone_no' => 'required|string',
         ]);
+        
+        // check if start with 0 or 60 for phone_no, remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
 
         // get user
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->first();
-
-        Log::info('User', ['request' => $request->all()]);
 
         // Generate new OTP
         $otp = rand(100000, 999999);
