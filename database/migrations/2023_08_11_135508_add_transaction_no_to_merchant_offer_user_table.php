@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('merchant_offer_user', function (Blueprint $table) {
             $table->string('transaction_no')->nullable()->after('merchant_offer_id');
+            
         });
     }
 
