@@ -452,7 +452,7 @@ class MerchantOfferController extends Controller
 
         // if user has claimed this get total claimable quantity by sum all claims with success quantity of user's
         $totalClaimedQuantity = $offer->claims()->where('user_id', auth()->user()->id)
-            ->where('status', MerchantOffer::CLAIM_SUCCESS)
+            ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
             ->sum('quantity');
 
         // check total redeemed quantity of this offer by user
@@ -464,12 +464,12 @@ class MerchantOfferController extends Controller
 
         if ($availableQuantity < $request->quantity) {
             return response()->json([
-                'message' => 'You do not have enough to redem'
+                'message' => 'You do not have enough to redeem'
             ], 422);
         }
 
         // check if merchant code is valid
-        $merchant = Merchant::where('claim_code', $request->merchant_code)->first();
+        $merchant = Merchant::where('redeem_code', $request->redeem_code)->first();
 
         if (!$merchant) {
             return response()->json([
