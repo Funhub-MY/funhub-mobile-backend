@@ -115,7 +115,9 @@ class AuthController extends Controller
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->first();
-            
+
+        Log::info('User', ['request' => $request->all()]);
+
         // Generate new OTP
         $otp = rand(100000, 999999);
         if (!$user) {
