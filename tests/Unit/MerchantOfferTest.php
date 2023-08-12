@@ -11,6 +11,7 @@ use Tests\TestCase;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\Store;
+use App\Models\Transaction;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
@@ -202,5 +203,57 @@ class MerchantOfferTest extends TestCase
 
         // check count is 1
         $this->assertEquals(1, $response->json('meta.total'));
+    }
+
+    public function testClaimOfferFiatByLoggedInUser()
+    {
+        // create a merchant offer with fiat
+        $offer = MerchantOffer::factory()->for($this->merchant->user)->create([
+            'fiat_price' => 150,
+            'discounted_fiat_price' => 120,
+            'currency' => 'MYR',
+            'quantity' => 10
+        ]);
+
+        // user claims this offer for 5 units first
+        $response = $this->postJson('/api/v1/merchant/offers/claim', [
+            'offer_id' => $offer->id,
+            'quantity' => 5,
+            'payment_method' => 'fiat',
+            'fiat_payment_method' => 'fpx'
+        ]);
+
+        // expect 200 response
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'gateway_data'
+            ]);
+
+        // check gateway data as follow
+        $this->assertArrayHasKey('url', $response->json('gateway_data'));
+        $this->assertArrayHasKey('formData', $response->json('gateway_data'));
+        
+        // check db if transaction is created
+        $this->assertDatabaseHas('transactions', [
+            'transaction_no' => $response->json('gateway_data')['formData']['invno'],
+            'user_id' => $this->loggedInUser->id,
+            'amount' => $offer->discounted_fiat_price * 5,
+            'gateway' => 'mpay',
+            'status' => Transaction::STATUS_PENDING,
+            'gateway_transaction_id' => 'N/A',
+            'payment_method' => 'fpx'
+        ]);
+
+        // check if offer->claims() has user and correct quantity and status is MerchantOffer::AWAIT_PAYMENT
+        $this->assertDatabaseHas('merchant_offer_user', [
+            'user_id' => $this->loggedInUser->id,
+            'merchant_offer_id' => $offer->id,
+            'quantity' => 5,
+            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT
+        ]);
+
+        // check if current merchantoffer is already deducted 5
+        $this->assertEquals(5, $offer->fresh()->quantity);
     }
 }

@@ -298,8 +298,9 @@ class MerchantOfferController extends Controller
                     // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the 
                     // amount and quantity required
                     $claim = $offer->claims()->where('user_id', $user->id)
-                        ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                        ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
                         ->first();
+                    
                     if ($claim) {
                         // user has initiated payment before, just update the amount and quantity
                         $claim->update([
