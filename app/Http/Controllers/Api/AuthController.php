@@ -111,39 +111,46 @@ class AuthController extends Controller
             'phone_no' => 'required|string',
         ]);
 
+        // get user
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->first();
-
-        $success = false;
-        if ($user) {
-            // fire sms
-            if ($user->otp && $user->otp_expiry < now()) { // existing otp still valid
-                $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
-            } else {
-                $otp = rand(100000, 999999);
-                $user->update([
-                    'otp' => $otp,
-                    'otp_expiry' => now()->addMinutes(1),
-                ]);
-                $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
-            }
-        } else {
+            
+        // Generate new OTP
+        $otp = rand(100000, 999999);
+        if (!$user) {
             // user doest not exist
             // register user account first with phone no.
-            $otp = rand(100000, 999999);
             try {
                 $user = User::create([
                     'phone_country_code' => $request->country_code,
                     'phone_no' => $request->phone_no, // unique
                     'otp' => $otp,
                     'otp_expiry' => now()->addMinutes(1),
+                    'otp_verified_at' => null,
                 ]);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Phone Number already registered'], 422);
             }
-            // fire sms
-            $success = $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
+        } else {
+             $user->update([
+                'otp' => $otp,
+                'otp_expiry' => now()->addMinutes(1),
+                'otp_verified_at' => null,
+            ]);
+        }
+
+        // Fires SMS
+        if ($user) {
+            try {
+                $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
+            } catch (\Exception $e) {
+                Log::error($e->getMessage(), [
+                    'phone_no' => $user->full_phone_no,
+                    'otp' => $user->otp,
+                ]);
+                return response()->json(['message' => 'Failed to send OTP'], 422);
+            }
         }
 
         return response()->json(['message' => 'OTP sent'], 200);

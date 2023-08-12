@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
-use Kingmaker\Illuminate\Eloquent\Relations\HasBelongsToManySelfRelation;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Article extends Model implements HasMedia
 {
