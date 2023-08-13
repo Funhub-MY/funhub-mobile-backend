@@ -200,7 +200,7 @@ class MerchantOfferTest extends TestCase
 
         // check each of my response.data matches $merchant_offer->id
         foreach ($response->json('data') as $data) {
-            $this->assertEquals($merchant_offer->id, $data['id']);
+            $this->assertEquals($merchant_offer->id, $data['merchant_offer']['id']);
         }
 
         // check count is 1
@@ -305,26 +305,28 @@ class MerchantOfferTest extends TestCase
         $user_point_ledgers = $this->loggedInUser->pointLedgers()->orderBy('id','desc')->first();
         $this->assertEquals(1, $user_point_ledgers->debit);
 
-        // now proceed to redeem
-        $response = $this->postJson('/api/v1/merchant/offers/redeem', [
-            'offer_id' => $merchant_offer->id,
-            'redeem_code' => $merchant_offer->user->merchant->redeem_code,
-            'quantity' => 5 // over my claimed quantity
-        ]);
-
-        // expect 422 with json message "You do not have enough to redeem"
-        $response->assertStatus(422)
-            ->assertJson([
-                'message' => 'You do not have enough to redeem'
+        // get my claimed offers
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
             ]);
 
-        // now proceed to redeem again with correct quantity
+        // check each of my response.data merchant_offer.id matches $merchant_offer->id
+        foreach ($response->json('data') as $data) {
+            $this->assertEquals($merchant_offer->id, $data['merchant_offer']['id']);
+        }
+
+        // get claim id
+        $claim_id = $response->json('data')[0]['id'];
+
+        // redeem
         $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+            'claim_id' => $claim_id,
             'offer_id' => $merchant_offer->id,
             'redeem_code' => $merchant_offer->user->merchant->redeem_code,
             'quantity' => 1
         ]);
-
 
         // expect 200 with json message "Redeemed Successfully"
         $response->assertStatus(200)
@@ -334,6 +336,7 @@ class MerchantOfferTest extends TestCase
 
         // check db if merchant_offer_claims_redemptions has this user, offer id and quantity
         $this->assertDatabaseHas('merchant_offer_claims_redemptions', [
+            'claim_id' => $claim_id,
             'user_id' => $this->loggedInUser->id,
             'merchant_offer_id' => $merchant_offer->id,
             'quantity' => 1
@@ -341,6 +344,7 @@ class MerchantOfferTest extends TestCase
 
         // attempt to redeem again, expect 422 with json message "You have already redeemed this offer"
         $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+            'claim_id' => $claim_id,
             'offer_id' => $merchant_offer->id,
             'redeem_code' => $merchant_offer->user->merchant->redeem_code,
             'quantity' => 1
@@ -358,13 +362,15 @@ class MerchantOfferTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
-                        'fully_redeemed',
+                        'redeemed',
                     ]
                 ]
             ]);
+
+        // check if first data id is claim->id
+        $this->assertEquals($claim_id, $response->json('data')[0]['id']);
         
-        // check if first data fully_redeemed is true
-        $this->assertEquals($merchant_offer->id, $response->json('data')[0]['id']);
-        $this->assertTrue($response->json('data')[0]['fully_redeemed']);
+        // check if first data redeemed is true
+        $this->assertEquals(true, $response->json('data')[0]['redeemed']);
     }
 }

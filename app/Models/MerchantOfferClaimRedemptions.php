@@ -11,6 +11,8 @@ class MerchantOfferClaimRedemptions extends Model
 
     protected $guarded = ['id'];
 
+    protected $table = 'merchant_offer_claims_redemptions';
+
     public function merchantOffer()
     {
         return $this->belongsTo(MerchantOffer::class, 'merchant_offer_id');
@@ -19,6 +21,11 @@ class MerchantOfferClaimRedemptions extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function claim()
+    {
+        return $this->belongsTo(MerchantOfferClaim::class, 'claim_id');
     }
 
     public function transaction()

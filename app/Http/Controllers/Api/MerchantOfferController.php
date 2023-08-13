@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferClaim;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -137,11 +139,11 @@ class MerchantOfferController extends Controller
     public function getMyMerchantOffers()
     {
         // get merchant offers claimed by user
-        $merchantOffers = MerchantOffer::whereHas('claims', function ($query) {
-            $query->where('user_id', auth()->user()->id);
-        })->paginate(config('app.paginate_per_page'));
+        $claims = MerchantOfferClaim::where('user_id', auth()->user()->id)
+            ->with('merchantOffer', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+            ->paginate(config('app.paginate_per_page'));
 
-        return MerchantOfferResource::collection($merchantOffers);
+        return MerchantOfferClaimResource::collection($claims);
     }
 
     /**
@@ -420,6 +422,7 @@ class MerchantOfferController extends Controller
      * 
      * @group Merchant
      * @subgroup Merchant Offers
+     * @bodyParam claim_id integer required Claim ID. Example: 1
      * @bodyParam offer_id integer required Merchant Offer ID. Example: 1
      * @bodyParam quantity integer required Quantity to Redeem. Example: 1
      * @bodyParam redeem_code string required Redemption Code Provided by Merchant. Example: 123456
@@ -433,6 +436,7 @@ class MerchantOfferController extends Controller
     public function postRedeemOffer(Request $request)
     {
         $this->validate($request, [
+            'claim_id' => 'required',
             'offer_id' => 'required|exists:merchant_offers,id',
             'quantity' => 'required|integer|min:1',
             'redeem_code' => 'required'
@@ -465,19 +469,14 @@ class MerchantOfferController extends Controller
             }
         }
 
-        // if user has claimed this get total claimable quantity by sum all claims with success quantity of user's
-        $totalClaimedQuantity = $offer->claims()->where('user_id', auth()->user()->id)
-            ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
-            ->sum('quantity');
+        // get claim without redeemed
+        $claim = MerchantOfferClaim::where('id', $request->claim_id)
+            ->where('user_id', auth()->user()->id)
+            ->whereDoesntHave('redeem')
+            ->first();
 
-        // check total redeemed quantity of this offer by user
-        $totalRedeemedQuantity = $offer->redeems()->where('user_id', auth()->user()->id)
-            ->sum('quantity');
-
-        // get available quantity by total claimed quantity - total redeemed quantity
-        $availableQuantity = $totalClaimedQuantity - $totalRedeemedQuantity;
-
-        if ($availableQuantity < $request->quantity) {
+        // already redeemed fully
+        if (!$claim || $claim->quantity < $request->quantity) {
             return response()->json([
                 'message' => 'You do not have enough to redeem'
             ], 422);
@@ -497,6 +496,7 @@ class MerchantOfferController extends Controller
 
         // merchant code validated proceed create redeems
         $redeem = $offer->redeems()->attach(auth()->user()->id, [
+            'claim_id' => $request->claim_id,
             'quantity' => $request->quantity,
         ]);
 
@@ -505,7 +505,7 @@ class MerchantOfferController extends Controller
 
         return response()->json([
             'message' => 'Redeemed Successfully',
-            'redeem' => new MerchantOfferResource($offer)
+            'offer' => new MerchantOfferResource($offer)
         ], 200);
     }
 }

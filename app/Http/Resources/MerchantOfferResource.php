@@ -6,6 +6,7 @@ use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class MerchantOfferResource extends JsonResource
 {
@@ -32,43 +33,6 @@ class MerchantOfferResource extends JsonResource
                     'lng' => floatval($loc->lng),
                 ];
             }
-        }
-
-        $userClaims = $this->claims->where('user_id', auth()->user()->id)->first();
-        if ($userClaims) {
-
-            $hasExpired = null;
-            $expiringAt = null;
-            if ($this->expiry_days > 0) {
-                $hasExpired = Carbon::parse($userClaims->created_at)->diffInDays(Carbon::now()) <= $this->expiry_days;
-                $expiringAt = Carbon::parse($userClaims->created_at)->addDays($this->expiry_days)->format('Y-m-d H:i:s');
-            }
-
-            $userClaims = [
-                'id' => $userClaims->id,
-                'order_no' => $userClaims->order_no,
-                'quantity' => $userClaims->quantity,
-                'status' => MerchantOffer::CLAIM_STATUS[$userClaims->status],
-                'has_expired' => $hasExpired,
-                'expiring_at' => $expiringAt,
-                'created_at' => $userClaims->created_at,
-                'updated_at' => $userClaims->updated_at,
-            ];
-        }
-
-        $redeemed = ($this->redeems->where('user_id', auth()->user()->id)->sum('quantity')
-                     == $this->claims->where('user_id', auth()->user()->id)
-                        ->where('status', MerchantOffer::CLAIM_SUCCESS)
-                        ->sum('quantity'));
-
-        $userRedeems = $this->redeems->where('user_id', auth()->user()->id)->first();
-        if ($userRedeems) {
-            $userRedeems = [
-                'id' => $userRedeems->id,
-                'quantity' => $userRedeems->quantity,
-                'created_at' => $userRedeems->created_at,
-                'updated_at' => $userRedeems->updated_at,
-            ];
         }
 
         return [
@@ -101,8 +65,6 @@ class MerchantOfferResource extends JsonResource
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
-            'my_claim' => $userClaims, 
-            'fully_redeemed' => $redeemed,
             'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,
             'count' => [

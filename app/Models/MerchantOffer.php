@@ -140,7 +140,7 @@ class MerchantOffer extends Model implements HasMedia
     public function redeems()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_claims_redemptions', 'merchant_offer_id', 'user_id')
-            ->withPivot(['transaction_id', 'quantity'])
+            ->withPivot(['claim_id', 'quantity', 'transaction_id'])
             ->withTimestamps();
     }
 
