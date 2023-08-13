@@ -72,6 +72,10 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\DateTimePicker::make('available_until')
                                     ->required()
                                     ->minDate(now()->startOfDay()),
+                                Forms\Components\TextInput::make('expiry_days')
+                                    ->label('Expire in (Days) After Purchase')
+                                    ->helperText('Leave blank if no expiry. Available until user redeemed it.')
+                                    ->numeric(),
                                 Forms\Components\Textarea::make('description')
                                     ->rows(5)
                                     ->cols(10)
@@ -173,7 +177,7 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\Select::make('status')
                                     ->options(MerchantOffer::STATUS)->default(0),
                                 Forms\Components\Select::make('user_id')
-                                    ->label('Merchant')
+                                    ->label('Merchant User')
                                     ->searchable()
                                     ->getSearchResultsUsing(fn (string $search) => User::whereHas('merchant')
                                         ->where('name', 'like', "%{$search}%")->limit(25)
@@ -231,7 +235,9 @@ class MerchantOfferResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(MerchantOffer::STATUS)
                     ->colors([
@@ -245,11 +251,20 @@ class MerchantOfferResource extends Resource
                 Tables\Columns\TextColumn::make('store.name')
                     ->label('By Store'),
                 Tables\Columns\TextColumn::make('description'),
-                Tables\Columns\TextColumn::make('unit_price'),
-                Tables\Columns\TextColumn::make('available_at'),
-                Tables\Columns\TextColumn::make('available_until'),
-                Tables\Columns\TextColumn::make('quantity'),
+                Tables\Columns\TextColumn::make('unit_price')
+                    ->label('Points')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('available_at')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('available_until')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('expiry_days')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('sku')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //

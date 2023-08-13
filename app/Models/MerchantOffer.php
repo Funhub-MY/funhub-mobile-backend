@@ -143,13 +143,6 @@ class MerchantOffer extends Model implements HasMedia
             ->withTimestamps();
     }
 
-    public function instoreClaims()
-    {
-        return $this->belongsToMany(User::class, 'instore_claims_merchant_offers', 'merchant_offer_id', 'user_id')
-            ->withPivot('remarks')
-            ->withTimestamps();
-    }
-
     public function transactions()
     {
         return $this->morphMany(Transaction::class, 'transactionable');

@@ -450,6 +450,16 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
+        if ($offer) {
+            // check offer expiry_days with claim created_at date days diff with now to see if expired
+            $userClaim = $offer->claims()->where('user_id', auth()->user()->id)->first();
+            if (Carbon::parse($userClaim->created_at)->addDays($offer->expiry_days)->isPast()) {
+                return response()->json([
+                    'message' => 'This offer has expired'
+                ], 422);
+            }
+        }
+
         // if user has claimed this get total claimable quantity by sum all claims with success quantity of user's
         $totalClaimedQuantity = $offer->claims()->where('user_id', auth()->user()->id)
             ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
@@ -469,7 +479,9 @@ class MerchantOfferController extends Controller
         }
 
         // check if merchant code is valid
-        $merchant = Merchant::where('redeem_code', $request->redeem_code)->first();
+        $merchant = $offer->whereHas('merchant', function ($query) use ($request) {
+            $query->where('code', $request->redeem_code);
+        })->exists();
 
         if (!$merchant) {
             return response()->json([

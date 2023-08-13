@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Interaction;
 use App\Models\MerchantOffer;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MerchantOfferResource extends JsonResource
@@ -40,6 +41,8 @@ class MerchantOfferResource extends JsonResource
                 'order_no' => $userClaims->order_no,
                 'quantity' => $userClaims->quantity,
                 'status' => MerchantOffer::CLAIM_STATUS[$userClaims->status],
+                'has_expired' => Carbon::parse($userClaims->created_at)->diffInDays(Carbon::now()) <= $this->expiry_days,
+                'expiring_at' => Carbon::parse($userClaims->created_at)->addDays($this->expiry_days)->format('Y-m-d H:i:s'),
                 'created_at' => $userClaims->created_at,
                 'updated_at' => $userClaims->updated_at,
             ];
@@ -81,6 +84,7 @@ class MerchantOfferResource extends JsonResource
             'default_purchase_method' => $this->purchase_method,
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
+            'expiry_days' => $this->expiry_days,
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),

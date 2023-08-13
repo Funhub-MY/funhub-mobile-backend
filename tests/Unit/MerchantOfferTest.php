@@ -205,6 +205,11 @@ class MerchantOfferTest extends TestCase
         $this->assertEquals(1, $response->json('meta.total'));
     }
 
+    /**
+     * Test Claim Offer with Fiat(Cash) by Logged In User
+     *
+     * Fiat will need have mpay gateway env to test
+     */
     public function testClaimOfferFiatByLoggedInUser()
     {
         // create a merchant offer with fiat
@@ -256,4 +261,98 @@ class MerchantOfferTest extends TestCase
         // check if current merchantoffer is already deducted 5
         $this->assertEquals(5, $offer->fresh()->quantity);
     }
+
+    /**
+     * Test Redeem Offer by Logged In User
+     */
+    // public function testRedeemClaimedOfferByLoggedInUser()
+    // {
+    //     PointLedger::create([
+    //         'user_id' => $this->loggedInUser->id,
+    //         'pointable_type' => get_class($this->loggedInUser),
+    //         'pointable_id' => $this->loggedInUser->id,
+    //         'title' => 'First topup simulation',
+    //         'amount' => 1000,
+    //         'credit' => 1,
+    //         'debit' => 0,
+    //         'balance' => 1000,
+    //         'remarks' => 'Simulation topup points for user.',
+    //         'created_at' => now(),
+    //         'updated_at' => now()
+    //     ]);
+    //     // get one merchant offer, set available_at as today, until as tomorrow to ensure the offer is valid.
+    //     $merchant_offer = $this->merchant_offer->random(1)->first();
+    //     $merchant_offer->available_at = now();
+    //     $merchant_offer->available_until = now()->addDay();
+    //     $merchant_offer->save();
+
+    //     dd($merchant_offer);
+
+
+    //     // change merchant_offer->merchant->redeem_code
+    //     Merchant::where('id', $merchant_offer->merchant->id)->update([
+    //         'redeem_code' => '334455'
+    //     ]);
+
+    //     $response = $this->postJson('/api/v1/merchant/offers/claim', [
+    //         'offer_id' => $merchant_offer->id,
+    //         'quantity' => 1,
+    //         'payment_method' => 'points'
+    //     ]);
+    //     $response->assertStatus(200)
+    //         ->assertJsonStructure([
+    //             'message',
+    //             'offer'
+    //         ]);
+
+    //     // check current user latest point ledger is debit or not.
+    //     $user_point_ledgers = $this->loggedInUser->pointLedgers()->orderBy('id','desc')->first();
+    //     $this->assertEquals(1, $user_point_ledgers->debit);
+
+    //     // now proceed to redeem
+    //     $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+    //         'offer_id' => $merchant_offer->id,
+    //         'redeem_code' => '334455',
+    //         'quantity' => 5 // over my claimed quantity
+    //     ]);
+
+    //     // expect 422 with json message "You do not have enough to redeem"
+    //     $response->assertStatus(422)
+    //         ->assertJson([
+    //             'message' => 'You do not have enough to redeem'
+    //         ]);
+
+    //     // now proceed to redeem again with correct quantity
+    //     $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+    //         'offer_id' => $merchant_offer->id,
+    //         'redeem_code' => '334455',
+    //         'quantity' => 1
+    //     ]);
+
+
+    //     // expect 200 with json message "Redeemed Successfully"
+    //     $response->assertStatus(200)
+    //         ->assertJson([
+    //             'message' => 'Redeemed Successfully'
+    //         ]);
+
+    //     // check db if merchant_offer_claims_redemptions has this user, offer id and quantity
+    //     $this->assertDatabaseHas('merchant_offer_claims_redemptions', [
+    //         'user_id' => $this->loggedInUser->id,
+    //         'merchant_offer_id' => $merchant_offer->id,
+    //         'quantity' => 1
+    //     ]);
+
+    //     // attempt to redeem again, expect 422 with json message "You have already redeemed this offer"
+    //     $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+    //         'offer_id' => $merchant_offer->id,
+    //         'redeem_code' => '334455',
+    //         'quantity' => 1
+    //     ]);
+
+    //     $response->assertStatus(422)
+    //         ->assertJson([
+    //             'message' => 'You do not have enough to redeem'
+    //         ]);
+    // }
 }
