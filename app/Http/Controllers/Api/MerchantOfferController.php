@@ -456,6 +456,8 @@ class MerchantOfferController extends Controller
             $userClaim = $offer->claims()->where('user_id', auth()->user()->id)
                 ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
                 ->first();
+            Log::info('user claim', [$userClaim, Carbon::parse($userClaim->created_at), Carbon::parse($userClaim->created_at)->addDays($offer->expiry_days), Carbon::parse($userClaim->created_at)->addDays($offer->expiry_days)->isPast()]);
+
             if (Carbon::parse($userClaim->created_at)->addDays($offer->expiry_days)->isPast()) {
                 return response()->json([
                     'message' => 'This offer has expired'
