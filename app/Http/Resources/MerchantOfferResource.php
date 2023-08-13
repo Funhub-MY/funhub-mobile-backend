@@ -56,11 +56,10 @@ class MerchantOfferResource extends JsonResource
             ];
         }
 
-        $redeemed = false;
-        // redeemed where theres matching sum $this->redeems record quantity and sum userClaims (success) quantity
-        if ($this->redeems->sum('quantity') == $this->claims->where('status', MerchantOffer::CLAIM_SUCCESS)->sum('quantity')) {
-            $redeemed = true;
-        }
+        $redeemed = ($this->redeems->where('user_id', auth()->user()->id)->sum('quantity')
+                     == $this->claims->where('user_id', auth()->user()->id)
+                        ->where('status', MerchantOffer::CLAIM_SUCCESS)
+                        ->sum('quantity'));
 
         $userRedeems = $this->redeems->where('user_id', auth()->user()->id)->first();
         if ($userRedeems) {

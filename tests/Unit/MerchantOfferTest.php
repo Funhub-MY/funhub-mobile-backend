@@ -350,5 +350,21 @@ class MerchantOfferTest extends TestCase
             ->assertJson([
                 'message' => 'You do not have enough to redeem'
             ]);
+
+        // check current my offers fully_redeemed is true for this offer
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'fully_redeemed',
+                    ]
+                ]
+            ]);
+        
+        // check if first data fully_redeemed is true
+        $this->assertEquals($merchant_offer->id, $response->json('data')[0]['id']);
+        $this->assertTrue($response->json('data')[0]['fully_redeemed']);
     }
 }
