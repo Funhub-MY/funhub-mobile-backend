@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZdvh8c54ea1ag6Vf3DPE6b'
+      - 'Bearer 6k8ePVDfh5E13avcagdZ46b'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8fhd46kPa5D6bcEag3Z1veV'
+      - 'Bearer e168gbakE5cavD3ZP6fdV4h'
     controller: null
     method: null
     route: null
@@ -357,7 +357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d4k6bfVecZg83DPaE1va6h5'
+      - 'Bearer 6Dc58VkePE3gfhZdvba1a64'
     controller: null
     method: null
     route: null
@@ -386,6 +386,13 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      claim_id:
+        name: claim_id
+        description: 'Claim ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
       offer_id:
         name: offer_id
         description: 'Merchant Offer ID.'
@@ -408,6 +415,7 @@ endpoints:
         type: string
         custom: []
     cleanBodyParameters:
+      claim_id: 1
       offer_id: 1
       quantity: 1
       redeem_code: '123456'
@@ -428,7 +436,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VcDa5ZPdkfh6Ebve1a836g4'
+      - 'Bearer dhgf6Vk5ebv683E4DP1aZac'
     controller: null
     method: null
     route: null
@@ -471,7 +479,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DgPv8EbZ145c6Vehk63dafa'
+      - 'Bearer kZv5aEVDh8fa6ebP4g6dc13'
     controller: null
     method: null
     route: null
@@ -498,11 +506,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: assumenda
+        example: temporibus
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: assumenda
+      offer_id: temporibus
     queryParameters:
       offer_id:
         name: offer_id
@@ -530,7 +538,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8fba64VDegEZakPhcv1d365'
+      - 'Bearer b5a8ed6h1k4Efc3DaVg6vPZ'
     controller: null
     method: null
     route: null
@@ -635,7 +643,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DgeVPfEZc4b6aa635hdk1v8'
+      - 'Bearer 86Z5gVbvD1dcEakfP3a64eh'
     controller: null
     method: null
     route: null
@@ -692,7 +700,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ga5hbE1kfZvca38D64Pd6Ve'
+      - 'Bearer aah8ebk6d46EDPcf5V1v3Zg'
     controller: null
     method: null
     route: null

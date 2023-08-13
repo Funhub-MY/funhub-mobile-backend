@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "e350342f-6c8b-49b4-9219-f450960182df",
+        "_postman_id": "be9fa7ab-ebcc-4dad-b412-c2fcb887d448",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":18,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"praesentium\",\"violation_level\":\"tempore\",\"article\":1}"
+                                    "raw": "{\"article_id\":19,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eligendi\",\"violation_level\":\"velit\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -323,7 +323,7 @@
                                 {
                                     "id": "article_id",
                                     "key": "article_id",
-                                    "value": "8",
+                                    "value": "34",
                                     "description": "The ID of the article."
                                 },
                                 {
@@ -379,7 +379,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"necessitatibus\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"iure\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"filter\":\"Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                         },
                         "description": ""
                     },
@@ -902,7 +902,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "et",
+                                            "value": "consequuntur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1002,7 +1002,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"aliquid\",\"violation_type\":\"fugit\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"omnis\",\"violation_type\":\"impedit\"}"
                                 },
                                 "description": ""
                             },
@@ -1127,7 +1127,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "similique",
+                                            "value": "ut",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2002,7 +2002,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "10",
+                                    "value": "8",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2191,7 +2191,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"offer_id\":1,\"quantity\":1,\"redeem_code\":\"123456\"}"
+                                    "raw": "{\"claim_id\":1,\"offer_id\":1,\"quantity\":1,\"redeem_code\":\"123456\"}"
                                 },
                                 "description": ""
                             },
@@ -2255,7 +2255,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "assumenda",
+                                            "value": "temporibus",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3038,7 +3038,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "5",
+                                    "value": "9",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3150,7 +3150,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":11}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -3191,7 +3191,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":20}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -3290,7 +3290,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"aut\",\"violation_level\":\"impedit\",\"violation_type\":\"nihil\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"odit\",\"violation_level\":\"non\",\"violation_type\":\"suscipit\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3388,7 +3388,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"voluptatibus\"}"
+                            "raw": "{\"user_ids\":\"neque\"}"
                         },
                         "description": ""
                     },
@@ -3413,7 +3413,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "10",
+                                    "value": "3",
                                     "description": "The ID of the user."
                                 },
                                 {
