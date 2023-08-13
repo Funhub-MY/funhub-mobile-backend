@@ -101,10 +101,11 @@ class MerchantOffer extends Model implements HasMedia
         return $this->status === self::STATUS_PUBLISHED;
     }
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class);
-    }
+    // public function merchant()
+    // {
+    //     // merchant inverted hasOneThrough user
+    //     return $this->hasOneThrough(Merchant::class, User::class, 'id', 'id', 'user_id', 'merchant_id');
+    // }
 
     public function store()
     {

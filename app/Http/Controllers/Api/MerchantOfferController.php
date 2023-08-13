@@ -66,7 +66,7 @@ class MerchantOfferController extends Controller
         // ensure only published offers
         $query = MerchantOffer::query()
             ->published()
-            ->with('merchant', 'merchant.user', 'categories', 'store', 'claims', 'user');
+            ->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user');
 
         // category_ids filter
         if ($request->has('category_ids')) {
@@ -214,7 +214,7 @@ class MerchantOfferController extends Controller
         // check offer is still valid by checking available_at and available_until
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
-            ->with('merchant', 'merchant.user', 'store', 'claims')
+            ->with('user', 'user.merchant', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
             ->where('quantity', '>=', $request->quantity)
@@ -450,9 +450,12 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        if ($offer) {
+        // if theres expiry for after purchase
+        if ($offer && $offer->expiry_days > 0) {
             // check offer expiry_days with claim created_at date days diff with now to see if expired
-            $userClaim = $offer->claims()->where('user_id', auth()->user()->id)->first();
+            $userClaim = $offer->claims()->where('user_id', auth()->user()->id)
+                ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
+                ->first();
             if (Carbon::parse($userClaim->created_at)->addDays($offer->expiry_days)->isPast()) {
                 return response()->json([
                     'message' => 'This offer has expired'
@@ -479,6 +482,7 @@ class MerchantOfferController extends Controller
         }
 
         // check if merchant code is valid
+        // note merchant is hasOneThrough user as we only attach merhcnat offer direct to user
         $merchant = $offer->whereHas('user.merchant', function ($query) use ($request) {
             $query->where('redeem_code', $request->redeem_code);
         })->exists();
@@ -498,7 +502,7 @@ class MerchantOfferController extends Controller
         $offer->refresh();
 
         return response()->json([
-            'message' => 'Redeemed successfully',
+            'message' => 'Redeemed Successfully',
             'redeem' => new MerchantOfferResource($offer)
         ], 200);
     }

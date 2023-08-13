@@ -36,16 +36,30 @@ class MerchantOfferResource extends JsonResource
 
         $userClaims = $this->claims->where('user_id', auth()->user()->id)->first();
         if ($userClaims) {
+
+            $hasExpired = null;
+            $expiringAt = null;
+            if ($this->expiry_days > 0) {
+                $hasExpired = Carbon::parse($userClaims->created_at)->diffInDays(Carbon::now()) <= $this->expiry_days;
+                $expiringAt = Carbon::parse($userClaims->created_at)->addDays($this->expiry_days)->format('Y-m-d H:i:s');
+            }
+
             $userClaims = [
                 'id' => $userClaims->id,
                 'order_no' => $userClaims->order_no,
                 'quantity' => $userClaims->quantity,
                 'status' => MerchantOffer::CLAIM_STATUS[$userClaims->status],
-                'has_expired' => Carbon::parse($userClaims->created_at)->diffInDays(Carbon::now()) <= $this->expiry_days,
-                'expiring_at' => Carbon::parse($userClaims->created_at)->addDays($this->expiry_days)->format('Y-m-d H:i:s'),
+                'has_expired' => $hasExpired,
+                'expiring_at' => $expiringAt,
                 'created_at' => $userClaims->created_at,
                 'updated_at' => $userClaims->updated_at,
             ];
+        }
+
+        $redeemed = false;
+        // redeemed where theres matching sum $this->redeems record quantity and sum userClaims (success) quantity
+        if ($this->redeems->sum('quantity') == $this->claims->where('status', MerchantOffer::CLAIM_SUCCESS)->sum('quantity')) {
+            $redeemed = true;
         }
 
         $userRedeems = $this->redeems->where('user_id', auth()->user()->id)->first();
@@ -89,6 +103,7 @@ class MerchantOfferResource extends JsonResource
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
             'my_claim' => $userClaims, 
+            'fully_redeemed' => $redeemed,
             'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,
             'count' => [
