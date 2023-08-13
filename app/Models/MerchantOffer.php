@@ -103,7 +103,7 @@ class MerchantOffer extends Model implements HasMedia
 
     public function merchant()
     {
-        return $this->user->merchant();
+        return $this->belongsTo(Merchant::class);
     }
 
     public function store()
