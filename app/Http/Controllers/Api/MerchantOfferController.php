@@ -479,13 +479,13 @@ class MerchantOfferController extends Controller
         }
 
         // check if merchant code is valid
-        $merchant = $offer->whereHas('merchant', function ($query) use ($request) {
-            $query->where('code', $request->redeem_code);
+        $merchant = $offer->whereHas('user.merchant', function ($query) use ($request) {
+            $query->where('redeem_code', $request->redeem_code);
         })->exists();
 
         if (!$merchant) {
             return response()->json([
-                'message' => 'Invalid merchant code'
+                'message' => 'Invalid merchant redeem code'
             ], 422);
         }
 

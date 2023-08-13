@@ -172,6 +172,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return $this->hasOne(Merchant::class);
     }
+    
     // Important Note:: This is to indicate what merchant_offers has created by the users.
     public function merchant_offers()
     {
