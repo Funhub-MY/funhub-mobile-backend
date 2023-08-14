@@ -24,6 +24,7 @@ use App\Notifications\TaggedUserInArticle;
 use App\Services\ArticleRecommenderService;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -433,7 +434,11 @@ class ArticleController extends Controller
 
             // notifiy tagged user
             $taggedUsers->each(function ($taggedUser) use ($article) {
-                $taggedUser->notify(new TaggedUserInArticle($article, $article->user));
+                try {
+                    $taggedUser->notify(new TaggedUserInArticle($article, $article->user));
+                } catch (\Exception $e) {
+                    Log::error('Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                }
             });
         }
 
@@ -652,6 +657,15 @@ class ArticleController extends Controller
             // tag users in article
             if ($taggedUsers) {
                 $article->taggedUsers()->sync($taggedUsers);
+
+                // notifiy tagged user
+                $article->taggedUsers->each(function ($taggedUser) use ($article) {
+                    try {
+                        $taggedUser->notify(new TaggedUserInArticle($article, $article->user));
+                    } catch (\Exception $e) {
+                        Log::error('Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                    }
+                });
             }
 
             // attach location with rating

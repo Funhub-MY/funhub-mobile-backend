@@ -177,8 +177,17 @@ class PaymentController extends Controller
                 'merchant_offer_id' => $transaction->transactionable_id,
             ]);
 
-            // notify
-            $transaction->user->notify(new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount));
+            try {
+                // notify
+                $transaction->user->notify(new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount));
+            } catch (Exception $ex) {
+                Log::error('Failed to send notification', [
+                    'error' => $ex->getMessage(),
+                    'transaction_id' => $transaction->id,
+                    'merchant_offer_id' => $transaction->transactionable_id,
+                    'user_id' => $transaction->user_id,
+                ]);
+            }
         } else if ($request->responseCode == 'PE') {
             // still pending
             Log::info('Updated Merchant Offer Claim Still Pending', [
