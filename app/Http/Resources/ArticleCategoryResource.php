@@ -25,6 +25,7 @@ class ArticleCategoryResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'name' => $this->name,
             'slug' => $this->slug,
             // 'icon' => $this->getFirstMedia('article_category_icon'),
             'cover_media_id' => $this->cover_media_id,
