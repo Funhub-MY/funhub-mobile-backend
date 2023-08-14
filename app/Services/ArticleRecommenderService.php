@@ -67,7 +67,7 @@ class ArticleRecommenderService
         }
         $affinity += $article->views_count;
         $affinity -= ($article->views()->where('created_at', '<', now()->subMonth())->count() * 0.1);
-        $affinity += $article->categories->count();
+        $affinity += $article->categories->count() * 10;
 
         return $affinity;
     }

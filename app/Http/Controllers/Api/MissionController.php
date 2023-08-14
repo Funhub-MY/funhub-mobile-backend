@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\MissionResource;
 use App\Models\Mission;
 use App\Models\RewardComponent;
+use App\Models\User;
+use App\Notifications\MissionCompleted;
 use Illuminate\Http\Request;
 use App\Services\PointService;
 use App\Services\PointComponentService;
@@ -25,9 +27,9 @@ class MissionController extends Controller
 
     /**
      * Get all missions available.
-     * 
+     *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     * 
+     *
      * @group Mission
      * @urlParam claimed_only boolean If set to true, only return missions rewards that has been claimed by user. Example: false
      * @response scenario=success {
@@ -88,12 +90,12 @@ class MissionController extends Controller
 
         return MissionResource::collection($missions);
     }
-    
+
     /**
      * Complete all missions or single mission
      *
      * @return void
-     * 
+     *
      * @group Mission
      * @bodyParam mission_id int The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed. Example: 1
      * @response scenario=success {
@@ -106,7 +108,7 @@ class MissionController extends Controller
      *   "quantity": 1
      * }
      * }
-     * 
+     *
      */
     public function postCompleteMission(Request $request)
     {
@@ -123,7 +125,7 @@ class MissionController extends Controller
             // complete single mission
             $mission = Mission::find($request->mission_id);
             $this->completeMission($mission, $user);
-            $completed_missions[] = $mission->id; 
+            $completed_missions[] = $mission->id;
         } else {
             // complete all missions
             $missions = $user->missionsParticipating()->where('is_completed', false)
@@ -162,6 +164,16 @@ class MissionController extends Controller
             'completed_at' => now()
         ]);
 
+        try {
+            auth()->user()->notify(new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity));
+        } catch (\Exception $e) {
+            Log::error('Mission Completed Notification Error', [
+                'mission_id' => $mission->id,
+                'user' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+
         // disburse rewards
         $this->disburseRewards($mission, $user);
     }
@@ -191,7 +203,7 @@ class MissionController extends Controller
           } else if ($mission->missionable_type == RewardComponent::class) {
               // reward point via pointComponentService
             $this->pointComponentService->credit(
-                $mission, 
+                $mission,
                 $mission->missionable, // PointComponent as reward
                 $user,
                 $mission->reward_quantity,
@@ -216,7 +228,7 @@ class MissionController extends Controller
      * Get latest claimable missions
      *
      * @return MissionResource
-     * 
+     *
      * @group Mission
      * @response scenario=success {
      * "data": [

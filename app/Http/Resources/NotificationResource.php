@@ -22,7 +22,7 @@ class NotificationResource extends JsonResource
         $article_type = null;
 
         $object = $this->data['object']::find($this->data['object_id']);
-        
+
         if ($object) {
             if ($this->data['object'] == Comment::class) {
                 $article =  $object->commentable;
