@@ -56,10 +56,6 @@ class ArticleController extends Controller
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
-     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at
-     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at
-     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
      *
@@ -155,7 +151,7 @@ class ArticleController extends Controller
                 ->orderByRaw('FIELD(id, ' . implode(',', $scoredArticlesIds) . ')');
         }
 
-        $this->buildQuery($query, $request);
+        // $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
