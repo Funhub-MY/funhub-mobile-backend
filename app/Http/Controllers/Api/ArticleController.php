@@ -127,6 +127,8 @@ class ArticleController extends Controller
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
                     ->havingRaw("distance < ?", [$radius]);
             });
+
+            Log::info('Lat: '. $request->lat . ' Lng: ' . $request->lng . ' Radius: ' . $radius);
         }
 
         // location id
@@ -138,6 +140,7 @@ class ArticleController extends Controller
 
         // by defaulty off, unless provided build recommendations
         if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
+            Log::info('Building Recommendations for User: ' . auth()->user()->id);
             $recommender = new ArticleRecommenderService(auth()->user());
 
             if ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1) {
