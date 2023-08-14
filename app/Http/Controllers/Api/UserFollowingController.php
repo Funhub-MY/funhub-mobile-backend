@@ -14,7 +14,7 @@ class UserFollowingController extends Controller
 {
     /**
      * Follow another user
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @group User
@@ -52,7 +52,7 @@ class UserFollowingController extends Controller
 
     /**
      * Unfollow another user
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @group User
@@ -84,9 +84,9 @@ class UserFollowingController extends Controller
 
     /**
      * Get all followers of user id or logged in user
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User
      * @subgroup Followers
      * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
@@ -101,6 +101,8 @@ class UserFollowingController extends Controller
         $user = User::findOrFail($user_id);
 
         $followers = $user->followers()
+            // exclude followers if id == user_id
+            ->where('follower_id', '!=', $user_id)
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followers);
@@ -108,9 +110,9 @@ class UserFollowingController extends Controller
 
     /**
      * Get all followings of user id or logged in user
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User
      * @subgroup Followings
      * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
@@ -125,6 +127,8 @@ class UserFollowingController extends Controller
         $user = User::findOrFail($user_id);
 
         $followings = $user->followings()
+            // exclude followings if id == user_id
+            ->where('following_id', '!=', $user_id)
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followings);
