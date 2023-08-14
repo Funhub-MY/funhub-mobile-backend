@@ -31,6 +31,7 @@ class MerchantOfferResource extends JsonResource
                     'address' => $loc->full_address,
                     'lat' => floatval($loc->lat),
                     'lng' => floatval($loc->lng),
+                    'rated_count' => $loc->ratings->count(),
                 ];
             }
         }

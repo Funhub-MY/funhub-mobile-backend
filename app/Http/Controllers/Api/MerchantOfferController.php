@@ -68,7 +68,7 @@ class MerchantOfferController extends Controller
         // ensure only published offers
         $query = MerchantOffer::query()
             ->published()
-            ->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user');
+            ->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user', 'location', 'location.ratings');
 
         // category_ids filter
         if ($request->has('category_ids')) {
