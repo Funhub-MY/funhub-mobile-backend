@@ -84,6 +84,7 @@ class OfferClaimed extends Notification
             'action' => 'claimed_offer',
             'from' => $this->user->name,
             'from_id' => $this->user->id,
+            'title' => '交易成功',
             'message' => $this->getMessage(),
         ];
     }

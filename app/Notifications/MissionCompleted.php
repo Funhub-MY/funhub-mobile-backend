@@ -76,6 +76,7 @@ class MissionCompleted extends Notification
             'action' => 'mission_completed',
             'from' => $this->user->name,
             'from_id' => $this->user->id,
+            'title' => '恭喜完成任务',
             'message' => $this->getMessage(),
         ];
     }

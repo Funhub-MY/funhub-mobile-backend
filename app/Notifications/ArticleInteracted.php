@@ -37,23 +37,23 @@ class ArticleInteracted extends Notification implements ShouldQueue
         return [FcmChannel::class, 'database'];
     }
 
-    
+
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
             ->setData([
                 'interaction_id' => (string) $this->interaction->id,
-                'interaction_user' => (string) $this->interaction->user->id, 
+                'interaction_user' => (string) $this->interaction->user->id,
                 'article_id' => (string) $this->interaction->interactable->id,
                 'article_type' => (string) $this->interaction->interactable->type,
                 'action' => 'article_interacted'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle( 'New '.$this->getAction())
+                ->setTitle('探文互动')
                 ->setBody($this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"')
             );
     }
-    
+
     /**
      * Get the array representation of the notification.
      *
@@ -71,7 +71,8 @@ class ArticleInteracted extends Notification implements ShouldQueue
             'action' => 'article_interacted',
             'from' => $this->interaction->user->name,
             'from_id' => $this->interaction->user->id,
-            'message' => $this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"',
+            'title' => $this->interaction->user->name,
+            'message' => '赞了你的探文，觉得超有趣！',
         ];
     }
 

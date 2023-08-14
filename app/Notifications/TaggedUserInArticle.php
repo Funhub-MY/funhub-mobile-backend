@@ -42,7 +42,7 @@ class TaggedUserInArticle extends Notification
 
     protected function getMessage()
     {
-        return '在文章中提到了你';
+        return '去探玩还不忘@你，快来看看吧';
     }
 
     public function toFcm($notifiable)
@@ -54,7 +54,7 @@ class TaggedUserInArticle extends Notification
                 'action' => 'tagged_user_in_article'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('提到了你')
+                ->setTitle('有人@你了')
                 ->setBody($this->getMessage())
             );
     }
@@ -76,6 +76,7 @@ class TaggedUserInArticle extends Notification
             'action' => 'tagged_user_in_article',
             'from' => $this->user->name,
             'from_id' => $this->user->id,
+            'title' => $this->user->name,
             'message' => $this->getMessage(),
         ];
     }

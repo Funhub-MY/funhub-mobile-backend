@@ -18,7 +18,7 @@ class CommentLiked extends Notification implements ShouldQueue
     protected $comment;
 
     /**
-     * Create a new notification instance.
+     * Create a new notifi赞了你的评论，觉得超有趣！cation instance.
      *
      * @return void
      */
@@ -42,18 +42,18 @@ class CommentLiked extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
             ->setData([
-                'comment_id' => (string) $this->comment->id, 
+                'comment_id' => (string) $this->comment->id,
                 'commentor_id' => (string) $this->comment->user->id,
                 'article_id' => (string) $this->comment->commentable->id,
                 'article_type' => (string) $this->comment->commentable->type,
                 'action' => 'comment_liked'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('New Comment Like')
+                ->setTitle('探文互动')
                 ->setBody( $this->comment->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"')
             );
     }
-    
+
     /**
      * Get the array representation of the notification.
      *
@@ -71,7 +71,8 @@ class CommentLiked extends Notification implements ShouldQueue
             'action' => 'comment_liked',
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
-            'message' => $this->comment->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"',
+            'title' => $this->comment->user->name,
+            'message' => '赞了你的评论，觉得超有趣!',
         ];
     }
 }

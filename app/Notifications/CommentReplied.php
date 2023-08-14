@@ -43,18 +43,18 @@ class CommentReplied extends Notification
         return FcmMessage::create()
             ->setData([
                 'comment_id' => (string) $this->comment->id,
-                'commentor_id' => (string) $this->comment->user->id, 
+                'commentor_id' => (string) $this->comment->user->id,
                 'parent_comment_id' => (string) $this->comment->parent->id,
                 'article_id' => (string) $this->comment->commentable->id,
                 'article_type' => (string) $this->comment->commentable->type,
                 'action' => 'comment_replied'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('New Comment Reply')
+                ->setTitle('探文互动')
                 ->setBody( $this->comment->user->name . '回复了你的评论 "' . Str::limit($this->comment->parent->body, 10, '...') . '"')
             );
     }
-    
+
     /**
      * Get the array representation of the notification.
      *
@@ -72,7 +72,8 @@ class CommentReplied extends Notification
             'action' => 'comment_replied',
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
-            'message' => $this->comment->user->name . '回复了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"',
+            'title' => $this->comment->user->name,
+            'message' => '回复了你的评论，快去看看吧',
         ];
     }
 }

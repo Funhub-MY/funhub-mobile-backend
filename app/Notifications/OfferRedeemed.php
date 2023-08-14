@@ -77,6 +77,7 @@ class OfferRedeemed extends Notification
             'action' => 'offer_redeemed',
             'from' => $this->user->name,
             'from_id' => $this->user->id,
+            'title' => '兑换成功',
             'message' => $this->getMessage(),
         ];
     }
