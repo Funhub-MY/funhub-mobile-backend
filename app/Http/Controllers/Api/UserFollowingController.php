@@ -27,6 +27,13 @@ class UserFollowingController extends Controller
      */
     public function follow(Request $request)
     {
+        // ensure user_id is not self
+        if ($request->user_id === auth()->user()->id) {
+            return response()->json([
+                'message' => 'You cannot follow yourself'
+            ], 400);
+        }
+
         // check if user already following user or not
         if (auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
@@ -101,7 +108,6 @@ class UserFollowingController extends Controller
         $user = User::findOrFail($user_id);
 
         $followers = $user->followers()
-            ->where('users_followings.follower_id', '!=', $user_id)
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followers);
