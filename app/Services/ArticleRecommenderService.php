@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class ArticleRecommenderService
@@ -46,11 +47,13 @@ class ArticleRecommenderService
                 ];
             });
 
-        // Sort scored results 
+        // Sort scored results
         $scored = $scored->sortByDesc('score');
+        Log::info('Before', $scored->pluck('id')->toArray());
 
-        // Apply randomization  
-        $scoredIds = $scored->pluck('id')->random($scored->count());
+        // random shuffle
+        $scoredIds = Arr::shuffle($scored->pluck('id')->toArray());
+        Log::info('Randomised', $scoredIds);
 
         return $scoredIds;
     }
@@ -72,7 +75,7 @@ class ArticleRecommenderService
 
         return $affinity;
     }
-  
+
     /**
      * Calculate weight score for article
      *

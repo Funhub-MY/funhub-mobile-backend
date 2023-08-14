@@ -116,7 +116,10 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            $radius = $request->has('radius') ? $request->radius : 15000; // 15km default
+
+            Log::info('lat: ' . $request->lat . ' lng: ' . $request->lng . ' radius: ' . $radius);
+
             // get article where article->location lat,lng is within the radius
             $query->whereHas('location', function ($query) use ($request, $radius) {
                 $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
@@ -150,7 +153,10 @@ class ArticleController extends Controller
                 return $recommender->build();
             });
 
-            $query->whereIn('id', $scoredArticlesIds);
+            Log::info('scoredArticlesIds', $scoredArticlesIds);
+
+            $query->whereIn('id', $scoredArticlesIds)
+                ->orderByRaw('FIELD(id, ' . implode(',', $scoredArticlesIds) . ')');
         }
 
         $this->buildQuery($query, $request);
@@ -167,7 +173,7 @@ class ArticleController extends Controller
      *
      * @param Request $request
      * @return UserResource
-     * 
+     *
      * @group Article
      * @bodyParam article_id integer required Article Id. Example: 1
      * @response scenario=success {
@@ -296,7 +302,7 @@ class ArticleController extends Controller
                 }
             }
         }
-        
+
         $query = Article::whereHas('interactions', function ($query) use ($user_id) {
             $query->where('user_id', $user_id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
@@ -333,7 +339,7 @@ class ArticleController extends Controller
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
      * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
      * @bodyParam tagged_user_ids array The tagged users IDs. Example: [1, 2]
-     * 
+     *
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -474,7 +480,7 @@ class ArticleController extends Controller
 
             if ($state) {
                 $loc['state_id'] = $state->id;
-            
+
                 // find country by state id
                 $country = Country::where('id', $state->country_id)->first();
                 $loc['country_id'] = $country->id;
@@ -497,7 +503,7 @@ class ArticleController extends Controller
                     'rating' => $locationData['rating'],
                 ]);
             }
-            
+
             // recalculate average ratings
             $location->average_ratings = $location->ratings()->avg('rating');
             $location->save();
@@ -549,7 +555,7 @@ class ArticleController extends Controller
      * @bodyParam video file The video ID of the article.
      * @bodyParam tagged_user_ids array The tagged user IDs of the article. Example: [1, 2]
      * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
-     * 
+     *
      * @response scenario=success {
      * "message": "Article updated",
      * }
@@ -574,7 +580,7 @@ class ArticleController extends Controller
                         'message' => 'You can only tag your followers.',
                     ], 422);
                 }
-    
+
                 $taggedUsers = User::whereIn('id', $request->tagged_user_ids)->get();
             }
 
@@ -615,7 +621,7 @@ class ArticleController extends Controller
                     }
                 });
             }
-            
+
             // sync category
             if ($request->has('categories')) {
                 // explode categories
@@ -624,7 +630,7 @@ class ArticleController extends Controller
                 $categories = ArticleCategory::whereIn('id', $category_ids)->pluck('id');
                 $article->categories()->sync($categories);
             }
-    
+
             // sync tags
             if ($request->has('tags')) {
                 $tags = $request->tags;
@@ -862,7 +868,7 @@ class ArticleController extends Controller
         fclose($stream);
         return response()->json(['url' => $fullUrl]);
     }
-    
+
     /**
      * Report an article
      *
@@ -910,7 +916,7 @@ class ArticleController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @urlParam search string optional Search for city. Example: "Kota"
      * @response scenario=success {
@@ -945,10 +951,10 @@ class ArticleController extends Controller
      * @param Request $request
      * @param Article $article
      * @return MerchantOfferResource
-     * 
+     *
      * @group Article
      * @urlParam article integer required The id of the article. Example: 1
-     * 
+     *
      * @response scenario=success {
      * "data": [
      * {}
