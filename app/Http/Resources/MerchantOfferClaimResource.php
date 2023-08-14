@@ -37,6 +37,7 @@ class MerchantOfferClaimResource extends JsonResource
             'tax' => $this->tax,
             'total' => $this->total,
             'net_amount' => $this->net_amount,
+            'purchase_method' => $this->purchase_method,
             'status' => $this->status,
             'status_label' => $this->status_label,
             'redeemed' => ($this->redeem) ? true : false,
