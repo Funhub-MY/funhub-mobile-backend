@@ -21,7 +21,7 @@ class MerchantOfferResource extends JsonResource
         $location = null;
         if ($this->has('location')) {
             $loc = $this->location->first();
-            
+
             // if artilce locaiton has ratings, get current article owner's ratings
             if ($loc && $loc->has('ratings')) {
                 $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
@@ -46,6 +46,7 @@ class MerchantOfferResource extends JsonResource
             'merchant' => [
                 'id' => ($this->user) ? $this->user->merchant->id : null,
                 'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
+                'business_phone_no' => ($this->user) ? $this->user->merchant->business_phone_no : null,
                 'user' => new UserResource($this->user),
             ],
             'name' => $this->name,

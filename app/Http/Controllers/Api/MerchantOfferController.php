@@ -129,7 +129,7 @@ class MerchantOfferController extends Controller
      * Get My Merchant Offers (Logged in User)
      *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Offers
      * @response scenario=success {
@@ -247,7 +247,7 @@ class MerchantOfferController extends Controller
                 // direct claim
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
-                    'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
+                    'order_no' => 'C' . date('Ymd') .strtoupper(Str::random(5)),
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
@@ -257,7 +257,7 @@ class MerchantOfferController extends Controller
                     'tax' => 0,
                     'net_amount' => $net_amount,
                     'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
-                ]); 
+                ]);
 
                 // debit from point ledger
                 $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
@@ -297,12 +297,12 @@ class MerchantOfferController extends Controller
                         $user->email ?? null
                     );
 
-                    // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the 
+                    // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the
                     // amount and quantity required
                     $claim = $offer->claims()->where('user_id', $user->id)
                         ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
                         ->first();
-                    
+
                     if ($claim) {
                         // user has initiated payment before, just update the amount and quantity
                         $claim->update([
@@ -315,7 +315,7 @@ class MerchantOfferController extends Controller
                             'net_amount' => $net_amount,
                             'transaction_no' => $transaction->transaction_no, // store transaction no for later use
                             'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                        ]); 
+                        ]);
                     } else {
                         // create claim but with status await payment for this offer
                         $offer->claims()->attach($user->id, [
@@ -331,9 +331,9 @@ class MerchantOfferController extends Controller
                             'net_amount' => $net_amount,
                             'transaction_no' => $transaction->transaction_no, // store transaction no for later use
                             'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                        ]); 
+                        ]);
                     }
-    
+
                     // reduce quantity first if failed in PaymentController will release the quantity if failed
                     $offer->quantity = $offer->quantity - $request->quantity;
                     $offer->save();
@@ -404,7 +404,7 @@ class MerchantOfferController extends Controller
             $query->where('user_id', auth()->user()->id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
         })->published();
-        
+
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'interactions', 'media', 'categories')
@@ -419,14 +419,14 @@ class MerchantOfferController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Offers
      * @bodyParam claim_id integer required Claim ID. Example: 1
      * @bodyParam offer_id integer required Merchant Offer ID. Example: 1
      * @bodyParam quantity integer required Quantity to Redeem. Example: 1
      * @bodyParam redeem_code string required Redemption Code Provided by Merchant. Example: 123456
-     * 
+     *
      * @response scenario=success {
      * "message": "Redeemed successfully",
      * "offer": {
