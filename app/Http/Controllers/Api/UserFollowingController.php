@@ -101,8 +101,6 @@ class UserFollowingController extends Controller
         $user = User::findOrFail($user_id);
 
         $followers = $user->followers()
-            // exclude followers if id == user_id
-            ->where('follower_id', '!=', $user_id)
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followers);
@@ -127,8 +125,6 @@ class UserFollowingController extends Controller
         $user = User::findOrFail($user_id);
 
         $followings = $user->followings()
-            // exclude followings if id == user_id
-            ->where('following_id', '!=', $user_id)
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followings);
