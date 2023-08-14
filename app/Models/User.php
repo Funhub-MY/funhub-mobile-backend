@@ -300,7 +300,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         if ($avatar) {
             return $avatar->getUrl();
         } else {
-            return 'https://ui-avatars.com/api/?name=' . $this->name;
+            return null;
         }
     }
 

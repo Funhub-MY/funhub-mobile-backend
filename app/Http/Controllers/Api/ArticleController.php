@@ -127,8 +127,6 @@ class ArticleController extends Controller
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
                     ->havingRaw("distance < ?", [$radius]);
             });
-
-            Log::info('Lat: '. $request->lat . ' Lng: ' . $request->lng . ' Radius: ' . $radius);
         }
 
         // location id
