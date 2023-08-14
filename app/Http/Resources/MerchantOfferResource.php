@@ -3,7 +3,10 @@
 namespace App\Http\Resources;
 
 use App\Models\Interaction;
+use App\Models\MerchantOffer;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class MerchantOfferResource extends JsonResource
 {
@@ -18,7 +21,7 @@ class MerchantOfferResource extends JsonResource
         $location = null;
         if ($this->has('location')) {
             $loc = $this->location->first();
-            
+
             // if artilce locaiton has ratings, get current article owner's ratings
             if ($loc && $loc->has('ratings')) {
                 $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
@@ -28,6 +31,7 @@ class MerchantOfferResource extends JsonResource
                     'address' => $loc->full_address,
                     'lat' => floatval($loc->lat),
                     'lng' => floatval($loc->lng),
+                    'rated_count' => $loc->ratings->count(),
                 ];
             }
         }
@@ -43,10 +47,14 @@ class MerchantOfferResource extends JsonResource
             'merchant' => [
                 'id' => ($this->user) ? $this->user->merchant->id : null,
                 'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
+                'business_phone_no' => ($this->user) ? $this->user->merchant->business_phone_no : null,
                 'user' => new UserResource($this->user),
             ],
             'name' => $this->name,
             'description' => $this->description,
+            'fine_print' => $this->fine_print,
+            'redemption_policy' => $this->redemption_policy,
+            'cancellation_policy' => $this->cancellation_policy,
             'point_cost' => floatval($this->unit_price),
             'point_fiat_price' => floatval($this->point_fiat_price),
             'discounted_point_fiat_price' => floatval($this->discounted_point_fiat_price),
@@ -55,6 +63,7 @@ class MerchantOfferResource extends JsonResource
             'default_purchase_method' => $this->purchase_method,
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
+            'expiry_days' => $this->expiry_days,
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),

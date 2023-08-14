@@ -14,7 +14,7 @@ class UserFollowingController extends Controller
 {
     /**
      * Follow another user
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @group User
@@ -27,6 +27,13 @@ class UserFollowingController extends Controller
      */
     public function follow(Request $request)
     {
+        // ensure user_id is not self
+        if ($request->user_id === auth()->user()->id) {
+            return response()->json([
+                'message' => 'You cannot follow yourself'
+            ], 400);
+        }
+
         // check if user already following user or not
         if (auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
@@ -52,7 +59,7 @@ class UserFollowingController extends Controller
 
     /**
      * Unfollow another user
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * @group User
@@ -84,9 +91,9 @@ class UserFollowingController extends Controller
 
     /**
      * Get all followers of user id or logged in user
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User
      * @subgroup Followers
      * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
@@ -108,9 +115,9 @@ class UserFollowingController extends Controller
 
     /**
      * Get all followings of user id or logged in user
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User
      * @subgroup Followings
      * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1

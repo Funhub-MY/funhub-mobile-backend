@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d66ghEb5DfevP14VaZak83c'
+      - 'Bearer 1cd3eagVbEfhak46PD5vZ86'
     controller: null
     method: null
     route: null
@@ -242,7 +242,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fedhZE3V81aaPgDbcv56k46'
+      - 'Bearer f5Vke43cZEg6Pah6v8aD1db'
     controller: null
     method: null
     route: null
@@ -357,7 +357,129 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4ahaeD8dbP63ZVvcf6Eg5k1'
+      - 'Bearer Eka4PaVf3Z5661cedDgbvh8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/redeem
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: |-
+        Redeem a Merchant Offer (In-Store)
+        This is when customer with claimed merchant offer wishes to redeem in store
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      claim_id:
+        name: claim_id
+        description: 'Claim ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      offer_id:
+        name: offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      quantity:
+        name: quantity
+        description: 'Quantity to Redeem.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      redeem_code:
+        name: redeem_code
+        description: 'Redemption Code Provided by Merchant.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      claim_id: 1
+      offer_id: 1
+      quantity: 1
+      redeem_code: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redeemed successfully",
+          "offer": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a1EVg5PZ6hckbDf4d683vae'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/my_claimed_offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get My Merchant Offers (Logged in User)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Dv5aP43gcEke1hf68aZ6bdV'
     controller: null
     method: null
     route: null
@@ -384,11 +506,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: numquam
+        example: qui
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: numquam
+      offer_id: qui
     queryParameters:
       offer_id:
         name: offer_id
@@ -416,7 +538,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vc1a5DPfda3g6kEe6Zh48bV'
+      - 'Bearer 6c65ZPehEV4fgba8ak3vdD1'
     controller: null
     method: null
     route: null
@@ -521,7 +643,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 136gDc8PV5EhZkafavb6d4e'
+      - 'Bearer b1cDhEkPvde6ga85f63aZ4V'
     controller: null
     method: null
     route: null
@@ -578,7 +700,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kab8cVve4PE5h631ZaDd6gf'
+      - 'Bearer Dfv16a8E4e6kZb3aPcdVhg5'
     controller: null
     method: null
     route: null

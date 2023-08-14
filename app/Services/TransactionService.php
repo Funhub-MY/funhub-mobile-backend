@@ -12,11 +12,12 @@ class TransactionService {
      * @param Class $transactionable
      * @param Float $amount
      * @param string $gateway
+     * @param int $user_id
      * @param string $payment_method
      * @param string $transaction_no
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $payment_method = 'fpx', $transaction_no = null)
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $transaction_no = null)
     {
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
@@ -32,6 +33,7 @@ class TransactionService {
             throw new \Exception('Transactionable model must have user_id attribute');
         }
 
+        $transaction = null;
         try {
             // ensure transaction_no is unique else re-generate, max tries 3
             $tries = 0;
@@ -42,10 +44,11 @@ class TransactionService {
 
             $transaction = $transactionable->transactions()->create([
                 'transaction_no' => $transaction_no,
-                'user_id' => $transactionable->user_id,
+                'user_id' => $user_id,
                 'amount' => $amount,
                 'gateway' => $gateway,
                 'status' => Transaction::STATUS_PENDING,
+                'gateway_transaction_id' => 'N/A',
                 'payment_method' => $payment_method,
             ]);
 

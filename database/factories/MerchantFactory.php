@@ -20,6 +20,7 @@ class MerchantFactory extends Factory
         return [
             'name' => fake()->name(),
             'business_name' => fake()->company(),
+            'redeem_code' => fake()->unique()->randomNumber(6),
             'business_phone_no' => fake()->randomNumber(9),
             'address' => fake()->address(),
             'address_postcode' => fake()->postcode(),

@@ -25,7 +25,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login/facebook', [\App\Http\Controllers\Api\AuthController::class, 'facebookLogin']);
     Route::post('login/google', [\App\Http\Controllers\Api\AuthController::class, 'googleLogin']);
     Route::post('login/social', [\App\Http\Controllers\Api\AuthController::class, 'socialLogin']);
-    
+
     // forgot password
     Route::post('reset-password-send-otp', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordSendOtp']);
     Route::post('reset-password', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordWithOtp']);
@@ -51,9 +51,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('articles/report', [\App\Http\Controllers\Api\ArticleController::class, 'postReportArticle']);
         Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
-       
+
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
-        
+
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
         Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
@@ -86,6 +86,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/my_bookmarks', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyBookmarkedMerchantOffers']);
             Route::get('/', [\App\Http\Controllers\Api\MerchantOfferController::class, 'index']);
             Route::post('/claim', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postClaimOffer']);
+            Route::post('/redeem', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postRedeemOffer']);
+            Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
 

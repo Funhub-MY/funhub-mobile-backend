@@ -41,18 +41,18 @@ class Commented extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
             ->setData([
-                'comment_id' => (string) $this->comment->id, 
-                'commentor_id' => (string) $this->comment->user->id, 
+                'comment_id' => (string) $this->comment->id,
+                'commentor_id' => (string) $this->comment->user->id,
                 'article_id' => (string) $this->comment->commentable->id,
                 'article_type' => (string) $this->comment->commentable->type,
                 'action' => 'commented'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('New Comment')
-                ->setBody( $this->comment->user->name . '留言在你的"' . $this->comment->commentable->title.'"')
+                ->setTitle('探文互动')
+                ->setBody( $this->comment->user->name . '评论了你的探文"' . $this->comment->commentable->title.'"')
             );
     }
-    
+
     /**
      * Get the array representation of the notification.
      *
@@ -70,7 +70,8 @@ class Commented extends Notification implements ShouldQueue
             'action' => 'commented',
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
-            'message' => $this->comment->user->name . '留言在你的"' . $this->comment->commentable->title.'"',
+            'title' => $this->comment->user->name,
+            'message' => '评论了你的探文，快去看看吧',
         ];
     }
 }

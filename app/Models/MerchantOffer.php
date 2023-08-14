@@ -45,6 +45,11 @@ class MerchantOffer extends Model implements HasMedia
     const CLAIM_SUCCESS = 1;
     const CLAIM_FAILED = 2;
     const CLAIM_AWAIT_PAYMENT = 3;
+    const CLAIM_STATUS = [
+        self::CLAIM_SUCCESS => 'Success',
+        self::CLAIM_FAILED => 'Failed',
+        self::CLAIM_AWAIT_PAYMENT => 'Awaiting Payment'
+    ];
 
     /**
      * Search Setup
@@ -96,10 +101,11 @@ class MerchantOffer extends Model implements HasMedia
         return $this->status === self::STATUS_PUBLISHED;
     }
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class);
-    }
+    // public function merchant()
+    // {
+    //     // merchant inverted hasOneThrough user
+    //     return $this->hasOneThrough(Merchant::class, User::class, 'id', 'id', 'user_id', 'merchant_id');
+    // }
 
     public function store()
     {
@@ -122,10 +128,19 @@ class MerchantOffer extends Model implements HasMedia
             ->where('type', Interaction::TYPE_LIKE);
     }
 
+    // Claims are purchase of Merchant Offers
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method', 'transaction_no')
+            ->withTimestamps();
+    }
+
+    // Redeems are claims that are redeemed(consumed) in store
+    public function redeems()
+    {
+        return $this->belongsToMany(User::class, 'merchant_offer_claims_redemptions', 'merchant_offer_id', 'user_id')
+            ->withPivot(['claim_id', 'quantity', 'transaction_id'])
             ->withTimestamps();
     }
 

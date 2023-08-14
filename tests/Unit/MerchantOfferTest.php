@@ -11,7 +11,9 @@ use Tests\TestCase;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\Store;
+use App\Models\Transaction;
 use App\Models\User;
+use Database\Factories\MerchantFactory;
 use Laravel\Sanctum\Sanctum;
 
 class MerchantOfferTest extends TestCase
@@ -30,6 +32,7 @@ class MerchantOfferTest extends TestCase
         // as 1-to-1 relationship, we can use 'for' here to tell the factory which user is belongsTo when creating the model below.
         $this->merchant = Merchant::factory()->for($this->user)->create();
         $this->store = Store::factory()->for($this->user)->create();
+
         // we can chain double for as well.
         $this->merchant_offer = MerchantOffer::factory()->count(5)->for($this->merchant->user)->create();
         $this->merchant_category = MerchantCategory::factory()->for($this->merchant->user)->create();
@@ -186,5 +189,188 @@ class MerchantOfferTest extends TestCase
         // check current user latest point ledger is debit or not.
         $user_point_ledgers = $this->loggedInUser->pointLedgers()->orderBy('id','desc')->first();
         $this->assertEquals(1, $user_point_ledgers->debit);
+
+        // check my offers are there or not in /merchant/offers/my_claimed_offers
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta'
+            ]);
+
+        // check each of my response.data matches $merchant_offer->id
+        foreach ($response->json('data') as $data) {
+            $this->assertEquals($merchant_offer->id, $data['merchant_offer']['id']);
+        }
+
+        // check count is 1
+        $this->assertEquals(1, $response->json('meta.total'));
+    }
+
+    /**
+     * Test Claim Offer with Fiat(Cash) by Logged In User
+     *
+     * Fiat will need have mpay gateway env to test
+     */
+    public function testClaimOfferFiatByLoggedInUser()
+    {
+        // create a merchant offer with fiat
+        $offer = MerchantOffer::factory()->for($this->merchant->user)->create([
+            'fiat_price' => 150,
+            'discounted_fiat_price' => 120,
+            'currency' => 'MYR',
+            'quantity' => 10
+        ]);
+
+        // user claims this offer for 5 units first
+        $response = $this->postJson('/api/v1/merchant/offers/claim', [
+            'offer_id' => $offer->id,
+            'quantity' => 5,
+            'payment_method' => 'fiat',
+            'fiat_payment_method' => 'fpx'
+        ]);
+
+        // expect 200 response
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'gateway_data'
+            ]);
+
+        // check gateway data as follow
+        $this->assertArrayHasKey('url', $response->json('gateway_data'));
+        $this->assertArrayHasKey('formData', $response->json('gateway_data'));
+        
+        // check db if transaction is created
+        $this->assertDatabaseHas('transactions', [
+            'transaction_no' => $response->json('gateway_data')['formData']['invno'],
+            'user_id' => $this->loggedInUser->id,
+            'amount' => $offer->discounted_fiat_price * 5,
+            'gateway' => 'mpay',
+            'status' => Transaction::STATUS_PENDING,
+            'gateway_transaction_id' => 'N/A',
+            'payment_method' => 'fpx'
+        ]);
+
+        // check if offer->claims() has user and correct quantity and status is MerchantOffer::AWAIT_PAYMENT
+        $this->assertDatabaseHas('merchant_offer_user', [
+            'user_id' => $this->loggedInUser->id,
+            'merchant_offer_id' => $offer->id,
+            'quantity' => 5,
+            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT
+        ]);
+
+        // check if current merchantoffer is already deducted 5
+        $this->assertEquals(5, $offer->fresh()->quantity);
+    }
+
+    /**
+     * Test Redeem Offer by Logged In User
+     */
+    public function testRedeemClaimedOfferByLoggedInUser()
+    {
+        PointLedger::create([
+            'user_id' => $this->loggedInUser->id,
+            'pointable_type' => get_class($this->loggedInUser),
+            'pointable_id' => $this->loggedInUser->id,
+            'title' => 'First topup simulation',
+            'amount' => 1000,
+            'credit' => 1,
+            'debit' => 0,
+            'balance' => 1000,
+            'remarks' => 'Simulation topup points for user.',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        // get one merchant offer, set available_at as today, until as tomorrow to ensure the offer is valid.
+        $merchant_offer = $this->merchant_offer->random(1)->first();
+        $merchant_offer->available_at = now();
+        $merchant_offer->available_until = now()->addDay();
+        $merchant_offer->save();
+
+        // change merchant_offer->merchant->redeem_code
+
+        $response = $this->postJson('/api/v1/merchant/offers/claim', [
+            'offer_id' => $merchant_offer->id,
+            'quantity' => 1,
+            'payment_method' => 'points'
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'offer'
+            ]);
+
+        // check current user latest point ledger is debit or not.
+        $user_point_ledgers = $this->loggedInUser->pointLedgers()->orderBy('id','desc')->first();
+        $this->assertEquals(1, $user_point_ledgers->debit);
+
+        // get my claimed offers
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        // check each of my response.data merchant_offer.id matches $merchant_offer->id
+        foreach ($response->json('data') as $data) {
+            $this->assertEquals($merchant_offer->id, $data['merchant_offer']['id']);
+        }
+
+        // get claim id
+        $claim_id = $response->json('data')[0]['id'];
+
+        // redeem
+        $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+            'claim_id' => $claim_id,
+            'offer_id' => $merchant_offer->id,
+            'redeem_code' => $merchant_offer->user->merchant->redeem_code,
+            'quantity' => 1
+        ]);
+
+        // expect 200 with json message "Redeemed Successfully"
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Redeemed Successfully'
+            ]);
+
+        // check db if merchant_offer_claims_redemptions has this user, offer id and quantity
+        $this->assertDatabaseHas('merchant_offer_claims_redemptions', [
+            'claim_id' => $claim_id,
+            'user_id' => $this->loggedInUser->id,
+            'merchant_offer_id' => $merchant_offer->id,
+            'quantity' => 1
+        ]);
+
+        // attempt to redeem again, expect 422 with json message "You have already redeemed this offer"
+        $response = $this->postJson('/api/v1/merchant/offers/redeem', [
+            'claim_id' => $claim_id,
+            'offer_id' => $merchant_offer->id,
+            'redeem_code' => $merchant_offer->user->merchant->redeem_code,
+            'quantity' => 1
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJson([
+                'message' => 'You do not have enough to redeem'
+            ]);
+
+        // check current my offers fully_redeemed is true for this offer
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'redeemed',
+                    ]
+                ]
+            ]);
+
+        // check if first data id is claim->id
+        $this->assertEquals($claim_id, $response->json('data')[0]['id']);
+        
+        // check if first data redeemed is true
+        $this->assertEquals(true, $response->json('data')[0]['redeemed']);
     }
 }

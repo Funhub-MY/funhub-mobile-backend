@@ -20,7 +20,7 @@ class ArticleResource extends JsonResource
         $location = null;
         if ($this->has('location')) {
             $loc = $this->location->first();
-            
+
             // if artilce locaiton has ratings, get current article owner's ratings
             if ($loc && $loc->has('ratings')) {
                 $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
@@ -41,14 +41,23 @@ class ArticleResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'body' => $this->body,
-            'user' => new UserResource($this->user),
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'username' => $this->user->username,
+                'email' => $this->user->email,
+                'avatar' => $this->user->avatar_url,
+                'avatar_thumb' => $this->user->avatar_thumb_url,
+                'has_avatar' => $this->user->avatar_url ? true : false,
+                'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
+            ],
             'categories' => ArticleCategoryResource::collection($this->categories),
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
             'media' => MediaResource::collection($this->media),
             // get cover where medialibrary media is_cover custom property is true
             'cover' => $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first(),
             'tags' => $this->tags,
-            'comments' => CommentResource::collection($this->comments),
+            // 'comments' => CommentResource::collection($this->comments),
             'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,
             // 'tagged_users' => UserResource::collection($this->taggedUsers),
@@ -58,7 +67,7 @@ class ArticleResource extends JsonResource
                 'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
-                'views' => $this->views->count()
+                'views' => $this->views_count ?? 0,
             ],
             'my_interactions' => [
                 'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),

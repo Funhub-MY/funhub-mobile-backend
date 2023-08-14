@@ -46,16 +46,17 @@ class Mpay {
 
         $data = [
             'url' => $this->url .'/payment/eCommerce',
-            'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
-            'mid' => $this->mid,
-            'invno' => $invoice_no,
-            'capture_amt' => $amount,
-            'desc' => $desc,
-            'postURL' => $redirectUrl,
-            'phone' => $phoneNo,
-            'email' => $email,
-            'param' => $param,
-            'authorize' => 'authorize'
+            'formData' => [
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param
+            ]
         ];
 
         return $data;
@@ -89,7 +90,7 @@ class Mpay {
     public function generateHashForResponse($mid, $responseCode, $authCode, $invoice_no, $amount)
     {
         // append hashkey,mid,responseocde,authcode,invoice_no,amount into a string and call gensecurehash
-        $string = $this->hashKey . $mid . $responseCode . $authCode . $invoice_no . strval($amount);
+        $string = $this->hashKey . $mid . $responseCode . $authCode . $invoice_no . $amount;
         return $this->secureHash->generateSecureHash($string);
     }
 }

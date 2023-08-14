@@ -24,6 +24,7 @@ class LocationResource extends JsonResource
             'address_2' => $this->address_2,
             'postcode' => $this->zip_code,
             'city' => $this->city,
+            'rated_count' => $this->ratings->count() ?? 0,
             'state' => [
                 'id' => $this->state->id,
                 'name' => $this->state->name

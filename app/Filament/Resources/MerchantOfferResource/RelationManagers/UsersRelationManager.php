@@ -34,7 +34,8 @@ class UsersRelationManager extends RelationManager
                 Forms\Components\Select::make('status')
                     ->options([
                         1 => 'Claimed',
-                        2 => 'Revoked'
+                        2 => 'Failed',
+                        3 => 'Await Payment'
                     ])
                     ->default(1)
                     ->required(),
@@ -50,7 +51,8 @@ class UsersRelationManager extends RelationManager
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum([
                         1 => 'Claimed',
-                        2 => 'Revoked',
+                        2 => 'Failed',
+                        3 => 'Await Payment'
                     ])
                     ->colors([
                         'success' => static fn ($state): bool => $state === 1,
@@ -61,17 +63,14 @@ class UsersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DetachBulkAction::make(),
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

@@ -4,9 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
 use App\Models\Interaction;
+use App\Models\Merchant;
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferClaim;
+use App\Notifications\OfferClaimed;
+use App\Notifications\OfferRedeemed;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -65,7 +70,7 @@ class MerchantOfferController extends Controller
         // ensure only published offers
         $query = MerchantOffer::query()
             ->published()
-            ->with('merchant', 'merchant.user', 'categories', 'store', 'claims', 'user');
+            ->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user', 'location', 'location.ratings');
 
         // category_ids filter
         if ($request->has('category_ids')) {
@@ -113,13 +118,34 @@ class MerchantOfferController extends Controller
         // location id
         if ($request->has('location_id')) {
             $query->whereHas('location', function ($query) use ($request) {
-                $query->where('id', $request->location_id);
+                $query->where('locations.id', $request->location_id);
             });
         }
 
         $this->buildQuery($query, $request);
         $data = $query->paginate(config('app.paginate_per_page'));
         return MerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Get My Merchant Offers (Logged in User)
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getMyMerchantOffers()
+    {
+        // get merchant offers claimed by user
+        $claims = MerchantOfferClaim::where('user_id', auth()->user()->id)
+            ->with('merchantOffer', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+            ->paginate(config('app.paginate_per_page'));
+
+        return MerchantOfferClaimResource::collection($claims);
     }
 
     /**
@@ -192,7 +218,7 @@ class MerchantOfferController extends Controller
         // check offer is still valid by checking available_at and available_until
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
-            ->with('merchant', 'merchant.user', 'store', 'claims')
+            ->with('user', 'user.merchant', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
             ->where('quantity', '>=', $request->quantity)
@@ -208,7 +234,7 @@ class MerchantOfferController extends Controller
         // ensure user have enough point balance
         $user = request()->user();
 
-        try {
+        // try {
             if ($request->payment_method == 'points')  {
 
                 $net_amount = $offer->unit_price * $request->quantity;
@@ -223,16 +249,17 @@ class MerchantOfferController extends Controller
                 // direct claim
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
-                    'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
+                    'order_no' => 'C' . date('Ymd') .strtoupper(Str::random(5)),
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
                     'total' => $offer->unit_price * $request->quantity,
+                    'purchase_method' => 'points',
                     'discount' => 0,
                     'tax' => 0,
                     'net_amount' => $net_amount,
                     'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
-                ]); 
+                ]);
 
                 // debit from point ledger
                 $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
@@ -243,16 +270,27 @@ class MerchantOfferController extends Controller
 
                 // fire event
                 event(new MerchantOfferClaimed($offer, $user));
-            } else if($request->payment_method == 'fiat') {
 
-                $net_amount = $offer->fiat_price * $request->quantity;
+                try {
+                    // notify user offer claimed
+                    $user->notify(new OfferClaimed($offer, $user, 'points', $net_amount));
+                } catch (\Exception $e) {
+                    Log::error($e->getMessage(), [
+                        'user_id' => $user->id,
+                        'offer_id' => $offer->id,
+                    ]);
+                }
+
+            } else if($request->payment_method == 'fiat') {
+                $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
 
                 // create payment transaction first, not yet claim
                 $transaction = $this->transactionService->create(
                     $offer,
                     $net_amount,
                     config('app.default_payment_gateway'),
-                    $request->fiat_payment_method
+                    $user->id,
+                    $request->fiat_payment_method,
                 );
 
                 // if gateway is mpay call mpay service generate Hash for frontend form
@@ -266,25 +304,48 @@ class MerchantOfferController extends Controller
                     $mpayData = $mpayService->createTransaction(
                         $transaction->transaction_no,
                         $net_amount,
-                        'Purchase ' . $offer->name,
+                        $transaction->transaction_no,
                         url('/payment/return'),
                         $user->full_phone_no ?? null,
                         $user->email ?? null
                     );
-                    
-                    // claim but with status await payment
-                    $offer->claims()->attach($user->id, [
-                        // order no is CLAIM(YMd)
-                        'order_no' => 'CLAIM-'. date('Ymd') .strtolower(Str::random(3)),
-                        'user_id' => $user->id,
-                        'quantity' => $request->quantity,
-                        'unit_price' => $offer->unit_price,
-                        'total' => $offer->unit_price * $request->quantity,
-                        'discount' => 0,
-                        'tax' => 0,
-                        'net_amount' => $net_amount,
-                        'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                    ]); 
+
+                    // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the
+                    // amount and quantity required
+                    $claim = $offer->claims()->where('user_id', $user->id)
+                        ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                        ->first();
+
+                    if ($claim) {
+                        // user has initiated payment before, just update the amount and quantity
+                        $claim->update([
+                            'quantity' => $request->quantity,
+                            'unit_price' => $offer->unit_price,
+                            'total' => $net_amount,
+                            'purchase_method' => 'fiat',
+                            'discount' => 0,
+                            'tax' => 0,
+                            'net_amount' => $net_amount,
+                            'transaction_no' => $transaction->transaction_no, // store transaction no for later use
+                            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
+                        ]);
+                    } else {
+                        // create claim but with status await payment for this offer
+                        $offer->claims()->attach($user->id, [
+                            // order no is CLAIM(YMd)
+                            'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
+                            'user_id' => $user->id,
+                            'quantity' => $request->quantity,
+                            'unit_price' => $offer->unit_price,
+                            'total' => $net_amount,
+                            'purchase_method' => 'fiat',
+                            'discount' => 0,
+                            'tax' => 0,
+                            'net_amount' => $net_amount,
+                            'transaction_no' => $transaction->transaction_no, // store transaction no for later use
+                            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
+                        ]);
+                    }
 
                     // reduce quantity first if failed in PaymentController will release the quantity if failed
                     $offer->quantity = $offer->quantity - $request->quantity;
@@ -297,19 +358,19 @@ class MerchantOfferController extends Controller
                     ], 200);
                 }
             }
-        } catch (\Exception $e) {
-            Log::error($e->getMessage(), [
-                'offer_id' => $offer->id,
-                'user_id' => $user->id,
-                'quantity' => $request->quantity,
-                'unit_price' => $offer->unit_price,
-                'total' => $offer->unit_price * $request->quantity,
-            ]);
+        // } catch (\Exception $e) {
+        //     Log::error($e->getMessage(), [
+        //         'offer_id' => $offer->id,
+        //         'user_id' => $user->id,
+        //         'quantity' => $request->quantity,
+        //         'unit_price' => $offer->unit_price,
+        //         'total' => $offer->unit_price * $request->quantity,
+        //     ]);
 
-            return response()->json([
-                'message' => 'Failed to claim'
-            ], 422);
-        }
+        //     return response()->json([
+        //         'message' => 'Failed to claim'
+        //     ], 422);
+        // }
 
         // refresh offer with latest data
         $offer->refresh();
@@ -356,12 +417,115 @@ class MerchantOfferController extends Controller
             $query->where('user_id', auth()->user()->id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
         })->published();
-        
+
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'interactions', 'media', 'categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Redeem a Merchant Offer (In-Store)
+     * This is when customer with claimed merchant offer wishes to redeem in store
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @bodyParam claim_id integer required Claim ID. Example: 1
+     * @bodyParam offer_id integer required Merchant Offer ID. Example: 1
+     * @bodyParam quantity integer required Quantity to Redeem. Example: 1
+     * @bodyParam redeem_code string required Redemption Code Provided by Merchant. Example: 123456
+     *
+     * @response scenario=success {
+     * "message": "Redeemed successfully",
+     * "offer": {
+     * }
+     * }
+     */
+    public function postRedeemOffer(Request $request)
+    {
+        $this->validate($request, [
+            'claim_id' => 'required',
+            'offer_id' => 'required|exists:merchant_offers,id',
+            'quantity' => 'required|integer|min:1',
+            'redeem_code' => 'required'
+        ]);
+
+        // check if user has claimed this merchant offer or not
+        $offer = MerchantOffer::where('id', $request->offer_id)
+            ->whereHas('claims', function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            })->first();
+
+        if (!$offer) {
+            return response()->json([
+                'message' => 'You have not claimed this offer'
+            ], 422);
+        }
+
+        // if theres expiry for after purchase
+        if ($offer && $offer->expiry_days > 0) {
+            // check offer expiry_days with claim created_at date days diff with now to see if expired
+            $userClaim = $offer->claims()->where('user_id', auth()->user()->id)
+                ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
+                ->first();
+            Log::info('user claim', [$userClaim->toArray(), Carbon::parse($userClaim->pivot->created_at), Carbon::parse($userClaim->pivot->created_at)->addDays($offer->expiry_days), Carbon::parse($userClaim->pivot->created_at)->addDays($offer->expiry_days)->isPast()]);
+
+            if (Carbon::parse($userClaim->pivot->created_at)->addDays($offer->expiry_days)->isPast()) {
+                return response()->json([
+                    'message' => 'This offer has expired'
+                ], 422);
+            }
+        }
+
+        // get claim without redeemed
+        $claim = MerchantOfferClaim::where('id', $request->claim_id)
+            ->where('user_id', auth()->user()->id)
+            ->whereDoesntHave('redeem')
+            ->first();
+
+        // already redeemed fully
+        if (!$claim || $claim->quantity < $request->quantity) {
+            return response()->json([
+                'message' => 'You do not have enough to redeem'
+            ], 422);
+        }
+
+        // check if merchant code is valid
+        // note merchant is hasOneThrough user as we only attach merhcnat offer direct to user
+        $merchant = $offer->whereHas('user.merchant', function ($query) use ($request) {
+            $query->where('redeem_code', $request->redeem_code);
+        })->exists();
+
+        if (!$merchant) {
+            return response()->json([
+                'message' => 'Invalid merchant redeem code'
+            ], 422);
+        }
+
+        // merchant code validated proceed create redeems
+        $redeem = $offer->redeems()->attach(auth()->user()->id, [
+            'claim_id' => $request->claim_id,
+            'quantity' => $request->quantity,
+        ]);
+
+        // reload offer
+        $offer->refresh();
+
+        // notify
+        try {
+            auth()->user()->notify(new OfferRedeemed($offer, auth()->user()));
+        } catch (\Exception $e) {
+            Log::error('Error sending offer redeemed notification', [$e->getMessage()]);
+        }
+
+        return response()->json([
+            'message' => 'Redeemed Successfully',
+            'offer' => new MerchantOfferResource($offer)
+        ], 200);
     }
 }
