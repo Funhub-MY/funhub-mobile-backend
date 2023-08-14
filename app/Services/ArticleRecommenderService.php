@@ -49,12 +49,8 @@ class ArticleRecommenderService
 
         // Sort scored results
         $scored = $scored->sortByDesc('score');
-        Log::info('Before', $scored->pluck('id')->toArray());
-
         // random shuffle
         $scoredIds = Arr::shuffle($scored->pluck('id')->toArray());
-        Log::info('Randomised', $scoredIds);
-
         return $scoredIds;
     }
 

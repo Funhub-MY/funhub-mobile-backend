@@ -117,9 +117,6 @@ class ArticleController extends Controller
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
             $radius = $request->has('radius') ? $request->radius : 15000; // 15km default
-
-            Log::info('lat: ' . $request->lat . ' lng: ' . $request->lng . ' radius: ' . $radius);
-
             // get article where article->location lat,lng is within the radius
             $query->whereHas('location', function ($query) use ($request, $radius) {
                 $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
@@ -139,8 +136,8 @@ class ArticleController extends Controller
             });
         }
 
-        // by default it will build recommendations, unless specifically turned off
-        if (!$request->has('build_recommendations') || $request->build_recommendations == 1) {
+        // by defaulty off, unless provided build recommendations
+        if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
             $recommender = new ArticleRecommenderService(auth()->user());
 
             if ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1) {
@@ -152,8 +149,6 @@ class ArticleController extends Controller
             $scoredArticlesIds = cache()->remember('user_' . auth()->user()->id . '_scored_articles', 60, function () use ($recommender) {
                 return $recommender->build();
             });
-
-            Log::info('scoredArticlesIds', $scoredArticlesIds);
 
             $query->whereIn('id', $scoredArticlesIds)
                 ->orderByRaw('FIELD(id, ' . implode(',', $scoredArticlesIds) . ')');
