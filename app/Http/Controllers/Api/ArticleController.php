@@ -20,6 +20,7 @@ use App\Models\MerchantOffer;
 use App\Models\State;
 use App\Models\User;
 use App\Models\View;
+use App\Notifications\TaggedUserInArticle;
 use App\Services\ArticleRecommenderService;
 use App\Traits\QueryBuilderTrait;
 use Carbon\Carbon;
@@ -429,6 +430,11 @@ class ArticleController extends Controller
         // tag users in article
         if ($taggedUsers) {
             $article->taggedUsers()->attach($taggedUsers);
+
+            // notifiy tagged user
+            $taggedUsers->each(function ($taggedUser) use ($article) {
+                $taggedUser->notify(new TaggedUserInArticle($article, $article->user));
+            });
         }
 
         event(new ArticleCreated($article));

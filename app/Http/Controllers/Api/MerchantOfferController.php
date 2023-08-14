@@ -10,6 +10,8 @@ use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
+use App\Notifications\OfferClaimed;
+use App\Notifications\OfferRedeemed;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -268,6 +270,10 @@ class MerchantOfferController extends Controller
 
                 // fire event
                 event(new MerchantOfferClaimed($offer, $user));
+
+                // notify user offer claimed
+                $user->notify(new OfferClaimed($offer, $user, 'points', $net_amount));
+
             } else if($request->payment_method == 'fiat') {
                 $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
 
@@ -502,6 +508,9 @@ class MerchantOfferController extends Controller
 
         // reload offer
         $offer->refresh();
+
+        // notify
+        auth()->user()->notify(new OfferRedeemed($offer, auth()->user()));
 
         return response()->json([
             'message' => 'Redeemed Successfully',

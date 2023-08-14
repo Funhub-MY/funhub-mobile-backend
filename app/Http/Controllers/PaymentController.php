@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MerchantOffer;
+use App\Notifications\OfferClaimed;
 use App\Services\Mpay;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,8 +11,8 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    protected $gateway; 
-    
+    protected $gateway;
+
     public function __construct()
     {
         $this->gateway = new Mpay(
@@ -118,7 +119,7 @@ class PaymentController extends Controller
                 'error' => 'Transaction not found',
                 'request' => request()->all()
             ]);
-            
+
             return view('payment-return', [
                 'message' => 'Transaction Failed - No transaction',
                 'transaction_id' => null,
@@ -153,7 +154,7 @@ class PaymentController extends Controller
      * @param Transaction $transaction
      * @return void
      */
-    protected function updateMerchantOfferTransaction($request, $transaction) 
+    protected function updateMerchantOfferTransaction($request, $transaction)
     {
         // update merchant claim by user
         $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
@@ -176,6 +177,8 @@ class PaymentController extends Controller
                 'merchant_offer_id' => $transaction->transactionable_id,
             ]);
 
+            // notify
+            $transaction->user->notify(new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount));
         } else if ($request->responseCode == 'PE') {
             // still pending
             Log::info('Updated Merchant Offer Claim Still Pending', [
