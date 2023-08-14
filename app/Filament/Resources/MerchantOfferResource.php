@@ -46,7 +46,7 @@ class MerchantOfferResource extends Resource
                                     ->collection(MerchantOffer::MEDIA_COLLECTION_NAME)
                                     ->columnSpan('full')
                                     ->customProperties(['is_cover' => false])
-                                    // disk is s3_public 
+                                    // disk is s3_public
                                     ->disk(function () {
                                         if (config('filesystems.default') === 's3') {
                                             return 's3_public';
@@ -89,7 +89,7 @@ class MerchantOfferResource extends Resource
                                     ->rows(5)
                                     ->cols(10)
                                     ->columnSpan('full'),
-                                Forms\Components\Textarea::make('cancellation_policy') 
+                                Forms\Components\Textarea::make('cancellation_policy')
                                     ->rows(5)
                                     ->cols(10)
                                     ->columnSpan('full'),
