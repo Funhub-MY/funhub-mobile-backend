@@ -54,6 +54,7 @@ class ArticleController extends Controller
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
+     * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam limit integer Per Page Limit Override. Example: 10
@@ -72,10 +73,15 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published()
-            ->where('user_id', '!=', auth()->user()->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             });
+
+        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+            // default to exclude own article
+            $query->where('user_id', '!=', auth()->user()->id);
+            // else it will also include own article
+        }
 
         // video only
         if ($request->has('video_only') && $request->video_only == 1) {

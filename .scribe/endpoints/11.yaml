@@ -99,7 +99,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dd68eaafkZ3b6gP5V1cv4Eh'
+      - 'Bearer 56kvDP1da8Vfg6ac4E3beZh'
     controller: null
     method: null
     route: null
@@ -126,7 +126,7 @@ endpoints:
         name: location_id
         description: 'The ID of the location.'
         required: true
-        example: 8
+        example: 1
         type: integer
         custom: []
       location:
@@ -137,7 +137,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
-      location_id: 8
+      location_id: 1
       location: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -159,7 +159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aD654ekgEbhPa8f1ZcdV6v3'
+      - 'Bearer 18eE6h5bakVfc6PZ3vgd4Da'
     controller: null
     method: null
     route: null

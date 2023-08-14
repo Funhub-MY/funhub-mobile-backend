@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: eligendi
+                  example: consequatur
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: velit
+                  example: iste
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -475,7 +475,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - iure
+                    - aperiam
                   items:
                     type: string
                 category_ids:
@@ -524,6 +524,10 @@ paths:
                   type: integer
                   description: 'optional Filter by Location Id.'
                   example: 1
+                include_own_article:
+                  type: integer
+                  description: 'optional Include own article.'
+                  example: 1
                 build_recommendations:
                   type: boolean
                   description: 'optional Build Recommendations On or Off, On by Default.'
@@ -532,22 +536,6 @@ paths:
                   type: boolean
                   description: 'optional Refresh Recommendations.'
                   example: true
-                filter:
-                  type: string
-                  description: 'Column to Filter.'
-                  example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
-                filter_value:
-                  type: string
-                  description: 'Value to Filter.'
-                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-                sort:
-                  type: string
-                  description: 'Column to Sort.'
-                  example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
-                order:
-                  type: string
-                  description: 'Direction to Sort.'
-                  example: 'Sortable directions are: asc, desc'
                 limit:
                   type: integer
                   description: 'Per Page Limit Override.'
@@ -1191,7 +1179,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: consequuntur
+        example: temporibus
         required: true
         schema:
           type: string
@@ -1286,11 +1274,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: omnis
+                  example: veniam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: impedit
+                  example: facilis
               required:
                 - comment_id
                 - reason
@@ -1561,7 +1549,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: ut
+        example: error
         required: true
         schema:
           type: string
@@ -2427,7 +2415,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 8
+        example: 1
         required: true
         schema:
           type: integer
@@ -2762,7 +2750,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: temporibus
+        example: qui
         required: true
         schema:
           type: string
@@ -3499,7 +3487,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 9
+        example: 1
         required: true
         schema:
           type: integer
@@ -3671,7 +3659,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 12
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3724,7 +3712,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 4
+                  example: 15
               required:
                 - user_id
   /api/v1/user/report:
@@ -3771,15 +3759,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: odit
+                  example: minus
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: non
+                  example: animi
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: suscipit
+                  example: et
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3865,7 +3853,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: neque
+                  example: fuga
               required:
                 - user_ids
     parameters:
@@ -4493,7 +4481,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
