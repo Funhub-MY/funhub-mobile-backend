@@ -101,6 +101,7 @@ class UserFollowingController extends Controller
         $user = User::findOrFail($user_id);
 
         $followers = $user->followers()
+            ->where('users_followings.follower_id', '!=', $user_id)
             ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followers);
