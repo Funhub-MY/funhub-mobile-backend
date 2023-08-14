@@ -59,7 +59,7 @@ class OfferClaimed extends Notification
             ->setData([
                 'offer_id' => (string) $this->offer->id,
                 'claim_user_id' => (string) $this->user->id,
-                'action' => 'claim_offer'
+                'action' => 'claimed_offer'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('交易成功')
@@ -81,7 +81,7 @@ class OfferClaimed extends Notification
             'link_to_url' => false,
             'link_to' => $this->offer->id, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
-            'action' => 'claimed',
+            'action' => 'claimed_offer',
             'from' => $this->user->name,
             'from_id' => $this->user->id,
             'message' => $this->getMessage(),
