@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ArticleCategoryResource\Pages;
 use App\Filament\Resources\ArticleCategoryResource\RelationManagers;
 use App\Models\ArticleCategory;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
@@ -56,12 +57,35 @@ class ArticleCategoryResource extends Resource
                     ->required()
                     ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
 
-                Forms\Components\SpatieMediaLibraryFileUpload::make('image')
-                    ->collection('article_category_cover')
-                    ->customProperties(['is_cover' => true])
+        
+                Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
+                    ->label('Icon')
+                    ->multiple()
+                    ->collection('article_category_icon')
                     ->columnSpan('full')
+                    ->disk(function () {
+                        if (config('filesystems.default') === 's3') {
+                            return 's3_public';
+                        }
+                    })
+                    ->acceptedFileTypes(['image/*'])
                     ->maxFiles(1)
                     ->rules('image'),
+
+                Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
+                    ->label('Icon')
+                    ->multiple()
+                    ->collection('article_category')
+                    ->columnSpan('full')
+                    ->disk(function () {
+                        if (config('filesystems.default') === 's3') {
+                            return 's3_public';
+                        }
+                    })
+                    ->acceptedFileTypes(['image/*'])
+                    ->maxFiles(1)
+                    ->rules('image'),
+                
                 Forms\Components\RichEditor::make('description')
                     ->columnSpan('full'),
                 Forms\Components\Hidden::make('user_id')

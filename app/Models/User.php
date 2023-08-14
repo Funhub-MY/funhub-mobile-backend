@@ -62,7 +62,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return $this->hasRole('staff');
     }
-    
+
     /**
      * Specifies the user's FCM token
      *
@@ -81,7 +81,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
 
     /**
      * Search Setup
@@ -172,7 +172,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return $this->hasOne(Merchant::class);
     }
-    
+
     // Important Note:: This is to indicate what merchant_offers has created by the users.
     public function merchant_offers()
     {
@@ -251,7 +251,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             ->withPivot('is_completed', 'started_at', 'current_value', 'completed_at')
             ->withTimestamps();
     }
-    
+
     public function reports()
     {
         return $this->morphMany(Reports::class, 'reportable');
@@ -306,7 +306,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 
     /**
      * Get user cover
-     * 
+     *
      * @return string
      */
     public function getCoverUrlAttribute()
@@ -419,10 +419,10 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 
     /**
      * Get Point Component balance
-     * 
-     * @param RewardComponent $component  
+     *
+     * @param RewardComponent $component
      */
-    public function getPointComponentBalance($component) 
+    public function getPointComponentBalance($component)
     {
         return $this->pointComponentsLedger()->where('pointable_type', RewardComponent::class)
             ->where('pointable_id', $component->id)

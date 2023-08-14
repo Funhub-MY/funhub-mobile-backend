@@ -20,7 +20,7 @@ class ArticleResource extends JsonResource
         $location = null;
         if ($this->has('location')) {
             $loc = $this->location->first();
-            
+
             // if artilce locaiton has ratings, get current article owner's ratings
             if ($loc && $loc->has('ratings')) {
                 $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
@@ -41,7 +41,16 @@ class ArticleResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'body' => $this->body,
-            'user' => new UserResource($this->user),
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'username' => $this->user->username,
+                'email' => $this->user->email,
+                'avatar' => $this->user->avatar_url,
+                'avatar_thumb' => $this->user->avatar_thumb_url,
+                'has_avatar' => $this->user->avatar_thumb_url ? true : false,
+                'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
+            ],
             'categories' => ArticleCategoryResource::collection($this->categories),
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
             'media' => MediaResource::collection($this->media),
@@ -58,7 +67,8 @@ class ArticleResource extends JsonResource
                 'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
-                'views' => $this->views->count()
+                'views' => $this->views_count ?? 0,
+                'imports' => $this->imports_count ?? 0,
             ],
             'my_interactions' => [
                 'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),
@@ -66,10 +76,10 @@ class ArticleResource extends JsonResource
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first(),
                 'bookmark' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first(),
             ],
-            'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
-            'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
+            // 'user_liked' => (auth()->user()) ? $this->likes->where('user_id', auth()->user()->id)->exists() : false,
+            // 'user_bookmarked' => (auth()->user()) ? $this->interactions->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
             'lang' => $this->lang,
-            'is_imported' => $this->imports()->exists(),
+            'is_imported' => $this->imports_count > 0,
             'source' => $this->source,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
