@@ -41,16 +41,7 @@ class ArticleResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'body' => $this->body,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'username' => $this->user->username,
-                'email' => $this->user->email,
-                'avatar' => $this->user->avatar_url,
-                'avatar_thumb' => $this->user->avatar_thumb_url,
-                'has_avatar' => $this->user->avatar_url ? true : false,
-                'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
-            ],
+            'user' => new UserResource($this->user),
             'categories' => ArticleCategoryResource::collection($this->categories),
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
             'media' => MediaResource::collection($this->media),

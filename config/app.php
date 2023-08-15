@@ -260,7 +260,9 @@ return [
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
     'recommended_article_cache_hours' => env('RECOMMENDED_ARTICLE_CACHE_HOURS', 2),
     'default_payment_gateway' => env('DEFAULT_PAYMENT_GATEWAY', 'mpay'),
-    
+
     // merchant offers
     'release_offer_stock_after_min' => env('RELEASE_OFFER_STOCK_AFTER_MIN', 60),
+
+    'recommendation_db_purge_hours' => env('RECOMMENDATION_DB_PURGE', 6),
 ];
