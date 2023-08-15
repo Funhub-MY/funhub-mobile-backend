@@ -59,6 +59,8 @@ class Mpay {
             ]
         ];
 
+        Log::info('Mpay create transaction data', $data);
+
         return $data;
     }
 
