@@ -10,7 +10,7 @@ class Mpay {
 
     public function __construct($mid, $hashKey, $uat = true)
     {
-        if (!$uat && !config('app.debug')) {
+        if (config('app.env') == 'production' && !config('app.debug')) {
             $this->url = config('services.mpay.prod_url');
         } else {
             // uat mode
