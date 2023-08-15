@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Jobs\BuildRecommendationsForUser;
 
 use function PHPSTORM_META\map;
 
@@ -142,21 +143,27 @@ class ArticleController extends Controller
 
         // by defaulty off, unless provided build recommendations
         if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
-            Log::info('Building Recommendations for User: ' . auth()->user()->id);
             $recommender = new ArticleRecommenderService(auth()->user());
 
-            if ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1) {
-                // forget cache 'user_' . auth()->user()->id . '_scored_articles'
-                cache()->forget('user_' . auth()->user()->id . '_scored_articles');
+            // if user dont have any user_{id}_scored_articles means user never build recommendations before, fire job to build it first while skip this step
+            if (!cache()->has('user_' . auth()->user()->id . '_scored_articles') && auth()->user()->articleRanks()->count() <= 0) {
+                // dispatch job to build recommendations
+                BuildRecommendationsForUser::dispatch(auth()->user());
+            } else {
+                // if want to refresh recommendations just pull down refresh
+                if ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1) {
+                    // forget cache 'user_' . auth()->user()->id . '_scored_articles'
+                    cache()->forget('user_' . auth()->user()->id . '_scored_articles');
+                }
+
+                // get recommendations again
+                $scoredArticlesIds = cache()->remember('user_' . auth()->user()->id . '_scored_articles', 60, function () use ($recommender) {
+                    return $recommender->build();
+                });
+
+                $query->whereIn('id', $scoredArticlesIds)
+                    ->orderByRaw('FIELD(id, ' . implode(',', $scoredArticlesIds) . ')');
             }
-
-            // get recommendations again
-            $scoredArticlesIds = cache()->remember('user_' . auth()->user()->id . '_scored_articles', 60, function () use ($recommender) {
-                return $recommender->build();
-            });
-
-            $query->whereIn('id', $scoredArticlesIds)
-                ->orderByRaw('FIELD(id, ' . implode(',', $scoredArticlesIds) . ')');
         }
 
         // $this->buildQuery($query, $request);

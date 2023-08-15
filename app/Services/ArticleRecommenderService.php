@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -15,6 +16,15 @@ class ArticleRecommenderService
 
     public function build()
     {
+        // if user has articleRanks last_built < 6 hours, then return the articleRanks article ids
+        $articleRanks = $this->user->articleRanks()->where('last_built', '>=', Carbon::now()->subHours(config('app.recommendation_db_purge_hours')))->get();
+        if ($articleRanks->count() > 0) {
+            $scoredIds = $articleRanks->pluck('article_id');
+            // shuffle it
+            $scoredIds = Arr::shuffle($scoredIds->toArray());
+            return $scoredIds;
+        }
+
         // Apply candidate filters to existing query
         $articles = Article::published()
             ->with(['views' => function ($query) {
@@ -43,9 +53,23 @@ class ArticleRecommenderService
 
                 return [
                     'id' => $article->id,
+                    'user_id' => $this->user->id,
+                    'affinity' => $affinity,
+                    'weight' => $weight,
                     'score' => $affinity * $weight,
                 ];
             });
+
+        // Save scores to database for future reference
+        $scored->each(function ($score) {
+           $this->user->articleRanks()->updateOrCreate([
+                'article_id' => $score['id'],
+                'affinity' => $score['affinity'],
+                'weight' => $score['weight'],
+                'score' => $score['score'],
+                'last_built' => now(),
+            ]);
+        });
 
         // Sort scored results
         $scored = $scored->sortByDesc('score');

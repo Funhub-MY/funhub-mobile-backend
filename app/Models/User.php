@@ -270,6 +270,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             ->where('blockable_type', User::class);
     }
 
+    public function articleRanks()
+    {
+        return $this->hasMany(UserArticleRank::class, 'user_id');
+    }
+
     /**
      * Get the user's point balance
      */
