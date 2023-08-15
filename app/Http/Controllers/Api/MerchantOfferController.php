@@ -305,47 +305,49 @@ class MerchantOfferController extends Controller
                         $transaction->transaction_no,
                         $net_amount,
                         $transaction->transaction_no,
-                        url('/payment/return'),
+                        secure_url('/payment/return'),
                         $user->full_phone_no ?? null,
                         $user->email ?? null
                     );
 
-                    // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the
-                    // amount and quantity required
-                    $claim = $offer->claims()->where('user_id', $user->id)
-                        ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
-                        ->first();
+                    // // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the
+                    // // amount and quantity required
+                    // $claim = $offer->claims()->where('user_id', $user->id)
+                    //     ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                    //     ->first();
 
-                    if ($claim) {
-                        // user has initiated payment before, just update the amount and quantity
-                        $claim->update([
-                            'quantity' => $request->quantity,
-                            'unit_price' => $offer->unit_price,
-                            'total' => $net_amount,
-                            'purchase_method' => 'fiat',
-                            'discount' => 0,
-                            'tax' => 0,
-                            'net_amount' => $net_amount,
-                            'transaction_no' => $transaction->transaction_no, // store transaction no for later use
-                            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                        ]);
-                    } else {
-                        // create claim but with status await payment for this offer
-                        $offer->claims()->attach($user->id, [
-                            // order no is CLAIM(YMd)
-                            'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
-                            'user_id' => $user->id,
-                            'quantity' => $request->quantity,
-                            'unit_price' => $offer->unit_price,
-                            'total' => $net_amount,
-                            'purchase_method' => 'fiat',
-                            'discount' => 0,
-                            'tax' => 0,
-                            'net_amount' => $net_amount,
-                            'transaction_no' => $transaction->transaction_no, // store transaction no for later use
-                            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                        ]);
-                    }
+                    // if ($claim) {
+                    //     // user has initiated payment before, just update the amount and quantity
+                    //     $offer->claims()->where('user_id', $user->id)
+                    //         ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                    //         ->updateExistingPivot($user->id, [
+                    //             'quantity' => $request->quantity,
+                    //             'unit_price' => $offer->unit_price,
+                    //             'total' => $net_amount,
+                    //             'purchase_method' => 'fiat',
+                    //             'discount' => 0,
+                    //             'tax' => 0,
+                    //             'net_amount' => $net_amount,
+                    //             'transaction_no' => $transaction->transaction_no, // store transaction no for later use
+                    //             'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
+                    //     ]);
+                    // } else {
+                    // create claim but with status await payment for this offer
+                    $offer->claims()->attach($user->id, [
+                        // order no is CLAIM(YMd)
+                        'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
+                        'user_id' => $user->id,
+                        'quantity' => $request->quantity,
+                        'unit_price' => $offer->unit_price,
+                        'total' => $net_amount,
+                        'purchase_method' => 'fiat',
+                        'discount' => 0,
+                        'tax' => 0,
+                        'net_amount' => $net_amount,
+                        'transaction_no' => $transaction->transaction_no, // store transaction no for later use
+                        'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
+                    ]);
+                    // }
 
                     // reduce quantity first if failed in PaymentController will release the quantity if failed
                     $offer->quantity = $offer->quantity - $request->quantity;
