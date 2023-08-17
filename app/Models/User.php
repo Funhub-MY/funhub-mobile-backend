@@ -301,7 +301,9 @@ class User extends Authenticatable implements HasMedia, FilamentUser
      */
     public function getAvatarUrlAttribute()
     {
-        $avatar = $this->getMedia('avatar')->first();
+        $avatar = cache()->rememberForever('user_avatar_' . $this->id, function () {
+            return $this->getMedia('avatar')->first();
+        });
         if ($avatar) {
             return $avatar->getUrl();
         } else {
@@ -316,7 +318,9 @@ class User extends Authenticatable implements HasMedia, FilamentUser
      */
     public function getCoverUrlAttribute()
     {
-        $cover = $this->getMedia('cover')->first();
+        $cover = cache()->rememberForever('user_cover_' . $this->id, function () {
+            return $this->getMedia('cover')->first();
+        });
         if ($cover) {
             return $cover->getUrl();
         } else {
@@ -331,7 +335,9 @@ class User extends Authenticatable implements HasMedia, FilamentUser
      */
     public function getAvatarThumbUrlAttribute()
     {
-        $avatar = $this->getMedia('avatar')->first();
+        $avatar = cache()->rememberForever('user_avatar_thumb_' . $this->id, function () {
+            return $this->getMedia('avatar')->first();
+        });
         if ($avatar) {
             return $avatar->getUrl('thumb');
         } else {

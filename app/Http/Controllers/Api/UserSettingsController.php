@@ -12,9 +12,9 @@ class UserSettingsController extends Controller
 {
     /**
      * Get settings of logged in user
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @response status=200 scenario="success" {
      *  "name": "John Doe",
@@ -49,7 +49,7 @@ class UserSettingsController extends Controller
             'avatar' => auth()->user()->avatar_url,
             'avatar_thumb' => auth()->user()->avatar_thumb_url,
             'category_ids' => auth()->user()->articleCategoriesInterests->pluck('id')->toArray(),
-        ]; 
+        ];
 
         if ($settings) {
             return response()->json($settings);
@@ -61,10 +61,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Email
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam email string required Email of the user. Example: john@gmail.com
      * @response status=200 scenario="success" {
@@ -91,10 +91,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Name
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam name string required Name of the user. Example: John Doe
      * @response status=200 scenario="success" {
@@ -121,10 +121,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Username
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam username string required Username of the user. Example: johndoe
      * @response status=200 scenario="success" {
@@ -151,10 +151,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Bio
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam bio string required Bio of the user. Example: I am a software engineer
      * @response status=200 scenario="success" {
@@ -181,10 +181,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Job title
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam job_title string required Job title of the user. Example: Software Engineer
      * @response status=200 scenario="success" {
@@ -211,10 +211,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Date of Birth
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam day integer required Day of the date of birth. Example: 1
      * @bodyParam month integer required Month of the date of birth. Example: 1
@@ -223,7 +223,7 @@ class UserSettingsController extends Controller
      * "message": "Date of birth updated",
      * "dob": "1990-01-01"
      * }
-     * 
+     *
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
     public function postSaveDob(Request $request)
@@ -243,20 +243,20 @@ class UserSettingsController extends Controller
             'dob' => $user->dob,
         ]);
     }
-    
+
     /**
      * Update User Save Gender
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParams gender string required Male or Female. Example: male,female
-     * 
+     *
      * @response status=200 scenario="success" {
      * "message": "Gender updated",
      * "gender": "male"
-     * } 
+     * }
      */
     public function postSaveGender(Request $request)
     {
@@ -276,20 +276,20 @@ class UserSettingsController extends Controller
 
     /**
      * Update User Location
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam country_id integer required Country id of the user. Example: 1
      * @bodyParam state_id integer required State id of the user. Example: 1
-     * 
+     *
      * @response status=200 scenario="success" {
      * "message": "Location updated"
      * "country_id": 1,
      * "state_id": 1
      * }
-     * 
+     *
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      */
     public function postSaveLocation(Request $request)
@@ -313,10 +313,10 @@ class UserSettingsController extends Controller
 
     /**
      * Link Article Categories to User (used for interest tagging)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam category_ids array required Array of article category ids. Example: [1,2,3]
      * @response status=200 scenario="success" {
@@ -345,7 +345,7 @@ class UserSettingsController extends Controller
         if ($categories->where('parent_id', '!=', null)->count()) {
             $request->category_ids = array_merge($request->category_ids, $categories->where('parent_id', '!=', null)->pluck('parent_id')->toArray());
         }
-    
+
         $user = auth()->user();
 
         // check if article category ids exists only sync
@@ -358,10 +358,10 @@ class UserSettingsController extends Controller
 
     /**
      * Upload or Update User Profile Picture
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam avatar file required One image file to upload.
      * @response status=200 scenario="success" {
@@ -395,11 +395,13 @@ class UserSettingsController extends Controller
             ->toMediaCollection('avatar',
                 (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
             );
-            
 
         // save user avatar id
         $user->avatar = $uploadedAvatar->id;
         $user->save();
+
+        // bust avatar cache
+        cache()->forget('user_avatar_' . $user->id);
 
         return response()->json([
             'message' => 'Avatar uploaded',
@@ -411,10 +413,10 @@ class UserSettingsController extends Controller
 
     /**
      * Upload or Update User Cover
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam cover file required One image file to upload.
      * @response status=200 scenario="success" {
@@ -448,11 +450,12 @@ class UserSettingsController extends Controller
             ->toMediaCollection('cover',
                 (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
             );
-            
 
         // save user avatar id
         $user->cover = $uploadedCover->id;
         $user->save();
+
+        cache()->forget('user_cover_' . $user->id);
 
         return response()->json([
             'message' => 'Cover uploaded',
@@ -463,10 +466,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update user fcm token
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return JsonResponse
-     * 
+     *
      * @group Notifications
      * @bodyParam fcm_token string required The fcm token of the user. Example: 1
      * @response scenario=success {
@@ -482,10 +485,10 @@ class UserSettingsController extends Controller
 
     /**
      * Update user password (only for login with OTP)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group User Settings
      * @bodyParam old_password string required The old password of the user. Example: abcd1234
      * @bodyParam password string required The new password of the user. Example: abcd1234
