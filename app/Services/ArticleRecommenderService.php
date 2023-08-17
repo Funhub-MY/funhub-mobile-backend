@@ -16,15 +16,6 @@ class ArticleRecommenderService
 
     public function build()
     {
-        // if user has articleRanks last_built < 6 hours, then return the articleRanks article ids
-        $articleRanks = $this->user->articleRanks()->where('last_built', '>=', Carbon::now()->subHours(config('app.recommendation_db_purge_hours')))->get();
-        if ($articleRanks->count() > 0) {
-            $scoredIds = $articleRanks->pluck('article_id');
-            // shuffle it
-            $scoredIds = Arr::shuffle($scoredIds->toArray());
-            return $scoredIds;
-        }
-
         // Apply candidate filters to existing query
         $articles = Article::published()
             ->with(['views' => function ($query) {
@@ -52,30 +43,20 @@ class ArticleRecommenderService
                 $weight = $this->weightScore($article);
 
                 return [
-                    'id' => $article->id,
+                    'article_id' => $article->id,
                     'user_id' => $this->user->id,
                     'affinity' => $affinity,
                     'weight' => $weight,
                     'score' => $affinity * $weight,
+                    'last_built' => Carbon::now()->toDateTimeString(),
                 ];
             });
 
-        // Save scores to database for future reference
-        $scored->each(function ($score) {
-           $this->user->articleRanks()->updateOrCreate([
-                'article_id' => $score['id'],
-                'affinity' => $score['affinity'],
-                'weight' => $score['weight'],
-                'score' => $score['score'],
-                'last_built' => now(),
-            ]);
-        });
+        // save to user->articleRanks update or create
+        $this->user->articleRanks()->delete();
+        $this->user->articleRanks()->createMany($scored->toArray());
 
-        // Sort scored results
-        $scored = $scored->sortByDesc('score');
-        // random shuffle
-        $scoredIds = Arr::shuffle($scored->pluck('id')->toArray());
-        return $scoredIds;
+        return $scored;
     }
 
     /**

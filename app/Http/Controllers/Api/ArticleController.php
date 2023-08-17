@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use Illuminate\Support\Arr;
 
 use function PHPSTORM_META\map;
 
@@ -143,32 +144,41 @@ class ArticleController extends Controller
 
         // by defaulty off, unless provided build recommendations
         if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
-            $recommender = new ArticleRecommenderService(auth()->user());
-
-            // if user dont have any user_{id}_scored_articles means user never build recommendations before, fire job to build it first while skip this step
-            if (!cache()->has('user_' . auth()->user()->id . '_scored_articles') && auth()->user()->articleRanks()->count() <= 0) {
-                // dispatch job to build recommendations
-                BuildRecommendationsForUser::dispatch(auth()->user());
-            } else {
-                // if want to refresh recommendations just pull down refresh
-                if ($request->has('refresh_recommendations') && $request->refresh_recommendations == 1) {
-                    // forget cache 'user_' . auth()->user()->id . '_scored_articles'
-                    cache()->forget('user_' . auth()->user()->id . '_scored_articles');
+            $rankIds = auth()->user()->articleRanks()
+                ->orderBy('score', 'desc')
+                ->take(500)
+                ->get();
+            if ($rankIds->count() > 0) {
+                // user has recommendation build before
+                // if ranks last_built > config recommendation_db_purge_hours
+                // then dispatch job to rebuild for user
+                $lastBuilt = $rankIds->first()->last_built;
+                if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
+                    BuildRecommendationsForUser::dispatch(auth()->user());
                 }
+            } else {
+                Log::info('No ranks found for user ' . auth()->user()->id);
+                // user never built recommendations, also fire job to rebuild
+                BuildRecommendationsForUser::dispatch(auth()->user());
+            }
 
-                // get recommendations again
-                $scoredArticlesIds = cache()->remember('user_' . auth()->user()->id . '_scored_articles', 60, function () use ($recommender) {
-                    return $recommender->build();
+            if ($rankIds->count() > 0) {  // if user has articles ranked
+                // if refresh articles or user scrolled until final page of recommendations
+                if ($request->refresh_recommendations == 1) {
+                    // remove recommendations cache
+                    cache()->forget('article_recommendations_' . auth()->user()->id);
+                }
+                $shuffledIds = cache()->remember('article_recommendations_' . auth()->user()->id, now()->addMinutes(60), function () use ($rankIds) {
+                    return $rankIds->shuffle()->pluck('article_id')->toArray();
                 });
-
-                $query->whereIn('id', $scoredArticlesIds)
-                    ->orderByRaw('FIELD(id, ' . implode(',', $scoredArticlesIds) . ')');
+                $query->whereIn('id', $shuffledIds)
+                    ->orderByRaw('FIELD(id, ' . implode(',', $shuffledIds) . ')');
             }
         }
 
         // $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings')
+        $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate(config('app.paginate_per_page'));
 
