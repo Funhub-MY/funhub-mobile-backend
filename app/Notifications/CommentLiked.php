@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -15,16 +16,17 @@ class CommentLiked extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $comment;
+    protected $comment, $user;
 
     /**
      * Create a new notifi赞了你的评论，觉得超有趣！cation instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Comment $comment, User $user)
     {
         $this->comment = $comment;
+        $this->user = $user;
     }
 
     /**
@@ -43,14 +45,14 @@ class CommentLiked extends Notification implements ShouldQueue
         return FcmMessage::create()
             ->setData([
                 'comment_id' => (string) $this->comment->id,
-                'commentor_id' => (string) $this->comment->user->id,
+                'liker_id' => (string) $this->user->id,
                 'article_id' => (string) $this->comment->commentable->id,
                 'article_type' => (string) $this->comment->commentable->type,
                 'action' => 'comment_liked'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
-                ->setBody( $this->comment->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"')
+                ->setBody( $this->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"')
             );
     }
 
@@ -69,9 +71,9 @@ class CommentLiked extends Notification implements ShouldQueue
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
             'action' => 'comment_liked',
-            'from' => $this->comment->user->name,
-            'from_id' => $this->comment->user->id,
-            'title' => $this->comment->user->name,
+            'from' => $this->user->name,
+            'from_id' => $this->user->id,
+            'title' => $this->user->name,
             'message' => '赞了你的评论，觉得超有趣!',
         ];
     }

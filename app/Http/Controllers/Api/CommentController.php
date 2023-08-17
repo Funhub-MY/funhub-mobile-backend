@@ -367,7 +367,7 @@ class CommentController extends Controller
 
             if ($comment && $comment->user && $comment->user->id != auth()->id()) {
                 // send notification to user
-                $comment->user->notify(new \App\Notifications\CommentLiked($comment));
+                $comment->user->notify(new \App\Notifications\CommentLiked($comment, auth()->user()));
             }
 
             return response()->json(['message' => 'Comment liked']);
