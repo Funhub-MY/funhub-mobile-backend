@@ -4,10 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserBlockResource;
+use App\Models\Article;
+use App\Models\Comment;
+use App\Models\Interaction;
+use App\Models\Location;
+use App\Models\LocationRating;
 use App\Models\User;
 use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -265,5 +271,90 @@ class UserController extends Controller
         $users = User::whereIn('id', $user_ids)->get();
 
         return \App\Http\Resources\UserResource::collection($users);
+    }
+
+    /**
+     * Delete My Account
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group User
+     * @response scenario=success {
+     * "message": "Account deleted successfully."
+     * }
+     */
+    public function postDeleteAccount(Request $request)
+    {
+        $this->validate($request, [
+            'reason' => 'required|string'
+        ]);
+
+        // archive all articles by this user
+        $user = auth()->user();
+
+        // archive all articles by this user
+        $user->articles()->update([
+            'status' => Article::STATUS_ARCHIVED
+        ]);
+
+        // archive all comments by this user
+        $user->comments()->update([
+            'status' => Comment::STATUS_HIDDEN
+        ]);
+
+        // archive all interactions by this user
+        $user->interactions()->update([
+            'status' => Interaction::STATUS_HIDDEN
+        ]);
+
+        // remove user's from any UserBlock
+        UserBlock::where('blockable_id', $user->id)
+            ->where('blockable_type', User::class)
+            ->delete();
+
+        // delete user's article ranks
+        $user->articleRanks()->delete();
+
+        // delete user's location ratings
+        $locationRatings = LocationRating::where('user_id', $user->id)->get();
+        $locationIdsNeedRecalculateRatings = $locationRatings->pluck('location_id')->toArray();
+        // recalculate a location avg ratings
+        Location::whereIn('id', $locationIdsNeedRecalculateRatings)->get()->each(function ($location) {
+            $location->average_ratings = $location->ratings()->avg('rating');
+            $location->save();
+        });
+
+        // remove user_id from scout index
+        $user->unsearchable();
+
+        // add a new record for account deletion for backup purposes
+        $user->userAccountDeletion()->create([
+            'reason' => $request->input('reason'),
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'phone_no' => $user->phone_no,
+            'phone_country_code' => $user->phone_country_code,
+        ]);
+
+        Log::info('User Account Deleted', ['user_id' => $user->id]);
+
+        // unauthorize user
+        auth()->user()->tokens()->delete();
+
+        // unset user's phone_no, phone_country_code, email, password
+        $user->name = null;
+        $user->username = null;
+        $user->phone_no = null;
+        $user->phone_country_code = null;
+        $user->email = null;
+        $user->password = null;
+        $user->save();
+
+        // soft deletes user
+        $user->delete();
+
+        return response()->json(['message' => 'Account deleted successfully.']);
     }
 }

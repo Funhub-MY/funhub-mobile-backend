@@ -53,7 +53,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1Pa4f5v8dceZEkDaVb66gh3'
+      - 'Bearer a68PDZeg1V3ak6Edc5b4fvh'
     controller: null
     method: null
     route: null
@@ -110,7 +110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6ka4EV8vDh6a3g1Zcdfe5bP'
+      - 'Bearer ce1EfDZ3kv6ab5Phda6gV48'
     controller: null
     method: null
     route: null
@@ -141,11 +141,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 19
+        example: 4
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 19
+      user_id: 4
     fileParameters: []
     responses:
       -
@@ -167,7 +167,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dEbcf4aPVDa135e6gvhZk68'
+      - 'Bearer k1Df85ZaheVb3aEPcvdg646'
     controller: null
     method: null
     route: null
@@ -198,11 +198,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 18
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 18
+      user_id: 19
     fileParameters: []
     responses:
       -
@@ -224,7 +224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1f836546aDevkdgahcbPZVE'
+      - 'Bearer 6DhE6b3fgk4edc5aZavV18P'
     controller: null
     method: null
     route: null
@@ -262,21 +262,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: fugiat
+        example: inventore
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: qui
+        example: et
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: quia
+        example: delectus
         type: required
         custom: []
       also_block_user:
@@ -288,9 +288,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: fugiat
-      violation_level: qui
-      violation_type: quia
+      reason: inventore
+      violation_level: et
+      violation_type: delectus
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bPh3avZka66EDc158gde4fV'
+      - 'Bearer 6EgVP1fdeDkacavZ6584h3b'
     controller: null
     method: null
     route: null
@@ -378,7 +378,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fZVdE56P8behgc6a4akvD31'
+      - 'Bearer 4aDhP6ckf18dgaZeEv63V5b'
     controller: null
     method: null
     route: null
@@ -429,7 +429,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36ae86g1DZPdcEfbkV45avh'
+      - 'Bearer kP86c13f4Vdahebv6Da5ZEg'
     controller: null
     method: null
     route: null
@@ -472,7 +472,58 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EZD63gckeha5df6v4Va1Pb8'
+      - 'Bearer aPk8Zh6bv34eafEd165DVgc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/delete
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete My Account'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: placeat
+        type: string
+        custom: []
+    cleanBodyParameters:
+      reason: placeat
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Account deleted successfully."
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dg4k35ZeE8616cVPafbhvDa'
     controller: null
     method: null
     route: null
@@ -511,11 +562,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: consequatur
+        example: iusto
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: consequatur
+      user_ids: iusto
     fileParameters: []
     responses:
       -
@@ -532,7 +583,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h6PcvDd6f48gE5Z1ebaVa3k'
+      - 'Bearer bP1a6hea54VvZ86ckfd3EgD'
     controller: null
     method: null
     route: null
@@ -591,7 +642,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ec6avPbE1kag8ZdDh5643Vf'
+      - 'Bearer 5ve86fDh1acdgVZ4EbP36ak'
     controller: null
     method: null
     route: null

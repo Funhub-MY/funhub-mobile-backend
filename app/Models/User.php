@@ -17,10 +17,11 @@ use Laravel\Scout\Searchable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements HasMedia, FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
+    use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
 
     const USER_VIDEO_UPLOADS = 'user_video_uploads';
     const USER_AVATAR = 'user_avatar';
@@ -273,6 +274,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function articleRanks()
     {
         return $this->hasMany(UserArticleRank::class, 'user_id');
+    }
+
+    public function userAccountDeletion()
+    {
+        return $this->hasOne(UserAccountDeletion::class, 'user_id');
     }
 
     /**

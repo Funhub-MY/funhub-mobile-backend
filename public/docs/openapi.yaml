@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 6
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: dolorem
+                  example: veritatis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: molestiae
+                  example: quia
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -475,7 +475,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - et
+                    - quia
                   items:
                     type: string
                 category_ids:
@@ -1175,7 +1175,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: consequatur
+        example: tempora
         required: true
         schema:
           type: string
@@ -1270,11 +1270,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolorum
+                  example: consequatur
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: velit
+                  example: fugiat
               required:
                 - comment_id
                 - reason
@@ -1545,7 +1545,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: magni
+        example: ut
         required: true
         schema:
           type: string
@@ -2411,7 +2411,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 10
+        example: 1
         required: true
         schema:
           type: integer
@@ -2746,7 +2746,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: explicabo
+        example: nobis
         required: true
         schema:
           type: string
@@ -3483,7 +3483,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 15
+        example: 18
         required: true
         schema:
           type: integer
@@ -3655,7 +3655,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 19
+                  example: 4
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3708,7 +3708,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 18
+                  example: 19
               required:
                 - user_id
   /api/v1/user/report:
@@ -3755,15 +3755,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: fugiat
+                  example: inventore
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: et
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quia
+                  example: delectus
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3870,6 +3870,47 @@ paths:
                 example: "{\n data: {}\n}"
       tags:
         - User
+  /api/v1/user/delete:
+    post:
+      summary: 'Delete My Account'
+      operationId: deleteMyAccount
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Account deleted successfully.'
+                properties:
+                  message:
+                    type: string
+                    example: 'Account deleted successfully.'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: ''
+                  example: placeat
+              required:
+                - reason
   /api/v1/users_by_id:
     get:
       summary: 'Get Users By IDs'
@@ -3908,7 +3949,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: consequatur
+                  example: iusto
               required:
                 - user_ids
     parameters:

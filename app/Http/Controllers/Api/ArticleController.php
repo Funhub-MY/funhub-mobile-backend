@@ -206,13 +206,9 @@ class ArticleController extends Controller
         }
         // vice-versa: article owners should not see their blocked list articles
         $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
-
         if ($myBlockedUserIds) {
             $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
         }
-        // TODO: remove any un-interested ids
-        Log::info('Excluded User Ids', ['ids' => $excludedUserIds]);
-
         $query->whereNotIn('user_id', $excludedUserIds);
     }
 

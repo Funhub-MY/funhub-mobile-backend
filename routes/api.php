@@ -82,6 +82,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/block', [\App\Http\Controllers\Api\UserController::class, 'postBlockUser']);
         Route::post('user/unblock', [\App\Http\Controllers\Api\UserController::class, 'postUnblockUser']);
         Route::get('user/my_blocked_users', [\App\Http\Controllers\Api\UserController::class, 'getMyBlockedUsers']);
+        Route::post('user/delete', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccount']);
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {
