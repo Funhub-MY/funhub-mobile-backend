@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 19
+                  example: 16
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: consequatur
+                  example: dolorem
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: iste
+                  example: molestiae
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -475,7 +475,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - aperiam
+                    - et
                   items:
                     type: string
                 category_ids:
@@ -538,12 +538,8 @@ paths:
                   example: true
                 limit:
                   type: integer
-                  description: 'Per Page Limit Override.'
+                  description: 'optional Per Page Limit Override.'
                   example: 10
-                offset:
-                  type: integer
-                  description: 'Offset Override.'
-                  example: 0
     post:
       summary: 'Create New Article'
       operationId: createNewArticle
@@ -1179,7 +1175,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: temporibus
+        example: consequatur
         required: true
         schema:
           type: string
@@ -1274,11 +1270,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: veniam
+                  example: dolorum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: facilis
+                  example: velit
               required:
                 - comment_id
                 - reason
@@ -1549,7 +1545,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: error
+        example: magni
         required: true
         schema:
           type: string
@@ -2415,7 +2411,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -2750,7 +2746,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: qui
+        example: explicabo
         required: true
         schema:
           type: string
@@ -3487,7 +3483,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 1
+        example: 15
         required: true
         schema:
           type: integer
@@ -3659,7 +3655,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 12
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3712,7 +3708,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 18
               required:
                 - user_id
   /api/v1/user/report:
@@ -3759,15 +3755,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: minus
+                  example: fugiat
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: animi
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: quia
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3815,6 +3811,65 @@ paths:
                   example: Spam
               required:
                 - user_id
+  /api/v1/user/unblock:
+    post:
+      summary: 'Unblock a user'
+      operationId: unblockAUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"User unblocked\",\n}"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'The id of the user.'
+                  example: 1
+              required:
+                - user_id
+  /api/v1/user/my_blocked_users:
+    get:
+      summary: 'Get My Blocked Users List'
+      operationId: getMyBlockedUsersList
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n data: {}\n}"
+      tags:
+        - User
   /api/v1/users_by_id:
     get:
       summary: 'Get Users By IDs'
@@ -3853,7 +3908,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: fuga
+                  example: consequatur
               required:
                 - user_ids
     parameters:

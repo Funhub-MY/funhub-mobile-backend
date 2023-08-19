@@ -266,7 +266,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     // users that this user has blocked
     public function usersBlocked()
     {
-        return $this->morphMany(UserBlock::class, 'blockable')
+        return $this->hasMany(UserBlock::class, 'user_id')
             ->where('blockable_type', User::class);
     }
 
@@ -432,5 +432,16 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         return $this->pointComponentsLedger()->where('pointable_type', RewardComponent::class)
             ->where('pointable_id', $component->id)
             ->orderBy('id', 'desc')->first()->balance ?? 0;
+    }
+
+    /**
+     * Get Is User Blocking User
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function isBlocking($user)
+    {
+        return $this->usersBlocked()->where('blockable_id', $user->id)->exists();
     }
 }

@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Models\UserBlock;
 use Illuminate\Support\Arr;
 
 use function PHPSTORM_META\map;
@@ -61,9 +62,7 @@ class ArticleController extends Controller
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
-     * @bodyParam limit integer Per Page Limit Override. Example: 10
-     * @bodyParam offset integer Offset Override. Example: 0
-     *
+     * @bodyParam limit integer optional Per Page Limit Override. Example: 10
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -176,13 +175,45 @@ class ArticleController extends Controller
             }
         }
 
-        // $this->buildQuery($query, $request);
+        $this->filterArticlesBlockedOrHidden($query);
+
+        $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
-            ->paginate(config('app.paginate_per_page'));
+            ->paginate($paginatePerPage);
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Filter Articles Blocked Or Hidden by User
+     *
+     * @param QueryBuilder $query
+     * @return void
+     */
+    protected function filterArticlesBlockedOrHidden(&$query) : void
+    {
+        $excludedUserIds = [];
+        // if i'm in someone's blocked list, i should not able to see that user's articles
+        $usersBlocks = UserBlock::where('blockable_type', User::class)
+            ->where('blockable_id', auth()->user()->id)
+            ->get();
+
+        if ($usersBlocks) {
+            $articleOwnersThatBlockedMe = $usersBlocks->pluck('user_id')->toArray();
+            $excludedUserIds = array_merge($excludedUserIds, $articleOwnersThatBlockedMe);
+        }
+        // vice-versa: article owners should not see their blocked list articles
+        $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
+
+        if ($myBlockedUserIds) {
+            $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
+        }
+        // TODO: remove any un-interested ids
+        Log::info('Excluded User Ids', ['ids' => $excludedUserIds]);
+
+        $query->whereNotIn('user_id', $excludedUserIds);
     }
 
     /**

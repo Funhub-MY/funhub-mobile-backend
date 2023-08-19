@@ -55,7 +55,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kedahacDVZvg185bE66fP43'
+      - 'Bearer 1Pa4f5v8dceZEkDaVb66gh3'
     controller: null
     method: null
     route: null
@@ -112,7 +112,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f6bhP4Vk81vZdD6Eaagce53'
+      - 'Bearer 6ka4EV8vDh6a3g1Zcdfe5bP'
     controller: null
     method: null
     route: null
@@ -143,11 +143,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 12
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 12
+      user_id: 19
     fileParameters: []
     responses:
       -
@@ -169,7 +169,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1DVf3686ZEhkvdc4aePg5ba'
+      - 'Bearer dEbcf4aPVDa135e6gvhZk68'
     controller: null
     method: null
     route: null
@@ -200,11 +200,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 15
+        example: 18
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 15
+      user_id: 18
     fileParameters: []
     responses:
       -
@@ -226,7 +226,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eEbd3g4f6hacVkZ156Dv8aP'
+      - 'Bearer 1f836546aDevkdgahcbPZVE'
     controller: null
     method: null
     route: null
@@ -264,21 +264,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: minus
+        example: fugiat
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: animi
+        example: qui
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: et
+        example: quia
         type: required
         custom: []
       also_block_user:
@@ -290,9 +290,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: minus
-      violation_level: animi
-      violation_type: et
+      reason: fugiat
+      violation_level: qui
+      violation_type: quia
       also_block_user: true
     fileParameters: []
     responses:
@@ -321,7 +321,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZ4g1ch6aEVPbde5D83fv6a'
+      - 'Bearer bPh3avZka66EDc158gde4fV'
     controller: null
     method: null
     route: null
@@ -380,7 +380,101 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D34cVaf6h6dZk8evbgPEa51'
+      - 'Bearer fZVdE56P8behgc6a4akvD31'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/unblock
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Unblock a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User unblocked",
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 36ae86g1DZPdcEfbkV45avh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/my_blocked_users
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Get My Blocked Users List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer EZD63gckeha5df6v4Va1Pb8'
     controller: null
     method: null
     route: null
@@ -419,11 +513,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: fuga
+        example: consequatur
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: fuga
+      user_ids: consequatur
     fileParameters: []
     responses:
       -
@@ -440,7 +534,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5baefkdcVPh814Ev36ag6D'
+      - 'Bearer h6PcvDd6f48gE5Z1ebaVa3k'
     controller: null
     method: null
     route: null
@@ -499,7 +593,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Pc6DV583aebaEhgfdk1vZ4'
+      - 'Bearer ec6avPbE1kag8ZdDh5643Vf'
     controller: null
     method: null
     route: null

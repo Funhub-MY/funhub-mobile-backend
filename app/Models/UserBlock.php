@@ -10,6 +10,8 @@ class UserBlock extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = ['id'];
+
     public function blockable()
     {
         return $this->morphTo();

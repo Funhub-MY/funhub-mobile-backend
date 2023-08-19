@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserBlockResource;
 use App\Models\User;
 use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
@@ -36,21 +37,19 @@ class UserController extends Controller
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group User
      * @urlParam user required The id of the user. Example: 1
      * @response scenario=success {
      * "data": {
      * }
-     * 
+     *
      */
     public function show(User $user)
     {
-        // ensure user is not blocked 
-        if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
-            return response()->json([
-                'message' => 'You are blocked by user'
-            ], 403);
+        // ensure user is not blocking me or i'm blocking this user
+        if (auth()->user()->isBlocking($user) || $user->isBlocking(auth()->user())) {
+            return response()->json(['message' => 'User not found'], 404);
         }
         return new \App\Http\Resources\UserResource($user);
     }
@@ -138,10 +137,10 @@ class UserController extends Controller
 
     /**
      * Block a user
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return JsonResponse
-     * 
+     *
      * @group User
      * @subgroup Blocks
      * @bodyParam user_id integer required The id of the user. Example: 1
@@ -150,7 +149,7 @@ class UserController extends Controller
      * "message": "User blocked",
      * }
      */
-    public function postBlockUser(Request $request) 
+    public function postBlockUser(Request $request)
     {
         $request->validate([
             'user_id' => 'required|integer',
@@ -167,9 +166,10 @@ class UserController extends Controller
         if (!$userBlockedByMe) {
             // create block
             UserBlock::create([
-                'user_id' => auth()->id(),
-                'blockable_type' => User::class,
-                'blockable_id' => $userToBlock->id
+                'user_id' => auth()->id(), // self
+                'reason' => $request->input('reason'),
+                'blockable_type' => User::class, // type of blockable
+                'blockable_id' => $userToBlock->id // person i block
             ]);
 
             return response()->json(['message' => 'User blocked']);
@@ -178,13 +178,71 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Unblock a user
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group User
+     * @subgroup Blocks
+     * @bodyParam user_id integer required The id of the user. Example: 1
+     * @response scenario=success {
+     * "message": "User unblocked",
+     * }
+     */
+    public function postUnblockUser(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+        ]);
+
+        $userToUnblock = User::where('id', request('user_id'))->firstOrFail();
+
+        $userBlockedByMe = UserBlock::where('user_id', auth()->id())
+            ->where('blockable_type', User::class)
+            ->where('blockable_id', $userToUnblock->id)
+            ->first();
+
+        if ($userBlockedByMe) {
+            // delete block
+            $userBlockedByMe->delete();
+
+            return response()->json(['message' => 'User unblocked']);
+        } else {
+            return response()->json(['message' => 'You have not blocked this user'], 422);
+        }
+    }
+
+    /**
+     * Get My Blocked Users List
+     *
+     * @return void
+     *
+     * @group User
+     * @subgroup Blocks
+     * @response scenario=success {
+     *  data: {}
+     * }
+     *
+     */
+    public function getMyBlockedUsers()
+    {
+        $blockedUsers = UserBlock::where('user_id', auth()->id())
+            ->where('blockable_type', User::class)
+            ->with('blockable')
+            ->paginate(config('app.paginate_per_page'));
+
+        return UserBlockResource::collection($blockedUsers);
+    }
+
 
     /**
      * Get Users By IDs
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return JsonResponse
-     * 
+     *
      * @group User
      * @urlParam user_ids required The ids of the users. Example: 1,2,3
      * @response scenario=success {
@@ -200,6 +258,9 @@ class UserController extends Controller
 
         // explode comma
         $user_ids = explode(',', request()->input('user_ids'));
+
+        // remove user if in auth()->user() blocked list
+        $user_ids = array_diff($user_ids, auth()->user()->usersBlocked()->pluck('blockable_id')->toArray());
 
         $users = User::whereIn('id', $user_ids)->get();
 

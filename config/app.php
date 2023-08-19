@@ -262,7 +262,8 @@ return [
     'default_payment_gateway' => env('DEFAULT_PAYMENT_GATEWAY', 'mpay'),
 
     // merchant offers
-    'release_offer_stock_after_min' => env('RELEASE_OFFER_STOCK_AFTER_MIN', 60),
+    'release_offer_stock_after_min' => env('RELEASE_OFFER_STOCK_AFTER_MIN', 10),
 
     'recommendation_db_purge_hours' => env('RECOMMENDATION_DB_PURGE', 6),
+
 ];
