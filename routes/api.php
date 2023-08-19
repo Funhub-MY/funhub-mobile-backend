@@ -49,6 +49,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/my_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getMyArticles']);
         Route::get('articles/my_bookmarks', [\App\Http\Controllers\Api\ArticleController::class, 'getMyBookmarkedArticles']);
         Route::post('articles/report', [\App\Http\Controllers\Api\ArticleController::class, 'postReportArticle']);
+        Route::post('articles/not_interested', [\App\Http\Controllers\Api\ArticleController::class, 'postNotInterestedArticle']);
         Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
 

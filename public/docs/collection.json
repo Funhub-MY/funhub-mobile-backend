@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "80c9260c-8c82-4cd1-8a11-c54e888209ad",
+        "_postman_id": "6c52b15c-e206-4968-a4b8-b1004f056daa",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":6,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"veritatis\",\"violation_level\":\"quia\",\"article\":1}"
+                                    "raw": "{\"article_id\":3,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"rerum\",\"violation_level\":\"aut\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -273,6 +273,41 @@
                                     "name": "Invalid Form Fields"
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Hide Article When Not Interested By user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/not_interested",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/not_interested"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"article_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Article marked as not interested\"\n}",
+                            "name": "success"
                         }
                     ]
                 },
@@ -379,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"quia\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"qui\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -902,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "tempora",
+                                            "value": "minus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1002,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"consequatur\",\"violation_type\":\"fugiat\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"repudiandae\",\"violation_type\":\"dolore\"}"
                                 },
                                 "description": ""
                             },
@@ -1127,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "ut",
+                                            "value": "et",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2002,7 +2037,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "1",
+                                    "value": "2",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2255,7 +2290,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "nobis",
+                                            "value": "voluptas",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3038,7 +3073,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "18",
+                                    "value": "13",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3150,7 +3185,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -3191,7 +3226,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":9}"
                                 },
                                 "description": ""
                             },
@@ -3290,7 +3325,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"inventore\",\"violation_level\":\"et\",\"violation_type\":\"delectus\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"nobis\",\"violation_level\":\"est\",\"violation_type\":\"voluptatem\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3447,7 +3482,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"placeat\"}"
+                            "raw": "{\"reason\":\"fugiat\"}"
                         },
                         "description": ""
                     },
@@ -3490,7 +3525,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"iusto\"}"
+                            "raw": "{\"user_ids\":\"est\"}"
                         },
                         "description": ""
                     },
@@ -3961,7 +3996,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

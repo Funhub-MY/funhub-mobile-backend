@@ -364,6 +364,41 @@ class ArticleController extends Controller
     }
 
     /**
+     * Hide Article When Not Interested By user
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group Article
+     * @bodyParam article_id integer required Article Id. Example: 1
+     * @response scenario=success {
+     * "message": "Article marked as not interested"
+     * }
+     */
+    public function postNotInterestedArticle(Request $request)
+    {
+        $this->validate($request, [
+            'article_id' => 'required',
+        ]);
+
+        $article = Article::find($request->article_id);
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        $article->hiddenUsers()->syncWithoutDetaching(auth()->user()->id);
+
+        // remove from article ranks of user
+        auth()->user()->articleRanks()->where('article_id', $article->id)->delete();
+
+        return response()->json([
+            'message' => 'Article marked as not interested'
+        ]);
+    }
+
+    /**
      * Create New Article
      *
      * @param  \Illuminate\Http\Request  $request

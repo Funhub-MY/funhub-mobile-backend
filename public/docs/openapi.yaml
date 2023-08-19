@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 3
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: veritatis
+                  example: rerum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quia
+                  example: aut
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -355,6 +355,47 @@ paths:
                 - reason
                 - violation_type
                 - article
+  /api/v1/articles/not_interested:
+    post:
+      summary: 'Hide Article When Not Interested By user'
+      operationId: hideArticleWhenNotInterestedByUser
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Article marked as not interested'
+                properties:
+                  message:
+                    type: string
+                    example: 'Article marked as not interested'
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_id:
+                  type: integer
+                  description: 'Article Id.'
+                  example: 1
+              required:
+                - article_id
   /api/v1/articles/tagged_users:
     get:
       summary: 'Get Tagged users of article'
@@ -475,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - quia
+                    - qui
                   items:
                     type: string
                 category_ids:
@@ -1175,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: tempora
+        example: minus
         required: true
         schema:
           type: string
@@ -1270,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: consequatur
+                  example: repudiandae
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: fugiat
+                  example: dolore
               required:
                 - comment_id
                 - reason
@@ -1545,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: ut
+        example: et
         required: true
         schema:
           type: string
@@ -2411,7 +2452,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 1
+        example: 2
         required: true
         schema:
           type: integer
@@ -2746,7 +2787,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: nobis
+        example: voluptas
         required: true
         schema:
           type: string
@@ -3483,7 +3524,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 18
+        example: 13
         required: true
         schema:
           type: integer
@@ -3655,7 +3696,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 1
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3708,7 +3749,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 19
+                  example: 9
               required:
                 - user_id
   /api/v1/user/report:
@@ -3755,15 +3796,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: inventore
+                  example: nobis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: est
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: delectus
+                  example: voluptatem
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3908,7 +3949,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: placeat
+                  example: fugiat
               required:
                 - reason
   /api/v1/users_by_id:
@@ -3949,7 +3990,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: iusto
+                  example: est
               required:
                 - user_ids
     parameters:
@@ -4577,7 +4618,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

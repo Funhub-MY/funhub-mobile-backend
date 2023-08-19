@@ -26,6 +26,9 @@ class ArticleRecommenderService
                 $query->where('user_id', $this->user->id);
             }, 'categories'])
             ->where('user_id', '!=', $this->user->id)
+            ->whereDoesntHave('hiddenUsers', function ($query) {
+                $query->where('user_id', $this->user->id);
+            })
             ->get();
 
         // Get ID list
