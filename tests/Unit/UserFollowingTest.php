@@ -9,6 +9,7 @@ use App\Notifications\Newfollower;
 use App\Notifications\Userfollowed;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
@@ -113,7 +114,7 @@ class UserFollowingTest extends TestCase
 
         // check if the followers are the same as the users
         $this->assertEquals(
-            $users->pluck('id')->toArray(), 
+            $users->pluck('id')->toArray(),
             collect($response->json()['data'])->pluck('id')->toArray()
         );
     }
@@ -141,13 +142,13 @@ class UserFollowingTest extends TestCase
             ->assertJsonStructure([
                 'data'
             ]);
-        
+
         // assert should be 10 followings
         $this->assertCount(10, $response->json()['data']);
 
         // check if followings of logged in user id are same as the users id
         $this->assertEquals(
-            $users->pluck('id')->toArray(), 
+            $users->pluck('id')->toArray(),
             collect($response->json()['data'])->pluck('id')->toArray()
         );
 
@@ -183,7 +184,7 @@ class UserFollowingTest extends TestCase
 
         // assert the follower should be $this->user
         $this->assertEquals(
-            $this->user->id, 
+            $this->user->id,
             collect($response->json()['data'])->pluck('id')->first()
         );
     }
@@ -215,7 +216,7 @@ class UserFollowingTest extends TestCase
 
         // assert the follower should be $this->user
         $this->assertEquals(
-            $user->id, 
+            $user->id,
             collect($response->json()['data'])->pluck('id')->first()
         );
     }
@@ -240,5 +241,58 @@ class UserFollowingTest extends TestCase
                 return in_array('database', $channels);
             }
         );
+    }
+
+    public function testUnfollowDetachTaggedInArticles()
+    {
+        $user = User::factory()->create();
+
+        // $this->user follows this $user first
+        $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        // create article and tag $this->user in it
+         // create article with users tagged
+         $this->actingAs($user);
+         // upload images first
+         $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'tagged_user_ids' => [$this->user->id],
+        ]);
+        $articleId = $response->json('article.id');
+
+        // back to acting $this->user
+        $this->actingAs($this->user);
+
+        // $this->user nfollows $user
+        $response = $this->postJson('/api/v1/user/unfollow', [
+            'user_id' => $user->id,
+        ]);
+
+        // check if see article taggedUsers do not have $this->user
+        $this->assertDatabaseMissing('articles_tagged_users', [
+            'article_id' => $articleId,
+            'user_id' => $this->user->id,
+        ]);
     }
 }

@@ -544,6 +544,11 @@ class ArticleController extends Controller
             ->first();
 
         if ($location) {
+            // if article has previous location, detach it first
+            if ($article->location) {
+                $article->location()->detach(); // detaches all
+            }
+
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
         } else {
