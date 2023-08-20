@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserBlockResource;
+use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Interaction;
@@ -246,9 +247,16 @@ class UserController extends Controller
         $blockedUsers = UserBlock::where('user_id', auth()->id())
             ->where('blockable_type', User::class)
             ->with('blockable')
+            ->get();
+
+        if (!$blockedUsers) {
+            return response()->json(['message' => 'No blocked users'], 404);
+        }
+
+        $users = User::whereIn('id', $blockedUsers->pluck('blockable_id')->toArray())
             ->paginate(config('app.paginate_per_page'));
 
-        return UserBlockResource::collection($blockedUsers);
+        return UserResource::collection($users);
     }
 
 
