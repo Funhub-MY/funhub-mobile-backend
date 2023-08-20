@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 
 class CommentResource extends JsonResource
 {
@@ -15,6 +16,13 @@ class CommentResource extends JsonResource
      */
     public function toArray($request)
     {
+        $commentBody = null;
+        if ($this->user->status == User::STATUS_ARCHIVED) {
+            $commentBody = '注销账号评论已被删除';
+        } else {
+            $commentBody = $this->body;
+        }
+
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
@@ -24,7 +32,7 @@ class CommentResource extends JsonResource
                 'likes' => $this->likes()->count(),
                 'replies' => $this->replies()->count(),
             ],
-            'body' => $this->body,
+            'body' => $commentBody,
             'liked_by_user' => $this->likes->contains('user_id', auth()->id()),
             'likes' => CommentLikeResource::collection($this->likes),
             'replies' => CommentResource::collection($this->replies),

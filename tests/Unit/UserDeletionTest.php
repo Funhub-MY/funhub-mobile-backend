@@ -63,27 +63,16 @@ class UserDeletionTest extends TestCase
             'message' => 'Account deleted successfully.'
         ]);
 
-        // assert user is has been soft deleted
-        $this->assertSoftDeleted('users', [
-            'id' => $this->user->id
+        // assert user is has been status marked as archived
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'status' => User::STATUS_ARCHIVED
         ]);
 
         // assert articles by user has been archived
         $this->assertDatabaseHas('articles', [
             'user_id' => $this->user->id,
             'status' => Article::STATUS_ARCHIVED
-        ]);
-
-        // assert comments by user has been hidden
-        $this->assertDatabaseHas('comments', [
-            'user_id' => $this->user->id,
-            'status' => Comment::STATUS_HIDDEN
-        ]);
-
-        // assert interactions by user has been hidden
-        $this->assertDatabaseHas('interactions', [
-            'user_id' => $this->user->id,
-            'status' => Interaction::STATUS_HIDDEN
         ]);
 
         // check user account deletion has record for this user

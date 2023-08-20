@@ -48,13 +48,18 @@ class ReleaseFailedMerchantOffers extends Command
                     'transaction' => $transaction->toArray(),
                 ]);
 
-                $claim = MerchantOffer::where('id', $transaction->transactionable_id)->claims()->wherePivot('user_id', $transaction->user_id)->first();
+                $claim = MerchantOffer::where('id', $transaction->transactionable_id)->claims()
+                    ->wherePivot('user_id', $transaction->user_id)->first();
+
                 if ($claim) {
                     try {
                         $merchantOffer = MerchantOffer::find($transaction->transactionable_id);
+                        $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
+                            'status' => \App\Models\MerchantOffer::CLAIM_FAILED
+                        ]);
                         $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
                         $merchantOffer->save();
-    
+
                         Log::info('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
                             'transaction' => $transaction->toArray(),
                             'merchant_offer' => $transaction->transactionable->toArray(),

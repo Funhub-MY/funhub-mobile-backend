@@ -57,6 +57,11 @@ class UserController extends Controller
         if (auth()->user()->isBlocking($user) || $user->isBlocking(auth()->user())) {
             return response()->json(['message' => 'User not found'], 404);
         }
+
+        // if user status is archived, 404
+        if ($user->status == User::STATUS_ARCHIVED) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
         return new \App\Http\Resources\UserResource($user);
     }
 
@@ -298,15 +303,15 @@ class UserController extends Controller
             'status' => Article::STATUS_ARCHIVED
         ]);
 
-        // archive all comments by this user
-        $user->comments()->update([
-            'status' => Comment::STATUS_HIDDEN
-        ]);
+        // // archive all comments by this user
+        // $user->comments()->update([
+        //     'status' => Comment::STATUS_HIDDEN
+        // ]);
 
-        // archive all interactions by this user
-        $user->interactions()->update([
-            'status' => Interaction::STATUS_HIDDEN
-        ]);
+        // // archive all interactions by this user
+        // $user->interactions()->update([
+        //     'status' => Interaction::STATUS_HIDDEN
+        // ]);
 
         // remove user's from any UserBlock
         UserBlock::where('blockable_id', $user->id)
@@ -350,10 +355,8 @@ class UserController extends Controller
         $user->phone_country_code = null;
         $user->email = null;
         $user->password = null;
+        $user->status = User::STATUS_ARCHIVED;
         $user->save();
-
-        // soft deletes user
-        $user->delete();
 
         return response()->json(['message' => 'Account deleted successfully.']);
     }

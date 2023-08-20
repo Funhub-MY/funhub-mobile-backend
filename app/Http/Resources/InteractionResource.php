@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\UserResource;
 use App\Models\Interaction;
+use App\Models\User;
 
 class InteractionResource extends JsonResource
 {
@@ -16,12 +17,22 @@ class InteractionResource extends JsonResource
      */
     public function toArray($request)
     {
+        $name = null;
+        $avatar = null;
+        if ($this->user->status == User::STATUS_ARCHIVED) {
+            $name = '用户已注销';
+            $avatar = null;
+        } else {
+            $name = $this->user->name;
+            $avatar = $this->user->avatar_url;
+        }
+
         return [
             'id' => $this->id,
             'user' => [
                 'id' => $this->user->id,
-                'name' => $this->user->name,
-                'avatar' => $this->user->avatar_url,
+                'name' => $name,
+                'avatar' => $avatar,
             ],
             'type' => $this->type,
             'created_at' => $this->created_at,

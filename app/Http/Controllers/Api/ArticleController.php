@@ -301,6 +301,8 @@ class ArticleController extends Controller
 
         $this->buildQuery($query, $request);
 
+        $this->filterArticlesBlockedOrHidden($query);
+
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
 
