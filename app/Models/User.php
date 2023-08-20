@@ -451,4 +451,15 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return $this->usersBlocked()->where('blockable_id', $user->id)->exists();
     }
+
+    /**
+     * Unfollow a user
+     *
+     * @param User $user
+     * @return void
+     */
+    public function unfollow($user)
+    {
+        return $this->followings()->detach($user->id);
+    }
 }

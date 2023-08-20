@@ -173,4 +173,65 @@ class UserBlockTest extends TestCase
         // check this->user->userBlocks has no record
         $this->assertNull($this->user->usersBlocked()->first());
     }
+
+    public function testUserBlockAndUnfollow()
+    {
+        // create another user
+        $userToBlock = User::factory()->create();
+
+        // follow each other
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $userToBlock->id,
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // act as $user
+        Sanctum::actingAs($userToBlock,['*']);
+        // follow $this->user
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $this->user->id,
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // act as $this->user
+        Sanctum::actingAs($this->user,['*']);
+        // block $userToBlock
+        $response = $this->postJson('/api/v1/user/block', [
+            'user_id' => $userToBlock->id,
+            'reason' => 'spam'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // ensure user followers dont have $userToBlock
+        $response = $this->getJson('/api/v1/user/followers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+        foreach ($response->json('data') as $follower) {
+            $this->assertNotEquals($follower['id'], $userToBlock->id);
+        }
+
+        // vice versa, ensure userToBlock followers dont have $this->user
+        // act as $userToBlock
+        Sanctum::actingAs($userToBlock,['*']);
+        $response = $this->getJson('/api/v1/user/followers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+        foreach ($response->json('data') as $follower) {
+            $this->assertNotEquals($follower['id'], $this->user->id);
+        }
+    }
 }

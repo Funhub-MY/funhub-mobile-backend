@@ -183,6 +183,10 @@ class UserController extends Controller
                 'blockable_id' => $userToBlock->id // person i block
             ]);
 
+            // unfollow each other
+            $userToBlock->unfollow(auth()->user());
+            auth()->user()->unfollow($userToBlock);
+
             return response()->json(['message' => 'User blocked']);
         } else {
             return response()->json(['message' => 'You have already blocked this user'], 422);
