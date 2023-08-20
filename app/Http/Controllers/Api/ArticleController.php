@@ -238,7 +238,7 @@ class ArticleController extends Controller
         $query = Article::published()->where('id', $request->article_id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
-            })->first();
+            });
 
         // ensure user is not blocked by auth()->user()
         $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
