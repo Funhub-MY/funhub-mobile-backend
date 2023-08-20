@@ -141,7 +141,6 @@ class UserFollowingController extends Controller
     {
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
-
         $followings = $user->followings()
             ->paginate(config('app.paginate_per_page'));
 

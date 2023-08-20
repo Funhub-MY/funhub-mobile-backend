@@ -48,7 +48,7 @@ class UserResource extends JsonResource
             'has_avatar' => $this->hasMedia('avatar'),
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
-            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false
+            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
         ];
     }
 }

@@ -272,6 +272,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             ->where('blockable_type', User::class);
     }
 
+    public function blockedBy()
+    {
+        return $this->hasMany(UserBlock::class, 'blockable_id')
+            ->where('blockable_type', User::class);
+    }
+
     public function articleRanks()
     {
         return $this->hasMany(UserArticleRank::class, 'user_id');

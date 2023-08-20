@@ -87,6 +87,22 @@ class CommentController extends Controller
             ->withCount('replies', 'likes')
             ->published();
 
+        // get my blocked users
+        $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
+        $peopleWhoBlockedMeIds = auth()->user()->blockedBy()->pluck('user_id')->toArray();
+
+        Log::info('myBlockedUserIds', $myBlockedUserIds);
+        Log::info('peopleWhoBlockedMeIds', $peopleWhoBlockedMeIds);
+
+        // filter out my blocked users ids comments and its replies
+        $query->whereNotIn('user_id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)));
+
+        // filter out if replies parent user_id is someone i blocked
+        // $query->whereDoesntHave('replies.user.usersBlocked', function ($query) {
+        //     $query->where('user_id', auth()->id())
+        //         ->orWhere('blockable_id', auth()->id());
+        // });
+
         $data = $query->paginate(config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
