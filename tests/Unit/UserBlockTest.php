@@ -369,4 +369,80 @@ class UserBlockTest extends TestCase
         // ensure meta.total is 3
         $this->assertEquals(3, $response->json('meta.total'));
     }
+
+    /**
+     * Test block user and should not see each other in article tagged users
+     *
+     * @return void
+     */
+    public function testBlockUserAndShouldNotSeeEachOtherInArticleTag()
+    {
+        // create a user to block
+        $userToBlock = User::factory()->create();
+        // create third party user
+        $thirdPartyUser = User::factory()->create();
+
+        // acting as third party user create an article with 3 users tagged
+        Sanctum::actingAs($thirdPartyUser,['*']);
+        $article = Article::factory()->published()->create([
+            'user_id' => $thirdPartyUser->id,
+        ]);
+
+        $article->taggedUsers()->attach([$this->user->id, $userToBlock->id, $thirdPartyUser->id]);
+
+        // acting as $this->user block $userToBlock
+        Sanctum::actingAs($this->user,['*']);
+        $response = $this->postJson('/api/v1/user/block', [
+            'user_id' => $userToBlock->id,
+            'reason' => 'spam'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // get article tagged users
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id=' . $article->id);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // ensure $userToBlock is not in the list
+        foreach ($response->json('data') as $taggedUser) {
+            $this->assertNotEquals($taggedUser['id'], $userToBlock->id);
+        }
+
+        // ensure meta.total is 2
+        // act as userToBlock to get tagged users
+        Sanctum::actingAs($userToBlock,['*']);
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id=' . $article->id);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // ensure $this->user is not in the list
+        foreach ($response->json('data') as $taggedUser) {
+            $this->assertNotEquals($taggedUser['id'], $this->user->id);
+        }
+
+        // third party should see all 3
+        Sanctum::actingAs($thirdPartyUser,['*']);
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id=' . $article->id);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // ensure meta.total is 3
+        $this->assertEquals(3, $response->json('meta.total'));
+
+        // ensure all 3 users are in the list
+        foreach ($response->json('data') as $taggedUser) {
+            $this->assertContains($taggedUser['id'], [$this->user->id, $userToBlock->id, $thirdPartyUser->id]);
+        }
+    }
+
 }

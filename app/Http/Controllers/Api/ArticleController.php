@@ -235,10 +235,16 @@ class ArticleController extends Controller
         ]);
 
         // ensure user has access to this articles to load tagged users
-        $article = Article::published()->where('id', $request->article_id)
+        $query = Article::published()->where('id', $request->article_id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             })->first();
+
+        // ensure user is not blocked by auth()->user()
+        $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
+        $peopleWhoBlockedMeIds = auth()->user()->blockedBy()->pluck('user_id')->toArray();
+
+        $article = $query->first();
 
         if (!$article) {
             return response()->json([
@@ -246,7 +252,9 @@ class ArticleController extends Controller
             ], 404);
         }
 
-        $taggedUsers = $article->taggedUsers()->paginate(config('app.paginate_per_page'));
+        $taggedUsers = $article->taggedUsers()
+            ->whereNotIn('users.id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)))
+            ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($taggedUsers);
     }
