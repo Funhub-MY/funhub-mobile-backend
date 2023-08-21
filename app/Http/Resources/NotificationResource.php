@@ -32,7 +32,7 @@ class NotificationResource extends JsonResource
                     $article_id = $article->id;
                     $article_type = $article->type;
                     $media = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
-                    if ($media)
+                    if ($media) {
                         $article_cover = $media->getFullUrl();
                     }
                 }
@@ -42,7 +42,7 @@ class NotificationResource extends JsonResource
                     $article_id = $article->id;
                     $article_type = $article->type;
                     $media = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
-                    if ($media)
+                    if ($media) {
                         $article_cover = $media->getFullUrl();
                     }
                 }
