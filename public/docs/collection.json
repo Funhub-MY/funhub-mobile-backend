@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "6c52b15c-e206-4968-a4b8-b1004f056daa",
+        "_postman_id": "cbadb3e0-39ef-4e1a-9932-f0a8143b009e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":3,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"rerum\",\"violation_level\":\"aut\",\"article\":1}"
+                                    "raw": "{\"article_id\":2,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eius\",\"violation_level\":\"labore\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"qui\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"a\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "minus",
+                                            "value": "vel",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"repudiandae\",\"violation_type\":\"dolore\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"quibusdam\",\"violation_type\":\"consequatur\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "et",
+                                            "value": "tenetur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2037,7 +2037,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "2",
+                                    "value": "4",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2290,7 +2290,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "voluptas",
+                                            "value": "vitae",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3073,7 +3073,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "13",
+                                    "value": "11",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3123,8 +3123,15 @@
                                 "url": {
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/user\/followings",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings",
+                                    "query": [
+                                        {
+                                            "key": "query",
+                                            "value": "John",
+                                            "description": "optional Search query for name of followings.",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings?query=John",
                                     "variable": [
                                         {
                                             "id": "user_id",
@@ -3185,7 +3192,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -3226,7 +3233,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -3257,8 +3264,15 @@
                                 "url": {
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/user\/followers",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers",
+                                    "query": [
+                                        {
+                                            "key": "query",
+                                            "value": "John",
+                                            "description": "optional Search query for name of followers.",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers?query=John",
                                     "variable": [
                                         {
                                             "id": "user_id",
@@ -3325,7 +3339,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"nobis\",\"violation_level\":\"est\",\"violation_type\":\"voluptatem\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"deserunt\",\"violation_level\":\"molestias\",\"violation_type\":\"minus\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3482,7 +3496,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"fugiat\"}"
+                            "raw": "{\"reason\":\"quod\"}"
                         },
                         "description": ""
                     },
@@ -3525,7 +3539,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"est\"}"
+                            "raw": "{\"user_ids\":\"qui\"}"
                         },
                         "description": ""
                     },
@@ -3996,7 +4010,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"female\"}"
+                            "raw": "{\"gender\":\"male\"}"
                         },
                         "description": ""
                     },

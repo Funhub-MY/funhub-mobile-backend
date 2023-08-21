@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 2
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: rerum
+                  example: eius
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: labore
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - qui
+                    - a
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: minus
+        example: vel
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: repudiandae
+                  example: quibusdam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dolore
+                  example: consequatur
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: et
+        example: tenetur
         required: true
         schema:
           type: string
@@ -2452,7 +2452,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 2
+        example: 4
         required: true
         schema:
           type: integer
@@ -2787,7 +2787,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: voluptas
+        example: vitae
         required: true
         schema:
           type: string
@@ -3524,7 +3524,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 13
+        example: 11
         required: true
         schema:
           type: integer
@@ -3542,6 +3542,16 @@ paths:
       operationId: getAllFollowingsOfUserIdOrLoggedInUser
       description: ''
       parameters:
+        -
+          in: query
+          name: query
+          description: 'optional Search query for name of followings.'
+          example: John
+          required: false
+          schema:
+            type: string
+            description: 'optional Search query for name of followings.'
+            example: John
         -
           in: header
           name: Authorization
@@ -3597,6 +3607,16 @@ paths:
       operationId: getAllFollowersOfUserIdOrLoggedInUser
       description: ''
       parameters:
+        -
+          in: query
+          name: query
+          description: 'optional Search query for name of followers.'
+          example: John
+          required: false
+          schema:
+            type: string
+            description: 'optional Search query for name of followers.'
+            example: John
         -
           in: header
           name: Authorization
@@ -3696,7 +3716,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 1
+                  example: 12
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3749,7 +3769,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 13
               required:
                 - user_id
   /api/v1/user/report:
@@ -3796,15 +3816,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: nobis
+                  example: deserunt
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: est
+                  example: molestias
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptatem
+                  example: minus
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -3949,7 +3969,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: fugiat
+                  example: quod
               required:
                 - reason
   /api/v1/users_by_id:
@@ -3990,7 +4010,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: est
+                  example: qui
               required:
                 - user_ids
     parameters:
@@ -4618,7 +4638,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:

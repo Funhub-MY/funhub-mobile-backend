@@ -187,6 +187,16 @@ class UserFollowingTest extends TestCase
             $this->user->id,
             collect($response->json()['data'])->pluck('id')->first()
         );
+
+        // get my followers with name
+        $response = $this->getJson('/api/v1/user/followers?user_id=' . $user->id . '&query=' . $this->user->name);
+        $this->assertCount(1, $response->json()['data']);
+
+         // assert the follower should be $this->user
+         $this->assertEquals(
+            $this->user->id,
+            collect($response->json()['data'])->pluck('id')->first()
+        );
     }
 
 
@@ -216,6 +226,16 @@ class UserFollowingTest extends TestCase
 
         // assert the follower should be $this->user
         $this->assertEquals(
+            $user->id,
+            collect($response->json()['data'])->pluck('id')->first()
+        );
+
+        // get my followers with name
+        $response = $this->getJson('/api/v1/user/followings?user_id=' . $this->user->id . '&query=' . $user->name);
+        $this->assertCount(1, $response->json()['data']);
+
+         // assert the follower should be $this->user
+         $this->assertEquals(
             $user->id,
             collect($response->json()['data'])->pluck('id')->first()
         );
