@@ -110,7 +110,7 @@ class AuthController extends Controller
             'country_code' => 'required|string',
             'phone_no' => 'required|string',
         ]);
-        
+
         // check if start with 0 or 60 for phone_no, remove it first
         if (substr($request->phone_no, 0, 1) == '0') {
             $request->merge(['phone_no' => substr($request->phone_no, 1)]);
@@ -522,11 +522,23 @@ class AuthController extends Controller
             }
 
             $user->email = $firebase_user->email;
-            if ($firebase_user->providerData[0]->providerId == 'google.com') {
+
+            // Save IDs to associated fields in DB for social providers
+            if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
                 $user->google_id = $firebase_user->providerData[0]->uid;
-            } else {
+            } else if ($firebase_user->providerData[0]->providerId == 'facebook.com'){ // Facebook Login
                 // need to get facebook_id.
                 $user->facebook_id = $firebase_user->uid; // use uid at the moment.
+            } else if ($firebase_user->providerData[0]->providerId == 'apple.com') { // Apple Login
+                // password login
+                try {
+                    $user->apple_id = $firebase_user->providerData[0]->uid;
+                } catch (\Exception $e) {
+                    Log::error($e->getMessage(), [
+                        'providerData' => $firebase_user->providerData
+                    ]);
+                }
+                $user->apple_id = $firebase_user->uid; // use uid at the moment.
             }
             $user->save();
         }
@@ -557,10 +569,10 @@ class AuthController extends Controller
 
     /**
      * Reset Password Send NEW OTP (Step 1)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
      *
@@ -569,7 +581,7 @@ class AuthController extends Controller
      * "status": "success",
      * "message": "OTP sent successfully"
      * }
-     * 
+     *
      */
     public function postResetPasswordSendOtp(Request $request) {
         $this->validate($request, [
@@ -611,10 +623,10 @@ class AuthController extends Controller
 
     /**
      * Reset Password with OTP (Step 2)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Authentication
      * @unauthenticated
      *
