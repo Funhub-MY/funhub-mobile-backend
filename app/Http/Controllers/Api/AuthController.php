@@ -495,16 +495,19 @@ class AuthController extends Controller
         }
 
         $socialid = null;
-        if ($firebase_user->providerData[0]->providerId == 'google.com') {
+        if ($firebase_user->providerData[0]->providerId == 'google.com' || $firebase_user->providerData[0]->providerId == 'apple.com') {
             $socialid = $firebase_user->providerData[0]->uid;
+            Log::info('socialid via provider data: ' . $socialid);
         } else {
             // need to get facebook_id.
             $socialid = $firebase_user->uid; // use uid at the moment.
+            Log::info('socialid via uid: ' . $socialid);
         }
 
         //check if the user already exists in the database
         $user = User::where('google_id', $socialid)
             ->orWhere('facebook_id', $socialid)
+            ->orWhere('apple_id', $socialid)
             ->first();
 
         if(!$user) {
