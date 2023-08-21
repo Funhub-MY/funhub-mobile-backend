@@ -31,14 +31,20 @@ class NotificationResource extends JsonResource
                 if ($article) {
                     $article_id = $article->id;
                     $article_type = $article->type;
-                    $article_cover = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first()->getFullUrl();
+                    $media = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
+                    if ($media)
+                        $article_cover = $media->getFullUrl();
+                    }
                 }
             } else if ($this->data['object'] == Interaction::class) {
                 $article = $object->interactable;
                 if ($article) {
                     $article_id = $article->id;
                     $article_type = $article->type;
-                    $article_cover = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first()->getFullUrl();
+                    $media = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
+                    if ($media)
+                        $article_cover = $media->getFullUrl();
+                    }
                 }
             }
         }
