@@ -28,8 +28,16 @@ endpoints:
         custom: []
     cleanUrlParameters:
       user_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      query:
+        name: query
+        description: 'optional Search query for name of followings.'
+        required: false
+        example: John
+        type: string
+        custom: []
+    cleanQueryParameters:
+      query: John
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -53,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kedahacDVZvg185bE66fP43'
+      - 'Bearer cPeg6fd5kD3VbZ41Eh86aav'
     controller: null
     method: null
     route: null
@@ -85,8 +93,16 @@ endpoints:
         custom: []
     cleanUrlParameters:
       user_id: 1
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      query:
+        name: query
+        description: 'optional Search query for name of followers.'
+        required: false
+        example: John
+        type: string
+        custom: []
+    cleanQueryParameters:
+      query: John
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -110,7 +126,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f6bhP4Vk81vZdD6Eaagce53'
+      - 'Bearer Vg3fEDavZhk615Paed846cb'
     controller: null
     method: null
     route: null
@@ -167,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1DVf3686ZEhkvdc4aePg5ba'
+      - 'Bearer ava6fd6Pkc3EZhb45Dg1e8V'
     controller: null
     method: null
     route: null
@@ -198,11 +214,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 15
+        example: 13
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 15
+      user_id: 13
     fileParameters: []
     responses:
       -
@@ -224,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eEbd3g4f6hacVkZ156Dv8aP'
+      - 'Bearer Pbf6DeZ3avgh56Vdca418kE'
     controller: null
     method: null
     route: null
@@ -262,21 +278,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: minus
+        example: deserunt
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: animi
+        example: molestias
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: et
+        example: minus
         type: required
         custom: []
       also_block_user:
@@ -288,9 +304,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: minus
-      violation_level: animi
-      violation_type: et
+      reason: deserunt
+      violation_level: molestias
+      violation_type: minus
       also_block_user: true
     fileParameters: []
     responses:
@@ -319,7 +335,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZ4g1ch6aEVPbde5D83fv6a'
+      - 'Bearer aDbed1kVv85g34a6PZ6cEhf'
     controller: null
     method: null
     route: null
@@ -378,7 +394,152 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D34cVaf6h6dZk8evbgPEa51'
+      - 'Bearer 8vEefkhPb1DZcga63a64d5V'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/unblock
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Unblock a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User unblocked",
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer va1V6g5dbecfE6Pha4kZD83'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/my_blocked_users
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Get My Blocked Users List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6d6E4ak58ebZDfa1VvPhcg3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/delete
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete My Account'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: quod
+        type: string
+        custom: []
+    cleanBodyParameters:
+      reason: quod
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Account deleted successfully."
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D65P6dfcaabevVk1Z4ghE83'
     controller: null
     method: null
     route: null
@@ -417,11 +578,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: fuga
+        example: qui
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: fuga
+      user_ids: qui
     fileParameters: []
     responses:
       -
@@ -438,7 +599,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5baefkdcVPh814Ev36ag6D'
+      - 'Bearer eVkc8gv616d5aZDa3PE4hfb'
     controller: null
     method: null
     route: null
@@ -497,7 +658,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Pc6DV583aebaEhgfdk1vZ4'
+      - 'Bearer 4DVfg5abh1vad6cZ8eEk3P6'
     controller: null
     method: null
     route: null

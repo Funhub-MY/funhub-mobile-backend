@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserBlockResource;
+use App\Http\Resources\UserResource;
+use App\Models\Article;
+use App\Models\Comment;
+use App\Models\Interaction;
+use App\Models\Location;
+use App\Models\LocationRating;
 use App\Models\User;
 use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -36,21 +44,24 @@ class UserController extends Controller
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group User
      * @urlParam user required The id of the user. Example: 1
      * @response scenario=success {
      * "data": {
      * }
-     * 
+     *
      */
     public function show(User $user)
     {
-        // ensure user is not blocked 
-        if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
-            return response()->json([
-                'message' => 'You are blocked by user'
-            ], 403);
+        // ensure user is not blocking me or i'm blocking this user
+        if (auth()->user()->isBlocking($user) || $user->isBlocking(auth()->user())) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // if user status is archived, 404
+        if ($user->status == User::STATUS_ARCHIVED) {
+            return response()->json(['message' => 'User not found'], 404);
         }
         return new \App\Http\Resources\UserResource($user);
     }
@@ -138,10 +149,10 @@ class UserController extends Controller
 
     /**
      * Block a user
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return JsonResponse
-     * 
+     *
      * @group User
      * @subgroup Blocks
      * @bodyParam user_id integer required The id of the user. Example: 1
@@ -150,7 +161,7 @@ class UserController extends Controller
      * "message": "User blocked",
      * }
      */
-    public function postBlockUser(Request $request) 
+    public function postBlockUser(Request $request)
     {
         $request->validate([
             'user_id' => 'required|integer',
@@ -167,10 +178,15 @@ class UserController extends Controller
         if (!$userBlockedByMe) {
             // create block
             UserBlock::create([
-                'user_id' => auth()->id(),
-                'blockable_type' => User::class,
-                'blockable_id' => $userToBlock->id
+                'user_id' => auth()->id(), // self
+                'reason' => $request->input('reason'),
+                'blockable_type' => User::class, // type of blockable
+                'blockable_id' => $userToBlock->id // person i block
             ]);
+
+            // unfollow each other
+            $userToBlock->unfollow(auth()->user());
+            auth()->user()->unfollow($userToBlock);
 
             return response()->json(['message' => 'User blocked']);
         } else {
@@ -178,13 +194,78 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Unblock a user
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group User
+     * @subgroup Blocks
+     * @bodyParam user_id integer required The id of the user. Example: 1
+     * @response scenario=success {
+     * "message": "User unblocked",
+     * }
+     */
+    public function postUnblockUser(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+        ]);
+
+        $userToUnblock = User::where('id', request('user_id'))->firstOrFail();
+
+        $userBlockedByMe = UserBlock::where('user_id', auth()->id())
+            ->where('blockable_type', User::class)
+            ->where('blockable_id', $userToUnblock->id)
+            ->first();
+
+        if ($userBlockedByMe) {
+            // delete block
+            $userBlockedByMe->delete();
+
+            return response()->json(['message' => 'User unblocked']);
+        } else {
+            return response()->json(['message' => 'You have not blocked this user'], 422);
+        }
+    }
+
+    /**
+     * Get My Blocked Users List
+     *
+     * @return void
+     *
+     * @group User
+     * @subgroup Blocks
+     * @response scenario=success {
+     *  data: {}
+     * }
+     *
+     */
+    public function getMyBlockedUsers()
+    {
+        $blockedUsers = UserBlock::where('user_id', auth()->id())
+            ->where('blockable_type', User::class)
+            ->with('blockable')
+            ->get();
+
+        if (!$blockedUsers) {
+            return response()->json(['message' => 'No blocked users'], 404);
+        }
+
+        $users = User::whereIn('id', $blockedUsers->pluck('blockable_id')->toArray())
+            ->paginate(config('app.paginate_per_page'));
+
+        return UserResource::collection($users);
+    }
+
 
     /**
      * Get Users By IDs
-     * 
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return JsonResponse
-     * 
+     *
      * @group User
      * @urlParam user_ids required The ids of the users. Example: 1,2,3
      * @response scenario=success {
@@ -201,8 +282,94 @@ class UserController extends Controller
         // explode comma
         $user_ids = explode(',', request()->input('user_ids'));
 
+        // remove user if in auth()->user() blocked list
+        $user_ids = array_diff($user_ids, auth()->user()->usersBlocked()->pluck('blockable_id')->toArray());
+
         $users = User::whereIn('id', $user_ids)->get();
 
         return \App\Http\Resources\UserResource::collection($users);
+    }
+
+    /**
+     * Delete My Account
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group User
+     * @response scenario=success {
+     * "message": "Account deleted successfully."
+     * }
+     */
+    public function postDeleteAccount(Request $request)
+    {
+        $this->validate($request, [
+            'reason' => 'required|string'
+        ]);
+
+        // archive all articles by this user
+        $user = auth()->user();
+
+        // archive all articles by this user
+        $user->articles()->update([
+            'status' => Article::STATUS_ARCHIVED
+        ]);
+
+        // // archive all comments by this user
+        // $user->comments()->update([
+        //     'status' => Comment::STATUS_HIDDEN
+        // ]);
+
+        // // archive all interactions by this user
+        // $user->interactions()->update([
+        //     'status' => Interaction::STATUS_HIDDEN
+        // ]);
+
+        // remove user's from any UserBlock
+        UserBlock::where('blockable_id', $user->id)
+            ->where('blockable_type', User::class)
+            ->delete();
+
+        // delete user's article ranks
+        $user->articleRanks()->delete();
+
+        // delete user's location ratings
+        $locationRatings = LocationRating::where('user_id', $user->id)->get();
+        $locationIdsNeedRecalculateRatings = $locationRatings->pluck('location_id')->toArray();
+        // recalculate a location avg ratings
+        Location::whereIn('id', $locationIdsNeedRecalculateRatings)->get()->each(function ($location) {
+            $location->average_ratings = $location->ratings()->avg('rating');
+            $location->save();
+        });
+
+        // remove user_id from scout index
+        $user->unsearchable();
+
+        // add a new record for account deletion for backup purposes
+        $user->userAccountDeletion()->create([
+            'reason' => $request->input('reason'),
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'phone_no' => $user->phone_no,
+            'phone_country_code' => $user->phone_country_code,
+        ]);
+
+        Log::info('User Account Deleted', ['user_id' => $user->id]);
+
+        // unauthorize user
+        auth()->user()->tokens()->delete();
+
+        // unset user's phone_no, phone_country_code, email, password
+        $user->name = null;
+        $user->username = null;
+        $user->phone_no = null;
+        $user->phone_country_code = null;
+        $user->email = null;
+        $user->password = null;
+        $user->status = User::STATUS_ARCHIVED;
+        $user->save();
+
+        return response()->json(['message' => 'Account deleted successfully.']);
     }
 }

@@ -17,6 +17,7 @@ class Interaction extends Model
 
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISHED = 1;
+    const STATUS_HIDDEN = 2;
 
     const TYPE_LIKE = 1;
     const TYPE_DISLIKE = 2;
@@ -57,7 +58,7 @@ class Interaction extends Model
     /**
      * Scopes
      */
-    
+
     public function scopePublished()
     {
         return $this->where('status', self::STATUS_PUBLISHED);

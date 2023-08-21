@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Models\UserBlock;
 use Illuminate\Support\Arr;
 
 use function PHPSTORM_META\map;
@@ -61,9 +62,7 @@ class ArticleController extends Controller
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
-     * @bodyParam limit integer Per Page Limit Override. Example: 10
-     * @bodyParam offset integer Offset Override. Example: 0
-     *
+     * @bodyParam limit integer optional Per Page Limit Override. Example: 10
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -176,13 +175,41 @@ class ArticleController extends Controller
             }
         }
 
-        // $this->buildQuery($query, $request);
+        $this->filterArticlesBlockedOrHidden($query);
+
+        $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
-            ->paginate(config('app.paginate_per_page'));
+            ->paginate($paginatePerPage);
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Filter Articles Blocked Or Hidden by User
+     *
+     * @param QueryBuilder $query
+     * @return void
+     */
+    protected function filterArticlesBlockedOrHidden(&$query) : void
+    {
+        $excludedUserIds = [];
+        // if i'm in someone's blocked list, i should not able to see that user's articles
+        $usersBlocks = UserBlock::where('blockable_type', User::class)
+            ->where('blockable_id', auth()->user()->id)
+            ->get();
+
+        if ($usersBlocks) {
+            $articleOwnersThatBlockedMe = $usersBlocks->pluck('user_id')->toArray();
+            $excludedUserIds = array_merge($excludedUserIds, $articleOwnersThatBlockedMe);
+        }
+        // vice-versa: article owners should not see their blocked list articles
+        $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
+        if ($myBlockedUserIds) {
+            $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
+        }
+        $query->whereNotIn('user_id', $excludedUserIds);
     }
 
     /**
@@ -208,10 +235,16 @@ class ArticleController extends Controller
         ]);
 
         // ensure user has access to this articles to load tagged users
-        $article = Article::published()->where('id', $request->article_id)
+        $query = Article::published()->where('id', $request->article_id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
-            })->first();
+            });
+
+        // ensure user is not blocked by auth()->user()
+        $myBlockedUserIds = auth()->user()->usersBlocked()->pluck('blockable_id')->toArray();
+        $peopleWhoBlockedMeIds = auth()->user()->blockedBy()->pluck('user_id')->toArray();
+
+        $article = $query->first();
 
         if (!$article) {
             return response()->json([
@@ -219,7 +252,9 @@ class ArticleController extends Controller
             ], 404);
         }
 
-        $taggedUsers = $article->taggedUsers()->paginate(config('app.paginate_per_page'));
+        $taggedUsers = $article->taggedUsers()
+            ->whereNotIn('users.id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)))
+            ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($taggedUsers);
     }
@@ -273,6 +308,8 @@ class ArticleController extends Controller
         }
 
         $this->buildQuery($query, $request);
+
+        $this->filterArticlesBlockedOrHidden($query);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
             ->paginate(config('app.paginate_per_page'));
@@ -334,6 +371,41 @@ class ArticleController extends Controller
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Hide Article When Not Interested By user
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group Article
+     * @bodyParam article_id integer required Article Id. Example: 1
+     * @response scenario=success {
+     * "message": "Article marked as not interested"
+     * }
+     */
+    public function postNotInterestedArticle(Request $request)
+    {
+        $this->validate($request, [
+            'article_id' => 'required',
+        ]);
+
+        $article = Article::find($request->article_id);
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        $article->hiddenUsers()->syncWithoutDetaching(auth()->user()->id);
+
+        // remove from article ranks of user
+        auth()->user()->articleRanks()->where('article_id', $article->id)->delete();
+
+        return response()->json([
+            'message' => 'Article marked as not interested'
+        ]);
     }
 
     /**
@@ -482,6 +554,11 @@ class ArticleController extends Controller
             ->first();
 
         if ($location) {
+            // if article has previous location, detach it first
+            if ($article->location) {
+                $article->location()->detach(); // detaches all
+            }
+
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
         } else {

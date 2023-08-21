@@ -82,6 +82,17 @@ class UserFollowingController extends Controller
         // logged in user unfollow anothe user
         auth()->user()->followings()->detach($request->user_id);
 
+        $unfollowedUser = User::find($request->user_id);
+        if ($unfollowedUser) {
+            // detach myself from all articles of this user that i just unfollowed as i'm no longer a follower cant be tagged
+            $articlesImTaggedIn = $unfollowedUser->articles()->whereHas('taggedUsers', function ($query) use ($request) {
+                $query->where('user_id', auth()->user()->id);
+            })->get();
+            $articlesImTaggedIn->each(function ($article) {
+                $article->taggedUsers()->detach(auth()->user()->id);
+            });
+        }
+
         event(new UnfollowedUser(auth()->user(), User::find($request->user_id)));
 
         return response()->json([
@@ -97,6 +108,7 @@ class UserFollowingController extends Controller
      * @group User
      * @subgroup Followers
      * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
+     * @queryParam query string optional Search query for name of followers. Example: John
      * @response scenario="success" {
      * "followers": []
      * }
@@ -107,8 +119,12 @@ class UserFollowingController extends Controller
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
 
-        $followers = $user->followers()
-            ->paginate(config('app.paginate_per_page'));
+        $query = $user->followers();
+        if ($request->has('query')) {
+            $query->where('name', 'like', '%' . $request->input('query') . '%');
+        }
+
+        $followers = $query->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followers);
     }
@@ -121,6 +137,7 @@ class UserFollowingController extends Controller
      * @group User
      * @subgroup Followings
      * @urlParam user_id int optional The id of the user, if not provided will use Logged In User ID. Example: 1
+     * @queryParam query string optional Search query for name of followings. Example: John
      * @response scenario="success" {
      * "followings": []
      * }
@@ -130,9 +147,11 @@ class UserFollowingController extends Controller
     {
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
-
-        $followings = $user->followings()
-            ->paginate(config('app.paginate_per_page'));
+        $query = $user->followings();
+        if ($request->has('query')) {
+            $query->where('name', 'like', '%' . $request->input('query') . '%');
+        }
+        $followings = $query->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followings);
     }

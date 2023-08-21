@@ -240,7 +240,7 @@ class MerchantOfferTest extends TestCase
         // check gateway data as follow
         $this->assertArrayHasKey('url', $response->json('gateway_data'));
         $this->assertArrayHasKey('formData', $response->json('gateway_data'));
-        
+
         // check db if transaction is created
         $this->assertDatabaseHas('transactions', [
             'transaction_no' => $response->json('gateway_data')['formData']['invno'],
@@ -263,6 +263,70 @@ class MerchantOfferTest extends TestCase
         // check if current merchantoffer is already deducted 5
         $this->assertEquals(5, $offer->fresh()->quantity);
     }
+
+    /**
+     * Test checkout by fiat but failed, a command should run to release quantity after set
+     * amount of time
+     *
+     * @return void
+     */
+    // public function testCheckoutByFiatButFailedCommandShouldReleaseQuantity()
+    // {
+    //     // create a merchant offer with fiat
+    //     $offer = MerchantOffer::factory()->for($this->merchant->user)->create([
+    //         'fiat_price' => 150,
+    //         'discounted_fiat_price' => 120,
+    //         'currency' => 'MYR',
+    //         'quantity' => 10
+    //     ]);
+
+    //     // user claims this offer for 5 units first
+    //     $response = $this->postJson('/api/v1/merchant/offers/claim', [
+    //         'offer_id' => $offer->id,
+    //         'quantity' => 5,
+    //         'payment_method' => 'fiat',
+    //         'fiat_payment_method' => 'fpx'
+    //     ]);
+
+    //     // expect 200 response
+    //     $response->assertStatus(200)
+    //         ->assertJsonStructure([
+    //             'message',
+    //             'gateway_data'
+    //         ]);
+
+    //     // check gateway data as follow
+    //     $this->assertArrayHasKey('url', $response->json('gateway_data'));
+    //     $this->assertArrayHasKey('formData', $response->json('gateway_data'));
+
+    //     // check offer now has 5 left
+    //     $this->assertEquals(5, $offer->fresh()->quantity);
+
+    //     // mock time to 1 hour later
+    //     Carbon::setTestNow(now()->addHour());
+
+    //     // trigger command to release quantity
+    //     $this->artisan('merchant-offers:release');
+
+    //     // check offer now has 10 again
+    //     $this->assertEquals(10, $offer->fresh()->quantity);
+    //     // check if user claim data status is CLAIM_FAILED
+    //     $this->assertDatabaseHas('merchant_offer_user', [
+    //         'user_id' => $this->loggedInUser->id,
+    //         'merchant_offer_id' => $offer->id,
+    //         'quantity' => 5,
+    //         'status' => MerchantOffer::CLAIM_FAILED
+    //     ]);
+
+    //     // check transaction status is failed too
+    //     $this->assertDatabaseHas('transactions', [
+    //         'user_id' => $this->loggedInUser->id,
+    //         'transactionable_type' => MerchantOffer::class,
+    //         'transactionable_id' => $offer->id,
+    //         'status' => Transaction::STATUS_FAILED,
+    //         'payment_method' => 'fpx'
+    //     ]);
+    // }
 
     /**
      * Test Redeem Offer by Logged In User
@@ -369,7 +433,7 @@ class MerchantOfferTest extends TestCase
 
         // check if first data id is claim->id
         $this->assertEquals($claim_id, $response->json('data')[0]['id']);
-        
+
         // check if first data redeemed is true
         $this->assertEquals(true, $response->json('data')[0]['redeemed']);
     }

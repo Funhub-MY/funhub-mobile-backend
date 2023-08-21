@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "ad1aecc0-dca5-45c4-924c-101ed4d2613a",
+        "_postman_id": "cbadb3e0-39ef-4e1a-9932-f0a8143b009e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":19,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"consequatur\",\"violation_level\":\"iste\",\"article\":1}"
+                                    "raw": "{\"article_id\":2,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eius\",\"violation_level\":\"labore\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -273,6 +273,41 @@
                                     "name": "Invalid Form Fields"
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Hide Article When Not Interested By user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/articles\/not_interested",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/articles\/not_interested"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"article_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Article marked as not interested\"\n}",
+                            "name": "success"
                         }
                     ]
                 },
@@ -379,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"aperiam\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10,\"offset\":0}"
+                            "raw": "{\"article_ids\":[\"a\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -902,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "temporibus",
+                                            "value": "vel",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1002,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"veniam\",\"violation_type\":\"facilis\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"quibusdam\",\"violation_type\":\"consequatur\"}"
                                 },
                                 "description": ""
                             },
@@ -1127,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "error",
+                                            "value": "tenetur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2002,7 +2037,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "1",
+                                    "value": "4",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2255,7 +2290,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "qui",
+                                            "value": "vitae",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3038,7 +3073,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "1",
+                                    "value": "11",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3088,8 +3123,15 @@
                                 "url": {
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/user\/followings",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings",
+                                    "query": [
+                                        {
+                                            "key": "query",
+                                            "value": "John",
+                                            "description": "optional Search query for name of followings.",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followings?query=John",
                                     "variable": [
                                         {
                                             "id": "user_id",
@@ -3191,7 +3233,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -3222,8 +3264,15 @@
                                 "url": {
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/user\/followers",
-                                    "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers",
+                                    "query": [
+                                        {
+                                            "key": "query",
+                                            "value": "John",
+                                            "description": "optional Search query for name of followers.",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/followers?query=John",
                                     "variable": [
                                         {
                                             "id": "user_id",
@@ -3290,7 +3339,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"minus\",\"violation_level\":\"animi\",\"violation_type\":\"et\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"deserunt\",\"violation_level\":\"molestias\",\"violation_type\":\"minus\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3355,6 +3404,108 @@
                                     "name": "success"
                                 }
                             ]
+                        },
+                        {
+                            "name": "Unblock a user",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/unblock",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/unblock"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"user_id\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"User unblocked\",\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get My Blocked Users List",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/my_blocked_users",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/my_blocked_users"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n data: {}\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete My Account",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/delete"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"reason\":\"quod\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Account deleted successfully.\"\n}",
+                            "name": "success"
                         }
                     ]
                 },
@@ -3388,7 +3539,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"fuga\"}"
+                            "raw": "{\"user_ids\":\"qui\"}"
                         },
                         "description": ""
                     },

@@ -93,7 +93,7 @@ class Article extends Model implements HasMedia
             ->withTimestamps();
     }
 
-    // NOTE since this is a self-referencing relationship, sync will override categories! 
+    // NOTE since this is a self-referencing relationship, sync will override categories!
     public function subCategories()
     {
         return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')

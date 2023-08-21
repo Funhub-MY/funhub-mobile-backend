@@ -143,12 +143,12 @@ class ArticleTest extends TestCase
 
         // get second article
         $response = $this->getJson('/api/v1/articles/'.$secondArticle->id);
-        
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'article',
             ]);
-            
+
         // cheeck article.id json is 2
         $this->assertEquals($secondArticle->id, $response->json('article.id'));
     }
@@ -199,7 +199,7 @@ class ArticleTest extends TestCase
 
         $this->assertEquals(3, $response->json('meta.total'));
     }
-    
+
 
     /**
      * Get Articles by users whose logged in user is following
@@ -238,7 +238,7 @@ class ArticleTest extends TestCase
         // count is 5
         $this->assertEquals(5, $response->json('meta.total'));
     }
-    
+
 
     /**
      * Article get articles bookmarked by logged in user
@@ -403,7 +403,7 @@ class ArticleTest extends TestCase
     }
 
     /**
-     * Articles create article with chinese title by logged in user 
+     * Articles create article with chinese title by logged in user
      * /api/v1/articles
      */
     public function testCreateArticleWithChineseCharactersAsTitle()
@@ -443,7 +443,7 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertTrue($this->user->media->where('file_name', 'test.jpg')->count() > 0);
-        
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'uploaded'
@@ -462,7 +462,7 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertTrue($this->user->media->where('file_name', 'test.jpg')->first()->custom_properties['is_cover'] == 1);
-        
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'uploaded'
@@ -594,7 +594,7 @@ class ArticleTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        
+
         // get article
         $response = $this->getJson('/api/v1/articles/'.$article->id);
         // check articles has interactions json
@@ -685,7 +685,7 @@ class ArticleTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        
+
         // get article
         $response = $this->getJson('/api/v1/articles/'.$article->id);
         // check articles has interactions json
@@ -795,7 +795,7 @@ class ArticleTest extends TestCase
      */
     public function testViewArticle()
     {
-        // create ten users 
+        // create ten users
         $users = User::factory()->count(10)->create();
 
         // create a new article
@@ -980,7 +980,7 @@ class ArticleTest extends TestCase
             'lng' => 1.234,
             'address_2' => 'Test Address 2',
             'zip_code' => '123456',
-            'average_ratings' => null, 
+            'average_ratings' => null,
         ]);
     }
 
@@ -1050,7 +1050,7 @@ class ArticleTest extends TestCase
             ->assertJsonStructure([
                 'data'
             ]);
-        
+
         // loop each tagged_users check match with $users
         foreach($response->json('data') as $tagged_user) {
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
@@ -1098,7 +1098,7 @@ class ArticleTest extends TestCase
         ->assertJsonStructure([
             'data'
         ]);
-    
+
         // loop each tagged_users check match with $users
         foreach($response->json('data') as $tagged_user) {
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
@@ -1115,7 +1115,7 @@ class ArticleTest extends TestCase
         $this->seed(StatesTableSeeder::class);
         // create 1 user
         $otherUser = User::factory()->create();
-        
+
         // create 10 articles
         $articles = Article::factory()->count(10)->published()
             ->create([
@@ -1131,7 +1131,7 @@ class ArticleTest extends TestCase
             'lat' => 1.234,
             'lng' => 1.234,
             'address_2' => 'Test Address 2',
-            'city' => $cities[0], 
+            'city' => $cities[0],
             'state_id' => State::where('name', 'Selangor')->first()->id,
             'country_id' => Country::where('name', 'Malaysia')->first()->id,
             'zip_code' => '123456'
@@ -1155,7 +1155,7 @@ class ArticleTest extends TestCase
 
         // get articles by city
         $response = $this->getJson('/api/v1/articles?city='.$cities[0]);
-        // assert data is 1 
+        // assert data is 1
         $this->assertCount(1, $response->json('data'));
 
         // check data first article id is the $articles[0]
@@ -1170,7 +1170,7 @@ class ArticleTest extends TestCase
          // ensure countries and states are seeded first
          $this->seed(CountriesTableSeeder::class);
          $this->seed(StatesTableSeeder::class);
-         
+
          $otherUser = User::factory()->create();
 
          // create 10 articles
@@ -1178,7 +1178,7 @@ class ArticleTest extends TestCase
              ->create([
                  'user_id' => $otherUser,
              ]);
- 
+
          // 3 cities of Klang valley
          $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
          foreach($articles as $article) {
@@ -1188,7 +1188,7 @@ class ArticleTest extends TestCase
                 'lat' => 3.0130517,
                 'lng' => 101.6199414,
                 'address_2' => 'Test Address 2',
-                'city' => $cities[0], 
+                'city' => $cities[0],
                 'state_id' => State::where('name', 'Selangor')->first()->id,
                 'country_id' => Country::where('name', 'Malaysia')->first()->id,
                 'zip_code' => '123456'
@@ -1197,8 +1197,42 @@ class ArticleTest extends TestCase
 
         // my location: 3.013814, 101.622510
         $response = $this->getJson('/api/v1/articles?lat=3.013814&lng=101.622510&radius=10000');
-        
+
         // assert data is 10 as its nearby
         $this->assertCount(10, $response->json('data'));
+    }
+
+    public function testArticleNotInterestedByUser()
+    {
+        // create a user
+        $user = User::factory()->create();
+        // create 10 articles by this user
+        $articles = Article::factory()->count(10)->published()
+            ->create([
+                'user_id' => $user->id,
+            ]);
+
+        // logged in user not interested in 5 of the articles
+        $notInterestedArticleIds = [];
+        foreach($articles->take(5) as $article) {
+            $response = $this->postJson('/api/v1/articles/not_interested', [
+                'article_id' => $article->id,
+            ]);
+            $notInterestedArticleIds[] = $article->id;
+
+            $response->assertStatus(200);
+        }
+
+        // get articles and check whether the data.id dosent have not interested articles
+        $response = $this->getJson('/api/v1/articles');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // check each article id is not in $notInterestedArticleIds
+        foreach($response->json('data') as $article) {
+            $this->assertNotContains($article['id'], $notInterestedArticleIds);
+        }
     }
 }

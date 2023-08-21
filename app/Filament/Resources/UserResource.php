@@ -40,7 +40,7 @@ class UserResource extends Resource
                             ->autofocus()
                             ->required()
                             ->rules('required', 'max:255'),
-                        
+
                         // username
                         Forms\Components\TextInput::make('username')
                             ->required()
@@ -66,6 +66,7 @@ class UserResource extends Resource
                             ->options([
                                 1 => 'Active',
                                 2 => 'Suspended',
+                                3 => 'Archived',
                             ])
                             ->default(1)
                             ->required(),
@@ -117,7 +118,7 @@ class UserResource extends Resource
                         SpatieMediaLibraryFileUpload::make('avatar')
                             ->maxFiles(1)
                             ->nullable()
-                             // disk is s3_public 
+                             // disk is s3_public
                              ->disk(function () {
                                 if (config('filesystems.default') === 's3') {
                                     return 's3_public';
@@ -138,8 +139,8 @@ class UserResource extends Resource
                         Forms\Components\Radio::make('gender')
                             ->inline()
                             ->options([
-                              'male' => 'Male', 
-                              'female' => 'Female'  
+                              'male' => 'Male',
+                              'female' => 'Female'
                             ])
                             ->rules('nullable'),
 
@@ -166,7 +167,7 @@ class UserResource extends Resource
                                     ->nullable()
                                     ->rules('nullable'),
                             ])
-                        
+
                     ])->columnSpan(['lg' => 2]),
             ])->columns(4);
     }
@@ -181,10 +182,12 @@ class UserResource extends Resource
                     ->enum([
                         1 => 'Active',
                         2 => 'Suspended',
+                        3 => 'Archived',
                     ])
                     ->colors([
-                        'secondary' => 0,
                         'success' => 1,
+                        'danger' => 2,
+                        'secondary' => 3,
                     ])
                     ->sortable()
                     ->searchable(),

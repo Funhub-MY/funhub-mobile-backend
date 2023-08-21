@@ -17,10 +17,11 @@ use Laravel\Scout\Searchable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements HasMedia, FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
+    use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
 
     const USER_VIDEO_UPLOADS = 'user_video_uploads';
     const USER_AVATAR = 'user_avatar';
@@ -28,6 +29,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 
     const STATUS_ACTIVE = 1;
     const STATUS_SUSPENDED = 2;
+    const STATUS_ARCHIVED = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -266,13 +268,24 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     // users that this user has blocked
     public function usersBlocked()
     {
-        return $this->morphMany(UserBlock::class, 'blockable')
+        return $this->hasMany(UserBlock::class, 'user_id')
+            ->where('blockable_type', User::class);
+    }
+
+    public function blockedBy()
+    {
+        return $this->hasMany(UserBlock::class, 'blockable_id')
             ->where('blockable_type', User::class);
     }
 
     public function articleRanks()
     {
         return $this->hasMany(UserArticleRank::class, 'user_id');
+    }
+
+    public function userAccountDeletion()
+    {
+        return $this->hasOne(UserAccountDeletion::class, 'user_id');
     }
 
     /**
@@ -432,5 +445,27 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         return $this->pointComponentsLedger()->where('pointable_type', RewardComponent::class)
             ->where('pointable_id', $component->id)
             ->orderBy('id', 'desc')->first()->balance ?? 0;
+    }
+
+    /**
+     * Get Is User Blocking User
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function isBlocking($user)
+    {
+        return $this->usersBlocked()->where('blockable_id', $user->id)->exists();
+    }
+
+    /**
+     * Unfollow a user
+     *
+     * @param User $user
+     * @return void
+     */
+    public function unfollow($user)
+    {
+        return $this->followings()->detach($user->id);
     }
 }
