@@ -10,6 +10,7 @@ use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
+use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
 use App\Services\Mpay;
@@ -427,6 +428,79 @@ class MerchantOfferController extends Controller
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Cancel a Merchant Offer Transaction
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @bodyParam merchant_offer_id integer required Merchant Offer ID. Example: 1
+     * @response scenario=success {
+     * "message": "Transaction cancelled"
+     * }
+     * @response scenario=offer_pending_payment_not_found {
+     * "message": "You have not claimed this offer"
+     * }
+     */
+    public function postCancelTransaction(Request $request)
+    {
+        $this->validate($request, [
+            'merchant_offer_id' => 'required|exists:merchant_offers,id',
+        ]);
+
+        // check if user has claimed this merchant offer or not where status is await payment
+        $offer = MerchantOffer::where('id', $request->merchant_offer_id)
+            ->whereHas('claims', function ($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('merchant_offer_user.status', MerchantOffer::CLAIM_AWAIT_PAYMENT);
+            })->first();
+
+        if ($offer) {
+            // release quantity back to MerchantOffer
+            $offer->quantity = $offer->quantity + $offer->claims()->where('user_id', auth()->user()->id)
+                ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                ->first()->pivot->quantity;
+            $offer->save();
+
+            // change status to failed
+            $offer->claims()->updateExistingPivot(auth()->user()->id, [
+                'status' => MerchantOffer::CLAIM_FAILED
+            ]);
+
+            Log::info('Offer quantity released', [
+                'offer_id' => $offer->id,
+                'user_id' => auth()->user()->id,
+            ]);
+
+            // change associated transaction status to failed
+            $transactionRecord = $offer->transactions()->where('user_id', auth()->user()->id)
+                ->where('status', Transaction::STATUS_PENDING)
+                ->first();
+            if ($transactionRecord) {
+                $transaction = $this->transactionService->updateTransactionStatus($transactionRecord->id, Transaction::STATUS_FAILED);
+                Log::info('Transaction status updated', [
+                    'transaction_id' => $transaction->toArray(),
+                    'status' => Transaction::STATUS_FAILED,
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Transaction cancelled'
+            ], 200);
+        } else {
+            Log::info('Offer pending payment not found', [
+                'offer_id' => $request->merchant_offer_id,
+                'user_id' => auth()->user()->id,
+            ]);
+            return response()->json([
+                'message' => 'You have not claimed this offer'
+            ], 422);
+        }
     }
 
     /**

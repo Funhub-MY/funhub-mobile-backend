@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d51Pfcav366akgV8eDE4bZh'
+      - 'Bearer a8c31fVeDkv4Z6Pa6bhdgE5'
     controller: null
     method: null
     route: null
@@ -240,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64bf6D583ZaEPvdchkga1Ve'
+      - 'Bearer P3f6d1c68aVhDag4ek5vZEb'
     controller: null
     method: null
     route: null
@@ -355,7 +355,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1bVv5afZ6eDPh8Egd36k4ac'
+      - 'Bearer Evhb18g4PVcZk5eDad6f36a'
     controller: null
     method: null
     route: null
@@ -434,7 +434,67 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EVkP634faDcebd5a8v61hgZ'
+      - 'Bearer 4hckf6D5E86evZPdbVa1a3g'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/cancel
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Cancel a Merchant Offer Transaction'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      merchant_offer_id:
+        name: merchant_offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      merchant_offer_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Transaction cancelled"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You have not claimed this offer"
+          }
+        headers: []
+        description: offer_pending_payment_not_found
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hbedfgDakE81VP463cvaZ65'
     controller: null
     method: null
     route: null
@@ -477,7 +537,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1EdgPD36v854kVhaecbf6aZ'
+      - 'Bearer a3dbP6Z4v5fDgVEhac61ke8'
     controller: null
     method: null
     route: null
@@ -504,11 +564,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: vitae
+        example: eum
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: vitae
+      offer_id: eum
     queryParameters:
       offer_id:
         name: offer_id
@@ -536,7 +596,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cka8EbVhDPZg45e3fv16d6a'
+      - 'Bearer E6a318v4bfVe5Pk6hDaZcgd'
     controller: null
     method: null
     route: null
@@ -641,7 +701,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a36V6ba415dhevZEfPcDkg8'
+      - 'Bearer k1gD5af8hc4Ze6aPvdbVE63'
     controller: null
     method: null
     route: null
@@ -698,7 +758,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6Z8aE6PD4cha3v1fbVed5k'
+      - 'Bearer 6D5ce3PbZEg8kadavf16Vh4'
     controller: null
     method: null
     route: null

@@ -437,4 +437,68 @@ class MerchantOfferTest extends TestCase
         // check if first data redeemed is true
         $this->assertEquals(true, $response->json('data')[0]['redeemed']);
     }
+
+    /**
+     * Test Checkout with Fiat then cancel
+     */
+    public function testCheckoutWithFiatAndCancel()
+    {
+         // create a merchant offer with fiat
+         $offer = MerchantOffer::factory()->for($this->merchant->user)->create([
+            'fiat_price' => 150,
+            'discounted_fiat_price' => 120,
+            'currency' => 'MYR',
+            'quantity' => 10
+        ]);
+
+        // user claims this offer for 5 units first
+        $response = $this->postJson('/api/v1/merchant/offers/claim', [
+            'offer_id' => $offer->id,
+            'quantity' => 5,
+            'payment_method' => 'fiat',
+            'fiat_payment_method' => 'fpx'
+        ]);
+
+        // expect 200 response
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'gateway_data'
+            ]);
+
+        // check gateway data as follow
+        $this->assertArrayHasKey('url', $response->json('gateway_data'));
+        $this->assertArrayHasKey('formData', $response->json('gateway_data'));
+
+        // cancel the transaction
+        $response = $this->postJson('/api/v1/merchant/offers/cancel', [
+            'merchant_offer_id' => $offer->id,
+        ]);
+
+        // expect 200 response
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+            ]);
+
+        // check if offer quantity has been released
+        $this->assertEquals(10, $offer->fresh()->quantity);
+
+        // check if user claim data status is CLAIM_FAILED
+        $this->assertDatabaseHas('merchant_offer_user', [
+            'user_id' => $this->loggedInUser->id,
+            'merchant_offer_id' => $offer->id,
+            'quantity' => 5,
+            'status' => MerchantOffer::CLAIM_FAILED
+        ]);
+
+        // check if associated transactions data status is failed as well
+        $this->assertDatabaseHas('transactions', [
+            'user_id' => $this->loggedInUser->id,
+            'transactionable_type' => MerchantOffer::class,
+            'transactionable_id' => $offer->id,
+            'status' => Transaction::STATUS_FAILED,
+            'payment_method' => 'fpx'
+        ]);
+    }
 }
