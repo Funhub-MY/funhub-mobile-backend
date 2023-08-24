@@ -36,6 +36,9 @@ class MerchantOfferResource extends JsonResource
             }
         }
 
+        // horizontal banner
+        $horizontalMedia = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_NAME);
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -67,6 +70,7 @@ class MerchantOfferResource extends JsonResource
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
             'media' => MediaResource::collection($this->media),
+            'horizontal_bannner' => ($horizontalMedia) ? new MediaResource($horizontalMedia) : null,
             'interactions' => InteractionResource::collection($this->interactions),
             'location' => $location,
             'count' => [
