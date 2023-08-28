@@ -238,6 +238,12 @@ class ArticleController extends Controller
         $query = Article::published()->where('id', $request->article_id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
+            })
+            // must only match my followers list if not remove from response
+            ->whereHas('user', function ($query) {
+                $query->whereHas('followers', function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                });
             });
 
         // ensure user is not blocked by auth()->user()
