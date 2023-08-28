@@ -526,8 +526,11 @@ class AuthController extends Controller
 
             $user->email = $firebase_user->email;
 
+            Log::info('providerData: ' . $firebase_user->providerData[0]->providerId);
+
             // Save IDs to associated fields in DB for social providers
             if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
+
                 $user->google_id = $firebase_user->providerData[0]->uid;
             } else if ($firebase_user->providerData[0]->providerId == 'facebook.com'){ // Facebook Login
                 // need to get facebook_id.
