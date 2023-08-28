@@ -91,6 +91,14 @@ class UserFollowingController extends Controller
             $articlesImTaggedIn->each(function ($article) {
                 $article->taggedUsers()->detach(auth()->user()->id);
             });
+
+            // vice versa
+            $myArticles = auth()->user()->articles()->whereHas('taggedUsers', function ($query) use ($request) {
+                $query->where('user_id', $request->user_id);
+            })->get();
+            $myArticles->each(function ($article) use ($request) {
+                $article->taggedUsers()->detach($request->user_id);
+            });
         }
 
         event(new UnfollowedUser(auth()->user(), User::find($request->user_id)));
