@@ -550,12 +550,14 @@ class AuthController extends Controller
         } else {
             // user exists
             // clear all google_id,facebook_id,apple_id
+            Log::info('user exists, clear all google_id,facebook_id,apple_id');
             $user->update([
                 'google_id' => null,
                 'facebook_id' => null,
                 'apple_id' => null,
             ]);
 
+            $user->refresh();
             // set ids based on providerId
             if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
                 $user->google_id = $firebase_user->providerData[0]->uid;
