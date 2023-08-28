@@ -14,6 +14,7 @@ class MerchantOffer extends Model implements HasMedia
     use HasFactory, InteractsWithMedia, Searchable;
 
     const MEDIA_COLLECTION_NAME = 'merchant_offer_gallery';
+    const MEDIA_COLLECTION_HORIZONTAL_BANNER = 'merchant_offer_horizontal_banner';
 
     protected $guarded = [
         'id'

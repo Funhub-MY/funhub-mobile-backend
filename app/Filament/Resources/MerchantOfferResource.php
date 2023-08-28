@@ -43,6 +43,7 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
                                     ->label('Offer Images')
                                     ->multiple()
+                                    ->required()
                                     ->collection(MerchantOffer::MEDIA_COLLECTION_NAME)
                                     ->columnSpan('full')
                                     ->customProperties(['is_cover' => false])
@@ -55,6 +56,23 @@ class MerchantOfferResource extends Resource
                                     ->acceptedFileTypes(['image/*'])
                                     ->maxFiles(20)
                                     ->rules('image'),
+
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('horizontal_banner')
+                                    ->label('Horizontal Banner (In Articles)')
+                                    ->maxFiles(1)
+                                    ->required()
+                                    ->collection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER)
+                                    ->columnSpan('full')
+                                    ->customProperties(['is_cover' => false])
+                                    // disk is s3_public
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    })
+                                    ->acceptedFileTypes(['image/*'])
+                                    ->rules('image'),
+
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
 

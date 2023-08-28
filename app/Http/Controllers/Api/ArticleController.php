@@ -778,7 +778,10 @@ class ArticleController extends Controller
                 }
             }
 
-            return response()->json(['message' => 'Article updated', 'article' => $article]);
+            // refresh article with its relations
+            $article = $article->refresh();
+
+            return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
         }
