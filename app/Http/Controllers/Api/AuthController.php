@@ -547,6 +547,33 @@ class AuthController extends Controller
                 $user->apple_id = $firebase_user->uid; // use uid at the moment.
             }
             $user->save();
+        } else {
+            // user exists
+            // clear all google_id,facebook_id,apple_id
+            $user->update([
+                'google_id' => null,
+                'facebook_id' => null,
+                'apple_id' => null,
+            ]);
+
+            // set ids based on providerId
+            if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
+                $user->google_id = $firebase_user->providerData[0]->uid;
+            } else if ($firebase_user->providerData[0]->providerId == 'facebook.com'){ // Facebook Login
+                // need to get facebook_id.
+                $user->facebook_id = $firebase_user->uid; // use uid at the moment.
+            } else if ($firebase_user->providerData[0]->providerId == 'apple.com') { // Apple Login
+                // password login
+                try {
+                    $user->apple_id = $firebase_user->providerData[0]->uid;
+                } catch (\Exception $e) {
+                    Log::error($e->getMessage(), [
+                        'providerData' => $firebase_user->providerData
+                    ]);
+                }
+                $user->apple_id = $firebase_user->uid; // use uid at the moment.
+            }
+            $user->save();
         }
 
         //log the new user in
