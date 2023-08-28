@@ -550,7 +550,9 @@ class AuthController extends Controller
         } else {
             // user exists
             // clear all google_id,facebook_id,apple_id
-            Log::info('user exists, clear all google_id,facebook_id,apple_id');
+            Log::info('user exists, clear all google_id,facebook_id,apple_id', [
+                'user' => $user
+            ]);
             $user->update([
                 'google_id' => null,
                 'facebook_id' => null,
@@ -559,13 +561,12 @@ class AuthController extends Controller
 
             $user->refresh();
             // set ids based on providerId
-            if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
+            $providerId = $firebase_user->providerData[0]->providerId;
+            if ($providerId == 'google.com') {
                 $user->google_id = $firebase_user->providerData[0]->uid;
-            } else if ($firebase_user->providerData[0]->providerId == 'facebook.com'){ // Facebook Login
-                // need to get facebook_id.
-                $user->facebook_id = $firebase_user->uid; // use uid at the moment.
-            } else if ($firebase_user->providerData[0]->providerId == 'apple.com') { // Apple Login
-                // password login
+            } else if ($providerId == 'facebook.com') {
+                $user->facebook_id = $firebase_user->uid;
+            } else if ($providerId == 'apple.com') {
                 try {
                     $user->apple_id = $firebase_user->providerData[0]->uid;
                 } catch (\Exception $e) {
@@ -573,7 +574,7 @@ class AuthController extends Controller
                         'providerData' => $firebase_user->providerData
                     ]);
                 }
-                $user->apple_id = $firebase_user->uid; // use uid at the moment.
+                $user->apple_id = $firebase_user->uid;
             }
             $user->save();
         }
