@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\MerchantOffer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -37,5 +38,15 @@ class MerchantOfferFactory extends Factory
             'created_at' => now(),
             'updated_at' => now()
         ];
+    }
+
+    // published
+    public function published()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'status' => MerchantOffer::STATUS_PUBLISHED,
+            ];
+        });
     }
 }
