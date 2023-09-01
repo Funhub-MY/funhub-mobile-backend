@@ -311,7 +311,8 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);

@@ -180,6 +180,12 @@ class MerchantOffer extends Model implements HasMedia
         $query->where('status', 1);
     }
 
+    public function scopeAvailable(Builder $query): void
+    {
+        // available_at must be past
+        $query->where('available_at', '<=', now());
+    }
+
     /**
      * claimed_quantity
      */
@@ -194,4 +200,5 @@ class MerchantOffer extends Model implements HasMedia
             $query->wherePivot('status', self::CLAIM_SUCCESS);
         });
     }
+    
 }

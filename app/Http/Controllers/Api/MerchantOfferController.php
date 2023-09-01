@@ -71,6 +71,7 @@ class MerchantOfferController extends Controller
         // ensure only published offers
         $query = MerchantOffer::query()
             ->published()
+            ->available()
             ->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user', 'location', 'location.ratings');
 
         // category_ids filter
@@ -124,6 +125,7 @@ class MerchantOfferController extends Controller
         }
 
         $this->buildQuery($query, $request);
+
         $data = $query->paginate(config('app.paginate_per_page'));
         return MerchantOfferResource::collection($data);
     }
