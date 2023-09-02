@@ -41,7 +41,8 @@ class VouchersRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code'),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable(),
 
                 Tables\Columns\BadgeColumn::make('claim.status')
                     ->label('Status')

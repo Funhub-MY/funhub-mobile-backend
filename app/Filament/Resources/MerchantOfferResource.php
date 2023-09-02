@@ -83,15 +83,10 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
 
-                                Forms\Components\TextInput::make('quantity')
-                                    ->label('Available Quantity')
-                                    ->required()
-                                    ->numeric()
-                                    ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
-                                    ->minValue(1),
                                 Forms\Components\TextInput::make('sku')
                                     ->label('SKU')
                                     ->required(),
+
                                 Forms\Components\DateTimePicker::make('available_at')
                                     ->required()
                                     ->minDate(now()->startOfDay()),
@@ -198,6 +193,16 @@ class MerchantOfferResource extends Resource
                     ])->columnSpan(['lg' => 2]),
                 Forms\Components\Group::make()
                     ->schema([
+                        Forms\Components\Section::make('Stock')
+                            ->schema([
+                                Forms\Components\TextInput::make('quantity')
+                                    ->label('Available Quantity')
+                                    ->required()
+                                    ->numeric()
+                                    ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
+                                    ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
+                                    ->minValue(1),
+                            ])->columns(1),
                         Forms\Components\Section::make('Other')
                             ->schema([
                                 Forms\Components\Select::make('status')

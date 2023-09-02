@@ -77,7 +77,8 @@ class MerchantOfferVoucherResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('code'),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable(),
 
                 Tables\Columns\BadgeColumn::make('claim.status')
                     ->label('Status')
