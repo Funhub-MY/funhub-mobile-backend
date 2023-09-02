@@ -20,6 +20,12 @@ use Closure;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 
 class MerchantOfferResource extends Resource
 {
@@ -32,6 +38,7 @@ class MerchantOfferResource extends Resource
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 1;
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -80,6 +87,7 @@ class MerchantOfferResource extends Resource
                                     ->label('Available Quantity')
                                     ->required()
                                     ->numeric()
+                                    ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
                                     ->minValue(1),
                                 Forms\Components\TextInput::make('sku')
                                     ->label('SKU')
@@ -253,6 +261,10 @@ class MerchantOfferResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -267,10 +279,10 @@ class MerchantOfferResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('store.name')
+                    ->default('-')
                     ->label('By Store'),
-                Tables\Columns\TextColumn::make('description'),
                 Tables\Columns\TextColumn::make('unit_price')
-                    ->label('Points')
+                    ->label('Funhub')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('available_at')
                     ->sortable(),
@@ -285,13 +297,73 @@ class MerchantOfferResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                // filter by available_at and available_until date range
+                Filter::make('availability')
+                    ->form([
+                        DatePicker::make('available_at'),
+                        DatePicker::make('available_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['available_at'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('available_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['available_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('available_until', '<=', $date),
+                            );
+                    }),
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options(MerchantOffer::STATUS),
+
+                // Filter::make('user')
+                //     ->label('Merchant User')
+                //     ->form([
+                //         Select::make('user_id')
+                //             ->relationship('user', 'name')
+                //             ->searchable()
+                //             // ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
+                //             ->helperText('Users who has merchant profile created.')
+                //     ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkAction::make('update_status')
+                    ->label('Update Status')
+                    ->icon('heroicon-o-refresh')
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->options(MerchantOffer::STATUS)->default(0),
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        $success = 0;
+                        $records->each(function (MerchantOffer $record) use ($data, $success) {
+                            try {
+                                $record->update([
+                                    'status' => $data['status'],
+                                ]);
+                                $success++;
+                            } catch (\Exception $e) {
+                                Log::error('[MerchantOfferResource] Bulk Update Status Error', [
+                                    'record' => $record->toArray(),
+                                    'data' => $data,
+                                    'error' => $e->getMessage(),
+                                ]);
+                            }
+                        });
+
+                        if ($success > 0) {
+                            Notification::make()
+                            ->success()
+                            ->title('Successfully updated '.$success.' offers status to' . MerchantOffer::STATUS[$data['status']])
+                            ->send();
+                        }
+                    })
             ]);
     }
 
@@ -299,7 +371,8 @@ class MerchantOfferResource extends Resource
     {
         return [
             // RelationManagers\ClaimedByUsersRelationManager::class,
-            RelationManagers\UsersRelationManager::class,
+            // RelationManagers\UsersRelationManager::class,
+            RelationManagers\VouchersRelationManager::class,
             RelationManagers\LocationRelationManager::class,
         ];
     }

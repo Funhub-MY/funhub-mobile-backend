@@ -10,6 +10,7 @@ use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
@@ -234,149 +235,124 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        // calculate net amount
-        // ensure user have enough point balance
+        // double check quantity via unclaimed vouchers
+        if ($offer->unclaimedVouchers()->count() < $request->quantity) {
+            return response()->json([
+                'message' => 'Offer is sold out'
+            ], 422);
+        }
+
         $user = request()->user();
+        if ($request->payment_method == 'points')  {
+            $net_amount = $offer->unit_price * $request->quantity;
+            $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
 
-        // try {
-            if ($request->payment_method == 'points')  {
+            // check if enough points
+            if ($user->point_balance < $net_amount) {
+                return response()->json([
+                    'message' => 'Insufficient Point Balance'
+                ], 422);
+            }
 
-                $net_amount = $offer->unit_price * $request->quantity;
+            // direct claim
+            $offer->claims()->attach($user->id, [
+                // order no is CLAIM(YMd)
+                'order_no' => 'C' . date('Ymd') .strtoupper(Str::random(5)),
+                'user_id' => $user->id,
+                'quantity' => $request->quantity,
+                'unit_price' => $offer->unit_price,
+                'total' => $offer->unit_price * $request->quantity,
+                'purchase_method' => 'points',
+                'discount' => 0,
+                'tax' => 0,
+                'net_amount' => $net_amount,
+                'voucher_id' => $voucher->id,
+                'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
+            ]);
+            // update voucher owned_by_id to this user
+            $voucher->update(['owned_by_id' => $user->id]);
 
-                // check if enough points
-                if ($user->point_balance < $net_amount) {
-                    return response()->json([
-                        'message' => 'Insufficient Point Balance'
-                    ], 422);
-                }
+            // debit from point ledger
+            $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
 
-                // direct claim
+            // reduce quantity
+            $offer->quantity = $offer->quantity - $request->quantity;
+            $offer->save();
+
+            // fire event
+            event(new MerchantOfferClaimed($offer, $user));
+
+            try {
+                // notify user offer claimed
+                $user->notify(new OfferClaimed($offer, $user, 'points', $net_amount));
+            } catch (\Exception $e) {
+                Log::error($e->getMessage(), [
+                    'user_id' => $user->id,
+                    'offer_id' => $offer->id,
+                ]);
+            }
+
+        } else if($request->payment_method == 'fiat') {
+            $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
+
+            // create payment transaction first, not yet claim
+            $transaction = $this->transactionService->create(
+                $offer,
+                $net_amount,
+                config('app.default_payment_gateway'),
+                $user->id,
+                $request->fiat_payment_method,
+            );
+
+            // if gateway is mpay call mpay service generate Hash for frontend form
+            if ($transaction->gateway == 'mpay') {
+                $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
+
+                $mpayService = new \App\Services\Mpay(
+                    config('services.mpay.mid'),
+                    config('services.mpay.hash_key')
+                );
+
+                // generates required form post fields data for frontend(app) usages
+                $mpayData = $mpayService->createTransaction(
+                    $transaction->transaction_no,
+                    $net_amount,
+                    $transaction->transaction_no,
+                    secure_url('/payment/return'),
+                    $user->full_phone_no ?? null,
+                    $user->email ?? null
+                );
+
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
-                    'order_no' => 'C' . date('Ymd') .strtoupper(Str::random(5)),
+                    'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
-                    'total' => $offer->unit_price * $request->quantity,
-                    'purchase_method' => 'points',
+                    'total' => $net_amount,
+                    'purchase_method' => 'fiat',
                     'discount' => 0,
                     'tax' => 0,
                     'net_amount' => $net_amount,
-                    'status' => MerchantOffer::CLAIM_SUCCESS // status set as 1 as right now the offer should be ready to claim.
+                    'voucher_id' => $voucher->id,
+                    'transaction_no' => $transaction->transaction_no, // store transaction no for later use
+                    'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
                 ]);
 
-                // debit from point ledger
-                $this->pointService->debit($offer, $user, $net_amount, 'Claim Offer');
+                // update voucher owned_by_id to this user
+                $voucher->update(['owned_by_id' => $user->id]); // lock down first
 
-                // reduce quantity
+                // reduce quantity first if failed in PaymentController will release the quantity if failed
                 $offer->quantity = $offer->quantity - $request->quantity;
                 $offer->save();
 
-                // fire event
-                event(new MerchantOfferClaimed($offer, $user));
-
-                try {
-                    // notify user offer claimed
-                    $user->notify(new OfferClaimed($offer, $user, 'points', $net_amount));
-                } catch (\Exception $e) {
-                    Log::error($e->getMessage(), [
-                        'user_id' => $user->id,
-                        'offer_id' => $offer->id,
-                    ]);
-                }
-
-            } else if($request->payment_method == 'fiat') {
-                $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
-
-                // create payment transaction first, not yet claim
-                $transaction = $this->transactionService->create(
-                    $offer,
-                    $net_amount,
-                    config('app.default_payment_gateway'),
-                    $user->id,
-                    $request->fiat_payment_method,
-                );
-
-                // if gateway is mpay call mpay service generate Hash for frontend form
-                if ($transaction->gateway == 'mpay') {
-                    $mpayService = new \App\Services\Mpay(
-                        config('services.mpay.mid'),
-                        config('services.mpay.hash_key')
-                    );
-
-                    // generates required form post fields data for frontend(app) usages
-                    $mpayData = $mpayService->createTransaction(
-                        $transaction->transaction_no,
-                        $net_amount,
-                        $transaction->transaction_no,
-                        secure_url('/payment/return'),
-                        $user->full_phone_no ?? null,
-                        $user->email ?? null
-                    );
-
-                    // // check if current offer user has status CLAIM_AWAIT_PAYMENT, if yes just update the
-                    // // amount and quantity required
-                    // $claim = $offer->claims()->where('user_id', $user->id)
-                    //     ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
-                    //     ->first();
-
-                    // if ($claim) {
-                    //     // user has initiated payment before, just update the amount and quantity
-                    //     $offer->claims()->where('user_id', $user->id)
-                    //         ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
-                    //         ->updateExistingPivot($user->id, [
-                    //             'quantity' => $request->quantity,
-                    //             'unit_price' => $offer->unit_price,
-                    //             'total' => $net_amount,
-                    //             'purchase_method' => 'fiat',
-                    //             'discount' => 0,
-                    //             'tax' => 0,
-                    //             'net_amount' => $net_amount,
-                    //             'transaction_no' => $transaction->transaction_no, // store transaction no for later use
-                    //             'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                    //     ]);
-                    // } else {
-                    // create claim but with status await payment for this offer
-                    $offer->claims()->attach($user->id, [
-                        // order no is CLAIM(YMd)
-                        'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
-                        'user_id' => $user->id,
-                        'quantity' => $request->quantity,
-                        'unit_price' => $offer->unit_price,
-                        'total' => $net_amount,
-                        'purchase_method' => 'fiat',
-                        'discount' => 0,
-                        'tax' => 0,
-                        'net_amount' => $net_amount,
-                        'transaction_no' => $transaction->transaction_no, // store transaction no for later use
-                        'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT // await payment claims
-                    ]);
-                    // }
-
-                    // reduce quantity first if failed in PaymentController will release the quantity if failed
-                    $offer->quantity = $offer->quantity - $request->quantity;
-                    $offer->save();
-
-                    // Claim is not successful yet, return mpay data for app to redirect (post)
-                    return response()->json([
-                        'message' => 'Redirect to Gateway',
-                        'gateway_data' => $mpayData
-                    ], 200);
-                }
+                // Claim is not successful yet, return mpay data for app to redirect (post)
+                return response()->json([
+                    'message' => 'Redirect to Gateway',
+                    'gateway_data' => $mpayData
+                ], 200);
             }
-        // } catch (\Exception $e) {
-        //     Log::error($e->getMessage(), [
-        //         'offer_id' => $offer->id,
-        //         'user_id' => $user->id,
-        //         'quantity' => $request->quantity,
-        //         'unit_price' => $offer->unit_price,
-        //         'total' => $offer->unit_price * $request->quantity,
-        //     ]);
-
-        //     return response()->json([
-        //         'message' => 'Failed to claim'
-        //     ], 422);
-        // }
+        }
 
         // refresh offer with latest data
         $offer->refresh();
@@ -468,12 +444,26 @@ class MerchantOfferController extends Controller
                 ->first()->pivot->quantity;
             $offer->save();
 
+            // release voucher back to MerchantOfferVoucher
+            // get voucher_id from claims
+            $voucher_id = $offer->claims()->where('user_id', auth()->user()->id)
+                ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                ->first()->pivot->voucher_id;
+            if ($voucher_id) {
+                $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
+                if ($voucher) {
+                    $voucher->owned_by_id = null;
+                    $voucher->save();
+                }
+            }
+
             // change status to failed
             $offer->claims()->updateExistingPivot(auth()->user()->id, [
-                'status' => MerchantOffer::CLAIM_FAILED
+                'status' => MerchantOffer::CLAIM_FAILED,
+                'voucher_id' => null
             ]);
 
-            Log::info('Offer quantity released', [
+            Log::info('Offer quantity released and voucher released', [
                 'offer_id' => $offer->id,
                 'user_id' => auth()->user()->id,
             ]);

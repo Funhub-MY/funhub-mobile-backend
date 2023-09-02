@@ -133,8 +133,20 @@ class MerchantOffer extends Model implements HasMedia
     public function claims()
     {
         return $this->belongsToMany(User::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method', 'quantity', 'transaction_no')
+            ->withPivot('status', 'voucher_id', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method', 'quantity', 'transaction_no')
             ->withTimestamps();
+    }
+    
+    // Used to track quanity of vouchers
+    public function vouchers()
+    {
+        return $this->hasMany(MerchantOfferVoucher::class, 'merchant_offer_id', 'id');
+    }
+
+    public function unclaimedVouchers()
+    {
+        return $this->hasMany(MerchantOfferVoucher::class, 'merchant_offer_id', 'id')
+            ->whereNull('owned_by_id');
     }
 
     // Redeems are claims that are redeemed(consumed) in store
