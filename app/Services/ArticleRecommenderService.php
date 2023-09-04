@@ -73,10 +73,20 @@ class ArticleRecommenderService
         if ($article->likes_count > 0) {
             $affinity += 10;
         }
-        $affinity += $article->views_count;
-        $affinity -= ($article->views()->where('created_at', '<', now()->subMonth())->count() * 0.1);
+        // increase affinity is user commented
+        if ($article->comments_count > 0) {
+            $affinity += 10;
+        }
+        // decrease affinite if user view more than twice
+        if ($article->views_count > 2) {
+            $affinity -= 5;
+        }
+        // increase affinity if user never viewed before
+        if ($article->views_count == 0) {
+            $affinity += 10;
+        }
+        // categories match user will increase affinity
         $affinity += $article->categories->count() * 10;
-
         return $affinity;
     }
 
@@ -87,10 +97,10 @@ class ArticleRecommenderService
      * @return float
      */
     private function weightScore($article) {
-        $weight = $article->created_at->diffInDays(now());
-        $weight += $article->comments()->where('created_at', '>', now()->subDay())->count();
-        $weight -= $article->created_at->diffInYears(now()) * 0.1;
-        $weight += ($article->comments_count / 10);
+        // the older the article, then lesser weight
+        $weight = 1;
+        $weight -= ($article->created_at->diffInDays(now()) * 0.01);        
+
         return $weight;
     }
 }

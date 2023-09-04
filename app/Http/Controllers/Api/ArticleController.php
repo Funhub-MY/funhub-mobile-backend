@@ -153,6 +153,7 @@ class ArticleController extends Controller
                 // then dispatch job to rebuild for user
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
+                    Log::info('Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id. ' Expiry Hours: '. config('app.recommendation_db_purge_hours'). ' - Last Built: '. $lastBuilt);
                     BuildRecommendationsForUser::dispatch(auth()->user());
                 }
             } else {
