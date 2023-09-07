@@ -121,7 +121,7 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 15000; // 15km default
+            $radius = $request->has('radius') ? $request->radius : 15; // 15km default
             // get article where article->location lat,lng is within the radius
             $query->whereHas('location', function ($query) use ($request, $radius) {
                 $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
@@ -370,6 +370,7 @@ class ArticleController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -631,6 +632,7 @@ class ArticleController extends Controller
      */
     public function show($id) {
         $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
