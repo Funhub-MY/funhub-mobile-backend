@@ -556,12 +556,10 @@ class ArticleController extends Controller
             ->where('lng', $locationData['lng'])
             ->first();
 
-        if ($location) {
-            // if article has previous location, detach it first
-            if ($article->location) {
-                $article->location()->detach(); // detaches all
-            }
+        // detach existing location first
+        $article->location()->detach(); // detaches all
 
+        if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
         } else {
@@ -777,7 +775,7 @@ class ArticleController extends Controller
                     }
 
                     // create or attach new location with ratings
-                    $loc = $this->createOrAttachLocation($article, $request->location);
+                    $loc = $this->createOrAttachLocation($article, $request->location); // this will detach existing location if changed
                 } catch (\Exception $e) {
                     Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
                 }
@@ -785,7 +783,6 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
-            Log::info('Article updated', ['article' => $article]);
 
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
