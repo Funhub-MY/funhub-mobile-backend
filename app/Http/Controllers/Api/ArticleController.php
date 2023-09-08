@@ -564,7 +564,6 @@ class ArticleController extends Controller
 
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
-            Log::info('Location attached', ['location' => $location]);
         } else {
             // create new location
             $loc = [
@@ -597,7 +596,6 @@ class ArticleController extends Controller
             }
 
             $location = $article->location()->create($loc);
-            Log::info('Location created', ['location' => $location, 'data' => $locationData]);
         }
 
         if ($location && $locationData['rating'] &&  $locationData['rating'] != 0) {
@@ -616,7 +614,6 @@ class ArticleController extends Controller
             // recalculate average ratings
             $location->average_ratings = $location->ratings()->avg('rating');
             $location->save();
-            Log::info('Location ratings updated', ['rating' => $locationData['rating'], 'location_id' => $location->id]);
         }
         return $location;
     }
@@ -788,6 +785,7 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
+            Log::info('Article updated', ['article' => $article, 'location_id' => $article->location->id]);
 
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
