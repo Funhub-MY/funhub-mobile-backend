@@ -564,6 +564,7 @@ class ArticleController extends Controller
 
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
+            Log::info('Location attached', ['location' => $location]);
         } else {
             // create new location
             $loc = [
@@ -581,7 +582,8 @@ class ArticleController extends Controller
             if (is_numeric($locationData['state'])) {
                 $state = State::where('id', $locationData['state'])->first();
             } else {
-                $state = State::where('name', trim($locationData['state']))->first();
+                // where lower(name) like %trim lower locationData['state']%
+                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
             }
 
             if ($state) {
@@ -595,6 +597,7 @@ class ArticleController extends Controller
             }
 
             $location = $article->location()->create($loc);
+            Log::info('Location created', ['location' => $location, 'data' => $locationData]);
         }
 
         if ($location && $locationData['rating'] &&  $locationData['rating'] != 0) {
@@ -613,6 +616,7 @@ class ArticleController extends Controller
             // recalculate average ratings
             $location->average_ratings = $location->ratings()->avg('rating');
             $location->save();
+            Log::info('Location ratings updated', ['rating' => $locationData['rating'], 'location_id' => $location->id]);
         }
         return $location;
     }
