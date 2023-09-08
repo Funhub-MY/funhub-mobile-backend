@@ -785,7 +785,7 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
-            Log::info('Article updated', ['article' => $article, 'location_id' => $article->location->id]);
+            Log::info('Article updated', ['article' => $article]);
 
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
