@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: FUNHUB
+  title: Funhub
   description: ''
   version: 1.0.0
 servers:
   -
-    url: 'https://funhub-mobile-backend.test'
+    url: 'http://funhub-mobile-backend.test'
 paths:
   /api/v1/article_cities:
     get:
@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 12
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: commodi
+                  example: odio
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: corrupti
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - cum
+                    - fuga
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: impedit
+        example: eaque
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: tempore
+                  example: nisi
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quam
+                  example: vel
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: dolores
+        example: qui
         required: true
         schema:
           type: string
@@ -2452,7 +2452,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -2828,7 +2828,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eum
+        example: nisi
         required: true
         schema:
           type: string
@@ -3467,6 +3467,56 @@ paths:
           present:
             summary: 'When the value is present'
             value: egg
+  /api/v1/products/checkout:
+    post:
+      summary: 'Post Checkout'
+      operationId: postCheckout
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: fiat_payment_mode
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Redirect to gateway\",\n\"gateway_data\": [\n     'url' => $this->url .'/payment/eCommerce',\n      'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),\n      'mid' => $this->mid,\n      'invno' => $invoice_no,\n      'capture_amt' => $amount,\n      'desc' => $desc,\n      'postURL' => $redirectUrl,\n      'phone' => $phoneNo,\n      'email' => $email,\n      'param' => $param,\n      'authorize' => 'authorize'\n  ];\n}"
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                  description: 'Product ID.'
+                  example: 1
+                payment_method:
+                  type: string
+                  description: 'Payment Method.'
+                  example: fiat
+                fiat_payment_method:
+                  type: string
+                  description: 'required_if:payment_method,fiat Payment Method.'
+                  example: fpx/card
+                quantity:
+                  type: integer
+                  description: Quantity.
+                  example: 1
+              required:
+                - product_id
+                - payment_method
+                - quantity
   /api/v1/transactions:
     get:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
@@ -3565,7 +3615,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 13
+        example: 1
         required: true
         schema:
           type: integer
@@ -3757,7 +3807,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 18
+                  example: 15
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3810,7 +3860,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 17
+                  example: 15
               required:
                 - user_id
   /api/v1/user/report:
@@ -3857,15 +3907,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: qui
+                  example: accusantium
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolor
+                  example: vel
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: harum
+                  example: nemo
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4010,7 +4060,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: sit
+                  example: est
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4051,7 +4101,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: reprehenderit
+                  example: labore
               required:
                 - user_ids
     parameters:
@@ -4972,6 +5022,9 @@ tags:
     description: ''
   -
     name: Point
+    description: ''
+  -
+    name: Product
     description: ''
   -
     name: Transaction
