@@ -16,7 +16,8 @@ class MediaResource extends JsonResource
     {
         // encode last part of original_url
         $originalUrl = $this->original_url;
-        if ($originalUrl) {
+        // check if cloufront url is provided as only work on cloudfront links
+        if ($originalUrl && strpos($originalUrl, 'cloudfront') !== false) {
             $parts = explode('/', $originalUrl);
             $parts[count($parts) - 1] = urlencode($parts[count($parts) - 1]);
             $originalUrl = implode('/', $parts);
