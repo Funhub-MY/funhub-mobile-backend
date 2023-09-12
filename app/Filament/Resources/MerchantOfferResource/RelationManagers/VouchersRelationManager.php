@@ -9,15 +9,17 @@ use App\Models\MerchantOfferVoucher;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Illuminate\Database\Eloquent\Collection;
 class VouchersRelationManager extends RelationManager
 {
     protected static string $relationship = 'vouchers';
@@ -116,6 +118,35 @@ class VouchersRelationManager extends RelationManager
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+                BulkAction::make('move')
+                ->action(function (Collection $records, array $data): void {
+                    $counter = 0;
+                    foreach($records as $record) {
+                        // move unclaimed vouchers from one merchant offer to another
+                        if ($record->owned_by_id) { // skip those already claimed
+                            continue;
+                        }
+                        $record->merchant_offer_id = $data['merchant_offer_id'];
+                        $record->save();
+                        $counter++;
+                    }
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Successfully Moved')
+                        ->body('Total '.$counter.' voucher(s) has been to moved.')
+                        ->success()
+                        ->send();
+                })
+                ->requiresConfirmation()
+                ->deselectRecordsAfterCompletion()
+                ->form([
+                    Select::make('merchant_offer_id')
+                        ->relationship('merchant_offer', 'name')
+                        ->getOptionLabelFromRecordUsing(fn (MerchantOffer $record) => $record->name . ' (SKU:'.$record->sku .')')
+                        ->searchable()
+                        ->preload()
+                        ->required()
+                ])
             ]);
-    }    
+    }
 }

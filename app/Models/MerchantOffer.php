@@ -21,7 +21,7 @@ class MerchantOffer extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'claimed_quantity'
+        'claimed_quantity', 'name_sku'
     ];
 
     const STATUS = [
@@ -136,7 +136,7 @@ class MerchantOffer extends Model implements HasMedia
             ->withPivot('status', 'voucher_id', 'order_no', 'tax', 'discount', 'net_amount', 'remarks', 'purchase_method', 'quantity', 'transaction_no')
             ->withTimestamps();
     }
-    
+
     // Used to track quanity of vouchers
     public function vouchers()
     {
@@ -206,11 +206,15 @@ class MerchantOffer extends Model implements HasMedia
         return $this->claims()->wherePivot('status', self::CLAIM_SUCCESS)->count();
     }
 
+    public function getNameSkuAttribute()
+    {
+        return $this->name . ' (' . $this->sku . ')';
+    }
+
     public function scopeSuccessClaimed(Builder $query)
     {
         $query->whereHas('claims', function ($query) {
             $query->wherePivot('status', self::CLAIM_SUCCESS);
         });
     }
-    
 }
