@@ -447,16 +447,14 @@ class MerchantOfferController extends Controller
             // release voucher back to MerchantOfferVoucher
             // get voucher_id from claims
             $voucher_id = $offer->claims()->where('user_id', auth()->user()->id)
-                ->first()->pivot->voucher_id;
-
-            Log::info('voucher id', [$voucher_id]);
+                ->latest()->first()->pivot->voucher_id;
 
             if ($voucher_id) {
                 $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
                 if ($voucher) {
                     $voucher->owned_by_id = null;
                     $voucher->save();
-                    Log::info('voucher released', [$voucher->toArray()]);
+                    Log::info('Voucher released', [$voucher->toArray()]);
                 }
             }
 

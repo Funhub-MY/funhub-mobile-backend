@@ -51,10 +51,11 @@ class ReleaseFailedMerchantOffers extends Command
 
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
                     ->first();
-                
+
                 $claim = $offer->claims()
                     ->where('user_id', $transaction->user_id)
                     ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                    ->latest()
                     ->first();
 
                 if ($claim) {
@@ -67,6 +68,7 @@ class ReleaseFailedMerchantOffers extends Command
                             if ($voucher) {
                                 $voucher->owner_by_id = null;
                                 $voucher->save();
+                                Log::info('Voucher released', [$voucher->toArray()]);
                             }
                         }
 
