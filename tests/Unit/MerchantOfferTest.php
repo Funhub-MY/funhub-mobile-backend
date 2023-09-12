@@ -480,6 +480,7 @@ class MerchantOfferTest extends TestCase
             'currency' => 'MYR',
             'quantity' => 10
         ]);
+
         for($i = 0; $i < $offer->quantity; $i++) {
             MerchantOfferVoucher::create([
                 'merchant_offer_id' => $offer->id,
@@ -487,14 +488,13 @@ class MerchantOfferTest extends TestCase
             ]);
         }
 
-        // user claims this offer for 5 units first
+        // user claims this offer for 1 unit first
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $offer->id,
-            'quantity' => 5,
+            'quantity' => 1,
             'payment_method' => 'fiat',
             'fiat_payment_method' => 'fpx'
         ]);
-
         // expect 200 response
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -502,9 +502,15 @@ class MerchantOfferTest extends TestCase
                 'gateway_data'
             ]);
 
+        // check if voucher is owned by user (locked in for user) is 5
+        $this->assertEquals(1, MerchantOfferVoucher::where('owned_by_id', $this->loggedInUser->id)->count());
+
         // check gateway data as follow
         $this->assertArrayHasKey('url', $response->json('gateway_data'));
         $this->assertArrayHasKey('formData', $response->json('gateway_data'));
+
+        // grab voucher id first before cancel
+        $voucher_id = $offer->claims()->where('user_id', $this->loggedInUser->id)->first()->pivot->voucher_id;
 
         // cancel the transaction
         $response = $this->postJson('/api/v1/merchant/offers/cancel', [
@@ -524,8 +530,15 @@ class MerchantOfferTest extends TestCase
         $this->assertDatabaseHas('merchant_offer_user', [
             'user_id' => $this->loggedInUser->id,
             'merchant_offer_id' => $offer->id,
-            'quantity' => 5,
-            'status' => MerchantOffer::CLAIM_FAILED
+            'quantity' => 1,
+            'status' => MerchantOffer::CLAIM_FAILED,
+            'voucher_id' => null
+        ]);
+
+        // check if vouchers has been release back to user
+        $this->assertDatabaseHas('merchant_offer_vouchers', [
+            'id' => $voucher_id,
+            'owned_by_id' => null
         ]);
 
         // check if associated transactions data status is failed as well

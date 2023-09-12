@@ -447,8 +447,8 @@ class MerchantOfferController extends Controller
             // release voucher back to MerchantOfferVoucher
             // get voucher_id from claims
             $voucher_id = $offer->claims()->where('user_id', auth()->user()->id)
-                ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
                 ->first()->pivot->voucher_id;
+
             if ($voucher_id) {
                 $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
                 if ($voucher) {
