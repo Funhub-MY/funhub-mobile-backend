@@ -109,7 +109,8 @@ class ArticleController extends Controller
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
                 $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
-            });
+            })
+            ->orderBy('created_at', 'desc');
         }
 
         // get articles by city
