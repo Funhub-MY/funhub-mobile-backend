@@ -64,7 +64,7 @@ class ReleaseFailedMerchantOffers extends Command
                         if ($claim->voucher_id) {
                             $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)->first();
                             if ($voucher) {
-                                $voucher->owner_by_id = null;
+                                $voucher->owned_by_id = null;
                                 $voucher->save();
                                 Log::info('Voucher released', [$voucher->toArray()]);
                             }
