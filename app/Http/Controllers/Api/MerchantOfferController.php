@@ -459,7 +459,8 @@ class MerchantOfferController extends Controller
             } else {
                 Log::info('[MerchantOfferController] Voucher not found not able to release', [
                     'offer_id' => $offer->id,
-                    'offer_data' => $offer->toArray(),
+                    'offer_claims_data' => $offer->claims()->where('user_id', auth()->user()->id)
+                        ->latest()->first()->pivot->toArray(),
                     'user_id' => auth()->user()->id,
                 ]);
             }

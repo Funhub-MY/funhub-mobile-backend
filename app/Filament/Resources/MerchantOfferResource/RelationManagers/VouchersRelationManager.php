@@ -6,10 +6,12 @@ use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
+use App\Models\MerchantOfferVoucherMovement;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
@@ -20,6 +22,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
+
 class VouchersRelationManager extends RelationManager
 {
     protected static string $relationship = 'vouchers';
@@ -126,8 +130,23 @@ class VouchersRelationManager extends RelationManager
                         if ($record->owned_by_id) { // skip those already claimed
                             continue;
                         }
+                        $from = $record->merchant_offer_id;
                         $record->merchant_offer_id = $data['merchant_offer_id'];
                         $record->save();
+
+                        // create a new movement record
+                        MerchantOfferVoucherMovement::create([
+                            'from_merchant_offer_id' => $from,
+                            'to_merchant_offer_id' => $data['merchant_offer_id'],
+                            'voucher_id' => $record->id,
+                            'user_id' => auth()->user()->id,
+                            'remarks' => $data['remarks'],
+                        ]);
+                        Log::info('Voucher moved', [
+                            'from' => $from,
+                            'to' => $data['merchant_offer_id'],
+                            'user_id' => auth()->user()->id,
+                        ]);
                         $counter++;
                     }
 
@@ -145,7 +164,11 @@ class VouchersRelationManager extends RelationManager
                         ->getOptionLabelFromRecordUsing(fn (MerchantOffer $record) => $record->name . ' (SKU:'.$record->sku .')')
                         ->searchable()
                         ->preload()
-                        ->required()
+                        ->required(),
+                    Textarea::make('remarks')
+                        ->label('Remarks')
+                        ->rows(2)
+                        ->nullable(),
                 ])
             ]);
     }
