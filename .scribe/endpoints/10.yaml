@@ -1,16 +1,16 @@
-name: Mission
+name: Point
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/missions
+    uri: api/v1/points/my_balance/all
     metadata:
-      groupName: Mission
+      groupName: Point
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get all missions available.'
+      title: 'Get the point & point components balance of the logged in user.'
       description: ''
       authenticated: true
       custom: []
@@ -18,16 +18,8 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      claimed_only:
-        name: claimed_only
-        description: 'boolean If set to true, only return missions rewards that has been claimed by user.'
-        required: false
-        example: 'false'
-        type: string
-        custom: []
-    cleanUrlParameters:
-      claimed_only: 'false'
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -38,36 +30,14 @@ endpoints:
         status: 200
         content: |-
           {
-          "current_page": 1,
-          "data": [
-            {
-            "id": 1,
-            "name": "Complete 10 missions",
-            "is_participating": true,
-            "description": "Complete 10 missions to earn a reward",
-            "event": "mission_completed",
-            "current_value": 5,
-            "value": 10,
-            "reward": {
-                "id": 1,
-                "name": "Egg",
-                "description": "egg",
-                "thumbnail_url": "https://example.com/egg.png",
-            },
-            "reward_quantity": 1,
-            "claimed": false,
-            "claimed_at": null,
-            "claimed_at_formatted": null,
-            "claimed_at_ago": null
-           }
-          ],
-          "first_page_url": "http://localhost:8000/api/missions?page=1",
-          "from": 1,
-          "last_page": 1,
-          "last_page_url": "http://localhost:8000/api/missions?page=1",
-          "next_page_url": null,
-          "path": "http://localhost:8000/api/missions",
-          "per_page": 15,
+          "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
+          "point_components": {[
+            {"id": 1, "name": "rice", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 2, "name": "egg", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 3, "name": "vegetable", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 4, "name": "meat", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+            {"id": 5, "name": "fish", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
+          ]}
           }
         headers: []
         description: success
@@ -76,21 +46,64 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68vga5a6bdD3eEP4ck1hVfZ'
+      - 'Bearer ZDb8E46akca6v1gV35Pefhd'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/missions/complete
+      - GET
+    uri: api/v1/points/balance
     metadata:
-      groupName: Mission
+      groupName: Point
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Complete all missions or single mission'
+      title: 'Get the point balance of the user.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "balance": 100
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer cE6dPa8bg1V65vk4Z3efhDa'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/components/balance
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get the point component balance of the user.'
       description: ''
       authenticated: true
       custom: []
@@ -103,29 +116,23 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      mission_id:
-        name: mission_id
-        description: 'The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed.'
-        required: false
-        example: 1
-        type: integer
+      type:
+        name: type
+        description: 'The type of point component.'
+        required: true
+        example: egg
+        type: string
         custom: []
     cleanBodyParameters:
-      mission_id: 1
+      type: egg
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Mission(s) completed successfully.",
-          "completed_missions": [
-             1, 2
-          ],
-          "reward": {
-            "object": {},
-            "quantity": 1
-          }
+          "type": "egg",
+          "balance": 100
           }
         headers: []
         description: success
@@ -134,7 +141,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bkegv8VaD54EaPf66Z3d1ch'
+      - 'Bearer af3Pdg4akZcv6V68bEDeh15'
     controller: null
     method: null
     route: null
@@ -142,13 +149,104 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/missions/claimables
+    uri: api/v1/points/rewards
     metadata:
-      groupName: Mission
+      groupName: Point
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get latest claimable missions'
+      title: 'Get Rewards Available.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "rewards": [
+          {
+          "id": 1,
+          "name": "Funhub",
+          "description": "Funhub",
+          "components": [],
+          }
+          ]
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VP4ve6caD3ZabEgd1k856fh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/points/reward_combine
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Combine Points Component to Form a Reward'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      quantity:
+        name: quantity
+        description: 'The quantity of the reward to form.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      quantity: 1
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aD6h46E8f1dbkc5aP3veZgV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/ledgers
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Point Ledger'
       description: ''
       authenticated: true
       custom: []
@@ -169,11 +267,10 @@ endpoints:
         content: |-
           {
           "data": [
-           {
-           "id": 1,
-           "name": "Mission 1",
-           ...
-           }
+          {
+            "id": 1,
+            ...
+          }
           ]
           }
         headers: []
@@ -183,7 +280,63 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fa45VcD6de3ahP6g1Z8kEvb'
+      - 'Bearer 6cEde8vfhk6a1D4agVPb5Z3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/points/components/ledgers
+    metadata:
+      groupName: Point
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Point Component Ledgers)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      filter_type:
+        name: filter_type
+        description: 'Type of Component (name).'
+        required: false
+        example: egg
+        type: string
+        custom: []
+    cleanUrlParameters:
+      filter_type: egg
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+            "id": 1,
+            ...
+          }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer dkhg4aPcDf1be668VEZv35a'
     controller: null
     method: null
     route: null

@@ -21,6 +21,8 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Forms\Components\Repeater;
+
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
@@ -112,6 +114,16 @@ class ProductResource extends Resource
                                         ->numeric()
                             ])
                 ])->columnSpan(['lg' => 2]),
+                // Forms\Components\Group::make()
+                // ->schema([
+                //     Forms\Components\Section::make('Rewards')->schema([
+                //         Forms\Components\Select::make('rewards')
+                //         ->relationship('rewards', 'name')
+                //         ->label('')
+                //         ->multiple()
+                //         ->searchable()
+                //         ->placeholder('Select rewards...'),
+                // ])->columns(1),
             ])->columns(4);
     }
 
@@ -155,7 +167,7 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\RewardsRelationManager::class,
         ];
     }
     

@@ -133,6 +133,11 @@ Route::group(['prefix' => 'v1'], function () {
            Route::get('/{type}/{id}', [\App\Http\Controllers\Api\ViewController::class, 'getViews']);
         });
 
+        // Products
+        Route::prefix('/products')->group(function (){
+            Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
+        });
+
         // Points & Rewards
         Route::prefix('/points')->group(function () {
             Route::get('/my_balance/all', [\App\Http\Controllers\Api\PointController::class, 'getPointsBalanceByUser']);
