@@ -77,7 +77,7 @@ class ArticleRecommenderService
         if ($article->comments_count > 0) {
             $affinity += 10;
         }
-        // decrease affinite if user view more than twice
+        // decrease affinity if user view more than twice
         if ($article->views_count > 2) {
             $affinity -= 15;
         }

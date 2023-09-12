@@ -130,7 +130,8 @@ class ArticleController extends Controller
                     ) + sin( radians(?) ) *
                     sin( radians( lat ) ) )
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
+                    ->havingRaw("distance < ?", [$radius])
+                    ->orderByRaw("distance ASC");
             });
         }
 
