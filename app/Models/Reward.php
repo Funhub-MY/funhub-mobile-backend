@@ -38,4 +38,10 @@ class Reward extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl(static::COLLECTION_NAME);
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_reward')->withPivot('quantity');
+    }
+    
 }

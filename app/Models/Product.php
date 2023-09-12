@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model implements HasMedia
 {
@@ -41,4 +42,18 @@ class Product extends Model implements HasMedia
     {
         return $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME, 'thumb');
     }
+
+    public function rewards()
+    {
+        return $this->belongsToMany(Reward::class, 'product_reward')->withPivot('quantity');
+    }
+
+    /**
+     * Scope a query to only include published offers.
+     */
+    public function scopePublished(Builder $query): void
+    {
+        $query->where('status', 1);
+    }
+
 }

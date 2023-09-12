@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "https:\/\/funhub-mobile-backend.test"
+            "value": "http:\/\/funhub-mobile-backend.test"
         }
     ],
     "info": {
-        "name": "FUNHUB",
-        "_postman_id": "b598ab3f-5041-4682-9cad-22859c76a54c",
+        "name": "Funhub",
+        "_postman_id": "db1570cf-d38b-487b-af5e-2f00e8265f8e",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"commodi\",\"violation_level\":\"aut\",\"article\":1}"
+                                    "raw": "{\"article_id\":12,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"odio\",\"violation_level\":\"corrupti\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"cum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"fuga\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "impedit",
+                                            "value": "eaque",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"tempore\",\"violation_type\":\"quam\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"nisi\",\"violation_type\":\"vel\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dolores",
+                                            "value": "qui",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2037,7 +2037,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2331,7 +2331,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "eum",
+                                            "value": "nisi",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3032,6 +3032,65 @@
             ]
         },
         {
+            "name": "Product",
+            "description": "",
+            "item": [
+                {
+                    "name": "Product Rewards",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Post Checkout",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/products\/checkout",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/products\/checkout"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"product_id\":1,\"payment_method\":\"fiat\",\"fiat_payment_method\":\"fpx\\\/card\",\"quantity\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Redirect to Gateway\"\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Product is sold out\"\n}",
+                                    "name": "insufficient_product_quantity"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Redirect to gateway\",\n\"gateway_data\": [\n     'url' => $this->url .'\/payment\/eCommerce',\n      'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),\n      'mid' => $this->mid,\n      'invno' => $invoice_no,\n      'capture_amt' => $amount,\n      'desc' => $desc,\n      'postURL' => $redirectUrl,\n      'phone' => $phoneNo,\n      'email' => $email,\n      'param' => $param,\n      'authorize' => 'authorize'\n  ];\n}",
+                                    "name": "fiat_payment_mode"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Transaction",
             "description": "",
             "item": [
@@ -3114,7 +3173,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "13",
+                                    "value": "1",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3233,7 +3292,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":18}"
+                                    "raw": "{\"user_id\":15}"
                                 },
                                 "description": ""
                             },
@@ -3274,7 +3333,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":17}"
+                                    "raw": "{\"user_id\":15}"
                                 },
                                 "description": ""
                             },
@@ -3380,7 +3439,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"qui\",\"violation_level\":\"dolor\",\"violation_type\":\"harum\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"accusantium\",\"violation_level\":\"vel\",\"violation_type\":\"nemo\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3537,7 +3596,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"sit\"}"
+                            "raw": "{\"reason\":\"est\"}"
                         },
                         "description": ""
                     },
@@ -3580,7 +3639,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"reprehenderit\"}"
+                            "raw": "{\"user_ids\":\"labore\"}"
                         },
                         "description": ""
                     },
