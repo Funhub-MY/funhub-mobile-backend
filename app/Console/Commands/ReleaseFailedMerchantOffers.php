@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use Exception;
 use Illuminate\Console\Command;
@@ -52,19 +53,16 @@ class ReleaseFailedMerchantOffers extends Command
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
                     ->first();
 
-                $claim = $offer->claims()
+                $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
                     ->where('user_id', $transaction->user_id)
-                    ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                    ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
                     ->latest()
                     ->first();
 
                 if ($claim) {
                     try {
-                        // release voucher back to MerchantOfferVoucher
-                        // get voucher_id from claims
-                        $voucher_id = $claim->pivot->voucher_id;
-                        if ($voucher_id) {
-                            $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
+                        if ($claim->voucher_id) {
+                            $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)->first();
                             if ($voucher) {
                                 $voucher->owner_by_id = null;
                                 $voucher->save();
@@ -72,7 +70,7 @@ class ReleaseFailedMerchantOffers extends Command
                             }
                         }
 
-                        $offer->claims()->updateExistingPivot($transaction->user_id, [
+                        $claim->update([
                             'status' => \App\Models\MerchantOffer::CLAIM_FAILED
                         ]);
                         $offer->quantity = $offer->quantity + $claim->pivot->quantity;

@@ -444,10 +444,15 @@ class MerchantOfferController extends Controller
                 ->first()->pivot->quantity;
             $offer->save();
 
+            $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
+                ->where('user_id', auth()->user()->id)
+                ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                ->latest()
+                ->first();
+
             // release voucher back to MerchantOfferVoucher
             // get voucher_id from claims
-            $voucher_id = $offer->claims()->where('user_id', auth()->user()->id)
-                ->latest()->first()->pivot->voucher_id;
+            $voucher_id = $claim->voucher_id;
 
             if ($voucher_id) {
                 $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
@@ -459,14 +464,13 @@ class MerchantOfferController extends Controller
             } else {
                 Log::info('[MerchantOfferController] Voucher not found not able to release', [
                     'offer_id' => $offer->id,
-                    'offer_claims_data' => $offer->claims()->where('user_id', auth()->user()->id)
-                        ->latest()->first()->pivot->toArray(),
+                    'offer_claims_data' => $claim->toArray(),
                     'user_id' => auth()->user()->id,
                 ]);
             }
 
             // change status to failed
-            $offer->claims()->updateExistingPivot(auth()->user()->id, [
+            $claim->update([
                 'status' => MerchantOffer::CLAIM_FAILED,
                 'voucher_id' => null
             ]);
