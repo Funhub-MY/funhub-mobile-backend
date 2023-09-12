@@ -121,7 +121,7 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 15000; // 15km default
+            $radius = $request->has('radius') ? $request->radius : 15; // 15km default
             // get article where article->location lat,lng is within the radius
             $query->whereHas('location', function ($query) use ($request, $radius) {
                 $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
@@ -130,7 +130,8 @@ class ArticleController extends Controller
                     ) + sin( radians(?) ) *
                     sin( radians( lat ) ) )
                     ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
+                    ->havingRaw("distance < ?", [$radius])
+                    ->orderByRaw("distance ASC");
             });
         }
 
@@ -370,6 +371,7 @@ class ArticleController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -555,12 +557,10 @@ class ArticleController extends Controller
             ->where('lng', $locationData['lng'])
             ->first();
 
-        if ($location) {
-            // if article has previous location, detach it first
-            if ($article->location) {
-                $article->location()->detach(); // detaches all
-            }
+        // detach existing location first
+        $article->location()->detach(); // detaches all
 
+        if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
         } else {
@@ -580,7 +580,8 @@ class ArticleController extends Controller
             if (is_numeric($locationData['state'])) {
                 $state = State::where('id', $locationData['state'])->first();
             } else {
-                $state = State::where('name', trim($locationData['state']))->first();
+                // where lower(name) like %trim lower locationData['state']%
+                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
             }
 
             if ($state) {
@@ -631,6 +632,7 @@ class ArticleController extends Controller
      */
     public function show($id) {
         $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -774,7 +776,7 @@ class ArticleController extends Controller
                     }
 
                     // create or attach new location with ratings
-                    $loc = $this->createOrAttachLocation($article, $request->location);
+                    $loc = $this->createOrAttachLocation($article, $request->location); // this will detach existing location if changed
                 } catch (\Exception $e) {
                     Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
                 }

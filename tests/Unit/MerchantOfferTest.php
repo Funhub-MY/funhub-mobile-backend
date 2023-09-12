@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Tests\TestCase;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferVoucher;
 use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\User;
@@ -35,6 +36,15 @@ class MerchantOfferTest extends TestCase
 
         // we can chain double for as well.
         $this->merchant_offer = MerchantOffer::factory()->count(5)->for($this->merchant->user)->create();
+        // ensure vouchers are created based on quantity of merchant offer
+        $this->merchant_offer->each(function ($offer) {
+            for($i = 0; $i < $offer->quantity; $i++) {
+                MerchantOfferVoucher::create([
+                    'merchant_offer_id' => $offer->id,
+                    'code' => MerchantOfferVoucher::generateCode(),
+                ]);
+            }
+        });
         $this->merchant_category = MerchantCategory::factory()->for($this->merchant->user)->create();
         // attach offer with category
         foreach($this->merchant_offer as $offer) {
@@ -83,6 +93,13 @@ class MerchantOfferTest extends TestCase
         // then create new category and offer
         $merchant_category = MerchantCategory::factory()->for($this->merchant->user)->create();
         $merchant_offer = MerchantOffer::factory()->for($this->merchant->user)->create();
+        for($i = 0; $i < $merchant_offer->quantity; $i++) {
+            MerchantOfferVoucher::create([
+                'merchant_offer_id' => $merchant_offer->id,
+                'code' => MerchantOfferVoucher::generateCode(),
+            ]);
+        }
+
         $merchant_offer->categories()->attach($merchant_category);
         // need look all $merchant_category again.
         $this->merchant_category = MerchantCategory::orderBy('id', 'DESC');
@@ -221,6 +238,12 @@ class MerchantOfferTest extends TestCase
             'currency' => 'MYR',
             'quantity' => 10
         ]);
+        for($i = 0; $i < $offer->quantity; $i++) {
+            MerchantOfferVoucher::create([
+                'merchant_offer_id' => $offer->id,
+                'code' => MerchantOfferVoucher::generateCode(),
+            ]);
+        }
 
         // user claims this offer for 5 units first
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
@@ -257,8 +280,15 @@ class MerchantOfferTest extends TestCase
             'user_id' => $this->loggedInUser->id,
             'merchant_offer_id' => $offer->id,
             'quantity' => 5,
-            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT
+            'status' => MerchantOffer::CLAIM_AWAIT_PAYMENT,
         ]);
+
+        // assert voucher_id of merchant_offer_user for user_id is not null
+        $this->assertNotNull($offer->claims()->where('user_id', $this->loggedInUser->id)->first()->pivot->voucher_id);
+
+        // assert owned_by_id is user_id
+        $voucher = MerchantOfferVoucher::where('id', $offer->claims()->where('user_id', $this->loggedInUser->id)->first()->pivot->voucher_id);
+        $this->assertEquals($this->loggedInUser->id, $voucher->first()->owned_by_id);
 
         // check if current merchantoffer is already deducted 5
         $this->assertEquals(5, $offer->fresh()->quantity);
@@ -451,14 +481,20 @@ class MerchantOfferTest extends TestCase
             'quantity' => 10
         ]);
 
-        // user claims this offer for 5 units first
+        for($i = 0; $i < $offer->quantity; $i++) {
+            MerchantOfferVoucher::create([
+                'merchant_offer_id' => $offer->id,
+                'code' => MerchantOfferVoucher::generateCode(),
+            ]);
+        }
+
+        // user claims this offer for 1 unit first
         $response = $this->postJson('/api/v1/merchant/offers/claim', [
             'offer_id' => $offer->id,
-            'quantity' => 5,
+            'quantity' => 1,
             'payment_method' => 'fiat',
             'fiat_payment_method' => 'fpx'
         ]);
-
         // expect 200 response
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -466,9 +502,15 @@ class MerchantOfferTest extends TestCase
                 'gateway_data'
             ]);
 
+        // check if voucher is owned by user (locked in for user) is 5
+        $this->assertEquals(1, MerchantOfferVoucher::where('owned_by_id', $this->loggedInUser->id)->count());
+
         // check gateway data as follow
         $this->assertArrayHasKey('url', $response->json('gateway_data'));
         $this->assertArrayHasKey('formData', $response->json('gateway_data'));
+
+        // grab voucher id first before cancel
+        $voucher_id = $offer->claims()->where('user_id', $this->loggedInUser->id)->first()->pivot->voucher_id;
 
         // cancel the transaction
         $response = $this->postJson('/api/v1/merchant/offers/cancel', [
@@ -488,8 +530,15 @@ class MerchantOfferTest extends TestCase
         $this->assertDatabaseHas('merchant_offer_user', [
             'user_id' => $this->loggedInUser->id,
             'merchant_offer_id' => $offer->id,
-            'quantity' => 5,
-            'status' => MerchantOffer::CLAIM_FAILED
+            'quantity' => 1,
+            'status' => MerchantOffer::CLAIM_FAILED,
+            'voucher_id' => null
+        ]);
+
+        // check if vouchers has been release back to user
+        $this->assertDatabaseHas('merchant_offer_vouchers', [
+            'id' => $voucher_id,
+            'owned_by_id' => null
         ]);
 
         // check if associated transactions data status is failed as well

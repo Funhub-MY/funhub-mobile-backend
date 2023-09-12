@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferVoucher;
 use App\Notifications\OfferClaimed;
 use App\Services\Mpay;
 use Exception;
@@ -167,8 +169,15 @@ class PaymentController extends Controller
             return 'Transaction Failed - Invalid Transaction ID';
         }
 
+        // get claim
+        $claim = MerchantOfferClaim::where('merchant_offer_id', $merchantOffer->id)
+            ->where('user_id', $transaction->user_id)
+            ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+            ->latest()
+            ->first();
+
         if ($request->responseCode == 0 || $request->responseCode == '0') {
-            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
+            $claim->update([
                 'status' => \App\Models\MerchantOffer::CLAIM_SUCCESS
             ]);
 
@@ -197,17 +206,24 @@ class PaymentController extends Controller
             ]);
         } else {
             // failed
-            $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
+            $claim->update([
                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
             ]);
-
-            // get current claims where pivot.user_id == $transaction->user_id and get the quantity in claims
-            // add back in MerchantOffer
-            $claim = MerchantOffer::where('id', $transaction->transactionable_id)->claims()->wherePivot('user_id', $transaction->user_id)->first();
             if ($claim) {
                 try {
                     $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
                     $merchantOffer->save();
+
+                    // release voucher
+                    $voucher_id = $claim->voucher_id;
+                    if ($voucher_id) {
+                        $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
+                        if ($voucher) {
+                            $voucher->owned_by_id = null;
+                            $voucher->save();
+                            Log::info('[MerchantOfferController] Voucher released', [$voucher->toArray()]);
+                        }
+                    }
 
                     Log::info('Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
                         'transaction_id' => $transaction->id,

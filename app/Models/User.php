@@ -185,7 +185,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function claimed_merchant_offers()
     {
         return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withPivot('status', 'voucher_id', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
             ->withTimestamps();
     }
 
