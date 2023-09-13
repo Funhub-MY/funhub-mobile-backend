@@ -134,13 +134,17 @@ class VouchersRelationManager extends RelationManager
                         $record->merchant_offer_id = $data['merchant_offer_id'];
                         $record->save();
 
-                        // ensure the moved quantity increase for the merchant offer
-                        MerchantOffer::where('id', $from)
-                            ->decrement('quantity', 1);
-
                         // ensure move increase for to
                         MerchantOffer::where('id', $data['merchant_offer_id'])
                             ->increment('quantity', 1);
+
+                        // count no. of quantity for from based on no. of vouchers unclaimed
+                        $from_count = MerchantOfferVoucher::where('merchant_offer_id', $from)
+                            ->whereNull('owned_by_id')
+                            ->count();
+                        // update from merchant offer quantity to from_count
+                        MerchantOffer::where('id', $from)
+                            ->update(['quantity' => $from_count]);
 
                         // create a new movement record
                         MerchantOfferVoucherMovement::create([
