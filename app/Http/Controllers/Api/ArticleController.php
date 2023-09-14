@@ -33,6 +33,7 @@ use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 use function PHPSTORM_META\map;
 
@@ -109,8 +110,7 @@ class ArticleController extends Controller
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
                 $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
-            })
-            ->orderBy('created_at', 'desc');
+            });
         }
 
         // get articles by city
@@ -122,18 +122,21 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 15; // 15km default
-            // get article where article->location lat,lng is within the radius
-            $query->whereHas('location', function ($query) use ($request, $radius) {
-                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
-                    cos( radians( lat ) )
-                    * cos( radians( lng ) - radians(?)
-                    ) + sin( radians(?) ) *
-                    sin( radians( lat ) ) )
-                    ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius])
-                    ->orderByRaw("distance ASC");
-            });
+            $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
+
+            $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                // add select to get distance from loc lat lng with request lat lng
+                ->selectRaw('articles.*, ( 6371 * acos( cos( radians(?) ) *
+                                cos( radians( loc.lat ) )
+                                * cos( radians( loc.lng ) - radians(?)
+                                ) + sin( radians(?) ) *
+                                sin( radians( loc.lat ) ) )
+                                )', [$request->lat, $request->lng, $request->lat]
+                )
+                ->whereHas('location', function ($query) use ($request, $radius) {
+                    $query->withinDistanceOf($request->lat, $request->lng, $radius);
+                });
         }
 
         // location id
@@ -179,6 +182,9 @@ class ArticleController extends Controller
         }
 
         $this->filterArticlesBlockedOrHidden($query);
+
+        // query everything by latest
+        $query->latest();
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
