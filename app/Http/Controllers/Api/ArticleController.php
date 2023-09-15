@@ -167,6 +167,7 @@ class ArticleController extends Controller
                 BuildRecommendationsForUser::dispatch(auth()->user());
             }
 
+            // shuffle ranking results
             if ($rankIds->count() > 0) {  // if user has articles ranked
                 // if refresh articles or user scrolled until final page of recommendations
                 if ($request->refresh_recommendations == 1) {
@@ -176,8 +177,26 @@ class ArticleController extends Controller
                 $shuffledIds = cache()->remember('article_recommendations_' . auth()->user()->id, now()->addMinutes(60), function () use ($rankIds) {
                     return $rankIds->shuffle()->pluck('article_id')->toArray();
                 });
-                $query->whereIn('id', $shuffledIds)
-                    ->orderByRaw('FIELD(id, ' . implode(',', $shuffledIds) . ')');
+            }
+
+            // count number of articles past x days
+            $latestArticlesCount = cache()->remember('article_latest_count_' . auth()->user()->id, now()->addHours(23), function () {
+                return Article::published()
+                    ->where('created_at', '>=', now()->subDays(config('app.recommendation_after_days')))
+                    ->count();
+            });
+
+            // if user has not scroll past X days of articles, show latest articles
+            // else load recommendations OR user force refresh recommendations, immediately load recommendations
+            $currentPage = $request->has('page') ? $request->page : 1;
+            $perPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
+            $currentLoadedTill = $currentPage * $perPage;
+            if ($currentLoadedTill > $latestArticlesCount || $request->has('refresh_recommendations')) {
+                // already load past X days articles, start loading recommendations
+                if ($rankIds->count() > 0) {  // if user has articles ranked
+                    $query->whereIn('id', $shuffledIds)
+                        ->orderByRaw('FIELD(id, ' . implode(',', $shuffledIds) . ')');
+                }
             }
         }
 
