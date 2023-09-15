@@ -38,7 +38,7 @@ class MerchantOfferResource extends Resource
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 1;
-    
+
     public static function form(Form $form): Form
     {
         return $form
@@ -199,8 +199,8 @@ class MerchantOfferResource extends Resource
                                     ->label('Available Quantity')
                                     ->required()
                                     ->numeric()
-                                    ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
-                                    ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
+                                    // ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
+                                    // ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
                                     ->minValue(1),
                             ])->columns(1),
                         Forms\Components\Section::make('Other')

@@ -9,22 +9,7 @@ class Merchant extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'business_name',
-        'business_phone_no',
-        'address',
-        'address_postcode',
-        'pic_name',
-        'pic_phone_no',
-        'pic_email',
-        'user_id',
-        'state_id',
-        'country_id',
-        'deleted_at',
-        'created_at',
-        'updated_at'
-    ];
+    protected $guarded = ['id'];
 
     public function user()
     {
