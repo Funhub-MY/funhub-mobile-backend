@@ -266,4 +266,7 @@ return [
 
     'recommendation_db_purge_hours' => env('RECOMMENDATION_DB_PURGE', 6),
 
+    'location_default_radius' => env('LOCATION_DEFAULT_RADIUS', 10),
+
+    'recommendation_after_days' => env('RECOMMENDATION_AFTER_DAYS', 3),
 ];

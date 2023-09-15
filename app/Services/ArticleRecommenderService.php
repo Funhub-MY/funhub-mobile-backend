@@ -24,7 +24,7 @@ class ArticleRecommenderService
                 $query->where('user_id', $this->user->id);
             }, 'comments' => function ($query) {
                 $query->where('user_id', $this->user->id);
-            }, 'categories'])
+            }, 'categories', 'imports'])
             ->where('user_id', '!=', $this->user->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', $this->user->id);
@@ -98,8 +98,15 @@ class ArticleRecommenderService
      */
     private function weightScore($article) {
         // the older the article, then lesser weight
-        $weight = 1;
-        $weight -= ($article->created_at->diffInDays(now()) * 0.01);
+        $weight = 10;
+
+        // reduce weight if older the article 30% of entire weight
+        $weight -= $weight * ($article->created_at->diffInDays(Carbon::now()) / 100);
+
+        // reduce article weight if article is an imported article. weights the remainder 60%
+        if ($article->is_imported) {
+            $weight -= $weight * 0.6;
+        }
 
         return $weight;
     }

@@ -54,5 +54,5 @@ return [
         'prod_url' => env('MPAY_PROD_URL', ' https://mpaypayment.mpay.my/mdex/'),
         'mid' => env('MPAY_MID'),
         'hash_key' => env('MPAY_HASH_KEY'),
-    ] 
+    ]
 ];

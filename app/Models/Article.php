@@ -182,6 +182,6 @@ class Article extends Model implements HasMedia
      */
     public function scopePublished(Builder $query): void
     {
-         $query->where('status', self::STATUS_PUBLISHED);
+         $query->where($this->getTable().'.status', self::STATUS_PUBLISHED);
     }
 }
