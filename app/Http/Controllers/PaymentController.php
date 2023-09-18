@@ -159,7 +159,7 @@ class PaymentController extends Controller
                     // credit user
                     $pointService->credit(
                         $reward,
-                        $transaction->user_id,
+                        $transaction->user,
                         $reward->pivot->quantity,
                         'Gift Card Purchase',
                         $transaction->transaction_no
