@@ -50,6 +50,7 @@ class ProductTest extends TestCase
         // assert gateway data has all required information
         $response->assertJsonStructure([
             'message',
+            'transaction_no',
             'gateway_data' => [
                 'url',
                 'formData' => [

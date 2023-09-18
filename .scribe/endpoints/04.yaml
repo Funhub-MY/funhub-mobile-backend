@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dbg3dacvEe154VhZfP66k8a'
+      - 'Bearer ha1fgbdDc4eV5a83vE66PZk'
     controller: null
     method: null
     route: null
@@ -126,7 +126,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e1EaVPhd5fZ6bak4gc8v36D'
+      - 'Bearer 48c66bD3hEfgvea15PVkadZ'
     controller: null
     method: null
     route: null
@@ -157,11 +157,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 15
+        example: 10
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 15
+      user_id: 10
     fileParameters: []
     responses:
       -
@@ -183,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EbkeZV6316gcvD4aPhdf5a8'
+      - 'Bearer k13aZgv4PfDa686be5VcdhE'
     controller: null
     method: null
     route: null
@@ -214,11 +214,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 15
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 15
+      user_id: 19
     fileParameters: []
     responses:
       -
@@ -240,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gb6D83dvekV1E4cZ6P5aahf'
+      - 'Bearer h3DaavEZg58ef6Pkd14cV6b'
     controller: null
     method: null
     route: null
@@ -278,21 +278,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: accusantium
+        example: sint
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: vel
+        example: similique
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: nemo
+        example: dolorem
         type: required
         custom: []
       also_block_user:
@@ -304,9 +304,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: accusantium
-      violation_level: vel
-      violation_type: nemo
+      reason: sint
+      violation_level: similique
+      violation_type: dolorem
       also_block_user: true
     fileParameters: []
     responses:
@@ -335,7 +335,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer chdD456VekfgEba1vaP3Z68'
+      - 'Bearer a4EeD8P1f6kdhaZg53vVc6b'
     controller: null
     method: null
     route: null
@@ -394,7 +394,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aehf5Pbckg64a6dVvZE38D1'
+      - 'Bearer g6hvV6da3fk5D81e4ZPacbE'
     controller: null
     method: null
     route: null
@@ -445,7 +445,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8ZDbd46Vefcag6Eakv1Ph53'
+      - 'Bearer E684b5c6hkfZPa13aDgedvV'
     controller: null
     method: null
     route: null
@@ -488,7 +488,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1cPbe5fvDdZ6aV3E64gkh8'
+      - 'Bearer cv1fZDa3ead8VP5k66hbgE4'
     controller: null
     method: null
     route: null
@@ -519,11 +519,11 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: est
+        example: aut
         type: string
         custom: []
     cleanBodyParameters:
-      reason: est
+      reason: aut
     fileParameters: []
     responses:
       -
@@ -539,7 +539,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VD84g653ZEh1kafc6dvePba'
+      - 'Bearer e8VP5baEd1v6f4ah63gZkcD'
     controller: null
     method: null
     route: null
@@ -578,11 +578,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: labore
+        example: et
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: labore
+      user_ids: et
     fileParameters: []
     responses:
       -
@@ -599,7 +599,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag64ED6P5f3Vdhk8vae1bcZ'
+      - 'Bearer g16Phf6e8Ec5b3avkDaZ4Vd'
     controller: null
     method: null
     route: null
@@ -658,7 +658,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZPEc463kgv1bD8a65hdaVf'
+      - 'Bearer 66cVaa5Eg8eP4vkD1fdZbh3'
     controller: null
     method: null
     route: null
