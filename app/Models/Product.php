@@ -49,7 +49,8 @@ class Product extends Model implements HasMedia
 
     public function rewards()
     {
-        return $this->belongsToMany(Reward::class, 'product_reward')->withPivot('quantity');
+        return $this->belongsToMany(Reward::class, 'product_reward')
+            ->withPivot('quantity');
     }
 
     /**

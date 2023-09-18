@@ -44,7 +44,7 @@ class TransactionService {
 
             $transaction = $transactionable->transactions()->create([
                 'transaction_no' => $transaction_no,
-                'user_id' => ($transactionable->user_id) ? $transactionable->user_id : $user_id,
+                'user_id' => $user_id,
                 'amount' => $amount,
                 'gateway' => $gateway,
                 'status' => Transaction::STATUS_PENDING,
