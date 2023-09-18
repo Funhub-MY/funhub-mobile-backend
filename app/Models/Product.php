@@ -11,7 +11,11 @@ use Illuminate\Database\Eloquent\Builder;
 class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
-    
+
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_ARCHIVED = 2;
+
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',
@@ -37,7 +41,7 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsTo(User::class, 'updated_by_id');
     }
-    
+
     public function getThumbnailAttribute()
     {
         return $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME, 'thumb');

@@ -28,10 +28,10 @@ class TransactionService {
             throw new \Exception('Transactionable model must have transactions relationship');
         }
 
-        // check if transactionable has user_id attribute
-        if (!isset($transactionable->user_id)) {
-            throw new \Exception('Transactionable model must have user_id attribute');
-        }
+        // // check if transactionable has user_id attribute
+        // if (!isset($transactionable->user_id)) {
+        //     throw new \Exception('Transactionable model must have user_id attribute');
+        // }
 
         $transaction = null;
         try {
@@ -44,7 +44,7 @@ class TransactionService {
 
             $transaction = $transactionable->transactions()->create([
                 'transaction_no' => $transaction_no,
-                'user_id' => $user_id,
+                'user_id' => ($transactionable->user_id) ? $transactionable->user_id : $user_id,
                 'amount' => $amount,
                 'gateway' => $gateway,
                 'status' => Transaction::STATUS_PENDING,
