@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "2247a4ea-7d9b-4d8e-96c2-3b9ce2f80626",
+        "_postman_id": "77432abf-02c4-4675-92f9-0be69e6690ee",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":11,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"labore\",\"violation_level\":\"aut\",\"article\":1}"
+                                    "raw": "{\"article_id\":5,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"nostrum\",\"violation_level\":\"veritatis\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"laborum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "laborum",
+                                            "value": "accusamus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"a\",\"violation_type\":\"corrupti\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"inventore\",\"violation_type\":\"consequatur\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "distinctio",
+                                            "value": "et",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2331,7 +2331,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "maxime",
+                                            "value": "accusantium",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3087,6 +3087,41 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "name": "Cancel Product Checkout",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products\/checkout\/cancel",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products\/checkout\/cancel"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"transaction_no\":\"11234455\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Transaction cancelled\"\n}",
+                            "name": "success"
+                        }
+                    ]
                 }
             ]
         },
@@ -3292,7 +3327,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":15}"
                                 },
                                 "description": ""
                             },
@@ -3333,7 +3368,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":15}"
                                 },
                                 "description": ""
                             },
@@ -3439,7 +3474,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"sint\",\"violation_level\":\"similique\",\"violation_type\":\"dolorem\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"corporis\",\"violation_level\":\"quidem\",\"violation_type\":\"est\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3596,7 +3631,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"aut\"}"
+                            "raw": "{\"reason\":\"quaerat\"}"
                         },
                         "description": ""
                     },
@@ -3639,7 +3674,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"et\"}"
+                            "raw": "{\"user_ids\":\"culpa\"}"
                         },
                         "description": ""
                     },

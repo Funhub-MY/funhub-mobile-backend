@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 5
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: labore
+                  example: nostrum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: veritatis
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - laborum
+                    - voluptatem
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: laborum
+        example: accusamus
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: a
+                  example: inventore
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: corrupti
+                  example: consequatur
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: distinctio
+        example: et
         required: true
         schema:
           type: string
@@ -2828,7 +2828,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: maxime
+        example: accusantium
         required: true
         schema:
           type: string
@@ -3517,6 +3517,47 @@ paths:
                 - product_id
                 - payment_method
                 - quantity
+  /api/v1/products/checkout/cancel:
+    post:
+      summary: 'Cancel Product Checkout'
+      operationId: cancelProductCheckout
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Transaction cancelled'
+                properties:
+                  message:
+                    type: string
+                    example: 'Transaction cancelled'
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transaction_no:
+                  type: string
+                  description: 'Transaction No.'
+                  example: '11234455'
+              required:
+                - transaction_no
   /api/v1/transactions:
     get:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
@@ -3807,7 +3848,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 10
+                  example: 15
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3860,7 +3901,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 19
+                  example: 15
               required:
                 - user_id
   /api/v1/user/report:
@@ -3907,15 +3948,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: sint
+                  example: corporis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: similique
+                  example: quidem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dolorem
+                  example: est
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4060,7 +4101,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aut
+                  example: quaerat
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4101,7 +4142,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: et
+                  example: culpa
               required:
                 - user_ids
     parameters:

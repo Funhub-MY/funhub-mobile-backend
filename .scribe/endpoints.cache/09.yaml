@@ -104,7 +104,58 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZaEVcvdfh4P3516ea8bkgD6'
+      - 'Bearer Pk61fvdhbVeaEc438aD65Zg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/products/checkout/cancel
+    metadata:
+      groupName: Product
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cancel Product Checkout'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      transaction_no:
+        name: transaction_no
+        description: 'Transaction No.'
+        required: true
+        example: '11234455'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      transaction_no: '11234455'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Transaction cancelled"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aE53k1c6D86hPbZf4ageVdv'
     controller: null
     method: null
     route: null

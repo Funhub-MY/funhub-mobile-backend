@@ -136,6 +136,7 @@ Route::group(['prefix' => 'v1'], function () {
         // Products
         Route::prefix('/products')->group(function (){
             Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
+            Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
         });
 
         // Points & Rewards
