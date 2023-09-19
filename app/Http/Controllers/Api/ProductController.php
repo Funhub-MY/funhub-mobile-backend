@@ -80,7 +80,7 @@ class ProductController extends Controller
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'quantity' => 'required|integer|min:1'
         ]);
- 
+
         $product = Product::where('id', request()->product_id)
             ->published()
             //->with('rewards')
@@ -90,8 +90,8 @@ class ProductController extends Controller
             return response()->json([
                 'message' => 'Product is no longer valid'
             ], 422);
-        } 
-        
+        }
+
         if ($product->unlimited_supply == 0) { //this product has limited supply
             if ($product->quantity < $request->quantity) {
                 return response()->json([
@@ -99,7 +99,7 @@ class ProductController extends Controller
                 ], 422);
             }
         }
-        
+
         //proceed to transaction
         $user = request()->user();
         $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
@@ -112,7 +112,7 @@ class ProductController extends Controller
             $user->id,
             $request->fiat_payment_method,
         );
-        
+
         // if gateway is mpay call mpay service generate Hash for frontend form
         if ($transaction->gateway == 'mpay') {
 
@@ -131,17 +131,56 @@ class ProductController extends Controller
                 $user->email ?? null
             );
 
-            //if this product has limited supply, reduce quantity 
-            if ($product->unlimited_supply == 0) { 
+            //if this product has limited supply, reduce quantity
+            if ($product->unlimited_supply == 0) {
                 $product->quantity = $product->quantity - $request->quantity;
                 $product->save();
             }
 
             return response()->json([
                 'message' => 'Redirect to Gateway',
+                'transaction_no' => $transaction->transaction_no,
                 'gateway_data' => $mpayData
             ], 200);
-        }        
+        }
+    }
+
+    /**
+     * Cancel Product Checkout
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @bodyParam transaction_no string required Transaction No. Example: 11234455
+     *
+     * @response scenario=success {
+     * "message": "Transaction cancelled"
+     * }
+     */
+    public function postCancelCheckout(Request $request)
+    {
+        $this->validate($request, [
+            'transaction_no' => 'required'
+        ]);
+
+        // find transaciton is by user and transaction_no
+        $transaction = Transaction::where('user_id', auth()->user()->id)
+            ->where('transaction_no', $request->transaction_no)
+            ->first();
+
+        if (!$transaction) {
+            return response()->json([
+                'message' => 'Transaction not found'
+            ], 404);
+        }
+
+        // update transaction status to FAILED
+        $transaction = $this->transactionService->updateTransactionStatus($transaction->id, Transaction::STATUS_FAILED);
+
+        return response()->json([
+            'message' => 'Transaction cancelled'
+        ], 200);
     }
 
 }

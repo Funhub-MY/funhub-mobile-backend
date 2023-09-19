@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dbg3dacvEe154VhZfP66k8a'
+      - 'Bearer V8ae5g6Z41Ehk6c3dPfvbDa'
     controller: null
     method: null
     route: null
@@ -126,7 +126,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e1EaVPhd5fZ6bak4gc8v36D'
+      - 'Bearer a8dkP5hZa4v6EDe6V3g1cbf'
     controller: null
     method: null
     route: null
@@ -183,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EbkeZV6316gcvD4aPhdf5a8'
+      - 'Bearer V38Dvdf6k4ea1gc6hb5ZPEa'
     controller: null
     method: null
     route: null
@@ -240,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gb6D83dvekV1E4cZ6P5aahf'
+      - 'Bearer g6v1ZP86Vd54bkcafhEDea3'
     controller: null
     method: null
     route: null
@@ -278,21 +278,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: accusantium
+        example: corporis
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: vel
+        example: quidem
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: nemo
+        example: est
         type: required
         custom: []
       also_block_user:
@@ -304,9 +304,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: accusantium
-      violation_level: vel
-      violation_type: nemo
+      reason: corporis
+      violation_level: quidem
+      violation_type: est
       also_block_user: true
     fileParameters: []
     responses:
@@ -335,7 +335,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer chdD456VekfgEba1vaP3Z68'
+      - 'Bearer aD8f65Ekg4cabeZ1P6v3Vhd'
     controller: null
     method: null
     route: null
@@ -394,7 +394,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aehf5Pbckg64a6dVvZE38D1'
+      - 'Bearer de56E6PDcb8ghZ1Vkv3af4a'
     controller: null
     method: null
     route: null
@@ -445,7 +445,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8ZDbd46Vefcag6Eakv1Ph53'
+      - 'Bearer a6aed41cD3k56PVf8bEvghZ'
     controller: null
     method: null
     route: null
@@ -488,7 +488,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1cPbe5fvDdZ6aV3E64gkh8'
+      - 'Bearer ce4ad6VP5fvaE18gZDhk63b'
     controller: null
     method: null
     route: null
@@ -519,11 +519,11 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: est
+        example: quaerat
         type: string
         custom: []
     cleanBodyParameters:
-      reason: est
+      reason: quaerat
     fileParameters: []
     responses:
       -
@@ -539,7 +539,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VD84g653ZEh1kafc6dvePba'
+      - 'Bearer 8kd5h4P6evVcaaZfEgD3b16'
     controller: null
     method: null
     route: null
@@ -578,11 +578,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: labore
+        example: culpa
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: labore
+      user_ids: culpa
     fileParameters: []
     responses:
       -
@@ -599,7 +599,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag64ED6P5f3Vdhk8vae1bcZ'
+      - 'Bearer Zb6P8vf4d35gkDE6eaac1Vh'
     controller: null
     method: null
     route: null
@@ -658,7 +658,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZPEc463kgv1bD8a65hdaVf'
+      - 'Bearer a6hgEPZ4fc1b6dka583VDev'
     controller: null
     method: null
     route: null

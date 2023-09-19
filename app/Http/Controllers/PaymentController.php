@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
+use App\Models\Product;
 use App\Notifications\OfferClaimed;
 use App\Services\Mpay;
 use Exception;
@@ -90,6 +91,8 @@ class PaymentController extends Controller
                 ]);
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
+                } else if ($transaction->transactionable_type == Product::class) {
+                    $this->updateProductTransaction($request, $transaction);
                 }
 
                 // return with js
@@ -108,6 +111,8 @@ class PaymentController extends Controller
                 ]);
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
+                } else if ($transaction->transactionable_type == Product::class) {
+                    $this->updateProductTransaction($request, $transaction);
                 }
 
                 return view('payment-return', [
@@ -129,6 +134,60 @@ class PaymentController extends Controller
             ]);
         }
 
+    }
+
+    protected function updateProductTransaction($request, $transaction)
+    {
+        $product = Product::where('id', $transaction->transactionable_id)->first();
+
+        if (!$product) {
+            Log::error('Payment return failed', [
+                'error' => 'Product not found',
+                'request' => request()->all()
+            ]);
+            return false;
+        }
+
+        // get product reward if any
+        if ($product) {
+            if ($request->responseCode == 0 || $request->responseCode == '0') {
+
+                $reward = $product->rewards()->first();
+                if ($reward) {
+                    $pointService = new \App\Services\PointService($transaction->user);
+
+                    // credit user
+                    $pointService->credit(
+                        $reward,
+                        $transaction->user,
+                        $reward->pivot->quantity,
+                        'Gift Card Purchase',
+                        $transaction->transaction_no
+                    );
+
+                } else {
+                    // no reward found
+                    Log::error('Payment return success but no product reward', [
+                        'error' => 'Product reward not found',
+                        'request' => request()->all()
+                    ]);
+                }
+            } else if ($request->responseCode == 'PE') {
+                // still pending
+                Log::info('Updated Product Transaction Still Pending', [
+                    'user_id' => $transaction->user_id,
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $transaction->transactionable_id,
+                ]);
+            } else {
+                // failed
+                Log::info('Updated Product Transaction to Failed', [
+                    'user_id' => $transaction->user_id,
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $transaction->transactionable_id,
+                ]);
+            }
+        }
     }
 
     /**
