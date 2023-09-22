@@ -563,6 +563,9 @@ class ArticleController extends Controller
 
         event(new ArticleCreated($article));
 
+        $article = $article->refresh();
+        // load relations
+        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers');
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
