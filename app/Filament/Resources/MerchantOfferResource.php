@@ -217,6 +217,11 @@ class MerchantOfferResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('status')
                                     ->options(MerchantOffer::STATUS)->default(0),
+                                DatePicker::make('publish_at')
+                                    ->label('Publish Date')
+                                    ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
+                                    ->minDate(now()->addDay()->startOfDay())
+                                    ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant User')
                                     ->searchable()

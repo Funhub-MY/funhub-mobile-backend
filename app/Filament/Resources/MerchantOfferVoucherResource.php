@@ -7,9 +7,13 @@ use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use Filament\Forms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -159,6 +163,33 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Merchant Offer'),
             ])
             ->actions([
+                Action::make('claim')
+                    ->visible(fn () => auth()->user()->hasRole('merchant'))
+                    ->requiresConfirmation()
+                    ->form([
+                        TextInput::make('unique_code')
+                            ->label('Unique Code Generated on Customer\'s App')
+                            ->placeholder('ABCDE')
+                            ->required(),
+                        DateTimePicker::make('claim_date_time')
+                            ->default(now())
+                            ->disabled()
+                            ->required()
+                            ->label('Claim Date Time'),
+                        Placeholder::make('disclaimer')
+                            ->label('Disclaimer: Once click confirmed, the voucher will be marked as claimed and is not reversible.')
+                    ])
+                    ->action(function (MerchantOfferVoucher $record, array $data) {
+                        $offer = $record->merchant_offer;
+
+                        // get claim id of the user via
+
+                        // merchant code validated proceed create redeems
+                        // $redeem = $offer->redeems()->attach(auth()->user()->id, [
+                        //     'claim_id' => $request->claim_id,
+                        //     'quantity' => $request->quantity,
+                        // ]);
+                    }),
             ])
             ->bulkActions([
                 ExportBulkAction::make()->exports([
