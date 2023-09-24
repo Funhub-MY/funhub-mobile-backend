@@ -4,13 +4,16 @@ namespace App\Filament\Widgets;
 
 use App\Models\ArticleCategory;
 use Filament\Widgets\RadarChartWidget;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class ArticleUserEngagementCategory extends RadarChartWidget
 {
+    use HasWidgetShield;
+
     protected static ?string $heading = 'User Activity by Published Article Category';
 
     protected function getData(): array
-    {       
+    {
         $labels = [];
         $viewed_data = [];
         $viewedCategories = ArticleCategory::with(['articles' => function ($query) {

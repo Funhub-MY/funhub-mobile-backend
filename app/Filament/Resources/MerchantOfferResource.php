@@ -39,6 +39,16 @@ class MerchantOfferResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+        if (auth()->user()->hasRole('merchant')) {
+            $query->where('user_id', auth()->user()->id);
+        }
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class MerchantOfferVoucherResource extends Resource
 {
@@ -33,6 +36,19 @@ class MerchantOfferVoucherResource extends Resource
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 3;
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+        if (auth()->user()->hasRole('merchant')) {
+            // whereHas offer with user_id = auth()->id()
+            $query->whereHas('merchant_offer', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        return $query;
+    }
 
     public static function canEdit(Model $record): bool
     {
@@ -143,20 +159,21 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Merchant Offer'),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ])
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -164,5 +181,5 @@ class MerchantOfferVoucherResource extends Resource
             'create' => Pages\CreateMerchantOfferVoucher::route('/create'),
             'edit' => Pages\EditMerchantOfferVoucher::route('/{record}/edit'),
         ];
-    }    
+    }
 }
