@@ -99,10 +99,10 @@ class MerchantOfferResource extends Resource
 
                                 Forms\Components\DateTimePicker::make('available_at')
                                     ->required()
-                                    ->minDate(now()->startOfDay()),
+                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
                                 Forms\Components\DateTimePicker::make('available_until')
                                     ->required()
-                                    ->minDate(now()->startOfDay()),
+                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
                                 Forms\Components\TextInput::make('expiry_days')
                                     ->label('Expire in (Days) After Purchase')
                                     ->helperText('Leave blank if no expiry. Available until user redeemed it.')
