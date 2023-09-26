@@ -354,6 +354,7 @@ class MerchantOfferResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\BulkAction::make('update_status')
+                    ->hidden(fn () => auth()->user()->hasRole('merchant'))
                     ->label('Update Status')
                     ->icon('heroicon-o-refresh')
                     ->form([

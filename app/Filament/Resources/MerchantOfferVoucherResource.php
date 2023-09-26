@@ -163,33 +163,33 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Merchant Offer'),
             ])
             ->actions([
-                Action::make('claim')
-                    ->visible(fn () => auth()->user()->hasRole('merchant'))
-                    ->requiresConfirmation()
-                    ->form([
-                        TextInput::make('unique_code')
-                            ->label('Unique Code Generated on Customer\'s App')
-                            ->placeholder('ABCDE')
-                            ->required(),
-                        DateTimePicker::make('claim_date_time')
-                            ->default(now())
-                            ->disabled()
-                            ->required()
-                            ->label('Claim Date Time'),
-                        Placeholder::make('disclaimer')
-                            ->label('Disclaimer: Once click confirmed, the voucher will be marked as claimed and is not reversible.')
-                    ])
-                    ->action(function (MerchantOfferVoucher $record, array $data) {
-                        $offer = $record->merchant_offer;
+                // Action::make('claim')
+                //     ->visible(fn () => auth()->user()->hasRole('merchant'))
+                //     ->requiresConfirmation()
+                //     ->form([
+                //         TextInput::make('unique_code')
+                //             ->label('Unique Code Generated on Customer\'s App')
+                //             ->placeholder('ABCDE')
+                //             ->required(),
+                //         DateTimePicker::make('claim_date_time')
+                //             ->default(now())
+                //             ->disabled()
+                //             ->required()
+                //             ->label('Claim Date Time'),
+                //         Placeholder::make('disclaimer')
+                //             ->label('Disclaimer: Once click confirmed, the voucher will be marked as claimed and is not reversible.')
+                //     ])
+                //     ->action(function (MerchantOfferVoucher $record, array $data) {
+                //         $offer = $record->merchant_offer;
 
-                        // get claim id of the user via
+                //         // get claim id of the user via
 
-                        // merchant code validated proceed create redeems
-                        // $redeem = $offer->redeems()->attach(auth()->user()->id, [
-                        //     'claim_id' => $request->claim_id,
-                        //     'quantity' => $request->quantity,
-                        // ]);
-                    }),
+                //         // merchant code validated proceed create redeems
+                //         // $redeem = $offer->redeems()->attach(auth()->user()->id, [
+                //         //     'claim_id' => $request->claim_id,
+                //         //     'quantity' => $request->quantity,
+                //         // ]);
+                //     }),
             ])
             ->bulkActions([
                 ExportBulkAction::make()->exports([
