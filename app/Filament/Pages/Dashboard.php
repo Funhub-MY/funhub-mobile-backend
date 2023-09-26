@@ -43,6 +43,7 @@ class Dashboard extends BasePage
         if (auth()->user()->hasRole('merchant')) {
             // load filers and merchant releated widgets
             $widgets = array_merge($widgets, [
+                Filters::class,
                 VoucherAvailable::class,
                 RedemptionsOverview::class,
                 RedemptionsValue::class,

@@ -503,7 +503,6 @@ class ArticleController extends Controller
             $userUploads = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->images);
             $userUploads->each(function ($media) use ($article) {
                 // move to article_gallery collection of the created article
-                Log::info('Media moved', ['media' => $media]);
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
             });
         }
@@ -513,7 +512,6 @@ class ArticleController extends Controller
             $userVideos = $user->getMedia(User::USER_VIDEO_UPLOADS)->whereIn('id', $request->video);
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
-                Log::info('Media moved', ['media' => $media]);
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
             });
         }
@@ -739,7 +737,6 @@ class ArticleController extends Controller
                 $userUploads = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->images);
                 $userUploads->each(function ($media) use ($article) {
                     // move to article_gallery collection of the created article
-                    Log::info('Media moved', ['media' => $media]);
                     $media->move($article, Article::MEDIA_COLLECTION_NAME);
                 });
             }
