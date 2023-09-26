@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "77432abf-02c4-4675-92f9-0be69e6690ee",
+        "_postman_id": "2e3f1fb6-6cf7-45b7-a92f-62ae9163cdfc",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":5,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"nostrum\",\"violation_level\":\"veritatis\",\"article\":1}"
+                                    "raw": "{\"article_id\":7,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"id\",\"violation_level\":\"qui\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"fugiat\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "accusamus",
+                                            "value": "eius",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"inventore\",\"violation_type\":\"consequatur\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"in\",\"violation_type\":\"in\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "et",
+                                            "value": "ab",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1301,6 +1301,50 @@
             "name": "Authentication",
             "description": "",
             "item": [
+                {
+                    "name": "Check phone no exists or not",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/check_phone_no",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/check_phone_no"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"country_code\":\"60\",\"phone_no\":\"1234567890\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Phone Number not registered\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"country_code\": [\"The Country COde field is required.\"], \"phone_no\": [\"The Phone No field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
                 {
                     "name": "Send OTP",
                     "request": {
@@ -2331,7 +2375,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "accusantium",
+                                            "value": "ad",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3327,7 +3371,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -3368,7 +3412,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":15}"
+                                    "raw": "{\"user_id\":17}"
                                 },
                                 "description": ""
                             },
@@ -3474,7 +3518,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"corporis\",\"violation_level\":\"quidem\",\"violation_type\":\"est\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"saepe\",\"violation_level\":\"tempore\",\"violation_type\":\"quam\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3631,7 +3675,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"quaerat\"}"
+                            "raw": "{\"reason\":\"eum\"}"
                         },
                         "description": ""
                     },
@@ -3674,7 +3718,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"culpa\"}"
+                            "raw": "{\"user_ids\":\"quod\"}"
                         },
                         "description": ""
                     },
@@ -4145,7 +4189,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },
