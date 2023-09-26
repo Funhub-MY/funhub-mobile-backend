@@ -123,6 +123,7 @@ class AuthController extends Controller
             ->where('phone_country_code', $request->country_code)
             ->first();
 
+
         // Generate new OTP
         $otp = rand(100000, 999999);
         if (!$user) {
@@ -140,11 +141,13 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Phone Number already registered'], 422);
             }
         } else {
-             $user->update([
-                'otp' => $otp,
-                'otp_expiry' => now()->addMinutes(1),
-                'otp_verified_at' => null,
-            ]);
+            //user account exists, cannot use sendOtp
+            return response()->json(['message' => 'Phone Number already registered'], 422);
+            //  $user->update([
+            //     'otp' => $otp,
+            //     'otp_expiry' => now()->addMinutes(1),
+            //     'otp_verified_at' => null,
+            // ]);
         }
 
         // Fires SMS
