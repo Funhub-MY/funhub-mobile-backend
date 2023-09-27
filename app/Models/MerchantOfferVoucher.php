@@ -38,7 +38,7 @@ class MerchantOfferVoucher extends Model
 
     public function redeem()
     {
-        return $this->hasOneThrough(MerchantOfferRedeem::class, MerchantOfferClaim::class, 'voucher_id', 'claim_id');
+        return $this->hasOneThrough(MerchantOfferClaimRedemptions::class, MerchantOfferClaim::class, 'voucher_id', 'claim_id', 'id', 'id');
     }
 
     public static function generateCode()
