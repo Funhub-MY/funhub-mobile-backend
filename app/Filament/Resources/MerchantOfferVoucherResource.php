@@ -89,6 +89,11 @@ class MerchantOfferVoucherResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Voucher Code')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
                     ->formatStateUsing(function ($state) {
@@ -97,11 +102,15 @@ class MerchantOfferVoucherResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
+                // sku
+                TextColumn::make('merchant_offer.sku')
+                ->label('SKU')
+                ->sortable()
+                ->searchable(),
 
+                // financial status (claim status)
                 Tables\Columns\BadgeColumn::make('claim.status')
-                    ->label('Status')
+                    ->label('Financial Status')
                     ->default(0)
                     ->sortable()
                     ->enum([
@@ -117,8 +126,21 @@ class MerchantOfferVoucherResource extends Resource
                         'warning' => 3,
                     ]),
 
+                // redemptions status
+                Tables\Columns\BadgeColumn::make('voucher_redeemed')
+                    ->label('Redemption Status')
+                    ->default(0)
+                    ->enum([
+                        false => 'Not Redeemed',
+                        true => 'Redeemed'
+                    ])
+                    ->colors([
+                        'secondary' => false,
+                        'success' => true,
+                    ]),
+
                 Tables\Columns\TextColumn::make('owner.name')
-                    ->label('Claimed By')
+                    ->label('Purchased By')
                     ->default('-')
                     ->searchable()
                     ->sortable(),
@@ -148,7 +170,7 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Amount'),
 
                 Tables\Columns\TextColumn::make('claim.created_at')
-                    ->label('Claimed At')
+                    ->label('Purchased At')
                     ->date('d/m/Y h:ia')
                     ->searchable()
                     ->sortable(),
@@ -156,7 +178,7 @@ class MerchantOfferVoucherResource extends Resource
             ->filters([
                 SelectFilter::make('claim.status')
                     ->options(MerchantOfferClaim::CLAIM_STATUS)
-                    ->label('Status'),
+                    ->label('Financial Status'),
                 SelectFilter::make('merchant_offer_id')
                     ->relationship('merchant_offer', 'name')
                     ->searchable()

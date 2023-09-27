@@ -48,11 +48,13 @@ class VouchersRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
+                ->label('Voucher Code')
+                ->sortable()
+                ->searchable(),
 
                 Tables\Columns\BadgeColumn::make('claim.status')
-                    ->label('Status')
-                    ->default(0)
+                ->label('Financial Status')
+                ->default(0)
                     ->sortable()
                     ->enum([
                         0 => 'Unclaimed',
@@ -67,8 +69,21 @@ class VouchersRelationManager extends RelationManager
                         'warning' => 3,
                     ]),
 
+                // redemptions status
+                Tables\Columns\BadgeColumn::make('voucher_redeemed')
+                    ->label('Redemption Status')
+                    ->default(0)
+                    ->enum([
+                        false => 'Not Redeemed',
+                        true => 'Redeemed'
+                    ])
+                    ->colors([
+                        'secondary' => false,
+                        'success' => true,
+                    ]),
+
                 Tables\Columns\TextColumn::make('owner.name')
-                    ->label('Claimed By')
+                    ->label('Purchased By')
                     ->default('-')
                     ->searchable()
                     ->sortable(),
@@ -98,7 +113,7 @@ class VouchersRelationManager extends RelationManager
                     ->label('Amount'),
 
                 Tables\Columns\TextColumn::make('claim.created_at')
-                    ->label('Claimed At')
+                    ->label('Purchased At')
                     ->date('d/m/Y h:ia')
                     ->searchable()
                     ->sortable(),
@@ -106,7 +121,7 @@ class VouchersRelationManager extends RelationManager
             ->filters([
                 SelectFilter::make('claim.status')
                     ->options(MerchantOfferClaim::CLAIM_STATUS)
-                    ->label('Status'),
+                    ->label('Financial Status'),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
