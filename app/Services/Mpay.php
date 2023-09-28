@@ -8,7 +8,7 @@ class Mpay {
     protected $url, $mid, $hashKey;
     protected $secureHash;
 
-    public function __construct($mid, $hashKey, $uat = true)
+    public function __construct($mid, $hashKey, $fpxOrCardOnly = false)
     {
         if (config('app.env') == 'production' && !config('app.debug')) {
             $this->url = config('services.mpay.prod_url');
@@ -18,6 +18,17 @@ class Mpay {
         }
         $this->mid = $mid;
         $this->hashKey = $hashKey;
+
+        // override mid and hashkey if card/fpx specific
+        if ($fpxOrCardOnly) {
+            if ($fpxOrCardOnly == 'card') {
+                $this->mid = config('services.mpay.mid_card_only');
+                $this->hashKey = config('services.mpay.hash_key_card_only');
+            } elseif ($fpxOrCardOnly == 'fpx') {
+                $this->mid = config('services.mpay.mid_fpx_only');
+                $this->hashKey = config('services.mpay.hash_key_fpx_only');
+            }
+        }
         $this->secureHash = new SecureHash();
     }
 

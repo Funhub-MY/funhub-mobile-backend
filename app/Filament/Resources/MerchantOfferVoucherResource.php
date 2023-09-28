@@ -7,9 +7,13 @@ use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use Filament\Forms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -21,6 +25,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class MerchantOfferVoucherResource extends Resource
 {
@@ -33,6 +40,19 @@ class MerchantOfferVoucherResource extends Resource
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 3;
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+        if (auth()->user()->hasRole('merchant')) {
+            // whereHas offer with user_id = auth()->id()
+            $query->whereHas('merchant_offer', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        return $query;
+    }
 
     public static function canEdit(Model $record): bool
     {
@@ -69,6 +89,11 @@ class MerchantOfferVoucherResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('code')
+                    ->label('Voucher Code')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
                     ->formatStateUsing(function ($state) {
@@ -77,11 +102,15 @@ class MerchantOfferVoucherResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
+                // sku
+                TextColumn::make('merchant_offer.sku')
+                ->label('SKU')
+                ->sortable()
+                ->searchable(),
 
+                // financial status (claim status)
                 Tables\Columns\BadgeColumn::make('claim.status')
-                    ->label('Status')
+                    ->label('Financial Status')
                     ->default(0)
                     ->sortable()
                     ->enum([
@@ -97,8 +126,21 @@ class MerchantOfferVoucherResource extends Resource
                         'warning' => 3,
                     ]),
 
+                // redemptions status
+                Tables\Columns\BadgeColumn::make('voucher_redeemed')
+                    ->label('Redemption Status')
+                    ->default(0)
+                    ->enum([
+                        false => 'Not Redeemed',
+                        true => 'Redeemed'
+                    ])
+                    ->colors([
+                        'secondary' => false,
+                        'success' => true,
+                    ]),
+
                 Tables\Columns\TextColumn::make('owner.name')
-                    ->label('Claimed By')
+                    ->label('Purchased By')
                     ->default('-')
                     ->searchable()
                     ->sortable(),
@@ -128,7 +170,7 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Amount'),
 
                 Tables\Columns\TextColumn::make('claim.created_at')
-                    ->label('Claimed At')
+                    ->label('Purchased At')
                     ->date('d/m/Y h:ia')
                     ->searchable()
                     ->sortable(),
@@ -136,27 +178,55 @@ class MerchantOfferVoucherResource extends Resource
             ->filters([
                 SelectFilter::make('claim.status')
                     ->options(MerchantOfferClaim::CLAIM_STATUS)
-                    ->label('Status'),
+                    ->label('Financial Status'),
                 SelectFilter::make('merchant_offer_id')
                     ->relationship('merchant_offer', 'name')
                     ->searchable()
                     ->label('Merchant Offer'),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                // Action::make('claim')
+                //     ->visible(fn () => auth()->user()->hasRole('merchant'))
+                //     ->requiresConfirmation()
+                //     ->form([
+                //         TextInput::make('unique_code')
+                //             ->label('Unique Code Generated on Customer\'s App')
+                //             ->placeholder('ABCDE')
+                //             ->required(),
+                //         DateTimePicker::make('claim_date_time')
+                //             ->default(now())
+                //             ->disabled()
+                //             ->required()
+                //             ->label('Claim Date Time'),
+                //         Placeholder::make('disclaimer')
+                //             ->label('Disclaimer: Once click confirmed, the voucher will be marked as claimed and is not reversible.')
+                //     ])
+                //     ->action(function (MerchantOfferVoucher $record, array $data) {
+                //         $offer = $record->merchant_offer;
+
+                //         // get claim id of the user via
+
+                //         // merchant code validated proceed create redeems
+                //         // $redeem = $offer->redeems()->attach(auth()->user()->id, [
+                //         //     'claim_id' => $request->claim_id,
+                //         //     'quantity' => $request->quantity,
+                //         // ]);
+                //     }),
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ])
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -164,5 +234,5 @@ class MerchantOfferVoucherResource extends Resource
             'create' => Pages\CreateMerchantOfferVoucher::route('/create'),
             'edit' => Pages\EditMerchantOfferVoucher::route('/{record}/edit'),
         ];
-    }    
+    }
 }

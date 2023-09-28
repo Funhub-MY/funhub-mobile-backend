@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 7
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: nostrum
+                  example: id
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: veritatis
+                  example: qui
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatem
+                    - fugiat
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: accusamus
+        example: eius
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: inventore
+                  example: in
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: consequatur
+                  example: in
               required:
                 - comment_id
                 - reason
@@ -1586,10 +1586,57 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: et
+        example: ab
         required: true
         schema:
           type: string
+  /api/v1/check_phone_no:
+    post:
+      summary: 'Check phone no exists or not'
+      operationId: checkPhoneNoExistsOrNot
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Phone Number not registered'
+                properties:
+                  message:
+                    type: string
+                    example: 'Phone Number not registered'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: "The country code of user's phone number."
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'The Phone No of the user.'
+                  example: '1234567890'
+              required:
+                - country_code
+                - phone_no
+      security: []
   /api/v1/sendOtp:
     post:
       summary: 'Send OTP'
@@ -2828,7 +2875,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: accusantium
+        example: ad
         required: true
         schema:
           type: string
@@ -3848,7 +3895,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 15
+                  example: 3
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3901,7 +3948,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 17
               required:
                 - user_id
   /api/v1/user/report:
@@ -3948,15 +3995,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: corporis
+                  example: saepe
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quidem
+                  example: tempore
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: est
+                  example: quam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4101,7 +4148,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quaerat
+                  example: eum
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4142,7 +4189,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: culpa
+                  example: quod
               required:
                 - user_ids
     parameters:
@@ -4770,7 +4817,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

@@ -6,6 +6,64 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/check_phone_no
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check phone no exists or not'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      country_code:
+        name: country_code
+        description: "The country code of user's phone number."
+        required: true
+        example: '60'
+        type: string
+        custom: []
+      phone_no:
+        name: phone_no
+        description: 'The Phone No of the user.'
+        required: true
+        example: '1234567890'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      country_code: '60'
+      phone_no: '1234567890'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message" : "Phone Number not registered"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/sendOtp
     metadata:
       groupName: Authentication
@@ -594,7 +652,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64v86kaPc5aegDV3ZfbdEh1'
+      - 'Bearer eaVPkZd6bag13v5hf4EDc86'
     controller: null
     method: null
     route: null
@@ -676,7 +734,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 366bPE4dVDkaaf1hcv5gZ8e'
+      - 'Bearer a64ghPvf813d5eDcka6VEbZ'
     controller: null
     method: null
     route: null

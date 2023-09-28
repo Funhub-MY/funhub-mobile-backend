@@ -87,6 +87,44 @@ class AuthController extends Controller
     }
 
     /**
+     * Check phone no exists or not
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Authentication
+     * @unauthenticated
+     * @bodyParam country_code string required The country code of user's phone number. Example: 60
+     * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
+     * @response scenario=success {"message" : "Phone Number not registered"}
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}
+     */
+    public function checkPhoneNoExists(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+        ]);
+        // check if start with 0 or 60 for phone_no, remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // get user
+        $user = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->first();
+
+        if ($user) {
+            return response()->json(['message' => 'Phone Number already registered'], 422);
+        } else {
+            return response()->json(['message' => 'Phone Number not registered'], 200);
+        }
+    }
+
+    /**
      * Send OTP
      *
      * Send SMS OTP to phone number
@@ -122,6 +160,7 @@ class AuthController extends Controller
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->first();
+
 
         // Generate new OTP
         $otp = rand(100000, 999999);

@@ -20,6 +20,12 @@ class Kernel extends ConsoleKernel
 
         // run every 15minutes for release merchant
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
+
+        // run publish merchant offers every midnight
+        $schedule->command('merchant-offers:publish')->dailyAt('00:00');
+
+        // run auto archieve merchant offers every midnight 23:55
+        $schedule->command('merchant-offers:auto-archieve')->dailyAt('23:55');
     }
 
     /**

@@ -62,12 +62,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 
     public function canAccessFilament(): bool
     {
-        return $this->hasRole('staff');
+        return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super-admin') || $this->hasRole('merchant');
     }
 
     /**
      * Specifies the user's FCM token
      *
+     * @return string|array
      * @return string|array
      */
     public function routeNotificationForFcm()

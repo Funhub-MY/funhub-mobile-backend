@@ -19,6 +19,8 @@ class MerchantOfferVoucher extends Model
 
     protected $guarded = ['id'];
 
+    protected $appends = ['voucher_redeemed'];
+
     public function merchant_offer()
     {
         return $this->belongsTo(MerchantOffer::class, 'merchant_offer_id');
@@ -34,6 +36,11 @@ class MerchantOfferVoucher extends Model
         return $this->hasOne(MerchantOfferClaim::class, 'voucher_id');
     }
 
+    public function redeem()
+    {
+        return $this->hasOneThrough(MerchantOfferClaimRedemptions::class, MerchantOfferClaim::class, 'voucher_id', 'claim_id', 'id', 'id');
+    }
+
     public static function generateCode()
     {
         return  strtoupper(date('Y').Str::random(4).random_int(10, 99)); // 2023ABCD99
@@ -47,5 +54,13 @@ class MerchantOfferVoucher extends Model
     public function scopeUnclaimed(Builder $query): void
     {
          $query->whereNull('owned_by_id');
+    }
+
+    public function getVoucherRedeemedAttribute()
+    {
+        if ($this->claim && $this->redeem()->exists()) {
+            return true;
+        }
+        return false;
     }
 }
