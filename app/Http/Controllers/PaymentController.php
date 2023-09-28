@@ -63,6 +63,13 @@ class PaymentController extends Controller
         $transaction = \App\Models\Transaction::where('transaction_no', request()->invno)->first();
 
         if ($transaction) {
+            // initiate mpay instance based on transaction type
+            $this->gateway = new Mpay(
+                config('services.mpay.mid'),
+                config('services.mpay.hash_key'),
+                ($transaction->payment_method) ? $transaction->payment_method : false
+            );
+
             // has transaction validate secure hash first from mpay
             if (!$this->validateSecureHash(
                 $request->mid,
