@@ -32,6 +32,7 @@ class MerchantOffer extends Model implements HasMedia
 
     const STATUS_DRAFT = 0;
     const STATUS_PUBLISHED = 1;
+    const STATUS_ARCHIVED = 2;
 
     // filterables
     const FILTERABLE = [
