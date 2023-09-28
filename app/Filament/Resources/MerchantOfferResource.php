@@ -26,6 +26,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\Action;
 
 class MerchantOfferResource extends Resource
 {
@@ -350,6 +351,36 @@ class MerchantOfferResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // Action::make('duplicate')
+                //     ->mountUsing(fn (Forms\ComponentContainer $form, MerchantOffer $record) => $form->fill([
+                //         'sku' => $record->flight_date,
+                //     ]))
+                //     ->action(function (MerchantOfferResource $record, array $data): void {
+                //         $record->fill($data);
+                //         $record->duplicate();
+                //     })
+                //     ->form([
+                //         Forms\Components\Select::make('status')
+                //             ->options(MerchantOffer::STATUS)->default(0),
+                //         Forms\Components\TextInput::make('sku')
+                //             ->label('SKU')
+                //             ->required(),
+                //         Forms\Components\DateTimePicker::make('available_at')
+                //             ->required(),
+                //         Forms\Components\DateTimePicker::make('available_until')
+                //             ->required(),
+                //         DatePicker::make('publish_at')
+                //             ->label('Publish Date')
+                //             ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
+                //             ->minDate(now()->addDay()->startOfDay())
+                //             ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
+                //         Forms\Components\TextInput::make('quantity')
+                //             ->label('Available Quantity')
+                //             ->required()
+                //             ->numeric()
+                //             ->minValue(1),
+                //     ])
+                //     ->icon('heroicon-s-document-duplicate'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
