@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +29,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if ($this->app->environment('production')) {
+            // if filament is serving
+            Filament::serving(function () {
+                // so assets load by https for filament
+                URL::forceScheme('https');
+            });
+        }
     }
 }
