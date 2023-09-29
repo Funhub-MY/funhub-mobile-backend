@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
@@ -39,13 +40,13 @@ class MerchantResource extends Resource
                             ->rules('required', 'max:255'),
 
                         TextInput::make('redeem_code')
-                            ->required()
                             ->label('Cashier Redeem Code (6 Digit)')
-                            ->default(fn () => random_int(100000, 999999))
+                            ->disabled(fn ($livewire) => $livewire instanceof CreateRecord)
                             ->rules('digits:6')
+                            ->disabled()
                             ->numeric()
                             ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
-                            ->helperText('Used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
+                            ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
 
                         Forms\Components\Select::make('user_id')
                             ->label('Attached To User Account')
@@ -94,6 +95,7 @@ class MerchantResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('business_name'),
+                Tables\Columns\TextColumn::make('redeem_code'),
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\TextColumn::make('address_postcode'),

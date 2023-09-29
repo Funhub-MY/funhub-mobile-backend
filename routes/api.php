@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1'], function () {
 
     // primary otp login
+    Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp
     Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
     Route::post('verifyOtp', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyOtp']); // verify otp
     Route::post('loginWithPassword', [\App\Http\Controllers\Api\AuthController::class, 'loginWithPassword']); // login with phone no + password
@@ -131,6 +132,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::prefix('/views')->group(function () {
            Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);
            Route::get('/{type}/{id}', [\App\Http\Controllers\Api\ViewController::class, 'getViews']);
+        });
+
+        // Products
+        Route::prefix('/products')->group(function (){
+            Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
+            Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
         });
 
         // Points & Rewards

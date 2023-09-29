@@ -6,9 +6,12 @@ use App\Models\Article;
 use Filament\Widgets\BarChartWidget;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\Cache;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class ArticleCountChartOverMonths extends BarChartWidget
 {
+    use HasWidgetShield;
+
     protected static ?string $heading = 'Articles';
 
     protected function getData(): array

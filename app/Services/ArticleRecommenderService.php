@@ -24,7 +24,7 @@ class ArticleRecommenderService
                 $query->where('user_id', $this->user->id);
             }, 'comments' => function ($query) {
                 $query->where('user_id', $this->user->id);
-            }, 'categories'])
+            }, 'categories', 'imports'])
             ->where('user_id', '!=', $this->user->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', $this->user->id);
@@ -73,10 +73,20 @@ class ArticleRecommenderService
         if ($article->likes_count > 0) {
             $affinity += 10;
         }
-        $affinity += $article->views_count;
-        $affinity -= ($article->views()->where('created_at', '<', now()->subMonth())->count() * 0.1);
+        // increase affinity is user commented
+        if ($article->comments_count > 0) {
+            $affinity += 10;
+        }
+        // decrease affinity if user view more than twice
+        if ($article->views_count > 2) {
+            $affinity -= 15;
+        }
+        // increase affinity if user never viewed before
+        if ($article->views_count == 0) {
+            $affinity += 10;
+        }
+        // categories match user will increase affinity
         $affinity += $article->categories->count() * 10;
-
         return $affinity;
     }
 
@@ -87,10 +97,17 @@ class ArticleRecommenderService
      * @return float
      */
     private function weightScore($article) {
-        $weight = $article->created_at->diffInDays(now());
-        $weight += $article->comments()->where('created_at', '>', now()->subDay())->count();
-        $weight -= $article->created_at->diffInYears(now()) * 0.1;
-        $weight += ($article->comments_count / 10);
+        // the older the article, then lesser weight
+        $weight = 10;
+
+        // reduce weight if older the article 30% of entire weight
+        $weight -= $weight * ($article->created_at->diffInDays(Carbon::now()) / 100);
+
+        // reduce article weight if article is an imported article. weights the remainder 60%
+        if ($article->imports()->exists()) {
+            $weight -= $weight * 0.6;
+        }
+
         return $weight;
     }
 }

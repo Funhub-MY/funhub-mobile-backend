@@ -105,7 +105,7 @@ class TransactionResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('User'),
-                TextColumn::make('product.name'),
+                TextColumn::make('transactionable.name'),
                 TextColumn::make('amount')
                     ->label('Amount (RM)'),
                 TextColumn::make('payment_method')

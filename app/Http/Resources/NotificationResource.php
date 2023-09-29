@@ -46,6 +46,16 @@ class NotificationResource extends JsonResource
                         $article_cover = $media->getFullUrl();
                     }
                 }
+            } else if ($this->data['object'] == Article::class) {
+                $article = Article::find($this->data['object_id']);
+                if ($article) {
+                    $article_id = $this->data['object_id'];
+                    $article_type = $article->type;
+                    $media = $article->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
+                    if ($media) {
+                        $article_cover = $media->getFullUrl();
+                    }
+                }
             }
         }
 

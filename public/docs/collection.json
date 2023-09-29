@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "b598ab3f-5041-4682-9cad-22859c76a54c",
+        "_postman_id": "2e3f1fb6-6cf7-45b7-a92f-62ae9163cdfc",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"commodi\",\"violation_level\":\"aut\",\"article\":1}"
+                                    "raw": "{\"article_id\":7,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"id\",\"violation_level\":\"qui\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"cum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"fugiat\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "impedit",
+                                            "value": "eius",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"tempore\",\"violation_type\":\"quam\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"in\",\"violation_type\":\"in\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dolores",
+                                            "value": "ab",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1301,6 +1301,50 @@
             "name": "Authentication",
             "description": "",
             "item": [
+                {
+                    "name": "Check phone no exists or not",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/check_phone_no",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/check_phone_no"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"country_code\":\"60\",\"phone_no\":\"1234567890\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Phone Number not registered\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"errors\": [\"country_code\": [\"The Country COde field is required.\"], \"phone_no\": [\"The Phone No field is required.\"] ]}",
+                            "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
                 {
                     "name": "Send OTP",
                     "request": {
@@ -2037,7 +2081,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -2331,7 +2375,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "eum",
+                                            "value": "ad",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3032,6 +3076,100 @@
             ]
         },
         {
+            "name": "Product",
+            "description": "",
+            "item": [
+                {
+                    "name": "Product Rewards",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Post Checkout",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/products\/checkout",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/products\/checkout"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"product_id\":1,\"payment_method\":\"fiat\",\"fiat_payment_method\":\"fpx\\\/card\",\"quantity\":1}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Redirect to Gateway\"\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Product is sold out\"\n}",
+                                    "name": "insufficient_product_quantity"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Redirect to gateway\",\n\"gateway_data\": [\n     'url' => $this->url .'\/payment\/eCommerce',\n      'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),\n      'mid' => $this->mid,\n      'invno' => $invoice_no,\n      'capture_amt' => $amount,\n      'desc' => $desc,\n      'postURL' => $redirectUrl,\n      'phone' => $phoneNo,\n      'email' => $email,\n      'param' => $param,\n      'authorize' => 'authorize'\n  ];\n}",
+                                    "name": "fiat_payment_mode"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Cancel Product Checkout",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products\/checkout\/cancel",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products\/checkout\/cancel"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"transaction_no\":\"11234455\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Transaction cancelled\"\n}",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Transaction",
             "description": "",
             "item": [
@@ -3114,7 +3252,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "13",
+                                    "value": "1",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3233,7 +3371,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":18}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -3380,7 +3518,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"qui\",\"violation_level\":\"dolor\",\"violation_type\":\"harum\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"saepe\",\"violation_level\":\"tempore\",\"violation_type\":\"quam\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3537,7 +3675,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"sit\"}"
+                            "raw": "{\"reason\":\"eum\"}"
                         },
                         "description": ""
                     },
@@ -3580,7 +3718,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"reprehenderit\"}"
+                            "raw": "{\"user_ids\":\"quod\"}"
                         },
                         "description": ""
                     },

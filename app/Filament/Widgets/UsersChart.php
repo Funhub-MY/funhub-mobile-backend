@@ -5,9 +5,12 @@ namespace App\Filament\Widgets;
 use App\Models\User;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\Cache;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class UsersChart extends LineChartWidget
 {
+    use HasWidgetShield;
+
     protected static ?string $heading = 'Users';
     protected static ?array $options = [
         'ticks' => [

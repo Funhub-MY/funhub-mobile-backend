@@ -62,12 +62,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 
     public function canAccessFilament(): bool
     {
-        return $this->hasRole('staff');
+        return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super-admin') || $this->hasRole('merchant');
     }
 
     /**
      * Specifies the user's FCM token
      *
+     * @return string|array
      * @return string|array
      */
     public function routeNotificationForFcm()
@@ -185,7 +186,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function claimed_merchant_offers()
     {
         return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_user')
-            ->withPivot('status', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
+            ->withPivot('status', 'voucher_id', 'order_no', 'amount', 'tax', 'discount', 'net_amount', 'remarks')
             ->withTimestamps();
     }
 

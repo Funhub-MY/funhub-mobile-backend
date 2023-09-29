@@ -1,0 +1,167 @@
+name: Transaction
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/transactions
+    metadata:
+      groupName: Transaction
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get all my transactions
+        Get all transactions of current logged in users paginated
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      date_from:
+        name: date_from
+        description: 'Date from'
+        required: false
+        example: '2021-01-01'
+        type: string
+        custom: []
+      date_to:
+        name: date_to
+        description: 'Date to'
+        required: false
+        example: '2021-01-31'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      date_from: '2021-01-01'
+      date_to: '2021-01-31'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VvhbakEe3ZDdc685aP4g6f1'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/transactions/transaction_no
+    metadata:
+      groupName: Transaction
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Transaction by Transaction Number'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kaa3cV5fPEDb4dZ1ge6v6h8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/transactions/{transaction_id}'
+    metadata:
+      groupName: Transaction
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a Transaction By ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      transaction_id:
+        name: transaction_id
+        description: 'The ID of the transaction.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      transaction:
+        name: transaction
+        description: 'Transaction ID'
+        required: true
+        example: '1'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      transaction_id: 1
+      transaction: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer k6VagbD43d5veEhcZfa8P61'
+    controller: null
+    method: null
+    route: null
+    custom: []

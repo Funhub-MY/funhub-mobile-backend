@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferVoucher;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -45,29 +47,43 @@ class ReleaseFailedMerchantOffers extends Command
                 ]);
 
                 Log::info('[ReleaseFailedMerchantOffers] Updated Transaction to Failed due to expired time limit', [
-                    'transaction' => $transaction->toArray(),
+                    'transaction_id' => $transaction->id,
                 ]);
 
-                $claim = MerchantOffer::where('id', $transaction->transactionable_id)->claims()
-                    ->wherePivot('user_id', $transaction->user_id)->first();
+                $offer = MerchantOffer::where('id', $transaction->transactionable_id)
+                    ->first();
+
+                $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
+                    ->where('user_id', $transaction->user_id)
+                    ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+                    ->latest()
+                    ->first();
 
                 if ($claim) {
                     try {
-                        $merchantOffer = MerchantOffer::find($transaction->transactionable_id);
-                        $merchantOffer->claims()->updateExistingPivot($transaction->user_id, [
+                        if ($claim->voucher_id) {
+                            $voucher = MerchantOfferVoucher::where('id', $claim->voucher_id)->first();
+                            if ($voucher) {
+                                $voucher->owned_by_id = null;
+                                $voucher->save();
+                                Log::info('Voucher released', [$voucher->toArray()]);
+                            }
+                        }
+
+                        $claim->update([
                             'status' => \App\Models\MerchantOffer::CLAIM_FAILED
                         ]);
-                        $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
-                        $merchantOffer->save();
+                        $offer->quantity = $offer->quantity + $claim->pivot->quantity;
+                        $offer->save();
 
                         Log::info('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
-                            'transaction' => $transaction->toArray(),
-                            'merchant_offer' => $transaction->transactionable->toArray(),
+                            'transaction_id' => $transaction->id,
+                            'merchant_offer_id' => $offer->id,
                         ]);
                     } catch (Exception $ex) {
                         Log::error('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
-                            'transaction' => $transaction->toArray(),
-                            'merchant_offer' => $transaction->transactionable->toArray(),
+                            'transaction_id' => $transaction->id,
+                            'merchant_offer_id' => $offer->id,
                             'error' => $ex->getMessage()
                         ]);
                     }

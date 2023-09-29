@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 7
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: commodi
+                  example: id
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: qui
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - cum
+                    - fugiat
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: impedit
+        example: eius
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: tempore
+                  example: in
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quam
+                  example: in
               required:
                 - comment_id
                 - reason
@@ -1586,10 +1586,57 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: dolores
+        example: ab
         required: true
         schema:
           type: string
+  /api/v1/check_phone_no:
+    post:
+      summary: 'Check phone no exists or not'
+      operationId: checkPhoneNoExistsOrNot
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Phone Number not registered'
+                properties:
+                  message:
+                    type: string
+                    example: 'Phone Number not registered'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: "The country code of user's phone number."
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'The Phone No of the user.'
+                  example: '1234567890'
+              required:
+                - country_code
+                - phone_no
+      security: []
   /api/v1/sendOtp:
     post:
       summary: 'Send OTP'
@@ -2452,7 +2499,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -2828,7 +2875,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eum
+        example: ad
         required: true
         schema:
           type: string
@@ -3467,6 +3514,97 @@ paths:
           present:
             summary: 'When the value is present'
             value: egg
+  /api/v1/products/checkout:
+    post:
+      summary: 'Post Checkout'
+      operationId: postCheckout
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: fiat_payment_mode
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Redirect to gateway\",\n\"gateway_data\": [\n     'url' => $this->url .'/payment/eCommerce',\n      'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),\n      'mid' => $this->mid,\n      'invno' => $invoice_no,\n      'capture_amt' => $amount,\n      'desc' => $desc,\n      'postURL' => $redirectUrl,\n      'phone' => $phoneNo,\n      'email' => $email,\n      'param' => $param,\n      'authorize' => 'authorize'\n  ];\n}"
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                  description: 'Product ID.'
+                  example: 1
+                payment_method:
+                  type: string
+                  description: 'Payment Method.'
+                  example: fiat
+                fiat_payment_method:
+                  type: string
+                  description: 'required_if:payment_method,fiat Payment Method.'
+                  example: fpx/card
+                quantity:
+                  type: integer
+                  description: Quantity.
+                  example: 1
+              required:
+                - product_id
+                - payment_method
+                - quantity
+  /api/v1/products/checkout/cancel:
+    post:
+      summary: 'Cancel Product Checkout'
+      operationId: cancelProductCheckout
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Transaction cancelled'
+                properties:
+                  message:
+                    type: string
+                    example: 'Transaction cancelled'
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transaction_no:
+                  type: string
+                  description: 'Transaction No.'
+                  example: '11234455'
+              required:
+                - transaction_no
   /api/v1/transactions:
     get:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
@@ -3565,7 +3703,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 13
+        example: 1
         required: true
         schema:
           type: integer
@@ -3757,7 +3895,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 18
+                  example: 3
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3857,15 +3995,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: qui
+                  example: saepe
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolor
+                  example: tempore
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: harum
+                  example: quam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4010,7 +4148,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: sit
+                  example: eum
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4051,7 +4189,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: reprehenderit
+                  example: quod
               required:
                 - user_ids
     parameters:
@@ -4972,6 +5110,9 @@ tags:
     description: ''
   -
     name: Point
+    description: ''
+  -
+    name: Product
     description: ''
   -
     name: Transaction

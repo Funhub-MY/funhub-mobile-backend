@@ -33,6 +33,7 @@ use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 use function PHPSTORM_META\map;
 
@@ -121,17 +122,21 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
-            $radius = $request->has('radius') ? $request->radius : 15000; // 15km default
-            // get article where article->location lat,lng is within the radius
-            $query->whereHas('location', function ($query) use ($request, $radius) {
-                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
-                    cos( radians( lat ) )
-                    * cos( radians( lng ) - radians(?)
-                    ) + sin( radians(?) ) *
-                    sin( radians( lat ) ) )
-                    ) AS distance', [$request->lat, $request->lng, $request->lat])
-                    ->havingRaw("distance < ?", [$radius]);
-            });
+            $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
+
+            $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                // add select to get distance from loc lat lng with request lat lng
+                ->selectRaw('articles.*, ( 6371 * acos( cos( radians(?) ) *
+                                cos( radians( loc.lat ) )
+                                * cos( radians( loc.lng ) - radians(?)
+                                ) + sin( radians(?) ) *
+                                sin( radians( loc.lat ) ) )
+                                )', [$request->lat, $request->lng, $request->lat]
+                )
+                ->whereHas('location', function ($query) use ($request, $radius) {
+                    $query->withinDistanceOf($request->lat, $request->lng, $radius);
+                });
         }
 
         // location id
@@ -153,6 +158,7 @@ class ArticleController extends Controller
                 // then dispatch job to rebuild for user
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
+                    Log::info('Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id. ' Expiry Hours: '. config('app.recommendation_db_purge_hours'). ' - Last Built: '. $lastBuilt);
                     BuildRecommendationsForUser::dispatch(auth()->user());
                 }
             } else {
@@ -161,6 +167,7 @@ class ArticleController extends Controller
                 BuildRecommendationsForUser::dispatch(auth()->user());
             }
 
+            // shuffle ranking results
             if ($rankIds->count() > 0) {  // if user has articles ranked
                 // if refresh articles or user scrolled until final page of recommendations
                 if ($request->refresh_recommendations == 1) {
@@ -170,12 +177,33 @@ class ArticleController extends Controller
                 $shuffledIds = cache()->remember('article_recommendations_' . auth()->user()->id, now()->addMinutes(60), function () use ($rankIds) {
                     return $rankIds->shuffle()->pluck('article_id')->toArray();
                 });
-                $query->whereIn('id', $shuffledIds)
-                    ->orderByRaw('FIELD(id, ' . implode(',', $shuffledIds) . ')');
+            }
+
+            // count number of articles past x days
+            $latestArticlesCount = cache()->remember('article_latest_count_' . auth()->user()->id, now()->addHours(23), function () {
+                return Article::published()
+                    ->where('created_at', '>=', now()->subDays(config('app.recommendation_after_days')))
+                    ->count();
+            });
+
+            // if user has not scroll past X days of articles, show latest articles
+            // else load recommendations OR user force refresh recommendations, immediately load recommendations
+            $currentPage = $request->has('page') ? $request->page : 1;
+            $perPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
+            $currentLoadedTill = $currentPage * $perPage;
+            if ($currentLoadedTill > $latestArticlesCount || $request->has('refresh_recommendations')) {
+                // already load past X days articles, start loading recommendations
+                if ($rankIds->count() > 0) {  // if user has articles ranked
+                    $query->whereIn('id', $shuffledIds)
+                        ->orderByRaw('FIELD(id, ' . implode(',', $shuffledIds) . ')');
+                }
             }
         }
 
         $this->filterArticlesBlockedOrHidden($query);
+
+        // query everything by latest
+        $query->latest();
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
@@ -311,7 +339,8 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -368,6 +397,7 @@ class ArticleController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -473,7 +503,6 @@ class ArticleController extends Controller
             $userUploads = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->images);
             $userUploads->each(function ($media) use ($article) {
                 // move to article_gallery collection of the created article
-                Log::info('Media moved', ['media' => $media]);
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
             });
         }
@@ -483,7 +512,6 @@ class ArticleController extends Controller
             $userVideos = $user->getMedia(User::USER_VIDEO_UPLOADS)->whereIn('id', $request->video);
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
-                Log::info('Media moved', ['media' => $media]);
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
             });
         }
@@ -533,6 +561,9 @@ class ArticleController extends Controller
 
         event(new ArticleCreated($article));
 
+        $article = $article->refresh();
+        // load relations
+        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers');
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
@@ -553,12 +584,10 @@ class ArticleController extends Controller
             ->where('lng', $locationData['lng'])
             ->first();
 
-        if ($location) {
-            // if article has previous location, detach it first
-            if ($article->location) {
-                $article->location()->detach(); // detaches all
-            }
+        // detach existing location first
+        $article->location()->detach(); // detaches all
 
+        if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
         } else {
@@ -578,7 +607,8 @@ class ArticleController extends Controller
             if (is_numeric($locationData['state'])) {
                 $state = State::where('id', $locationData['state'])->first();
             } else {
-                $state = State::where('name', trim($locationData['state']))->first();
+                // where lower(name) like %trim lower locationData['state']%
+                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
             }
 
             if ($state) {
@@ -629,6 +659,7 @@ class ArticleController extends Controller
      */
     public function show($id) {
         $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -706,7 +737,6 @@ class ArticleController extends Controller
                 $userUploads = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->images);
                 $userUploads->each(function ($media) use ($article) {
                     // move to article_gallery collection of the created article
-                    Log::info('Media moved', ['media' => $media]);
                     $media->move($article, Article::MEDIA_COLLECTION_NAME);
                 });
             }
@@ -772,13 +802,16 @@ class ArticleController extends Controller
                     }
 
                     // create or attach new location with ratings
-                    $loc = $this->createOrAttachLocation($article, $request->location);
+                    $loc = $this->createOrAttachLocation($article, $request->location); // this will detach existing location if changed
                 } catch (\Exception $e) {
                     Log::error('Location error', ['error' => $e->getMessage(), 'location' => $request->location]);
                 }
             }
 
-            return response()->json(['message' => 'Article updated', 'article' => $article]);
+            // refresh article with its relations
+            $article = $article->refresh();
+
+            return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
         }

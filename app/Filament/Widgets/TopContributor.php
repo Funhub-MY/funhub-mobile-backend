@@ -10,10 +10,12 @@ use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 
 class TopContributor extends BaseWidget
 {
-    
+    use HasWidgetShield;
+
     protected function getTableQuery(): Builder
     {
         // exclude user with name like Goody, Moretify, Noodou
@@ -38,7 +40,7 @@ class TopContributor extends BaseWidget
         ];
     }
 
-    protected function getTableFilters(): array 
+    protected function getTableFilters(): array
     {
         return [
             Filter::make('created_at')
@@ -62,6 +64,6 @@ class TopContributor extends BaseWidget
                         );
                 })
         ];
-    } 
+    }
 
 }
