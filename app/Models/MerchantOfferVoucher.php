@@ -36,6 +36,11 @@ class MerchantOfferVoucher extends Model
         return $this->hasOne(MerchantOfferClaim::class, 'voucher_id');
     }
 
+    public function latestSuccessfulClaim()
+    {
+        return $this->hasOne(MerchantOfferClaim::class, 'voucher_id')->where('status', MerchantOfferClaim::CLAIM_SUCCESS)->latest();
+    }
+
     public function redeem()
     {
         return $this->hasOneThrough(MerchantOfferClaimRedemptions::class, MerchantOfferClaim::class, 'voucher_id', 'claim_id', 'id', 'id');

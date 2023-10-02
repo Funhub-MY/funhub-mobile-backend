@@ -283,7 +283,9 @@ class PaymentController extends Controller
                     // release voucher
                     $voucher_id = $claim->voucher_id;
                     if ($voucher_id) {
-                        $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
+                        $voucher = MerchantOfferVoucher::where('id', $voucher_id)
+                            ->where('owned_by_id', $claim->user_id)
+                            ->first();
                         if ($voucher) {
                             $voucher->owned_by_id = null;
                             $voucher->save();
