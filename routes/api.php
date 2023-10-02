@@ -189,6 +189,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/support_requests/raise', [\App\Http\Controllers\Api\SupportRequestController::class, 'postRaiseSupportRequest']);
             Route::post('/support_requests/{id}/reply', [\App\Http\Controllers\Api\SupportRequestController::class, 'postReplyToSupportRequest']);
             Route::get('/support_requests/{id}/messages', [\App\Http\Controllers\Api\SupportRequestController::class, 'getMessagesOfSupportRequest']);
+            Route::post('/support_requests/{id}/resolve', [\App\Http\Controllers\Api\SupportRequestController::class, 'postResolveSupportRequest']);
             Route::get('/support_requests/categories', [\App\Http\Controllers\Api\SupportRequestController::class, 'getSupportRequestsCategories']);
             Route::post('/support_requests/attach', [\App\Http\Controllers\Api\SupportRequestController::class, 'postAttachmentsUpload']);
         });

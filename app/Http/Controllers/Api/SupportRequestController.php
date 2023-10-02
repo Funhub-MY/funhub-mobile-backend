@@ -198,6 +198,37 @@ class SupportRequestController extends Controller
     }
 
     /**
+     * Resolve Support Request
+     *
+     * @param SupportRequest $supportRequest
+     * @return JsonResponse
+     *
+     * @group Help Center
+     * @subgroup Support Requests
+     * @urlParam id required Support Request ID. Example: 1
+     * @response scenario="success" {
+     * "message": "Support request resolved and closed"
+     * }
+     */
+    public function postResolveSupportRequest(SupportRequest $supportRequest)
+    {
+        // check if supportRequest requestor is same as current user
+        if ($supportRequest->requestor_id != auth()->user()->id) {
+            return response()->json([
+                'message' => 'You are not allowed to reply to this support request'
+            ], 403);
+        }
+
+        $supportRequest->update([
+            'status' => SupportRequest::STATUS_CLOSED
+        ]);
+
+        return response()->json([
+            'message' => 'Support request resolved and closed'
+        ]);
+    }
+
+    /**
      * Get Support Request Categories
      *
      * @return JsonResponse

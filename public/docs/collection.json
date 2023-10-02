@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "d47b7d10-66d8-4bb6-b1a8-0dd3d0ee7cf6",
+        "_postman_id": "719a2258-a455-4660-89c6-4eafae562e90",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":18,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"impedit\",\"violation_level\":\"voluptate\",\"article\":1}"
+                                    "raw": "{\"article_id\":15,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"natus\",\"violation_level\":\"a\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"numquam\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"inventore\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "voluptate",
+                                            "value": "quos",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"odit\",\"violation_type\":\"nihil\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ut\",\"violation_type\":\"quasi\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "et",
+                                            "value": "qui",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2043,6 +2043,46 @@
                             ]
                         },
                         {
+                            "name": "Resolve Support Request",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Support Request ID."
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Support request resolved and closed\"\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
                             "name": "Get Support Request Categories",
                             "request": {
                                 "url": {
@@ -2705,7 +2745,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "ut",
+                                            "value": "nulla",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3742,7 +3782,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":6}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -3848,7 +3888,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"saepe\",\"violation_level\":\"beatae\",\"violation_type\":\"eum\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"natus\",\"violation_level\":\"magni\",\"violation_type\":\"est\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4005,7 +4045,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"et\"}"
+                            "raw": "{\"reason\":\"eius\"}"
                         },
                         "description": ""
                     },
@@ -4048,7 +4088,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"nihil\"}"
+                            "raw": "{\"user_ids\":\"pariatur\"}"
                         },
                         "description": ""
                     },
