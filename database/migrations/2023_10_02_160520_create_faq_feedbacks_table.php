@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('supports_messages', function (Blueprint $table) {
+        Schema::create('faq_feedbacks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('faq_id');
+            $table->foreignId('user_id');
+            $table->tinyInteger('rating')->default(0); // 0 = not helpful, 1 = somewhat helpful, 2 = very helpful
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supports_messages');
+        Schema::dropIfExists('faq_feedbacks');
     }
 };

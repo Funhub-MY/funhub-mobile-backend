@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 7
+                  example: 18
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: id
+                  example: impedit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: voluptate
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - fugiat
+                    - numquam
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: eius
+        example: voluptate
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: in
+                  example: odit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: in
+                  example: nihil
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: ab
+        example: et
         required: true
         schema:
           type: string
@@ -2148,6 +2148,404 @@ paths:
               required:
                 - name
                 - email
+  /api/v1/help/faqs:
+    get:
+      summary: 'Get All FAQs'
+      operationId: getAllFAQs
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                properties:
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - 'Help Center'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_ids:
+                  type: array
+                  description: 'optional Array of category ids.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                query:
+                  type: string
+                  description: 'optional Search query.'
+                  example: 'How to ...'
+  /api/v1/help/faq_categories:
+    get:
+      summary: 'Get All FAQs Categories'
+      operationId: getAllFAQsCategories
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                properties:
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - 'Help Center'
+  /api/v1/help/support_requests:
+    get:
+      summary: 'Get My Support Requests'
+      operationId: getMySupportRequests
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                properties:
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - 'Help Center'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: 'optional Status of support request.'
+                  example: 'open,closed,more_info,invalid'
+                category_ids:
+                  type: array
+                  description: 'optional Array of category ids.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                query:
+                  type: string
+                  description: 'optional Search query.'
+                  example: 'my support request'
+  /api/v1/help/support_requests/raise:
+    post:
+      summary: 'Raise Support Request'
+      operationId: raiseSupportRequest
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: {  }
+                  request: {  }
+                properties:
+                  message:
+                    type: object
+                    properties: []
+                  request:
+                    type: object
+                    properties: []
+      tags:
+        - 'Help Center'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: integer
+                  description: 'Category id.'
+                  example: 1
+                title:
+                  type: string
+                  description: 'Title of support request.'
+                  example: 'My support request'
+                message:
+                  type: string
+                  description: 'Message to send.'
+                  example: 'This is my message'
+                media_ids:
+                  type: array
+                  description: 'optional Array of media ids.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - category_id
+                - title
+                - message
+  '/api/v1/help/support_requests/{id}/reply':
+    post:
+      summary: 'Reply to Support Request'
+      operationId: replyToSupportRequest
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: {  }
+                  request: {  }
+                properties:
+                  message:
+                    type: object
+                    properties: []
+                  request:
+                    type: object
+                    properties: []
+      tags:
+        - 'Help Center'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: 'Message to send.'
+                  example: 'This is my message'
+                media_ids:
+                  type: array
+                  description: 'optional Array of media ids.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - message
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Support Request ID.'
+        example: '1'
+        required: true
+        schema:
+          type: string
+  '/api/v1/help/support_requests/{id}/messages':
+    get:
+      summary: 'Get Messages of Support Request'
+      operationId: getMessagesOfSupportRequest
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                properties:
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - 'Help Center'
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Support Request ID.'
+        example: '1'
+        required: true
+        schema:
+          type: string
+  /api/v1/help/support_requests/categories:
+    get:
+      summary: 'Get Support Request Categories'
+      operationId: getSupportRequestCategories
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - 'Help Center'
+  /api/v1/help/support_requests/attach:
+    post:
+      summary: 'Upload Attachments(Images) for Support Messages'
+      operationId: uploadAttachmentsImagesForSupportMessages
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  uploaded:
+                    -
+                      id: 1
+                      name: image.jpg
+                      url: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
+                      size: 12345
+                      type: image/jpeg
+                properties:
+                  uploaded:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: image.jpg
+                        url: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
+                        size: 12345
+                        type: image/jpeg
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: image.jpg
+                        url:
+                          type: string
+                          example: 'http://localhost:8000/storage/user_uploads/1/image.jpg'
+                        size:
+                          type: integer
+                          example: 12345
+                        type:
+                          type: string
+                          example: image/jpeg
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["images": ["The images field is required."] ]}'
+      tags:
+        - 'Help Center'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: string
+                  format: binary
+                  description: 'The images to upload.'
+              required:
+                - images
   /api/v1/interactions/users:
     get:
       summary: 'Get Users of Interaction'
@@ -2875,7 +3273,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: ad
+        example: ut
         required: true
         schema:
           type: string
@@ -3703,7 +4101,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 1
+        example: 7
         required: true
         schema:
           type: integer
@@ -3895,7 +4293,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 1
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -3948,7 +4346,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 17
+                  example: 6
               required:
                 - user_id
   /api/v1/user/report:
@@ -3999,11 +4397,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: tempore
+                  example: beatae
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quam
+                  example: eum
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4148,7 +4546,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: eum
+                  example: et
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4189,7 +4587,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quod
+                  example: nihil
               required:
                 - user_ids
     parameters:
@@ -5089,6 +5487,9 @@ tags:
     description: ''
   -
     name: Authentication
+    description: ''
+  -
+    name: 'Help Center'
     description: ''
   -
     name: Interactions
