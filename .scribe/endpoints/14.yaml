@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3vg1cV6PbE65Da4kZh8fade'
+      - 'Bearer acD1eba6h6gv3dfk4P8EZ5V'
     controller: null
     method: null
     route: null
@@ -104,7 +104,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8465ePdg6abv1VakZh3cEDf'
+      - 'Bearer ZV3ah5PDadcf86b46gE1vke'
     controller: null
     method: null
     route: null
@@ -177,7 +177,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Eve81adZ5baV3kD64cP6hgf'
+      - 'Bearer afvb8VDPeZ36h64c5aEk1gd'
     controller: null
     method: null
     route: null
@@ -259,7 +259,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8d5E1eab3kZvV6cPDh64gaf'
+      - 'Bearer dDf1564PE6ahg3ckaVZ8vbe'
     controller: null
     method: null
     route: null
@@ -333,7 +333,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4f3dcEe5Pgka1Z8vh6VbaD6'
+      - 'Bearer b3khE6vPf6aV1d5eZ4D8agc'
     controller: null
     method: null
     route: null
@@ -384,7 +384,58 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bD4aVkc5Zh1P3af68dEevg6'
+      - 'Bearer f65k3DVghEbv8PaZcd6a41e'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/help/support_requests/{id}/resolve'
+    metadata:
+      groupName: 'Help Center'
+      groupDescription: ''
+      subgroup: 'Support Requests'
+      subgroupDescription: ''
+      title: 'Resolve Support Request'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'Support Request ID.'
+        required: true
+        example: '1'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      id: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Support request resolved and closed"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer f563VdgeEa4Pvc8Z6hDbka1'
     controller: null
     method: null
     route: null
@@ -427,7 +478,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DacV8fdv4Ze6gP6h3E15bak'
+      - 'Bearer a1bdPkv6e6gh3cVfaDE845Z'
     controller: null
     method: null
     route: null
@@ -492,7 +543,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P6g1VZv6facEd483aekD5bh'
+      - 'Bearer 5vaea6Vg861fZhP4EdckDb3'
     controller: null
     method: null
     route: null

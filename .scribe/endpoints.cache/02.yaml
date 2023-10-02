@@ -49,7 +49,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Va6165DvgPba8f4cEdekZh3'
+      - 'Bearer P6f1gv6VZ83EDe4ab5dkhca'
     controller: null
     method: null
     route: null
@@ -122,7 +122,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vd5h6bk6gZ83D14cVfaaePE'
+      - 'Bearer b4gEhc853avf1DdekPZa66V'
     controller: null
     method: null
     route: null
@@ -176,7 +176,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pa54d1caDVfveg8k6hE3bZ6'
+      - 'Bearer 53PefkcE168bag4aVDhv6dZ'
     controller: null
     method: null
     route: null
@@ -287,7 +287,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6c635aZgdkafED8VbPev41h'
+      - 'Bearer bv4h81dcgZPV5e3D6Eaa6kf'
     controller: null
     method: null
     route: null
@@ -390,7 +390,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g5dhvVkE6De6acb4a1ZPf38'
+      - 'Bearer ahPvbg5Ve6ZD6ck48aEd31f'
     controller: null
     method: null
     route: null
@@ -421,7 +421,7 @@ endpoints:
         name: article_id
         description: ''
         required: true
-        example: 18
+        example: 15
         type: integer
         custom: []
       reason:
@@ -435,14 +435,14 @@ endpoints:
         name: violation_type
         description: ''
         required: true
-        example: impedit
+        example: natus
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: voluptate
+        example: a
         type: required
         custom: []
       article:
@@ -453,10 +453,10 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
-      article_id: 18
+      article_id: 15
       reason: 'Spam     * @bodyParam violation_type required The violation type of this report'
-      violation_type: impedit
-      violation_level: voluptate
+      violation_type: natus
+      violation_level: a
       article: 1
     fileParameters: []
     responses:
@@ -485,7 +485,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a68fge1kc5Dd6EaZVvbh4P3'
+      - 'Bearer 3cd1vDZEabhk8fVgaP6e456'
     controller: null
     method: null
     route: null
@@ -536,7 +536,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DP6fZkVb1eahv56Ega3c4d8'
+      - 'Bearer E5k3c846VZv1aaPDbgfhed6'
     controller: null
     method: null
     route: null
@@ -591,7 +591,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bc8hVdPaEZ1fke3Dg46a65v'
+      - 'Bearer 4dba6vV5c3D1ge6Z8EahkPf'
     controller: null
     method: null
     route: null
@@ -652,7 +652,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1Dga4P658EakbvhZceVd63f'
+      - 'Bearer 5VeaDcZva1f48dE63k6Pbgh'
     controller: null
     method: null
     route: null
@@ -686,7 +686,7 @@ endpoints:
         description: 'optional Article Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - numquam
+          - inventore
         type: 'string[]'
         custom: []
       category_ids:
@@ -788,7 +788,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       article_ids:
-        - numquam
+        - inventore
       category_ids:
         - 1
         - 2
@@ -827,7 +827,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DZchk6V85fPv3b6aeadE1g4'
+      - 'Bearer 6Zackg13efhvE6PdaD58Vb4'
     controller: null
     method: null
     route: null
@@ -994,7 +994,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EaV1b3gDke486ZchvaP56fd'
+      - 'Bearer gakeE65b1ZDcd4v86VafPh3'
     controller: null
     method: null
     route: null
@@ -1051,7 +1051,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e34dbkPhv8g1aDE6a5ZcV6f'
+      - 'Bearer a651cfZvePghd3bV8EDka46'
     controller: null
     method: null
     route: null
@@ -1199,7 +1199,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c86ZbVkhgeEf4a51P3avD6d'
+      - 'Bearer bVh6g854ZeEDkfav6da13cP'
     controller: null
     method: null
     route: null
@@ -1256,7 +1256,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kfhaVZce6DP8b5gEd34a61v'
+      - 'Bearer 8c6gPh4DbEfV61kZ5e3aadv'
     controller: null
     method: null
     route: null
@@ -1353,7 +1353,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed1D4b5a3VPevZgch6kf68a'
+      - 'Bearer PfV4v318adE6a6hDbcZeg5k'
     controller: null
     method: null
     route: null
@@ -1410,7 +1410,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8v16Vdf6eDPakbhZEa34gc5'
+      - 'Bearer 6vDagakEf5V68bchedPZ314'
     controller: null
     method: null
     route: null
@@ -1515,7 +1515,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c1dgb5DfPhVa6av4Zk8eE63'
+      - 'Bearer VadbP3hk68fZ1Dca6Eg54ev'
     controller: null
     method: null
     route: null
@@ -1564,7 +1564,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hbe65EdZv1gPDaca6fk8V43'
+      - 'Bearer aVba3c6Z85f61DEPge4kdvh'
     controller: null
     method: null
     route: null
@@ -1621,7 +1621,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aacP86vgZbd1Vh453ek6EfD'
+      - 'Bearer 8cZ5kbv3a1daf6Ph6EDegV4'
     controller: null
     method: null
     route: null
@@ -1648,11 +1648,11 @@ endpoints:
         name: comment_id
         description: 'The ID of the comment.'
         required: true
-        example: voluptate
+        example: quos
         type: string
         custom: []
     cleanUrlParameters:
-      comment_id: voluptate
+      comment_id: quos
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1726,7 +1726,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5b6ef6dvDaP1Z843VcEhkga'
+      - 'Bearer vV86beDaEhc5afdk13Z4gP6'
     controller: null
     method: null
     route: null
@@ -1783,7 +1783,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZPfh6DkE4V3e5av6a18bcdg'
+      - 'Bearer 6abev3E8ad6kVcDhPZ5g41f'
     controller: null
     method: null
     route: null
@@ -1828,21 +1828,21 @@ endpoints:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: odit
+        example: ut
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: nihil
+        example: quasi
         type: required
         custom: []
     cleanBodyParameters:
       comment_id: 1
       reason: Spam
-      violation_level: odit
-      violation_type: nihil
+      violation_level: ut
+      violation_type: quasi
     fileParameters: []
     responses:
       -
@@ -1870,7 +1870,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aZkVv684g5eaP6fhDEc3db1'
+      - 'Bearer 1kZd8Phc6DeEgbva534faV6'
     controller: null
     method: null
     route: null
@@ -1995,7 +1995,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DbZh8VcEd3g6av4ka51e6fP'
+      - 'Bearer 5Zb436gvDac6k81fadVPehE'
     controller: null
     method: null
     route: null
@@ -2082,7 +2082,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f6da41kbEaVZ5DPvh68ce3g'
+      - 'Bearer h3D1ZPd6Vc4E6bkfeav8g5a'
     controller: null
     method: null
     route: null
@@ -2109,11 +2109,11 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: et
+        example: qui
         type: string
         custom: []
     cleanUrlParameters:
-      id: et
+      id: qui
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -2161,7 +2161,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pf6cVabhvEka1538d6gZeD4'
+      - 'Bearer 4vfPVE38c615hbde6kaZgDa'
     controller: null
     method: null
     route: null
@@ -2233,7 +2233,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f5aZhecVDg3P18d4k6ab6vE'
+      - 'Bearer 31PVbv8af6Z46kDEadhcg5e'
     controller: null
     method: null
     route: null
@@ -2275,7 +2275,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ch4E3kvVfZ5b1eD6g8ad6Pa'
+      - 'Bearer Ec6h6P1D3d8b54aZveVfakg'
     controller: null
     method: null
     route: null
