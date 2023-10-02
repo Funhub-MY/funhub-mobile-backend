@@ -70,7 +70,7 @@ class Mpay {
                 'desc' => $desc,
                 'postURL' => $redirectUrl,
                 'phone' => $phoneNo,
-                'email' => $email,
+                'email' => $email ? $email : $defaultEmail,
                 'param' => $param
             ]
         ];
