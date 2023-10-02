@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('supports', function (Blueprint $table) {
+        Schema::create('support_requests_messages', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('support_request_id');
+            $table->text('message');
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supports');
+        Schema::dropIfExists('support_requests_messages');
     }
 };
