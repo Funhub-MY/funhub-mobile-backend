@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer acD1eba6h6gv3dfk4P8EZ5V'
+      - 'Bearer bgPZ6ad5V6e8f4Dca1vEh3k'
     controller: null
     method: null
     route: null
@@ -104,7 +104,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZV3ah5PDadcf86b46gE1vke'
+      - 'Bearer 3dEPhcgaa6Vkb8vf16Z54eD'
     controller: null
     method: null
     route: null
@@ -135,7 +135,7 @@ endpoints:
         name: status
         description: 'optional Status of support request.'
         required: false
-        example: 'open,closed,more_info,invalid'
+        example: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
         type: string
         custom: []
       category_ids:
@@ -156,7 +156,7 @@ endpoints:
         type: string
         custom: []
     cleanBodyParameters:
-      status: 'open,closed,more_info,invalid'
+      status: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
       category_ids:
         - 1
         - 2
@@ -177,7 +177,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afvb8VDPeZ36h64c5aEk1gd'
+      - 'Bearer hVD6P34e8av1fZdbc6Eak5g'
     controller: null
     method: null
     route: null
@@ -259,7 +259,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dDf1564PE6ahg3ckaVZ8vbe'
+      - 'Bearer 6cP3aeVEZb54h8a6kfg1Ddv'
     controller: null
     method: null
     route: null
@@ -333,7 +333,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b3khE6vPf6aV1d5eZ4D8agc'
+      - 'Bearer EZa5ckfdDPh4g6bae136vV8'
     controller: null
     method: null
     route: null
@@ -384,7 +384,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f65k3DVghEbv8PaZcd6a41e'
+      - 'Bearer bZ6cfa1eP6dg4khDEV8av53'
     controller: null
     method: null
     route: null
@@ -435,7 +435,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f563VdgeEa4Pvc8Z6hDbka1'
+      - 'Bearer hgP8aDa463Ekb5vVe1cZ6fd'
     controller: null
     method: null
     route: null
@@ -478,7 +478,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1bdPkv6e6gh3cVfaDE845Z'
+      - 'Bearer dhZ16v4PEebfaVkc3a8gD56'
     controller: null
     method: null
     route: null
@@ -543,7 +543,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5vaea6Vg861fZhP4EdckDb3'
+      - 'Bearer 6h34avEcdPkg8Vbef16Za5D'
     controller: null
     method: null
     route: null

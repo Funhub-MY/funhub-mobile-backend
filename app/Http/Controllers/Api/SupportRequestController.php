@@ -22,7 +22,7 @@ class SupportRequestController extends Controller
      *
      * @group Help Center
      * @subgroup Support Requests
-     * @bodyParam status string optional Status of support request. Example: open,closed,more_info,invalid
+     * @bodyParam status string optional Status of support request. Example: 0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid
      * @bodyParam category_ids array optional Array of category ids. Example: [1,2,3]
      * @bodyParam query string optional Search query. Example: my support request
      *
@@ -43,6 +43,12 @@ class SupportRequestController extends Controller
         }
 
         if ($request->has('status')) {
+            // check whether status number is valid
+            if (!in_array($request->status, array_keys(SupportRequest::STATUS))) {
+                return response()->json([
+                    'message' => 'Invalid status'
+                ], 422);
+            }
             $query->where('status', $request->status);
         }
 
