@@ -269,4 +269,6 @@ return [
     'location_default_radius' => env('LOCATION_DEFAULT_RADIUS', 10),
 
     'recommendation_after_days' => env('RECOMMENDATION_AFTER_DAYS', 3),
+
+    'mpay_default_email_tld' => env('MPAY_DEFAULT_EMAIL', '@funhub.my')
 ];

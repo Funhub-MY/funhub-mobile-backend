@@ -20,15 +20,15 @@ class Mpay {
         $this->hashKey = $hashKey;
 
         // override mid and hashkey if card/fpx specific
-        // if ($fpxOrCardOnly) {
-        //     if ($fpxOrCardOnly == 'card') {
-        //         $this->mid = config('services.mpay.mid_card_only');
-        //         $this->hashKey = config('services.mpay.hash_key_card_only');
-        //     } elseif ($fpxOrCardOnly == 'fpx') {
-        //         $this->mid = config('services.mpay.mid_fpx_only');
-        //         $this->hashKey = config('services.mpay.hash_key_fpx_only');
-        //     }
-        // }
+        if ($fpxOrCardOnly) {
+            if ($fpxOrCardOnly == 'card') {
+                $this->mid = config('services.mpay.mid_card_only');
+                $this->hashKey = config('services.mpay.hash_key_card_only');
+            } elseif ($fpxOrCardOnly == 'fpx') {
+                $this->mid = config('services.mpay.mid_fpx_only');
+                $this->hashKey = config('services.mpay.hash_key_fpx_only');
+            }
+        }
         $this->secureHash = new SecureHash();
     }
 
@@ -54,6 +54,11 @@ class Mpay {
         // convert amount 000000000100 represent RM 1.00
         // 000000000100 = RM 1.00 000000001000 = RM 10.00 000000010000 = RM 100.00
         $amount = str_pad(number_format($amount, 2, '', ''), 12, '0', STR_PAD_LEFT);
+
+        if(!$email) {
+            $defaultEmail = $invoice_no . config('app.mpay_default_email_tld');
+            Log::info('[MPAY] Email is not set, using default email:'. $defaultEmail);
+        }
 
         $data = [
             'url' => $this->url .'/payment/eCommerce',
