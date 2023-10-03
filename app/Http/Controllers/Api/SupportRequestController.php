@@ -145,12 +145,6 @@ class SupportRequestController extends Controller
             'media_ids' => 'nullable|array',
         ]);
 
-        Log::info('Reply - ', [
-            'support_id' => $supportRequest->id,
-            'user_id' => $request->user()->id,
-            'requestor_id' => $supportRequest->requestor_id,
-        ]);
-
         // check if supportRequest requestor is same as current user
         if ($supportRequest->requestor_id != $request->user()->id) {
             return response()->json([
