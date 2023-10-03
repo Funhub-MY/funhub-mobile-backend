@@ -13,6 +13,8 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -71,6 +73,21 @@ class SupportRequestCategoryResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                BadgeColumn::make('type')
+                    ->label('Type')
+                    ->enum([
+                        'complain' => 'Complain',
+                        'bug' => 'Bug',
+                        'feature_request' => 'Feature Request',
+                        'others' => 'Others',
+                    ])
+                    ->colors([
+                        'secondary' => 'complain',
+                        'success' => 'bug',
+                        'warning' => 'feature_request',
+                        'danger' => 'others',
+                    ]),
+
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
                     ->enum([
@@ -87,7 +104,14 @@ class SupportRequestCategoryResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('type')
+                    ->options([
+                        'complain' => 'Complain',
+                        'bug' => 'Bug',
+                        'feature_request' => 'Feature Request',
+                        'others' => 'Others',
+                    ])
+                    ->placeholder('Filter by type'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -100,7 +124,6 @@ class SupportRequestCategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
         ];
     }
 
