@@ -11,7 +11,9 @@ class SupportRequestMessage extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    const MEDIA_COLLECTION_NAME = 'support_request_message';
+    protected $table = 'support_requests_messages';
+
+    const MEDIA_COLLECTION_NAME = 'support_requests_messages';
 
     protected $guarded = ['id'];
 

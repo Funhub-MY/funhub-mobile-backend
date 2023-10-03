@@ -70,6 +70,11 @@ class SupportRequestResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->date('d/m/Y h:iA')
+                    ->sortable(),
+
                 TextColumn::make('title')
                     ->searchable(),
 
