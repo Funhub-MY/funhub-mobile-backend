@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,5 +25,11 @@ class Faq extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
+    }
+
+
+    public function scopePublished(Builder $query) : void
+    {
+        $query->where('status', 1);
     }
 }
