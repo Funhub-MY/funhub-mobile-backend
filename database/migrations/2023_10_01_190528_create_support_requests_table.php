@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('requestor_id');
             $table->foreignId('assignee_id')->nullable();
             $table->text('internal_remarks')->nullable();
-            $table->morphs('associated'); // morphs to supportable models (e.g. merchant, user, etc.)
+            $table->nullableMorphs('associated'); // morphs to supportable models (e.g. merchant, user, etc.)
             $table->timestamps();
         });
     }
