@@ -182,6 +182,8 @@ class InteractionTest extends TestCase
             'id' => $article->id,
             'interactable' => Article::class,
             'type' => 'share',
+            'code' => 'ABCDE1',
+            'model_type' => 'article'
         ]);
 
         // find Shareable Link generated

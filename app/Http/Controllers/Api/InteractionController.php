@@ -149,7 +149,7 @@ class InteractionController extends Controller
         if ($request->type == Interaction::TYPE_SHARE) {
             // get sharable link code and model type and id from frontend
             $this->validate($request, [
-                'code' => 'required|string|length:6',
+                'code' => 'required|string|min:6|max:6',
                 'model_type' => 'required|string|in:article,merchant_offer',
             ]);
 
