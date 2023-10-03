@@ -11,6 +11,7 @@ use App\Models\SupportRequestCategory;
 use App\Models\SupportRequestMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SupportRequestController extends Controller
 {
@@ -142,6 +143,12 @@ class SupportRequestController extends Controller
         $this->validate($request, [
             'message' => 'required|string',
             'media_ids' => 'nullable|array',
+        ]);
+
+        Log::info('Reply - ', [
+            'support_id' => $supportRequest->id,
+            'user_id' => $request->user()->id,
+            'requestor_id' => $supportRequest->requestor_id,
         ]);
 
         // check if supportRequest requestor is same as current user
