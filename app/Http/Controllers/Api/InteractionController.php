@@ -23,12 +23,12 @@ class InteractionController extends Controller
 
     /**
      * Get interactions on a interactable type (eg. Articles)
-     * 
+     *
      * @param $type string
      * @param $id integer
      * @param Request $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Interactions
      * @authenticated
      * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
@@ -45,7 +45,7 @@ class InteractionController extends Controller
      *  "meta": {
      *     "current_page": 1,
      *   }
-     * } 
+     * }
      * @response status=404 scenario="Not Found"
     */
     public function index(Request $request)
@@ -84,7 +84,7 @@ class InteractionController extends Controller
         $data = $query->with('user')
             ->published()
             ->paginate(config('app.paginate_per_page'));
-        
+
         return InteractionResource::collection($data);
     }
 
@@ -93,12 +93,14 @@ class InteractionController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Interactions
      * @authenticated
      * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
+     * @bodyParam code string optional The code of the shareable link(6 characters). Example: 1
+     * @bodyParam model_type string optional The model type of the shareable link. Example: article,merchant_offer
      * @response scenario=success {
      *  "interaction": {}
      * }
@@ -145,12 +147,35 @@ class InteractionController extends Controller
 
         // if interaction type is share, create ShareableLink then link it to interaction
         if ($request->type == Interaction::TYPE_SHARE) {
+            // get sharable link code and model type and id from frontend
+            $this->validate($request, [
+                'code' => 'required|string|length:6',
+                'model_type' => 'required|string|in:article,merchant_offer',
+            ]);
+
+            // check if code already generated before
+            $shareableLink = ShareableLink::where('link', $request->code)
+                ->first();
+            if ($shareableLink) {
+                // reject
+                return response()->json([
+                    'message' => 'Shareable link already exists. provide new code.',
+                ], 422);
+            }
+
+            // model type
+            if ($request->model_type == 'article') {
+                $request->merge(['model_type' => Article::class]);
+            } else if ($request->model_type == 'merchant_offer') {
+                $request->merge(['model_type' => MerchantOffer::class]);
+            }
+
             // create new shareable link exists for this article and user
             $shareableLink = ShareableLink::create([
-                'link' => strtolower(Str::random(6)), // random 6 characters
+                'link' => $request->code, // random 6 characters
                 'user_id' => auth()->id(), // logged in user
                 'model_id' => $request->id, // eg Article Id
-                'model_type' => $request->interactable, // eg Article Model Type
+                'model_type' => $request->model_type, // eg Article Model Type
             ]);
 
             // link to interaction via relationship ShareableLink
@@ -174,7 +199,7 @@ class InteractionController extends Controller
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Interactions
      * @authenticated
      * @urlParam id integer required The id of the interaction. Example: 1
@@ -192,17 +217,17 @@ class InteractionController extends Controller
     /**
      * Remove Interaction By ID
      * Only owner can call this method
-     * 
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
-     * 
+     *
      * @group Interactions
      * @authenticated
      * @urlParam id integer required The id of the interaction. Example: 1
      * @response scenario=success {
      * "message": "Interaction deleted"
      * }
-     * 
+     *
      * @response status=404 scenario="Not Found" {['message' => 'Interaction not found']}
      */
     public function destroy($id)
@@ -224,13 +249,13 @@ class InteractionController extends Controller
      *
      * @param Request $request
      * @return UserResource
-     * 
+     *
      * @group Interactions
      * @authenticated
      * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer
      * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
-     * 
+     *
      * @response scenario=success {
      * "data": [],
      * "links": {},

@@ -269,4 +269,6 @@ return [
     'location_default_radius' => env('LOCATION_DEFAULT_RADIUS', 10),
 
     'recommendation_after_days' => env('RECOMMENDATION_AFTER_DAYS', 3),
+
+    'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
 ];
