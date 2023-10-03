@@ -14,6 +14,13 @@ class SupportRequestCategory extends Model
 
     protected $guarded = ['id'];
 
+    const TYPES = [
+        'complain',
+        'bug',
+        'feature_request',
+        'others'
+    ];
+
     public function support_requests()
     {
         return $this->hasMany(SupportRequest::class, 'category_id');
