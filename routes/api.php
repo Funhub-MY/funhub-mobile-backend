@@ -187,9 +187,9 @@ Route::group(['prefix' => 'v1'], function () {
             // support requests
             Route::get('/support_requests', [\App\Http\Controllers\Api\SupportRequestController::class, 'index']);
             Route::post('/support_requests/raise', [\App\Http\Controllers\Api\SupportRequestController::class, 'postRaiseSupportRequest']);
-            Route::post('/support_requests/{id}/reply', [\App\Http\Controllers\Api\SupportRequestController::class, 'postReplyToSupportRequest']);
-            Route::get('/support_requests/{id}/messages', [\App\Http\Controllers\Api\SupportRequestController::class, 'getMessagesOfSupportRequest']);
-            Route::post('/support_requests/{id}/resolve', [\App\Http\Controllers\Api\SupportRequestController::class, 'postResolveSupportRequest']);
+            Route::post('/support_requests/{support_request}/reply', [\App\Http\Controllers\Api\SupportRequestController::class, 'postReplyToSupportRequest']);
+            Route::get('/support_requests/{support_request}/messages', [\App\Http\Controllers\Api\SupportRequestController::class, 'getMessagesOfSupportRequest']);
+            Route::post('/support_requests/{support_request}/resolve', [\App\Http\Controllers\Api\SupportRequestController::class, 'postResolveSupportRequest']);
             Route::get('/support_requests/categories', [\App\Http\Controllers\Api\SupportRequestController::class, 'getSupportRequestsCategories']);
             Route::post('/support_requests/attach', [\App\Http\Controllers\Api\SupportRequestController::class, 'postAttachmentsUpload']);
         });
