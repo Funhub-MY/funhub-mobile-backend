@@ -28,7 +28,7 @@ class FaqController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Faq::with('category');
+        $query = Faq::with('category')->published();
 
         if ($request->has('category_ids')) {
             $query->whereIn('category_id', $request->category_ids);
