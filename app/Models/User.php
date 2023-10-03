@@ -289,6 +289,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         return $this->hasOne(UserAccountDeletion::class, 'user_id');
     }
 
+    public function supportRequests()
+    {
+        return $this->hasMany(SupportRequest::class, 'requestor_id');
+    }
+
     /**
      * Get the user's point balance
      */
