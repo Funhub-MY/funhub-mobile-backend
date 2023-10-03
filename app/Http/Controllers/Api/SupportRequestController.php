@@ -25,6 +25,7 @@ class SupportRequestController extends Controller
      * @bodyParam status string optional Status of support request. Example: 0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid
      * @bodyParam category_ids array optional Array of category ids. Example: [1,2,3]
      * @bodyParam query string optional Search query. Example: my support request
+     * @bodyParam limit integer optional Limit of results per page. Example: 10
      *
      * @response scenario="success" {
      * "data": []
@@ -34,7 +35,6 @@ class SupportRequestController extends Controller
         // get all my own support requests
         $query = $request->user()->supportRequests()
             ->with('messages')
-        // join messages so can order entire query by messages.created_at
             ->join(DB::raw('(SELECT id,created_at,support_request_id from support_request_messages) AS support_request_messages'), 'support_requests.id', '=', 'support_requests_messages.support_request_id')
             ->orderBy('support_requests_messages.created_at', 'desc');
 
@@ -57,7 +57,7 @@ class SupportRequestController extends Controller
         }
 
         $results = $query->paginate(
-            config('app.paginate_per_page')
+            ($request->has('limit') ? $request->limit : config('app.paginate_per_page'))
         );
 
         return SupportRequestResource::collection($results);
@@ -241,10 +241,23 @@ class SupportRequestController extends Controller
      *
      * @group Help Center
      * @subgroup Support Requests
+     * @bodyParam type string optional Type of support request category. Example: 0=general,1=product,2=account,3=other
      */
-    public function getSupportRequestsCategories()
+    public function getSupportRequestsCategories(Request $request)
     {
-        $supportRequestsCategories = SupportRequestCategory::published()->get();
+        $query = SupportRequestCategory::published();
+
+        if ($request->has('type')) {
+            // validate type
+            if (!in_array($request->type, array_keys(SupportRequestCategory::TYPES))) {
+                return response()->json([
+                    'message' => 'Invalid type'
+                ], 422);
+            }
+            $query->where('type', $request->type);
+        }
+
+        $supportRequestsCategories = $query->get();
 
         return SupportRequestCategoryResource::collection($supportRequestsCategories);
     }

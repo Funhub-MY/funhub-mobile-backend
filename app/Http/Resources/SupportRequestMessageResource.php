@@ -19,6 +19,7 @@ class SupportRequestMessageResource extends JsonResource
             'id' => $this->id,
             'user' => new UserResource($this->user),
             'message' => $this->message,
+            'is_self' => $this->user_id === auth()->id(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'media' => MediaResource::collection($this->getMedia(SupportRequestMessage::MEDIA_COLLECTION_NAME)),

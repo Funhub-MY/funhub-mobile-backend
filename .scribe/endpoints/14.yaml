@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bgPZ6ad5V6e8f4Dca1vEh3k'
+      - 'Bearer dv6eb46D83EgPVkha5Zacf1'
     controller: null
     method: null
     route: null
@@ -104,7 +104,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3dEPhcgaa6Vkb8vf16Z54eD'
+      - 'Bearer E651gv3a6acbPfdeVkhZD84'
     controller: null
     method: null
     route: null
@@ -155,6 +155,13 @@ endpoints:
         example: 'my support request'
         type: string
         custom: []
+      limit:
+        name: limit
+        description: 'optional Limit of results per page.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
     cleanBodyParameters:
       status: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
       category_ids:
@@ -162,6 +169,7 @@ endpoints:
         - 2
         - 3
       query: 'my support request'
+      limit: 10
     fileParameters: []
     responses:
       -
@@ -177,7 +185,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hVD6P34e8av1fZdbc6Eak5g'
+      - 'Bearer da561V8DveP4ka6hg3fbcZE'
     controller: null
     method: null
     route: null
@@ -259,7 +267,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6cP3aeVEZb54h8a6kfg1Ddv'
+      - 'Bearer 3VaDvdE46gP1k856Zbhceaf'
     controller: null
     method: null
     route: null
@@ -333,7 +341,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EZa5ckfdDPh4g6bae136vV8'
+      - 'Bearer 5Eba6fDehg8V643cvkZ1Pad'
     controller: null
     method: null
     route: null
@@ -384,7 +392,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bZ6cfa1eP6dg4khDEV8av53'
+      - 'Bearer 6v81ac4DeZa3EfbPgd6kV5h'
     controller: null
     method: null
     route: null
@@ -435,7 +443,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hgP8aDa463Ekb5vVe1cZ6fd'
+      - 'Bearer eZk156a34PE6Dgacf8dhvbV'
     controller: null
     method: null
     route: null
@@ -461,8 +469,16 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      type:
+        name: type
+        description: 'optional Type of support request category.'
+        required: false
+        example: '0=general,1=product,2=account,3=other'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      type: '0=general,1=product,2=account,3=other'
     fileParameters: []
     responses:
       -
@@ -478,7 +494,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dhZ16v4PEebfaVkc3a8gD56'
+      - 'Bearer ha8caek16Z4fv5Vdb6DPE3g'
     controller: null
     method: null
     route: null
@@ -543,7 +559,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6h34avEcdPkg8Vbef16Za5D'
+      - 'Bearer E6b4ae31d58vkDafZcVgP6h'
     controller: null
     method: null
     route: null
