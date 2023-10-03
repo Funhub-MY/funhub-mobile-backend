@@ -6,6 +6,7 @@ use App\Filament\Resources\FaqCategoryResource\Pages;
 use App\Filament\Resources\FaqCategoryResource\RelationManagers;
 use App\Models\FaqCategory;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -31,23 +32,26 @@ class FaqCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Hidden::make('user_id')
-                    ->default(fn () => auth()->user()->id),
+                Card::make([
+                    Hidden::make('user_id')
+                        ->default(fn () => auth()->user()->id),
 
-                TextInput::make('name')
-                    ->autofocus()
-                    ->required(),
+                    TextInput::make('name')
+                        ->autofocus()
+                        ->required(),
 
-                Select::make('lang')
-                    ->options([
-                        'cn' => 'Chinese',
-                        'en' => 'English',
-                    ])
-                    ->default('cn')
-                    ->required(),
+                    Select::make('lang')
+                        ->label('Language')
+                        ->options([
+                            'cn' => 'Chinese',
+                            'en' => 'English',
+                        ])
+                        ->default('cn')
+                        ->required(),
 
-                Forms\Components\Toggle::make('is_featured')
-                    ->label('Is Featured?')
+                    Forms\Components\Toggle::make('is_featured')
+                        ->label('Is Featured?')
+                ])
             ]);
     }
 

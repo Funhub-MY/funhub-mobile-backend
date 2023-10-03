@@ -105,11 +105,10 @@ class FaqResource extends Resource
                     ])
                     ->sortable(),
 
-                SelectColumn::make('language')
-                    ->options([
-                        'cn' => 'Chinese',
-                        'en' => 'English',
-                    ])
+                TextColumn::make('language')
+                    ->formatStateUsing(function ($state) {
+                        return strtoupper($state);
+                    })
                     ->sortable(),
 
                 BadgeColumn::make('is_featured')
