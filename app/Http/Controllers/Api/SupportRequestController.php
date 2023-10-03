@@ -84,7 +84,7 @@ class SupportRequestController extends Controller
     public function postRaiseSupportRequest(Request $request)
     {
         $this->validate($request, [
-            'category_id' => 'required|exists:support_request_categories,id',
+            'category_id' => 'required|exists:support_requests_categories,id',
             'title' => 'required|string',
             'message' => 'required|string',
             'media_ids' => 'nullable|array',
