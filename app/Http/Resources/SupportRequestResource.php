@@ -20,7 +20,7 @@ class SupportRequestResource extends JsonResource
             'title' => $this->title,
             'status' => $this->status,
             'requestor' => new UserResource($this->user),
-            'latest_message' => ($this->messages) ? $this->messages->last()->message : null,
+            'latest_message' => ($this->messages->count() > 0) ? $this->messages->last()->message : null,
             'assignee' => [
                 'id' => $this->assignee_id,
                 'name' => $this->assignee ? $this->assignee->name : null,
