@@ -68,7 +68,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 45kgbPeavh6cV681DEfad3Z'
+      - 'Bearer 6ca8DZg34Ee6vkVPhf1bd5a'
     controller: null
     method: null
     route: null
@@ -185,7 +185,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P8D6E3g1hcf45aZaVdkev6b'
+      - 'Bearer ae48hkgd3vE16Vf5D6bPcaZ'
     controller: null
     method: null
     route: null
@@ -233,10 +233,26 @@ endpoints:
         example: 1
         type: integer
         custom: []
+      code:
+        name: code
+        description: 'optional The code of the shareable link(6 characters).'
+        required: false
+        example: '1'
+        type: string
+        custom: []
+      model_type:
+        name: model_type
+        description: 'optional The model type of the shareable link.'
+        required: false
+        example: 'article,merchant_offer'
+        type: string
+        custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
       type: 'like,dislike,share,bookmark'
       id: 1
+      code: '1'
+      model_type: 'article,merchant_offer'
     fileParameters: []
     responses:
       -
@@ -258,7 +274,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c4aPE1Zgk6fa35Dd6b8vVhe'
+      - 'Bearer bkaZea8vd1gPVc65Dh4E63f'
     controller: null
     method: null
     route: null
@@ -309,7 +325,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1gbPDafv568E4dhV6ae3cZk'
+      - 'Bearer ZdgefcbPvV6813h6Eaka4D5'
     controller: null
     method: null
     route: null
@@ -368,7 +384,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D45Ekbaa3e1PZchV866fgvd'
+      - 'Bearer dv3VaZePE56h1fka8Dcg4b6'
     controller: null
     method: null
     route: null

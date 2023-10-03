@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "2ba8783c-e857-4387-afdf-ae85604a2ac3",
+        "_postman_id": "df343794-6602-4f94-80c4-bec4b6a82383",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":4,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"dolorem\",\"violation_level\":\"est\",\"article\":1}"
+                                    "raw": "{\"article_id\":15,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eveniet\",\"violation_level\":\"ratione\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"distinctio\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"eos\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "aut",
+                                            "value": "impedit",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"consequatur\",\"violation_type\":\"recusandae\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"cupiditate\",\"violation_type\":\"sit\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "est",
+                                            "value": "occaecati",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2283,7 +2283,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"interactable\":\"article,merchant_offer\",\"type\":\"like,dislike,share,bookmark\",\"id\":1}"
+                            "raw": "{\"interactable\":\"article,merchant_offer\",\"type\":\"like,dislike,share,bookmark\",\"id\":1,\"code\":\"1\",\"model_type\":\"article,merchant_offer\"}"
                         },
                         "description": ""
                     },
@@ -2748,7 +2748,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "omnis",
+                                            "value": "hic",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3744,7 +3744,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":18}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -3785,7 +3785,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":13}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -3891,7 +3891,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"consequuntur\",\"violation_level\":\"distinctio\",\"violation_type\":\"fugit\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"voluptatem\",\"violation_level\":\"quod\",\"violation_type\":\"atque\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4048,7 +4048,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"tempore\"}"
+                            "raw": "{\"reason\":\"aspernatur\"}"
                         },
                         "description": ""
                     },
@@ -4091,7 +4091,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"est\"}"
+                            "raw": "{\"user_ids\":\"sed\"}"
                         },
                         "description": ""
                     },

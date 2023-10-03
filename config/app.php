@@ -270,5 +270,7 @@ return [
 
     'recommendation_after_days' => env('RECOMMENDATION_AFTER_DAYS', 3),
 
-    'mpay_default_email_tld' => env('MPAY_DEFAULT_EMAIL', '@funhub.my')
+    'mpay_default_email_tld' => env('MPAY_DEFAULT_EMAIL', '@funhub.my'),
+
+    'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
 ];
