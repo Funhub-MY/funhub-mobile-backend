@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "2e3f1fb6-6cf7-45b7-a92f-62ae9163cdfc",
+        "_postman_id": "df343794-6602-4f94-80c4-bec4b6a82383",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":7,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"id\",\"violation_level\":\"qui\",\"article\":1}"
+                                    "raw": "{\"article_id\":15,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eveniet\",\"violation_level\":\"ratione\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"fugiat\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"eos\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "eius",
+                                            "value": "impedit",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"in\",\"violation_type\":\"in\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"cupiditate\",\"violation_type\":\"sit\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "ab",
+                                            "value": "occaecati",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1809,6 +1809,379 @@
             ]
         },
         {
+            "name": "Help Center",
+            "description": "",
+            "item": [
+                {
+                    "name": "FAQs",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get All FAQs",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/faqs",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/faqs"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"category_ids\":[1,2,3],\"query\":\"How to ...\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"data\": []\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get All FAQs Categories",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/faq_categories",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/faq_categories"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"data\": []\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Support Requests",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Get My Support Requests",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"status\":\"0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid\",\"category_ids\":[1,2,3],\"query\":\"my support request\",\"limit\":10}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"data\": []\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Raise Support Request",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/raise",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/raise"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"category_id\":1,\"title\":\"My support request\",\"message\":\"This is my message\",\"media_ids\":[1,2,3]}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": {},\n\"request\": {}\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Reply to Support Request",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/:id\/reply",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/reply",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Support Request ID."
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"message\":\"This is my message\",\"media_ids\":[1,2,3]}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": {},\n\"request\": {}\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get Messages of Support Request",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/:id\/messages",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/messages",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Support Request ID."
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"data\": []\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Resolve Support Request",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "variable": [
+                                        {
+                                            "id": "id",
+                                            "key": "id",
+                                            "value": "1",
+                                            "description": "Support Request ID."
+                                        }
+                                    ]
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Support request resolved and closed\"\n}",
+                                    "name": "success"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get Support Request Categories",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/categories",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/categories"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"type\":\"0=general,1=product,2=account,3=other\"}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [
+                                        {
+                                            "key": "cache-control",
+                                            "value": "no-cache, private"
+                                        },
+                                        {
+                                            "key": "content-type",
+                                            "value": "application\/json"
+                                        },
+                                        {
+                                            "key": "access-control-allow-origin",
+                                            "value": "*"
+                                        }
+                                    ],
+                                    "code": 401,
+                                    "body": "{\"message\":\"Unauthenticated.\"}",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Upload Attachments(Images) for Support Messages",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/help\/support_requests\/attach",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/attach"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "multipart\/form-data"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "images",
+                                            "src": [],
+                                            "type": "file"
+                                        }
+                                    ]
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"uploaded\": [\n    {\n       \"id\": 1,\n       \"name\": \"image.jpg\",\n       \"url\": \"http:\/\/localhost:8000\/storage\/user_uploads\/1\/image.jpg\",\n       \"size\": 12345,\n       \"type\": \"image\/jpeg\"\n   }\n]\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\"errors\": [\"images\": [\"The images field is required.\"] ]}",
+                                    "name": "Invalid Form Fields"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Interactions",
             "description": "",
             "item": [
@@ -1910,7 +2283,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"interactable\":\"article,merchant_offer\",\"type\":\"like,dislike,share,bookmark\",\"id\":1}"
+                            "raw": "{\"interactable\":\"article,merchant_offer\",\"type\":\"like,dislike,share,bookmark\",\"id\":1,\"code\":\"1\",\"model_type\":\"article,merchant_offer\"}"
                         },
                         "description": ""
                     },
@@ -2375,7 +2748,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "ad",
+                                            "value": "hic",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3252,7 +3625,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "1",
+                                    "value": "7",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -3412,7 +3785,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":17}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -3518,7 +3891,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"saepe\",\"violation_level\":\"tempore\",\"violation_type\":\"quam\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"voluptatem\",\"violation_level\":\"quod\",\"violation_type\":\"atque\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -3675,7 +4048,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"eum\"}"
+                            "raw": "{\"reason\":\"aspernatur\"}"
                         },
                         "description": ""
                     },
@@ -3718,7 +4091,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"quod\"}"
+                            "raw": "{\"user_ids\":\"sed\"}"
                         },
                         "description": ""
                     },
