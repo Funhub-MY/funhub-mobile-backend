@@ -43,4 +43,9 @@ class MerchantOfferClaim extends Model
     {
         return self::CLAIM_STATUS[$this->status];
     }
+
+    public function voucher()
+    {
+        return $this->hasOne(Voucher::class, 'voucher_id', 'id');
+    }
 }

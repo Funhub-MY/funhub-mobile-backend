@@ -147,7 +147,7 @@ class MerchantOfferController extends Controller
         // get merchant offers claimed by user
         $claims = MerchantOfferClaim::where('user_id', auth()->user()->id)
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-            ->with('merchantOffer', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+            ->with('merchantOffer', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferClaimResource::collection($claims);
