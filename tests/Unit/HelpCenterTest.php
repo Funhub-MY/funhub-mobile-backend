@@ -8,6 +8,7 @@ use App\Models\FaqCategory;
 use Laravel\Sanctum\Sanctum;
 use App\Models\SupportRequest;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Http\UploadedFile;
 use App\Models\SupportRequestMessage;
 use App\Models\SupportRequestCategory;
 use Database\Factories\SupportRequestFactory;
@@ -16,17 +17,22 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->user = User::factory()->create([
-        'id' => 1,
+    $this->user = User::factory()->create([]);
+
+    $this->faqCategories = FaqCategory::factory()->count(2)->create([
+        'user_id' => $this->user->id,
     ]);
 
-    $this->faq = Faq::factory()->create([
+    $this->faq1 = Faq::factory()->count(5)->create([
         'user_id' => $this->user->id,
-        'faq_category_id' => 1,
+        'faq_category_id' => $this->faqCategories->first()->id,
+        'status' => 1,
     ]);
 
-    $this->faqCatogories = FaqCategory::factory()->create([
+    $this->faq2 = Faq::factory()->count(5)->create([
         'user_id' => $this->user->id,
+        'faq_category_id' => $this->faqCategories->get(1)->id,
+        'status' => 1,
     ]);
 
     $this->supportRequestCategories = SupportRequestCategory::factory()->create();
@@ -42,31 +48,91 @@ beforeEach(function () {
         'support_request_id' => $this->supportRequest->id,
     ]);
 
-    Sanctum::actingAs($this->user,['*']);
+    Sanctum::actingAs($this->user, ['*']);
+});
+
+it('testGetFaqsByCategories', function () {
+    $category_id = $this->faqCategories->first()->id;
+    $response = $this->getJson('api/v1/help/faqs?category_ids=' . $category_id);
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'question',
+                    'answer',
+                    'category' => [
+                        'id',
+                        'name'
+                    ],
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
+        ]);
+    $this->assertEquals(5, $response->json('meta.total'));
+    collect($response->json('data'))->each(function ($faq) use ($category_id) {
+        $this->assertEquals($category_id, $faq['category']['id']);
+    });
 });
 
 it('testGetAllFaqs', function () {
     $response = $this->getJson('api/v1/help/faqs');
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'data'
-        ]);
+            'data' => [
+                '*' => [
+                    'id',
+                    'question',
+                    'answer',
+                    'category' => [
+                        'id',
+                        'name'
+                    ],
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
+                ]);
+    $this->assertEquals(10, $response->json('meta.total'));
 });
 
 it('testGetAllFaqsCategories', function () {
     $response = $this->getJson('api/v1/help/faq_categories');
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'data'
-        ]);
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'is_featured',
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
+        ])
+        ->assertJsonCount(2, 'data');
 });
 
 it('testGetSupportRequests', function () {
     $response = $this->getJson('api/v1/help/support_requests');
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'data'
+            'data' => [
+                '*' => [
+                    'id',
+                    'category',
+                    'title',
+                    'status',
+                    'requestor',
+                    'latest_message',
+                    'assignee',
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
         ]);
+    $this->assertEquals(1, $response->json('meta.total'));
 });
 
 it('testRaiseSupportRequests', function () {
@@ -75,9 +141,9 @@ it('testRaiseSupportRequests', function () {
     $response = $this->postJson('/api/v1/comments/report', $body);
     $response->assertStatus(422)
         ->assertJsonStructure([
-            'message', 
+            'message',
         ]);
-    $body =[
+    $body = [
         'category_id' => $this->supportRequestCategories->id,
         'title' => 'My support request',
         'message' => 'This is my message',
@@ -105,7 +171,7 @@ it('testReplySupportRequests', function () {
         ->assertJsonStructure([
             'message'
         ]);
-    $body =[
+    $body = [
         'message' => 'This is my message',
         'media_ids' => null
     ];
@@ -123,3 +189,24 @@ it('testReplySupportRequests', function () {
     ]);
 });
 
+it('testResolveSupportRequests', function () {
+    $response = $this->postJson("api/v1/help/support_requests/{$this->supportRequest->id}/resolve");
+    $response->assertStatus(200)
+        ->assertJson([
+            'message' => 'Support request resolved and closed',
+        ]);
+});
+
+it('testUploadAttachmentForSupportRequests', function () {
+    $body = [
+        'images' => UploadedFile::fake()->image('test.jpg'),
+    ];
+    $response = $this->postJson('api/v1/help/support_requests/attach', $body);
+    $this->assertTrue($this->user->media->where('file_name', 'test.jpg')->count() > 0);
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'uploaded' => [
+                '*' => ['id', 'name', 'url', 'size', 'type']
+            ]
+        ]);
+});
