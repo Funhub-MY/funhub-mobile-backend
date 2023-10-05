@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 6
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: at
+                  example: facere
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: amet
+                  example: dolores
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - dolores
+                    - omnis
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: sint
+        example: libero
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: iusto
+                  example: sit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: laboriosam
+                  example: temporibus
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: a
+        example: id
         required: true
         schema:
           type: string
@@ -2139,7 +2139,7 @@ paths:
                   example: 'John Smith'
                 email:
                   type: string
-                  description: 'The email of the user.'
+                  description: 'The email of the user(email verificatioin will be sent).'
                   example: john@example.com
                 password:
                   type: string
@@ -2148,6 +2148,93 @@ paths:
               required:
                 - name
                 - email
+  /api/v1/user/resend-email-verification:
+    post:
+      summary: 'Resend Verification Email with Token Inside'
+      operationId: resendVerificationEmailWithTokenInside
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Verification Email Sent'
+                properties:
+                  message:
+                    type: string
+                    example: 'Verification Email Sent'
+      tags:
+        - Authentication
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'optional You can pass in email address here if user decide to change it again.'
+                  example: john@example.com
+  /api/v1/user/verify-email:
+    post:
+      summary: 'Verify Email with Token'
+      operationId: verifyEmailWithToken
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email Verified'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email Verified'
+        422:
+          description: 'Invalid Token'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"message": "Invalid Token" ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: 'The email verification token.'
+                  example: '123456'
+              required:
+                - token
   /api/v1/help/faqs:
     get:
       summary: 'Get All FAQs'
@@ -3366,7 +3453,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: quos
+        example: beatae
         required: true
         schema:
           type: string
@@ -4386,7 +4473,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 2
+                  example: 11
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -4439,7 +4526,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 5
+                  example: 12
               required:
                 - user_id
   /api/v1/user/report:
@@ -4486,15 +4573,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aspernatur
+                  example: voluptate
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: inventore
+                  example: optio
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ut
+                  example: nostrum
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4639,7 +4726,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: et
+                  example: quis
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4821,6 +4908,18 @@ paths:
                   message:
                     type: string
                     example: Unauthenticated.
+        422:
+          description: 'Email already verified for your account'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email already verified for your account'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email already verified for your account'
       tags:
         - 'User Settings'
       requestBody:
@@ -4836,6 +4935,47 @@ paths:
                   example: john@gmail.com
               required:
                 - email
+  /api/v1/user/settings/verify/email:
+    post:
+      summary: 'Verify User Email with Token'
+      operationId: verifyUserEmailWithToken
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email Verified'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email Verified'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: 'Token of the user.'
+                  example: '123456'
+              required:
+                - token
   /api/v1/user/settings/name:
     post:
       summary: 'Update User Name'
@@ -5308,7 +5448,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:

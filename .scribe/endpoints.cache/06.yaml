@@ -64,7 +64,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6b5v4kVDag8d6fh3ae1PZEc'
+      - 'Bearer ZgD3cb1P8e64vfhaaV6kd5E'
     controller: null
     method: null
     route: null
@@ -118,11 +118,68 @@ endpoints:
         headers: []
         description: Unauthenticated
         custom: []
+      -
+        status: 422
+        content: '{"message": "Email already verified for your account"}'
+        headers: []
+        description: 'Email already verified for your account'
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer cg8ev4f3PVZkhbEaD61d65a'
+      - 'Bearer a3cfvhd1V645aZPeD8Ekb6g'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/verify/email
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Verify User Email with Token'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      token:
+        name: token
+        description: 'Token of the user.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      token: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Email Verified"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a66k1EfcvDga3d8V45PehZb'
     controller: null
     method: null
     route: null
@@ -180,7 +237,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ae8bhD5gV6EvkP4aZc1f6d3'
+      - 'Bearer e5Ebf6P1Zdacv6Vga834Dhk'
     controller: null
     method: null
     route: null
@@ -244,7 +301,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8vPE1dk4hacef3baZD5Vg66'
+      - 'Bearer 63kg1cEb8PZ54edh6aVvaDf'
     controller: null
     method: null
     route: null
@@ -303,7 +360,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5v3ha1d4fgD66E8VPcekZab'
+      - 'Bearer ePc5gDEZ6ba6a13k48fvVdh'
     controller: null
     method: null
     route: null
@@ -362,7 +419,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D45k3gf1bZhv66EaP8acVde'
+      - 'Bearer c6d4kagEeavb83fh5PVD61Z'
     controller: null
     method: null
     route: null
@@ -420,7 +477,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3bcak66Pgv54adh8VEeZ1Df'
+      - 'Bearer 6Dvcb58ag4fV3hZaE1edkP6'
     controller: null
     method: null
     route: null
@@ -478,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vP6eV4hZ6E1caf3b5kgDad8'
+      - 'Bearer 6egv5fPa6183ZbdVcDahEk4'
     controller: null
     method: null
     route: null
@@ -552,7 +609,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V4af6vPk8bghe35cdaDEZ61'
+      - 'Bearer a6Z34g1PcD6deEVakh58vbf'
     controller: null
     method: null
     route: null
@@ -583,11 +640,11 @@ endpoints:
         name: gender
         description: 'Must be one of <code>male</code> or <code>female</code>.'
         required: true
-        example: male
+        example: female
         type: string
         custom: []
     cleanBodyParameters:
-      gender: male
+      gender: female
     fileParameters: []
     responses:
       -
@@ -604,7 +661,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VbPvE8c341hk65gd6DaeZaf'
+      - 'Bearer fkd6aD8eE153VvZb6hgPc4a'
     controller: null
     method: null
     route: null
@@ -671,7 +728,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VhZ5cg31bdaaeE46PvD68fk'
+      - 'Bearer 1e65Ehv3kg6fb4Da8dPZcVa'
     controller: null
     method: null
     route: null
@@ -729,7 +786,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 63hab1akZgvEd4e5cP8f6DV'
+      - 'Bearer kE5hbDfe6Vvg8PZ1ca364da'
     controller: null
     method: null
     route: null
@@ -812,7 +869,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer haZ6vDe1468b3Pfgc5EdaVk'
+      - 'Bearer 5Vea3v6k461PZdcfgahD8bE'
     controller: null
     method: null
     route: null

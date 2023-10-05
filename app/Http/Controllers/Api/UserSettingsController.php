@@ -72,6 +72,7 @@ class UserSettingsController extends Controller
      * "email": "johndoe@gmail.com"
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     * @response status=422 scenario="Email already verified for your account" {"message": "Email already verified for your account"}
      */
     public function postSaveEmail(Request $request)
     {
@@ -79,14 +80,48 @@ class UserSettingsController extends Controller
             'email' => 'required|email|unique:users,email,' . auth()->user()->id,
         ]);
 
+        // if user email still same with current email then reject
+        if ($request->has('email') && auth()->user()->email == $request->email) {
+            return response()->json(['message' => 'Email already verified for your account'], 422);
+        }
+
         $user = auth()->user();
         $user->email = $request->email;
         $user->save();
 
+        // send verification email
+        $user->sendEmailVerificationNotification();
+
         return response()->json([
-            'message' => 'Email updated',
+            'message' => 'Email updated and verification email sent',
              'email' => $user->email
         ]);
+    }
+
+    /**
+     * Verify User Email with Token
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam token string required Token of the user. Example: 123456
+     * @response status=200 scenario="success" {
+     * "message": "Email Verified"
+     * }
+     */
+    public function verifyEmail(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|min:6|max:6'
+        ]);
+        $user = auth()->user();
+        // check token provided
+        if ($user->email_verification_token != $request->token) {
+            return response()->json(['message' => 'Invalid Token'], 422);
+        }
+        $user->markEmailAsVerified();
+        return response()->json(['message' => 'Email Verified'], 200);
     }
 
     /**

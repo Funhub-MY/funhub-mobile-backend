@@ -650,7 +650,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gkcfeZdE6aPa3V86D4bv5h1'
+      - 'Bearer ZfkDV4dh1g6bEae3Pc6v58a'
     controller: null
     method: null
     route: null
@@ -686,7 +686,7 @@ endpoints:
         custom: []
       email:
         name: email
-        description: 'The email of the user.'
+        description: 'The email of the user(email verificatioin will be sent).'
         required: true
         example: john@example.com
         type: string
@@ -732,7 +732,109 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6e5a8EkcV4Dv36bfZPag1h'
+      - 'Bearer c34DkhEabVae1ZP668vdf5g'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/resend-email-verification
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Resend Verification Email with Token Inside'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'optional You can pass in email address here if user decide to change it again.'
+        required: false
+        example: john@example.com
+        type: string
+        custom: []
+    cleanBodyParameters:
+      email: john@example.com
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message" : "Verification Email Sent"}'
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P34Z816e5dbfaEDVgha6vkc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/verify-email
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Verify Email with Token'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      token:
+        name: token
+        description: 'The email verification token.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      token: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"message" : "Email Verified"}'
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Invalid Token" ]}'
+        headers: []
+        description: 'Invalid Token'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Zfbh15v6EPDdaecg3k8a64V'
     controller: null
     method: null
     route: null

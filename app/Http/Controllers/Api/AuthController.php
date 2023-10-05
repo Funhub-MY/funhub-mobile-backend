@@ -348,7 +348,7 @@ class AuthController extends Controller
      * @group Authentication
      * @authenticated
      * @bodyParam name string required The name of the use. Example: John Smith
-     * @bodyParam email string required The email of the user. Example: john@example.com
+     * @bodyParam email string required The email of the user(email verificatioin will be sent). Example: john@example.com
      * @bodyParam password string The password of the user(social login do not need to provide). Example: abcd1234
      *
      * @response scenario=success {"message" : "Profile Updated"}
@@ -382,7 +382,74 @@ class AuthController extends Controller
             'password' => ($request->password) ? Hash::make($request->password) : null,
         ]);
 
-        return response()->json(['message' => 'Profile Updated'], 200);
+        // fire verification email
+        if ($request->email) {
+            $user->sendEmailVerificationNotification();
+        }
+
+        return response()->json(['message' => 'Profile Updated, Email verification sent'], 200);
+    }
+
+    /**
+     * Resend Verification Email with Token Inside
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Authentication
+     * @authenticated
+     * @bodyParam email string optional You can pass in email address here if user decide to change it again. Example: john@example.com
+     * @response scenario=success {"message" : "Verification Email Sent"}
+     */
+    public function postResendVerificationEmail(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'email|unique:users,email,' . auth()->user()->id,
+        ]);
+
+        $user = auth()->user();
+        if ($request->has('email')) {
+            // update login user email first
+            $user->update([
+                'email' => $request->email,
+            ]);
+        }
+
+        // resend verification email
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification Email Sent'], 200);
+    }
+
+    /**
+     * Verify Email with Token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Authentication
+     * @authenticated
+     * @bodyParam token string required The email verification token. Example: 123456
+     * @response scenario=success {"message" : "Email Verified"}
+     * @response status=422 scenario="Invalid Token" {"message": "Invalid Token" ]}
+     */
+    public function postVerifyEmail(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|min:6|max:6'
+        ]);
+
+        $user = auth()->user();
+
+        // check token provided
+        if ($user->email_verification_token != $request->token) {
+            return response()->json(['message' => 'Invalid Token'], 422);
+        }
+
+        // mark as verified email
+        $user->markEmailAsVerified();
+
+        return response()->json(['message' => 'Email Verified'], 200);
     }
 
     /**

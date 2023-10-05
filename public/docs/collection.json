@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "ca172a5c-8c48-476e-9e60-cab9228c5fa6",
+        "_postman_id": "b69326a0-541a-40fa-b992-c80819b3cdc2",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"at\",\"violation_level\":\"amet\",\"article\":1}"
+                                    "raw": "{\"article_id\":6,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"facere\",\"violation_level\":\"dolores\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"dolores\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"omnis\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "sint",
+                                            "value": "libero",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"iusto\",\"violation_type\":\"laboriosam\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"sit\",\"violation_type\":\"temporibus\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "a",
+                                            "value": "id",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1803,6 +1803,82 @@
                             "code": 422,
                             "body": "{\"message\": \"Please verify your phone number first\" ]}",
                             "name": "Invalid Form Fields"
+                        }
+                    ]
+                },
+                {
+                    "name": "Resend Verification Email with Token Inside",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/resend-email-verification",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/resend-email-verification"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"john@example.com\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Verification Email Sent\"}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Verify Email with Token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/verify-email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/verify-email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"123456\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Email Verified\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Invalid Token\" ]}",
+                            "name": "Invalid Token"
                         }
                     ]
                 }
@@ -2777,7 +2853,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "quos",
+                                            "value": "beatae",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3773,7 +3849,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":2}"
+                                    "raw": "{\"user_id\":11}"
                                 },
                                 "description": ""
                             },
@@ -3814,7 +3890,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":5}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -3920,7 +3996,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"aspernatur\",\"violation_level\":\"inventore\",\"violation_type\":\"ut\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"voluptate\",\"violation_level\":\"optio\",\"violation_type\":\"nostrum\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4077,7 +4153,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"et\"}"
+                            "raw": "{\"reason\":\"quis\"}"
                         },
                         "description": ""
                     },
@@ -4267,6 +4343,47 @@
                             "code": 401,
                             "body": "{\"message\": \"Unauthenticated.\"}",
                             "name": "Unauthenticated"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Email already verified for your account\"}",
+                            "name": "Email already verified for your account"
+                        }
+                    ]
+                },
+                {
+                    "name": "Verify User Email with Token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/verify\/email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/verify\/email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"123456\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Email Verified\"\n}",
+                            "name": "success"
                         }
                     ]
                 },
@@ -4591,7 +4708,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

@@ -293,6 +293,12 @@ class MerchantOfferController extends Controller
             }
 
         } else if($request->payment_method == 'fiat') {
+            // check if user has verified email address
+            if (!$user->hasVerifiedEmail()) {
+                return response()->json([
+                    'message' => 'Please verify your email address first.'
+                ], 422);
+            }
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
 
             // create payment transaction first, not yet claim
