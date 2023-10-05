@@ -46,6 +46,6 @@ class MerchantOfferClaim extends Model
 
     public function voucher()
     {
-        return $this->hasOne(Voucher::class, 'voucher_id', 'id');
+        return $this->hasOne(MerchantOfferVoucher::class, 'voucher_id', 'id');
     }
 }
