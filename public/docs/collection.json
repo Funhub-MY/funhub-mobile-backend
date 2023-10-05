@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "df343794-6602-4f94-80c4-bec4b6a82383",
+        "_postman_id": "ca172a5c-8c48-476e-9e60-cab9228c5fa6",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":15,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eveniet\",\"violation_level\":\"ratione\",\"article\":1}"
+                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"at\",\"violation_level\":\"amet\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"eos\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"dolores\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "impedit",
+                                            "value": "sint",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"cupiditate\",\"violation_type\":\"sit\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"iusto\",\"violation_type\":\"laboriosam\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "occaecati",
+                                            "value": "a",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1823,7 +1823,21 @@
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/help\/faqs",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/faqs"
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/faqs",
+                                    "variable": [
+                                        {
+                                            "id": "category_ids",
+                                            "key": "category_ids",
+                                            "value": "1%2C2%2C3",
+                                            "description": "array optional Array of category ids."
+                                        },
+                                        {
+                                            "id": "query",
+                                            "key": "query",
+                                            "value": "How+to+...",
+                                            "description": "optional Search query."
+                                        }
+                                    ]
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1836,10 +1850,7 @@
                                         "value": "application\/json"
                                     }
                                 ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"query\":\"How to ...\"}"
-                                },
+                                "body": null,
                                 "description": ""
                             },
                             "response": [
@@ -1964,10 +1975,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/help\/support_requests\/:id\/reply",
+                                    "path": "api\/v1\/help\/support_requests\/:support_request_id\/reply",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/reply",
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:support_request_id\/reply",
                                     "variable": [
+                                        {
+                                            "id": "support_request_id",
+                                            "key": "support_request_id",
+                                            "value": "1",
+                                            "description": "The ID of the support request."
+                                        },
                                         {
                                             "id": "id",
                                             "key": "id",
@@ -2007,10 +2024,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/help\/support_requests\/:id\/messages",
+                                    "path": "api\/v1\/help\/support_requests\/:support_request_id\/messages",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/messages",
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:support_request_id\/messages",
                                     "variable": [
+                                        {
+                                            "id": "support_request_id",
+                                            "key": "support_request_id",
+                                            "value": "1",
+                                            "description": "The ID of the support request."
+                                        },
                                         {
                                             "id": "id",
                                             "key": "id",
@@ -2047,10 +2070,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "path": "api\/v1\/help\/support_requests\/:support_request_id\/resolve",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:support_request_id\/resolve",
                                     "variable": [
+                                        {
+                                            "id": "support_request_id",
+                                            "key": "support_request_id",
+                                            "value": "1",
+                                            "description": "The ID of the support request."
+                                        },
                                         {
                                             "id": "id",
                                             "key": "id",
@@ -2748,7 +2777,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "hic",
+                                            "value": "quos",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3744,7 +3773,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":2}"
                                 },
                                 "description": ""
                             },
@@ -3785,7 +3814,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":5}"
                                 },
                                 "description": ""
                             },
@@ -3891,7 +3920,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"voluptatem\",\"violation_level\":\"quod\",\"violation_type\":\"atque\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"aspernatur\",\"violation_level\":\"inventore\",\"violation_type\":\"ut\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4048,7 +4077,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"aspernatur\"}"
+                            "raw": "{\"reason\":\"et\"}"
                         },
                         "description": ""
                     },
@@ -4091,7 +4120,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"sed\"}"
+                            "raw": "{\"user_ids\":\"et\"}"
                         },
                         "description": ""
                     },
@@ -4562,7 +4591,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"female\"}"
+                            "raw": "{\"gender\":\"male\"}"
                         },
                         "description": ""
                     },

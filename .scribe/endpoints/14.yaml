@@ -18,20 +18,13 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
+    urlParameters:
       category_ids:
         name: category_ids
-        description: 'optional Array of category ids.'
+        description: 'array optional Array of category ids.'
         required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
+        example: '1,2,3'
+        type: string
         custom: []
       query:
         name: query
@@ -40,12 +33,13 @@ endpoints:
         example: 'How to ...'
         type: string
         custom: []
-    cleanBodyParameters:
-      category_ids:
-        - 1
-        - 2
-        - 3
+    cleanUrlParameters:
+      category_ids: '1,2,3'
       query: 'How to ...'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
@@ -61,7 +55,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zdh1V48aaEDc5f3gbP6e6kv'
+      - 'Bearer 3P84fdk6e56cZD1bagvVEha'
     controller: null
     method: null
     route: null
@@ -104,7 +98,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ef8a45Dg3Pa6bhd1cevV6kZ'
+      - 'Bearer 6eVZEbhdPga853fvk146Dca'
     controller: null
     method: null
     route: null
@@ -185,7 +179,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5geDvacP6ZV31adEhbf48k6'
+      - 'Bearer 4d5k16EvDachg36bfaeZ8PV'
     controller: null
     method: null
     route: null
@@ -267,7 +261,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VgDhf13ePaa6k5vb8EZ64dc'
+      - 'Bearer 8evdhVf6Pb3c615E4gDZaka'
     controller: null
     method: null
     route: null
@@ -275,7 +269,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v1/help/support_requests/{id}/reply'
+    uri: 'api/v1/help/support_requests/{support_request_id}/reply'
     metadata:
       groupName: 'Help Center'
       groupDescription: ''
@@ -290,6 +284,13 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
+      support_request_id:
+        name: support_request_id
+        description: 'The ID of the support request.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
       id:
         name: id
         description: 'Support Request ID.'
@@ -298,6 +299,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
+      support_request_id: 1
       id: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -341,7 +343,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3h1ZDedbcPvf6a65Vg8Eka4'
+      - 'Bearer 6Ecb35vf41eaadDg8kh6PVZ'
     controller: null
     method: null
     route: null
@@ -349,7 +351,7 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/help/support_requests/{id}/messages'
+    uri: 'api/v1/help/support_requests/{support_request_id}/messages'
     metadata:
       groupName: 'Help Center'
       groupDescription: ''
@@ -364,6 +366,13 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
+      support_request_id:
+        name: support_request_id
+        description: 'The ID of the support request.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
       id:
         name: id
         description: 'Support Request ID.'
@@ -372,6 +381,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
+      support_request_id: 1
       id: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -392,7 +402,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aP4hVbvkd63fDaZcg6E15e8'
+      - 'Bearer bgaVe45dD6k1Z68fvcEPha3'
     controller: null
     method: null
     route: null
@@ -400,7 +410,7 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: 'api/v1/help/support_requests/{id}/resolve'
+    uri: 'api/v1/help/support_requests/{support_request_id}/resolve'
     metadata:
       groupName: 'Help Center'
       groupDescription: ''
@@ -415,6 +425,13 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
+      support_request_id:
+        name: support_request_id
+        description: 'The ID of the support request.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
       id:
         name: id
         description: 'Support Request ID.'
@@ -423,6 +440,7 @@ endpoints:
         type: string
         custom: []
     cleanUrlParameters:
+      support_request_id: 1
       id: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -443,7 +461,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5bDPkeac146h63ZvVaf8gdE'
+      - 'Bearer b5vd1aa8kP4Eg6fVchZ63eD'
     controller: null
     method: null
     route: null
@@ -494,7 +512,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8Z4f656bPcda1eD3VhkgEav'
+      - 'Bearer EbD1fkaZd6Pcvh4e3ag5V68'
     controller: null
     method: null
     route: null
@@ -559,7 +577,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ehba3gcP18Dk6vd6faV45ZE'
+      - 'Bearer ac34f6hgEVk8Pbdv65aeZ1D'
     controller: null
     method: null
     route: null

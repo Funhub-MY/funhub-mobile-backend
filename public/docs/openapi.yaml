@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 15
+                  example: 8
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: eveniet
+                  example: at
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ratione
+                  example: amet
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - eos
+                    - dolores
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: impedit
+        example: sint
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: cupiditate
+                  example: iusto
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sit
+                  example: laboriosam
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: occaecati
+        example: a
         required: true
         schema:
           type: string
@@ -2176,26 +2176,35 @@ paths:
                     example: []
       tags:
         - 'Help Center'
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                category_ids:
-                  type: array
-                  description: 'optional Array of category ids.'
-                  example:
-                    - 1
-                    - 2
-                    - 3
-                  items:
-                    type: string
-                query:
-                  type: string
-                  description: 'optional Search query.'
-                  example: 'How to ...'
+    parameters:
+      -
+        in: path
+        name: category_ids
+        description: 'Optional parameter. array optional Array of category ids.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: query
+        description: 'Optional parameter. optional Search query.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'How to ...'
   /api/v1/help/faq_categories:
     get:
       summary: 'Get All FAQs Categories'
@@ -2344,7 +2353,7 @@ paths:
                 - category_id
                 - title
                 - message
-  '/api/v1/help/support_requests/{id}/reply':
+  '/api/v1/help/support_requests/{support_request_id}/reply':
     post:
       summary: 'Reply to Support Request'
       operationId: replyToSupportRequest
@@ -2401,13 +2410,21 @@ paths:
     parameters:
       -
         in: path
+        name: support_request_id
+        description: 'The ID of the support request.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
         name: id
         description: 'Support Request ID.'
         example: '1'
         required: true
         schema:
           type: string
-  '/api/v1/help/support_requests/{id}/messages':
+  '/api/v1/help/support_requests/{support_request_id}/messages':
     get:
       summary: 'Get Messages of Support Request'
       operationId: getMessagesOfSupportRequest
@@ -2438,13 +2455,21 @@ paths:
     parameters:
       -
         in: path
+        name: support_request_id
+        description: 'The ID of the support request.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
         name: id
         description: 'Support Request ID.'
         example: '1'
         required: true
         schema:
           type: string
-  '/api/v1/help/support_requests/{id}/resolve':
+  '/api/v1/help/support_requests/{support_request_id}/resolve':
     post:
       summary: 'Resolve Support Request'
       operationId: resolveSupportRequest
@@ -2473,6 +2498,14 @@ paths:
       tags:
         - 'Help Center'
     parameters:
+      -
+        in: path
+        name: support_request_id
+        description: 'The ID of the support request.'
+        example: 1
+        required: true
+        schema:
+          type: integer
       -
         in: path
         name: id
@@ -3333,7 +3366,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: hic
+        example: quos
         required: true
         schema:
           type: string
@@ -4353,7 +4386,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -4406,7 +4439,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 3
+                  example: 5
               required:
                 - user_id
   /api/v1/user/report:
@@ -4453,15 +4486,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: aspernatur
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quod
+                  example: inventore
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: atque
+                  example: ut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4606,7 +4639,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aspernatur
+                  example: et
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4647,7 +4680,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: sed
+                  example: et
               required:
                 - user_ids
     parameters:
@@ -5275,7 +5308,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
