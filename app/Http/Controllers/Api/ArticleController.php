@@ -1112,6 +1112,8 @@ class ArticleController extends Controller
     {
         $merchantOffers = $article->merchantOffers()
             ->with('merchant')
+            ->published()
+            ->available()
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferResource::collection($merchantOffers);
