@@ -118,7 +118,11 @@ class AuthController extends Controller
             ->first();
 
         if ($user) {
-            return response()->json(['message' => 'Phone Number already registered'], 422);
+            if ($user->password) { // in scenario user havent fully complete profile setupo and decide to close the app, so password field is the checker here to verify user can resume their journey
+                return response()->json(['message' => 'Phone Number already registered'], 422);
+            } else {
+                return response()->json(['message' => 'Phone Number registered but incomplete profile setup, continue setup'], 200);
+            }
         } else {
             return response()->json(['message' => 'Phone Number not registered'], 200);
         }
@@ -160,7 +164,6 @@ class AuthController extends Controller
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->first();
-
 
         // Generate new OTP
         $otp = rand(100000, 999999);
