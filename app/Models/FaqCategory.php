@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class FaqCategory extends Model implements InteractsWithMedia
+class FaqCategory extends Model implements HasMedia
 {
-    use HasFactory, HasMedia;
+    use HasFactory, InteractsWithMedia;
 
     protected $guarded = ['id'];
 
