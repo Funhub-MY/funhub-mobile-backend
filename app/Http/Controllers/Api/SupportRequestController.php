@@ -36,8 +36,7 @@ class SupportRequestController extends Controller
         // get all my own support requests
         $query = $request->user()->supportRequests()
             ->with('messages')
-            ->join(DB::raw('(SELECT created_at,support_request_id from support_requests_messages) AS support_requests_messages'), 'support_requests.id', '=', 'support_requests_messages.support_request_id')
-            ->orderBy('support_requests_messages.created_at', 'desc');
+            ->orderBy('created_at', 'desc');
 
         if ($request->has('query')) {
             $query->where('title', 'like', '%' . $request->query . '%');
