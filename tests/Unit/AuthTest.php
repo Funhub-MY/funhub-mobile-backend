@@ -232,7 +232,6 @@ class AuthTest extends TestCase
         // complete profile
         $response = $this->postJson('/api/v1/user/complete-profile', [
             'name' => 'John Doe',
-            'email' => 'john@gmail.com',
         ]);
 
         $response->assertStatus(200)
@@ -243,7 +242,6 @@ class AuthTest extends TestCase
         // verify user is updated
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
-            'email' => 'john@gmail.com',
             'google_id' => $user->google_id
         ]);
     }
