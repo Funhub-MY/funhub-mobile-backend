@@ -360,7 +360,6 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'email|unique:users,email,' . auth()->user()->id,
         ]);
 
         // auth user if social login (has google_id or facebook_id) then no need to verify password required rule
@@ -378,42 +377,36 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->update([
             'name' => $request->name,
-            'email' => $request->email ?? null,
+            // 'email' => $request->email ?? null,
             'password' => ($request->password) ? Hash::make($request->password) : null,
         ]);
-
-        // fire verification email
-        if ($request->email) {
-            $user->sendEmailVerificationNotification();
-        }
 
         return response()->json(['message' => 'Profile Updated, Email verification sent'], 200);
     }
 
     /**
-     * Resend Verification Email with Token Inside
+     * Send Verification Email with Token Inside
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Authentication
      * @authenticated
-     * @bodyParam email string optional You can pass in email address here if user decide to change it again. Example: john@example.com
+     * @bodyParam email string required You can pass in email address here if user decide to change it again. Example: john@example.com
      * @response scenario=success {"message" : "Verification Email Sent"}
      */
-    public function postResendVerificationEmail(Request $request)
+    public function postSendVerificationEmail(Request $request)
     {
         $this->validate($request, [
-            'email' => 'email|unique:users,email,' . auth()->user()->id,
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
         ]);
 
         $user = auth()->user();
-        if ($request->has('email')) {
-            // update login user email first
-            $user->update([
-                'email' => $request->email,
-            ]);
-        }
+        // update login user email first
+        $user->update([
+            'email' => $request->email,
+            'email_verified_at' => null
+        ]);
 
         // resend verification email
         $user->sendEmailVerificationNotification();
@@ -445,6 +438,9 @@ class AuthController extends Controller
         if ($user->email_verification_token != $request->token) {
             return response()->json(['message' => 'Invalid Token'], 422);
         }
+
+        // update user token to null
+        $user->update(['email_verification_token' => null]);
 
         // mark as verified email
         $user->markEmailAsVerified();

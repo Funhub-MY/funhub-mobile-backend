@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 8
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: facere
+                  example: cumque
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: dolores
+                  example: sed
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - omnis
+                    - eligendi
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: libero
+        example: pariatur
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sit
+                  example: tempora
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: temporibus
+                  example: reprehenderit
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: id
+        example: est
         required: true
         schema:
           type: string
@@ -2148,10 +2148,10 @@ paths:
               required:
                 - name
                 - email
-  /api/v1/user/resend-email-verification:
+  /api/v1/user/send-email-verification:
     post:
-      summary: 'Resend Verification Email with Token Inside'
-      operationId: resendVerificationEmailWithTokenInside
+      summary: 'Send Verification Email with Token Inside'
+      operationId: sendVerificationEmailWithTokenInside
       description: ''
       parameters:
         -
@@ -2177,7 +2177,7 @@ paths:
       tags:
         - Authentication
       requestBody:
-        required: false
+        required: true
         content:
           application/json:
             schema:
@@ -2185,8 +2185,10 @@ paths:
               properties:
                 email:
                   type: string
-                  description: 'optional You can pass in email address here if user decide to change it again.'
+                  description: 'You can pass in email address here if user decide to change it again.'
                   example: john@example.com
+              required:
+                - email
   /api/v1/user/verify-email:
     post:
       summary: 'Verify Email with Token'
@@ -3453,7 +3455,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: beatae
+        example: nam
         required: true
         schema:
           type: string
@@ -4473,7 +4475,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 11
+                  example: 8
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -4526,7 +4528,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 19
               required:
                 - user_id
   /api/v1/user/report:
@@ -4573,15 +4575,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: voluptate
+                  example: vero
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: optio
+                  example: eaque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: nostrum
+                  example: totam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -4726,7 +4728,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quis
+                  example: iusto
               required:
                 - reason
   /api/v1/users_by_id:
@@ -4767,7 +4769,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: et
+                  example: eaque
               required:
                 - user_ids
     parameters:

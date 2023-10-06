@@ -39,7 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
 
         // set email address (used during complete profile), must be authenticated
-        Route::post('user/resend-email-verification', [\App\Http\Controllers\Api\AuthController::class, 'postResendVerificationEmail']);
+        Route::post('user/send-email-verification', [\App\Http\Controllers\Api\AuthController::class, 'postSendVerificationEmail']);
         Route::post('user/verify-email', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyEmail']);
 
         // Country & State

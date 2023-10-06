@@ -650,7 +650,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZfkDV4dh1g6bEae3Pc6v58a'
+      - 'Bearer 4Pa1V6386fhEvZ5eakdbDcg'
     controller: null
     method: null
     route: null
@@ -732,7 +732,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c34DkhEabVae1ZP668vdf5g'
+      - 'Bearer 6aPfhb83DcE64akeZgd1Vv5'
     controller: null
     method: null
     route: null
@@ -740,13 +740,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/resend-email-verification
+    uri: api/v1/user/send-email-verification
     metadata:
       groupName: Authentication
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Resend Verification Email with Token Inside'
+      title: 'Send Verification Email with Token Inside'
       description: ''
       authenticated: true
       custom: []
@@ -761,8 +761,8 @@ endpoints:
     bodyParameters:
       email:
         name: email
-        description: 'optional You can pass in email address here if user decide to change it again.'
-        required: false
+        description: 'You can pass in email address here if user decide to change it again.'
+        required: true
         example: john@example.com
         type: string
         custom: []
@@ -780,7 +780,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P34Z816e5dbfaEDVgha6vkc'
+      - 'Bearer kagb3aPDh45V6618fcedEZv'
     controller: null
     method: null
     route: null
@@ -834,7 +834,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zfbh15v6EPDdaecg3k8a64V'
+      - 'Bearer 63D14gb8ceh5akPfVE6aZdv'
     controller: null
     method: null
     route: null

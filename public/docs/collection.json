@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "b69326a0-541a-40fa-b992-c80819b3cdc2",
+        "_postman_id": "2e2ec32e-b69e-412e-aa25-479ae481ecb7",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":6,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"facere\",\"violation_level\":\"dolores\",\"article\":1}"
+                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"cumque\",\"violation_level\":\"sed\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"omnis\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"eligendi\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "libero",
+                                            "value": "pariatur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"sit\",\"violation_type\":\"temporibus\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"tempora\",\"violation_type\":\"reprehenderit\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "id",
+                                            "value": "est",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1807,13 +1807,13 @@
                     ]
                 },
                 {
-                    "name": "Resend Verification Email with Token Inside",
+                    "name": "Send Verification Email with Token Inside",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/resend-email-verification",
+                            "path": "api\/v1\/user\/send-email-verification",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/resend-email-verification"
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/send-email-verification"
                         },
                         "method": "POST",
                         "header": [
@@ -2853,7 +2853,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "beatae",
+                                            "value": "nam",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3849,7 +3849,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":11}"
+                                    "raw": "{\"user_id\":8}"
                                 },
                                 "description": ""
                             },
@@ -3890,7 +3890,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":12}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -3996,7 +3996,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"voluptate\",\"violation_level\":\"optio\",\"violation_type\":\"nostrum\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"vero\",\"violation_level\":\"eaque\",\"violation_type\":\"totam\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4153,7 +4153,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"quis\"}"
+                            "raw": "{\"reason\":\"iusto\"}"
                         },
                         "description": ""
                     },
@@ -4196,7 +4196,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"et\"}"
+                            "raw": "{\"user_ids\":\"eaque\"}"
                         },
                         "description": ""
                     },
