@@ -125,6 +125,9 @@ class MerchantOfferController extends Controller
             });
         }
 
+        // order by available_at from past first to future
+        $query->orderBy('available_at', 'asc');
+
         $this->buildQuery($query, $request);
 
         $data = $query->paginate(config('app.paginate_per_page'));
