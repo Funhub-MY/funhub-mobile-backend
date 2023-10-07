@@ -1133,7 +1133,7 @@ class ArticleController extends Controller
 
         // get article by ShareableLink
         $share = ShareableLink::where('link', $request->share_code)
-            ->where('type', Article::class)
+            ->where('model_type', Article::class)
             ->first();
 
         if (!$share) {
