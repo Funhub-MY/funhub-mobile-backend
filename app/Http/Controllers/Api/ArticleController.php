@@ -1139,7 +1139,7 @@ class ArticleController extends Controller
         if (!$share) {
             return abort(404);
         }
-        $article = $share->shareable;
+        $article = $share->model;
 
         // if article is published only return
         if ($article->status != Article::STATUS_PUBLISHED) {
