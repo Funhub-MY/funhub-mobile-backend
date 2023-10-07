@@ -1132,7 +1132,7 @@ class ArticleController extends Controller
         ]);
 
         // get article by ShareableLink
-        $share = ShareableLink::where('code', $request->share_code)
+        $share = ShareableLink::where('link', $request->share_code)
             ->where('type', Article::class)
             ->first();
 
@@ -1140,6 +1140,11 @@ class ArticleController extends Controller
             return abort(404);
         }
         $article = $share->shareable;
+
+        // if article is published only return
+        if ($article->status != Article::STATUS_PUBLISHED) {
+            return abort(404);
+        }
 
         $article->load('user', 'media', 'location', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
