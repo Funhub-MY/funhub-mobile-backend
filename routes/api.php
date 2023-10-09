@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::group(['prefix' => 'v1'], function () {
+    Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
 
     // primary otp login
     Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp
@@ -30,12 +33,17 @@ Route::group(['prefix' => 'v1'], function () {
     // forgot password
     Route::post('reset-password-send-otp', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordSendOtp']);
     Route::post('reset-password', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordWithOtp']);
+
     /**
      * Authenticated routes
      */
     Route::group(['middleware' => ['auth:sanctum', 'checkStatus']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
+
+        // set email address (used during complete profile), must be authenticated
+        Route::post('user/send-email-verification', [\App\Http\Controllers\Api\AuthController::class, 'postSendVerificationEmail']);
+        Route::post('user/verify-email', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyEmail']);
 
         // Country & State
         Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
@@ -106,6 +114,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
             Route::post('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
             Route::post('/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
+            Route::post('/verify/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'verifyEmail']);
             Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
             Route::post('/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
             Route::post('/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);
@@ -176,6 +185,22 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', [\App\Http\Controllers\Api\TransactionController::class, 'index']);
             Route::get('/transaction_no', [\App\Http\Controllers\Api\TransactionController::class, 'getTransactionByNumber']);
             Route::get('/{transaction}', [\App\Http\Controllers\Api\TransactionController::class, 'show']);
+        });
+
+        // Help Center
+        Route::prefix('/help')->group(function () {
+            // Faqs
+            Route::get('/faqs', [\App\Http\Controllers\Api\FaqController::class, 'index']);
+            Route::get('/faq_categories', [\App\Http\Controllers\Api\FaqController::class, 'getFaqCategories']);
+
+            // support requests
+            Route::get('/support_requests', [\App\Http\Controllers\Api\SupportRequestController::class, 'index']);
+            Route::post('/support_requests/raise', [\App\Http\Controllers\Api\SupportRequestController::class, 'postRaiseSupportRequest']);
+            Route::post('/support_requests/{support_request}/reply', [\App\Http\Controllers\Api\SupportRequestController::class, 'postReplyToSupportRequest']);
+            Route::get('/support_requests/{support_request}/messages', [\App\Http\Controllers\Api\SupportRequestController::class, 'getMessagesOfSupportRequest']);
+            Route::post('/support_requests/{support_request}/resolve', [\App\Http\Controllers\Api\SupportRequestController::class, 'postResolveSupportRequest']);
+            Route::get('/support_requests/categories', [\App\Http\Controllers\Api\SupportRequestController::class, 'getSupportRequestsCategories']);
+            Route::post('/support_requests/attach', [\App\Http\Controllers\Api\SupportRequestController::class, 'postAttachmentsUpload']);
         });
     });
 });

@@ -1,16 +1,16 @@
-name: Interactions
+name: Article
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/interactions/users
+    uri: api/v1/article_cities
     metadata:
-      groupName: Interactions
+      groupName: Article
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Users of Interaction'
+      title: 'Get Article Cities (Unique)'
       description: ''
       authenticated: true
       custom: []
@@ -18,46 +18,27 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      search:
+        name: search
+        description: 'optional Search for city.'
+        required: false
+        example: '"Kota"'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      search: '"Kota"'
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: 'article,merchant_offer'
-        type: string
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      type:
-        name: type
-        description: 'The type of interaction.'
-        required: true
-        example: 'like,dislike,share,bookmark'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      interactable: 'article,merchant_offer'
-      id: 1
-      type: 'like,dislike,share,bookmark'
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "data": [],
-          "links": {},
-          "meta": {
-          }
+          "cities": []
           }
         headers: []
         description: success
@@ -66,7 +47,134 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fvdhk68b1agaeE65PcZ4VD3'
+      - 'Bearer e5v48c6d6PkVDZbfg31aEah'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles/gallery
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload Images for Article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      images:
+        name: images
+        description: 'The images to upload.'
+        required: true
+        example: null
+        type: file
+        custom: []
+      is_cover:
+        name: is_cover
+        description: 'used to set this image as a cover.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      is_cover: true
+    fileParameters:
+      images: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "uploaded": [
+              {
+                 "id": 1,
+                 "name": "image.jpg",
+                 "url": "http://localhost:8000/storage/user_uploads/1/image.jpg",
+                 "size": 12345,
+                 "type": "image/jpeg"
+             }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["images": ["The images field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ckeV6PZDbgd81v54fa6ah3E'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles/video-upload
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload Video for Article'
+      description: |-
+        Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration
+
+        Must be able to stream completion percentage back to client
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      video:
+        name: video
+        description: 'The video to upload.'
+        required: true
+        example: null
+        type: file
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      video: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "url" : "http://localhost:8000/storage/user_video_uploads/1/video.mp4"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hVkb6e1fg58vd4aZPDa36Ec'
     controller: null
     method: null
     route: null
@@ -74,13 +182,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/interactions
+    uri: api/v1/articles/my_articles
     metadata:
-      groupName: Interactions
+      groupName: Article
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get interactions on a interactable type (eg. Articles)'
+      title: 'Get Articles by User ID or Logged In User'
       description: ''
       authenticated: true
       custom: []
@@ -93,25 +201,25 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: 'article,merchant_offer'
-        type: string
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable.'
-        required: true
+      user_id:
+        name: user_id
+        description: 'optional Load Spciefic User Articles.'
+        required: false
         example: 1
         type: integer
+        custom: []
+      published_only:
+        name: published_only
+        description: 'optional Filter by published articles.'
+        required: false
+        example: true
+        type: boolean
         custom: []
       filter:
         name: filter
         description: 'Column to Filter.'
         required: false
-        example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+        example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         custom: []
       filter_value:
@@ -125,7 +233,7 @@ endpoints:
         name: sort
         description: 'Column to Sort.'
         required: false
-        example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         custom: []
       order:
@@ -150,11 +258,1713 @@ endpoints:
         type: integer
         custom: []
     cleanBodyParameters:
-      interactable: 'article,merchant_offer'
-      id: 1
-      filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+      user_id: 1
+      published_only: true
+      filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8bfPaZvk41DEVgc6e53dah6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/articles/my_bookmarks
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Bookmarked Articles by User ID or Logged In User'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'optional Load Spciefic User Bookmarked Articles.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      filter: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a8eDbhgZ6EdkavcP1f653V4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles/report
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Reports
+      subgroupDescription: ''
+      title: 'Report an article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      article_id:
+        name: article_id
+        description: ''
+        required: true
+        example: 17
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: 'The reason for reporting the comment.'
+        required: true
+        example: 'Spam     * @bodyParam violation_type required The violation type of this report'
+        type: string
+        custom: []
+      violation_type:
+        name: violation_type
+        description: ''
+        required: true
+        example: quidem
+        type: string
+        custom: []
+      violation_level:
+        name: violation_level
+        description: 'The violation level of this report'
+        required: false
+        example: aut
+        type: required
+        custom: []
+      article:
+        name: article
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      article_id: 17
+      reason: 'Spam     * @bodyParam violation_type required The violation type of this report'
+      violation_type: quidem
+      violation_level: aut
+      article: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["article_id": ["The Article Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Dv5gbh6EP63f1VdakaZe84c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles/not_interested
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Hide Article When Not Interested By user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      article_id:
+        name: article_id
+        description: 'Article Id.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      article_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Article marked as not interested"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6fDakP1vgbheZ64E85daV3c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/articles/tagged_users
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Tagged users of article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      article_id:
+        name: article_id
+        description: 'Article Id.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      article_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fZc1gaev46D85EdPa6Vb3hk'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/articles/merchant_offers/{article_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Article Merchant Offers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      article_id:
+        name: article_id
+        description: 'The ID of the article.'
+        required: true
+        example: 34
+        type: integer
+        custom: []
+      article:
+        name: article
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      article_id: 34
+      article: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {}
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1eD8Ev5h3g66VkaaZdPfbc4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/articles
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get Articles for Logged in user (for Home Page)
+        Note: user's own posts will not show up on home page
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      article_ids:
+        name: article_ids
+        description: 'optional Article Ids to Filter. Example [1,2,3]'
+        required: false
+        example:
+          - soluta
+        type: 'string[]'
+        custom: []
+      category_ids:
+        name: category_ids
+        description: 'optional Category Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        custom: []
+      video_only:
+        name: video_only
+        description: 'optional Filter by Videos.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      following_only:
+        name: following_only
+        description: 'optional Filter by Articles by Users who logged in user is following.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      tag_ids:
+        name: tag_ids
+        description: 'optional Tag Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      include_own_article:
+        name: include_own_article
+        description: 'optional Include own article.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      build_recommendations:
+        name: build_recommendations
+        description: 'optional Build Recommendations On or Off, On by Default.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+      refresh_recommendations:
+        name: refresh_recommendations
+        description: 'optional Refresh Recommendations.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      article_ids:
+        - soluta
+      category_ids:
+        - 1
+        - 2
+        - 3
+      video_only: 1
+      following_only: 1
+      tag_ids:
+        - 1
+        - 2
+        - 3
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
+      include_own_article: 1
+      build_recommendations: true
+      refresh_recommendations: true
+      limit: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 186hca43dkDv6VPf5egEbZa'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/articles
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create New Article'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        name: title
+        description: 'The title of the article.'
+        required: true
+        example: 'This is a title'
+        type: string
+        custom: []
+      type:
+        name: type
+        description: 'The type of the article.'
+        required: true
+        example: 'multimedia,text,video'
+        type: string
+        custom: []
+      body:
+        name: body
+        description: 'The body of the article.'
+        required: true
+        example: 'This is a caption or body of article'
+        type: string
+        custom: []
+      status:
+        name: status
+        description: 'The status of the article.'
+        required: true
+        example: 0
+        type: integer
+        custom: []
+      published_at:
+        name: published_at
+        description: 'The published date of the article.'
+        required: false
+        example: '2021-02-21 12:00:00'
+        type: datetime
+        custom: []
+      categories:
+        name: categories
+        description: 'The categories ID of the article.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      tags:
+        name: tags
+        description: 'The tags of the article.'
+        required: false
+        example:
+          - '#tag1'
+          - '#tag2'
+        type: 'string[]'
+        custom: []
+      images:
+        name: images
+        description: 'The images IDs. Must first call upload images endpoint.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      video:
+        name: video
+        description: 'The video ID. Must first call upload videos endpoint.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      excerpt:
+        name: excerpt
+        description: 'The excerpt of the article.'
+        required: false
+        example: 'This is a excerpt of article'
+        type: string
+        custom: []
+      location:
+        name: location
+        description: 'The location of the article.'
+        required: false
+        example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+        type: string
+        custom: []
+      tagged_user_ids:
+        name: tagged_user_ids
+        description: 'The tagged users IDs.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+    cleanBodyParameters:
+      title: 'This is a title'
+      type: 'multimedia,text,video'
+      body: 'This is a caption or body of article'
+      status: 0
+      published_at: '2021-02-21 12:00:00'
+      categories:
+        - 1
+        - 2
+      tags:
+        - '#tag1'
+        - '#tag2'
+      images:
+        - 1
+        - 2
+      video: 1
+      excerpt: 'This is a excerpt of article'
+      location: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+      tagged_user_ids:
+        - 1
+        - 2
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Article updated",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Comment not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8Ehaed1DvafkP366cb54VgZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/articles/{id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get One Article by ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "article": {}
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Article not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a5Zb1E84ach6dPDV3vfegk6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/v1/articles/{id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update article by ID. (Only owner of article can update)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      body:
+        name: body
+        description: 'The body of the article.'
+        required: true
+        example: 'This is a comment'
+        type: string
+        custom: []
+      status:
+        name: status
+        description: 'The status of the article, change this to 0 to unpublish.'
+        required: true
+        example: 0
+        type: integer
+        custom: []
+      title:
+        name: title
+        description: 'The title of the article, will regenerate slug.'
+        required: true
+        example: 'This is a title'
+        type: string
+        custom: []
+      tags:
+        name: tags
+        description: 'The tags of the article.'
+        required: false
+        example:
+          - '#tag1'
+          - '#tag2'
+        type: 'string[]'
+        custom: []
+      categories:
+        name: categories
+        description: 'The categories ID of the article.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      images:
+        name: images
+        description: 'The images ID of the article.'
+        required: false
+        example: null
+        type: file
+        custom: []
+      video:
+        name: video
+        description: 'The video ID of the article.'
+        required: false
+        example: null
+        type: file
+        custom: []
+      tagged_user_ids:
+        name: tagged_user_ids
+        description: 'The tagged user IDs of the article.'
+        required: false
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        custom: []
+      location:
+        name: location
+        description: 'The location of the article.'
+        required: false
+        example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      body: 'This is a comment'
+      status: 0
+      title: 'This is a title'
+      tags:
+        - '#tag1'
+        - '#tag2'
+      categories:
+        - 1
+        - 2
+      tagged_user_ids:
+        - 1
+        - 2
+      location: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
+    fileParameters:
+      images: null
+      video: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Article updated",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Comment not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kd164P5VacvEeh38f6gDaZb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/articles/{id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove article by ID. (Only owner of article can delete)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the Article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Article deleted"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Article not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8V56ackb1a6P4hvg3fZedDE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/article_tags
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Tags'
+      subgroupDescription: ''
+      title: 'Get popular tags'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "tags": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DVegEfdhva53caZbk8P6146'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/article_tags/{article_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Tags'
+      subgroupDescription: ''
+      title: 'Get Tags by article id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      article_id:
+        name: article_id
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      article_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "tags": []
+           }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'No tags found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6843hbgcaZ5f1Da6vPEdVke'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/article_categories
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Categories'
+      subgroupDescription: ''
+      title: 'Get popular Article Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      is_featured:
+        name: is_featured
+        description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      is_featured: 1
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Dvd5Vc1h36bE48ea6aPZgkf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/article_categories/all
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Categories'
+      subgroupDescription: ''
+      title: 'Get All Article Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hefg5E661PbVDdaZvak43c8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/article_categories/{article_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: 'Article Categories'
+      subgroupDescription: ''
+      title: 'Get Article Categories by article id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      article_id:
+        name: article_id
+        description: 'The id of the article.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      article_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6fV1ebPcv3aahZ4Edg586Dk'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/comments/replies/{comment_id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Get replies to a comment'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      comment_id:
+        name: comment_id
+        description: 'The ID of the comment.'
+        required: true
+        example: aperiam
+        type: string
+        custom: []
+    cleanUrlParameters:
+      comment_id: aperiam
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      filter: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {},
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Comment not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6cb5vdDa3PfV61eEkgah84Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/comments/like_toggle
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Toggle a Comment Like'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      comment_id:
+        name: comment_id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      comment_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment liked/Un-Liked",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["comment_id": ["The Comment Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4aZk51DbhEfv6aP3cde6Vg8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/comments/report
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Report a comment'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      comment_id:
+        name: comment_id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: 'The reason for reporting the comment.'
+        required: true
+        example: Spam
+        type: string
+        custom: []
+      violation_level:
+        name: violation_level
+        description: 'The violation level of this report'
+        required: false
+        example: ab
+        type: required
+        custom: []
+      violation_type:
+        name: violation_type
+        description: 'The violation type of this report'
+        required: false
+        example: ut
+        type: required
+        custom: []
+    cleanBodyParameters:
+      comment_id: 1
+      reason: Spam
+      violation_level: ab
+      violation_type: ut
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["comment_id": ["The Comment Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8kcfZagP45v3d6VaD16ebhE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/comments
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Get comments on a commentable type (eg. Articles)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      type:
+        name: type
+        description: 'The type of commentable.'
+        required: true
+        example: article
+        type: string
+        custom: []
+      id:
+        name: id
+        description: 'The id of the commentable.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      replies_per_comment:
+        name: replies_per_comment
+        description: 'Number of replies to show per comment.'
+        required: false
+        example: 3
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      type: article
+      id: 1
+      replies_per_comment: 3
+      filter: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
       order: 'Sortable directions are: asc, desc'
       limit: 10
       offset: 0
@@ -183,7 +1993,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 664v3Zcga5fa1bE8DPhdVke'
+      - 'Bearer b6DE4vd5aaPc6V31Zkgf8eh'
     controller: null
     method: null
     route: null
@@ -191,13 +2001,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/interactions
+    uri: api/v1/comments
     metadata:
-      groupName: Interactions
+      groupName: Article
       groupDescription: ''
-      subgroup: ''
+      subgroup: Comments
       subgroupDescription: ''
-      title: 'Create an interaction for interactable type'
+      title: 'Create a new comment by logged in user'
       description: ''
       authenticated: true
       custom: []
@@ -210,53 +2020,67 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: 'article,merchant_offer'
-        type: string
-        custom: []
       type:
         name: type
-        description: 'The type of interaction.'
+        description: 'The type of commentable.'
         required: true
-        example: 'like,dislike,share,bookmark'
+        example: article
         type: string
         custom: []
       id:
         name: id
-        description: 'The id of the interactable (eg. Article ID).'
+        description: 'The id of the commentable.'
         required: true
         example: 1
         type: integer
         custom: []
+      body:
+        name: body
+        description: 'The body of the comment.'
+        required: true
+        example: 'This is a comment'
+        type: string
+        custom: []
+      parent_id:
+        name: parent_id
+        description: 'The id of the parent comment (For Replies).'
+        required: false
+        example: 1
+        type: integer
+        custom: []
     cleanBodyParameters:
-      interactable: 'article,merchant_offer'
-      type: 'like,dislike,share,bookmark'
+      type: article
       id: 1
+      body: 'This is a comment'
+      parent_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "interaction": {}
+           "comment": {},
           }
         headers: []
         description: success
         custom: []
       -
-        status: 422
-        content: '{}'
+        status: 404
+        content: ''
         headers: []
-        description: ''
+        description: 'Not Found'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["commentable_type": ["The Commentable Type field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3vPk5h4EDfaZ61gVa8dcbe6'
+      - 'Bearer aE6kvhbad85f4V6ecgP1ZD3'
     controller: null
     method: null
     route: null
@@ -264,13 +2088,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/interactions/{id}'
+    uri: 'api/v1/comments/{id}'
     metadata:
-      groupName: Interactions
+      groupName: Article
       groupDescription: ''
-      subgroup: ''
+      subgroup: Comments
       subgroupDescription: ''
-      title: 'Show one interaction by ID'
+      title: 'Show one comment by ID'
       description: ''
       authenticated: true
       custom: []
@@ -281,84 +2105,53 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The id of the interaction.'
+        description: 'The ID of the comment.'
         required: true
-        example: 1
-        type: integer
+        example: sequi
+        type: string
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: sequi
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Pa3akgZEV8bd166D5chvfe4'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/v1/interactions/{id}'
-    metadata:
-      groupName: Interactions
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: |-
-        Remove Interaction By ID
-        Only owner can call this method
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
+    bodyParameters:
       id:
         name: id
-        description: 'The id of the interaction.'
+        description: 'The id of the comment.'
         required: true
         example: 1
         type: integer
         custom: []
-    cleanUrlParameters:
+      replies_per_comment:
+        name: replies_per_comment
+        description: 'Number of replies to show per comment.'
+        required: false
+        example: 3
+        type: integer
+        custom: []
+    cleanBodyParameters:
       id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+      replies_per_comment: 3
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Interaction deleted"
+           "comment": {},
           }
         headers: []
         description: success
         custom: []
       -
+        status: 401
+        content: ''
+        headers: []
+        description: Forbidden
+        custom: []
+      -
         status: 404
-        content: "{['message' => 'Interaction not found']}"
+        content: ''
         headers: []
         description: 'Not Found'
         custom: []
@@ -366,7 +2159,121 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1b6kde8PD4h6fgcZ53vaVEa'
+      - 'Bearer Pk66fvah18a53dZDgEbeVc4'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/v1/comments/{id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Update comment by ID. (Only owner of comment can update)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      body:
+        name: body
+        description: 'The body of the comment.'
+        required: true
+        example: 'This is a comment'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      body: 'This is a comment'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment updated",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "Comment not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["body": ["The Body field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 83a6fdvPck165egEbaVDh4Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/comments/{id}'
+    metadata:
+      groupName: Article
+      groupDescription: ''
+      subgroup: Comments
+      subgroupDescription: ''
+      title: 'Remove comment by ID. (Only owner of comment can delete)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DcPabe6h8ag6v3fd4VZE15k'
     controller: null
     method: null
     route: null

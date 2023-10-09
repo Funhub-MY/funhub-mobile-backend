@@ -51,6 +51,7 @@ class MerchantOfferController extends Controller
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
+     * @bodyParam available_only boolean optional Filter by Available Only. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -85,15 +86,9 @@ class MerchantOfferController extends Controller
                 });
             }
         }
-        // ensure offer is valid/coming soon
-        // $query->where(function ($query) {
-        //     $query->where('available_at', '<=', now())
-        //         ->where('available_until', '>=', now())
-        //         ->orWhere('available_at', '>=', now());
-        // });
-        // order by latest first if no query sort order
-        if (!$request->has('sort')) {
-            $query->orderBy('created_at', 'desc');
+
+        if ($request->has('available_only')) {
+            $query->available();
         }
 
         // get articles by city
@@ -125,6 +120,9 @@ class MerchantOfferController extends Controller
             });
         }
 
+        // order by available_at from past first to future
+        $query->orderBy('available_at', 'asc');
+
         $this->buildQuery($query, $request);
 
         $data = $query->paginate(config('app.paginate_per_page'));
@@ -147,7 +145,7 @@ class MerchantOfferController extends Controller
         // get merchant offers claimed by user
         $claims = MerchantOfferClaim::where('user_id', auth()->user()->id)
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-            ->with('merchantOffer', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+            ->with('merchantOffer', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferClaimResource::collection($claims);
@@ -293,6 +291,12 @@ class MerchantOfferController extends Controller
             }
 
         } else if($request->payment_method == 'fiat') {
+            // check if user has verified email address
+            if (!$user->hasVerifiedEmail()) {
+                return response()->json([
+                    'message' => 'Please verify your email address first.'
+                ], 422);
+            }
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
 
             // create payment transaction first, not yet claim

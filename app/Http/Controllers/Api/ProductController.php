@@ -81,6 +81,13 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
+       // check if user has verified email address
+        if (!auth()->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Please verify your email address first.'
+            ], 422);
+        }
+
         $product = Product::where('id', request()->product_id)
             ->published()
             //->with('rewards')
