@@ -1,557 +1,16 @@
-name: Merchant
+name: User
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/merchant/offers/my_bookmarks
+    uri: api/v1/user/followings
     metadata:
-      groupName: Merchant
+      groupName: User
       groupDescription: ''
-      subgroup: 'Merchant Offers'
+      subgroup: Followings
       subgroupDescription: ''
-      title: 'Get My Bookmarked Merchant Offers'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      filter:
-        name: filter
-        description: 'Column to Filter.'
-        required: false
-        example: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
-        type: string
-        custom: []
-      filter_value:
-        name: filter_value
-        description: 'Value to Filter.'
-        required: false
-        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-        type: string
-        custom: []
-      sort:
-        name: sort
-        description: 'Column to Sort.'
-        required: false
-        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
-        type: string
-        custom: []
-      order:
-        name: order
-        description: 'Direction to Sort.'
-        required: false
-        example: 'Sortable directions are: asc, desc'
-        type: string
-        custom: []
-      limit:
-        name: limit
-        description: 'Per Page Limit Override.'
-        required: false
-        example: 10
-        type: integer
-        custom: []
-      offset:
-        name: offset
-        description: 'Offset Override.'
-        required: false
-        example: 0
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      filter: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
-      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
-      order: 'Sortable directions are: asc, desc'
-      limit: 10
-      offset: 0
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer bDkh36aZc15fEgev8daV64P'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/merchant/offers
-    metadata:
-      groupName: Merchant
-      groupDescription: ''
-      subgroup: 'Merchant Offers'
-      subgroupDescription: ''
-      title: 'Get Offers'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      category_ids:
-        name: category_ids
-        description: 'optional Merchant Category Ids to Filter.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        custom: []
-      city:
-        name: city
-        description: 'optional Filter by City.'
-        required: false
-        example: 'Subang Jaya'
-        type: string
-        custom: []
-      lat:
-        name: lat
-        description: 'optional Filter by Lat of User (must provide lng).'
-        required: false
-        example: 3.123456
-        type: number
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Filter by Lng of User (must provide lat).'
-        required: false
-        example: 101.123456
-        type: number
-        custom: []
-      radius:
-        name: radius
-        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
-        required: false
-        example: 10000
-        type: integer
-        custom: []
-      location_id:
-        name: location_id
-        description: 'optional Filter by Location Id.'
-        required: false
-        example: 1
-        type: integer
-        custom: []
-      filter:
-        name: filter
-        description: 'Column to Filter.'
-        required: false
-        example: 'Filterable columns are: id, name, description, available_at, available_until, sku'
-        type: string
-        custom: []
-      filter_value:
-        name: filter_value
-        description: 'Value to Filter.'
-        required: false
-        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-        type: string
-        custom: []
-      sort:
-        name: sort
-        description: 'Column to Sort.'
-        required: false
-        example: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
-        type: string
-        custom: []
-      order:
-        name: order
-        description: 'Direction to Sort.'
-        required: false
-        example: 'Sortable directions are: asc, desc'
-        type: string
-        custom: []
-      limit:
-        name: limit
-        description: 'Per Page Limit Override.'
-        required: false
-        example: 10
-        type: integer
-        custom: []
-      offset:
-        name: offset
-        description: 'Offset Override.'
-        required: false
-        example: 0
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      category_ids:
-        - 1
-        - 2
-        - 3
-      city: 'Subang Jaya'
-      lat: 3.123456
-      lng: 101.123456
-      radius: 10000
-      location_id: 1
-      filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
-      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
-      order: 'Sortable directions are: asc, desc'
-      limit: 10
-      offset: 0
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer k5E6a8a6vZ4Dc3efVdbgP1h'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/merchant/offers/claim
-    metadata:
-      groupName: Merchant
-      groupDescription: ''
-      subgroup: 'Merchant Offers'
-      subgroupDescription: ''
-      title: 'Claim Offer'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      offer_id:
-        name: offer_id
-        description: 'Offer ID.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      payment_method:
-        name: payment_method
-        description: 'Payment Method.'
-        required: true
-        example: points/fiat
-        type: string
-        custom: []
-      fiat_payment_method:
-        name: fiat_payment_method
-        description: 'required_if:payment_method,fiat Payment Method.'
-        required: false
-        example: fpx/card
-        type: string
-        custom: []
-      quantity:
-        name: quantity
-        description: Quantity.
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      offer_id: 1
-      payment_method: points/fiat
-      fiat_payment_method: fpx/card
-      quantity: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Offer Claimed"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Insufficient Point Balance"
-          }
-        headers: []
-        description: insufficient_point_balance
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Redirect to gateway",
-          "gateway_data": [
-               'url' => $this->url .'/payment/eCommerce',
-                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
-                'mid' => $this->mid,
-                'invno' => $invoice_no,
-                'capture_amt' => $amount,
-                'desc' => $desc,
-                'postURL' => $redirectUrl,
-                'phone' => $phoneNo,
-                'email' => $email,
-                'param' => $param,
-                'authorize' => 'authorize'
-            ];
-          }
-        headers: []
-        description: fiat_payment_mode
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Offer is no longer valid"
-          }
-        headers: []
-        description: offer_no_longer_valid
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 1h86ZaEgb5ePa6kcD4dV3vf'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/merchant/offers/redeem
-    metadata:
-      groupName: Merchant
-      groupDescription: ''
-      subgroup: 'Merchant Offers'
-      subgroupDescription: ''
-      title: |-
-        Redeem a Merchant Offer (In-Store)
-        This is when customer with claimed merchant offer wishes to redeem in store
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      claim_id:
-        name: claim_id
-        description: 'Claim ID.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      offer_id:
-        name: offer_id
-        description: 'Merchant Offer ID.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      quantity:
-        name: quantity
-        description: 'Quantity to Redeem.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      redeem_code:
-        name: redeem_code
-        description: 'Redemption Code Provided by Merchant.'
-        required: true
-        example: '123456'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      claim_id: 1
-      offer_id: 1
-      quantity: 1
-      redeem_code: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Redeemed successfully",
-          "offer": {
-          }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 13bZ6Eae58vfPhka4gc6dVD'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/merchant/offers/cancel
-    metadata:
-      groupName: Merchant
-      groupDescription: ''
-      subgroup: 'Merchant Offers'
-      subgroupDescription: ''
-      title: 'Cancel a Merchant Offer Transaction'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      merchant_offer_id:
-        name: merchant_offer_id
-        description: 'Merchant Offer ID.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      merchant_offer_id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Transaction cancelled"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "You have not claimed this offer"
-          }
-        headers: []
-        description: offer_pending_payment_not_found
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6e5P4dava8DZE1ch3bfgkV6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/merchant/offers/my_claimed_offers
-    metadata:
-      groupName: Merchant
-      groupDescription: ''
-      subgroup: 'Merchant Offers'
-      subgroupDescription: ''
-      title: 'Get My Merchant Offers (Logged in User)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Dc1ZefhabEVaPd8v6436kg5'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/merchant/offers/{offer_id}'
-    metadata:
-      groupName: Merchant
-      groupDescription: ''
-      subgroup: 'Merchant Offers'
-      subgroupDescription: ''
-      title: 'Get Offer By ID'
+      title: 'Get all followings of user id or logged in user'
       description: ''
       authenticated: true
       custom: []
@@ -560,25 +19,25 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      offer_id:
-        name: offer_id
-        description: 'The ID of the offer.'
-        required: true
-        example: nam
-        type: string
-        custom: []
-    cleanUrlParameters:
-      offer_id: nam
-    queryParameters:
-      offer_id:
-        name: offer_id
-        description: 'Offer ID.'
-        required: true
+      user_id:
+        name: user_id
+        description: 'optional The id of the user, if not provided will use Logged In User ID.'
+        required: false
         example: 1
         type: integer
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
+    queryParameters:
+      query:
+        name: query
+        description: 'optional Search query for name of followings.'
+        required: false
+        example: John
+        type: string
         custom: []
     cleanQueryParameters:
-      offer_id: 1
+      query: John
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -587,16 +46,22 @@ endpoints:
         status: 200
         content: |-
           {
-          "offer": {}
+          "followings": []
           }
         headers: []
         description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "User not found"}'
+        headers: []
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 56e3E64gfPDkVabc8a1dhZv'
+      - 'Bearer g4ek6dba31ZE8VhfcaDPv65'
     controller: null
     method: null
     route: null
@@ -604,13 +69,78 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/merchant_categories
+    uri: api/v1/user/followers
     metadata:
-      groupName: Merchant
+      groupName: User
       groupDescription: ''
-      subgroup: 'Merchant Categories'
+      subgroup: Followers
       subgroupDescription: ''
-      title: 'Get popular Merchant Categories'
+      title: 'Get all followers of user id or logged in user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'optional The id of the user, if not provided will use Logged In User ID.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
+    queryParameters:
+      query:
+        name: query
+        description: 'optional Search query for name of followers.'
+        required: false
+        example: John
+        type: string
+        custom: []
+    cleanQueryParameters:
+      query: John
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "followers": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "User not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DE64aPdbh3Vvcf8Zk6ea1g5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/follow
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followings
+      subgroupDescription: ''
+      title: 'Follow another user'
       description: ''
       authenticated: true
       custom: []
@@ -623,77 +153,29 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      is_featured:
-        name: is_featured
-        description: 'Is Featured Categories.'
-        required: false
-        example: 1
-        type: integer
-        custom: []
-      filter:
-        name: filter
-        description: 'Column to Filter.'
-        required: false
-        example: 'Filterable columns are: id, name, created_at, updated_at'
-        type: string
-        custom: []
-      filter_value:
-        name: filter_value
-        description: 'Value to Filter.'
-        required: false
-        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-        type: string
-        custom: []
-      sort:
-        name: sort
-        description: 'Column to Sort.'
-        required: false
-        example: 'Sortable columns are: id, name, created_at, updated_at'
-        type: string
-        custom: []
-      order:
-        name: order
-        description: 'Direction to Sort.'
-        required: false
-        example: 'Sortable directions are: asc, desc'
-        type: string
-        custom: []
-      limit:
-        name: limit
-        description: 'Per Page Limit Override.'
-        required: false
-        example: 10
-        type: integer
-        custom: []
-      offset:
-        name: offset
-        description: 'Offset Override.'
-        required: false
-        example: 0
+      user_id:
+        name: user_id
+        description: 'The id of the user to follow'
+        required: true
+        example: 3
         type: integer
         custom: []
     cleanBodyParameters:
-      is_featured: 1
-      filter: 'Filterable columns are: id, name, created_at, updated_at'
-      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, name, created_at, updated_at'
-      order: 'Sortable directions are: asc, desc'
-      limit: 10
-      offset: 0
+      user_id: 3
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "categories": []
+          "message": "You are now following this user"
           }
         headers: []
         description: success
         custom: []
       -
-        status: 404
-        content: ''
+        status: 400
+        content: '{"message": "You are already following this user"}'
         headers: []
         description: 'Not Found'
         custom: []
@@ -701,21 +183,21 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f4h6PD8kaedbEZ3g6vc5aV1'
+      - 'Bearer eDcZ8d56E6bf4kg3ahP1vVa'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/v1/merchant_categories/{offer_id}'
+      - POST
+    uri: api/v1/user/unfollow
     metadata:
-      groupName: Merchant
+      groupName: User
       groupDescription: ''
-      subgroup: 'Merchant Categories'
+      subgroup: Followings
       subgroupDescription: ''
-      title: 'Get Merchant Categories by offer id'
+      title: 'Unfollow another user'
       description: ''
       authenticated: true
       custom: []
@@ -723,16 +205,270 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      offer_id:
-        name: offer_id
-        description: 'The id of the merchant offer id.'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user to unfollow'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      user_id: 12
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You are now unfollowing this user"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 400
+        content: '{"message": "You are not following this user"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer vEVa1c6f4bDa835hPd6gekZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/report
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Reports
+      subgroupDescription: ''
+      title: 'Report a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the comment.'
         required: true
         example: 1
         type: integer
         custom: []
-    cleanUrlParameters:
-      offer_id: 1
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: id
+        type: string
+        custom: []
+      violation_level:
+        name: violation_level
+        description: 'The violation level of this report'
+        required: false
+        example: placeat
+        type: required
+        custom: []
+      violation_type:
+        name: violation_type
+        description: 'The violation type of this report'
+        required: false
+        example: libero
+        type: required
+        custom: []
+      also_block_user:
+        name: also_block_user
+        description: 'optional Whether to block the user or not.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      reason: id
+      violation_level: placeat
+      violation_type: libero
+      also_block_user: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["user_id": ["The User Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1bZk53Dvhgaeacd6EV46P8f'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/block
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Block a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      reason:
+        name: reason
+        description: 'optional The reason for blocking the user.'
+        required: false
+        example: Spam
+        type: string
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      reason: Spam
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User blocked",
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aVdae5c8gDhbP66E14vk3fZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/unblock
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Unblock a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User unblocked",
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Da4hZkVbc85P6edv6g1faE3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/my_blocked_users
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Get My Blocked Users List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -743,22 +479,186 @@ endpoints:
         status: 200
         content: |-
           {
-          "categories": []
+           data: {}
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 404
-        content: ''
-        headers: []
-        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 4b16cZPVvEDdk685g3fhaea'
+      - 'Bearer kaVfdv134DhE6a8gb6cP5eZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/delete
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete My Account'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: iusto
+        type: string
+        custom: []
+    cleanBodyParameters:
+      reason: iusto
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Account deleted successfully."
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ca1Ve3Zd6vf5b8ahPDEg64k'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/users_by_id
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Users By IDs'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_ids:
+        name: user_ids
+        description: 'The ids of the users.'
+        required: true
+        example: '1,2,3'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      user_ids: '1,2,3'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_ids:
+        name: user_ids
+        description: ''
+        required: true
+        example: dolorum
+        type: string
+        custom: []
+    cleanBodyParameters:
+      user_ids: dolorum
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4vEaZ65c1Dg8kfbhedPaV36'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/user/{user_id}'
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user.'
+        required: true
+        example: 3
+        type: integer
+        custom: []
+      user:
+        name: user
+        description: 'The id of the user.'
+        required: true
+        example: '1'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      user_id: 3
+      user: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 1kge6va8ch6Ebaf4PZD3d5V'
     controller: null
     method: null
     route: null

@@ -51,6 +51,7 @@ class MerchantOfferController extends Controller
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
+     * @bodyParam available_only boolean optional Filter by Available Only. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -85,6 +86,11 @@ class MerchantOfferController extends Controller
                 });
             }
         }
+
+        if ($request->has('available_only')) {
+            $query->available();
+        }
+
         // ensure offer is valid/coming soon
         // $query->where(function ($query) {
         //     $query->where('available_at', '<=', now())
