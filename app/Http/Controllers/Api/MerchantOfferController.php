@@ -91,17 +91,6 @@ class MerchantOfferController extends Controller
             $query->available();
         }
 
-        // ensure offer is valid/coming soon
-        // $query->where(function ($query) {
-        //     $query->where('available_at', '<=', now())
-        //         ->where('available_until', '>=', now())
-        //         ->orWhere('available_at', '>=', now());
-        // });
-        // order by latest first if no query sort order
-        if (!$request->has('sort')) {
-            $query->orderBy('created_at', 'desc');
-        }
-
         // get articles by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
