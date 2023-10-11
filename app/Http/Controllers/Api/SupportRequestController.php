@@ -75,10 +75,8 @@ class SupportRequestController extends Controller
      * @bodyParam title string required Title of support request. Example: My support request
      * @bodyParam message string required Message to send. Example: This is my message
      * @bodyParam media_ids array optional Array of media ids. Example: [1,2,3]
-     *
      * @response scenario="success" {
-     * "message": {},
-     * "request": {}
+     * "data": []
      * }
      */
     public function postRaiseSupportRequest(Request $request)
@@ -114,10 +112,7 @@ class SupportRequestController extends Controller
 
         $supportRequest->load('messages');
 
-        return response()->json([
-            'message' => new SupportRequestMessageResource($message),
-            'request' => new SupportRequestResource($supportRequest)
-        ]);
+        return new SupportRequestResource($supportRequest);
     }
 
     /**

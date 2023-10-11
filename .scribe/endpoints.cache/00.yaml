@@ -29,11 +29,11 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: modi
+        example: omnis
         type: string
         custom: []
     cleanBodyParameters:
-      share_code: modi
+      share_code: omnis
     fileParameters: []
     responses:
       -
@@ -54,7 +54,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1140,
+                      "line": 1149,
                       "function": "abort"
                   },
                   {
@@ -519,7 +519,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer af8V66b341daZDvkhegPcE5'
+      - 'Bearer 8h5ve6b46kgadVaDZc3EfP1'
     controller: null
     method: null
     route: null
