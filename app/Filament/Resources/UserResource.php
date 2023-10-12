@@ -23,6 +23,7 @@ use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Reward;
 use App\Models\RewardComponent;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
@@ -228,14 +229,16 @@ class UserResource extends Resource
                             $quantity = $data['quantity'];
                             $rewardComponentId = $data['rewardComponent'] ? $data['rewardComponent'] : null;
                             $rewardComponent = RewardComponent::find($rewardComponentId);
+                            $user = User::find($record->id);
 
                             // Call PointService or PointComponentService based on the selected reward type
                             if ($rewardType === 'point') {
                                 $pointService = new PointService();
-                                $pointService->credit($record, $record, $quantity, 'Manual Reward', 'Rewarding points');
+                                $reward = Reward::first();
+                                $pointService->credit($reward, $user, $quantity, 'Manual Reward', 'Rewarding points');
                             } elseif ($rewardType === 'point_component') {
                                 $pointComponentService = new PointComponentService();
-                                $pointComponentService->credit($record, $rewardComponent, $record, $quantity, 'Manual Reward', 'Rewarding components');
+                                $pointComponentService->credit(auth()->user(), $rewardComponent, $user, $quantity, 'Manual Reward', 'Rewarding components');
                             }
                         }
                     })

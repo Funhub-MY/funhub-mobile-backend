@@ -14,6 +14,7 @@ use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
+use App\Notifications\PurchasedOfferNotification;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -253,9 +254,11 @@ class MerchantOfferController extends Controller
             }
 
             // direct claim
+            $orderNo = 'C' . date('Ymd') .strtoupper(Str::random(5));
+
             $offer->claims()->attach($user->id, [
                 // order no is CLAIM(YMd)
-                'order_no' => 'C' . date('Ymd') .strtoupper(Str::random(5)),
+                'order_no' => $orderNo,
                 'user_id' => $user->id,
                 'quantity' => $request->quantity,
                 'unit_price' => $offer->unit_price,
@@ -279,6 +282,12 @@ class MerchantOfferController extends Controller
 
             // fire event
             event(new MerchantOfferClaimed($offer, $user));
+
+            if ($user->email) {
+                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
+
+                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
+            }
 
             try {
                 // notify user offer claimed
