@@ -153,7 +153,7 @@ it('testRaiseSupportRequests', function () {
     $response = $this->postJson('api/v1/help/support_requests/raise', $body);
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'message', 'request'
+            'data'
         ]);
     // check report.
     $this->assertDatabaseHas('support_requests', [

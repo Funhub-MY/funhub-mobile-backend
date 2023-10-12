@@ -204,8 +204,10 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        // query everything by latest
-        $query->latest();
+        // query everything by latest if not provided lat, lng
+        if (!$request->has('lat') && !$request->has('lng')) {
+            $query->latest();
+        }
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
@@ -620,7 +622,19 @@ class ArticleController extends Controller
                 $country = Country::where('id', $state->country_id)->first();
                 $loc['country_id'] = $country->id;
             } else {
-                throw new \Exception('State not found');
+                // create new state and country
+                // default to Malaysia
+                $country = Country::where('name', 'Malaysia')->first();
+                // create state
+                $state = State::create([
+                    'name' => $locationData['state'],
+                    'code' => 'CUSTOM'.ucwords(Str::random(3)),
+                    'country_id' => $country->id,
+                ]);
+                Log::info('Created new state as state data not found', ['state' => $state]);
+
+                $loc['state_id'] = $state->id;
+                $loc['country_id'] = $country->id;
             }
 
             $location = $article->location()->create($loc);

@@ -323,7 +323,8 @@ class MerchantOfferController extends Controller
 
                 $mpayService = new \App\Services\Mpay(
                     config('services.mpay.mid'),
-                    config('services.mpay.hash_key')
+                    config('services.mpay.hash_key'),
+                    ($request->fiat_payment_method) ? $request->fiat_payment_method : false,
                 );
 
                 // generates required form post fields data for frontend(app) usages

@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 12
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: quidem
+                  example: non
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: aspernatur
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - soluta
+                    - iste
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: aperiam
+        example: at
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ab
+                  example: officia
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ut
+                  example: occaecati
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sequi
+        example: consectetur
         required: true
         schema:
           type: string
@@ -2271,7 +2271,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1140
+                      line: 1149
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2681,7 +2681,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1140
+                        line: 1149
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3097,7 +3097,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: modi
+                  example: omnis
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3262,15 +3262,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: {  }
-                  request: {  }
+                  data: []
                 properties:
-                  message:
-                    type: object
-                    properties: []
-                  request:
-                    type: object
-                    properties: []
+                  data:
+                    type: array
+                    example: []
       tags:
         - 'Help Center'
       requestBody:
@@ -4322,7 +4318,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eos
+        example: cupiditate
         required: true
         schema:
           type: string
@@ -5342,7 +5338,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 17
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5395,7 +5391,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 13
               required:
                 - user_id
   /api/v1/user/report:
@@ -5442,15 +5438,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: id
+                  example: iure
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: placeat
+                  example: omnis
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: libero
+                  example: culpa
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5595,7 +5591,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: iusto
+                  example: quia
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5636,7 +5632,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: eum
               required:
                 - user_ids
     parameters:
@@ -6317,7 +6313,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
