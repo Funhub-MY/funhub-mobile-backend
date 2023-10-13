@@ -285,7 +285,6 @@ class MerchantOfferController extends Controller
 
             if ($user->email) {
                 $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
-
                 $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
             }
 

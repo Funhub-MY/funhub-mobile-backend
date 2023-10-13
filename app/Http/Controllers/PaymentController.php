@@ -114,7 +114,7 @@ class PaymentController extends Controller
                         $quantity = $transaction->amount / $product->unit_price;
                         $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
                     }
-                    }
+                }
 
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});

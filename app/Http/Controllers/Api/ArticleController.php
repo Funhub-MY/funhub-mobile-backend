@@ -567,7 +567,7 @@ class ArticleController extends Controller
 
         $article = $article->refresh();
         // load relations
-        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers');
+        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
@@ -826,7 +826,8 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
-
+            // load relations
+            $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
