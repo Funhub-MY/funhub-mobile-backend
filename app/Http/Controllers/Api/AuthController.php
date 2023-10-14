@@ -600,11 +600,11 @@ class AuthController extends Controller
         }
 
         $socialid = null;
-        if ($firebase_user->providerData[0]->providerId == 'google.com' || $firebase_user->providerData[0]->providerId == 'apple.com') {
+        if ($firebase_user->providerData[0]->providerId == 'google.com') {
             $socialid = $firebase_user->providerData[0]->uid;
             Log::info('socialid via provider data: ' . $socialid);
         } else {
-            // need to get facebook_id.
+            // facebook, apple
             $socialid = $firebase_user->uid; // use uid at the moment.
             Log::info('socialid via uid: ' . $socialid);
         }
@@ -635,22 +635,14 @@ class AuthController extends Controller
 
             // Save IDs to associated fields in DB for social providers
             if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
-
                 $user->google_id = $firebase_user->providerData[0]->uid;
             } else if ($firebase_user->providerData[0]->providerId == 'facebook.com'){ // Facebook Login
                 // need to get facebook_id.
                 $user->facebook_id = $firebase_user->uid; // use uid at the moment.
             } else if ($firebase_user->providerData[0]->providerId == 'apple.com') { // Apple Login
-                // password login
-                try {
-                    $user->apple_id = $firebase_user->providerData[0]->uid;
-                } catch (\Exception $e) {
-                    Log::error($e->getMessage(), [
-                        'providerData' => $firebase_user->providerData
-                    ]);
-                }
                 $user->apple_id = $firebase_user->uid; // use uid at the moment.
             }
+
             $user->save();
         } else {
             // user exists
@@ -672,13 +664,6 @@ class AuthController extends Controller
             } else if ($providerId == 'facebook.com') {
                 $user->facebook_id = $firebase_user->uid;
             } else if ($providerId == 'apple.com') {
-                try {
-                    $user->apple_id = $firebase_user->providerData[0]->uid;
-                } catch (\Exception $e) {
-                    Log::error($e->getMessage(), [
-                        'providerData' => $firebase_user->providerData
-                    ]);
-                }
                 $user->apple_id = $firebase_user->uid;
             }
             $user->save();
