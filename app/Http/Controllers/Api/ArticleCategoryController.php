@@ -14,10 +14,10 @@ class ArticleCategoryController extends Controller
 
     /**
      * Get popular Article Categories
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @subgroup Article Categories
      * @bodyParam is_featured integer Is Featured Categories. Example: 1
@@ -52,10 +52,10 @@ class ArticleCategoryController extends Controller
 
     /**
      * Get Article Categories by article id
-     * 
+     *
      * @param $article_id integer
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @subgroup Article Categories
      * @urlParam article_id integer required The id of the article. Example: 1
@@ -69,16 +69,16 @@ class ArticleCategoryController extends Controller
         $article = ArticleCategory::active()->whereHas('articles', function ($query) use ($article_id) {
             $query->where('article_id', $article_id);
         })->paginate(config('app.paginate_per_page'));
-        
+
         return ArticleCategoryResource::collection($article);
     }
 
     /**
      * Get All Article Categories
-     * 
+     *
      * @param $article_slug string
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @subgroup Article Categories
      * @response scenario=success {
@@ -88,10 +88,10 @@ class ArticleCategoryController extends Controller
      */
     public function getAllCategories()
     {
-        $categories = ArticleCategory::active()
-            ->orderBy('parent_id', 'asc')
-            ->get();
-            
+        $categories = cache()->remember('article_categories', 60, function () {
+            return ArticleCategory::active()->get();
+        });
+
         return ArticleCategoryResource::collection($categories);
-    } 
+    }
 }
