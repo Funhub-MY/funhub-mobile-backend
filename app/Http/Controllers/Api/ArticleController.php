@@ -134,11 +134,12 @@ class ArticleController extends Controller
                                 * cos( radians( loc.lng ) - radians(?)
                                 ) + sin( radians(?) ) *
                                 sin( radians( loc.lat ) ) )
-                                )', [$request->lat, $request->lng, $request->lat]
+                                ) as distance', [$request->lat, $request->lng, $request->lat]
                 )
                 ->whereHas('location', function ($query) use ($request, $radius) {
                     $query->withinDistanceOf($request->lat, $request->lng, $radius);
-                });
+                })
+                ->orderBy('distance', 'asc');
         }
 
         // location id
@@ -204,10 +205,7 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        // query everything by latest if not provided lat, lng
-        if (!$request->has('lat') && !$request->has('lng')) {
-            $query->latest();
-        }
+        $query->latest();
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
