@@ -13,7 +13,7 @@ class SupportRequestMessage extends Model implements HasMedia
 
     protected $table = 'support_requests_messages';
 
-    const MEDIA_COLLECTION_NAME = 'support_requests_messages';
+    const MEDIA_COLLECTION_NAME = 'support_uploads';
 
     protected $guarded = ['id'];
 

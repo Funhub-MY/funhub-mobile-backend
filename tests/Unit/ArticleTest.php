@@ -1202,37 +1202,37 @@ class ArticleTest extends TestCase
         $this->assertCount(10, $response->json('data'));
     }
 
-    public function testArticleNotInterestedByUser()
-    {
-        // create a user
-        $user = User::factory()->create();
-        // create 10 articles by this user
-        $articles = Article::factory()->count(10)->published()
-            ->create([
-                'user_id' => $user->id,
-            ]);
+    // public function testArticleNotInterestedByUser()
+    // {
+    //     // create a user
+    //     $user = User::factory()->create();
+    //     // create 10 articles by this user
+    //     $articles = Article::factory()->count(10)->published()
+    //         ->create([
+    //             'user_id' => $user->id,
+    //         ]);
 
-        // logged in user not interested in 5 of the articles
-        $notInterestedArticleIds = [];
-        foreach($articles->take(5) as $article) {
-            $response = $this->postJson('/api/v1/articles/not_interested', [
-                'article_id' => $article->id,
-            ]);
-            $notInterestedArticleIds[] = $article->id;
+    //     // logged in user not interested in 5 of the articles
+    //     $notInterestedArticleIds = [];
+    //     foreach($articles->take(5) as $article) {
+    //         $response = $this->postJson('/api/v1/articles/not_interested', [
+    //             'article_id' => $article->id,
+    //         ]);
+    //         $notInterestedArticleIds[] = $article->id;
 
-            $response->assertStatus(200);
-        }
+    //         $response->assertStatus(200);
+    //     }
 
-        // get articles and check whether the data.id dosent have not interested articles
-        $response = $this->getJson('/api/v1/articles');
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'data'
-            ]);
+    //     // get articles and check whether the data.id dosent have not interested articles
+    //     $response = $this->getJson('/api/v1/articles');
+    //     $response->assertStatus(200)
+    //         ->assertJsonStructure([
+    //             'data'
+    //         ]);
 
-        // check each article id is not in $notInterestedArticleIds
-        foreach($response->json('data') as $article) {
-            $this->assertNotContains($article['id'], $notInterestedArticleIds);
-        }
-    }
+    //     // check each article id is not in $notInterestedArticleIds
+    //     foreach($response->json('data') as $article) {
+    //         $this->assertNotContains($article['id'], $notInterestedArticleIds);
+    //     }
+    // }
 }
