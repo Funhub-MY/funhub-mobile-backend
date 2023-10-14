@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PurchasedOfferNotification extends Notification
+class PurchasedOfferNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -57,7 +57,7 @@ class PurchasedOfferNotification extends Notification
                 'itemTitle' => $this->itemTitle,
                 'quantity' => $this->quantity,
                 'subtotal' => $this->subtotal,
-                'currencyType' => $this->currencyType, 
+                'currencyType' => $this->currencyType,
             ]);
     }
 
