@@ -78,10 +78,10 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Article::published()
-            ->whereDoesntHave('hiddenUsers', function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            });
+        $query = Article::published();
+            // ->whereDoesntHave('hiddenUsers', function ($query) {
+            //     $query->where('user_id', auth()->user()->id);
+            // });
 
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
             // default to exclude own article
