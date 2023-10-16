@@ -6,10 +6,14 @@ use Closure;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Reward;
+use App\Models\Approval;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Services\PointService;
+use App\Models\ApprovalSetting;
+use App\Models\RewardComponent;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
@@ -23,8 +27,6 @@ use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\Reward;
-use App\Models\RewardComponent;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class UserResource extends Resource
@@ -227,18 +229,41 @@ class UserResource extends Resource
                         foreach ($records as $record) {
                             $rewardType = $data['rewardType'];
                             $quantity = $data['quantity'];
+                            $reward = Reward::first();
                             $rewardComponentId = $data['rewardComponent'] ? $data['rewardComponent'] : null;
                             $rewardComponent = RewardComponent::find($rewardComponentId);
                             $user = User::find($record->id);
 
-                            // Call PointService or PointComponentService based on the selected reward type
-                            if ($rewardType === 'point') {
-                                $pointService = new PointService();
-                                $reward = Reward::first();
-                                $pointService->credit($reward, $user, $quantity, 'Manual Reward', 'Rewarding points');
-                            } elseif ($rewardType === 'point_component') {
-                                $pointComponentService = new PointComponentService();
-                                $pointComponentService->credit(auth()->user(), $rewardComponent, $user, $quantity, 'Manual Reward', 'Rewarding components');
+                            switch ($rewardType) {
+                                case 'point':
+                                    $approvableType = 'App\Models\Reward';
+                                    $approvableId = $reward->id;
+                                    break;
+                                case 'point_component':
+                                    $approvableType = 'App\Models\RewardComponent';
+                                    $approvableId = $rewardComponent->id;
+                                    break;
+                            }
+
+                            $approvalSettings = ApprovalSetting::getSettingsForModel($approvableType);
+                                    
+                            foreach ($approvalSettings as $approvalSetting) {
+                                // Create new approval record(s)
+                                // Number of record(s) created based on no. of sequence available for each approvable_type 
+                                $approval = new Approval([
+                                    'approval_setting_id' => $approvalSetting->id,
+                                    'approver_id' => $approvalSetting->sequence === 1 ? auth()->user()->id : null,
+                                    'approvable_type' => $approvableType,
+                                    'approvable_id' => $approvableId,
+                                    'data' => json_encode([
+                                        'user' => $user->toArray(),
+                                        'reward_user_id' => $user->id,
+                                        'action' => 'reward-user',
+                                        'quantity' => $quantity,
+                                    ]),
+                                    'approved' => $approvalSetting->sequence === 1,
+                                ]);
+                                $approval->save();
                             }
                         }
                     })
