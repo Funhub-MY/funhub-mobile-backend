@@ -824,8 +824,8 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
-            // load relations
-            $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
+            // load relations count
+            $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
