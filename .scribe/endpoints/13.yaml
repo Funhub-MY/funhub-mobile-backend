@@ -1,16 +1,96 @@
-name: Location
+name: Mission
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/locations
+    uri: api/v1/missions
     metadata:
-      groupName: Location
+      groupName: Mission
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Locations'
+      title: 'Get all missions available.'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      claimed_only:
+        name: claimed_only
+        description: 'boolean If set to true, only return missions rewards that has been claimed by user.'
+        required: false
+        example: 'false'
+        type: string
+        custom: []
+    cleanUrlParameters:
+      claimed_only: 'false'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": [
+            {
+            "id": 1,
+            "name": "Complete 10 missions",
+            "is_participating": true,
+            "description": "Complete 10 missions to earn a reward",
+            "event": "mission_completed",
+            "current_value": 5,
+            "value": 10,
+            "reward": {
+                "id": 1,
+                "name": "Egg",
+                "description": "egg",
+                "thumbnail_url": "https://example.com/egg.png",
+            },
+            "reward_quantity": 1,
+            "claimed": false,
+            "claimed_at": null,
+            "claimed_at_formatted": null,
+            "claimed_at_ago": null
+           }
+          ],
+          "first_page_url": "http://localhost:8000/api/missions?page=1",
+          "from": 1,
+          "last_page": 1,
+          "last_page_url": "http://localhost:8000/api/missions?page=1",
+          "next_page_url": null,
+          "path": "http://localhost:8000/api/missions",
+          "per_page": 15,
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5ga6dbfc4Zv16aPVDeh38kE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/missions/complete
+    metadata:
+      groupName: Mission
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Complete all missions or single mission'
       description: ''
       authenticated: true
       custom: []
@@ -23,74 +103,29 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      name:
-        name: name
-        description: 'optional Search query.'
-        required: false
-        example: '"KFC SS15"'
-        type: string
-        custom: []
-      state_id:
-        name: state_id
-        description: 'optional Filter by state id.'
+      mission_id:
+        name: mission_id
+        description: 'The id of the mission to complete, if not pass in, system will complete all missions thats eligible to be completed.'
         required: false
         example: 1
-        type: integer
-        custom: []
-      country_id:
-        name: country_id
-        description: 'optional Filter by country id.'
-        required: false
-        example: 1
-        type: integer
-        custom: []
-      city:
-        name: city
-        description: 'optional Filter by city.'
-        required: false
-        example: '"Subang Jaya"'
-        type: string
-        custom: []
-      lat:
-        name: lat
-        description: 'optional Latitude of User GeoLoc.'
-        required: false
-        example: 3.073065
-        type: number
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Longitude of User GeoLoc.'
-        required: false
-        example: 101.607787
-        type: number
-        custom: []
-      radius:
-        name: radius
-        description: 'optional Radius (KM) of search if lat,lng provided.'
-        required: false
-        example: 10
         type: integer
         custom: []
     cleanBodyParameters:
-      name: '"KFC SS15"'
-      state_id: 1
-      country_id: 1
-      city: '"Subang Jaya"'
-      lat: 3.073065
-      lng: 101.607787
-      radius: 10
+      mission_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
+          "message": "Mission(s) completed successfully.",
+          "completed_missions": [
+             1, 2
+          ],
+          "reward": {
+            "object": {},
+            "quantity": 1
+          }
           }
         headers: []
         description: success
@@ -99,7 +134,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e8kv4Za6f1adcb65Pg3VEhD'
+      - 'Bearer 6DEaPh613Va5vdce8bgfk4Z'
     controller: null
     method: null
     route: null
@@ -107,38 +142,22 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/locations/{location_id}'
+    uri: api/v1/missions/claimables
     metadata:
-      groupName: Location
+      groupName: Mission
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get One Location'
-      description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
+      title: 'Get latest claimable missions'
+      description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      location_id:
-        name: location_id
-        description: 'The ID of the location.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      location:
-        name: location
-        description: 'Location ID.'
-        required: true
-        example: '1'
-        type: string
-        custom: []
-    cleanUrlParameters:
-      location_id: 1
-      location: '1'
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -149,8 +168,13 @@ endpoints:
         status: 200
         content: |-
           {
-          "data": {
-          }
+          "data": [
+           {
+           "id": 1,
+           "name": "Mission 1",
+           ...
+           }
+          ]
           }
         headers: []
         description: success
@@ -159,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Za6dc8D6fEh4g1bea3Vkv5P'
+      - 'Bearer V465d3aaEvPe61ZgfcbkD8h'
     controller: null
     method: null
     route: null

@@ -52,6 +52,10 @@ Route::group(['prefix' => 'v1'], function () {
         // Articles
         Route::get('article_cities', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleCities']);
 
+        // Media
+        Route::get('media/signed_upload', [\App\Http\Controllers\Api\MediaController::class, 'getSignedUploadLink']);
+        Route::post('media/upload_complete', [\App\Http\Controllers\Api\MediaController::class, 'postUploadMediaComplete']);
+
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
         Route::post('articles/video-upload', [\App\Http\Controllers\Api\ArticleController::class, 'postVideoUpload']);
