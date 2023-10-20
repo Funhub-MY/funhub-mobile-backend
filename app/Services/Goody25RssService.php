@@ -154,7 +154,7 @@ class Goody25RssService
                     // save thumbnail first, as it need to be is_cover_picture = true.
                     if (isset($article['media_thumbnail']) && $article['media_thumbnail'] != null) {
                         $new_article->addMediaFromUrl($article['media_thumbnail'])
-                            ->withCustomProperties(['is_cover_picture' => true])
+                            ->withCustomProperties(['is_cover' => true])
                             ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                     } else {
                         // try get first image as thumbnail.
@@ -162,7 +162,7 @@ class Goody25RssService
                         if ($first_image_url !== '' && $first_image_url !== null) {
                             $this->current_image_url = $first_image_url;
                             $new_article->addMediaFromUrl($first_image_url)
-                                ->withCustomProperties(['is_cover_picture' => true])
+                                ->withCustomProperties(['is_cover' => true])
                                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                         } else {
                             Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);
