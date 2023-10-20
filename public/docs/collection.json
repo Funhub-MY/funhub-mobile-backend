@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "d6121db5-c734-4477-a671-68da95679f12",
+        "_postman_id": "cf6728d8-1ab6-4512-adcc-3af98438fed6",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":14,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"est\",\"violation_level\":\"esse\",\"article\":1}"
+                                    "raw": "{\"article_id\":2,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"qui\",\"violation_level\":\"quaerat\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"aut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"repellat\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "ducimus",
+                                            "value": "aut",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"iste\",\"violation_type\":\"possimus\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"quibusdam\",\"violation_type\":\"soluta\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "sapiente",
+                                            "value": "vero",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1910,7 +1910,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"nesciunt\"}"
+                            "raw": "{\"share_code\":\"suscipit\"}"
                         },
                         "description": ""
                     },
@@ -2729,11 +2729,18 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"upload_ids\":\"1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e\"}"
+                            "raw": "{\"upload_ids\":\"1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e\",\"is_cover\":true}"
                         },
                         "description": ""
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Success\",\n\"uploaded\": [\n{\n\"id\": 1,\n\"name\": \"1619114400-608b7a10a3b3d_my-photo.jpg\",\n\"url\": \"https:\/\/your-bucket-name.s3-ap-southeast-1.amazonaws.com\/user_uploads\/1619114400-608b7a10a3b3d_my-photo.jpg\",\n\"size\": 12345,\n\"type\": \"image\/jpeg\"\n},\n]\n}",
+                            "name": "success"
+                        }
+                    ]
                 }
             ]
         },
@@ -2998,7 +3005,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "ut",
+                                            "value": "doloribus",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3994,7 +4001,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":13}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -4035,7 +4042,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":14}"
+                                    "raw": "{\"user_id\":7}"
                                 },
                                 "description": ""
                             },
@@ -4141,7 +4148,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"ratione\",\"violation_level\":\"sint\",\"violation_type\":\"alias\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"quis\",\"violation_level\":\"similique\",\"violation_type\":\"pariatur\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4298,7 +4305,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"placeat\"}"
+                            "raw": "{\"reason\":\"occaecati\"}"
                         },
                         "description": ""
                     },
@@ -4341,7 +4348,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"repudiandae\"}"
+                            "raw": "{\"user_ids\":\"quos\"}"
                         },
                         "description": ""
                     },

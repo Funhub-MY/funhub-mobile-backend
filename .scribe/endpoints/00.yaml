@@ -27,11 +27,11 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: nesciunt
+        example: suscipit
         type: string
         custom: []
     cleanBodyParameters:
-      share_code: nesciunt
+      share_code: suscipit
     fileParameters: []
     responses:
       -
@@ -517,7 +517,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fZDhb6v1a5P8d3e6kaVg4cE'
+      - 'Bearer hafZ683ePDcgbVEkv45d61a'
     controller: null
     method: null
     route: null

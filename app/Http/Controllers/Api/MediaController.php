@@ -75,6 +75,19 @@ class MediaController extends Controller
      *
      * @group Media
      * @bodyParam upload_ids string required The upload_ids from get signed upload link, can be multiple ids in a comma separated. Example: 1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e
+     * @bodyParam is_cover boolean optional The is_cover flag, default false. Example: true
+     * @response scenario=success {
+     * "message": "Success",
+     * "uploaded": [
+     * {
+     * "id": 1,
+     * "name": "1619114400-608b7a10a3b3d_my-photo.jpg",
+     * "url": "https://your-bucket-name.s3-ap-southeast-1.amazonaws.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg",
+     * "size": 12345,
+     * "type": "image/jpeg"
+     * },
+     * ]
+     * }
      */
     public function postUploadMediaComplete(Request $request)
     {
@@ -102,10 +115,16 @@ class MediaController extends Controller
                 $collection = self::userUploadsCollection;
                 $fullPath =  $collection . '/' . $filename;
 
+                if (!$request->has('is_cover')) { // default false
+                    $request->merge(['is_cover' => false]);
+                }
+
                 try {
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
+                        ->withCustomProperties(['is_cover' => $request->is_cover])
                         ->toMediaCollection($collection);
+
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,

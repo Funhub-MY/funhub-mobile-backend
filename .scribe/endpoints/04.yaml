@@ -60,7 +60,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gDb686ZE1h5ekaVcf3dPa4v'
+      - 'Bearer gd6kDa5Vh38vaZ6E14cbPef'
     controller: null
     method: null
     route: null
@@ -94,15 +94,41 @@ endpoints:
         example: '1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e'
         type: string
         custom: []
+      is_cover:
+        name: is_cover
+        description: 'optional The is_cover flag, default false.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
     cleanBodyParameters:
       upload_ids: '1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e'
+      is_cover: true
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Success",
+          "uploaded": [
+          {
+          "id": 1,
+          "name": "1619114400-608b7a10a3b3d_my-photo.jpg",
+          "url": "https://your-bucket-name.s3-ap-southeast-1.amazonaws.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg",
+          "size": 12345,
+          "type": "image/jpeg"
+          },
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer adDcbEVfhvg48keaP63Z165'
+      - 'Bearer baVdv5gc68af1E4eZPDk6h3'
     controller: null
     method: null
     route: null
