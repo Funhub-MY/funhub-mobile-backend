@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 14
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: minus
+                  example: est
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sed
+                  example: esse
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - omnis
+                    - aut
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: explicabo
+        example: ducimus
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: cumque
+                  example: iste
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ex
+                  example: possimus
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: et
+        example: sapiente
         required: true
         schema:
           type: string
@@ -3097,7 +3097,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: eos
+                  example: nesciunt
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3986,7 +3986,7 @@ paths:
       -
         in: path
         name: filename
-        description: 'The filename of the media to be uploaded.'
+        description: 'The filename of the media to be uploaded, filename must only contain alphabets and numbers.'
         example: my-photo.jpg
         required: true
         schema:
@@ -4345,6 +4345,17 @@ paths:
                     example: []
       tags:
         - Merchant
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_redeemed:
+                  type: boolean
+                  description: 'optional Filter by Redeemed.'
+                  example: true
   '/api/v1/merchant/offers/{offer_id}':
     get:
       summary: 'Get Offer By ID'
@@ -4388,7 +4399,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: doloribus
+        example: ut
         required: true
         schema:
           type: string
@@ -5408,7 +5419,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 13
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5461,7 +5472,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 10
+                  example: 14
               required:
                 - user_id
   /api/v1/user/report:
@@ -5508,15 +5519,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: autem
+                  example: ratione
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: magnam
+                  example: sint
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sit
+                  example: alias
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5661,7 +5672,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: deserunt
+                  example: placeat
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5702,7 +5713,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: natus
+                  example: repudiandae
               required:
                 - user_ids
     parameters:

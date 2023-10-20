@@ -23,7 +23,7 @@ endpoints:
     urlParameters:
       filename:
         name: filename
-        description: 'The filename of the media to be uploaded.'
+        description: 'The filename of the media to be uploaded, filename must only contain alphabets and numbers.'
         required: true
         example: my-photo.jpg
         type: string
@@ -60,7 +60,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vh66daZcf431e8gabDvEPk5'
+      - 'Bearer gDb686ZE1h5ekaVcf3dPa4v'
     controller: null
     method: null
     route: null
@@ -102,7 +102,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k3hD1vgcafedPV4Z5a6E6b8'
+      - 'Bearer adDcbEVfhvg48keaP63Z165'
     controller: null
     method: null
     route: null

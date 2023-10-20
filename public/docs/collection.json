@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "fe2242db-afdd-49f2-8df6-2e6391b0859a",
+        "_postman_id": "d6121db5-c734-4477-a671-68da95679f12",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":17,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"minus\",\"violation_level\":\"sed\",\"article\":1}"
+                                    "raw": "{\"article_id\":14,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"est\",\"violation_level\":\"esse\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"omnis\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"aut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "explicabo",
+                                            "value": "ducimus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"cumque\",\"violation_type\":\"ex\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"iste\",\"violation_type\":\"possimus\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "et",
+                                            "value": "sapiente",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1910,7 +1910,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"eos\"}"
+                            "raw": "{\"share_code\":\"nesciunt\"}"
                         },
                         "description": ""
                     },
@@ -2674,7 +2674,7 @@
                                     "id": "filename",
                                     "key": "filename",
                                     "value": "my-photo.jpg",
-                                    "description": "The filename of the media to be uploaded."
+                                    "description": "The filename of the media to be uploaded, filename must only contain alphabets and numbers."
                                 }
                             ]
                         },
@@ -2964,7 +2964,10 @@
                                         "value": "application\/json"
                                     }
                                 ],
-                                "body": null,
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"is_redeemed\":true}"
+                                },
                                 "description": ""
                             },
                             "response": [
@@ -2995,7 +2998,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "doloribus",
+                                            "value": "ut",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3991,7 +3994,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -4032,7 +4035,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":14}"
                                 },
                                 "description": ""
                             },
@@ -4138,7 +4141,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"autem\",\"violation_level\":\"magnam\",\"violation_type\":\"sit\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"ratione\",\"violation_level\":\"sint\",\"violation_type\":\"alias\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4295,7 +4298,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"deserunt\"}"
+                            "raw": "{\"reason\":\"placeat\"}"
                         },
                         "description": ""
                     },
@@ -4338,7 +4341,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"natus\"}"
+                            "raw": "{\"user_ids\":\"repudiandae\"}"
                         },
                         "description": ""
                     },

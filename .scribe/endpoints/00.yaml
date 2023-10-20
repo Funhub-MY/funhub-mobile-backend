@@ -27,11 +27,11 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: eos
+        example: nesciunt
         type: string
         custom: []
     cleanBodyParameters:
-      share_code: eos
+      share_code: nesciunt
     fileParameters: []
     responses:
       -
@@ -517,7 +517,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dhV1483ab5gP66fDeZkEcva'
+      - 'Bearer fZDhb6v1a5P8d3e6kaVg4cE'
     controller: null
     method: null
     route: null

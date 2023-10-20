@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DVh5v61PEbead6kgZac348f'
+      - 'Bearer VaP4he6fcbagZ3v1DEdk865'
     controller: null
     method: null
     route: null
@@ -250,7 +250,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gdD1cEbVeh3kvf6aPa648Z5'
+      - 'Bearer vVE831ca4ZPb6fgeka6h5Dd'
     controller: null
     method: null
     route: null
@@ -365,7 +365,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fa15v3d6cZakgDehVEb846P'
+      - 'Bearer a5VfeakZc4P3hDb8E66v1dg'
     controller: null
     method: null
     route: null
@@ -444,7 +444,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3P4EkdVbv8f661aeac5ghDZ'
+      - 'Bearer cEeVa18a6Zvb65Phf4Dkd3g'
     controller: null
     method: null
     route: null
@@ -504,7 +504,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vaDfacP53k6hZVd1g6e4Eb8'
+      - 'Bearer 4gVbEDhfv1ca3PZa6dk86e5'
     controller: null
     method: null
     route: null
@@ -530,8 +530,16 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      is_redeemed:
+        name: is_redeemed
+        description: 'optional Filter by Redeemed.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      is_redeemed: true
     fileParameters: []
     responses:
       -
@@ -547,7 +555,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b4af6aP1hZDvdc6Ek3Ve8g5'
+      - 'Bearer ked145vaDPhZEb6Va38f6gc'
     controller: null
     method: null
     route: null
@@ -574,11 +582,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: doloribus
+        example: ut
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: doloribus
+      offer_id: ut
     queryParameters:
       offer_id:
         name: offer_id
@@ -606,7 +614,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h86Vgavabdkc6Z4eDE1f53P'
+      - 'Bearer k6Z8aDcg3v56Pb1eEf4daVh'
     controller: null
     method: null
     route: null
@@ -711,7 +719,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P65vZhkD63fa1d4gcaVeb8E'
+      - 'Bearer vDa164db6Vhca5g8f3ZkEeP'
     controller: null
     method: null
     route: null
@@ -768,7 +776,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4kcD8Z6bvd1fVePa3a5hEg6'
+      - 'Bearer 6Pcv8dZVE436eDka5bga1fh'
     controller: null
     method: null
     route: null
