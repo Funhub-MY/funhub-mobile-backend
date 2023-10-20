@@ -121,14 +121,9 @@ class MediaController extends Controller
                     $request->merge(['is_cover' => false]);
                 }
 
-                $customProperties = [
-                    'is_cover' => $request->is_cover
-                ];
-
                 try {
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
-                        ->withCustomProperties($customProperties)
                         ->toMediaCollection(User::USER_UPLOADS);
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
@@ -142,6 +137,9 @@ class MediaController extends Controller
 
                 // update image size if its an image
                 if (str_contains($file->mime_type, 'image')) {
+                    // if image always set is_cover, else do nothing
+                    $file->setCustomProperty('is_cover', $request->is_cover);
+
                    try {
                         $imageSize = getimagesize($file->getFullUrl());
                         // save the media width and height
