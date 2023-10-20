@@ -148,9 +148,13 @@ class MerchantOfferController extends Controller
         $query = MerchantOfferClaim::where('user_id', auth()->user()->id)
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
 
-        $query->when($request->has('is_redeemed'), function ($q) {
-            $q->whereHas('redeem');
-        });
+        if ($request->has('is_redeemed')) {
+            if ($request->is_redeemed) { // true
+                $query->whereHas('redeem');
+            } else { // false
+                $query->whereDoesntHave('redeem');
+            }
+        }
 
         $claims = $query->with('merchantOffer', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
