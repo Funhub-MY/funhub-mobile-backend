@@ -124,7 +124,8 @@ class MediaController extends Controller
                 try {
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
-                        ->toMediaCollection(User::USER_UPLOADS);
+                        ->toMediaCollection(User::USER_UPLOADS); // image and video consolidate here
+
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,
@@ -138,7 +139,10 @@ class MediaController extends Controller
                 // update image size if its an image
                 if (str_contains($file->mime_type, 'image')) {
                     // if image always set is_cover, else do nothing
-                    $file->setCustomProperty('is_cover', $request->is_cover);
+                    Media::withoutEvents(function () use ($file, $request) {
+                        $file->setCustomProperty('is_cover', $request->is_cover);
+                        $file->save();
+                    });
 
                    try {
                         $imageSize = getimagesize($file->getFullUrl());
