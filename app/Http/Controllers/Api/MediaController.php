@@ -130,9 +130,6 @@ class MediaController extends Controller
                     $file = $user->addMediaFromDisk($fullPath, 's3')
                         ->withCustomProperties($customProperties)
                         ->toMediaCollection(User::USER_UPLOADS);
-
-
-
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,
@@ -169,7 +166,7 @@ class MediaController extends Controller
                     'type' => $file->mime_type,
                 ];
 
-                // delete temporary file from signed_uploads temporary folder
+                // delete temporary file from signed_uploads temporary
                 Storage::disk('s3')->delete($fullPath);
             } else {
                 // filename not found from uploadId
