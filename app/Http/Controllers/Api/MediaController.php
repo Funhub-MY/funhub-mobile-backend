@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -115,15 +116,34 @@ class MediaController extends Controller
                 $collection = self::userUploadsCollection;
                 $fullPath =  $collection . '/' . $filename;
 
-                if (!$request->has('is_cover')) { // default false
+                if (!$request->has('is_cover')) { // default false if not provided
                     $request->merge(['is_cover' => false]);
                 }
+
+                $customProperties = [
+                    'is_cover' => $request->is_cover
+                ];
+
+                // // if the file is image, get the width and height set inside custom properties as well
+                // $media = Storage::disk('s3')->file($fullPath);
+                // if (str_contains($media->mime_type, 'image')) {
+                //     try {
+                //         // set custom_properties width and height
+                //         $imageSize = getimagesize(($media->disk == 's3_public' ? $media->getFullUrl() : $media->getPath()));
+                //         $customProperties['width'] = $imageSize[0];
+                //         $customProperties['height'] = $imageSize[1];
+                //     } catch (\Exception $ex) {
+                //         Log::error('[MediaController] Error getting image size: ' . $ex->getMessage(), [
+                //             'uploadId' => $uploadId,
+                //         ]);
+                //     }
+                // }
 
                 try {
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
-                        ->withCustomProperties(['is_cover' => $request->is_cover])
-                        ->toMediaCollection($collection);
+                        ->withCustomProperties($customProperties)
+                        ->toMediaCollection(User::USER_UPLOADS);
 
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
