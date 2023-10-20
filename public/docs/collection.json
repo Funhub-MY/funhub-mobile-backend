@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "9aa8b11f-2347-467d-9452-070c1b5c73d6",
+        "_postman_id": "762cc51c-e619-4798-ac2e-9708fdec5298",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":4,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"omnis\",\"violation_level\":\"ratione\",\"article\":1}"
+                                    "raw": "{\"article_id\":3,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"quibusdam\",\"violation_level\":\"optio\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptatibus\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"qui\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "sint",
+                                            "value": "nam",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"explicabo\",\"violation_type\":\"excepturi\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"voluptatem\",\"violation_type\":\"voluptatem\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "aspernatur",
+                                            "value": "distinctio",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1910,7 +1910,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"voluptas\"}"
+                            "raw": "{\"share_code\":\"omnis\"}"
                         },
                         "description": ""
                     },
@@ -2963,8 +2963,8 @@
                                         {
                                             "id": "is_redeemed",
                                             "key": "is_redeemed",
-                                            "value": "true",
-                                            "description": "boolean optional Filter by Redeemed."
+                                            "value": "0",
+                                            "description": "optional Filter by Redeemed."
                                         }
                                     ]
                                 },
@@ -3010,7 +3010,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "illo",
+                                            "value": "aut",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -4006,7 +4006,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":3}"
                                 },
                                 "description": ""
                             },
@@ -4047,7 +4047,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":14}"
                                 },
                                 "description": ""
                             },
@@ -4153,7 +4153,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"qui\",\"violation_level\":\"nesciunt\",\"violation_type\":\"laboriosam\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"rem\",\"violation_level\":\"mollitia\",\"violation_type\":\"dolor\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4310,7 +4310,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"qui\"}"
+                            "raw": "{\"reason\":\"cum\"}"
                         },
                         "description": ""
                     },
@@ -4353,7 +4353,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"neque\"}"
+                            "raw": "{\"user_ids\":\"dicta\"}"
                         },
                         "description": ""
                     },
@@ -4865,7 +4865,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

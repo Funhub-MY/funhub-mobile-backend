@@ -130,6 +130,9 @@ class MediaController extends Controller
                     $file = $user->addMediaFromDisk($fullPath, 's3')
                         ->withCustomProperties($customProperties)
                         ->toMediaCollection(User::USER_UPLOADS);
+
+
+
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,

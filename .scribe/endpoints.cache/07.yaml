@@ -93,7 +93,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6hcgZDf1EV3ak45d8avP6be'
+      - 'Bearer Ee63vfk548DVcd1a6bgZPha'
     controller: null
     method: null
     route: null
@@ -250,7 +250,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fdE65b6kDPZ8cVahev3a4g1'
+      - 'Bearer 16Eh6ZP5baag4fvcDe3Vd8k'
     controller: null
     method: null
     route: null
@@ -365,7 +365,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Da661hZEvkg8dcbaeP5V34f'
+      - 'Bearer g86hfdVvcb4eZa6k31a5EPD'
     controller: null
     method: null
     route: null
@@ -444,7 +444,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4dk153VcPa68faZEegv6bhD'
+      - 'Bearer 5v46Pk1h8Efeda6cZbgV3Da'
     controller: null
     method: null
     route: null
@@ -504,7 +504,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6cfa4VePa6bD58k3dgZEvh1'
+      - 'Bearer VhDZadbE86P3e5kc16f4gav'
     controller: null
     method: null
     route: null
@@ -529,13 +529,13 @@ endpoints:
     urlParameters:
       is_redeemed:
         name: is_redeemed
-        description: 'boolean optional Filter by Redeemed.'
+        description: 'optional Filter by Redeemed.'
         required: false
-        example: 'true'
-        type: string
+        example: 0.0
+        type: number
         custom: []
     cleanUrlParameters:
-      is_redeemed: 'true'
+      is_redeemed: 0.0
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -555,7 +555,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dDk5PEc8e6VbZ4haf3gv6a'
+      - 'Bearer 8eV61gZbD5P3c4daEva6fhk'
     controller: null
     method: null
     route: null
@@ -582,11 +582,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: illo
+        example: aut
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: illo
+      offer_id: aut
     queryParameters:
       offer_id:
         name: offer_id
@@ -614,7 +614,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aD8e3ab6dP15EfZv46kcVgh'
+      - 'Bearer 651DPcad8bkvE6aghZ34fVe'
     controller: null
     method: null
     route: null
@@ -719,7 +719,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8daab5fEP16vk4eDhV6c3Zg'
+      - 'Bearer DhE6e6Zv3a4a1b8PckfVdg5'
     controller: null
     method: null
     route: null
@@ -776,7 +776,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vc48aaZP3f5hegbkDVE61d6'
+      - 'Bearer 8keV6facagvZbE14Dd6h53P'
     controller: null
     method: null
     route: null

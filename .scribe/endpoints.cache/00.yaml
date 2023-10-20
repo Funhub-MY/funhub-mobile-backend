@@ -29,11 +29,11 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: voluptas
+        example: omnis
         type: string
         custom: []
     cleanBodyParameters:
-      share_code: voluptas
+      share_code: omnis
     fileParameters: []
     responses:
       -
@@ -519,7 +519,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gd6ZVEv3baDPceh46k581fa'
+      - 'Bearer 6agk584hPf3vea6bdDZEcV1'
     controller: null
     method: null
     route: null
