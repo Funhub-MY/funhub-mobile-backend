@@ -512,6 +512,10 @@ class ArticleController extends Controller
         // if request->video attach video from user_videos to article_videos collection media library
         if ($request->has('video')) {
             $userVideos = $user->getMedia(User::USER_VIDEO_UPLOADS)->whereIn('id', $request->video);
+            if (!$userVideos) { // TODO: in future completely remove line above, as all uploads will be synced to USER_VIDEO_UPLOADS
+                // get from user uplaods
+                $userVideos = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->video);
+            }
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
