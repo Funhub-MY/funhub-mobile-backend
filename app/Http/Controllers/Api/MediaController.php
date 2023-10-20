@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MediaController extends Controller
 {
@@ -124,27 +125,11 @@ class MediaController extends Controller
                     'is_cover' => $request->is_cover
                 ];
 
-                // // if the file is image, get the width and height set inside custom properties as well
-                // $media = Storage::disk('s3')->file($fullPath);
-                // if (str_contains($media->mime_type, 'image')) {
-                //     try {
-                //         // set custom_properties width and height
-                //         $imageSize = getimagesize(($media->disk == 's3_public' ? $media->getFullUrl() : $media->getPath()));
-                //         $customProperties['width'] = $imageSize[0];
-                //         $customProperties['height'] = $imageSize[1];
-                //     } catch (\Exception $ex) {
-                //         Log::error('[MediaController] Error getting image size: ' . $ex->getMessage(), [
-                //             'uploadId' => $uploadId,
-                //         ]);
-                //     }
-                // }
-
                 try {
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
                         ->withCustomProperties($customProperties)
                         ->toMediaCollection(User::USER_UPLOADS);
-
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,
@@ -155,6 +140,24 @@ class MediaController extends Controller
                     ]);
                 }
 
+                // update image size if its an image
+                if (str_contains($file->mime_type, 'image')) {
+                   try {
+                        $imageSize = getimagesize($file->getFullUrl());
+                        // save the media width and height
+                        Media::withoutEvents(function () use ($file, $imageSize) {
+                            $file->setCustomProperty('width', $imageSize[0]);
+                            $file->setCustomProperty('height', $imageSize[1]);
+                            $file->save();
+                        });
+                   } catch (\Exception $ex) {
+                       Log::error('[MediaController] Error getting image size: ' . $ex->getMessage(), [
+                           'uploadId' => $uploadId,
+                           'media_id' => $file->id,
+                       ]);
+                   }
+                }
+
                 $medias[] = [
                     'id' => $file->id,
                     'name' => $file->file_name,
@@ -163,7 +166,7 @@ class MediaController extends Controller
                     'type' => $file->mime_type,
                 ];
 
-                // delete temporary file
+                // delete temporary file from signed_uploads temporary folder
                 Storage::disk('s3')->delete($fullPath);
             } else {
                 // filename not found from uploadId
