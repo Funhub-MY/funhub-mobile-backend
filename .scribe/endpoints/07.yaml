@@ -91,7 +91,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afhc4d1vZ6bk5Pe3ga6EDV8'
+      - 'Bearer 6hcgZDf1EV3ak45d8avP6be'
     controller: null
     method: null
     route: null
@@ -248,7 +248,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dEvabh63PZ56g4kDa8cVef'
+      - 'Bearer fdE65b6kDPZ8cVahev3a4g1'
     controller: null
     method: null
     route: null
@@ -363,7 +363,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZ1PcaDd5gE3fvh48eVb66a'
+      - 'Bearer Da661hZEvkg8dcbaeP5V34f'
     controller: null
     method: null
     route: null
@@ -442,7 +442,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VDEZPg436fkde1bv85ca6ah'
+      - 'Bearer 4dk153VcPa68faZEegv6bhD'
     controller: null
     method: null
     route: null
@@ -502,7 +502,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6d3Z8k54gVfacav1PbhED6e'
+      - 'Bearer 6cfa4VePa6bD58k3dgZEvh1'
     controller: null
     method: null
     route: null
@@ -524,20 +524,20 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
+    urlParameters:
       is_redeemed:
         name: is_redeemed
-        description: 'optional Filter by Redeemed.'
+        description: 'boolean optional Filter by Redeemed.'
         required: false
-        example: true
-        type: boolean
+        example: 'true'
+        type: string
         custom: []
-    cleanBodyParameters:
-      is_redeemed: true
+    cleanUrlParameters:
+      is_redeemed: 'true'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
@@ -553,7 +553,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P8g4adEh6D6531ZkcbvfVae'
+      - 'Bearer 1dDk5PEc8e6VbZ4haf3gv6a'
     controller: null
     method: null
     route: null
@@ -580,11 +580,11 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: doloribus
+        example: illo
         type: string
         custom: []
     cleanUrlParameters:
-      offer_id: doloribus
+      offer_id: illo
     queryParameters:
       offer_id:
         name: offer_id
@@ -612,7 +612,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Eh3efZc18D6ba4v6Pgk5aVd'
+      - 'Bearer aD8e3ab6dP15EfZv46kcVgh'
     controller: null
     method: null
     route: null
@@ -717,7 +717,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 56cd14Pfv6ZEahe8VgDba3k'
+      - 'Bearer 8daab5fEP16vk4eDhV6c3Zg'
     controller: null
     method: null
     route: null
@@ -774,7 +774,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ce5ha6dvVk6g184P3faDbZE'
+      - 'Bearer vc48aaZP3f5hegbkDVE61d6'
     controller: null
     method: null
     route: null

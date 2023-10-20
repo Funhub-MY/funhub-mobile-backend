@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cEge664PD8aZvf3Vb5ahk1d'
+      - 'Bearer V1bdaea86h46fkc5vZD3PEg'
     controller: null
     method: null
     route: null
@@ -126,7 +126,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 645afVga3hcDkPdeZbE681v'
+      - 'Bearer cvdakb83f61gVZhDeP4Ea56'
     controller: null
     method: null
     route: null
@@ -157,11 +157,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 3
+        example: 9
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 3
+      user_id: 9
     fileParameters: []
     responses:
       -
@@ -183,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c6ZbVvaEhe84dga5fD3k6P1'
+      - 'Bearer a1fgkb4P5ZvDV3ha8de6Ec6'
     controller: null
     method: null
     route: null
@@ -214,11 +214,11 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 7
+        example: 4
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 7
+      user_id: 4
     fileParameters: []
     responses:
       -
@@ -240,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VfZvE36e41aad5k8bDg6hPc'
+      - 'Bearer 48DvakV3E6ceh6dbf51ZgaP'
     controller: null
     method: null
     route: null
@@ -278,21 +278,21 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: quis
+        example: qui
         type: string
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: similique
+        example: nesciunt
         type: required
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: pariatur
+        example: laboriosam
         type: required
         custom: []
       also_block_user:
@@ -304,9 +304,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: quis
-      violation_level: similique
-      violation_type: pariatur
+      reason: qui
+      violation_level: nesciunt
+      violation_type: laboriosam
       also_block_user: true
     fileParameters: []
     responses:
@@ -335,7 +335,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1kv66hEcDd8fbg5Vaea4ZP3'
+      - 'Bearer DkaeEdgv6hcZ358V6bf4Pa1'
     controller: null
     method: null
     route: null
@@ -394,7 +394,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e6hcV3Efa4d1PakZ5v8gbD6'
+      - 'Bearer V6k4cdegEPa185hDZ63bafv'
     controller: null
     method: null
     route: null
@@ -445,7 +445,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer va36kc8dV6fZ1hEa4PDb5eg'
+      - 'Bearer f418h5adgbaVc3vPD6ZeEk6'
     controller: null
     method: null
     route: null
@@ -488,7 +488,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fk56E4a6vbPDVa38hZdg1ec'
+      - 'Bearer 4ZkE8Db6d1eahacfv63gVP5'
     controller: null
     method: null
     route: null
@@ -519,11 +519,11 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: occaecati
+        example: qui
         type: string
         custom: []
     cleanBodyParameters:
-      reason: occaecati
+      reason: qui
     fileParameters: []
     responses:
       -
@@ -539,7 +539,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag14kE8vhab3e6d5DVZ6Pfc'
+      - 'Bearer ea48ED3VakfbZ51vdhc66Pg'
     controller: null
     method: null
     route: null
@@ -578,11 +578,11 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: quos
+        example: neque
         type: string
         custom: []
     cleanBodyParameters:
-      user_ids: quos
+      user_ids: neque
     fileParameters: []
     responses:
       -
@@ -599,7 +599,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b61ePahE56fcvZkg4Vd8Da3'
+      - 'Bearer PE5v16c8gabV3kZ64fDhdea'
     controller: null
     method: null
     route: null
@@ -658,7 +658,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4EZv856fcDePV1d63gaahkb'
+      - 'Bearer a6acZhDg54v1fbkEPde836V'
     controller: null
     method: null
     route: null

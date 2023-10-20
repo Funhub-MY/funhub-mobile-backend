@@ -29,11 +29,11 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: suscipit
+        example: voluptas
         type: string
         custom: []
     cleanBodyParameters:
-      share_code: suscipit
+      share_code: voluptas
     fileParameters: []
     responses:
       -
@@ -54,7 +54,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1153,
+                      "line": 1157,
                       "function": "abort"
                   },
                   {
@@ -519,7 +519,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hafZ683ePDcgbVEkv45d61a'
+      - 'Bearer gd6ZVEv3baDPceh46k581fa'
     controller: null
     method: null
     route: null

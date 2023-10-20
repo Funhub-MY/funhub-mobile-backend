@@ -137,7 +137,7 @@ class MerchantOfferController extends Controller
      *
      * @group Merchant
      * @subgroup Merchant Offers
-     * @bodyParam is_redeemed boolean optional Filter by Redeemed. Example: true
+     * @urlParam is_redeemed boolean optional Filter by Redeemed. Example: true
      * @response scenario=success {
      * "data": []
      * }
@@ -149,7 +149,7 @@ class MerchantOfferController extends Controller
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
 
         if ($request->has('is_redeemed')) {
-            if ($request->is_redeemed) { // true
+            if ($request->get('is_redeemed')) { // true
                 $query->whereHas('redeem');
             } else { // false
                 $query->whereDoesntHave('redeem');

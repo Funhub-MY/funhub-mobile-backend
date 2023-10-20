@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 4
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: qui
+                  example: omnis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quaerat
+                  example: ratione
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - repellat
+                    - voluptatibus
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: aut
+        example: sint
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quibusdam
+                  example: explicabo
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: soluta
+                  example: excepturi
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: vero
+        example: aspernatur
         required: true
         schema:
           type: string
@@ -2271,7 +2271,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1153
+                      line: 1157
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2681,7 +2681,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1153
+                        line: 1157
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3097,7 +3097,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: suscipit
+                  example: voluptas
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -4356,17 +4356,21 @@ paths:
                     example: []
       tags:
         - Merchant
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                is_redeemed:
-                  type: boolean
-                  description: 'optional Filter by Redeemed.'
-                  example: true
+    parameters:
+      -
+        in: path
+        name: is_redeemed
+        description: 'Optional parameter. boolean optional Filter by Redeemed.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'true'
   '/api/v1/merchant/offers/{offer_id}':
     get:
       summary: 'Get Offer By ID'
@@ -4410,7 +4414,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: doloribus
+        example: illo
         required: true
         schema:
           type: string
@@ -5430,7 +5434,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 9
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5483,7 +5487,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 7
+                  example: 4
               required:
                 - user_id
   /api/v1/user/report:
@@ -5530,15 +5534,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quis
+                  example: qui
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: similique
+                  example: nesciunt
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: pariatur
+                  example: laboriosam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5683,7 +5687,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: occaecati
+                  example: qui
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5724,7 +5728,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quos
+                  example: neque
               required:
                 - user_ids
     parameters:
@@ -6405,7 +6409,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  example: male
               required:
                 - gender
   /api/v1/user/settings/location:
