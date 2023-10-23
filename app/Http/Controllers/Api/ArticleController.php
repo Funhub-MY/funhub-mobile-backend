@@ -600,6 +600,7 @@ class ArticleController extends Controller
             // create new location
             $loc = [
                 'name' => $locationData['name'],
+                'google_id' => isset($locationData['google_id']) ? $locationData['google_id'] : null,
                 'lat' => $locationData['lat'],
                 'lng' => $locationData['lng'],
                 'address' => $locationData['address'] ?? '',
@@ -610,11 +611,19 @@ class ArticleController extends Controller
 
             // find state by id if the locationdata state is integer else find by name
             $state = null;
-            if (is_numeric($locationData['state'])) {
-                $state = State::where('id', $locationData['state'])->first();
-            } else {
-                // where lower(name) like %trim lower locationData['state']%
-                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
+            // match by google id first
+            if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+                $state = State::where('google_id', $locationData['google_id'])->first();
+            }
+
+            // if not matched via google id then proceed with state look up
+            if (!$state) {
+                if (is_numeric($locationData['state'])) {
+                    $state = State::where('id', $locationData['state'])->first();
+                } else {
+                    // where lower(name) like %trim lower locationData['state']%
+                    $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
+                }
             }
 
             if ($state) {
@@ -626,7 +635,17 @@ class ArticleController extends Controller
             } else {
                 // create new state and country
                 // default to Malaysia
-                $country = Country::where('name', 'Malaysia')->first();
+                // check if locationData has country
+                $country = null;
+                if (isset($locationData['country']) && $locationData['country'] != 0) {
+                    $country = Country::where('name', 'like', '%'.$locationData['country'].'%')->first();
+                }
+
+                if (!$country) {
+                      // defaults to malaysia
+                      $country = Country::where('name', 'Malaysia')->first();
+                }
+
                 // create state
                 $state = State::create([
                     'name' => $locationData['state'],
