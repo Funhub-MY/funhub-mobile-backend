@@ -585,10 +585,16 @@ class ArticleController extends Controller
      */
     private function createOrAttachLocation($article, $locationData)
     {
-        // check if lat and lng exists
+        // search by google_id first if there is in locationData
+        $location = null;
+        if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+            $location = Location::where('google_id', $locationData['google_id'])->first();
+        }
+
+        // if location cant be found by google_id, then find by lat,lng
         $location = Location::where('lat', $locationData['lat'])
-            ->where('lng', $locationData['lng'])
-            ->first();
+           ->where('lng', $locationData['lng'])
+           ->first();
 
         // detach existing location first
         $article->location()->detach(); // detaches all
