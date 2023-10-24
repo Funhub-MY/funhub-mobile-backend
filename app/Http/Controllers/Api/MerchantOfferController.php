@@ -137,16 +137,26 @@ class MerchantOfferController extends Controller
      *
      * @group Merchant
      * @subgroup Merchant Offers
+     * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
      * @response scenario=success {
      * "data": []
      * }
      */
-    public function getMyMerchantOffers()
+    public function getMyMerchantOffers(Request $request)
     {
         // get merchant offers claimed by user
-        $claims = MerchantOfferClaim::where('user_id', auth()->user()->id)
-            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-            ->with('merchantOffer', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+        $query = MerchantOfferClaim::where('user_id', auth()->user()->id)
+            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+
+        if ($request->has('is_redeemed')) {
+            if ($request->get('is_redeemed') == 1) { // true
+                $query->whereHas('redeem');
+            } else if ($request->get('is_redeemed') == 0) { // false
+                $query->whereDoesntHave('redeem');
+            }
+        }
+
+        $claims = $query->with('merchantOffer', 'redeem', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferClaimResource::collection($claims);

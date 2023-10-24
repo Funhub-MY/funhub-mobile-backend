@@ -333,7 +333,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 12
+                  example: 3
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +341,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: non
+                  example: quibusdam
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aspernatur
+                  example: optio
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -516,7 +516,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - iste
+                    - qui
                   items:
                     type: string
                 category_ids:
@@ -1216,7 +1216,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: at
+        example: nam
         required: true
         schema:
           type: string
@@ -1311,11 +1311,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: officia
+                  example: voluptatem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: occaecati
+                  example: voluptatem
               required:
                 - comment_id
                 - reason
@@ -1586,7 +1586,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: consectetur
+        example: distinctio
         required: true
         schema:
           type: string
@@ -2271,7 +2271,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1149
+                      line: 1157
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2681,7 +2681,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1149
+                        line: 1157
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3950,6 +3950,87 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/media/signed_upload:
+    get:
+      summary: "Get Signed URL Upload Media (photos/videos)\nMust only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it."
+      operationId: getSignedURLUploadMediaphotosvideosMustOnlyCallOnePerFileIfMultipleFilesCallMultipleTimesURLGeneratedYouNeedToPUTABinaryFileToIt
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: failed
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Only applicable for S3 Storage'
+                  url: null
+                properties:
+                  message:
+                    type: string
+                    example: 'Only applicable for S3 Storage'
+                  url:
+                    type: string
+                    example: null
+      tags:
+        - Media
+    parameters:
+      -
+        in: path
+        name: filename
+        description: 'The filename of the media to be uploaded, filename must only contain alphabets and numbers.'
+        example: my-photo.jpg
+        required: true
+        schema:
+          type: string
+  /api/v1/media/upload_complete:
+    post:
+      summary: 'Upload Media Complete'
+      operationId: uploadMediaComplete
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Authorization
+          description: ''
+          example: 'Bearer {USER_TOKEN_KEY}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Success\",\n\"uploaded\": [\n{\n\"id\": 1,\n\"name\": \"1619114400-608b7a10a3b3d_my-photo.jpg\",\n\"url\": \"https://your-bucket-name.s3-ap-southeast-1.amazonaws.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg\",\n\"size\": 12345,\n\"type\": \"image/jpeg\"\n},\n]\n}"
+      tags:
+        - Media
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                upload_ids:
+                  type: string
+                  description: 'The upload_ids from get signed upload link, can be multiple ids in a comma separated.'
+                  example: '1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e'
+                is_cover:
+                  type: boolean
+                  description: 'optional The is_cover flag, default false.'
+                  example: true
+              required:
+                - upload_ids
   /api/v1/merchant/offers/my_bookmarks:
     get:
       summary: 'Get My Bookmarked Merchant Offers'
@@ -4275,6 +4356,21 @@ paths:
                     example: []
       tags:
         - Merchant
+    parameters:
+      -
+        in: path
+        name: is_redeemed
+        description: 'Optional parameter. optional Filter by Redeemed.'
+        required: true
+        schema:
+          type: number
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 0.0
   '/api/v1/merchant/offers/{offer_id}':
     get:
       summary: 'Get Offer By ID'
@@ -4318,7 +4414,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: cupiditate
+        example: aut
         required: true
         schema:
           type: string
@@ -5338,7 +5434,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 17
+                  example: 3
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5391,7 +5487,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 13
+                  example: 14
               required:
                 - user_id
   /api/v1/user/report:
@@ -5438,15 +5534,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: iure
+                  example: rem
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: omnis
+                  example: mollitia
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: culpa
+                  example: dolor
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5591,7 +5687,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quia
+                  example: cum
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5632,7 +5728,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: eum
+                  example: dicta
               required:
                 - user_ids
     parameters:
@@ -6313,7 +6409,7 @@ paths:
                 gender:
                   type: string
                   description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: male
+                  example: female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -6597,6 +6693,9 @@ tags:
     description: ''
   -
     name: Location
+    description: ''
+  -
+    name: Media
     description: ''
   -
     name: Merchant

@@ -112,10 +112,10 @@ class SupportRequestController extends Controller
 
         $supportRequest->load('messages');
 
-        return response()->json([
+        return [
             'message' => new SupportRequestMessageResource($message),
             'request' => new SupportRequestResource($supportRequest)
-        ]);
+        ];
     }
 
     /**

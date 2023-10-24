@@ -512,6 +512,10 @@ class ArticleController extends Controller
         // if request->video attach video from user_videos to article_videos collection media library
         if ($request->has('video')) {
             $userVideos = $user->getMedia(User::USER_VIDEO_UPLOADS)->whereIn('id', $request->video);
+            if (!$userVideos || count($userVideos) <= 0) { // TODO: in future completely remove line above, as all uploads will be synced to USER_VIDEO_UPLOADS
+                // get from user uplaods
+                $userVideos = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->video);
+            }
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
@@ -581,10 +585,16 @@ class ArticleController extends Controller
      */
     private function createOrAttachLocation($article, $locationData)
     {
-        // check if lat and lng exists
+        // search by google_id first if there is in locationData
+        $location = null;
+        if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+            $location = Location::where('google_id', $locationData['google_id'])->first();
+        }
+
+        // if location cant be found by google_id, then find by lat,lng
         $location = Location::where('lat', $locationData['lat'])
-            ->where('lng', $locationData['lng'])
-            ->first();
+           ->where('lng', $locationData['lng'])
+           ->first();
 
         // detach existing location first
         $article->location()->detach(); // detaches all
@@ -596,6 +606,7 @@ class ArticleController extends Controller
             // create new location
             $loc = [
                 'name' => $locationData['name'],
+                'google_id' => isset($locationData['google_id']) ? $locationData['google_id'] : null,
                 'lat' => $locationData['lat'],
                 'lng' => $locationData['lng'],
                 'address' => $locationData['address'] ?? '',
@@ -606,11 +617,19 @@ class ArticleController extends Controller
 
             // find state by id if the locationdata state is integer else find by name
             $state = null;
-            if (is_numeric($locationData['state'])) {
-                $state = State::where('id', $locationData['state'])->first();
-            } else {
-                // where lower(name) like %trim lower locationData['state']%
-                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
+            // match by google id first
+            if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+                $state = State::where('google_id', $locationData['google_id'])->first();
+            }
+
+            // if not matched via google id then proceed with state look up
+            if (!$state) {
+                if (is_numeric($locationData['state'])) {
+                    $state = State::where('id', $locationData['state'])->first();
+                } else {
+                    // where lower(name) like %trim lower locationData['state']%
+                    $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
+                }
             }
 
             if ($state) {
@@ -622,7 +641,17 @@ class ArticleController extends Controller
             } else {
                 // create new state and country
                 // default to Malaysia
-                $country = Country::where('name', 'Malaysia')->first();
+                // check if locationData has country
+                $country = null;
+                if (isset($locationData['country']) && $locationData['country'] != 0) {
+                    $country = Country::where('name', 'like', '%'.$locationData['country'].'%')->first();
+                }
+
+                if (!$country) {
+                      // defaults to malaysia
+                      $country = Country::where('name', 'Malaysia')->first();
+                }
+
                 // create state
                 $state = State::create([
                     'name' => $locationData['state'],
@@ -824,8 +853,8 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
-            // load relations
-            $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
+            // load relations count
+            $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);

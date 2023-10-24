@@ -1,82 +1,16 @@
-name: 'User Settings'
+name: Merchant
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/settings
+    uri: api/v1/merchant/offers/my_bookmarks
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Get settings of logged in user'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "name": "John Doe",
-           "email": "johndoe@gmail.com"
-           "username": "johndoe",
-           "dob": "1990-01-01",
-           "gender": "male",
-           "bio": "Hello",
-           "job_title": "Engineer",
-           "country_id": 1,
-           "state_id": 1,
-           "avatar": "https://www.example.com/avatar.jpg",
-           "avatar_thumb": "https://www.example.com/avatar_thumb.jpg",
-           "category_ids": [1,2,3]
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 404
-        content: '{"message": "No settings found yet."}'
-        headers: []
-        description: 'No settings found yet'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer hcPVkeag6ZaD5b43E1f8d6v'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/email
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Email'
+      title: 'Get My Bookmarked Merchant Offers'
       description: ''
       authenticated: true
       custom: []
@@ -89,86 +23,66 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      email:
-        name: email
-        description: 'Email of the user.'
-        required: true
-        example: john@gmail.com
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
         type: string
         custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
     cleanBodyParameters:
-      email: john@gmail.com
+      filter: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Email updated",
-          "email": "johndoe@gmail.com"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Email already verified for your account"}'
-        headers: []
-        description: 'Email already verified for your account'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer D8b34a661V5vghkfdaEePZc'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/verify/email
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Verify User Email with Token'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      token:
-        name: token
-        description: 'Token of the user.'
-        required: true
-        example: '123456'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      token: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Email Verified"
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
           }
         headers: []
         description: success
@@ -177,79 +91,21 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZgfEa4ah1Dckbvd58V366eP'
+      - 'Bearer Ee63vfk548DVcd1a6bgZPha'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/settings/name
+      - GET
+    uri: api/v1/merchant/offers
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Update User Name'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Name of the user.'
-        required: true
-        example: 'John Doe'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      name: 'John Doe'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Name updated",
-          "name": "John Doe"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer gZhEd4ve3a6a81DbV5cPf6k'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/article_categories
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Link Article Categories to User (used for interest tagging)'
+      title: 'Get Offers'
       description: ''
       authenticated: true
       custom: []
@@ -264,42 +120,135 @@ endpoints:
     bodyParameters:
       category_ids:
         name: category_ids
-        description: 'Array of article category ids.'
-        required: true
+        description: 'optional Merchant Category Ids to Filter.'
+        required: false
         example:
           - 1
           - 2
           - 3
         type: 'string[]'
         custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      available_only:
+        name: available_only
+        description: 'optional Filter by Available Only.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
     cleanBodyParameters:
       category_ids:
         - 1
         - 2
         - 3
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
+      available_only: true
+      filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Article categories linked to user",
-          "category_ids": [1,2,3]
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 8kPgVfdavcbe3D5a1h6Z4E6'
+      - 'Bearer 16Eh6ZP5baag4fvcDe3Vd8k'
     controller: null
     method: null
     route: null
@@ -307,189 +256,377 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/settings/avatar/upload
+    uri: api/v1/merchant/offers/claim
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Upload or Update User Profile Picture'
+      title: 'Claim Offer'
       description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      avatar:
-        name: avatar
-        description: 'One image file to upload.'
+      offer_id:
+        name: offer_id
+        description: 'Offer ID.'
         required: true
-        example: null
-        type: file
+        example: 1
+        type: integer
         custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: points/fiat
+        type: string
+        custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        custom: []
+      quantity:
+        name: quantity
+        description: Quantity.
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      offer_id: 1
+      payment_method: points/fiat
+      fiat_payment_method: fpx/card
+      quantity: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Offer Claimed"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Insufficient Point Balance"
+          }
+        headers: []
+        description: insufficient_point_balance
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Offer is no longer valid"
+          }
+        headers: []
+        description: offer_no_longer_valid
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer g86hfdVvcb4eZa6k31a5EPD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/redeem
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: |-
+        Redeem a Merchant Offer (In-Store)
+        This is when customer with claimed merchant offer wishes to redeem in store
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      claim_id:
+        name: claim_id
+        description: 'Claim ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      offer_id:
+        name: offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      quantity:
+        name: quantity
+        description: 'Quantity to Redeem.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      redeem_code:
+        name: redeem_code
+        description: 'Redemption Code Provided by Merchant.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      claim_id: 1
+      offer_id: 1
+      quantity: 1
+      redeem_code: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redeemed successfully",
+          "offer": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5v46Pk1h8Efeda6cZbgV3Da'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/cancel
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Cancel a Merchant Offer Transaction'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      merchant_offer_id:
+        name: merchant_offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      merchant_offer_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Transaction cancelled"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You have not claimed this offer"
+          }
+        headers: []
+        description: offer_pending_payment_not_found
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VhDZadbE86P3e5kc16f4gav'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/my_claimed_offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get My Merchant Offers (Logged in User)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      is_redeemed:
+        name: is_redeemed
+        description: 'optional Filter by Redeemed.'
+        required: false
+        example: 0.0
+        type: number
+        custom: []
+    cleanUrlParameters:
+      is_redeemed: 0.0
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
     cleanBodyParameters: []
-    fileParameters:
-      avatar: null
+    fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Avatar uploaded",
-          "avatar": "url",
-          "avatar_thumb": "url"
+          "data": []
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer aD8Eh3ZPfade1V4b6gkcv56'
+      - 'Bearer 8eV61gZbD5P3c4daEva6fhk'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/settings/cover/upload
+      - GET
+    uri: 'api/v1/merchant/offers/{offer_id}'
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Upload or Update User Cover'
+      title: 'Get Offer By ID'
       description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      cover:
-        name: cover
-        description: 'One image file to upload.'
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The ID of the offer.'
         required: true
-        example: null
-        type: file
+        example: aut
+        type: string
         custom: []
+    cleanUrlParameters:
+      offer_id: aut
+    queryParameters:
+      offer_id:
+        name: offer_id
+        description: 'Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      offer_id: 1
+    bodyParameters: []
     cleanBodyParameters: []
-    fileParameters:
-      cover: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Cover uploaded",
-          "cover": "url",
-          "cover_thumb": "url"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 4fZ6akvDEgadPh536cVbe81'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/username
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Username'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      username:
-        name: username
-        description: 'Username of the user.'
-        required: true
-        example: johndoe
-        type: string
-        custom: []
-    cleanBodyParameters:
-      username: johndoe
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Username updated",
-          "username": "johndoe"
+          "offer": {}
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 8vZfVa6Pdh6D4k3a1egcE5b'
+      - 'Bearer 651DPcad8bkvE6aghZ34fVe'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/settings/bio
+      - GET
+    uri: api/v1/merchant_categories
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Categories'
       subgroupDescription: ''
-      title: 'Update User Bio'
+      title: 'Get popular Merchant Categories'
       description: ''
       authenticated: true
       custom: []
@@ -502,52 +639,99 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      bio:
-        name: bio
-        description: 'Bio of the user.'
-        required: true
-        example: 'I am a software engineer'
+      is_featured:
+        name: is_featured
+        description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
         type: string
         custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
     cleanBodyParameters:
-      bio: 'I am a software engineer'
+      is_featured: 1
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Bio updated",
-          "bio": "I am a software engineer"
+          "categories": []
           }
         headers: []
         description: success
         custom: []
       -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
+        status: 404
+        content: ''
         headers: []
-        description: Unauthenticated
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer bd5fhaVDZ1Eacv3g4k6e6P8'
+      - 'Bearer DhE6e6Zv3a4a1b8PckfVdg5'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/settings/dob
+      - GET
+    uri: 'api/v1/merchant_categories/{offer_id}'
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Categories'
       subgroupDescription: ''
-      title: 'Update User Date of Birth'
+      title: 'Get Merchant Categories by offer id'
       description: ''
       authenticated: true
       custom: []
@@ -555,319 +739,42 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      day:
-        name: day
-        description: 'Day of the date of birth.'
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The id of the merchant offer id.'
         required: true
         example: 1
         type: integer
         custom: []
-      month:
-        name: month
-        description: 'Month of the date of birth.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      year:
-        name: year
-        description: 'Year of the date of birth.'
-        required: true
-        example: 1990
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      day: 1
-      month: 1
-      year: 1990
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Date of birth updated",
-          "dob": "1990-01-01"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer gdc8e6V3a4avfE16bhkD5PZ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/gender
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Save Gender'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    cleanUrlParameters:
+      offer_id: 1
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      gender:
-        name: gender
-        description: 'Must be one of <code>male</code> or <code>female</code>.'
-        required: true
-        example: male
-        type: string
-        custom: []
-    cleanBodyParameters:
-      gender: male
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Gender updated",
-          "gender": "male"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 86V1kDv5ZPc4faabheg6Ed3'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/location
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Location'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_id:
-        name: country_id
-        description: 'Country id of the user.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-      state_id:
-        name: state_id
-        description: 'State id of the user.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      country_id: 1
-      state_id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Location updated"
-          "country_id": 1,
-          "state_id": 1
+          "categories": []
           }
         headers: []
         description: success
         custom: []
       -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
+        status: 404
+        content: ''
         headers: []
-        description: Unauthenticated
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer fahD651eacg3Pd8V46vbZEk'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/job-title
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Job title'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      job_title:
-        name: job_title
-        description: 'Job title of the user.'
-        required: true
-        example: 'Software Engineer'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      job_title: 'Software Engineer'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Job Title updated",
-          "job_title": "Software Engineer"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer aPE6V36Z5cfDhagdk4vb18e'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/postUpdatePassword
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update user password (only for login with OTP)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      old_password:
-        name: old_password
-        description: 'The old password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        custom: []
-      password:
-        name: password
-        description: 'The new password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        custom: []
-      password_confirmation:
-        name: password_confirmation
-        description: 'The new password confirmation of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        custom: []
-    cleanBodyParameters:
-      old_password: abcd1234
-      password: abcd1234
-      password_confirmation: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Password updated"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-          "message": "The given data was invalid.",
-          "errors": {
-          "old_password": [
-           "The old password is incorrect"
-          ],
-          "password": [
-          "The password confirmation does not match."
-          ]
-          }
-        headers: []
-        description: 'validation error'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer aVc8edDakb6hf43vP5Z6gE1'
+      - 'Bearer 8keV6facagvZbE14Dd6h53P'
     controller: null
     method: null
     route: null

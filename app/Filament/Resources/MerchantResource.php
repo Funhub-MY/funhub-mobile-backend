@@ -2,20 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MerchantResource\Pages;
-use App\Filament\Resources\MerchantResource\RelationManagers;
-use App\Models\Merchant;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
-use Filament\Resources\Pages\CreateRecord;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Merchant;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Filament\Resources\Pages\CreateRecord;
+use App\Notifications\MerchantOnboardEmail;
+use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Filament\Resources\MerchantResource\RelationManagers;
 
 class MerchantResource extends Resource
 {
@@ -48,13 +52,10 @@ class MerchantResource extends Resource
                             ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
                             ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
 
-                        Forms\Components\Select::make('user_id')
-                            ->label('Attached To User Account')
-                            ->searchable()
-                            ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
-                            ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
+                        TextInput::make('email')
+                            ->label('Email')
                             ->required()
-                            ->relationship('user','name')
+                            ->rules('required', 'email')
                     ]),
                 Forms\Components\Section::make('Business Information')
                     ->schema([
@@ -111,6 +112,22 @@ class MerchantResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                BulkAction::make('sendEmail')
+                    ->label('Send Merchant Onboard Email')
+                    ->action(function (Collection $records) {
+                        foreach ($records as $record) {
+                            if (empty($record->default_password)) {
+                                $record->default_password = Str::random(8);
+                                $record->save();
+                                
+                                $user = $record->user;
+                                $user->password = bcrypt($record->default_password);
+                                $user->save();
+                            } 
+                            $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password));
+                        }
+                    })
+                    ->deselectRecordsAfterCompletion()
             ]);
     }
 
