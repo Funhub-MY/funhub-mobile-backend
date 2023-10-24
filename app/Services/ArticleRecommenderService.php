@@ -101,7 +101,7 @@ class ArticleRecommenderService
         $weight = 10;
 
         // reduce weight if older the article 30% of entire weight
-        $weight -= $weight * ($article->created_at->diffInDays(Carbon::now()) / 100);
+        $weight -= ($article->created_at->diffInDays(Carbon::now()) / 100) * 5;
 
         // reduce article weight if article is an imported article. weights the remainder 60%
         if ($article->imports()->exists()) {
