@@ -152,6 +152,9 @@ class ArticleController extends Controller
         // by defaulty off, unless provided build recommendations
         if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
             $rankIds = auth()->user()->articleRanks()
+                // join articles order by article creeated at latest first
+                ->join('articles', 'articles.id', '=', 'user_article_ranks.article_id')
+                ->orderBy('articles.created_at', 'desc')
                 ->orderBy('score', 'desc')
                 ->take(500)
                 ->get();
@@ -161,7 +164,7 @@ class ArticleController extends Controller
                 // then dispatch job to rebuild for user
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
-                    Log::info('Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id. ' Expiry Hours: '. config('app.recommendation_db_purge_hours'). ' - Last Built: '. $lastBuilt);
+                    Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id. ' Expiry Hours: '. config('app.recommendation_db_purge_hours'). ' - Last Built: '. $lastBuilt);
                     BuildRecommendationsForUser::dispatch(auth()->user());
                 }
             } else {
