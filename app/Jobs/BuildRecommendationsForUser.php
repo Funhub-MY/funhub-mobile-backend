@@ -34,10 +34,10 @@ class BuildRecommendationsForUser implements ShouldQueue
      *
      * @return array<int, object>
      */
-    public function middleware(): array
-    {
-        return [(new WithoutOverlapping($this->user->id))->dontRelease()];
-    }
+    // public function middleware(): array
+    // {
+    //     return [(new WithoutOverlapping($this->user->id))->dontRelease()];
+    // }
 
     /**
      * Execute the job.
