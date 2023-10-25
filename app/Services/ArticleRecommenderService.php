@@ -57,11 +57,10 @@ class ArticleRecommenderService
 
         if ($scores) {
           // delete all article ranks
-         $this->user->articleRanks()->delete();
+          $this->user->articleRanks()->delete();
           // recreate many from scores
           $this->user->articleRanks()->createMany($scores);
         }
-
 
         // return latest
         return $this->user->articleRanks;

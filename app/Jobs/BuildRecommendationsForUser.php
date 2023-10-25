@@ -17,6 +17,8 @@ class BuildRecommendationsForUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 1200;
+
     protected $recommender, $user;
     /**
      * Create a new job instance.
@@ -34,10 +36,10 @@ class BuildRecommendationsForUser implements ShouldQueue
      *
      * @return array<int, object>
      */
-    // public function middleware(): array
-    // {
-    //     return [(new WithoutOverlapping($this->user->id))->dontRelease()];
-    // }
+    public function middleware(): array
+    {
+        return [(new WithoutOverlapping($this->user->id))->dontRelease()];
+    }
 
     /**
      * Execute the job.
