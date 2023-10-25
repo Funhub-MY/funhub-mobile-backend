@@ -100,6 +100,11 @@ class GoodyMyRssService
         }
         $article_tags = ArticleTag::Select(DB::raw('id, LOWER(name) as name'))->get();
         foreach ($articles as $article) {
+            // if article title exists in db skip
+            $article_exists = Article::where('title', htmlspecialchars_decode($article['title']))->first();
+            if ($article_exists) {
+                continue;
+            }
             try {
                 $new_article = new Article();
                 $new_article->title = htmlspecialchars_decode($article['title']);
