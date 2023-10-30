@@ -108,21 +108,25 @@ class Location extends Model implements HasMedia
      */
     public function scopeWithinKmOf($query, $latitude, $longitude, $km)
     {
-        $box = static::boundingBox($latitude, $longitude, $km);
+        $box = static::boundingBox($latitude, $longitude, $km / 1000);
+        // Convert the latitudes to tranches
+        $box['minLat'] = (int)floor($box['minLat'] * 1000);
+        $box['maxLat'] = (int)ceil($box['maxLat'] * 1000);
+
+        // Fill out the range of possibilities.
+        $lats = range($box['minLat'], $box['maxLat']);
 
         Log::info('box', [
             'box' => $box,
-            'lat' => $latitude,
+            'lats' => $latitude,
             'lng' => $longitude,
             'km' => $km,
         ]);
 
         $query
             // Latitude part of the bounding box.
-            ->whereBetween('lat', [
-                $box['minLat'],
-                $box['maxLat']
-            ])
+            ->whereIn('lat_1000_floor', $lats)
+
             // Longitude part of the bounding box.
             ->whereBetween('lng', [
                 $box['minLon'],
