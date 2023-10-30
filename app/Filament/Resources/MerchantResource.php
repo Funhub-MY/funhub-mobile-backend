@@ -53,7 +53,10 @@ class MerchantResource extends Resource
                             ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
 
                         TextInput::make('email')
-                            ->label('Email')
+                            ->label('Email (used for Login)')
+                            ->email(true)
+                            ->unique(User::class, 'email', ignoreRecord: true)
+                            ->helperText('System auto send an email with their Login Email, Password to this address when created.')
                             ->required()
                             ->rules('required', 'email')
                     ]),
@@ -82,6 +85,7 @@ class MerchantResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('pic_email')
                             ->label('Email')
+                            ->helperText('For record purposes only, not used for login.')
                             ->required()
                             ->rules('required', 'email')
                     ]),
@@ -119,11 +123,11 @@ class MerchantResource extends Resource
                             if (empty($record->default_password)) {
                                 $record->default_password = Str::random(8);
                                 $record->save();
-                                
+
                                 $user = $record->user;
                                 $user->password = bcrypt($record->default_password);
                                 $user->save();
-                            } 
+                            }
                             $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password));
                         }
                     })
