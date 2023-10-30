@@ -137,7 +137,7 @@ class ArticleController extends Controller
                                 ) as distance', [$request->lat, $request->lng, $request->lat]
                 )
                 ->whereHas('location', function ($query) use ($request, $radius) {
-                    $query->withinDistanceOf($request->lat, $request->lng, $radius);
+                    $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
                 })
                 ->orderBy('distance', 'asc');
         }
