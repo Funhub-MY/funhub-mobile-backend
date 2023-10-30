@@ -129,12 +129,10 @@ class ArticleController extends Controller
             $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
                 ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
                 // add select to get distance from loc lat lng with request lat lng
-                ->selectRaw('articles.*, ( 6371 * acos( cos( radians(?) ) *
-                                cos( radians( loc.lat ) )
-                                * cos( radians( loc.lng ) - radians(?)
-                                ) + sin( radians(?) ) *
-                                sin( radians( loc.lat ) ) )
-                                ) as distance', [$request->lat, $request->lng, $request->lat]
+                ->selectRaw('articles.*, (ST_Distance_Sphere(
+                    point(lng, lat),
+                    point(?, ?)
+                  ) / 1000) as distance', [$request->lng, $request->lat]
                 )
                 ->whereHas('location', function ($query) use ($request, $radius) {
                     $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
@@ -149,7 +147,7 @@ class ArticleController extends Controller
             });
         }
 
-        // by defaulty off, unless provided build recommendations
+        // by default off, unless provided build recommendations
         if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
             $rankIds = auth()->user()->articleRanks()
                 // join articles order by article creeated at latest first
