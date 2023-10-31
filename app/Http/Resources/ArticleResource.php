@@ -49,6 +49,7 @@ class ArticleResource extends JsonResource
                 'avatar_thumb' => $this->user->avatar_thumb_url,
                 'following_count' => $this->user_followings_count,
                 'followers_count' => $this->user_followers_count,
+                'has_avatar' => $this->user->hasMedia('avatar'),
             ],
             'categories' => ArticleCategoryResource::collection($this->categories),
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
