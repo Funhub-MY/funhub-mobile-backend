@@ -47,6 +47,6 @@ class CreateMerchant extends CreateRecord
         $this->record->user_id = $user->id;
         $this->record->save();
 
-        $user->notify(new MerchantOnboardEmail($name, $email, $password));
+        $user->notify(new MerchantOnboardEmail($name, $email, $password, $this->record->redeem_code));
     }
 }

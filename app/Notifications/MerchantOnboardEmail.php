@@ -6,23 +6,25 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class MerchantOnboardEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $merchantName, $userEmail, $defaultPassword;
+    protected $merchantName, $userEmail, $defaultPassword, $redeemCode;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($merchantName, $userEmail, $defaultPassword)
+    public function __construct($merchantName, $userEmail, $defaultPassword, $redeemCode)
     {
         $this->merchantName = $merchantName;
         $this->userEmail = $userEmail;
         $this->defaultPassword = $defaultPassword;
+        $this->redeemCode = $redeemCode;
     }
 
     /**
@@ -50,6 +52,7 @@ class MerchantOnboardEmail extends Notification implements ShouldQueue
                 'merchantName' => $this->merchantName,
                 'userEmail' => $this->userEmail,
                 'defaultPassword' => $this->defaultPassword,
+                'redeemCode' => $this->redeemCode,
             ]);
     }
 

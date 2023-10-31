@@ -20,6 +20,7 @@ use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
+use Filament\Notifications\Notification;
 
 class MerchantResource extends Resource
 {
@@ -128,9 +129,15 @@ class MerchantResource extends Resource
                                 $user->password = bcrypt($record->default_password);
                                 $user->save();
                             }
-                            $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password));
+                            $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
+
+                            Notification::make()
+                                ->title('Sent to ' . $record->user->email)
+                                ->success()
+                                ->send();
                         }
                     })
+                    ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion()
             ]);
     }

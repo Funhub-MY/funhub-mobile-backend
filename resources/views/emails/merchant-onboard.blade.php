@@ -1,15 +1,15 @@
 <x-mail::message>
 Welcome {{ $merchantName }},
 
-Below are your login details:<br>
-Email: {{ $userEmail }}<br>
-Password: {{ $defaultPassword }}
+### Below are your login details<br>
 
-<x-mail::button :url="'/'">
+Email: {{ $userEmail }}<br>
+Password: {{ $defaultPassword }}<br>
+Master Code(for Redemption use): {{ $redeemCode }}
+
+<x-mail::button :url="url('/')">
 Click here to Login
 </x-mail::button>
-
-Steps:
 
 Thank you,<br>
 {{ config('app.name') }}
