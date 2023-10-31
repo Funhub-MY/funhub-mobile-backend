@@ -116,13 +116,6 @@ class Location extends Model implements HasMedia
         // Fill out the range of possibilities.
         $lats = range($box['minLat'], $box['maxLat']);
 
-        Log::info('box', [
-            'box' => $box,
-            'lats' => $latitude,
-            'lng' => $longitude,
-            'km' => $km,
-        ]);
-
         $query
             // Latitude part of the bounding box.
             ->whereIn('lat_1000_floor', $lats)
