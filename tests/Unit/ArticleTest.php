@@ -1185,8 +1185,8 @@ class ArticleTest extends TestCase
             $article->location()->create([
                 'name' => 'Test Location',
                 'address' => 'Test Address',
-                'lat' => 3.0130517,
-                'lng' => 101.6199414,
+                'lat' => 3.0254065,
+                'lng' => 101.5814762,
                 'address_2' => 'Test Address 2',
                 'city' => $cities[0],
                 'state_id' => State::where('name', 'Selangor')->first()->id,
@@ -1196,7 +1196,7 @@ class ArticleTest extends TestCase
         }
 
         // my location: 3.013814, 101.622510
-        $response = $this->getJson('/api/v1/articles?lat=3.013814&lng=101.622510&radius=10000');
+        $response = $this->getJson('/api/v1/articles?lat=3.0254065&lng=101.5814762');
 
         // assert data is 10 as its nearby
         $this->assertCount(10, $response->json('data'));
