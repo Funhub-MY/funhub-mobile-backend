@@ -37,7 +37,7 @@ class InteractionResource extends JsonResource
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'share_url' => ($this->type == Interaction::TYPE_SHARE) ? $this->share_url : null,
+            'share_url' => null,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->created_at->diffForHumans(),
         ];

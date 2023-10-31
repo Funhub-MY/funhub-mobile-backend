@@ -112,6 +112,16 @@ class Article extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function userFollowers()
+    {
+        return $this->hasManyThrough(User::class, UserFollowing::class, 'following_id', 'id', 'user_id', 'user_id');
+    }
+
+    public function userFollowings()
+    {
+        return $this->hasManyThrough(User::class, UserFollowing::class, 'user_id', 'id', 'id', 'following_id');
+    }
+
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');

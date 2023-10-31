@@ -78,10 +78,7 @@ class Interaction extends Model
       */
     public function getShareUrlAttribute()
     {
-        if ( $this->shareableLink()->first()) {
-            return url('/s/'.$this->shareableLink()->first()->link);
-        } else {
-            return null;
-        }
+        // DEPRECATED
+        return null;
     }
 }
