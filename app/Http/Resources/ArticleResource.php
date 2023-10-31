@@ -46,8 +46,8 @@ class ArticleResource extends JsonResource
                 'name' => $this->user->name,
                 'avatar' => $this->user->avatar,
                 'avatar_thumb' => $this->user->avatar_thumb,
-                'following_count' => $this->user->followings()->count(),
-                'followers_count' => $this->user->followers()->count(),
+                'following_count' => $this->user_followings_count,
+                'followers_count' => $this->user_followers_count,
                 'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
             ],
             'categories' => ArticleCategoryResource::collection($this->categories),
