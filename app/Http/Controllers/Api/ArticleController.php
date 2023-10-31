@@ -129,11 +129,10 @@ class ArticleController extends Controller
             $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
                 ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
                 // add select to get distance from loc lat lng with request lat lng
-                ->selectRaw('articles.*, (ST_Distance_Sphere(
+                ->selectRaw('articles.*, ROUND(ST_Distance_Sphere(
                     point(lng, lat),
                     point(?, ?)
-                  ) / 1000) as distance', [$request->lng, $request->lat]
-                )
+                )) / 1000 as distance', [$request->lng, $request->lat])
                 ->whereHas('location', function ($query) use ($request, $radius) {
                     $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
                 })
@@ -210,7 +209,7 @@ class ArticleController extends Controller
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
-        $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
+        $data = $query->with('user', 'user.media', 'user.followers', 'user.followings', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->paginate($paginatePerPage);
 
