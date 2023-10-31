@@ -126,7 +126,6 @@ class Location extends Model implements HasMedia
         $query
             // Latitude part of the bounding box.
             ->whereIn('lat_1000_floor', $lats)
-
             // Longitude part of the bounding box.
             ->whereBetween('lng', [
                 $box['minLon'],
