@@ -26,7 +26,10 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Actions\Action;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Filament\Tables\Actions\RestoreAction;
 
 class MerchantOfferResource extends Resource
 {
@@ -351,6 +354,67 @@ class MerchantOfferResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                ReplicateAction::make('duplicate')
+                    ->excludeAttributes(['quantity', 'available_at', 'available_until', 'publish_at', 'status'])
+                    ->mountUsing(fn (Forms\ComponentContainer $form, MerchantOffer $record) => $form->fill([
+                    'sku' => $record->sku,
+                    'idOfModelToBeReplicate' => $record->id,
+                    ]))
+                    ->form([
+                        Hidden::make('idOfModelToBeReplicate'),
+                        Forms\Components\Select::make('status')
+                        ->options(MerchantOffer::STATUS)->default(0),
+                        Forms\Components\TextInput::make('sku')
+                            ->label('SKU')
+                            ->required(),
+                        Forms\Components\DateTimePicker::make('available_at')
+                            ->required(),
+                        Forms\Components\DateTimePicker::make('available_until')
+                            ->required(),
+                        DatePicker::make('publish_at')
+                            ->label('Publish Date')
+                            ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
+                            ->minDate(now()->addDay()->startOfDay())
+                            ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Available Quantity')
+                            ->required()
+                            ->numeric()
+                            ->minValue(1),
+                    ])
+                    ->beforeReplicaSaved(function (MerchantOffer $replica, array $data): void {
+                        $replica->fill($data);
+                    })
+                    ->afterReplicaSaved(function (MerchantOffer $replica, array $data): void {
+                        $idOfModelToBeReplicated = $data['idOfModelToBeReplicate'];
+
+                        // Retrieve the images associated with the original model.
+                        $originalMediaCollectionNameImgs = Media::where('model_id', $idOfModelToBeReplicated)
+                            ->where('collection_name', MerchantOffer::MEDIA_COLLECTION_NAME)
+                            ->get();
+
+                        foreach ($originalMediaCollectionNameImgs as $originalMediaCollectionNameImg) {
+                            // Copy the image to the new model.
+                            $replica->addMedia($originalMediaCollectionNameImg->getPath())
+                                ->preservingOriginal()
+                                ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
+                        }
+
+                        $originalHorizontalBannerImgs = Media::where('model_id', $idOfModelToBeReplicated)
+                            ->where('collection_name', MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER)
+                            ->get();
+
+                        foreach ($originalHorizontalBannerImgs as $originalHorizontalBannerImg) {
+                            // Copy the image to the new model.
+                            $replica->addMedia($originalHorizontalBannerImg->getPath())
+                                ->preservingOriginal()
+                                ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+                        }
+
+                        redirect()->route('filament.resources.merchant-offers.edit', $replica);
+
+                    })
+                    ->icon('heroicon-s-document-duplicate'),
                 // Action::make('duplicate')
                 //     ->mountUsing(fn (Forms\ComponentContainer $form, MerchantOffer $record) => $form->fill([
                 //         'sku' => $record->flight_date,
