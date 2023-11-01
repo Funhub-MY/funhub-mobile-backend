@@ -44,6 +44,9 @@ class CreateMerchant extends CreateRecord
 
         $user->save();
 
+        // attach merchant role
+        $user->assignRole('merchant');
+
         $this->record->user_id = $user->id;
         $this->record->save();
 
