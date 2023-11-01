@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 sudo cp ../../files/mycustomlogs.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/mycustomlogs.json
 
