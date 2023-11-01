@@ -272,5 +272,7 @@ return [
 
     'mpay_default_email_tld' => env('MPAY_DEFAULT_EMAIL', '@funhub.my'),
 
+    'mpay_default_phone' => env('MPAY_DEFAULT_PHONE', '60123456789'),
+
     'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
 ];

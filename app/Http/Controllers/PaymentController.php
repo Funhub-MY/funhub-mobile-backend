@@ -126,10 +126,20 @@ class PaymentController extends Controller
             } else if ($request->responseCode == 'PE') { // pending
                 return 'Transaction Still Pending';
             } else { // failed
+                Log::error('Payment return failed', [
+                    'error' => 'Transaction Failed',
+                    'request' => request()->all()
+                ]);
+                $gatewayId = $request->mpay_ref_no;
+                if (!$request->mpay_ref_no) {
+                    // dont have mpay ref no when failed then use responseCode
+                    $gatewayId = 'RES'.$request->responseCode;
+                }
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
-                    'gateway_transaction_id' => $request->mpay_ref_no,
+                    'gateway_transaction_id' => $gatewayId,
                 ]);
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
                 } else if ($transaction->transactionable_type == Product::class) {
