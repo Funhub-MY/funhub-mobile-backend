@@ -50,6 +50,7 @@ class ArticleResource extends JsonResource
                 'following_count' => $this->user_followings_count,
                 'followers_count' => $this->user_followers_count,
                 'has_avatar' => $this->user->hasMedia('avatar'),
+                'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
             ],
             'categories' => ArticleCategoryResource::collection($this->categories),
             'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
