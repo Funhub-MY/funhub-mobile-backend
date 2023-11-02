@@ -34,6 +34,11 @@ class ViewTest extends TestCase
         $response
             ->assertOk()
             ->assertJson(['message' => 'View recorded']);
+
+        $this->assertDatabaseHas('views', [
+            'viewable_type' => Article::class,
+            'viewable_id' => 1,
+        ]);
     }
 
     public function testGetViews()
@@ -49,6 +54,11 @@ class ViewTest extends TestCase
                 'views',
                 'total',
             ]);
+
+        $this->assertDatabaseHas('views', [
+            'viewable_type' => 'App\Models\Article',
+            'viewable_id' => 1,
+        ]);
     }
 }
 
