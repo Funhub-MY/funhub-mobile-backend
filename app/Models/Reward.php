@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Reward extends Model implements HasMedia
+class Reward extends BaseModel implements HasMedia
 {
     use HasFactory, SoftDeletes, InteractsWithMedia;
 
@@ -43,5 +43,5 @@ class Reward extends Model implements HasMedia
     {
         return $this->belongsToMany(Product::class, 'product_reward')->withPivot('quantity');
     }
-    
+
 }
