@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserBlock extends Model
+class UserBlock extends BaseModel
 {
     use HasFactory, SoftDeletes;
 

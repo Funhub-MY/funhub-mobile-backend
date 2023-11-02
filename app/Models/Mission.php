@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
-class Mission extends Model implements HasMedia
+class Mission extends BaseModel implements HasMedia
 {
     use HasFactory, SoftDeletes, InteractsWithMedia;
 

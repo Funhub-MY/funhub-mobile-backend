@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Interaction extends Model
+class Interaction extends BaseModel
 {
     use HasFactory;
+
+    protected $cacheCooldownSeconds = 300; // 5 minutes
 
     const STATUS = [
         0 => 'Draft',
