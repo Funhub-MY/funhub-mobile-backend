@@ -27,6 +27,7 @@ endpoints:
         required: false
         example: 'false'
         type: string
+        enumValues: []
         custom: []
     cleanUrlParameters:
       claimed_only: 'false'
@@ -78,7 +79,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cbekVEg38da5vhfa6Z146DP'
+      - 'Bearer E6h8kbaP6ca1Z5vVf34degD'
     controller: null
     method: null
     route: null
@@ -111,6 +112,7 @@ endpoints:
         required: false
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       mission_id: 1
@@ -136,7 +138,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8PZfda566aD3VE1eckghb4v'
+      - 'Bearer ZacVdhv8b13Deag6Pf4k5E6'
     controller: null
     method: null
     route: null
@@ -185,7 +187,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PDkaE146vbgf6Vacdh3e85Z'
+      - 'Bearer h64eDEckg5ZVva13bPfd68a'
     controller: null
     method: null
     route: null

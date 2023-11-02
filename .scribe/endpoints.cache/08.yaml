@@ -64,7 +64,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b1ZE6a56PvcdD3hk4fag8eV'
+      - 'Bearer E1adg3866hDavPkbZf5ce4V'
     controller: null
     method: null
     route: null
@@ -97,6 +97,7 @@ endpoints:
         required: true
         example: john@gmail.com
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       email: john@gmail.com
@@ -128,7 +129,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k1bePd3DZ8cE6v4haf5a6gV'
+      - 'Bearer vc6ZDdgf6381eaVh4kEab5P'
     controller: null
     method: null
     route: null
@@ -161,6 +162,7 @@ endpoints:
         required: true
         example: '123456'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       token: '123456'
@@ -179,7 +181,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8vVP5ZbfD6kEg46ad31heca'
+      - 'Bearer cVabahE6ev34fk6Z18PdgD5'
     controller: null
     method: null
     route: null
@@ -212,6 +214,7 @@ endpoints:
         required: true
         example: 'John Doe'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       name: 'John Doe'
@@ -237,7 +240,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kavf6e8a4gVE5361cbdhDZP'
+      - 'Bearer 381a4VbgeafDZcd665EhPkv'
     controller: null
     method: null
     route: null
@@ -273,6 +276,7 @@ endpoints:
           - 2
           - 3
         type: 'string[]'
+        enumValues: []
         custom: []
     cleanBodyParameters:
       category_ids:
@@ -301,7 +305,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3Z18EvcDgPVda5af646behk'
+      - 'Bearer DkVfPb65gd4aah8vE31Ze6c'
     controller: null
     method: null
     route: null
@@ -334,6 +338,7 @@ endpoints:
         required: true
         example: null
         type: file
+        enumValues: []
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -360,7 +365,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z38gaE4hePfk5cDbda1vV66'
+      - 'Bearer Zf1vkb3a8D64VPea6Egc5dh'
     controller: null
     method: null
     route: null
@@ -393,6 +398,7 @@ endpoints:
         required: true
         example: null
         type: file
+        enumValues: []
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -419,7 +425,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZ863egbE4haVcDaP1dvf56'
+      - 'Bearer aZPd8h4eDV1f66Ekcb35agv'
     controller: null
     method: null
     route: null
@@ -452,6 +458,7 @@ endpoints:
         required: true
         example: johndoe
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       username: johndoe
@@ -477,7 +484,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E6eVv5P6Z3gah1ckdba8f4D'
+      - 'Bearer b5DEc1g6dv4fZ86Pkaa3Vhe'
     controller: null
     method: null
     route: null
@@ -510,6 +517,7 @@ endpoints:
         required: true
         example: 'I am a software engineer'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       bio: 'I am a software engineer'
@@ -535,7 +543,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ahePkgVZa4bc8613Ed5fvD6'
+      - 'Bearer ghV163a4Pbc8dDEka6Z5fev'
     controller: null
     method: null
     route: null
@@ -568,6 +576,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       month:
         name: month
@@ -575,6 +584,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       year:
         name: year
@@ -582,6 +592,7 @@ endpoints:
         required: true
         example: 1990
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       day: 1
@@ -609,7 +620,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hackg43vDeb8fZ61Pd56VEa'
+      - 'Bearer va5gdfbhD6e41Z3PEk8acV6'
     controller: null
     method: null
     route: null
@@ -638,10 +649,13 @@ endpoints:
     bodyParameters:
       gender:
         name: gender
-        description: 'Must be one of <code>male</code> or <code>female</code>.'
+        description: ''
         required: true
         example: female
         type: string
+        enumValues:
+          - male
+          - female
         custom: []
     cleanBodyParameters:
       gender: female
@@ -661,7 +675,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fdevkP384cZbV5hDgE6a61a'
+      - 'Bearer 136P8a5cg6abDVfvEheZ4kd'
     controller: null
     method: null
     route: null
@@ -694,6 +708,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       state_id:
         name: state_id
@@ -701,6 +716,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       country_id: 1
@@ -728,7 +744,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZ8Dkbd1EVge4aah6f6vP53'
+      - 'Bearer g86D4kPvf6Zce3V5Eahb1da'
     controller: null
     method: null
     route: null
@@ -761,6 +777,7 @@ endpoints:
         required: true
         example: 'Software Engineer'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       job_title: 'Software Engineer'
@@ -786,7 +803,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gdbZcv5EkPVea83f61h46Da'
+      - 'Bearer v1EdfeP6ZDV43hcaa5bg6k8'
     controller: null
     method: null
     route: null
@@ -819,6 +836,7 @@ endpoints:
         required: true
         example: abcd1234
         type: string
+        enumValues: []
         custom: []
       password:
         name: password
@@ -826,6 +844,7 @@ endpoints:
         required: true
         example: abcd1234
         type: string
+        enumValues: []
         custom: []
       password_confirmation:
         name: password_confirmation
@@ -833,6 +852,7 @@ endpoints:
         required: true
         example: abcd1234
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       old_password: abcd1234
@@ -869,7 +889,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4Zkg3a6P1vdchf5a68DeVb'
+      - 'Bearer EVkvZge4aDPah61c5dfb836'
     controller: null
     method: null
     route: null

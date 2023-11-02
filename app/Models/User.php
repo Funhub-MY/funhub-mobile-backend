@@ -490,4 +490,9 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     {
         return $this->followings()->detach($user->id);
     }
+
+    public function views()
+    {
+        return $this->morphMany(View::class, 'viewable');
+    }
 }

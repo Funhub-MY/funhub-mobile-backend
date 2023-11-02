@@ -14,7 +14,7 @@ endpoints:
       subgroupDescription: ''
       title: |-
         Record view for viewable
-        This is used for recording views for articles, comments, and merchant offers
+        This is used for recording views for articles, comments, merchant offers, and user profiles
       description: ''
       authenticated: true
       custom: []
@@ -31,8 +31,9 @@ endpoints:
         name: viewable_type
         description: 'The type of the viewable.'
         required: true
-        example: article/comment/merchant_offer
+        example: article/comment/merchant_offer/user_profile
         type: string
+        enumValues: []
         custom: []
       viewable_id:
         name: viewable_id
@@ -40,9 +41,10 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      viewable_type: article/comment/merchant_offer
+      viewable_type: article/comment/merchant_offer/user_profile
       viewable_id: 1
     fileParameters: []
     responses:
@@ -59,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EaV84v163dDk5hecbfZPa6g'
+      - 'Bearer 466bda8a5chD13vgfZePVkE'
     controller: null
     method: null
     route: null
@@ -75,7 +77,7 @@ endpoints:
       subgroupDescription: ''
       title: |-
         Get views for viewable type
-        This is used for getting views for articles, comments, and merchant offers
+        This is used for getting views for articles, comments, merchant offers, and user profiles
       description: ''
       authenticated: true
       custom: []
@@ -88,8 +90,9 @@ endpoints:
         name: type
         description: 'The type of the viewable.'
         required: true
-        example: article/comment/merchant_offer
+        example: article/comment/merchant_offer/user_profile
         type: string
+        enumValues: []
         custom: []
       id:
         name: id
@@ -97,9 +100,10 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanUrlParameters:
-      type: article/comment/merchant_offer
+      type: article/comment/merchant_offer/user_profile
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -121,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vfck1DP3hdZ6bae48vEag56'
+      - 'Bearer fPV6av8g45hDaZc6kde1b3E'
     controller: null
     method: null
     route: null

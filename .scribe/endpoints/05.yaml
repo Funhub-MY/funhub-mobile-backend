@@ -29,6 +29,7 @@ endpoints:
         required: true
         example: 'article,merchant_offer'
         type: string
+        enumValues: []
         custom: []
       id:
         name: id
@@ -36,6 +37,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       type:
         name: type
@@ -43,6 +45,7 @@ endpoints:
         required: true
         example: 'like,dislike,share,bookmark'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
@@ -66,7 +69,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ef5VZakE643c61h8DdPvbga'
+      - 'Bearer da8e6b63fgaZhv5ckDP1V4E'
     controller: null
     method: null
     route: null
@@ -99,6 +102,7 @@ endpoints:
         required: true
         example: 'article,merchant_offer'
         type: string
+        enumValues: []
         custom: []
       id:
         name: id
@@ -106,6 +110,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       filter:
         name: filter
@@ -113,6 +118,7 @@ endpoints:
         required: false
         example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
         type: string
+        enumValues: []
         custom: []
       filter_value:
         name: filter_value
@@ -120,6 +126,7 @@ endpoints:
         required: false
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
+        enumValues: []
         custom: []
       sort:
         name: sort
@@ -127,6 +134,7 @@ endpoints:
         required: false
         example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
         type: string
+        enumValues: []
         custom: []
       order:
         name: order
@@ -134,6 +142,7 @@ endpoints:
         required: false
         example: 'Sortable directions are: asc, desc'
         type: string
+        enumValues: []
         custom: []
       limit:
         name: limit
@@ -141,6 +150,7 @@ endpoints:
         required: false
         example: 10
         type: integer
+        enumValues: []
         custom: []
       offset:
         name: offset
@@ -148,6 +158,7 @@ endpoints:
         required: false
         example: 0
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
@@ -183,7 +194,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EDhac3Zf8g4Vkdb6a56ePv1'
+      - 'Bearer hdgP6c8fkD3a4eE1bavV6Z5'
     controller: null
     method: null
     route: null
@@ -216,6 +227,7 @@ endpoints:
         required: true
         example: 'article,merchant_offer'
         type: string
+        enumValues: []
         custom: []
       type:
         name: type
@@ -223,6 +235,7 @@ endpoints:
         required: true
         example: 'like,dislike,share,bookmark'
         type: string
+        enumValues: []
         custom: []
       id:
         name: id
@@ -230,6 +243,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       code:
         name: code
@@ -237,6 +251,7 @@ endpoints:
         required: false
         example: '1'
         type: string
+        enumValues: []
         custom: []
       model_type:
         name: model_type
@@ -244,6 +259,7 @@ endpoints:
         required: false
         example: 'article,merchant_offer'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
@@ -272,7 +288,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZ584366kbaVvghP1EcDdfa'
+      - 'Bearer Z4fD8b6dPEkaaeV1vg63h5c'
     controller: null
     method: null
     route: null
@@ -301,6 +317,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanUrlParameters:
       id: 1
@@ -323,7 +340,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer keEVa34dPvZcb856aD1g6hf'
+      - 'Bearer 66dPgvZDa48k3Ea5efh1cbV'
     controller: null
     method: null
     route: null
@@ -354,6 +371,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanUrlParameters:
       id: 1
@@ -382,7 +400,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 38baceV6vh6D4PdE1Zfag5k'
+      - 'Bearer 6gP4aDVd8a61bkEhf5v3Zec'
     controller: null
     method: null
     route: null

@@ -1,25 +1,18 @@
 openapi: 3.0.3
 info:
-  title: FUNHUB
+  title: Funhub
   description: ''
   version: 1.0.0
 servers:
   -
-    url: 'https://funhub-mobile-backend.test'
+    url: 'http://funhub-mobile-backend.test'
 paths:
   /api/v1/article_cities:
     get:
       summary: 'Get Article Cities (Unique)'
       operationId: getArticleCitiesUnique
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -55,14 +48,7 @@ paths:
       summary: 'Upload Images for Article'
       operationId: uploadImagesForArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -137,14 +123,7 @@ paths:
       summary: 'Upload Video for Article'
       operationId: uploadVideoForArticle
       description: "Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration\n\nMust be able to stream completion percentage back to client"
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -178,14 +157,7 @@ paths:
       summary: 'Get Articles by User ID or Logged In User'
       operationId: getArticlesByUserIDOrLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -240,14 +212,7 @@ paths:
       summary: 'Get Bookmarked Articles by User ID or Logged In User'
       operationId: getBookmarkedArticlesByUserIDOrLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -298,14 +263,7 @@ paths:
       summary: 'Report an article'
       operationId: reportAnArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -333,7 +291,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 4
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +299,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: quibusdam
+                  example: omnis
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: optio
+                  example: quae
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -360,14 +318,7 @@ paths:
       summary: 'Hide Article When Not Interested By user'
       operationId: hideArticleWhenNotInterestedByUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -401,14 +352,7 @@ paths:
       summary: 'Get Tagged users of article'
       operationId: getTaggedUsersOfArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -437,14 +381,7 @@ paths:
       summary: 'Get Article Merchant Offers'
       operationId: getArticleMerchantOffers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -487,14 +424,7 @@ paths:
       summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
       operationId: getArticlesForLoggedInUserforHomePageNoteUsersOwnPostsWillNotShowUpOnHomePage
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -516,7 +446,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - qui
+                    - est
                   items:
                     type: string
                 category_ids:
@@ -585,14 +515,7 @@ paths:
       summary: 'Create New Article'
       operationId: createNewArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -703,14 +626,7 @@ paths:
       summary: 'Get One Article by ID'
       operationId: getOneArticleByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -723,7 +639,7 @@ paths:
                 properties:
                   article:
                     type: object
-                    properties: []
+                    properties: {  }
         404:
           description: 'Not Found'
           content:
@@ -742,14 +658,7 @@ paths:
       summary: 'Update article by ID. (Only owner of article can update)'
       operationId: updateArticleByIDOnlyOwnerOfArticleCanUpdate
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -842,14 +751,7 @@ paths:
       summary: 'Remove article by ID. (Only owner of article can delete)'
       operationId: removeArticleByIDOnlyOwnerOfArticleCanDelete
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -891,14 +793,7 @@ paths:
       summary: 'Get popular tags'
       operationId: getPopularTags
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -957,14 +852,7 @@ paths:
       summary: 'Get Tags by article id'
       operationId: getTagsByArticleId
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1001,14 +889,7 @@ paths:
       summary: 'Get popular Article Categories'
       operationId: getPopularArticleCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1071,14 +952,7 @@ paths:
       summary: 'Get All Article Categories'
       operationId: getAllArticleCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1106,14 +980,7 @@ paths:
       summary: 'Get Article Categories by article id'
       operationId: getArticleCategoriesByArticleId
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1150,14 +1017,7 @@ paths:
       summary: 'Get replies to a comment'
       operationId: getRepliesToAComment
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1216,7 +1076,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: nam
+        example: quo
         required: true
         schema:
           type: string
@@ -1225,14 +1085,7 @@ paths:
       summary: 'Toggle a Comment Like'
       operationId: toggleACommentLike
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1268,14 +1121,7 @@ paths:
       summary: 'Report a comment'
       operationId: reportAComment
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1311,11 +1157,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptatem
+                  example: temporibus
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptatem
+                  example: ea
               required:
                 - comment_id
                 - reason
@@ -1324,14 +1170,7 @@ paths:
       summary: 'Get comments on a commentable type (eg. Articles)'
       operationId: getCommentsOnACommentableTypeegArticles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1399,14 +1238,7 @@ paths:
       summary: 'Create a new comment by logged in user'
       operationId: createANewCommentByLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1463,14 +1295,7 @@ paths:
       summary: 'Show one comment by ID'
       operationId: showOneCommentByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1516,14 +1341,7 @@ paths:
       summary: 'Update comment by ID. (Only owner of comment can update)'
       operationId: updateCommentByIDOnlyOwnerOfCommentCanUpdate
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1570,14 +1388,7 @@ paths:
       summary: 'Remove comment by ID. (Only owner of comment can delete)'
       operationId: removeCommentByIDOnlyOwnerOfCommentCanDelete
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses: {  }
       tags:
         - Article
@@ -1586,7 +1397,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: distinctio
+        example: maxime
         required: true
         schema:
           type: string
@@ -1762,7 +1573,7 @@ paths:
                 properties:
                   user:
                     type: object
-                    properties: []
+                    properties: {  }
                   token:
                     type: string
                     example: auth_token
@@ -2044,14 +1855,7 @@ paths:
       summary: Logout
       operationId: logout
       description: 'Log User Out and destroy any active tokens of user'
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2084,14 +1888,7 @@ paths:
       summary: 'Complete Profile'
       operationId: completeProfile
       description: 'Complete user profile after registration'
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2153,14 +1950,7 @@ paths:
       summary: 'Send Verification Email with Token Inside'
       operationId: sendVerificationEmailWithTokenInside
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2194,14 +1984,7 @@ paths:
       summary: 'Verify Email with Token'
       operationId: verifyEmailWithToken
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2242,14 +2025,7 @@ paths:
       summary: 'Get Article (public)'
       operationId: getArticlepublic
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         404:
           description: ''
@@ -2260,399 +2036,399 @@ paths:
                 example:
                   message: ''
                   exception: Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-                  file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                  file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
                   line: 1144
                   trace:
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
                       line: 45
                       function: abort
                       class: Illuminate\Foundation\Application
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1157
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
+                      line: 1182
                       function: abort
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
                       line: 54
                       function: getArticleForPublicView
                       class: App\Http\Controllers\Api\ArticleController
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
                       line: 43
                       function: callAction
                       class: Illuminate\Routing\Controller
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                       line: 259
                       function: dispatch
                       class: Illuminate\Routing\ControllerDispatcher
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                       line: 205
                       function: runController
                       class: Illuminate\Routing\Route
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                       line: 798
                       function: run
                       class: Illuminate\Routing\Route
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 141
                       function: 'Illuminate\Routing\{closure}'
                       class: Illuminate\Routing\Router
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
                       line: 50
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Routing\Middleware\SubstituteBindings
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
                       line: 126
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
                       line: 92
                       function: handleRequest
                       class: Illuminate\Routing\Middleware\ThrottleRequests
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
                       line: 54
                       function: handleRequestUsingNamedLimiter
                       class: Illuminate\Routing\Middleware\ThrottleRequests
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Routing\Middleware\ThrottleRequests
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 116
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                       line: 797
                       function: then
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                       line: 776
                       function: runRouteWithinStack
                       class: Illuminate\Routing\Router
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                       line: 740
                       function: runRoute
                       class: Illuminate\Routing\Router
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                       line: 729
                       function: dispatchToRoute
                       class: Illuminate\Routing\Router
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
                       line: 190
                       function: dispatch
                       class: Illuminate\Routing\Router
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 141
                       function: 'Illuminate\Foundation\Http\{closure}'
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                       line: 19
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Livewire\DisableBrowserCache
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
                       line: 21
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
                       line: 31
                       function: handle
                       class: Illuminate\Foundation\Http\Middleware\TransformsRequest
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
                       line: 21
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
                       line: 40
                       function: handle
                       class: Illuminate\Foundation\Http\Middleware\TransformsRequest
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Foundation\Http\Middleware\TrimStrings
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
                       line: 27
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
                       line: 86
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
                       line: 62
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Http\Middleware\HandleCors
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
                       line: 39
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 180
                       function: handle
                       class: Illuminate\Http\Middleware\TrustProxies
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                       line: 116
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
                       line: 165
                       function: then
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
                       line: 134
                       function: sendRequestThroughRouter
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                       line: 299
                       function: handle
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                       line: 287
                       function: callLaravelOrLumenRoute
                       class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                       line: 92
                       function: makeApiCall
                       class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                       line: 45
                       function: makeResponseCall
                       class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                       line: 35
                       function: makeResponseCallIfConditionsPass
                       class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
                       line: 209
                       function: __invoke
                       class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
                       line: 163
                       function: iterateThroughStrategies
                       class: Knuckles\Scribe\Extracting\Extractor
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
                       line: 95
                       function: fetchResponses
                       class: Knuckles\Scribe\Extracting\Extractor
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
                       line: 124
                       function: processRoute
                       class: Knuckles\Scribe\Extracting\Extractor
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
                       line: 71
                       function: extractEndpointsInfoFromLaravelApp
                       class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
                       line: 49
                       function: extractEndpointsInfoAndWriteToDisk
                       class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
                       line: 51
                       function: get
                       class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
                       line: 36
                       function: handle
                       class: Knuckles\Scribe\Commands\GenerateDocumentation
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
                       line: 41
                       function: 'Illuminate\Container\{closure}'
                       class: Illuminate\Container\BoundMethod
                       type: '::'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
                       line: 93
                       function: unwrapIfClosure
                       class: Illuminate\Container\Util
                       type: '::'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
                       line: 35
                       function: callBoundMethod
                       class: Illuminate\Container\BoundMethod
                       type: '::'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
                       line: 661
                       function: call
                       class: Illuminate\Container\BoundMethod
                       type: '::'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
                       line: 183
                       function: call
                       class: Illuminate\Container\Container
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
                       line: 326
                       function: execute
                       class: Illuminate\Console\Command
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
                       line: 152
                       function: run
                       class: Symfony\Component\Console\Command\Command
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php
                       line: 1063
                       function: run
                       class: Illuminate\Console\Command
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php
                       line: 320
                       function: doRunCommand
                       class: Symfony\Component\Console\Application
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php
                       line: 174
                       function: doRun
                       class: Symfony\Component\Console\Application
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
                       line: 102
                       function: run
                       class: Symfony\Component\Console\Application
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
                       line: 155
                       function: run
                       class: Illuminate\Console\Application
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/artisan
+                      file: /Users/kahshinyip/Laravel/funhub-mobile-backend/artisan
                       line: 35
                       function: handle
                       class: Illuminate\Foundation\Console\Kernel
@@ -2666,7 +2442,7 @@ paths:
                     example: Symfony\Component\HttpKernel\Exception\NotFoundHttpException
                   file:
                     type: string
-                    example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                    example: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
                   line:
                     type: integer
                     example: 1144
@@ -2674,395 +2450,395 @@ paths:
                     type: array
                     example:
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
                         line: 45
                         function: abort
                         class: Illuminate\Foundation\Application
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1157
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
+                        line: 1182
                         function: abort
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
                         line: 54
                         function: getArticleForPublicView
                         class: App\Http\Controllers\Api\ArticleController
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
                         line: 43
                         function: callAction
                         class: Illuminate\Routing\Controller
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                         line: 259
                         function: dispatch
                         class: Illuminate\Routing\ControllerDispatcher
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                         line: 205
                         function: runController
                         class: Illuminate\Routing\Route
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                         line: 798
                         function: run
                         class: Illuminate\Routing\Route
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 141
                         function: 'Illuminate\Routing\{closure}'
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
                         line: 50
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Routing\Middleware\SubstituteBindings
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
                         line: 126
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
                         line: 92
                         function: handleRequest
                         class: Illuminate\Routing\Middleware\ThrottleRequests
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
                         line: 54
                         function: handleRequestUsingNamedLimiter
                         class: Illuminate\Routing\Middleware\ThrottleRequests
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Routing\Middleware\ThrottleRequests
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 116
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                         line: 797
                         function: then
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                         line: 776
                         function: runRouteWithinStack
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                         line: 740
                         function: runRoute
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
                         line: 729
                         function: dispatchToRoute
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
                         line: 190
                         function: dispatch
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 141
                         function: 'Illuminate\Foundation\Http\{closure}'
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                         line: 19
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Livewire\DisableBrowserCache
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
                         line: 21
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
                         line: 31
                         function: handle
                         class: Illuminate\Foundation\Http\Middleware\TransformsRequest
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
                         line: 21
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
                         line: 40
                         function: handle
                         class: Illuminate\Foundation\Http\Middleware\TransformsRequest
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Foundation\Http\Middleware\TrimStrings
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
                         line: 27
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
                         line: 86
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
                         line: 62
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Http\Middleware\HandleCors
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
                         line: 39
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 180
                         function: handle
                         class: Illuminate\Http\Middleware\TrustProxies
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
                         line: 116
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
                         line: 165
                         function: then
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
                         line: 134
                         function: sendRequestThroughRouter
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                         line: 299
                         function: handle
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                         line: 287
                         function: callLaravelOrLumenRoute
                         class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                         line: 92
                         function: makeApiCall
                         class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                         line: 45
                         function: makeResponseCall
                         class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
                         line: 35
                         function: makeResponseCallIfConditionsPass
                         class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
                         line: 209
                         function: __invoke
                         class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
                         line: 163
                         function: iterateThroughStrategies
                         class: Knuckles\Scribe\Extracting\Extractor
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
                         line: 95
                         function: fetchResponses
                         class: Knuckles\Scribe\Extracting\Extractor
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
                         line: 124
                         function: processRoute
                         class: Knuckles\Scribe\Extracting\Extractor
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
                         line: 71
                         function: extractEndpointsInfoFromLaravelApp
                         class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
                         line: 49
                         function: extractEndpointsInfoAndWriteToDisk
                         class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
                         line: 51
                         function: get
                         class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
                         line: 36
                         function: handle
                         class: Knuckles\Scribe\Commands\GenerateDocumentation
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
                         line: 41
                         function: 'Illuminate\Container\{closure}'
                         class: Illuminate\Container\BoundMethod
                         type: '::'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
                         line: 93
                         function: unwrapIfClosure
                         class: Illuminate\Container\Util
                         type: '::'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
                         line: 35
                         function: callBoundMethod
                         class: Illuminate\Container\BoundMethod
                         type: '::'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
                         line: 661
                         function: call
                         class: Illuminate\Container\BoundMethod
                         type: '::'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
                         line: 183
                         function: call
                         class: Illuminate\Container\Container
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
                         line: 326
                         function: execute
                         class: Illuminate\Console\Command
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
                         line: 152
                         function: run
                         class: Symfony\Component\Console\Command\Command
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php
                         line: 1063
                         function: run
                         class: Illuminate\Console\Command
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php
                         line: 320
                         function: doRunCommand
                         class: Symfony\Component\Console\Application
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php
                         line: 174
                         function: doRun
                         class: Symfony\Component\Console\Application
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
                         line: 102
                         function: run
                         class: Symfony\Component\Console\Application
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
                         line: 155
                         function: run
                         class: Illuminate\Console\Application
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/artisan
+                        file: /Users/kahshinyip/Laravel/funhub-mobile-backend/artisan
                         line: 35
                         function: handle
                         class: Illuminate\Foundation\Console\Kernel
@@ -3072,7 +2848,7 @@ paths:
                       properties:
                         file:
                           type: string
-                          example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+                          example: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
                         line:
                           type: integer
                           example: 45
@@ -3097,7 +2873,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: omnis
+                  example: quaerat
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3105,14 +2881,7 @@ paths:
       summary: 'Get All FAQs'
       operationId: getAllFAQs
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3162,14 +2931,7 @@ paths:
       summary: 'Get All FAQs Categories'
       operationId: getAllFAQsCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3190,14 +2952,7 @@ paths:
       summary: 'Get My Support Requests'
       operationId: getMySupportRequests
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3246,14 +3001,7 @@ paths:
       summary: 'Raise Support Request'
       operationId: raiseSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3306,14 +3054,7 @@ paths:
       summary: 'Reply to Support Request'
       operationId: replyToSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3327,10 +3068,10 @@ paths:
                 properties:
                   message:
                     type: object
-                    properties: []
+                    properties: {  }
                   request:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - 'Help Center'
       requestBody:
@@ -3360,7 +3101,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 12
         required: true
         schema:
           type: integer
@@ -3377,14 +3118,7 @@ paths:
       summary: 'Get Messages of Support Request'
       operationId: getMessagesOfSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3405,7 +3139,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 9
         required: true
         schema:
           type: integer
@@ -3422,14 +3156,7 @@ paths:
       summary: 'Resolve Support Request'
       operationId: resolveSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3450,7 +3177,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 4
         required: true
         schema:
           type: integer
@@ -3467,14 +3194,7 @@ paths:
       summary: 'Get Support Request Categories'
       operationId: getSupportRequestCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         401:
           description: ''
@@ -3506,14 +3226,7 @@ paths:
       summary: 'Upload Attachments(Images) for Support Messages'
       operationId: uploadAttachmentsImagesForSupportMessages
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3584,14 +3297,7 @@ paths:
       summary: 'Get Users of Interaction'
       operationId: getUsersOfInteraction
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3609,10 +3315,10 @@ paths:
                     example: []
                   links:
                     type: object
-                    properties: []
+                    properties: {  }
                   meta:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Interactions
       requestBody:
@@ -3643,14 +3349,7 @@ paths:
       summary: 'Get interactions on a interactable type (eg. Articles)'
       operationId: getInteractionsOnAInteractableTypeegArticles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3714,14 +3413,7 @@ paths:
       summary: 'Create an interaction for interactable type'
       operationId: createAnInteractionForInteractableType
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3734,7 +3426,7 @@ paths:
                 properties:
                   interaction:
                     type: object
-                    properties: []
+                    properties: {  }
         422:
           description: ''
           content:
@@ -3781,14 +3473,7 @@ paths:
       summary: 'Show one interaction by ID'
       operationId: showOneInteractionByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         401:
           description: ''
@@ -3808,14 +3493,7 @@ paths:
       summary: "Remove Interaction By ID\nOnly owner can call this method"
       operationId: removeInteractionByIDOnlyOwnerCanCallThisMethod
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3852,14 +3530,7 @@ paths:
       summary: 'Get Locations'
       operationId: getLocations
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3910,14 +3581,7 @@ paths:
       summary: 'Get One Location'
       operationId: getOneLocation
       description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3930,7 +3594,7 @@ paths:
                 properties:
                   data:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Location
     parameters:
@@ -3955,14 +3619,7 @@ paths:
       summary: "Get Signed URL Upload Media (photos/videos)\nMust only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it."
       operationId: getSignedURLUploadMediaphotosvideosMustOnlyCallOnePerFileIfMultipleFilesCallMultipleTimesURLGeneratedYouNeedToPUTABinaryFileToIt
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: failed
@@ -3996,14 +3653,7 @@ paths:
       summary: 'Upload Media Complete'
       operationId: uploadMediaComplete
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4036,14 +3686,7 @@ paths:
       summary: 'Get My Bookmarked Merchant Offers'
       operationId: getMyBookmarkedMerchantOffers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4090,14 +3733,7 @@ paths:
       summary: 'Get Offers'
       operationId: getOffers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4177,14 +3813,7 @@ paths:
       summary: 'Claim Offer'
       operationId: claimOffer
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: offer_no_longer_valid
@@ -4232,14 +3861,7 @@ paths:
       summary: "Redeem a Merchant Offer (In-Store)\nThis is when customer with claimed merchant offer wishes to redeem in store"
       operationId: redeemAMerchantOfferInStoreThisIsWhenCustomerWithClaimedMerchantOfferWishesToRedeemInStore
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4256,7 +3878,7 @@ paths:
                     example: 'Redeemed successfully'
                   offer:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Merchant
       requestBody:
@@ -4292,14 +3914,7 @@ paths:
       summary: 'Cancel a Merchant Offer Transaction'
       operationId: cancelAMerchantOfferTransaction
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: offer_pending_payment_not_found
@@ -4333,14 +3948,7 @@ paths:
       summary: 'Get My Merchant Offers (Logged in User)'
       operationId: getMyMerchantOffersLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4387,13 +3995,6 @@ paths:
             type: integer
             description: 'Offer ID.'
             example: 1
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -4406,7 +4007,7 @@ paths:
                 properties:
                   offer:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Merchant
     parameters:
@@ -4423,14 +4024,7 @@ paths:
       summary: 'Get popular Merchant Categories'
       operationId: getPopularMerchantCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4493,14 +4087,7 @@ paths:
       summary: 'Get Merchant Categories by offer id'
       operationId: getMerchantCategoriesByOfferId
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4537,14 +4124,7 @@ paths:
       summary: 'Get all missions available.'
       operationId: getAllMissionsAvailable
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4575,14 +4155,7 @@ paths:
       summary: 'Complete all missions or single mission'
       operationId: completeAllMissionsOrSingleMission
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4614,7 +4187,7 @@ paths:
                     properties:
                       object:
                         type: object
-                        properties: []
+                        properties: {  }
                       quantity:
                         type: integer
                         example: 1
@@ -4636,14 +4209,7 @@ paths:
       summary: 'Get latest claimable missions'
       operationId: getLatestClaimableMissions
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4659,14 +4225,7 @@ paths:
       summary: 'Update user fcm token'
       operationId: updateUserFcmToken
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4700,14 +4259,7 @@ paths:
       summary: "Get latest notifications of the user\nOrdered by latest one"
       operationId: getLatestNotificationsOfTheUserOrderedByLatestOne
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4734,14 +4286,7 @@ paths:
       summary: 'Mark a Single Notification as Read by Notification ID'
       operationId: markASingleNotificationAsReadByNotificationID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4775,14 +4320,7 @@ paths:
       summary: 'Mark all notifications as read'
       operationId: markAllNotificationsAsRead
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4803,14 +4341,7 @@ paths:
       summary: 'Get Countries'
       operationId: getCountries
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4826,14 +4357,7 @@ paths:
       summary: 'Get States'
       operationId: getStates
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4849,14 +4373,7 @@ paths:
       summary: 'Get the point & point components balance of the logged in user.'
       operationId: getThePointPointComponentsBalanceOfTheLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4872,14 +4389,7 @@ paths:
       summary: 'Get the point balance of the user.'
       operationId: getThePointBalanceOfTheUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4900,14 +4410,7 @@ paths:
       summary: 'Get the point component balance of the user.'
       operationId: getThePointComponentBalanceOfTheUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4945,14 +4448,7 @@ paths:
       summary: 'Get Rewards Available.'
       operationId: getRewardsAvailable
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4968,14 +4464,7 @@ paths:
       summary: 'Combine Points Component to Form a Reward'
       operationId: combinePointsComponentToFormAReward
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses: {  }
       tags:
         - Point
@@ -4997,14 +4486,7 @@ paths:
       summary: 'Get Point Ledger'
       operationId: getPointLedger
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5020,14 +4502,7 @@ paths:
       summary: 'Get Point Component Ledgers)'
       operationId: getPointComponentLedgers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5058,14 +4533,7 @@ paths:
       summary: 'Post Checkout'
       operationId: postCheckout
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: fiat_payment_mode
@@ -5108,14 +4576,7 @@ paths:
       summary: 'Cancel Product Checkout'
       operationId: cancelProductCheckout
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5149,14 +4610,7 @@ paths:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
       operationId: getAllMyTransactionsGetAllTransactionsOfCurrentLoggedInUsersPaginated
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5196,14 +4650,7 @@ paths:
       summary: 'Get Transaction by Transaction Number'
       operationId: getTransactionByTransactionNumber
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5219,14 +4666,7 @@ paths:
       summary: 'Get a Transaction By ID'
       operationId: getATransactionByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5242,7 +4682,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 7
+        example: 1
         required: true
         schema:
           type: integer
@@ -5270,13 +4710,6 @@ paths:
             type: string
             description: 'optional Search query for name of followings.'
             example: John
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -5335,13 +4768,6 @@ paths:
             type: string
             description: 'optional Search query for name of followers.'
             example: John
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -5389,14 +4815,7 @@ paths:
       summary: 'Follow another user'
       operationId: followAnotherUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5434,7 +4853,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 8
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5442,14 +4861,7 @@ paths:
       summary: 'Unfollow another user'
       operationId: unfollowAnotherUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5487,7 +4899,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 14
+                  example: 8
               required:
                 - user_id
   /api/v1/user/report:
@@ -5495,14 +4907,7 @@ paths:
       summary: 'Report a user'
       operationId: reportAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5538,11 +4943,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: mollitia
+                  example: et
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dolor
+                  example: inventore
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5555,14 +4960,7 @@ paths:
       summary: 'Block a user'
       operationId: blockAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5595,14 +4993,7 @@ paths:
       summary: 'Unblock a user'
       operationId: unblockAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5631,14 +5022,7 @@ paths:
       summary: 'Get My Blocked Users List'
       operationId: getMyBlockedUsersList
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5654,14 +5038,7 @@ paths:
       summary: 'Delete My Account'
       operationId: deleteMyAccount
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5687,7 +5064,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: cum
+                  example: autem
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5695,14 +5072,7 @@ paths:
       summary: 'Get Users By IDs'
       operationId: getUsersByIDs
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5715,7 +5085,7 @@ paths:
                 properties:
                   data:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - User
       requestBody:
@@ -5728,7 +5098,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: dicta
+                  example: in
               required:
                 - user_ids
     parameters:
@@ -5745,14 +5115,7 @@ paths:
       summary: 'Get a user'
       operationId: getAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5785,14 +5148,7 @@ paths:
       summary: 'Get settings of logged in user'
       operationId: getSettingsOfLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5832,14 +5188,7 @@ paths:
       summary: 'Update User Email'
       operationId: updateUserEmail
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5901,14 +5250,7 @@ paths:
       summary: 'Verify User Email with Token'
       operationId: verifyUserEmailWithToken
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5942,14 +5284,7 @@ paths:
       summary: 'Update User Name'
       operationId: updateUserName
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5999,14 +5334,7 @@ paths:
       summary: 'Link Article Categories to User (used for interest tagging)'
       operationId: linkArticleCategoriesToUserusedForInterestTagging
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6069,14 +5397,7 @@ paths:
       summary: 'Upload or Update User Profile Picture'
       operationId: uploadOrUpdateUserProfilePicture
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6130,14 +5451,7 @@ paths:
       summary: 'Upload or Update User Cover'
       operationId: uploadOrUpdateUserCover
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6191,14 +5505,7 @@ paths:
       summary: 'Update User Username'
       operationId: updateUserUsername
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6248,14 +5555,7 @@ paths:
       summary: 'Update User Bio'
       operationId: updateUserBio
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6305,14 +5605,7 @@ paths:
       summary: 'Update User Date of Birth'
       operationId: updateUserDateOfBirth
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6372,14 +5665,7 @@ paths:
       summary: 'Update User Save Gender'
       operationId: updateUserSaveGender
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6408,8 +5694,11 @@ paths:
               properties:
                 gender:
                   type: string
-                  description: 'Must be one of <code>male</code> or <code>female</code>.'
+                  description: ''
                   example: female
+                  enum:
+                    - male
+                    - female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -6417,14 +5706,7 @@ paths:
       summary: 'Update User Location'
       operationId: updateUserLocation
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6470,14 +5752,7 @@ paths:
       summary: 'Update User Job title'
       operationId: updateUserJobTitle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6527,14 +5802,7 @@ paths:
       summary: 'Update user password (only for login with OTP)'
       operationId: updateUserPasswordonlyForLoginWithOTP
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6582,17 +5850,10 @@ paths:
                 - password_confirmation
   /api/v1/views:
     post:
-      summary: "Record view for viewable\nThis is used for recording views for articles, comments, and merchant offers"
-      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsAndMerchantOffers
+      summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, and user profiles"
+      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsMerchantOffersAndUserProfiles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6618,7 +5879,7 @@ paths:
                 viewable_type:
                   type: string
                   description: 'The type of the viewable.'
-                  example: article/comment/merchant_offer
+                  example: article/comment/merchant_offer/user_profile
                 viewable_id:
                   type: integer
                   description: 'The id of the viewable.'
@@ -6628,17 +5889,10 @@ paths:
                 - viewable_id
   '/api/v1/views/{type}/{id}':
     get:
-      summary: "Get views for viewable type\nThis is used for getting views for articles, comments, and merchant offers"
-      operationId: getViewsForViewableTypeThisIsUsedForGettingViewsForArticlesCommentsAndMerchantOffers
+      summary: "Get views for viewable type\nThis is used for getting views for articles, comments, merchant offers, and user profiles"
+      operationId: getViewsForViewableTypeThisIsUsedForGettingViewsForArticlesCommentsMerchantOffersAndUserProfiles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6663,7 +5917,7 @@ paths:
         in: path
         name: type
         description: 'The type of the viewable.'
-        example: article/comment/merchant_offer
+        example: article/comment/merchant_offer/user_profile
         required: true
         schema:
           type: string
@@ -6732,7 +5986,7 @@ components:
     default:
       type: http
       scheme: bearer
-      description: ''
+      description: 'You will received a token to authenticate user requests after you logged in.'
 security:
   -
     default: []
