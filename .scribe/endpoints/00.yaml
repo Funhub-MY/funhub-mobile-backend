@@ -27,12 +27,12 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: quaerat
+        example: velit
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      share_code: quaerat
+      share_code: velit
     fileParameters: []
     responses:
       -
@@ -518,7 +518,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6fdhV3kvegca54Z1PD68abE'
+      - 'Bearer vkD45e86aZgbV63Edafh1cP'
     controller: null
     method: null
     route: null

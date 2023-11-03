@@ -16,7 +16,7 @@ class LocationPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_location');
     }
@@ -28,7 +28,7 @@ class LocationPolicy
      * @param  \App\Models\Location  $location
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Location $location)
+    public function view(User $user, Location $location): bool
     {
         return $user->can('view_location');
     }
@@ -39,7 +39,7 @@ class LocationPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_location');
     }
@@ -51,7 +51,7 @@ class LocationPolicy
      * @param  \App\Models\Location  $location
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Location $location)
+    public function update(User $user, Location $location): bool
     {
         return $user->can('update_location');
     }
@@ -63,7 +63,7 @@ class LocationPolicy
      * @param  \App\Models\Location  $location
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Location $location)
+    public function delete(User $user, Location $location): bool
     {
         return $user->can('delete_location');
     }
@@ -74,7 +74,7 @@ class LocationPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_location');
     }
@@ -86,7 +86,7 @@ class LocationPolicy
      * @param  \App\Models\Location  $location
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Location $location)
+    public function forceDelete(User $user, Location $location): bool
     {
         return $user->can('force_delete_location');
     }
@@ -97,7 +97,7 @@ class LocationPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_location');
     }
@@ -109,7 +109,7 @@ class LocationPolicy
      * @param  \App\Models\Location  $location
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Location $location)
+    public function restore(User $user, Location $location): bool
     {
         return $user->can('restore_location');
     }
@@ -120,7 +120,7 @@ class LocationPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_location');
     }
@@ -132,7 +132,7 @@ class LocationPolicy
      * @param  \App\Models\Location  $location
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Location $location)
+    public function replicate(User $user, Location $location): bool
     {
         return $user->can('replicate_location');
     }
@@ -143,7 +143,7 @@ class LocationPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_location');
     }

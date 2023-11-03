@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Funhub",
-        "_postman_id": "66b24c03-79d6-43f2-86c1-0409b1816184",
+        "_postman_id": "92a8d55a-35f7-4e9d-bf3f-89ddd953a24a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":4,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"omnis\",\"violation_level\":\"quae\",\"article\":1}"
+                                    "raw": "{\"article_id\":2,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"omnis\",\"violation_level\":\"quidem\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"est\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"ut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "quo",
+                                            "value": "consequatur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"temporibus\",\"violation_type\":\"ea\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"expedita\",\"violation_type\":\"nihil\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "maxime",
+                                            "value": "sunt",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1910,7 +1910,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"quaerat\"}"
+                            "raw": "{\"share_code\":\"velit\"}"
                         },
                         "description": ""
                     },
@@ -2120,7 +2120,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "12",
+                                            "value": "3",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2169,7 +2169,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "9",
+                                            "value": "13",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2215,7 +2215,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "4",
+                                            "value": "12",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -3010,7 +3010,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "aut",
+                                            "value": "rerum",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3128,6 +3128,53 @@
                                     "code": 404,
                                     "body": "",
                                     "name": "Not Found"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Merchant Contacts",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Submit Merchant Contact Information",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/merchant-contacts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant-contacts"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"name\":\"Alex Koh\",\"email\":\"alex@funhub.my\",\"tel_no\":\"182036794\",\"company_name\":\"Funhub TV\",\"business_type\":\"others\",\"other_business_type\":\"IT Consult\",\"message_type\":\"General Inquiry\",\"message\":\"This is a sample message.\"}"
+                                },
+                                "description": "Allows users to submit merchant contact information via the API."
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Merchant contact information submitted successfully\"\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 422,
+                                    "body": "{\n\"errors\": {\n    \"name\": [\"The Name field is required.\"],\n    \"email\": [\"The Email field must be a valid email address.\"],\n    \"tel_no\": [\"The Phone Number field is required.\"],\n    \"company_name\": [\"The Company Name field is required.\"],\n    \"business_type\": [\"The Business Type field is required.\"],\n    \"message_type\": [\"The Message Category field is required.\"],\n    \"message\": [\"The Message field is required.\"]\n    }\n}",
+                                    "name": "Invalid Form Fields"
                                 }
                             ]
                         }
@@ -4006,7 +4053,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":8}"
+                                    "raw": "{\"user_id\":17}"
                                 },
                                 "description": ""
                             },
@@ -4047,7 +4094,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":8}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -4153,7 +4200,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"rem\",\"violation_level\":\"et\",\"violation_type\":\"inventore\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"reprehenderit\",\"violation_level\":\"velit\",\"violation_type\":\"enim\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4310,7 +4357,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"autem\"}"
+                            "raw": "{\"reason\":\"sunt\"}"
                         },
                         "description": ""
                     },
@@ -4353,7 +4400,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"in\"}"
+                            "raw": "{\"user_ids\":\"eveniet\"}"
                         },
                         "description": ""
                     },

@@ -291,7 +291,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 4
+                  example: 2
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -303,7 +303,7 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quae
+                  example: quidem
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -446,7 +446,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - est
+                    - ut
                   items:
                     type: string
                 category_ids:
@@ -1076,7 +1076,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quo
+        example: consequatur
         required: true
         schema:
           type: string
@@ -1157,11 +1157,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: temporibus
+                  example: expedita
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ea
+                  example: nihil
               required:
                 - comment_id
                 - reason
@@ -1397,7 +1397,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: maxime
+        example: sunt
         required: true
         schema:
           type: string
@@ -2873,7 +2873,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: quaerat
+                  example: velit
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3101,7 +3101,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 12
+        example: 3
         required: true
         schema:
           type: integer
@@ -3139,7 +3139,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 9
+        example: 13
         required: true
         schema:
           type: integer
@@ -3177,7 +3177,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 4
+        example: 12
         required: true
         schema:
           type: integer
@@ -4015,7 +4015,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: aut
+        example: rerum
         required: true
         schema:
           type: string
@@ -4119,6 +4119,142 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/merchant-contacts:
+    post:
+      summary: 'Submit Merchant Contact Information'
+      operationId: submitMerchantContactInformation
+      description: 'Allows users to submit merchant contact information via the API.'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Merchant contact information submitted successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Merchant contact information submitted successfully'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    name:
+                      - 'The Name field is required.'
+                    email:
+                      - 'The Email field must be a valid email address.'
+                    tel_no:
+                      - 'The Phone Number field is required.'
+                    company_name:
+                      - 'The Company Name field is required.'
+                    business_type:
+                      - 'The Business Type field is required.'
+                    message_type:
+                      - 'The Message Category field is required.'
+                    message:
+                      - 'The Message field is required.'
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      name:
+                        type: array
+                        example:
+                          - 'The Name field is required.'
+                        items:
+                          type: string
+                      email:
+                        type: array
+                        example:
+                          - 'The Email field must be a valid email address.'
+                        items:
+                          type: string
+                      tel_no:
+                        type: array
+                        example:
+                          - 'The Phone Number field is required.'
+                        items:
+                          type: string
+                      company_name:
+                        type: array
+                        example:
+                          - 'The Company Name field is required.'
+                        items:
+                          type: string
+                      business_type:
+                        type: array
+                        example:
+                          - 'The Business Type field is required.'
+                        items:
+                          type: string
+                      message_type:
+                        type: array
+                        example:
+                          - 'The Message Category field is required.'
+                        items:
+                          type: string
+                      message:
+                        type: array
+                        example:
+                          - 'The Message field is required.'
+                        items:
+                          type: string
+      tags:
+        - Merchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the contact person.'
+                  example: 'Alex Koh'
+                email:
+                  type: string
+                  description: 'The email address of the contact person.'
+                  example: alex@funhub.my
+                tel_no:
+                  type: string
+                  description: 'The telephone number of the contact person.'
+                  example: '182036794'
+                company_name:
+                  type: string
+                  description: 'The name of the company.'
+                  example: 'Funhub TV'
+                business_type:
+                  type: string
+                  description: 'The type of the business.'
+                  example: others
+                other_business_type:
+                  type: string
+                  description: 'required_if:business_type,others The type of the business.'
+                  example: 'IT Consult'
+                message_type:
+                  type: string
+                  description: 'The category of the message.'
+                  example: 'General Inquiry'
+                message:
+                  type: text
+                  description: 'The message or remarks.'
+                  example: 'This is a sample message.'
+              required:
+                - name
+                - email
+                - tel_no
+                - company_name
+                - business_type
+                - message_type
+                - message
   /api/v1/missions:
     get:
       summary: 'Get all missions available.'
@@ -4853,7 +4989,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 8
+                  example: 17
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -4899,7 +5035,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 8
+                  example: 10
               required:
                 - user_id
   /api/v1/user/report:
@@ -4939,15 +5075,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: rem
+                  example: reprehenderit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: velit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: inventore
+                  example: enim
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5064,7 +5200,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: autem
+                  example: sunt
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5098,7 +5234,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: in
+                  example: eveniet
               required:
                 - user_ids
     parameters:

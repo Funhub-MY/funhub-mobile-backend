@@ -16,7 +16,7 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_transaction');
     }
@@ -28,7 +28,7 @@ class TransactionPolicy
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Transaction $transaction)
+    public function view(User $user, Transaction $transaction): bool
     {
         return $user->can('view_transaction');
     }
@@ -39,7 +39,7 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_transaction');
     }
@@ -51,7 +51,7 @@ class TransactionPolicy
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Transaction $transaction)
+    public function update(User $user, Transaction $transaction): bool
     {
         return $user->can('update_transaction');
     }
@@ -63,7 +63,7 @@ class TransactionPolicy
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Transaction $transaction)
+    public function delete(User $user, Transaction $transaction): bool
     {
         return $user->can('delete_transaction');
     }
@@ -74,7 +74,7 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_transaction');
     }
@@ -86,7 +86,7 @@ class TransactionPolicy
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Transaction $transaction)
+    public function forceDelete(User $user, Transaction $transaction): bool
     {
         return $user->can('force_delete_transaction');
     }
@@ -97,7 +97,7 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_transaction');
     }
@@ -109,7 +109,7 @@ class TransactionPolicy
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Transaction $transaction)
+    public function restore(User $user, Transaction $transaction): bool
     {
         return $user->can('restore_transaction');
     }
@@ -120,7 +120,7 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_transaction');
     }
@@ -132,7 +132,7 @@ class TransactionPolicy
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Transaction $transaction)
+    public function replicate(User $user, Transaction $transaction): bool
     {
         return $user->can('replicate_transaction');
     }
@@ -143,7 +143,7 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_transaction');
     }
