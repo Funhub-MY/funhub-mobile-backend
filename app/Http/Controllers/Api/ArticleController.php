@@ -305,6 +305,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      *
      * @response scenario=success {
      *  "data": [],
@@ -332,6 +333,10 @@ class ArticleController extends Controller
         }
 
         $query = Article::where('user_id', $user_id);
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
 
         if ($request->has('published_only')) {
             $query->where('status', Article::STATUS[1]);
@@ -362,6 +367,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      *
      * @response scenario=success {
      *  "data": [],
@@ -397,6 +403,11 @@ class ArticleController extends Controller
             });
 
         $this->buildQuery($query, $request);
+
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
