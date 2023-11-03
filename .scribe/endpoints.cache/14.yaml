@@ -31,6 +31,7 @@ endpoints:
         required: false
         example: '"KFC SS15"'
         type: string
+        enumValues: []
         custom: []
       state_id:
         name: state_id
@@ -38,6 +39,7 @@ endpoints:
         required: false
         example: 1
         type: integer
+        enumValues: []
         custom: []
       country_id:
         name: country_id
@@ -45,6 +47,7 @@ endpoints:
         required: false
         example: 1
         type: integer
+        enumValues: []
         custom: []
       city:
         name: city
@@ -52,6 +55,7 @@ endpoints:
         required: false
         example: '"Subang Jaya"'
         type: string
+        enumValues: []
         custom: []
       lat:
         name: lat
@@ -59,6 +63,7 @@ endpoints:
         required: false
         example: 3.073065
         type: number
+        enumValues: []
         custom: []
       lng:
         name: lng
@@ -66,6 +71,7 @@ endpoints:
         required: false
         example: 101.607787
         type: number
+        enumValues: []
         custom: []
       radius:
         name: radius
@@ -73,6 +79,7 @@ endpoints:
         required: false
         example: 10
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       name: '"KFC SS15"'
@@ -101,7 +108,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6k14bEc5d6D8eZg3PhafvaV'
+      - 'Bearer 3Dhg6fV6Eab1acPe8dvkZ45'
     controller: null
     method: null
     route: null
@@ -130,6 +137,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       location:
         name: location
@@ -137,6 +145,7 @@ endpoints:
         required: true
         example: '1'
         type: string
+        enumValues: []
         custom: []
     cleanUrlParameters:
       location_id: 1
@@ -161,7 +170,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D6PkaZgfd48bvcV1h3ea6E5'
+      - 'Bearer 3baecafZ84D6V6Phd1Ev5gk'
     controller: null
     method: null
     route: null

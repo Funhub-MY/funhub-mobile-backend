@@ -31,6 +31,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       payment_method:
         name: payment_method
@@ -38,6 +39,7 @@ endpoints:
         required: true
         example: fiat
         type: string
+        enumValues: []
         custom: []
       fiat_payment_method:
         name: fiat_payment_method
@@ -45,6 +47,7 @@ endpoints:
         required: false
         example: fpx/card
         type: string
+        enumValues: []
         custom: []
       quantity:
         name: quantity
@@ -52,6 +55,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       product_id: 1
@@ -104,7 +108,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vvg4Z3ea6h186fc5EdPabDk'
+      - 'Bearer ZgVavkD65648fde13EPchba'
     controller: null
     method: null
     route: null
@@ -137,6 +141,7 @@ endpoints:
         required: true
         example: '11234455'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       transaction_no: '11234455'
@@ -155,7 +160,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hafe1vZ46gDc5dk36V8EPab'
+      - 'Bearer agceVd61PhvEa538bfZ4kD6'
     controller: null
     method: null
     route: null

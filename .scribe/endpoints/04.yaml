@@ -27,6 +27,7 @@ endpoints:
         required: true
         example: my-photo.jpg
         type: string
+        enumValues: []
         custom: []
     cleanUrlParameters:
       filename: my-photo.jpg
@@ -60,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ceP3da5h6E86vfkV1g4abDZ'
+      - 'Bearer ev1fbZd8g5E4hk6acPaV6D3'
     controller: null
     method: null
     route: null
@@ -93,6 +94,7 @@ endpoints:
         required: true
         example: '1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e'
         type: string
+        enumValues: []
         custom: []
       is_cover:
         name: is_cover
@@ -100,6 +102,7 @@ endpoints:
         required: false
         example: true
         type: boolean
+        enumValues: []
         custom: []
     cleanBodyParameters:
       upload_ids: '1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e'
@@ -128,7 +131,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cDe65v8V1d3bafkaEgZP4h6'
+      - 'Bearer g5f1Phak648Vd3cbZav6DEe'
     controller: null
     method: null
     route: null

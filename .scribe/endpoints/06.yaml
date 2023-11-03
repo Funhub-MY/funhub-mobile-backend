@@ -25,6 +25,7 @@ endpoints:
         required: false
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanUrlParameters:
       user_id: 1
@@ -35,6 +36,7 @@ endpoints:
         required: false
         example: John
         type: string
+        enumValues: []
         custom: []
     cleanQueryParameters:
       query: John
@@ -61,7 +63,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e4vZha3fg8Pc1V5E6d6abkD'
+      - 'Bearer 8Dfe5cbZ4hVagP1a6vkEd63'
     controller: null
     method: null
     route: null
@@ -90,6 +92,7 @@ endpoints:
         required: false
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanUrlParameters:
       user_id: 1
@@ -100,6 +103,7 @@ endpoints:
         required: false
         example: John
         type: string
+        enumValues: []
         custom: []
     cleanQueryParameters:
       query: John
@@ -126,7 +130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aPv3kg68EaZhVb1d56eDfc4'
+      - 'Bearer gbvdE3a54hfacP8V6eDZ16k'
     controller: null
     method: null
     route: null
@@ -157,11 +161,12 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 3
+        example: 10
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      user_id: 3
+      user_id: 10
     fileParameters: []
     responses:
       -
@@ -183,7 +188,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 18Vfa4vEdhb56eg6a3cPkDZ'
+      - 'Bearer 3gha4eakDvE18Zcd6bfVP56'
     controller: null
     method: null
     route: null
@@ -214,11 +219,12 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 14
+        example: 8
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      user_id: 14
+      user_id: 8
     fileParameters: []
     responses:
       -
@@ -240,7 +246,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ah364gevdc6PbD18aEfk5ZV'
+      - 'Bearer 3agvcPfeh1E6Zkd5aVb684D'
     controller: null
     method: null
     route: null
@@ -273,27 +279,31 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       reason:
         name: reason
         description: ''
         required: true
-        example: rem
+        example: aspernatur
         type: string
+        enumValues: []
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: mollitia
+        example: sed
         type: required
+        enumValues: []
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: dolor
+        example: maiores
         type: required
+        enumValues: []
         custom: []
       also_block_user:
         name: also_block_user
@@ -301,12 +311,13 @@ endpoints:
         required: false
         example: true
         type: boolean
+        enumValues: []
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: rem
-      violation_level: mollitia
-      violation_type: dolor
+      reason: aspernatur
+      violation_level: sed
+      violation_type: maiores
       also_block_user: true
     fileParameters: []
     responses:
@@ -335,7 +346,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b5ck3Dfd84aaVgEv1Pe6h6Z'
+      - 'Bearer 61cVgEeP3Ddk8Zva4fhb5a6'
     controller: null
     method: null
     route: null
@@ -368,6 +379,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
       reason:
         name: reason
@@ -375,6 +387,7 @@ endpoints:
         required: false
         example: Spam
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       user_id: 1
@@ -394,7 +407,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Dbe14k3a5ZfEPcvdg8h6aV'
+      - 'Bearer DVgEvc3a8kb4ah6Z5fP6ed1'
     controller: null
     method: null
     route: null
@@ -427,6 +440,7 @@ endpoints:
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
       user_id: 1
@@ -445,7 +459,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pvdcga4kfeZ3b668ha1DE5V'
+      - 'Bearer vcf48hDakZgb63PVed15aE6'
     controller: null
     method: null
     route: null
@@ -488,7 +502,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vDed5ka6P8VhbZg3c6Ef14a'
+      - 'Bearer 1eVZv5P68fEa6dkhb3cgD4a'
     controller: null
     method: null
     route: null
@@ -519,11 +533,12 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: cum
+        example: aut
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      reason: cum
+      reason: aut
     fileParameters: []
     responses:
       -
@@ -539,7 +554,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g3abvdhaf6V68P5EDk1eZc4'
+      - 'Bearer 5kb3P16Vc4Zdgaah8EeDf6v'
     controller: null
     method: null
     route: null
@@ -568,6 +583,7 @@ endpoints:
         required: true
         example: '1,2,3'
         type: string
+        enumValues: []
         custom: []
     cleanUrlParameters:
       user_ids: '1,2,3'
@@ -578,11 +594,12 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: dicta
+        example: dolorum
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      user_ids: dicta
+      user_ids: dolorum
     fileParameters: []
     responses:
       -
@@ -599,7 +616,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4dV368DE1kaev6gafPhcb5Z'
+      - 'Bearer 1Deavdkah3gZ45Ef68P6bVc'
     controller: null
     method: null
     route: null
@@ -628,6 +645,7 @@ endpoints:
         required: true
         example: 3
         type: integer
+        enumValues: []
         custom: []
       user:
         name: user
@@ -635,6 +653,7 @@ endpoints:
         required: true
         example: '1'
         type: string
+        enumValues: []
         custom: []
     cleanUrlParameters:
       user_id: 3
@@ -658,7 +677,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1e8hEg5bc6dvPZ6a4faDkV3'
+      - 'Bearer eVvZ41aad6b56Dgh8Pck3Ef'
     controller: null
     method: null
     route: null

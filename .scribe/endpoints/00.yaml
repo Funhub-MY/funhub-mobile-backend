@@ -27,11 +27,12 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: omnis
+        example: quas
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      share_code: omnis
+      share_code: quas
     fileParameters: []
     responses:
       -
@@ -52,7 +53,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1157,
+                      "line": 1193,
                       "function": "abort"
                   },
                   {
@@ -517,7 +518,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6agk584hPf3vea6bdDZEcV1'
+      - 'Bearer aZ63Eh4Pf6V8cDbeg1kva5d'
     controller: null
     method: null
     route: null
