@@ -49,7 +49,7 @@ class Article extends BaseModel implements HasMedia
      */
     public function searchableAs(): string
     {
-        return 'articles_index';
+        return config('scout.prefix').'articles_index';
     }
 
     public function toSearchableArray()

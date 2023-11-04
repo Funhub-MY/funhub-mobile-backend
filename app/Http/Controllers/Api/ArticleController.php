@@ -35,6 +35,7 @@ use App\Jobs\BuildRecommendationsForUser;
 use App\Models\ShareableLink;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 use function PHPSTORM_META\map;
@@ -126,17 +127,38 @@ class ArticleController extends Controller
         if ($request->has('lat') && $request->has('lng')) {
             $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
 
-            $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
-                ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
-                // add select to get distance from loc lat lng with request lat lng
-                ->selectRaw('articles.*, ROUND(ST_Distance_Sphere(
-                    point(lng, lat),
-                    point(?, ?)
-                )) / 1000 as distance', [$request->lng, $request->lat])
-                ->whereHas('location', function ($query) use ($request, $radius) {
-                    $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
+            if (config('app.search_location_use_algolia')) {
+                // algolia search,search all location ids first
+                $cacheKey = 'location_search_' . $request->lat . '_' . $request->lng . '_' . $radius;
+                $locationIds = Cache::remember($cacheKey, 60, function () use ($request, $radius) {
+                    return Location::search('')->with([
+                        'aroundLatLng' => $request->lat.','.$request->lng,
+                        'aroundRadius' => $radius * 1000,
+                        'aroundPrecision' => 2000,
+                    ])->raw()['hits'];
+                });
+
+                // query articles whereHas these location ids and sort by join
+                $query->whereHas('location', function ($query) use ($locationIds) {
+                    $query->whereIn('locations.id', Arr::pluck($locationIds, 'id'));
                 })
-                ->orderBy('distance', 'asc');
+                ->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                ->orderByRaw('FIELD(loc.id, ' . implode(',', Arr::pluck($locationIds, 'id')) . ')');
+            } else {
+                // use DB to search instead
+                $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                    ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                    // add select to get distance from loc lat lng with request lat lng
+                    ->selectRaw('articles.*, ROUND(ST_Distance_Sphere(
+                        point(lng, lat),
+                        point(?, ?)
+                    )) / 1000 as distance', [$request->lng, $request->lat])
+                    ->whereHas('location', function ($query) use ($request, $radius) {
+                        $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
+                    })
+                    ->orderBy('distance', 'asc');
+            }
         }
 
         // location id
