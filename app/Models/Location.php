@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Netsells\GeoScope\Traits\GeoScopeTrait;
 
 class Location extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, GeoScopeTrait;
+    use HasFactory, InteractsWithMedia, GeoScopeTrait, Searchable;
 
     protected $guarded = ['id'];
 
@@ -21,6 +22,35 @@ class Location extends Model implements HasMedia
     const MEDIA_COLLECTION_NAME = 'location_images';
     const STATUS_PUBLISHED = 1;
     const STATUS_DRAFT = 0;
+
+    /**
+     * Search Setup
+     */
+    public function searchableAs(): string
+    {
+        return config('scout.prefix').'location_index';
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => (int) $this->id,
+            'name' => $this->name,
+            'address' => $this->address,
+            'address2' => $this->address2,
+            'zip_code' => $this->zip_code,
+            'city' => $this->city,
+            'state' => $this->state->name,
+            'country' => $this->country->name,
+            'average_rating' => $this->ratings->avg('rating'),
+            '_geoloc' => [
+                'lat' => floatval($this->lat),
+                'lng' => floatval($this->lng)
+            ],
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
+    }
 
     public function getLocationAttribute(): array
     {

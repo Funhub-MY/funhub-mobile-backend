@@ -275,4 +275,6 @@ return [
     'mpay_default_phone' => env('MPAY_DEFAULT_PHONE', '60123456789'),
 
     'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
+
+    'search_location_use_algolia' => env('SEARCH_LOCATION_USE_ALGOLIA', true),
 ];

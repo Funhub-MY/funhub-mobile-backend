@@ -58,7 +58,7 @@ class MerchantOffer extends Model implements HasMedia
      */
     public function searchableAs(): string
     {
-        return 'merchant_offers_index';
+        return config('scout.prefix').'merchant_offers_index';
     }
 
     /**
