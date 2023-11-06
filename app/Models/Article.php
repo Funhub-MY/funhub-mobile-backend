@@ -120,7 +120,7 @@ class Article extends BaseModel implements HasMedia
 
     public function userFollowings()
     {
-        return $this->hasManyThrough(User::class, UserFollowing::class, 'user_id', 'id', 'id', 'following_id');
+        return $this->hasManyThrough(User::class, UserFollowing::class, 'user_id', 'id', 'user_id', 'following_id');
     }
 
     public function comments()
@@ -198,6 +198,6 @@ class Article extends BaseModel implements HasMedia
      */
     public function scopePublished(Builder $query): void
     {
-         $query->where($this->getTable().'.status', self::STATUS_PUBLISHED);
+        $query->where($this->getTable() . '.status', self::STATUS_PUBLISHED);
     }
 }
