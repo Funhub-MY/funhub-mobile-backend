@@ -650,19 +650,11 @@ class ArticleController extends Controller
 
             // find state by id if the locationdata state is integer else find by name
             $state = null;
-            // match by google id first
-            if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
-                $state = State::where('google_id', $locationData['google_id'])->first();
-            }
-
-            // if not matched via google id then proceed with state look up
-            if (!$state) {
-                if (is_numeric($locationData['state'])) {
-                    $state = State::where('id', $locationData['state'])->first();
-                } else {
-                    // where lower(name) like %trim lower locationData['state']%
-                    $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
-                }
+            if (is_numeric($locationData['state'])) {
+                $state = State::where('id', $locationData['state'])->first();
+            } else {
+                // where lower(name) like %trim lower locationData['state']%
+                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
             }
 
             if ($state) {
