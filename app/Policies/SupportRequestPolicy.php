@@ -16,7 +16,7 @@ class SupportRequestPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_support::request');
     }
@@ -28,7 +28,7 @@ class SupportRequestPolicy
      * @param  \App\Models\SupportRequest  $supportRequest
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, SupportRequest $supportRequest)
+    public function view(User $user, SupportRequest $supportRequest): bool
     {
         return $user->can('view_support::request');
     }
@@ -39,7 +39,7 @@ class SupportRequestPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_support::request');
     }
@@ -51,7 +51,7 @@ class SupportRequestPolicy
      * @param  \App\Models\SupportRequest  $supportRequest
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, SupportRequest $supportRequest)
+    public function update(User $user, SupportRequest $supportRequest): bool
     {
         return $user->can('update_support::request');
     }
@@ -63,7 +63,7 @@ class SupportRequestPolicy
      * @param  \App\Models\SupportRequest  $supportRequest
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, SupportRequest $supportRequest)
+    public function delete(User $user, SupportRequest $supportRequest): bool
     {
         return $user->can('delete_support::request');
     }
@@ -74,7 +74,7 @@ class SupportRequestPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_support::request');
     }
@@ -86,7 +86,7 @@ class SupportRequestPolicy
      * @param  \App\Models\SupportRequest  $supportRequest
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, SupportRequest $supportRequest)
+    public function forceDelete(User $user, SupportRequest $supportRequest): bool
     {
         return $user->can('force_delete_support::request');
     }
@@ -97,7 +97,7 @@ class SupportRequestPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_support::request');
     }
@@ -109,7 +109,7 @@ class SupportRequestPolicy
      * @param  \App\Models\SupportRequest  $supportRequest
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, SupportRequest $supportRequest)
+    public function restore(User $user, SupportRequest $supportRequest): bool
     {
         return $user->can('restore_support::request');
     }
@@ -120,7 +120,7 @@ class SupportRequestPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_support::request');
     }
@@ -132,7 +132,7 @@ class SupportRequestPolicy
      * @param  \App\Models\SupportRequest  $supportRequest
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, SupportRequest $supportRequest)
+    public function replicate(User $user, SupportRequest $supportRequest): bool
     {
         return $user->can('replicate_support::request');
     }
@@ -143,7 +143,7 @@ class SupportRequestPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_support::request');
     }

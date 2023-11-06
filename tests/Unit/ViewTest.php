@@ -2,6 +2,7 @@
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
@@ -43,6 +44,14 @@ class ViewTest extends TestCase
 
     public function testGetViews()
     {
+        //add data
+        $data = [
+            'viewable_type' => 'article',
+            'viewable_id' => 1,
+        ];
+
+        $post_response = $this->postJson('/api/v1/views', $data);
+
         $type = 'article';
         $id = 1;
 
@@ -56,7 +65,7 @@ class ViewTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('views', [
-            'viewable_type' => 'App\Models\Article',
+            'viewable_type' => Article::class,
             'viewable_id' => 1,
         ]);
     }

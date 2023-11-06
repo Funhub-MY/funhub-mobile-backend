@@ -16,7 +16,7 @@ class StorePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_store');
     }
@@ -28,7 +28,7 @@ class StorePolicy
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Store $store)
+    public function view(User $user, Store $store): bool
     {
         return $user->can('view_store');
     }
@@ -39,7 +39,7 @@ class StorePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_store');
     }
@@ -51,7 +51,7 @@ class StorePolicy
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Store $store)
+    public function update(User $user, Store $store): bool
     {
         return $user->can('update_store');
     }
@@ -63,7 +63,7 @@ class StorePolicy
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Store $store)
+    public function delete(User $user, Store $store): bool
     {
         return $user->can('delete_store');
     }
@@ -74,7 +74,7 @@ class StorePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_store');
     }
@@ -86,7 +86,7 @@ class StorePolicy
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Store $store)
+    public function forceDelete(User $user, Store $store): bool
     {
         return $user->can('force_delete_store');
     }
@@ -97,7 +97,7 @@ class StorePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_store');
     }
@@ -109,7 +109,7 @@ class StorePolicy
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Store $store)
+    public function restore(User $user, Store $store): bool
     {
         return $user->can('restore_store');
     }
@@ -120,7 +120,7 @@ class StorePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_store');
     }
@@ -132,7 +132,7 @@ class StorePolicy
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Store $store)
+    public function replicate(User $user, Store $store): bool
     {
         return $user->can('replicate_store');
     }
@@ -143,7 +143,7 @@ class StorePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_store');
     }

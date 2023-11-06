@@ -16,7 +16,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_merchant::category');
     }
@@ -28,7 +28,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\MerchantCategory  $merchantCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, MerchantCategory $merchantCategory)
+    public function view(User $user, MerchantCategory $merchantCategory): bool
     {
         return $user->can('view_merchant::category');
     }
@@ -39,7 +39,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_merchant::category');
     }
@@ -51,7 +51,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\MerchantCategory  $merchantCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, MerchantCategory $merchantCategory)
+    public function update(User $user, MerchantCategory $merchantCategory): bool
     {
         return $user->can('update_merchant::category');
     }
@@ -63,7 +63,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\MerchantCategory  $merchantCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, MerchantCategory $merchantCategory)
+    public function delete(User $user, MerchantCategory $merchantCategory): bool
     {
         return $user->can('delete_merchant::category');
     }
@@ -74,7 +74,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_merchant::category');
     }
@@ -86,7 +86,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\MerchantCategory  $merchantCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, MerchantCategory $merchantCategory)
+    public function forceDelete(User $user, MerchantCategory $merchantCategory): bool
     {
         return $user->can('force_delete_merchant::category');
     }
@@ -97,7 +97,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_merchant::category');
     }
@@ -109,7 +109,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\MerchantCategory  $merchantCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, MerchantCategory $merchantCategory)
+    public function restore(User $user, MerchantCategory $merchantCategory): bool
     {
         return $user->can('restore_merchant::category');
     }
@@ -120,7 +120,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_merchant::category');
     }
@@ -132,7 +132,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\MerchantCategory  $merchantCategory
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, MerchantCategory $merchantCategory)
+    public function replicate(User $user, MerchantCategory $merchantCategory): bool
     {
         return $user->can('replicate_merchant::category');
     }
@@ -143,7 +143,7 @@ class MerchantCategoryPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_merchant::category');
     }

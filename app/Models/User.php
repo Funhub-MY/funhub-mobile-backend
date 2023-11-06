@@ -107,7 +107,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
      */
     public function searchableAs(): string
     {
-        return 'users_index';
+        return config('scout.prefix').'users_index';
     }
 
     public function toSearchableArray()
