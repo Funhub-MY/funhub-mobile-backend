@@ -58,13 +58,15 @@ class MerchantContactController extends Controller
         ]);
 
         //prepare data
+        $is_others = false;
         if ($request->input('business_type') === 'others') {
             $validatedData['business_type'] = $request->input('other_business_type');
+            $is_others = true;
         }
 
         $createdBy = auth()->id();
 
-        $data = array_merge($validatedData, ['created_by' => $createdBy]);
+        $data = array_merge($validatedData, ['created_by' => $createdBy, 'is_others' => $is_others]);
 
         // Create a new merchant contact record
         $merchantContact = MerchantContact::create($data);

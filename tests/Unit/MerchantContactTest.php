@@ -48,6 +48,7 @@ class MerchantContactTest extends TestCase
             'tel_no' => '182036794',
             'company_name' => 'Funhub TV',
             'business_type' => 'IT Consult',
+            'is_others' => true,
             'message_type' => 'General Inquiry',
             'message' => 'This is a sample message',
         ]);

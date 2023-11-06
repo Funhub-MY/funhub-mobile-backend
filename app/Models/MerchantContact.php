@@ -15,6 +15,7 @@ class MerchantContact extends Model
         'tel_no',
         'company_name',
         'business_type',
+        'is_others',
         'message_type',
         'message',
         'created_by',
