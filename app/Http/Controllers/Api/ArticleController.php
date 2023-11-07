@@ -134,7 +134,7 @@ class ArticleController extends Controller
                     return Location::search('')->with([
                         'aroundLatLng' => $request->lat.','.$request->lng,
                         'aroundRadius' => $radius * 1000,
-                        'aroundPrecision' => 2000,
+                        'aroundPrecision' => 50,
                     ])->raw()['hits'];
                 });
 
