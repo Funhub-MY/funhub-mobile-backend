@@ -79,10 +79,14 @@ class ArticleRecommenderService
         // Adjusted view count mechanism to incorporate time decay
         if ($article->views_count > 0) {
             // my views
-            $daysSinceLastView = $article->views()->where('user_id', $this->user->id)
-                ->max('created_at')->diffInDays(Carbon::now());
-            $viewDecayFactor = 1 / (1 + $daysSinceLastView);
-            $affinity += $viewDecayFactor * 10;
+            $latestCreatedAt = $article->views()->where('user_id', $this->user->id)
+                ->max('created_at');
+            if ($latestCreatedAt) {
+                $daysSinceLastView = Carbon::parse($latestCreatedAt)->diffInDays(Carbon::now());
+
+                $viewDecayFactor = 1 / (1 + $daysSinceLastView);
+                $affinity += $viewDecayFactor * 10;
+            }
         }
 
         // Incorporating category importance
@@ -96,7 +100,7 @@ class ArticleRecommenderService
         $weight = 10;
 
         // if article is older penalize more, we want only latest articles
-        $daysSincePublished = $article->created_at->diffInDays(Carbon::now());
+        $daysSincePublished = Carbon::parse($article->created_at)->diffInDays(Carbon::now());
         $weight -= $daysSincePublished * 0.1;
 
         if ($article->imports()->exists()) {

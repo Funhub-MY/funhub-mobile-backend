@@ -8,7 +8,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Builder;
 
-class Product extends Model implements HasMedia
+class Product extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 

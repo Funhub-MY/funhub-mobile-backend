@@ -7,6 +7,7 @@ use App\Events\CommentCreated;
 use App\Events\InteractionCreated;
 use App\Listeners\MediaListener;
 use App\Listeners\MissionEventListener;
+use App\Listeners\CreateViewsForArticleListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -39,6 +40,7 @@ class EventServiceProvider extends ServiceProvider
 
         ArticleCreated::class => [
             MissionEventListener::class,
+            CreateViewsForArticleListener::class,
         ],
     ];
 

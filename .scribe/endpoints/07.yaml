@@ -97,7 +97,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bcgVZav3a48hfPd5EDek661'
+      - 'Bearer 8de6DV6E4kvgaac5fb1P3hZ'
     controller: null
     method: null
     route: null
@@ -267,7 +267,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ED6a6hZcV8vk1fd43a5Pebg'
+      - 'Bearer 4DekagEd3v65Zac1hb6f8PV'
     controller: null
     method: null
     route: null
@@ -386,7 +386,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer faZ8bE45Pv3cgD6a1hdeVk6'
+      - 'Bearer bPDd38EvafZ65hca1gVk6e4'
     controller: null
     method: null
     route: null
@@ -469,7 +469,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k86cf6345gPDdZ1aebvEahV'
+      - 'Bearer V4g8hZ61P6edvaakE3cfbD5'
     controller: null
     method: null
     route: null
@@ -530,7 +530,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aPD843V6h6d1e5fcZbEkvag'
+      - 'Bearer b68dva5EZc3keVhg146PfDa'
     controller: null
     method: null
     route: null
@@ -582,7 +582,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h85D6a4dZPbk3Egcva1Vfe6'
+      - 'Bearer 83vEZcf6dak4Phbg56DVe1a'
     controller: null
     method: null
     route: null
@@ -609,12 +609,12 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: rem
+        example: rerum
         type: string
         enumValues: []
         custom: []
     cleanUrlParameters:
-      offer_id: rem
+      offer_id: rerum
     queryParameters:
       offer_id:
         name: offer_id
@@ -643,7 +643,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dvaE61b3gfPaheZVDc86k54'
+      - 'Bearer c4aaV6h5dvefD3b16P8ZEkg'
     controller: null
     method: null
     route: null
@@ -755,7 +755,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vah6D8bvZdgE6k3P5c4e1fa'
+      - 'Bearer eca3hDEVf68dP4agvZ651kb'
     controller: null
     method: null
     route: null
@@ -813,7 +813,139 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pbg16VcEhZe6af4vd53ak8D'
+      - 'Bearer av86EPk41d3cVfD65hbaZge'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant-contacts
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Contacts'
+      subgroupDescription: ''
+      title: 'Submit Merchant Contact Information'
+      description: 'Allows users to submit merchant contact information via the API.'
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'The name of the contact person.'
+        required: true
+        example: 'Alex Koh'
+        type: string
+        enumValues: []
+        custom: []
+      email:
+        name: email
+        description: 'The email address of the contact person.'
+        required: true
+        example: alex@funhub.my
+        type: string
+        enumValues: []
+        custom: []
+      tel_no:
+        name: tel_no
+        description: 'The telephone number of the contact person.'
+        required: true
+        example: '182036794'
+        type: string
+        enumValues: []
+        custom: []
+      company_name:
+        name: company_name
+        description: 'The name of the company.'
+        required: true
+        example: 'Funhub TV'
+        type: string
+        enumValues: []
+        custom: []
+      business_type:
+        name: business_type
+        description: 'The type of the business.'
+        required: true
+        example: others
+        type: string
+        enumValues: []
+        custom: []
+      other_business_type:
+        name: other_business_type
+        description: 'required_if:business_type,others The type of the business.'
+        required: false
+        example: 'IT Consult'
+        type: string
+        enumValues: []
+        custom: []
+      message_type:
+        name: message_type
+        description: 'The category of the message.'
+        required: true
+        example: 'General Inquiry'
+        type: string
+        enumValues: []
+        custom: []
+      message:
+        name: message
+        description: 'The message or remarks.'
+        required: true
+        example: 'This is a sample message.'
+        type: text
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      name: 'Alex Koh'
+      email: alex@funhub.my
+      tel_no: '182036794'
+      company_name: 'Funhub TV'
+      business_type: others
+      other_business_type: 'IT Consult'
+      message_type: 'General Inquiry'
+      message: 'This is a sample message.'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Merchant contact information submitted successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "errors": {
+              "name": ["The Name field is required."],
+              "email": ["The Email field must be a valid email address."],
+              "tel_no": ["The Phone Number field is required."],
+              "company_name": ["The Company Name field is required."],
+              "business_type": ["The Business Type field is required."],
+              "message_type": ["The Message Category field is required."],
+              "message": ["The Message field is required."]
+              }
+          }
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d1Zab4P65fg38cDka6vehEV'
     controller: null
     method: null
     route: null

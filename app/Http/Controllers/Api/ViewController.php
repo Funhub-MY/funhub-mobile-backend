@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\MerchantOffer;
+use App\Models\User;
 use App\Models\View;
 use Illuminate\Http\Request;
 
@@ -13,13 +14,13 @@ class ViewController extends Controller
 {
     /**
      * Record view for viewable
-     * This is used for recording views for articles, comments, and merchant offers
+     * This is used for recording views for articles, comments, merchant offers, and user profiles
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group View
-     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer
+     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile
      * @bodyParam viewable_id int required The id of the viewable. Example: 1
      * @response scenario="success" {
      * "message": "View recorded"
@@ -28,7 +29,7 @@ class ViewController extends Controller
     public function postView(Request $request)
     {
         $this->validate($request, [
-            'viewable_type' => 'required|in:article,comment,merchant_offer',
+            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile',
             'viewable_id' => 'required|integer',
         ]);
 
@@ -41,6 +42,9 @@ class ViewController extends Controller
                 break;
             case 'merchant_offer':
                 $request->merge(['viewable_type' => MerchantOffer::class]);
+                break;
+            case 'user_profile':
+                $request->merge(['viewable_type' => User::class]);
                 break;
         }
 
@@ -59,7 +63,7 @@ class ViewController extends Controller
 
     /**
      * Get views for viewable type
-     * This is used for getting views for articles, comments, and merchant offers
+     * This is used for getting views for articles, comments, merchant offers, and user profiles
      * 
      * @param string $type
      * @param int $id
@@ -67,7 +71,7 @@ class ViewController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group View
-     * @urlParam type string required The type of the viewable. Example: article/comment/merchant_offer
+     * @urlParam type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile
      * @urlParam id int required The id of the viewable. Example: 1
      * @response scenario="success" {
      * "views": [],

@@ -67,10 +67,10 @@ class ReleaseFailedMerchantOffers extends Command
                     ->first();
 
                 if (!$offer) {
-                    Log::error('[ReleaseFailedMerchantOffers] Merchant Offer not found', [
-                        'transaction_id' => $transaction->id,
-                        'merchant_offer_id' => $transaction->transactionable_id,
-                    ]);
+                    // Log::error('[ReleaseFailedMerchantOffers] Merchant Offer not found', [
+                    //     'transaction_id' => $transaction->id,
+                    //     'merchant_offer_id' => $transaction->transactionable_id,
+                    // ]);
                     $this->info('[ReleaseFailedMerchantOffers] Merchant Offer not found, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $transaction->transactionable_id);
                     continue;
                 }

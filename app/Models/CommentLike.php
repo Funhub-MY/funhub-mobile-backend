@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CommentLike extends Model
+class CommentLike extends BaseModel
 {
     use HasFactory;
-    
+
     protected $table = 'comments_likes';
 
     protected $guarded = ['id'];

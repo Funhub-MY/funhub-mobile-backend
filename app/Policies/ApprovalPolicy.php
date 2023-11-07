@@ -16,7 +16,7 @@ class ApprovalPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_approval');
     }
@@ -28,7 +28,7 @@ class ApprovalPolicy
      * @param  \App\Models\Approval  $approval
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Approval $approval)
+    public function view(User $user, Approval $approval): bool
     {
         return $user->can('view_approval');
     }
@@ -39,7 +39,7 @@ class ApprovalPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_approval');
     }
@@ -51,7 +51,7 @@ class ApprovalPolicy
      * @param  \App\Models\Approval  $approval
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Approval $approval)
+    public function update(User $user, Approval $approval): bool
     {
         return $user->can('update_approval');
     }
@@ -63,7 +63,7 @@ class ApprovalPolicy
      * @param  \App\Models\Approval  $approval
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Approval $approval)
+    public function delete(User $user, Approval $approval): bool
     {
         return $user->can('delete_approval');
     }
@@ -74,7 +74,7 @@ class ApprovalPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_approval');
     }
@@ -86,7 +86,7 @@ class ApprovalPolicy
      * @param  \App\Models\Approval  $approval
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Approval $approval)
+    public function forceDelete(User $user, Approval $approval): bool
     {
         return $user->can('force_delete_approval');
     }
@@ -97,7 +97,7 @@ class ApprovalPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_approval');
     }
@@ -109,7 +109,7 @@ class ApprovalPolicy
      * @param  \App\Models\Approval  $approval
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Approval $approval)
+    public function restore(User $user, Approval $approval): bool
     {
         return $user->can('restore_approval');
     }
@@ -120,7 +120,7 @@ class ApprovalPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_approval');
     }
@@ -132,7 +132,7 @@ class ApprovalPolicy
      * @param  \App\Models\Approval  $approval
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Approval $approval)
+    public function replicate(User $user, Approval $approval): bool
     {
         return $user->can('replicate_approval');
     }
@@ -143,7 +143,7 @@ class ApprovalPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_approval');
     }

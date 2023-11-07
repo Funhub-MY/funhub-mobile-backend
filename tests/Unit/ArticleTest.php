@@ -29,7 +29,7 @@ class ArticleTest extends TestCase
 
         // mock log in user get token
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user,['*']);
+        Sanctum::actingAs($this->user, ['*']);
     }
 
     /**
@@ -47,9 +47,9 @@ class ArticleTest extends TestCase
         $response = $this->getJson('/api/v1/articles');
 
         $response->assertStatus(200)
-        ->assertJsonStructure([
-            'data',
-        ]);
+            ->assertJsonStructure([
+                'data',
+            ]);
 
         $this->assertEquals(10, $response->json('meta.total'));
     }
@@ -69,11 +69,11 @@ class ArticleTest extends TestCase
             ->create();
 
         // attach these two categories to 5 articles only
-        collect($articles->take(5))->each(function($article) use ($categories) {
+        collect($articles->take(5))->each(function ($article) use ($categories) {
             $article->categories()->attach($categories->pluck('id')->toArray());
         });
 
-        $response = $this->getJson('/api/v1/articles?category_ids='.$categories->pluck('id')->implode(','));
+        $response = $this->getJson('/api/v1/articles?category_ids=' . $categories->pluck('id')->implode(','));
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -84,14 +84,14 @@ class ArticleTest extends TestCase
         $this->assertEquals(5, $response->json('meta.total'));
 
         // check 5 articles have correct article categories ids
-        collect($response->json('data'))->each(function($article) use ($categories) {
+        collect($response->json('data'))->each(function ($article) use ($categories) {
             // get article categories ids from $article['categories']
             $article_categories_id = collect($article['categories'])->pluck('id')->toArray();
             $this->assertEquals($categories->pluck('id')->toArray(), $article_categories_id);
         });
     }
 
-     /**
+    /**
      * Article get articles for Home filtered by tag ids by logged in user
      * /api/v1/articles?tag_ids=1,2,3
      */
@@ -106,11 +106,11 @@ class ArticleTest extends TestCase
             ->create();
 
         // attach these two tags to 5 articles only
-        collect($articles->take(5))->each(function($article) use ($tags) {
+        collect($articles->take(5))->each(function ($article) use ($tags) {
             $article->tags()->attach($tags->pluck('id')->toArray());
         });
 
-        $response = $this->getJson('/api/v1/articles?tag_ids='.$tags->pluck('id')->implode(','));
+        $response = $this->getJson('/api/v1/articles?tag_ids=' . $tags->pluck('id')->implode(','));
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -121,7 +121,7 @@ class ArticleTest extends TestCase
         $this->assertEquals(5, $response->json('meta.total'));
 
         // check 5 articles have correct article tags ids
-        collect($response->json('data'))->each(function($article) use ($tags) {
+        collect($response->json('data'))->each(function ($article) use ($tags) {
             // get article tags ids from $article['tags']
             $article_tag_id = collect($article['tags'])->pluck('id')->toArray();
             $this->assertEquals($tags->pluck('id')->toArray(), $article_tag_id);
@@ -142,7 +142,7 @@ class ArticleTest extends TestCase
         $secondArticle = $articles->get(2);
 
         // get second article
-        $response = $this->getJson('/api/v1/articles/'.$secondArticle->id);
+        $response = $this->getJson('/api/v1/articles/' . $secondArticle->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -159,18 +159,18 @@ class ArticleTest extends TestCase
      */
     public function testGetArticlesForHomeByLoggedInUserWhenUserIsNotFollowing()
     {
-           // factory create articles
-           Article::factory()
-           ->count(10)
-           ->published()
-           ->create();
+        // factory create articles
+        Article::factory()
+            ->count(10)
+            ->published()
+            ->create();
 
-       $response = $this->getJson('/api/v1/articles?following_only=1');
+        $response = $this->getJson('/api/v1/articles?following_only=1');
 
-       $response->assertStatus(200)
-       ->assertJsonStructure([
-           'data',
-       ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
 
         // count is 0
         $this->assertEquals(0, $response->json('meta.total'));
@@ -289,8 +289,8 @@ class ArticleTest extends TestCase
      * Article get articles by user id
      * /api/v1/my_articles
      */
-   public function testGetMyArticlesByUserId()
-   {
+    public function testGetMyArticlesByUserId()
+    {
         // create a new user
         $user = User::factory()->create();
 
@@ -303,7 +303,7 @@ class ArticleTest extends TestCase
             ]);
 
         // get my_articles by user id
-        $response = $this->getJson('/api/v1/articles/my_articles?user_id='.$user->id);
+        $response = $this->getJson('/api/v1/articles/my_articles?user_id=' . $user->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -312,10 +312,10 @@ class ArticleTest extends TestCase
 
         // assert is 10 articles
         $this->assertEquals(10, $response->json('meta.total'));
-   }
+    }
 
-   public function testGetMyBookmarkedArticlesByUserId()
-   {
+    public function testGetMyBookmarkedArticlesByUserId()
+    {
         // create a new user
         $user = User::factory()->create();
 
@@ -342,7 +342,7 @@ class ArticleTest extends TestCase
                     'interaction',
                 ]);
         }
-   }
+    }
 
     /**
      * Articles create article by logged in user without images
@@ -382,21 +382,21 @@ class ArticleTest extends TestCase
             'user_id' => $this->user->id,
         ]);
 
-       // check article categories (two categories)
-       $this->assertDatabaseHas('articles_article_categories', [
-        'article_id' => $article_id,
-        'article_category_id' => $categories->first()->id,
+        // check article categories (two categories)
+        $this->assertDatabaseHas('articles_article_categories', [
+            'article_id' => $article_id,
+            'article_category_id' => $categories->first()->id,
         ]);
         $this->assertDatabaseHas('articles_article_categories', [
             'article_id' => $article_id,
             'article_category_id' => $categories->last()->id,
         ]);
         // check article has tags attached (two tags)
-        $this->assertDatabaseHas('articles_article_tags',[
+        $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
             'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
         ]);
-        $this->assertDatabaseHas('articles_article_tags',[
+        $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
             'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
@@ -524,26 +524,26 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles_article_categories', [
             'article_id' => $article_id,
             'article_category_id' => $categories->first()->id,
-       ]);
-       $this->assertDatabaseHas('articles_article_categories', [
+        ]);
+        $this->assertDatabaseHas('articles_article_categories', [
             'article_id' => $article_id,
             'article_category_id' => $categories->last()->id,
         ]);
         // check article has tags attached (two tags)
-        $this->assertDatabaseHas('articles_article_tags',[
+        $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
             'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
         ]);
-        $this->assertDatabaseHas('articles_article_tags',[
+        $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
             'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
     }
 
     /**
-    * Update Articles Change Body and Status
-    * /api/v1/articles/{article}
-    */
+     * Update Articles Change Body and Status
+     * /api/v1/articles/{article}
+     */
     public function testUpdateArticleBodyAndStatusByLoggedInUser()
     {
         // create one article by this user using factory
@@ -554,7 +554,7 @@ class ArticleTest extends TestCase
             'user_id' => $this->user->id,
         ]);
 
-        $response = $this->putJson('/api/v1/articles/'.$article->id, [
+        $response = $this->putJson('/api/v1/articles/' . $article->id, [
             'body' => 'Test Article Body Updated',
             'status' => 0, // unpublished
         ]);
@@ -596,7 +596,7 @@ class ArticleTest extends TestCase
         $response->assertStatus(200);
 
         // get article
-        $response = $this->getJson('/api/v1/articles/'.$article->id);
+        $response = $this->getJson('/api/v1/articles/' . $article->id);
         // check articles has interactions json
         $response->assertJsonStructure([
             'article' => [
@@ -687,7 +687,7 @@ class ArticleTest extends TestCase
         $response->assertStatus(200);
 
         // get article
-        $response = $this->getJson('/api/v1/articles/'.$article->id);
+        $response = $this->getJson('/api/v1/articles/' . $article->id);
         // check articles has interactions json
         $response->assertJsonStructure([
             'article' => [
@@ -721,7 +721,7 @@ class ArticleTest extends TestCase
         $this->refreshDatabase();
 
         $user = User::factory()->create();
-        Sanctum::actingAs($user,['*']);
+        Sanctum::actingAs($user, ['*']);
 
         // create one article by this user using factory
         $article = Article::factory()->create([
@@ -740,7 +740,7 @@ class ArticleTest extends TestCase
         // create 3 more different categories
         $categories_new = \App\Models\ArticleCategory::factory()->count(3)->create();
 
-        $response = $this->putJson('/api/v1/articles/'.$article->id, [
+        $response = $this->putJson('/api/v1/articles/' . $article->id, [
             'body' => 'Test Article Body',
             'status' => 1, // unpublished
             'categories' => $categories_new->pluck('id')->toArray(),
@@ -773,13 +773,13 @@ class ArticleTest extends TestCase
      */
     public function testGetArticleByArticleIds()
     {
-         // create one article by this user using factory
+        // create one article by this user using factory
         $articles = Article::factory()->count(20)
             ->published()
             ->create();
 
         // get article
-        $response = $this->getJson('/api/v1/articles?article_ids='.implode(',', $articles->pluck('id')->toArray()));
+        $response = $this->getJson('/api/v1/articles?article_ids=' . implode(',', $articles->pluck('id')->toArray()));
 
         $response->assertJsonStructure([
             'data'
@@ -804,7 +804,7 @@ class ArticleTest extends TestCase
         ]);
 
         // each user view article
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $this->actingAs($user);
             $response = $this->postJson('/api/v1/views', [
                 'viewable_type' => 'article',
@@ -837,8 +837,8 @@ class ArticleTest extends TestCase
         $this->seed(CountriesTableSeeder::class);
         $this->seed(StatesTableSeeder::class);
 
-         // upload images first
-         $response = $this->json('POST', '/api/v1/articles/gallery', [
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
         ]);
         // create article category factory
@@ -889,7 +889,7 @@ class ArticleTest extends TestCase
         ]);
 
         // get article by id
-        $response = $this->getJson('/api/v1/articles/'.$article_id);
+        $response = $this->getJson('/api/v1/articles/' . $article_id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -922,8 +922,8 @@ class ArticleTest extends TestCase
         $this->seed(CountriesTableSeeder::class);
         $this->seed(StatesTableSeeder::class);
 
-         // upload images first
-         $response = $this->json('POST', '/api/v1/articles/gallery', [
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
         ]);
         // create article category factory
@@ -965,7 +965,7 @@ class ArticleTest extends TestCase
         $article_id = $response->json('article.id');
 
         // delete article
-        $response = $this->deleteJson('/api/v1/articles/'.$article_id);
+        $response = $this->deleteJson('/api/v1/articles/' . $article_id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -991,7 +991,7 @@ class ArticleTest extends TestCase
     public function testCreateUpdateArticleWithFollowersTagged()
     {
         // upload images first
-         $response = $this->json('POST', '/api/v1/articles/gallery', [
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
         ]);
         // create article category factory
@@ -1004,7 +1004,7 @@ class ArticleTest extends TestCase
 
         // create ten users who follow $this->user
         $users = User::factory()->count(10)->create();
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $this->actingAs($user); // act as follower
             $response = $this->postJson('/api/v1/user/follow', [
                 'user_id' => $this->user->id, // follow global user
@@ -1044,7 +1044,7 @@ class ArticleTest extends TestCase
             ]);
 
         // get article by id
-        $response = $this->getJson('/api/v1/articles/tagged_users?article_id='.$response->json('article.id'));
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id=' . $response->json('article.id'));
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -1052,7 +1052,7 @@ class ArticleTest extends TestCase
             ]);
 
         // loop each tagged_users check match with $users
-        foreach($response->json('data') as $tagged_user) {
+        foreach ($response->json('data') as $tagged_user) {
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
         }
 
@@ -1060,7 +1060,7 @@ class ArticleTest extends TestCase
         // create new sets of users
         $users = User::factory()->count(2)->create();
         // ensure users is followers of $this->user
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $this->actingAs($user); // act as follower
             $response = $this->postJson('/api/v1/user/follow', [
                 'user_id' => $this->user->id, // follow global user
@@ -1074,7 +1074,7 @@ class ArticleTest extends TestCase
         // acting back to main logged in user
         $this->actingAs($this->user); // act as follower
 
-        $response = $this->postJson('/api/v1/articles/'.$response->json('article.id'), [
+        $response = $this->postJson('/api/v1/articles/' . $response->json('article.id'), [
             'title' => 'Test Article with Images',
             'body' => 'Test Article Body',
             'type' => 'multimedia',
@@ -1093,14 +1093,14 @@ class ArticleTest extends TestCase
             ]);
 
         // check if article has users tagged
-        $response = $this->getJson('/api/v1/articles/tagged_users?article_id='.$response->json('article.id'));
+        $response = $this->getJson('/api/v1/articles/tagged_users?article_id=' . $response->json('article.id'));
         $response->assertStatus(200)
-        ->assertJsonStructure([
-            'data'
-        ]);
+            ->assertJsonStructure([
+                'data'
+            ]);
 
         // loop each tagged_users check match with $users
-        foreach($response->json('data') as $tagged_user) {
+        foreach ($response->json('data') as $tagged_user) {
             $this->assertContains($tagged_user['id'], $users->pluck('id')->toArray());
         }
     }
@@ -1138,7 +1138,7 @@ class ArticleTest extends TestCase
         ]);
 
         // attach remainder two location to each article
-        foreach($articles as $article) {
+        foreach ($articles as $article) {
             $article->location()->create([
                 'name' => 'Test Location',
                 'address' => 'Test Address',
@@ -1146,7 +1146,7 @@ class ArticleTest extends TestCase
                 'lng' => 1.234,
                 'address_2' => 'Test Address 2',
                 // randomize cities
-                'city' => $cities[rand(1,2)],
+                'city' => $cities[rand(1, 2)],
                 'state_id' => State::where('name', 'Selangor')->first()->id,
                 'country_id' => Country::where('name', 'Malaysia')->first()->id,
                 'zip_code' => '123456'
@@ -1154,7 +1154,7 @@ class ArticleTest extends TestCase
         }
 
         // get articles by city
-        $response = $this->getJson('/api/v1/articles?city='.$cities[0]);
+        $response = $this->getJson('/api/v1/articles?city=' . $cities[0]);
         // assert data is 1
         $this->assertCount(1, $response->json('data'));
 
@@ -1167,21 +1167,21 @@ class ArticleTest extends TestCase
      */
     public function testGetArticlesWithintMyLatLng()
     {
-         // ensure countries and states are seeded first
-         $this->seed(CountriesTableSeeder::class);
-         $this->seed(StatesTableSeeder::class);
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
 
-         $otherUser = User::factory()->create();
+        $otherUser = User::factory()->create();
 
-         // create 10 articles
-         $articles = Article::factory()->count(10)->published()
-             ->create([
-                 'user_id' => $otherUser,
-             ]);
+        // create 10 articles
+        $articles = Article::factory()->count(10)->published()
+            ->create([
+                'user_id' => $otherUser,
+            ]);
 
-         // 3 cities of Klang valley
-         $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
-         foreach($articles as $article) {
+        // 3 cities of Klang valley
+        $cities = ['Kuala Lumpur', 'Petaling Jaya', 'Shah Alam'];
+        foreach ($articles as $article) {
             $article->location()->create([
                 'name' => 'Test Location',
                 'address' => 'Test Address',
@@ -1200,6 +1200,371 @@ class ArticleTest extends TestCase
 
         // assert data is 10 as its nearby
         $this->assertCount(10, $response->json('data'));
+    }
+
+    /**
+     * To ensure consistency in resources returned via different endpoints after updating an article
+     */
+    public function testUpdateConsistency()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+        // 1. Factory create 5 articles by 5 different users
+        $users = User::factory()->count(5)->create();
+
+        $articles = collect();
+        foreach ($users as $user) {
+            $article = Article::factory()->published()
+                ->create([
+                    'user_id' => $user->id,
+                ]);
+            $articles->push($article);
+        }
+
+        // assign a city and lat lng for each article created
+        foreach ($articles as $article) {
+            $article->location()->create([
+                'name' => 'Location',
+                'address' => 'Address',
+                'lat' => 3.0254065,
+                'lng' => 101.5814762,
+                'address_2' => 'Address 2',
+                'city' => 'Kuala Lumpur',
+                'state_id' => State::where('name', 'Selangor')->first()->id,
+                'country_id' => Country::where('name', 'Malaysia')->first()->id,
+                'zip_code' => '123456'
+            ]);
+        }
+         // check if /api/articles/cities have one city
+         $response = $this->getJson('/api/v1/article_cities');
+         $response->assertStatus(200)
+             ->assertJsonStructure([
+                 'cities',
+             ]);
+         $this->assertCount(1, $response->json('cities'));
+ 
+         // assert city is Kuala Lumpur
+         $this->assertEquals('Kuala Lumpur', $response->json('cities.0'));
+
+         // my location: 3.013814, 101.622510
+        $articlesWithinLatLng = $this->getJson('/api/v1/articles?lat=3.0254065&lng=101.5814762');
+        $articleIdsWithinLatLng =collect($articlesWithinLatLng['data'])->pluck('id')->toArray();
+
+        // assert data is 5 as its nearby
+        $this->assertCount(5, $articlesWithinLatLng->json('data'));
+
+        // 2. Bookmark all 5 articles by logged in user
+        foreach ($articles as $article) {
+            $bookmarks = $this->postJson('/api/v1/interactions', [
+                'interactable' => 'article',
+                'type' => 'bookmark',
+                'id' => $article->id,
+
+            ]);
+            // assert json response
+            $bookmarks->assertStatus(200)
+                ->assertJsonStructure([
+                    'interaction',
+                ]);
+        }
+
+        // 3. Create 1 article by logged in user with Location Tagged     
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()->count(2)->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $authUserArticle = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+        $authUserArticle->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $authUserArticleId = $authUserArticle->json('article.id');
+
+        // 4. Attach 5 followings to logged-in user
+        foreach ($users as $user) {
+            // acting as logged in user, follow each of the users created
+            $follow = $this->postJson('/api/v1/user/follow', [
+                'user_id' => $user->id,
+            ]);
+            $follow->assertStatus(200)
+                ->assertJsonStructure([
+                    'message'
+                ]);
+            $this->assertDatabaseHas('users_followings', [
+                'user_id' => $this->user->id,
+                'following_id' => $user->id,
+            ]);
+        }
+
+        $followings = $this->getJson('/api/v1/user/followings');
+
+        $followings->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+        // assert should be 5 followings
+        $this->assertCount(5, $followings->json()['data']);
+
+        // check if followings of logged in user id are same as the users id
+        $this->assertEquals(
+            $users->pluck('id')->toArray(),
+            collect($followings->json()['data'])->pluck('id')->toArray()
+        );
+
+        // ensure json data each user is_following is true
+        foreach ($followings->json()['data'] as $user) {
+            $this->assertTrue($user['is_following']);
+        }
+
+        // 5. Other user like and comment on article of logged-in user
+        Sanctum::actingAs($users->first(), ['*']);
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $authUserArticleId,
+            'interactable' => Article::class,
+            'type' => 'like',
+        ]);
+        $response->assertStatus(200);
+
+        $comment = $this->postJson('/api/v1/comments', [
+            'id' => $authUserArticleId,
+            'type' => 'article',
+            'body' => 'test comment',
+            'parent_id' => null
+        ]);
+        $comment->assertStatus(200)
+        ->assertJsonStructure([
+            'comment'
+        ]);
+        $this->assertDatabaseHas('comments', [
+            'body' => 'test comment',
+            'commentable_id' => $authUserArticleId,
+            'commentable_type' => Article::class,
+            'user_id' => $users->first()->id,
+        ]);
+
+        // switch back to $this->user
+        $this->actingAs($this->user);
+
+        // 7. Logged-in user like and comment article of other user
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $articles->first(),
+            'interactable' => Article::class,
+            'type' => 'like',
+        ]);
+        
+        $authUserComment = $this->postJson('/api/v1/comments', [
+            'id' => $articles->first(),
+            'type' => 'article',
+            'body' => 'test comment by auth user',
+            'parent_id' => null
+        ]);
+
+        // 8. Update the article
+        // create 3 more different categories
+        $categories_new = \App\Models\ArticleCategory::factory()->count(3)->create();
+
+        $response = $this->putJson('/api/v1/articles/' . $authUserArticleId, [
+            'body' => 'Test Article Body',
+            'status' => 1, // unpublished
+            'categories' => $categories_new->pluck('id')->toArray(),
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        $updatedArticle = Article::find($authUserArticleId);
+        $this->assertModelExists($updatedArticle);
+        $this->assertEquals($updatedArticle->id, $authUserArticleId);
+        $this->assertEquals($updatedArticle->user_id, $this->user->id);
+        $this->assertEquals($updatedArticle->body, 'Test Article Body');
+        $this->assertEquals($updatedArticle->status, 1);
+
+        $article = Article::find($authUserArticleId);
+
+        // assert article has categories (new)
+        $this->assertTrue($article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray());
+
+        // 9. Get articles for homepage, and my_bookmarks
+        $homepageArticles = $this->getJson('/api/v1/articles?include_own_article=1');
+        $this->assertEquals(6, $homepageArticles->json('meta.total'));
+
+        $homepageArticleData = $homepageArticles->json('data');
+
+        // CORE TEST: Get articles for my_profile and assert data returned same as in homepage
+        $myArticles = $this->getJson('/api/v1/articles/my_articles');
+        $this->assertEquals(1, $myArticles->json('meta.total'));
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+        $this->assertEquals(1, $myArticles['data'][0]['count']['comments']);
+        $this->assertEquals(1, $myArticles['data'][0]['count']['likes']);
+        $this->assertEquals(5, $myArticles['data'][0]['user']['following_count']);
+
+        // test get article by id
+        $response = $this->getJson('/api/v1/articles/' . $authUserArticleId);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'article' => [
+                    'location',
+                ]
+            ]);
+
+        // check location data is correct
+        $this->assertEquals('Test Location', $myArticles['data'][0]['location']['name']);
+
+        // check if /api/articles/cities have one city
+        $response = $this->getJson('/api/v1/article_cities');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'cities',
+            ]);
+        $this->assertCount(2, $response->json('cities'));
+
+        // assert city is Kuala Lumpur and Test City
+        $this->assertEquals(array_values(['Kuala Lumpur','Test City']), array_values($response->json('cities')));
+
+        $myArticleData = $myArticles->json('data');
+
+        // Filter homepage articles created by $this->user
+        $homepageArticlesCreatedByUser = collect($homepageArticleData)->filter(function ($article) {
+            return $article['user']['id'] === $this->user->id;
+        })->toArray();
+
+        // Assertions that data returned from /articles created by $this->user is same as data returned from /my_articles
+        $this->assertEquals(array_values($homepageArticlesCreatedByUser), array_values($myArticleData));
+
+        // CORE TEST: Get my_bookmarks articles and assert data returned same as in homepage
+        $myBookmarks = $this->getJson('/api/v1/articles/my_bookmarks');
+        $this->assertEquals(5, $myBookmarks->json('meta.total'));
+
+        $myBookmarkData = $myBookmarks->json('data');
+
+        // Filter homepage articles bookmarked by $this->user
+        $homepageArticlesBookmarkedByUser = collect($homepageArticleData)->filter(function ($article) {
+            return $article['user_bookmarked'];
+        })->toArray();
+
+        // Assertions that data returned from /articles bookmarked by $this->user is same as data returned from /my_bookmarks
+        $this->assertEquals(array_values($homepageArticlesBookmarkedByUser), array_values($myBookmarkData));
+
+        // CORE TEST: GetArticlesWithintMyLatLng and assert data returned same as in homepage
+        $articlesWithinLatLng = $this->getJson('/api/v1/articles?lat=3.0254065&lng=101.5814762');
+        $articleIdsWithinLatLng = collect($articlesWithinLatLng['data'])->pluck('id')->toArray();
+        
+        // Filter homepage articles with same Lat Lng query
+        $homePageArticlesWithinUserLatLng = collect($homepageArticleData)->filter(function ($article) use ($articleIdsWithinLatLng) {
+            return in_array($article['id'], $articleIdsWithinLatLng);
+        })->toArray();
+
+        $articlesWithinLatLngArray = $articlesWithinLatLng->json();
+
+        // Assertions that data returned from /articles is same as data returned from GetArticlesWithintMyLatLng
+        foreach ($articlesWithinLatLngArray['data'] as $article) {
+            $articleId = $article['id'];
+        
+            // Get the corresponding article with the same ID from $homePageArticlesWithinUserLatLng
+            $matchingArticle = array_values(array_filter($homePageArticlesWithinUserLatLng, function($a) use ($articleId) {
+                return $a['id'] === $articleId;
+            }))[0];
+        
+            // Assert location data
+            $this->assertEquals($article['location'], $matchingArticle['location']);
+        
+            // Assert count data
+            $this->assertEquals($article['count'], $matchingArticle['count']);
+        
+            // Assert user_liked and user_bookmarked
+            $this->assertEquals($article['user_liked'], $matchingArticle['user_liked']);
+            $this->assertEquals($article['user_bookmarked'], $matchingArticle['user_bookmarked']);
+        }
+
+        // CORE TEST: GetArticlesForHomeFilteredByCategoryIdsByLoggedInUser and assert data returned same as in homepage
+        collect($articles->take(3))->each(function ($article) use ($categories) {
+            $article->categories()->attach($categories->pluck('id')->toArray());
+        });
+
+        $articlesWithCategories = $this->getJson('/api/v1/articles?category_ids=' . $categories->pluck('id')->implode(','));
+        $articleIdsWithCategories = collect($articlesWithCategories['data'])->pluck('id')->toArray();
+
+        $articlesWithCategories->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
+        // ensure only 3 articles got taken
+        $this->assertEquals(3, $articlesWithCategories->json('meta.total'));
+
+        // check 3 articles have correct article categories ids
+        collect($articlesWithCategories->json('data'))->each(function ($article) use ($categories) {
+            // get article categories ids from $article['categories']
+            $article_categories_id = collect($article['categories'])->pluck('id')->toArray();
+            $this->assertEquals($categories->pluck('id')->toArray(), $article_categories_id);
+        });
+
+        // Filter homepage articles with categories
+        $homepageArticlesWithCategories = collect($homepageArticleData)->filter(function ($article) use ($articleIdsWithCategories) {
+            return in_array($article['id'], $articleIdsWithCategories);
+        })->toArray();
+
+        $articlesWithCategoriesArray = $articlesWithCategories->json();
+
+        // Assertions that data returned from /articles bookmarked by $this->user is same as data returned from /my_bookmarks
+        foreach ($articlesWithCategoriesArray['data'] as $article) {
+            $articleId = $article['id'];
+        
+            // Get the corresponding article with the same ID from $homepageArticlesWithCategories
+            $matchingArticle = array_values(array_filter($homepageArticlesWithCategories, function($a) use ($articleId) {
+                return $a['id'] === $articleId;
+            }))[0];
+        
+            // Assert location data
+            $this->assertEquals($article['location'], $matchingArticle['location']);
+        
+            // Assert count data
+            $this->assertEquals($article['count'], $matchingArticle['count']);
+        
+            // Assert user_liked and user_bookmarked
+            $this->assertEquals($article['user_liked'], $matchingArticle['user_liked']);
+            $this->assertEquals($article['user_bookmarked'], $matchingArticle['user_bookmarked']);
+        }
     }
 
     // public function testArticleNotInterestedByUser()

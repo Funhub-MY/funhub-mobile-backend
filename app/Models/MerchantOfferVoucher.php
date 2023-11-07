@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
  * MerchantOfferVoucher
  * Represents individual voucher for a merchant offer (will affect quantity count of merchant offer)
  */
-class MerchantOfferVoucher extends Model
+class MerchantOfferVoucher extends BaseModel
 {
     use HasFactory;
 

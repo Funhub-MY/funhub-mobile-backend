@@ -80,9 +80,9 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published();
-            // ->whereDoesntHave('hiddenUsers', function ($query) {
-            //     $query->where('user_id', auth()->user()->id);
-            // });
+        // ->whereDoesntHave('hiddenUsers', function ($query) {
+        //     $query->where('user_id', auth()->user()->id);
+        // });
 
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
             // default to exclude own article
@@ -96,7 +96,7 @@ class ArticleController extends Controller
         }
 
         if ($request->has('category_ids')) {
-            $query->whereHas('categories', fn($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
+            $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
         }
 
         if ($request->has('article_ids')) {
@@ -104,11 +104,11 @@ class ArticleController extends Controller
         }
 
         if ($request->has('tag_ids')) {
-            $query->whereHas('tags', fn($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+            $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
         }
 
         // get articles from users whose this auth user is following only
-        if($request->has('following_only') && $request->following_only == 1) {
+        if ($request->has('following_only') && $request->following_only == 1) {
             $myFollowings = auth()->user()->followings;
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
@@ -134,7 +134,7 @@ class ArticleController extends Controller
                     return Location::search('')->with([
                         'aroundLatLng' => $request->lat.','.$request->lng,
                         'aroundRadius' => $radius * 1000,
-                        'aroundPrecision' => 2000,
+                        'aroundPrecision' => 50,
                     ])->raw()['hits'];
                 });
 
@@ -183,7 +183,7 @@ class ArticleController extends Controller
                 // then dispatch job to rebuild for user
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
-                    Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id. ' Expiry Hours: '. config('app.recommendation_db_purge_hours'). ' - Last Built: '. $lastBuilt);
+                    Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id . ' Expiry Hours: ' . config('app.recommendation_db_purge_hours') . ' - Last Built: ' . $lastBuilt);
                     BuildRecommendationsForUser::dispatch(auth()->user());
                 }
             } else {
@@ -244,7 +244,7 @@ class ArticleController extends Controller
      * @param QueryBuilder $query
      * @return void
      */
-    protected function filterArticlesBlockedOrHidden(&$query) : void
+    protected function filterArticlesBlockedOrHidden(&$query): void
     {
         $excludedUserIds = [];
         // if i'm in someone's blocked list, i should not able to see that user's articles
@@ -360,6 +360,7 @@ class ArticleController extends Controller
             $query->where('type', 'video');
         }
 
+
         if ($request->has('published_only')) {
             $query->where('status', Article::STATUS[1]);
         }
@@ -420,7 +421,7 @@ class ArticleController extends Controller
             $query->where('user_id', $user_id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
         })->published()
-            ->whereDoesntHave('hiddenUsers', function ($query) use ($user_id){
+            ->whereDoesntHave('hiddenUsers', function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
             });
 
@@ -626,8 +627,8 @@ class ArticleController extends Controller
 
         // if location cant be found by google_id, then find by lat,lng
         $location = Location::where('lat', $locationData['lat'])
-           ->where('lng', $locationData['lng'])
-           ->first();
+            ->where('lng', $locationData['lng'])
+            ->first();
 
         // detach existing location first
         $article->location()->detach(); // detaches all
@@ -650,19 +651,11 @@ class ArticleController extends Controller
 
             // find state by id if the locationdata state is integer else find by name
             $state = null;
-            // match by google id first
-            if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
-                $state = State::where('google_id', $locationData['google_id'])->first();
-            }
-
-            // if not matched via google id then proceed with state look up
-            if (!$state) {
-                if (is_numeric($locationData['state'])) {
-                    $state = State::where('id', $locationData['state'])->first();
-                } else {
-                    // where lower(name) like %trim lower locationData['state']%
-                    $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
-                }
+            if (is_numeric($locationData['state'])) {
+                $state = State::where('id', $locationData['state'])->first();
+            } else {
+                // where lower(name) like %trim lower locationData['state']%
+                $state = State::whereRaw('lower(name) like ?', ['%' . trim(strtolower($locationData['state'])) . '%'])->first();
             }
 
             if ($state) {
@@ -677,18 +670,18 @@ class ArticleController extends Controller
                 // check if locationData has country
                 $country = null;
                 if (isset($locationData['country']) && $locationData['country'] != 0) {
-                    $country = Country::where('name', 'like', '%'.$locationData['country'].'%')->first();
+                    $country = Country::where('name', 'like', '%' . $locationData['country'] . '%')->first();
                 }
 
                 if (!$country) {
-                      // defaults to malaysia
-                      $country = Country::where('name', 'Malaysia')->first();
+                    // defaults to malaysia
+                    $country = Country::where('name', 'Malaysia')->first();
                 }
 
                 // create state
                 $state = State::create([
                     'name' => $locationData['state'],
-                    'code' => 'CUSTOM'.ucwords(Str::random(3)),
+                    'code' => 'CUSTOM' . ucwords(Str::random(3)),
                     'country_id' => $country->id,
                 ]);
                 Log::info('Created new state as state data not found', ['state' => $state]);
@@ -733,9 +726,10 @@ class ArticleController extends Controller
      * }
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
-    public function show($id) {
+    public function show($id)
+    {
         $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -1007,7 +1001,7 @@ class ArticleController extends Controller
                     ->toMediaCollection(
                         'user_uploads',
                         (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
-                );
+                    );
             });
             $uploaded->each(function ($image) use (&$images) {
                 $images[] = [
@@ -1040,19 +1034,21 @@ class ArticleController extends Controller
      * "url" : "http://localhost:8000/storage/user_video_uploads/1/video.mp4"
      * }
      */
-    public function postVideoUpload(Request $request) {
+    public function postVideoUpload(Request $request)
+    {
         // validate video size must not larger than 500MB
         $request->validate([
-            'video' => 'required|file|max:'.config('app.max_size_per_video_kb'),
+            'video' => 'required|file|max:' . config('app.max_size_per_video_kb'),
         ]);
         $videoFile = $request->file('video');
         $user = auth()->user();
 
         // Create new media item in the "user_uploads" collection
         $media = $user->addMedia($videoFile)
-        ->toMediaCollection(User::USER_VIDEO_UPLOADS,
+            ->toMediaCollection(
+                User::USER_VIDEO_UPLOADS,
                 (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
-        );
+            );
 
         $filesystem = config('filesystems.default');
 
@@ -1112,10 +1108,10 @@ class ArticleController extends Controller
     {
         // validate
         $request->validate([
-           'article_id' => 'required|integer',
-           'reason' => 'required|string',
-           'violation_type' => 'required|string',
-           'violation_level' => 'required|integer',
+            'article_id' => 'required|integer',
+            'reason' => 'required|string',
+            'violation_type' => 'required|string',
+            'violation_level' => 'required|integer',
         ]);
         // find article
         $article = Article::where('id', request('article_id'))->firstOrFail();
