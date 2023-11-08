@@ -32,16 +32,22 @@ class CreateViewsForArticleListener
         $view_seeder_on = Setting::where('key', 'view_seeder_on')->first(); //check if view_seeder_on is 'true' or 'false'
 
         if ($view_seeder_on) {
-            if ($view_seeder_on->value === 'true') {
+            if (strtolower($view_seeder_on->value) === 'true') {
                 $article = $event->article;
 
                 //get the view_seeder_weight from settings table(view_seeder_weight is set by admin)
-                $setting = Setting::where('key', 'view_seeder_weight')->first();
+                $view_seeder_weight_setting = Setting::where('key', 'view_seeder_weight')->first();
         
-                if ($setting) {
-                    $auto_view_percentage = $setting->value;
+                if ($view_seeder_weight_setting) {
+                    $value = $view_seeder_weight_setting->value;
+                    try {
+                        $auto_view_percentage = (int)$value; // Convert to integer
+                    } catch (\Exception $e) {
+                        // Handle the case where the value is not convertible to an integer
+                        $auto_view_percentage = 1; // Default as 1
+                    }
                 } else {
-                    $auto_view_percentage = 10; //default as 10 first
+                    $auto_view_percentage = 1; // Default as 1
                 }
         
                 $total_app_user = User::count();

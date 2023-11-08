@@ -32,20 +32,23 @@ class AutoGenerateArticleViews extends Command
     {
         $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())->get();
 
-        foreach ($viewQueueRecords as $record) {
-            $articleId = $record->article_id;
-            $scheduledViews = $record->scheduled_views;
-
-            for ($i = 0; $i < $scheduledViews; $i++) {
-                View::create([
-                    'user_id' => $this->getSuperAdminUserId(),
-                    'viewable_type' => Article::class,
-                    'viewable_id' => $articleId,
-                    'ip_address' => null,
-                    'is_system_generated' => true,
-                ]);
+        if ($viewQueueRecords) {
+            foreach ($viewQueueRecords as $record) {
+                $articleId = $record->article_id;
+                $scheduledViews = $record->scheduled_views;
+    
+                for ($i = 0; $i < $scheduledViews; $i++) {
+                    View::create([
+                        'user_id' => $this->getSuperAdminUserId(),
+                        'viewable_type' => Article::class,
+                        'viewable_id' => $articleId,
+                        'ip_address' => null,
+                        'is_system_generated' => true,
+                    ]);
+                }
             }
         }
+
         return Command::SUCCESS;
     }
 
