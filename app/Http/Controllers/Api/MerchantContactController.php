@@ -17,7 +17,7 @@ class MerchantContactController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @group Merchant
-     * @subgroup Merchant Contacts
+     * @subgroup Merchant Contact
      *
      * @bodyParam name string required The name of the contact person. Example: Alex Koh
      * @bodyParam email string required The email address of the contact person. Example: alex@funhub.my

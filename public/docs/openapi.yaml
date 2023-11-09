@@ -207,6 +207,10 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+                video_only:
+                  type: integer
+                  description: 'optional Filter by Videos.'
+                  example: 1
   /api/v1/articles/my_bookmarks:
     get:
       summary: 'Get Bookmarked Articles by User ID or Logged In User'
@@ -258,6 +262,10 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+                video_only:
+                  type: integer
+                  description: 'optional Filter by Videos.'
+                  example: 1
   /api/v1/articles/report:
     post:
       summary: 'Report an article'
@@ -291,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 14
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -299,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: omnis
+                  example: consequatur
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quidem
+                  example: sapiente
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -446,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ut
+                    - amet
                   items:
                     type: string
                 category_ids:
@@ -1076,7 +1084,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: consequatur
+        example: aut
         required: true
         schema:
           type: string
@@ -1157,11 +1165,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: expedita
+                  example: sit
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: nihil
+                  example: sed
               required:
                 - comment_id
                 - reason
@@ -1397,7 +1405,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sunt
+        example: omnis
         required: true
         schema:
           type: string
@@ -2047,7 +2055,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1182
+                      line: 1211
                       function: abort
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2063,7 +2071,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 259
+                      line: 260
                       function: dispatch
                       class: Illuminate\Routing\ControllerDispatcher
                       type: '->'
@@ -2105,7 +2113,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                      line: 92
+                      line: 102
                       function: handleRequest
                       class: Illuminate\Routing\Middleware\ThrottleRequests
                       type: '->'
@@ -2129,7 +2137,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 797
+                      line: 799
                       function: then
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -2315,7 +2323,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 163
+                      line: 166
                       function: iterateThroughStrategies
                       class: Knuckles\Scribe\Extracting\Extractor
                       type: '->'
@@ -2369,7 +2377,7 @@ paths:
                       type: '::'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 35
+                      line: 37
                       function: callBoundMethod
                       class: Illuminate\Container\BoundMethod
                       type: '::'
@@ -2393,7 +2401,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                      line: 152
+                      line: 153
                       function: run
                       class: Symfony\Component\Console\Command\Command
                       type: '->'
@@ -2429,7 +2437,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/kahshinyip/Laravel/funhub-mobile-backend/artisan
-                      line: 35
+                      line: 37
                       function: handle
                       class: Illuminate\Foundation\Console\Kernel
                       type: '->'
@@ -2457,7 +2465,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1182
+                        line: 1211
                         function: abort
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2473,7 +2481,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 259
+                        line: 260
                         function: dispatch
                         class: Illuminate\Routing\ControllerDispatcher
                         type: '->'
@@ -2515,7 +2523,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                        line: 92
+                        line: 102
                         function: handleRequest
                         class: Illuminate\Routing\Middleware\ThrottleRequests
                         type: '->'
@@ -2539,7 +2547,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 797
+                        line: 799
                         function: then
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -2725,7 +2733,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 163
+                        line: 166
                         function: iterateThroughStrategies
                         class: Knuckles\Scribe\Extracting\Extractor
                         type: '->'
@@ -2779,7 +2787,7 @@ paths:
                         type: '::'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 35
+                        line: 37
                         function: callBoundMethod
                         class: Illuminate\Container\BoundMethod
                         type: '::'
@@ -2803,7 +2811,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                        line: 152
+                        line: 153
                         function: run
                         class: Symfony\Component\Console\Command\Command
                         type: '->'
@@ -2839,7 +2847,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/kahshinyip/Laravel/funhub-mobile-backend/artisan
-                        line: 35
+                        line: 37
                         function: handle
                         class: Illuminate\Foundation\Console\Kernel
                         type: '->'
@@ -2873,7 +2881,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: velit
+                  example: dolores
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3101,7 +3109,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 3
+        example: 8
         required: true
         schema:
           type: integer
@@ -3139,7 +3147,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 13
+        example: 17
         required: true
         schema:
           type: integer
@@ -3177,7 +3185,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 12
+        example: 2
         required: true
         schema:
           type: integer
@@ -4015,7 +4023,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: rerum
+        example: quas
         required: true
         schema:
           type: string
@@ -4119,7 +4127,7 @@ paths:
         required: true
         schema:
           type: integer
-  /api/v1/merchant-contacts:
+  /api/v1/merchant-contact:
     post:
       summary: 'Submit Merchant Contact Information'
       operationId: submitMerchantContactInformation
@@ -4989,7 +4997,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 17
+                  example: 11
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5075,15 +5083,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: reprehenderit
+                  example: qui
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: velit
+                  example: voluptatem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: enim
+                  example: iusto
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5200,7 +5208,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: sunt
+                  example: laborum
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5234,7 +5242,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: eveniet
+                  example: cumque
               required:
                 - user_ids
     parameters:

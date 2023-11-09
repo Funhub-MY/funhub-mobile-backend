@@ -29,12 +29,12 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: velit
+        example: dolores
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      share_code: velit
+      share_code: dolores
     fileParameters: []
     responses:
       -
@@ -55,7 +55,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1182,
+                      "line": 1211,
                       "function": "abort"
                   },
                   {
@@ -74,7 +74,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 259,
+                      "line": 260,
                       "function": "dispatch",
                       "class": "Illuminate\\Routing\\ControllerDispatcher",
                       "type": "->"
@@ -123,7 +123,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 92,
+                      "line": 102,
                       "function": "handleRequest",
                       "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
                       "type": "->"
@@ -151,7 +151,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 797,
+                      "line": 799,
                       "function": "then",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
@@ -368,7 +368,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 163,
+                      "line": 166,
                       "function": "iterateThroughStrategies",
                       "class": "Knuckles\\Scribe\\Extracting\\Extractor",
                       "type": "->"
@@ -431,7 +431,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 35,
+                      "line": 37,
                       "function": "callBoundMethod",
                       "class": "Illuminate\\Container\\BoundMethod",
                       "type": "::"
@@ -459,7 +459,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php",
-                      "line": 152,
+                      "line": 153,
                       "function": "run",
                       "class": "Symfony\\Component\\Console\\Command\\Command",
                       "type": "->"
@@ -501,7 +501,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/kahshinyip/Laravel/funhub-mobile-backend/artisan",
-                      "line": 35,
+                      "line": 37,
                       "function": "handle",
                       "class": "Illuminate\\Foundation\\Console\\Kernel",
                       "type": "->"
@@ -520,7 +520,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vkD45e86aZgbV63Edafh1cP'
+      - 'Bearer 6ebP46c15ZkdEDVfg3hav8a'
     controller: null
     method: null
     route: null

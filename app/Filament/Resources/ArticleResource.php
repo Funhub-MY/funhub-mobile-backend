@@ -7,6 +7,7 @@ use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\ArticleTag;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -164,7 +165,7 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
-                            Forms\Components\DatePicker::make('published_at')
+                            Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
                                                
                                 ->helperText('If you choose a future date, the article will be published at that date.')
@@ -254,8 +255,23 @@ class ArticleResource extends Resource
                                 ])
                                 // search
                                 ->searchable()
+                                // ->getSearchResultsUsing(fn (string $search) => ArticleTag::where('name', 'like', "%{$search}%")
+                                //     ->distinct()
+                                //     ->pluck('name', 'id')
+                                //     )
+                                // ->getOptionLabelUsing(fn ($value): ?string => ArticleTag::find($value)?->name->distinct())
                                 ->multiple()
                                 ->placeholder('Select tags...'),
+                        ]),
+
+                        Forms\Components\Section::make('Location')->schema([
+                            Forms\Components\Select::make('locations')
+                                ->label('')
+                                ->relationship('location', 'name')
+                                // search
+                                ->searchable()
+                                ->multiple()
+                                ->placeholder('Select location...'),
                         ]),
 
                     ])
