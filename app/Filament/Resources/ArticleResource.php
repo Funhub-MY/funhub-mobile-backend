@@ -24,6 +24,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\FormsComponent;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\DB;
 
 class ArticleResource extends Resource
 {
@@ -110,6 +111,7 @@ class ArticleResource extends Resource
                                 })
                                 ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(20)
+                                //->enableReordering()
                                 ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
 
@@ -255,11 +257,17 @@ class ArticleResource extends Resource
                                 ])
                                 // search
                                 ->searchable()
-                                // ->getSearchResultsUsing(fn (string $search) => ArticleTag::where('name', 'like', "%{$search}%")
-                                //     ->distinct()
-                                //     ->pluck('name', 'id')
-                                //     )
-                                // ->getOptionLabelUsing(fn ($value): ?string => ArticleTag::find($value)?->name->distinct())
+                                ->getSearchResultsUsing(function (string $search) {
+                                    // search by name in article tags and unique name.
+                                    $tags  = DB::table('article_tags')
+                                    ->select(DB::raw('MAX(id) as id'),'name')
+                                    ->where('name', 'like', "%{$search}%")
+                                    ->groupBy('name')
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                                    return $tags;
+                                })
+                                ->getOptionLabelUsing(fn ($value): ?string => ArticleTag::find($value)?->name)
                                 ->multiple()
                                 ->placeholder('Select tags...'),
                         ]),
