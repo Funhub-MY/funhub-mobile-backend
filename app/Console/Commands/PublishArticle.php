@@ -29,7 +29,7 @@ class PublishArticle extends Command
      */
     public function handle()
     {
-        $articles = Article::where('status', Article::STATUS[0])
+        $articles = Article::where('status', Article::STATUS_DRAFT)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->get();
@@ -37,7 +37,7 @@ class PublishArticle extends Command
         if (!$articles->isEmpty()) {
             foreach ($articles as $article) {
                 $this->info('Publishing article: '.$article->id);
-                $article->update(['status' => Article::STATUS[1]]);
+                $article->update(['status' => Article::STATUS_PUBLISHED]);
                 $this->info('Article published: '.$article->id);
             }
             Log::info('[PublishArticle] Articles published', ['article_ids' => $articles->pluck('id')]);
