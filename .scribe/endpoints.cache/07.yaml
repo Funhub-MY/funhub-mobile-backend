@@ -99,7 +99,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8de6DV6E4kvgaac5fb1P3hZ'
+      - 'Bearer vDagEbe4ZdV15P3chk8af66'
     controller: null
     method: null
     route: null
@@ -269,7 +269,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4DekagEd3v65Zac1hb6f8PV'
+      - 'Bearer DPgchZv5a34eb1dka6V68fE'
     controller: null
     method: null
     route: null
@@ -388,7 +388,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bPDd38EvafZ65hca1gVk6e4'
+      - 'Bearer 6DE6b8kZaeh3dV1f4cPg5va'
     controller: null
     method: null
     route: null
@@ -471,7 +471,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V4g8hZ61P6edvaakE3cfbD5'
+      - 'Bearer Pgkc61a3V5Z6eE4fbDadhv8'
     controller: null
     method: null
     route: null
@@ -532,7 +532,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b68dva5EZc3keVhg146PfDa'
+      - 'Bearer 6ZgE5ckd6a83V4v1fDehaPb'
     controller: null
     method: null
     route: null
@@ -584,7 +584,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 83vEZcf6dak4Phbg56DVe1a'
+      - 'Bearer 1ePvc3VhDa8664ZgEdabfk5'
     controller: null
     method: null
     route: null
@@ -611,12 +611,12 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: rerum
+        example: commodi
         type: string
         enumValues: []
         custom: []
     cleanUrlParameters:
-      offer_id: rerum
+      offer_id: commodi
     queryParameters:
       offer_id:
         name: offer_id
@@ -645,7 +645,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c4aaV6h5dvefD3b16P8ZEkg'
+      - 'Bearer fevbVE66g5d4Pkh8cZaD3a1'
     controller: null
     method: null
     route: null
@@ -757,7 +757,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eca3hDEVf68dP4agvZ651kb'
+      - 'Bearer 4v6kZd6aE3bDhag1V8cefP5'
     controller: null
     method: null
     route: null
@@ -815,7 +815,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer av86EPk41d3cVfD65hbaZge'
+      - 'Bearer f63kZ5Da8vVcaEhd46Pbge1'
     controller: null
     method: null
     route: null
@@ -823,11 +823,11 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/merchant-contacts
+    uri: api/v1/merchant-contact
     metadata:
       groupName: Merchant
       groupDescription: ''
-      subgroup: 'Merchant Contacts'
+      subgroup: 'Merchant Contact'
       subgroupDescription: ''
       title: 'Submit Merchant Contact Information'
       description: 'Allows users to submit merchant contact information via the API.'
@@ -947,7 +947,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d1Zab4P65fg38cDka6vehEV'
+      - 'Bearer h4agaE66kcVZbP35dD8ve1f'
     controller: null
     method: null
     route: null

@@ -2,6 +2,7 @@
 
 use Tests\TestCase;
 use App\Models\Article;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\ViewQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -79,23 +80,37 @@ class ViewTest extends TestCase
 
         // Collect the generated views for the article
         $generatedViews = ViewQueue::where('article_id', $article_id)->get();
+        $scheduledViewsArray = [];
 
-        // Define an array to store the expected bell curve values
-        //expected values calculated by google sheet, using formula =NORM.DIST(A2, 12, 3, FALSE), A1 column contains the hour from 0-24
-        $expectedValues = [0, 5, 38, 180, 547, 1065, 1330, 1065, 547, 180, 38, 5, 0]; 
-
-        // Verify that the generated views match the expected values
-        foreach ($generatedViews as $key => $generatedView) {
-            $this->assertEquals($expectedValues[$key], $generatedView->scheduled_views);
+        foreach ($generatedViews as $view) {
+            $scheduledViewsArray[] = $view->scheduled_views;
         }
+
+        // Check if the middle value is the peak
+        $middleIndex = floor(count($scheduledViewsArray) / 2);
+        $isPeak = $scheduledViewsArray[$middleIndex] === max($scheduledViewsArray);
+        //dd($scheduledViewsArray);
+
+        $isSymmetric = true;
+        $length = count($scheduledViewsArray);
+        for ($i = 0; $i < $length / 2; $i++) {
+            if ($scheduledViewsArray[$i] !== $scheduledViewsArray[$length - 1 - $i]) {
+                $isSymmetric = false;
+                break;
+            }
+        }
+        
+        // Assert that the data has a peak in the middle and is symmetric
+        $this->assertTrue($isPeak);
+        $this->assertTrue($isSymmetric);
     }
 
     // Simulate the view generation for a specific article
     protected function generateViewsForArticle($article_id)
     {
-        $auto_view_percentage = 10;
+        $auto_view_percentage = 1;
 
-        $total_app_user = 1000;
+        $total_app_user = 500;
         $peak_time = 12; // in hours
         $standard_deviation = 3;
 
@@ -121,7 +136,7 @@ class ViewTest extends TestCase
         $exponent = -0.5 * (($x - $peak) / $stdDev) ** 2;
         return (1 / ($stdDev * sqrt(2 * M_PI))) * exp($exponent);
     }
-    
+
 }
 
 

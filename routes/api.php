@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -66,8 +67,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
 
+        Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
-
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
         Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
