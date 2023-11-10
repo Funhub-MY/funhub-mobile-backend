@@ -257,6 +257,7 @@ class ArticleController extends Controller
      * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
      * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam city string optional Filter by City Name. Example: Subang Jaya
      * @bodyParam lat float required Filter by Lat of User (must provide lng). Example: 3.123456
      * @bodyParam lng float required Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
@@ -275,41 +276,59 @@ class ArticleController extends Controller
 
         $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
 
-        $data = Article::search('')->with([
-            'aroundLatLng' => $request->lat . ',' . $request->lng,
-            'aroundRadius' => $radius * 1000,
-            'aroundPrecision' => 50,
-        ])->query(function ($query) use ($request) {
-            $query->published();
+        if ($request->has('city')) {
+            // direct use city
+            $query = Article::query();
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
 
-            if (!$request->has('include_own_article') || $request->include_own_article == 0) {
-                // default to exclude own article
-                $query->where('user_id', '!=', auth()->user()->id);
-                // else it will also include own article
-            }
-
-            // video only
-            if ($request->has('video_only') && $request->video_only == 1) {
-                $query->where('type', 'video');
-            }
-
-            if ($request->has('category_ids')) {
-                $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
-            }
-
-            if ($request->has('article_ids')) {
-                $query->whereIn('id', explode(',', $request->article_ids));
-            }
-
-            if ($request->has('tag_ids')) {
-                $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
-            }
-
-            $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-                ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
-        })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+            // pass to query builder
+            $data = $this->articleQueryBuilder($query, $request)
+            ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        } else {
+            $data = Article::search('')->with([
+                'aroundLatLng' => $request->lat . ',' . $request->lng,
+                'aroundRadius' => $radius * 1000,
+                'aroundPrecision' => 50,
+            ])->query(function ($query) use ($request) {
+                $query = $this->articleQueryBuilder($query, $request);
+            })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        }
 
         return ArticleResource::collection($data);
+    }
+
+    public function articleQueryBuilder($query, $request) {
+        $query->published();
+
+        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+            // default to exclude own article
+            $query->where('user_id', '!=', auth()->user()->id);
+            // else it will also include own article
+        }
+
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
+
+        if ($request->has('category_ids')) {
+            $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
+        }
+
+        if ($request->has('article_ids')) {
+            $query->whereIn('id', explode(',', $request->article_ids));
+        }
+
+        if ($request->has('tag_ids')) {
+            $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+        }
+
+        $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
+
+        return $query;
     }
 
     /**
