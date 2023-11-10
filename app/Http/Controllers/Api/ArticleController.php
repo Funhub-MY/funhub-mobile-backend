@@ -125,6 +125,7 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
+            // DEPRECATED; see getArticlesNearby() instead
             $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
 
             if (config('app.search_location_use_algolia')) {

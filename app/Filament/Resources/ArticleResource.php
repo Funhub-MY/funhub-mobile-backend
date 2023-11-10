@@ -35,7 +35,7 @@ class ArticleResource extends Resource
     protected static ?string $navigationGroup = 'Articles';
 
     protected static ?int $navigationSort = 1;
-    
+
     protected function getTableQuery(): Builder
     {
         return Article::query();
@@ -50,7 +50,7 @@ class ArticleResource extends Resource
                         Forms\Components\Card::make()->schema([
                             Forms\Components\Hidden::make('user_id')
                                 ->default(fn () => auth()->id()),
-                            
+
                             // default set source to backend because we need to flag it for flutter side to determine to use html or not
                             Forms\Components\Hidden::make('source')
                                 ->default('backend'),
@@ -68,7 +68,7 @@ class ArticleResource extends Resource
                             Forms\Components\Hidden::make('type')
                                 ->default(Article::TYPE[0])
                                 ->required(),
-                                
+
                             Forms\Components\RichEditor::make('body')
                                 ->required()
                                 ->placeholder('Write something...')
@@ -103,7 +103,7 @@ class ArticleResource extends Resource
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
-                                // disk is s3_public 
+                                // disk is s3_public
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
@@ -163,13 +163,13 @@ class ArticleResource extends Resource
                                 ->default('en')
                                 ->required()
                         ])->columnSpan('Language'),
-                        
+
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
                             Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
-                                               
+
                                 ->helperText('If you choose a future date, the article will be published at that date.')
                                 ->default(now())
                         ])->columnSpan('Status'),
@@ -278,7 +278,6 @@ class ArticleResource extends Resource
                                 ->relationship('location', 'name')
                                 // search
                                 ->searchable()
-                                ->multiple()
                                 ->placeholder('Select location...'),
                         ]),
 
@@ -325,7 +324,7 @@ class ArticleResource extends Resource
                 //     ->enum(Article::TYPE)
                 //     ->sortable()
                 //     ->searchable(),
-        
+
                 // likes count
                 Tables\Columns\TextColumn::make('likes_count')
                     ->sortable()
