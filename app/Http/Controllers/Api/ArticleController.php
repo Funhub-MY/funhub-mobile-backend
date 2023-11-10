@@ -129,12 +129,18 @@ class ArticleController extends Controller
 
             if (config('app.search_location_use_algolia')) {
                 // algolia search,search all location ids first
+                $query->disableCache()->search('')->with([
+                    'aroundLatLng' => $request->lat . ',' . $request->lng,
+                    'aroundRadius' => $radius * 1000,
+                    'aroundPrecision' => 50,
+                ]);
                 $cacheKey = 'location_search_' . $request->lat . '_' . $request->lng . '_' . $radius;
-                $locationIds = Cache::remember($cacheKey, 60, function () use ($request, $radius) {
+                $locationIds = cache()->remember($cacheKey, 60, function () use ($request, $radius) {
                     return Location::search('')->with([
                         'aroundLatLng' => $request->lat.','.$request->lng,
                         'aroundRadius' => $radius * 1000,
                         'aroundPrecision' => 50,
+                        'hitsPerPage' => 100,
                     ])->raw()['hits'];
                 });
 
@@ -142,8 +148,8 @@ class ArticleController extends Controller
                 $query->whereHas('location', function ($query) use ($locationIds) {
                     $query->whereIn('locations.id', Arr::pluck($locationIds, 'id'));
                 })
-                ->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
-                ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                ->leftJoin(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                ->leftJoin(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
                 ->orderByRaw('FIELD(loc.id, ' . implode(',', Arr::pluck($locationIds, 'id')) . ')');
             } else {
                 // use DB to search instead
@@ -227,13 +233,81 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        $query->latest();
+        if (!$request->has('lat') && !$request->has('lng')) {
+            $query->latest();
+        }
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate($paginatePerPage);
+
+        return ArticleResource::collection($data);
+    }
+
+    /**
+     * Get Articles Nearby
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group Article
+     * @bodyParam article_ids array optional Article Ids to Filter. Example [1,2,3]
+     * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
+     * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam lat float required Filter by Lat of User (must provide lng). Example: 3.123456
+     * @bodyParam lng float required Filter by Lng of User (must provide lat). Example: 101.123456
+     * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
+     * @bodyParam limit integer optional Per Page Limit Override. Example: 10
+     *
+     * @response scenario=success {
+     * "data": [],
+     * }
+     */
+    public function getArticlesNearby(Request $request)
+    {
+        if (!config('app.search_location_use_algolia')) {
+            return ArticleResource::collection([]);
+        }
+
+        $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
+
+        $data = Article::search('')->with([
+            'aroundLatLng' => $request->lat . ',' . $request->lng,
+            'aroundRadius' => $radius * 1000,
+            'aroundPrecision' => 50,
+        ])->query(function ($query) use ($request) {
+            $query->published();
+
+            if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+                // default to exclude own article
+                $query->where('user_id', '!=', auth()->user()->id);
+                // else it will also include own article
+            }
+
+            // video only
+            if ($request->has('video_only') && $request->video_only == 1) {
+                $query->where('type', 'video');
+            }
+
+            if ($request->has('category_ids')) {
+                $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
+            }
+
+            if ($request->has('article_ids')) {
+                $query->whereIn('id', explode(',', $request->article_ids));
+            }
+
+            if ($request->has('tag_ids')) {
+                $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+            }
+
+            $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+                ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
+        })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
     }

@@ -76,6 +76,10 @@ class Article extends BaseModel implements HasMedia
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
                 'views' => $this->views->count()
             ],
+            '_geoloc' => ($this->location()->count() > 0) ? [
+                'lat' => floatval($this->location->first()->lat),
+                'lng' => floatval($this->location->first()->lng)
+            ] : null,
         ];
     }
 
