@@ -131,7 +131,18 @@ class Location extends BaseModel implements HasMedia
 
     public function getFullAddressAttribute(): string
     {
-        return $this->address . ', ' . $this->city . ', ' . $this->state->name . ', ' . $this->country->name;
+        $fullAddress = $this->address;
+        if ($this->address2) {
+            $fullAddress .= ', ' . $this->address2;
+        }
+        $fullAddress .= ', ' . $this->city;
+        if ($this->state) {
+            $fullAddress .= ', ' . $this->state->name;
+        }
+        if ($this->country) {
+            $fullAddress .= ', ' . $this->country->name;
+        }
+        return $fullAddress;
     }
 
     /**
