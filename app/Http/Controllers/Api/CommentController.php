@@ -60,8 +60,8 @@ class CommentController extends Controller
             $request->merge(['commentable_type' => Article::class]);
         }
 
-        $query = Comment::where('commentable_type', $request->commentable_type)
-            ->where('commentable_id', $id);
+        $query = Comment::where('comments.commentable_type', $request->commentable_type)
+            ->where('comments.commentable_id', $id);
 
         if ($type == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
