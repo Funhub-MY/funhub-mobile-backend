@@ -79,11 +79,15 @@ class CommentController extends Controller
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
-            ->with(['replies' => function ($query) use ($request) {
-                $query->latest()->limit(($request->has('replies_per_comment') ? $request->replies_per_comment : 3));
-            }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
+            // join replies to this comment order by latest on top, limit to replies_per_comment
+            ->join('comments as replies', function ($join) {
+                $join->on('comments.id', '=', 'replies.parent_id')
+                    ->where('replies.status', Comment::STATUS_PUBLISHED)
+                    ->orderBy('replies.created_at', 'desc')
+                    ->limit(3);
+            })
             ->published();
 
         // get my blocked users
@@ -188,12 +192,20 @@ class CommentController extends Controller
     public function show($id, Request $request)
     {
         $comment = Comment::where('id', $id)->with('user')
-            ->with(['replies' => function ($query) use ($request) {
-                $query->latest()->limit(($request->has('replies_per_comment') ? $request->replies_per_comment : 3));
+            ->with(['replies' => function ($query) {
+                $query->latest();
             }])
             ->with('replies.user')
             ->withCount('replies')
             ->firstOrFail();
+
+        if ($comment && request()->has('replies_per_comment')) {
+            // go to each comment and limit the replies to replies_per_comment (default: 3)
+            $replies_per_comment = $request->replies_per_comment ? $request->replies_per_comment : 3;
+            $comment->map(function ($item, $key) use ($replies_per_comment) {
+                $item->replies = $item->replies->take($replies_per_comment);
+            });
+        }
 
         // TODO: check if user is blocked to view comment
 
