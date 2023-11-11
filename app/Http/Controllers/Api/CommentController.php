@@ -81,7 +81,7 @@ class CommentController extends Controller
         $query->with('user')
             ->with(['replies' => function ($query) use ($request) {
                 $query->latest()
-                    ->take($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
+                    ->limit($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
             }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
@@ -191,7 +191,7 @@ class CommentController extends Controller
         $comment = Comment::where('id', $id)->with('user')
             ->with(['replies' => function ($query) use ($request) {
                 $query->latest()
-                    ->take($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
+                    ->limit($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
             }])
             ->with('replies.user')
             ->withCount('replies')

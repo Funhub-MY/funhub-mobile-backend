@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends BaseModel
 {
+    use \Staudenmeir\EloquentEagerLimit\HasEagerLimit;
+
     // protected $cacheCooldownSeconds = 300; // 5 minutes
 
     use HasFactory;
