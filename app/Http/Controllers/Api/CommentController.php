@@ -79,15 +79,11 @@ class CommentController extends Controller
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
+            ->with(['replies' => function ($query) {
+                $query->latest();
+            }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
-            // join replies to this comment order by latest on top, limit to replies_per_comment
-            ->join('comments as replies', function ($join) {
-                $join->on('comments.id', '=', 'replies.parent_id')
-                    ->where('replies.status', Comment::STATUS_PUBLISHED)
-                    ->orderBy('replies.created_at', 'desc')
-                    ->limit(3);
-            })
             ->published();
 
         // get my blocked users
@@ -105,6 +101,15 @@ class CommentController extends Controller
 
         $data = $query->paginate(config('app.paginate_per_page'));
 
+        // post process replies
+        // TODO: enhance this as the primary query will still call all replies
+        if ($data && request()->has('replies_per_comment')) {
+            // go to each comment and limit the replies to replies_per_comment (default: 3)
+            $replies_per_comment = $request->replies_per_comment ? $request->replies_per_comment : 3;
+            $data->map(function ($item, $key) use ($replies_per_comment) {
+                $item->replies = $item->replies->take($replies_per_comment);
+            });
+        }
         return CommentResource::collection($data);
     }
 
