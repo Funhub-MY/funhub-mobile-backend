@@ -71,7 +71,7 @@ class CommentController extends Controller
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
                     });
-            })->where('parent_id', null);
+            })->where('comments.parent_id', null);
         }
 
         $this->buildQuery($query, $request);
@@ -95,7 +95,7 @@ class CommentController extends Controller
         $peopleWhoBlockedMeIds = auth()->user()->blockedBy()->pluck('user_id')->toArray();
 
         // filter out my blocked users ids comments and its replies
-        $query->whereNotIn('user_id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)));
+        $query->whereNotIn('comments.user_id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)));
 
         // filter out if replies parent user_id is someone i blocked
         // $query->whereDoesntHave('replies.user.usersBlocked', function ($query) {
