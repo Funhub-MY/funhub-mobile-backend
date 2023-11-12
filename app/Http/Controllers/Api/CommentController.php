@@ -361,6 +361,8 @@ class CommentController extends Controller
 
         $data = $query->with('user');
 
+        $data = $query->paginate(config('app.paginate_per_page'));
+
         return CommentResource::collection($data);
     }
 
