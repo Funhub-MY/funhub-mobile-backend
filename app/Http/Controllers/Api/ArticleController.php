@@ -240,7 +240,7 @@ class ArticleController extends Controller
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $data = $query->with('merchantOffers', 'user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate($paginatePerPage);
 
@@ -326,7 +326,7 @@ class ArticleController extends Controller
             $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
         }
 
-        $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $query->with('merchantOffers', 'user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
 
         return $query;
