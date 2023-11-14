@@ -130,11 +130,6 @@ class ArticleController extends Controller
 
             if (config('app.search_location_use_algolia')) {
                 // algolia search,search all location ids first
-                $query->disableCache()->search('')->with([
-                    'aroundLatLng' => $request->lat . ',' . $request->lng,
-                    'aroundRadius' => $radius * 1000,
-                    'aroundPrecision' => 50,
-                ]);
                 $cacheKey = 'location_search_' . $request->lat . '_' . $request->lng . '_' . $radius;
                 $locationIds = cache()->remember($cacheKey, 60, function () use ($request, $radius) {
                     return Location::search('')->with([
