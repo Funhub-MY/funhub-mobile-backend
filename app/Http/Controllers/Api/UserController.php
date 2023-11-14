@@ -244,7 +244,8 @@ class UserController extends Controller
      */
     public function getMyBlockedUsers()
     {
-        $blockedUsers = UserBlock::where('user_id', auth()->id())
+        $blockedUsers = UserBlock::disableCache()
+            ->where('user_id', auth()->id())
             ->where('blockable_type', User::class)
             ->with('blockable')
             ->get();
@@ -252,8 +253,6 @@ class UserController extends Controller
         if ($blockedUsers->count() <= 0) {
             return response()->json(['message' => 'No blocked users'], 404);
         }
-
-        Log::info('blocked users', ['blocked_users' => $blockedUsers, 'user_id' => auth()->id()]);
 
         $users = User::whereIn('id', $blockedUsers->pluck('blockable_id')->toArray())
             ->paginate(config('app.paginate_per_page'));
