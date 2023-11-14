@@ -253,6 +253,8 @@ class UserController extends Controller
             return response()->json(['message' => 'No blocked users'], 404);
         }
 
+        Log::info('blocked users', ['blocked_users' => $blockedUsers]);
+
         $users = User::whereIn('id', $blockedUsers->pluck('blockable_id')->toArray())
             ->paginate(config('app.paginate_per_page'));
 
