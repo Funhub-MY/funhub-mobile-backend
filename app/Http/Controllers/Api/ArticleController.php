@@ -235,7 +235,7 @@ class ArticleController extends Controller
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
-        $data = $query->with('merchantOffers', 'user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate($paginatePerPage);
 
@@ -287,10 +287,19 @@ class ArticleController extends Controller
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
-            ])->query(function ($query) use ($request) {
+            ])
+            ->query(function ($query) use ($request) {
                 $query = $this->articleQueryBuilder($query, $request);
             })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
+
+        // get all article location ids
+        $locationIds = $data->pluck('location.0.id')->filter()->toArray();
+        $locatables = DB::table('locatables')->whereIn('location_id', $locationIds)->get();
+        $data->each(function ($article) use ($locatables) {
+            $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
+            $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+        });
 
         return ArticleResource::collection($data);
     }
@@ -321,7 +330,7 @@ class ArticleController extends Controller
             $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
         }
 
-        $query->with('merchantOffers', 'user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
 
         return $query;
