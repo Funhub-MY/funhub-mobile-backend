@@ -25,6 +25,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\FormsComponent;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\DB;
+use Filament\Forms\Components\Repeater;
 
 class ArticleResource extends Resource
 {
@@ -97,23 +98,47 @@ class ArticleResource extends Resource
                             //     ->maxFiles(1)
                             //     ->rules('image'),
                             // multiple images
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
-                                ->label('Images')
-                                ->multiple()
-                                ->collection(Article::MEDIA_COLLECTION_NAME)
+                            // Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                            //     ->label('Images')
+                            //     ->multiple()
+                            //     ->collection(Article::MEDIA_COLLECTION_NAME)
+                            //     ->columnSpan('full')
+                            //     ->customProperties(['is_cover' => false])
+                            //     // disk is s3_public 
+                            //     ->disk(function () {
+                            //         if (config('filesystems.default') === 's3') {
+                            //             return 's3_public';
+                            //         }
+                            //     })
+                            //     ->acceptedFileTypes(['image/*'])
+                            //     ->maxFiles(20)
+                            //     ->enableReordering()
+                                
+                            //     ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
+                            //     ->rules('image'),
+
+                            Repeater::make('images')
+                                ->schema([
+                                    Forms\Components\SpatieMediaLibraryFileUpload::make('image')
+                                        ->label('Image')
+                                        ->collection(Article::MEDIA_COLLECTION_NAME)
+                                        ->columnSpan('full')
+                                        ->customProperties(['is_cover' => false])
+                                        // disk is s3_public 
+                                        ->disk(function () {
+                                            if (config('filesystems.default') === 's3') {
+                                                return 's3_public';
+                                            }
+                                        })
+                                        ->acceptedFileTypes(['image/*'])
+                                        ->maxFiles(1)
+                                        ->rules('image'),
+                                ])
+                                ->maxItems(20)
+                                ->collapsible()
                                 ->columnSpan('full')
-                                ->customProperties(['is_cover' => false])
-                                // disk is s3_public
-                                ->disk(function () {
-                                    if (config('filesystems.default') === 's3') {
-                                        return 's3_public';
-                                    }
-                                })
-                                ->acceptedFileTypes(['image/*'])
-                                ->maxFiles(20)
-                                //->enableReordering()
-                                ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
-                                ->rules('image'),
+                                ->orderable('order_column')
+                                ->hidden(fn (Closure $get) => $get('type') !== 'multimedia'),
 
                             //  video upload
                             // image upload for video thumbnail
@@ -272,14 +297,15 @@ class ArticleResource extends Resource
                                 ->placeholder('Select tags...'),
                         ]),
 
-                        Forms\Components\Section::make('Location')->schema([
-                            Forms\Components\Select::make('locations')
-                                ->label('')
-                                ->relationship('location', 'name')
-                                // search
-                                ->searchable()
-                                ->placeholder('Select location...'),
-                        ]),
+                        //temporary comment out, noted Elson removed multiple locations fo article
+                        // Forms\Components\Section::make('Location')->schema([
+                        //     Forms\Components\Select::make('locations')
+                        //         ->label('')
+                        //         ->relationship('location', 'name')
+                        //         // search
+                        //         ->searchable()
+                        //         ->placeholder('Select location...'),
+                        // ]),
 
                     ])
                     ->columnSpan(['lg' => 1]),

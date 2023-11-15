@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\ArticleResource;
+use App\Models\Article;
 
 class EditArticle extends EditRecord
 {
@@ -39,7 +40,13 @@ class EditArticle extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        //dd($data);
         $data['sub_categories'] = $this->record->subCategories->pluck('id')->toArray();
+        //$data['images'] = $this->record->getMedia(Article::MEDIA_COLLECTION_NAME)->toArray();
+        //$data['images'] = $this->record->media->pluck('uuid')->toArray();
+        //dd($this->record->media->toArray());
+        //dd($data['images']);
+        //dd($data);
 
         return $data;
     }
