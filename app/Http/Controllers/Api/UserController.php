@@ -14,7 +14,9 @@ use App\Models\User;
 use App\Models\UserBlock;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -63,7 +65,8 @@ class UserController extends Controller
         if ($user->status == User::STATUS_ARCHIVED) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        return new \App\Http\Resources\UserResource($user);
+        
+        return new \App\Http\Resources\UserResource($user, false);
     }
 
     /**
@@ -372,5 +375,147 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Account deleted successfully.']);
+    }
+
+    public function getAuthUserDetails()
+    {
+        $userId = auth()->user()->id;
+        $user = User::find($userId);
+        // if user status is archived, 404
+        if ($user->status == User::STATUS_ARCHIVED) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $userData = new UserResource($user, true);
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'user' => $userData,
+            'token' => $token,
+        ], 200);
+    }
+
+    public function postUpdateUserDetails(Request $request, User $user)
+    {
+        // Validate the request inputs
+        $request->validate([
+            'field_name' => 'required|string',
+            'field_value' => 'required',
+        ]);
+
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Update the user details based on field_name and field_value
+        $field_name = $request->input('field_name');
+        $field_value = $request->input('field_value');
+
+        $user->$field_name = $field_value;
+
+        // Save the changes
+        $user->save();
+
+        return response()->json([
+            'message' => 'User details updated successfully',
+            'user' => $user,
+        ]);
+    }
+
+        /**
+     * Update user password (only for login with OTP)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User
+     * @bodyParam old_password string required The old password of the user. Example: abcd1234
+     * @bodyParam new_password string required The new password of the user. Example: abcd1234
+     * @bodyParam new_password_confirmation string required The new password confirmation of the user. Example: abcd1234
+     * @response status=200 scenario="success" {
+     * "message": "Password updated"
+     * }
+     * @response status=422 scenario="validation error" {
+     * "message": "The given data was invalid.",
+     * "errors": {
+     * "old_password": [
+     *  "The old password is incorrect"
+     * ],
+     * "password": [
+     * "The password confirmation does not match."
+     * ]
+     * }
+     */
+    public function postUpdatePassword (Request $request)
+    {
+        // only allow if user is not logged in with google or facebook
+        $user = auth()->user();
+
+        if ($user->google_id || $user->facebook_id) {
+            return response()->json([
+                'message' => 'You cannot change your password if you are logged in with Google or Facebook',
+            ], 403);
+        }
+
+        $request->validate([
+            'old_password' => 'required|string|min:8',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // check if old password is correct
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'message' => 'Old password is incorrect',
+            ], 422);
+        }
+
+        // update password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password updated',
+        ]);
+    }
+
+    /**
+     * Update User Email
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam new_email string required Email of the user. Example: john@gmail.com
+     * @bodyParam new_email_confirmation string required Email of the user. Example: john@gmail.com
+     * @response status=200 scenario="success" {
+     * "message": "Email updated",
+     * "email": "johndoe@gmail.com"
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     * @response status=422 scenario="Email already verified for your account" {"message": "Email already verified for your account"}
+     */
+    public function postSaveEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+            'new_email_confirmation' => 'required|email|same:new_email',
+        ]);
+
+        // if user email still same with current email then reject
+        if ($request->has('email') && auth()->user()->email == $request->email) {
+            return response()->json(['message' => 'Email already verified for your account'], 422);
+        }
+
+        $user = auth()->user();
+        $user->email = $request->email;
+        $user->save();
+
+        // send verification email
+        $user->sendEmailVerificationNotification();
+
+        return response()->json([
+            'message' => 'Email updated and verification email sent',
+             'email' => $user->email
+        ]);
     }
 }

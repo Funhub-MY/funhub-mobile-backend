@@ -145,6 +145,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
 
+        Route::get('user', [\App\Http\Controllers\Api\UserController::class, 'getAuthUserDetails']);
+        Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'postUpdateUserDetails']);
+        Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
+        Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
+
         // Views
         Route::prefix('/views')->group(function () {
            Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);
