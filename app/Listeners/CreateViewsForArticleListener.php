@@ -6,6 +6,7 @@ use App\Events\ArticleCreated;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\ViewQueue;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -39,9 +40,16 @@ class CreateViewsForArticleListener
                 $view_seeder_weight_setting = Setting::where('key', 'view_seeder_weight')->first();
         
                 if ($view_seeder_weight_setting) {
+                    Log::info('[CreateViewsForArticleListener] view_seeder_weight_setting: ', [
+                        'key' => $view_seeder_weight_setting->key,
+                        'value' => $view_seeder_weight_setting->value,
+                    ]);
                     $value = $view_seeder_weight_setting->value;
                     try {
                         $auto_view_percentage = (int)$value; // Convert to integer
+                        Log::info('[CreateViewsForArticleListener] auto_view_percentage: ', [
+                            'auto_view_percentage' => $auto_view_percentage,
+                        ]);
                     } catch (\Exception $e) {
                         // Handle the case where the value is not convertible to an integer
                         $auto_view_percentage = 1; // Default as 1
@@ -68,6 +76,16 @@ class CreateViewsForArticleListener
         
                     // Calculate the number of scheduled views directly, no decimal 
                     $scheduled_views = round(($total_app_user * $auto_view_percentage / 100) * $scaled_view_percentage);
+
+                    Log::info('[CreateViewsForArticleListener]', [
+                        'auto_view_percentage' => $auto_view_percentage,
+                        'total_app_user' => $total_app_user,
+                        'view_percentage' => $view_percentage,
+                        'scaled_view_percentage' => $scaled_view_percentage,
+                        'article_id' => $article->id,
+                        'scheduled_views' => $scheduled_views,
+                        'scheduled_at' => now()->addHours($time),
+                    ]);
         
                     // Create a ViewQueue entry
                     ViewQueue::create([
