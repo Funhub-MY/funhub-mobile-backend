@@ -76,7 +76,7 @@ class ArticleResource extends JsonResource
                 'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first(),
                 'bookmark' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first(),
             ],
-            'has_merchant_offer' => ($this->merchantOffers) ? $this->merchantOffers->count() > 0 : false,
+            'has_merchant_offer' => (isset($this->has_merchant_offer) && $this->has_merchant_offer) ? true : false,
             'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'lang' => $this->lang,
