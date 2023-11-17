@@ -12,6 +12,7 @@ use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
 use App\Models\User;
+use App\Models\View;
 use App\Notifications\ArticleInteracted;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
@@ -180,13 +181,12 @@ class InteractionController extends Controller
 
             // if like, fire view
             if ($request->model_type == Article::class && $request->type == Interaction::TYPE_LIKE) {
-                $article = Article::where('id', $request->id)->first();
-                if ($article) {
-                    $article->views()->create([
-                        'user_id' => auth()->id(),
-                        'ip_address' => $request->ip(),
-                    ]);
-                }
+                View::create([
+                    'user_id' => auth()->id(),
+                    'viewable_type' => $request->interactable,
+                    'viewable_id' => $request->id,
+                    'ip_address' => $request->ip(),
+                ]);
             }
 
             // link to interaction via relationship ShareableLink
