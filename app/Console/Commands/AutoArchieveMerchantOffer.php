@@ -60,7 +60,6 @@ class AutoArchieveMerchantOffer extends Command
             Log::info('[AutoArchiveMerchantOffer] Archived Offer: ' . $offer->id. ' past available_until');
         }
 
-
         return Command::SUCCESS;
     }
 }

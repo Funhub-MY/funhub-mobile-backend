@@ -65,7 +65,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZbfea53vd64PhgDVkE68a1'
+      - 'Bearer P458EVZ16afD6hdk3egvbca'
     controller: null
     method: null
     route: null
@@ -132,7 +132,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6eagfv3c16EkZVPd8bDha45'
+      - 'Bearer 84Va66bDZvh3faPdcg1E5ke'
     controller: null
     method: null
     route: null
@@ -163,12 +163,12 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 3
+        example: 14
         type: integer
         enumValues: []
         custom: []
     cleanBodyParameters:
-      user_id: 3
+      user_id: 14
     fileParameters: []
     responses:
       -
@@ -190,7 +190,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hE6kc1Zav86gPe3d54abfDV'
+      - 'Bearer ec8Eafvg4h5kD3Pad1b6Z6V'
     controller: null
     method: null
     route: null
@@ -221,12 +221,12 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 15
+        example: 13
         type: integer
         enumValues: []
         custom: []
     cleanBodyParameters:
-      user_id: 15
+      user_id: 13
     fileParameters: []
     responses:
       -
@@ -248,7 +248,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DVZf4PEc36ab1ed58v6kgah'
+      - 'Bearer 16vg4dkPEb65achfD83aZeV'
     controller: null
     method: null
     route: null
@@ -287,7 +287,7 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: natus
+        example: laborum
         type: string
         enumValues: []
         custom: []
@@ -295,7 +295,7 @@ endpoints:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: at
+        example: pariatur
         type: required
         enumValues: []
         custom: []
@@ -303,7 +303,7 @@ endpoints:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: quaerat
+        example: mollitia
         type: required
         enumValues: []
         custom: []
@@ -317,9 +317,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: natus
-      violation_level: at
-      violation_type: quaerat
+      reason: laborum
+      violation_level: pariatur
+      violation_type: mollitia
       also_block_user: true
     fileParameters: []
     responses:
@@ -348,7 +348,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4c3eb5gfahkZDVdP1a686v'
+      - 'Bearer c8e6hZvD4a16gfEabV53kPd'
     controller: null
     method: null
     route: null
@@ -409,7 +409,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v6cVEa4k53d81aZhbe6gfPD'
+      - 'Bearer h8PE4Zgcdba51fDe36vkV6a'
     controller: null
     method: null
     route: null
@@ -461,7 +461,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3aVbk5ge8va61Z4ch6EDdPf'
+      - 'Bearer deEgaD38caVb145Z6Pvfkh6'
     controller: null
     method: null
     route: null
@@ -504,7 +504,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gE6db6v3PZhcaVe154fak8D'
+      - 'Bearer fD14eZEkP8a3hc6av5b6Vgd'
     controller: null
     method: null
     route: null
@@ -535,12 +535,12 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: alias
+        example: qui
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      reason: alias
+      reason: qui
     fileParameters: []
     responses:
       -
@@ -556,7 +556,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aDga6eZ5Ev6dh3481kfPbcV'
+      - 'Bearer hZfgaD8vdc6eVakEP64b315'
     controller: null
     method: null
     route: null
@@ -596,12 +596,12 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: officia
+        example: libero
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      user_ids: officia
+      user_ids: libero
     fileParameters: []
     responses:
       -
@@ -618,7 +618,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cfkvagbe46aP385DZ6hdV1E'
+      - 'Bearer a45ve6k6f8aZdDVhb3cEP1g'
     controller: null
     method: null
     route: null
@@ -645,7 +645,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 3
+        example: 16
         type: integer
         enumValues: []
         custom: []
@@ -658,7 +658,7 @@ endpoints:
         enumValues: []
         custom: []
     cleanUrlParameters:
-      user_id: 3
+      user_id: 16
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -679,7 +679,514 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dhe5Ea1fdZa66gbk3VcP4v8'
+      - 'Bearer af46g58hc3vEaVb61DkeZPd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get auth user details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user": {
+          },
+          "token": ""
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer eDa6f4gdha5136kEPbZvcV8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/public/user/{user_id}'
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a public user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      user:
+        name: user
+        description: 'The id of the user.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
+      user: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user": {
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer c6vDdaf6ba58EZ1g3k4eVPh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      update_type:
+        name: update_type
+        description: 'Field to update.'
+        required: true
+        example: job_title
+        type: string
+        enumValues: []
+        custom: []
+      name:
+        name: name
+        description: "Name of the user (Required if update_type is 'name')."
+        required: false
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        custom: []
+      username:
+        name: username
+        description: "Username of the user (Required if update_type is 'username')."
+        required: false
+        example: johndoe
+        type: string
+        enumValues: []
+        custom: []
+      bio:
+        name: bio
+        description: "Bio of the user (Required if update_type is 'bio')."
+        required: false
+        example: 'I am a developer'
+        type: string
+        enumValues: []
+        custom: []
+      job_title:
+        name: job_title
+        description: "Job title of the user (Required if update_type is 'job_title')."
+        required: false
+        example: Developer
+        type: string
+        enumValues: []
+        custom: []
+      day:
+        name: day
+        description: "Day of the date of birth (Required if update_type is 'dob')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      month:
+        name: month
+        description: "Month of the date of birth (Required if update_type is 'dob')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      year:
+        name: year
+        description: "Year of the date of birth (Required if update_type is 'dob')."
+        required: false
+        example: 1990
+        type: integer
+        enumValues: []
+        custom: []
+      country_id:
+        name: country_id
+        description: "Country id of the user (Required if update_type is 'location')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      state_id:
+        name: state_id
+        description: "State id of the user (Required if update_type is 'location')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      avatar:
+        name: avatar
+        description: "One image file to upload,Avatar of the user (Required if update_type is 'avatar')."
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        custom: []
+      cover:
+        name: cover
+        description: "One image file to upload,Cover of the user (Required if update_type is 'cover')."
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        custom: []
+      category_ids:
+        name: category_ids
+        description: "Array of article category ids (Required if update_type is 'article_categories')."
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      update_type: job_title
+      name: 'John Doe'
+      username: johndoe
+      bio: 'I am a developer'
+      job_title: Developer
+      day: 1
+      month: 1
+      year: 1990
+      country_id: 1
+      state_id: 1
+      category_ids:
+        - 1
+        - 2
+        - 3
+    fileParameters:
+      avatar: null
+      cover: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user":
+          {
+           "id": 1,
+           "name": "John Doe"
+           "username": "johndoe"
+           "email": "johndoe@gmail.com"
+           "verified_email": true
+           "auth_provider": "email"
+           "avatar": "https://domain.com/storage/avatars/1/avatar.jpg"
+           "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg"
+           "bio": "I am a developer"
+           "cover": "https://domain.com/storage/covers/1/cover.jpg"
+           "articles_published_count": 0
+           "following_count": 0
+           "followers_count": 0
+           "has_completed_profile": false
+           "has_avatar": true
+           "point_balance": 0
+           "unread_notifications_count": 0
+           "is_following": false
+           "dob": "1990-01-01",
+           "gender": "male",
+           "job_title": "Engineer",
+           "country_id": 1,
+           "state_id": 1,
+           "category_ids": [1,2,3]
+          },
+          "message": "Field updated"
+
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 500
+        content: '{"message": "Error updating user details", "error": "Error message"}'
+        headers: []
+        description: 'Error updating user details'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v6f46DPadV18ehEg5bcZak3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/password
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user password (only for login with OTP)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      old_password:
+        name: old_password
+        description: 'The old password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        enumValues: []
+        custom: []
+      new_password:
+        name: new_password
+        description: 'The new password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        enumValues: []
+        custom: []
+      new_password_confirmation:
+        name: new_password_confirmation
+        description: 'The new password confirmation of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      old_password: abcd1234
+      new_password: abcd1234
+      new_password_confirmation: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Password updated",
+          "user":
+               * {
+           "id": 1,
+           "name": "John Doe"
+           "username": "johndoe"
+           "email": "johndoe@gmail.com"
+           "verified_email": true
+           "auth_provider": "email"
+           "avatar": "https://domain.com/storage/avatars/1/avatar.jpg"
+           "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg"
+           "bio": "I am a developer"
+           "cover": "https://domain.com/storage/covers/1/cover.jpg"
+           "articles_published_count": 0
+           "following_count": 0
+           "followers_count": 0
+           "has_completed_profile": false
+           "has_avatar": true
+           "point_balance": 0
+           "unread_notifications_count": 0
+           "is_following": false
+           "dob": "1990-01-01",
+           "gender": "male",
+           "job_title": "Engineer",
+           "country_id": 1,
+           "state_id": 1,
+           "category_ids": [1,2,3]
+          },
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "The given data was invalid.",
+          "errors": {
+          "old_password": [
+           "The old password is incorrect"
+          ],
+          "password": [
+          "The password confirmation does not match."
+          ]
+          }
+        headers: []
+        description: 'validation error'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer k461fh5vZ8P6cgdaVeaDEb3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/email
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        custom: []
+      new_email:
+        name: new_email
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        enumValues: []
+        custom: []
+      new_email_confirmation:
+        name: new_email_confirmation
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      new_email: john@gmail.com
+      new_email_confirmation: john@gmail.com
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Email updated",
+          "email": "johndoe@gmail.com",
+          "user": {}
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Email already verified for your account"}'
+        headers: []
+        description: 'Email already verified for your account'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ck85hEPdV13Zv6eDb6afag4'
     controller: null
     method: null
     route: null
