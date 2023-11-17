@@ -12,6 +12,7 @@ use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
 use App\Models\User;
+use App\Models\View;
 use App\Notifications\ArticleInteracted;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
