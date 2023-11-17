@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 7
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: amet
+                  example: consequatur
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: distinctio
+                  example: enim
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -415,7 +415,7 @@ paths:
         in: path
         name: article_id
         description: 'The ID of the article.'
-        example: 18
+        example: 6
         required: true
         schema:
           type: integer
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - assumenda
+                    - ut
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - doloremque
+                    - enim
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ea
+        example: et
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quisquam
+                  example: eum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sit
+                  example: consequatur
               required:
                 - comment_id
                 - reason
@@ -1484,7 +1484,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: aut
+        example: commodi
         required: true
         schema:
           type: string
@@ -2960,7 +2960,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: laudantium
+                  example: pariatur
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3188,7 +3188,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 15
+        example: 18
         required: true
         schema:
           type: integer
@@ -3226,7 +3226,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 11
+        example: 19
         required: true
         schema:
           type: integer
@@ -3264,7 +3264,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 8
+        example: 3
         required: true
         schema:
           type: integer
@@ -3689,7 +3689,7 @@ paths:
         in: path
         name: location_id
         description: 'The ID of the location.'
-        example: 6
+        example: 1
         required: true
         schema:
           type: integer
@@ -4102,7 +4102,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: laudantium
+        example: deleniti
         required: true
         schema:
           type: string
@@ -4905,7 +4905,7 @@ paths:
         in: path
         name: transaction_id
         description: 'The ID of the transaction.'
-        example: 1
+        example: 20
         required: true
         schema:
           type: integer
@@ -5076,7 +5076,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 12
+                  example: 14
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5122,7 +5122,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 17
+                  example: 13
               required:
                 - user_id
   /api/v1/user/report:
@@ -5162,15 +5162,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: eum
+                  example: laborum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sunt
+                  example: pariatur
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: labore
+                  example: mollitia
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5287,7 +5287,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: excepturi
+                  example: qui
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5321,7 +5321,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: assumenda
+                  example: libero
               required:
                 - user_ids
     parameters:
@@ -5354,7 +5354,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 9
+        example: 16
         required: true
         schema:
           type: integer
@@ -5512,7 +5512,7 @@ paths:
         in: path
         name: user_id
         description: 'The ID of the user.'
-        example: 7
+        example: 1
         required: true
         schema:
           type: integer
@@ -5570,6 +5570,81 @@ paths:
                 - old_password
                 - new_password
                 - new_password_confirmation
+  /api/v1/user/email:
+    post:
+      summary: 'Update User Email'
+      operationId: updateUserEmail
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email updated'
+                  email: johndoe@gmail.com
+                  user: {  }
+                properties:
+                  message:
+                    type: string
+                    example: 'Email updated'
+                  email:
+                    type: string
+                    example: johndoe@gmail.com
+                  user:
+                    type: object
+                    properties: {  }
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        422:
+          description: 'Email already verified for your account'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email already verified for your account'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email already verified for your account'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: ''
+                  example: null
+                new_email:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+                new_email_confirmation:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+              required:
+                - new_email
+                - new_email_confirmation
   /api/v1/user/settings:
     get:
       summary: 'Get settings of logged in user'
@@ -6275,81 +6350,6 @@ paths:
                 - old_password
                 - password
                 - password_confirmation
-  /api/v1/user/email:
-    post:
-      summary: 'Update User Email'
-      operationId: updateUserEmail
-      description: ''
-      parameters: []
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Email updated'
-                  email: johndoe@gmail.com
-                  user: {  }
-                properties:
-                  message:
-                    type: string
-                    example: 'Email updated'
-                  email:
-                    type: string
-                    example: johndoe@gmail.com
-                  user:
-                    type: object
-                    properties: {  }
-        401:
-          description: Unauthenticated
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: Unauthenticated.
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-        422:
-          description: 'Email already verified for your account'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Email already verified for your account'
-                properties:
-                  message:
-                    type: string
-                    example: 'Email already verified for your account'
-      tags:
-        - 'User Settings'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: ''
-                  example: null
-                new_email:
-                  type: string
-                  description: 'Email of the user.'
-                  example: john@gmail.com
-                new_email_confirmation:
-                  type: string
-                  description: 'Email of the user.'
-                  example: john@gmail.com
-              required:
-                - new_email
-                - new_email_confirmation
   /api/v1/views:
     post:
       summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, and user profiles"

@@ -62,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bgv64EefkDdc3aP1ZVh85a'
+      - 'Bearer e56EcPha64VfZd1k3gaD8bv'
     controller: null
     method: null
     route: null
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aghD4e1P66dVEba85Zv3cfk'
+      - 'Bearer cPZ6haf8bv6De3gak41EVd5'
     controller: null
     method: null
     route: null
@@ -179,7 +179,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vVa1D4ea6586EkPhbd3cfgZ'
+      - 'Bearer kZv38V6be4cfP5h1Dgd6aaE'
     controller: null
     method: null
     route: null
@@ -238,7 +238,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D8ag36d61Pv5cZbeEa4fhVk'
+      - 'Bearer 4Ea318cVvZDkaPbefhg66d5'
     controller: null
     method: null
     route: null
@@ -303,7 +303,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pvda6Dg51ce86fEhZ4a3kVb'
+      - 'Bearer 54egck8dhfPZ31bvV6aEa6D'
     controller: null
     method: null
     route: null
@@ -363,7 +363,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fPDcE6541h3gvaaVe6d8kbZ'
+      - 'Bearer 8EDfZhvd6cP4a5gb6V13ake'
     controller: null
     method: null
     route: null
@@ -423,7 +423,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g3aev4VhZ6Pa68DbfEc15kd'
+      - 'Bearer dbhcv6f5a4a861EDZPek3gV'
     controller: null
     method: null
     route: null
@@ -482,7 +482,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gvEV4Zbfcak3ade56D1h8P6'
+      - 'Bearer fa64VcZ1gkah5vd8bDE6eP3'
     controller: null
     method: null
     route: null
@@ -541,7 +541,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 81fd3c6V6DaghEPe4abkZv5'
+      - 'Bearer D16PvVhZ6aea8E3bcd4kg5f'
     controller: null
     method: null
     route: null
@@ -618,7 +618,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d5heVk4Pb63gacv8a1fD6ZE'
+      - 'Bearer P1Vh4becf6d8aa6kgZDv35E'
     controller: null
     method: null
     route: null
@@ -673,7 +673,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 614ahvkfe3gV6ZP5aE8Dcbd'
+      - 'Bearer gZv3h8cbe46afD6Eak15PdV'
     controller: null
     method: null
     route: null
@@ -742,7 +742,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d3kVEvc5eP6gD8bfaZa146h'
+      - 'Bearer 53bhevkPVda68EDf164aZgc'
     controller: null
     method: null
     route: null
@@ -801,7 +801,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4VdEvf6aDa83b1ckZPhe65g'
+      - 'Bearer aEaheb183P6gD5VdZkfcv46'
     controller: null
     method: null
     route: null
@@ -887,90 +887,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bd4vf6PD8cZ3ekg6hE51aaV'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/email
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Email'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      email:
-        name: email
-        description: ''
-        required: false
-        example: null
-        type: string
-        enumValues: []
-        custom: []
-      new_email:
-        name: new_email
-        description: 'Email of the user.'
-        required: true
-        example: john@gmail.com
-        type: string
-        enumValues: []
-        custom: []
-      new_email_confirmation:
-        name: new_email_confirmation
-        description: 'Email of the user.'
-        required: true
-        example: john@gmail.com
-        type: string
-        enumValues: []
-        custom: []
-    cleanBodyParameters:
-      new_email: john@gmail.com
-      new_email_confirmation: john@gmail.com
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Email updated",
-          "email": "johndoe@gmail.com",
-          "user": {}
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Email already verified for your account"}'
-        headers: []
-        description: 'Email already verified for your account'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Z4Vevh65c1Df3aadk6gbEP8'
+      - 'Bearer ca8E3Debh6gVf45d61akvZP'
     controller: null
     method: null
     route: null

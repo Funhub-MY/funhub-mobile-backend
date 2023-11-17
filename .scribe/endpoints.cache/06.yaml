@@ -65,7 +65,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kD648PVhe1ab3dc6aZ5fvEg'
+      - 'Bearer P458EVZ16afD6hdk3egvbca'
     controller: null
     method: null
     route: null
@@ -132,7 +132,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fh1vebak64E5DcdaPV8Z63g'
+      - 'Bearer 84Va66bDZvh3faPdcg1E5ke'
     controller: null
     method: null
     route: null
@@ -163,12 +163,12 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 12
+        example: 14
         type: integer
         enumValues: []
         custom: []
     cleanBodyParameters:
-      user_id: 12
+      user_id: 14
     fileParameters: []
     responses:
       -
@@ -190,7 +190,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zd43eaP5aEcDfhkv8gb616V'
+      - 'Bearer ec8Eafvg4h5kD3Pad1b6Z6V'
     controller: null
     method: null
     route: null
@@ -221,12 +221,12 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 17
+        example: 13
         type: integer
         enumValues: []
         custom: []
     cleanBodyParameters:
-      user_id: 17
+      user_id: 13
     fileParameters: []
     responses:
       -
@@ -248,7 +248,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kh564DdfEa6PVcbgevZ31a8'
+      - 'Bearer 16vg4dkPEb65achfD83aZeV'
     controller: null
     method: null
     route: null
@@ -287,7 +287,7 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: eum
+        example: laborum
         type: string
         enumValues: []
         custom: []
@@ -295,7 +295,7 @@ endpoints:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: sunt
+        example: pariatur
         type: required
         enumValues: []
         custom: []
@@ -303,7 +303,7 @@ endpoints:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: labore
+        example: mollitia
         type: required
         enumValues: []
         custom: []
@@ -317,9 +317,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: eum
-      violation_level: sunt
-      violation_type: labore
+      reason: laborum
+      violation_level: pariatur
+      violation_type: mollitia
       also_block_user: true
     fileParameters: []
     responses:
@@ -348,7 +348,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8bPa564dfgk3aD1echV6ZvE'
+      - 'Bearer c8e6hZvD4a16gfEabV53kPd'
     controller: null
     method: null
     route: null
@@ -409,7 +409,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer agvD1kfV4h6cd5ePb3Z6E8a'
+      - 'Bearer h8PE4Zgcdba51fDe36vkV6a'
     controller: null
     method: null
     route: null
@@ -461,7 +461,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zcf6De45gvd1bakP6aV3E8h'
+      - 'Bearer deEgaD38caVb145Z6Pvfkh6'
     controller: null
     method: null
     route: null
@@ -504,7 +504,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 14a6ZhbEPca5f6dg38veVDk'
+      - 'Bearer fD14eZEkP8a3hc6av5b6Vgd'
     controller: null
     method: null
     route: null
@@ -535,12 +535,12 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: excepturi
+        example: qui
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      reason: excepturi
+      reason: qui
     fileParameters: []
     responses:
       -
@@ -556,7 +556,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PchDga53v1Zf8Vae64b6dEk'
+      - 'Bearer hZfgaD8vdc6eVakEP64b315'
     controller: null
     method: null
     route: null
@@ -596,12 +596,12 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: assumenda
+        example: libero
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      user_ids: assumenda
+      user_ids: libero
     fileParameters: []
     responses:
       -
@@ -618,7 +618,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 856dc1Pgk4Zh6EfeDvba3aV'
+      - 'Bearer a45ve6k6f8aZdDVhb3cEP1g'
     controller: null
     method: null
     route: null
@@ -645,7 +645,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 9
+        example: 16
         type: integer
         enumValues: []
         custom: []
@@ -658,7 +658,7 @@ endpoints:
         enumValues: []
         custom: []
     cleanUrlParameters:
-      user_id: 9
+      user_id: 16
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -679,7 +679,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vbEZa5ahdVe4cP83g6D1k6f'
+      - 'Bearer af46g58hc3vEaVb61DkeZPd'
     controller: null
     method: null
     route: null
@@ -723,7 +723,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer af6vZ4Vkhe6c5b3d1P8agED'
+      - 'Bearer eDa6f4gdha5136kEPbZvcV8'
     controller: null
     method: null
     route: null
@@ -750,7 +750,7 @@ endpoints:
         name: user_id
         description: 'The ID of the user.'
         required: true
-        example: 7
+        example: 1
         type: integer
         enumValues: []
         custom: []
@@ -763,7 +763,7 @@ endpoints:
         enumValues: []
         custom: []
     cleanUrlParameters:
-      user_id: 7
+      user_id: 1
       user: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -784,7 +784,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eE8ZgcVvf3b461hk6aDd5aP'
+      - 'Bearer c6vDdaf6ba58EZ1g3k4eVPh'
     controller: null
     method: null
     route: null
@@ -990,7 +990,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6gPb1haf8ce36Vavdk5E4DZ'
+      - 'Bearer v6f46DPadV18ehEg5bcZak3'
     controller: null
     method: null
     route: null
@@ -1103,7 +1103,90 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Pc8befZV6kaa5hD4d1gvE3'
+      - 'Bearer k461fh5vZ8P6cgdaVeaDEb3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/email
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        custom: []
+      new_email:
+        name: new_email
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        enumValues: []
+        custom: []
+      new_email_confirmation:
+        name: new_email_confirmation
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        enumValues: []
+        custom: []
+    cleanBodyParameters:
+      new_email: john@gmail.com
+      new_email_confirmation: john@gmail.com
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Email updated",
+          "email": "johndoe@gmail.com",
+          "user": {}
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Email already verified for your account"}'
+        headers: []
+        description: 'Email already verified for your account'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ck85hEPdV13Zv6eDb6afag4'
     controller: null
     method: null
     route: null

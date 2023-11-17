@@ -635,7 +635,7 @@ class UserController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @group User Settings
+     * @group User
      * @bodyParam new_email string required Email of the user. Example: john@gmail.com
      * @bodyParam new_email_confirmation string required Email of the user. Example: john@gmail.com
      * @response status=200 scenario="success" {

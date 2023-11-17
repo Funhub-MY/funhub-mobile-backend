@@ -29,12 +29,12 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: laudantium
+        example: pariatur
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      share_code: laudantium
+      share_code: pariatur
     fileParameters: []
     responses:
       -
@@ -520,7 +520,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Da6k83vceabZgP5f4dV6Eh1'
+      - 'Bearer f4536cgdDhkPE8e1vVbaa6Z'
     controller: null
     method: null
     route: null

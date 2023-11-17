@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Funhub",
-        "_postman_id": "6ecbc38f-b502-42b8-a3b2-a0aaee4b0205",
+        "_postman_id": "f9383227-5383-4166-b566-c7d44e370612",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":17,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"amet\",\"violation_level\":\"distinctio\",\"article\":1}"
+                                    "raw": "{\"article_id\":7,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"consequatur\",\"violation_level\":\"enim\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -358,7 +358,7 @@
                                 {
                                     "id": "article_id",
                                     "key": "article_id",
-                                    "value": "18",
+                                    "value": "6",
                                     "description": "The ID of the article."
                                 },
                                 {
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"assumenda\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"ut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -449,7 +449,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"doloremque\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"enim\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -972,7 +972,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "ea",
+                                            "value": "et",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1072,7 +1072,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"quisquam\",\"violation_type\":\"sit\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"eum\",\"violation_type\":\"consequatur\"}"
                                 },
                                 "description": ""
                             },
@@ -1197,7 +1197,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "aut",
+                                            "value": "commodi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1945,7 +1945,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"laudantium\"}"
+                            "raw": "{\"share_code\":\"pariatur\"}"
                         },
                         "description": ""
                     },
@@ -2155,7 +2155,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "15",
+                                            "value": "18",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2204,7 +2204,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "11",
+                                            "value": "19",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2250,7 +2250,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "8",
+                                            "value": "3",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2656,7 +2656,7 @@
                                 {
                                     "id": "location_id",
                                     "key": "location_id",
-                                    "value": "6",
+                                    "value": "1",
                                     "description": "The ID of the location."
                                 },
                                 {
@@ -3045,7 +3045,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "laudantium",
+                                            "value": "deleniti",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3969,7 +3969,7 @@
                                 {
                                     "id": "transaction_id",
                                     "key": "transaction_id",
-                                    "value": "1",
+                                    "value": "20",
                                     "description": "The ID of the transaction."
                                 },
                                 {
@@ -4088,7 +4088,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":12}"
+                                    "raw": "{\"user_id\":14}"
                                 },
                                 "description": ""
                             },
@@ -4129,7 +4129,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":17}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -4235,7 +4235,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"eum\",\"violation_level\":\"sunt\",\"violation_type\":\"labore\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"laborum\",\"violation_level\":\"pariatur\",\"violation_type\":\"mollitia\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4392,7 +4392,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"excepturi\"}"
+                            "raw": "{\"reason\":\"qui\"}"
                         },
                         "description": ""
                     },
@@ -4435,7 +4435,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"assumenda\"}"
+                            "raw": "{\"user_ids\":\"libero\"}"
                         },
                         "description": ""
                     },
@@ -4460,7 +4460,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "9",
+                                    "value": "16",
                                     "description": "The ID of the user."
                                 },
                                 {
@@ -4538,7 +4538,7 @@
                                 {
                                     "id": "user_id",
                                     "key": "user_id",
-                                    "value": "7",
+                                    "value": "1",
                                     "description": "The ID of the user."
                                 },
                                 {
@@ -4746,6 +4746,53 @@
                             "code": 422,
                             "body": "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}",
                             "name": "validation error"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update User Email",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"new_email\":\"john@gmail.com\",\"new_email_confirmation\":\"john@gmail.com\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Email updated\",\n\"email\": \"johndoe@gmail.com\",\n\"user\": {}\n}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 401,
+                            "body": "{\"message\": \"Unauthenticated.\"}",
+                            "name": "Unauthenticated"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Email already verified for your account\"}",
+                            "name": "Email already verified for your account"
                         }
                     ]
                 }
@@ -5335,53 +5382,6 @@
                             "code": 422,
                             "body": "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}",
                             "name": "validation error"
-                        }
-                    ]
-                },
-                {
-                    "name": "Update User Email",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/user\/email",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/user\/email"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"new_email\":\"john@gmail.com\",\"new_email_confirmation\":\"john@gmail.com\"}"
-                        },
-                        "description": ""
-                    },
-                    "response": [
-                        {
-                            "header": [],
-                            "code": 200,
-                            "body": "{\n\"message\": \"Email updated\",\n\"email\": \"johndoe@gmail.com\",\n\"user\": {}\n}",
-                            "name": "success"
-                        },
-                        {
-                            "header": [],
-                            "code": 401,
-                            "body": "{\"message\": \"Unauthenticated.\"}",
-                            "name": "Unauthenticated"
-                        },
-                        {
-                            "header": [],
-                            "code": 422,
-                            "body": "{\"message\": \"Email already verified for your account\"}",
-                            "name": "Email already verified for your account"
                         }
                     ]
                 }
