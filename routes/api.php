@@ -145,6 +145,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
 
+        //user module consolidate api
+        Route::get('user', [\App\Http\Controllers\Api\UserController::class, 'getAuthUserDetails']);
+        Route::get('public/user/{user}', [\App\Http\Controllers\Api\UserController::class, 'getPublicUser']);
+        //single route to update user details(name, username, bio, job_title, dob, gender, location, avatar, cover, category_ids)
+        Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'postUpdateUserDetails']);
+        Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
+        Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
+
         // Views
         Route::prefix('/views')->group(function () {
            Route::post('/', [\App\Http\Controllers\Api\ViewController::class, 'postView']);
