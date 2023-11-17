@@ -16,6 +16,7 @@ use App\Models\View;
 use App\Notifications\ArticleInteracted;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class InteractionController extends Controller
@@ -179,16 +180,6 @@ class InteractionController extends Controller
                 'model_type' => $request->model_type, // eg Article Model Type
             ]);
 
-            // if like, fire view
-            if ($request->model_type == Article::class && $request->type == Interaction::TYPE_LIKE) {
-                View::create([
-                    'user_id' => auth()->id(),
-                    'viewable_type' => $request->interactable,
-                    'viewable_id' => $request->id,
-                    'ip_address' => $request->ip(),
-                ]);
-            }
-
             // link to interaction via relationship ShareableLink
             $interaction->shareableLink()->attach($shareableLink->id);
         }
@@ -198,6 +189,16 @@ class InteractionController extends Controller
         // notify user of interactable is article and is like
         if ($request->interactable == Article::class && $request->type == Interaction::TYPE_LIKE && $interaction->interactable->user->id != auth()->id()) {
             $interaction->interactable->user->notify(new ArticleInteracted($interaction));
+        }
+
+        // if like, fire view as well
+        if ($request->interactable == Article::class && $request->type == Interaction::TYPE_LIKE) {
+            View::create([
+                'user_id' => auth()->id(),
+                'viewable_type' => $request->interactable,
+                'viewable_id' => $request->id,
+                'ip_address' => $request->ip(),
+            ]);
         }
 
         return response()->json([
