@@ -272,14 +272,14 @@ class ArticleResource extends Resource
                                 ->placeholder('Select tags...'),
                         ]),
 
-                        Forms\Components\Section::make('Location')->schema([
-                            Forms\Components\Select::make('locations')
-                                ->label('')
-                                ->relationship('location', 'name')
-                                // search
-                                ->searchable()
-                                ->placeholder('Select location...'),
-                        ]),
+                        // Forms\Components\Section::make('Location')->schema([
+                        //     Forms\Components\Select::make('locations')
+                        //         ->label('')
+                        //         ->relationship('location', 'name')
+                        //         // search
+                        //         ->searchable()
+                        //         ->placeholder('Select location...'),
+                        // ]),
 
                     ])
                     ->columnSpan(['lg' => 1]),
