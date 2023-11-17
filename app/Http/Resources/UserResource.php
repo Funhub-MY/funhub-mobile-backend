@@ -20,7 +20,7 @@ class UserResource extends JsonResource
      *
      * @var string|null
      */
-    public static $wrap = 'user';
+    // public static $wrap = 'user';
 
     /**
      * Transform the resource collection into an array.
