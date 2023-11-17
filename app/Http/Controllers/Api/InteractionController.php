@@ -178,6 +178,17 @@ class InteractionController extends Controller
                 'model_type' => $request->model_type, // eg Article Model Type
             ]);
 
+            // if like, fire view
+            if ($request->model_type == Article::class && $request->type == Interaction::TYPE_LIKE) {
+                $article = Article::where('id', $request->id)->first();
+                if ($article) {
+                    $article->views()->create([
+                        'user_id' => auth()->id(),
+                        'ip_address' => $request->ip(),
+                    ]);
+                }
+            }
+
             // link to interaction via relationship ShareableLink
             $interaction->shareableLink()->attach($shareableLink->id);
         }
