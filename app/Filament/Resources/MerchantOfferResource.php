@@ -395,9 +395,12 @@ class MerchantOfferResource extends Resource
 
                         foreach ($originalMediaCollectionNameImgs as $originalMediaCollectionNameImg) {
                             // Copy the image to the new model.
-                            $replica->addMedia($originalMediaCollectionNameImg->getPath())
-                                ->preservingOriginal()
-                                ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
+                            $replica
+                            ->addMediaFromDisk($originalMediaCollectionNameImg->getPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                            ->preservingOriginal()
+                            ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME,
+                            (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
+                        );
                         }
 
                         $originalHorizontalBannerImgs = Media::where('model_id', $idOfModelToBeReplicated)
@@ -406,9 +409,11 @@ class MerchantOfferResource extends Resource
 
                         foreach ($originalHorizontalBannerImgs as $originalHorizontalBannerImg) {
                             // Copy the image to the new model.
-                            $replica->addMedia($originalHorizontalBannerImg->getPath())
-                                ->preservingOriginal()
-                                ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+                            $replica
+                            ->addMediaFromDisk($originalHorizontalBannerImg->getPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                            ->preservingOriginal()
+                            ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER,
+                            (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),);
                         }
 
                         redirect()->route('filament.resources.merchant-offers.edit', $replica);
