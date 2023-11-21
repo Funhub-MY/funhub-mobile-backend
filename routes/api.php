@@ -86,7 +86,8 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Interactions
         Route::get('interactions/users', \App\Http\Controllers\Api\InteractionController::class . '@getUsersOfInteraction');
-        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
+        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update', 'destroy']);
+        Route::delete('interactions/{id}', \App\Http\Controllers\Api\InteractionController::class . '@destroy');
 
         // User Following/Followers
         Route::get('user/followings', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowings']);
