@@ -250,7 +250,7 @@ class InteractionController extends Controller
         $deleteBy = $request->input('delete_by');
         if ($deleteBy == 'interactable') {
             $this->validate($request, [
-                'interacable' => 'required',
+                'interactable' => 'required',
                 'type' => 'required|string|in:like,dislike,share,bookmark',
             ]);
 
@@ -265,10 +265,26 @@ class InteractionController extends Controller
 
         $interaction = null;
         if ($deleteBy == 'interactable') {
+            $type = null;
+            switch($request->type) {
+                case 'like':
+                    $type = Interaction::TYPE_LIKE;
+                    break;
+                case 'dislike':
+                    $type = Interaction::TYPE_DISLIKE;
+                    break;
+                case 'share':
+                    $type = Interaction::TYPE_SHARE;
+                    break;
+                case 'bookmark':
+                    $type = Interaction::TYPE_BOOKMARK;
+                    break;
+            }
+
             $interaction = Interaction::where('interactable_type', $request->interactable)
                 ->where('interactable_id', $id)
                 ->where('user_id', auth()->id())
-                ->where('type', $request->type)
+                ->where('type', $type)
                 ->firstOrFail();
         } else {
             $interaction = Interaction::where('id', $id)
