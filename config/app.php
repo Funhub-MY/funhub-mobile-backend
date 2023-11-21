@@ -277,4 +277,16 @@ return [
     'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
 
     'search_location_use_algolia' => env('SEARCH_LOCATION_USE_ALGOLIA', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Support Emails
+    |--------------------------------------------------------------------------
+    |
+    | Configure the support email addresses for the application.
+    |
+    */
+
+    'support_email1' => env('SUPPORT_EMAIL_1', 'admin@dreamax.my'),
+    'support_email2' => env('SUPPORT_EMAIL_2', 'content@funhub.my'),
 ];

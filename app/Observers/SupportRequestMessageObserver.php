@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Models\SupportRequestMessage;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewSupportRequestRaised;
 use App\Notifications\NewSupportRequestMessage;
 
@@ -25,22 +26,16 @@ class SupportRequestMessageObserver
             } catch (\Exception $e) {
                 Log::error('Error sending notification: ' . $e->getMessage());
             }
-        } else { 
-        // if NOT admin created message && if this is the first message of the request, send email to admin that hasRole('super_admin')
-            if ($supportRequestMessage->request->messages()->count() === 1) {
-                $admins = User::whereHas('roles', function ($query) {
-                    $query->where('name', 'super_admin');
-                })->get();
+        } else {
+            // if NOT admin created message && if this is the first message of the request, send email based on request category type
+            // Determine the admin email address based on the request category type
+            $supportEmail = ($supportRequestMessage->request->category['type'] === 'complain') ? config('app.support_email2') : config('app.support_email1');
 
-                if ($admins) {
-                    foreach ($admins as $admin) {
-                        try {
-                            $admin->notify(new NewSupportRequestRaised($supportRequestMessage));
-                        } catch (\Exception $e) {
-                            Log::error('Error sending notification: ' . $e->getMessage());
-                        }
-                    }
-                }
+            try {
+                Notification::route('mail', $supportEmail)
+                    ->notify(new NewSupportRequestRaised($supportRequestMessage));
+            } catch (\Exception $e) {
+                Log::error('Error sending support request email to admin: ' . $e->getMessage());
             }
         }
     }
