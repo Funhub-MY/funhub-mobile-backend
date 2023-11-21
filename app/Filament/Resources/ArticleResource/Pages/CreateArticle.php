@@ -9,4 +9,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateArticle extends CreateRecord
 {
     protected static string $resource = ArticleResource::class;
+
+    protected function afterCreate(): void
+    {
+        if($this->data['locations']) {
+            $this->record->location()->sync($this->data['locations']);
+        }
+    }
 }
