@@ -250,7 +250,7 @@ class InteractionController extends Controller
         $deleteBy = $request->input('delete_by');
         if ($deleteBy == 'interactable') {
             $this->validate($request, [
-                'interacable' => 'required',
+                'interactable' => 'required',
                 'type' => 'required|string|in:like,dislike,share,bookmark',
             ]);
 
