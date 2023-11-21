@@ -69,7 +69,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fPZghb4dE368a1v56kVDcae'
+      - 'Bearer ecb13Ek65D4g8Vfa6dahZvP'
     controller: null
     method: null
     route: null
@@ -194,7 +194,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer edP6g5f8cvab4hZ1D6V3akE'
+      - 'Bearer eV146kEfP5cvDh3agdab8Z6'
     controller: null
     method: null
     route: null
@@ -288,7 +288,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k6b841DV5EPZehdcv3aga6f'
+      - 'Bearer eD3aZkgd6bah1V56v4EcPf8'
     controller: null
     method: null
     route: null
@@ -340,7 +340,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ba66hfa4vVEDZ3P1ecd5gk8'
+      - 'Bearer cka1gVa86hb354fPZDd6veE'
     controller: null
     method: null
     route: null
@@ -367,14 +367,41 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The id of the interaction.'
+        description: 'The id of the interaction/interactable(article id).'
         required: true
         example: 1
         type: integer
         enumValues: []
         custom: []
+      delete_by:
+        name: delete_by
+        description: 'The type of delete, defaults to interaction.'
+        required: false
+        example: 'interactable,interaction'
+        type: string
+        enumValues: []
+        custom: []
+      interactable:
+        name: interactable
+        description: 'The type of interactable (Required if delete_by is interactable).'
+        required: false
+        example: 'article,merchant_offer'
+        type: string
+        enumValues: []
+        custom: []
+      type:
+        name: type
+        description: 'The type of interaction (Required if delete_by is interactable).'
+        required: false
+        example: 'like,dislike,share,bookmark'
+        type: string
+        enumValues: []
+        custom: []
     cleanUrlParameters:
       id: 1
+      delete_by: 'interactable,interaction'
+      interactable: 'article,merchant_offer'
+      type: 'like,dislike,share,bookmark'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -400,7 +427,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8c6ZE6P5bh3fevaDgk41Vad'
+      - 'Bearer 8153kc64bPdD6aEahZegfvV'
     controller: null
     method: null
     route: null

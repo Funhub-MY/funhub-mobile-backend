@@ -98,47 +98,47 @@ class ArticleResource extends Resource
                             //     ->maxFiles(1)
                             //     ->rules('image'),
                             // multiple images
-                            // Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
-                            //     ->label('Images')
-                            //     ->multiple()
-                            //     ->collection(Article::MEDIA_COLLECTION_NAME)
-                            //     ->columnSpan('full')
-                            //     ->customProperties(['is_cover' => false])
-                            //     // disk is s3_public 
-                            //     ->disk(function () {
-                            //         if (config('filesystems.default') === 's3') {
-                            //             return 's3_public';
-                            //         }
-                            //     })
-                            //     ->acceptedFileTypes(['image/*'])
-                            //     ->maxFiles(20)
-                            //     ->enableReordering()
-                                
-                            //     ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
-                            //     ->rules('image'),
-
-                            Repeater::make('images')
-                                ->schema([
-                                    Forms\Components\SpatieMediaLibraryFileUpload::make('image')
-                                        ->label('Image')
-                                        ->collection(Article::MEDIA_COLLECTION_NAME)
-                                        ->columnSpan('full')
-                                        ->customProperties(['is_cover' => false])
-                                        // disk is s3_public 
-                                        ->disk(function () {
-                                            if (config('filesystems.default') === 's3') {
-                                                return 's3_public';
-                                            }
-                                        })
-                                        ->acceptedFileTypes(['image/*'])
-                                        ->maxFiles(1)
-                                        ->rules('image'),
-                                ])
-                                ->maxItems(20)
-                                ->collapsible()
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                                ->label('Images')
+                                ->multiple()
+                                ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
-                                ->orderable('order_column')
-                                ->hidden(fn (Closure $get) => $get('type') !== 'multimedia'),
+                                ->customProperties(['is_cover' => false])
+                                // disk is s3_public 
+                                ->disk(function () {
+                                    if (config('filesystems.default') === 's3') {
+                                        return 's3_public';
+                                    }
+                                })
+                                ->acceptedFileTypes(['image/*'])
+                                ->maxFiles(20)
+                                ->enableReordering()
+                                ->appendFiles()
+                                ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
+                                ->rules('image'),
+
+                            // Repeater::make('images')
+                            //     ->schema([
+                            //         Forms\Components\SpatieMediaLibraryFileUpload::make('image')
+                            //             ->label('Image')
+                            //             ->collection(Article::MEDIA_COLLECTION_NAME)
+                            //             ->columnSpan('full')
+                            //             ->customProperties(['is_cover' => false])
+                            //             // disk is s3_public 
+                            //             ->disk(function () {
+                            //                 if (config('filesystems.default') === 's3') {
+                            //                     return 's3_public';
+                            //                 }
+                            //             })
+                            //             ->acceptedFileTypes(['image/*'])
+                            //             ->maxFiles(1)
+                            //             ->rules('image'),
+                            //     ])
+                            //     ->maxItems(20)
+                            //     ->collapsible()
+                            //     ->columnSpan('full')
+                            //     ->orderable('order_column')
+                            //     ->hidden(fn (Closure $get) => $get('type') !== 'multimedia'),
 
                             //  video upload
                             // image upload for video thumbnail

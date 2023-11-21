@@ -1473,18 +1473,42 @@ class ArticleTest extends TestCase
 
         // CORE TEST: Get my_bookmarks articles and assert data returned same as in homepage
         $myBookmarks = $this->getJson('/api/v1/articles/my_bookmarks');
+        $myBookmarks->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+            ]);
+
         $this->assertEquals(5, $myBookmarks->json('meta.total'));
 
-        $myBookmarkData = $myBookmarks->json('data');
+        $myBookmarkIds = collect($myBookmarks['data'])->pluck('id')->toArray();
 
         // Filter homepage articles bookmarked by $this->user
-        $homepageArticlesBookmarkedByUser = collect($homepageArticleData)->filter(function ($article) {
-            return $article['user_bookmarked'];
+        $homepageArticlesBookmarkedByUser = collect($homepageArticleData)->filter(function ($article) use ($myBookmarkIds) {
+            return in_array($article['id'], $myBookmarkIds);
         })->toArray();
 
-        // Assertions that data returned from /articles bookmarked by $this->user is same as data returned from /my_bookmarks
-        $this->assertEquals(array_values($homepageArticlesBookmarkedByUser), array_values($myBookmarkData));
+        $myBookmarksArray = $myBookmarks->json();
 
+        // Assertions that data returned from /articles bookmarked by $this->user is same as data returned from /my_bookmarks
+        foreach ($myBookmarksArray['data'] as $bookmark) {
+            $articleId = $bookmark['id'];
+
+            // Get the corresponding article with the same ID from $homepageArticlesBookmarkedByUser
+            $matchingArticle = array_values(array_filter($homepageArticlesBookmarkedByUser, function($a) use ($articleId) {
+                return $a['id'] === $articleId;
+            }))[0];
+        
+            // Assert location data
+            $this->assertEquals($bookmark['location'], $matchingArticle['location']);
+        
+            // Assert count data
+            $this->assertEquals($bookmark['count'], $matchingArticle['count']);
+        
+            // Assert user_liked and user_bookmarked
+            $this->assertEquals($bookmark['user_liked'], $matchingArticle['user_liked']);
+            $this->assertEquals($bookmark['user_bookmarked'], $matchingArticle['user_bookmarked']);
+        }
+        
         // CORE TEST: GetArticlesWithintMyLatLng and assert data returned same as in homepage
         $articlesWithinLatLng = $this->getJson('/api/v1/articles?lat=3.0254065&lng=101.5814762');
         $articleIdsWithinLatLng = collect($articlesWithinLatLng['data'])->pluck('id')->toArray();
@@ -1546,7 +1570,7 @@ class ArticleTest extends TestCase
 
         $articlesWithCategoriesArray = $articlesWithCategories->json();
 
-        // Assertions that data returned from /articles bookmarked by $this->user is same as data returned from /my_bookmarks
+        // Assertions that data returned from /articles filtered by categories is same as in homepage
         foreach ($articlesWithCategoriesArray['data'] as $article) {
             $articleId = $article['id'];
         

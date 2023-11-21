@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Funhub Documentation</title>
+    <title>FUNHUB Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -26,7 +26,7 @@
             </style>
 
     <script>
-        var tryItOutBaseUrl = "http://funhub-mobile-backend.test";
+        var tryItOutBaseUrl = "https://funhub-mobile-backend.test";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
@@ -655,7 +655,7 @@ This is used for getting views for articles, comments, merchant offers, and user
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: November 17, 2023</li>
+        <li>Last updated: November 20, 2023</li>
     </ul>
 </div>
 
@@ -664,7 +664,7 @@ This is used for getting views for articles, comments, merchant offers, and user
     <div class="content">
         <h1 id="introduction">Introduction</h1>
 <aside>
-    <strong>Base URL</strong>: <code>http://funhub-mobile-backend.test</code>
+    <strong>Base URL</strong>: <code>https://funhub-mobile-backend.test</code>
 </aside>
 <p>This documentation aims to provide all the information you need to work with our API.</p>
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
@@ -693,7 +693,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/article_cities" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_cities" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -701,7 +701,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/article_cities"
+    "https://funhub-mobile-backend.test/api/v1/article_cities"
 );
 
 const headers = {
@@ -836,17 +836,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/articles/gallery" \
+    "https://funhub-mobile-backend.test/api/v1/articles/gallery" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "is_cover=1" \
-    --form "images=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpDzNaLJ" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpV318y0" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/gallery"
+    "https://funhub-mobile-backend.test/api/v1/articles/gallery"
 );
 
 const headers = {
@@ -983,7 +983,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpDzNaLJ</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpV318y0</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
@@ -1023,16 +1023,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/articles/video-upload" \
+    "https://funhub-mobile-backend.test/api/v1/articles/video-upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "video=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpqBGIO6" </code></pre></div>
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpsNRb2E" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/video-upload"
+    "https://funhub-mobile-backend.test/api/v1/articles/video-upload"
 );
 
 const headers = {
@@ -1153,7 +1153,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video to upload. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpqBGIO6</code></p>
+<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpsNRb2E</code></p>
         </div>
         </form>
 
@@ -1171,7 +1171,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles/my_articles" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/my_articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1191,7 +1191,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/my_articles"
+    "https://funhub-mobile-backend.test/api/v1/articles/my_articles"
 );
 
 const headers = {
@@ -1441,7 +1441,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles/my_bookmarks" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/my_bookmarks" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1460,7 +1460,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/my_bookmarks"
+    "https://funhub-mobile-backend.test/api/v1/articles/my_bookmarks"
 );
 
 const headers = {
@@ -1688,7 +1688,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/articles/not_interested" \
+    "https://funhub-mobile-backend.test/api/v1/articles/not_interested" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1700,7 +1700,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/not_interested"
+    "https://funhub-mobile-backend.test/api/v1/articles/not_interested"
 );
 
 const headers = {
@@ -1840,7 +1840,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles/tagged_users" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/tagged_users" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -1852,7 +1852,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/tagged_users"
+    "https://funhub-mobile-backend.test/api/v1/articles/tagged_users"
 );
 
 const headers = {
@@ -1996,7 +1996,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles/merchant_offers/6" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/merchant_offers/34" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2004,7 +2004,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/merchant_offers/6"
+    "https://funhub-mobile-backend.test/api/v1/articles/merchant_offers/34"
 );
 
 const headers = {
@@ -2120,10 +2120,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="article_id"                data-endpoint="GETapi-v1-articles-merchant_offers--article_id-"
-               value="6"
+               value="34"
                data-component="url">
     <br>
-<p>The ID of the article. Example: <code>6</code></p>
+<p>The ID of the article. Example: <code>34</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
@@ -2152,13 +2152,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles/nearby" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/nearby" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"ut\"
+        \"non\"
     ],
     \"category_ids\": [
         1,
@@ -2183,7 +2183,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/nearby"
+    "https://funhub-mobile-backend.test/api/v1/articles/nearby"
 );
 
 const headers = {
@@ -2194,7 +2194,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "ut"
+        "non"
     ],
     "category_ids": [
         1,
@@ -2448,13 +2448,13 @@ Note: user&#039;s own posts will not show up on home page</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"enim\"
+        \"voluptate\"
     ],
     \"category_ids\": [
         1,
@@ -2483,7 +2483,7 @@ Note: user&#039;s own posts will not show up on home page</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles"
+    "https://funhub-mobile-backend.test/api/v1/articles"
 );
 
 const headers = {
@@ -2494,7 +2494,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "enim"
+        "voluptate"
     ],
     "category_ids": [
         1,
@@ -2819,7 +2819,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/articles" \
+    "https://funhub-mobile-backend.test/api/v1/articles" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -2854,7 +2854,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles"
+    "https://funhub-mobile-backend.test/api/v1/articles"
 );
 
 const headers = {
@@ -3162,7 +3162,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/articles/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3170,7 +3170,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/1"
+    "https://funhub-mobile-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -3314,7 +3314,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://funhub-mobile-backend.test/api/v1/articles/1" \
+    "https://funhub-mobile-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
@@ -3325,13 +3325,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "categories[]=1" \
     --form "tagged_user_ids[]=1" \
     --form "location={"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}" \
-    --form "images=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpeEBEP1" \
-    --form "video=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phptizG2S" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHonagM" \
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYsQXeK" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/1"
+    "https://funhub-mobile-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -3551,7 +3551,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpeEBEP1</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHonagM</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
@@ -3562,7 +3562,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video ID of the article. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phptizG2S</code></p>
+<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYsQXeK</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>tagged_user_ids</code></b>&nbsp;&nbsp;
@@ -3604,7 +3604,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://funhub-mobile-backend.test/api/v1/articles/1" \
+    "https://funhub-mobile-backend.test/api/v1/articles/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -3612,7 +3612,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/1"
+    "https://funhub-mobile-backend.test/api/v1/articles/1"
 );
 
 const headers = {
@@ -3757,15 +3757,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/articles/report" \
+    "https://funhub-mobile-backend.test/api/v1/articles/report" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"article_id\": 7,
+    \"article_id\": 16,
     \"reason\": \"Spam     * @bodyParam violation_type required The violation type of this report\",
-    \"violation_type\": \"consequatur\",
-    \"violation_level\": \"enim\",
+    \"violation_type\": \"voluptatum\",
+    \"violation_level\": \"sed\",
     \"article\": 1
 }"
 </code></pre></div>
@@ -3773,7 +3773,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/articles/report"
+    "https://funhub-mobile-backend.test/api/v1/articles/report"
 );
 
 const headers = {
@@ -3783,10 +3783,10 @@ const headers = {
 };
 
 let body = {
-    "article_id": 7,
+    "article_id": 16,
     "reason": "Spam     * @bodyParam violation_type required The violation type of this report",
-    "violation_type": "consequatur",
-    "violation_level": "enim",
+    "violation_type": "voluptatum",
+    "violation_level": "sed",
     "article": 1
 };
 
@@ -3910,10 +3910,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="article_id"                data-endpoint="POSTapi-v1-articles-report"
-               value="7"
+               value="16"
                data-component="body">
     <br>
-<p>Example: <code>7</code></p>
+<p>Example: <code>16</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
@@ -3932,10 +3932,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-articles-report"
-               value="consequatur"
+               value="voluptatum"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>voluptatum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -3943,10 +3943,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-articles-report"
-               value="enim"
+               value="sed"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>enim</code></p>
+<p>The violation level of this report Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
@@ -3976,7 +3976,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/article_tags" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_tags" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -3993,7 +3993,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/article_tags"
+    "https://funhub-mobile-backend.test/api/v1/article_tags"
 );
 
 const headers = {
@@ -4200,7 +4200,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/article_tags/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_tags/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4208,7 +4208,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/article_tags/1"
+    "https://funhub-mobile-backend.test/api/v1/article_tags/1"
 );
 
 const headers = {
@@ -4351,7 +4351,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/article_categories" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4369,7 +4369,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/article_categories"
+    "https://funhub-mobile-backend.test/api/v1/article_categories"
 );
 
 const headers = {
@@ -4588,7 +4588,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/article_categories/all" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_categories/all" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4596,7 +4596,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/article_categories/all"
+    "https://funhub-mobile-backend.test/api/v1/article_categories/all"
 );
 
 const headers = {
@@ -4726,7 +4726,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/article_categories/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/article_categories/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -4734,7 +4734,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/article_categories/1"
+    "https://funhub-mobile-backend.test/api/v1/article_categories/1"
 );
 
 const headers = {
@@ -4877,7 +4877,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/comments/replies/et" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/sit" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4894,7 +4894,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments/replies/et"
+    "https://funhub-mobile-backend.test/api/v1/comments/replies/sit"
 );
 
 const headers = {
@@ -5027,10 +5027,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="et"
+               value="sit"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>et</code></p>
+<p>The ID of the comment. Example: <code>sit</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -5115,7 +5115,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/comments/like_toggle" \
+    "https://funhub-mobile-backend.test/api/v1/comments/like_toggle" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5127,7 +5127,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments/like_toggle"
+    "https://funhub-mobile-backend.test/api/v1/comments/like_toggle"
 );
 
 const headers = {
@@ -5274,22 +5274,22 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/comments/report" \
+    "https://funhub-mobile-backend.test/api/v1/comments/report" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"comment_id\": 1,
     \"reason\": \"Spam\",
-    \"violation_level\": \"eum\",
-    \"violation_type\": \"consequatur\"
+    \"violation_level\": \"dolor\",
+    \"violation_type\": \"blanditiis\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments/report"
+    "https://funhub-mobile-backend.test/api/v1/comments/report"
 );
 
 const headers = {
@@ -5301,8 +5301,8 @@ const headers = {
 let body = {
     "comment_id": 1,
     "reason": "Spam",
-    "violation_level": "eum",
-    "violation_type": "consequatur"
+    "violation_level": "dolor",
+    "violation_type": "blanditiis"
 };
 
 fetch(url, {
@@ -5447,10 +5447,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-comments-report"
-               value="eum"
+               value="dolor"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>eum</code></p>
+<p>The violation level of this report Example: <code>dolor</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -5458,10 +5458,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-comments-report"
-               value="consequatur"
+               value="blanditiis"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>consequatur</code></p>
+<p>The violation type of this report Example: <code>blanditiis</code></p>
         </div>
         </form>
 
@@ -5479,7 +5479,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/comments" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5499,7 +5499,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments"
+    "https://funhub-mobile-backend.test/api/v1/comments"
 );
 
 const headers = {
@@ -5746,7 +5746,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/comments" \
+    "https://funhub-mobile-backend.test/api/v1/comments" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5761,7 +5761,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments"
+    "https://funhub-mobile-backend.test/api/v1/comments"
 );
 
 const headers = {
@@ -5951,7 +5951,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/comments/commodi" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/ratione" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5964,7 +5964,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments/commodi"
+    "https://funhub-mobile-backend.test/api/v1/comments/ratione"
 );
 
 const headers = {
@@ -6098,10 +6098,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="commodi"
+               value="ratione"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>commodi</code></p>
+<p>The ID of the comment. Example: <code>ratione</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -6142,7 +6142,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://funhub-mobile-backend.test/api/v1/comments/1" \
+    "https://funhub-mobile-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -6154,7 +6154,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments/1"
+    "https://funhub-mobile-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -6326,7 +6326,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://funhub-mobile-backend.test/api/v1/comments/1" \
+    "https://funhub-mobile-backend.test/api/v1/comments/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -6334,7 +6334,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/comments/1"
+    "https://funhub-mobile-backend.test/api/v1/comments/1"
 );
 
 const headers = {
@@ -6463,7 +6463,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/check_phone_no" \
+    "https://funhub-mobile-backend.test/api/v1/check_phone_no" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -6475,7 +6475,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/check_phone_no"
+    "https://funhub-mobile-backend.test/api/v1/check_phone_no"
 );
 
 const headers = {
@@ -6621,7 +6621,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/sendOtp" \
+    "https://funhub-mobile-backend.test/api/v1/sendOtp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -6633,7 +6633,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/sendOtp"
+    "https://funhub-mobile-backend.test/api/v1/sendOtp"
 );
 
 const headers = {
@@ -6779,7 +6779,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/verifyOtp" \
+    "https://funhub-mobile-backend.test/api/v1/verifyOtp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -6792,7 +6792,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/verifyOtp"
+    "https://funhub-mobile-backend.test/api/v1/verifyOtp"
 );
 
 const headers = {
@@ -6963,7 +6963,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/loginWithPassword" \
+    "https://funhub-mobile-backend.test/api/v1/loginWithPassword" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -6976,7 +6976,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/loginWithPassword"
+    "https://funhub-mobile-backend.test/api/v1/loginWithPassword"
 );
 
 const headers = {
@@ -7144,7 +7144,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/register/otp" \
+    "https://funhub-mobile-backend.test/api/v1/register/otp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -7159,7 +7159,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/register/otp"
+    "https://funhub-mobile-backend.test/api/v1/register/otp"
 );
 
 const headers = {
@@ -7345,7 +7345,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/login/facebook" \
+    "https://funhub-mobile-backend.test/api/v1/login/facebook" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -7356,7 +7356,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/login/facebook"
+    "https://funhub-mobile-backend.test/api/v1/login/facebook"
 );
 
 const headers = {
@@ -7474,7 +7474,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/login/google" \
+    "https://funhub-mobile-backend.test/api/v1/login/google" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -7485,7 +7485,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/login/google"
+    "https://funhub-mobile-backend.test/api/v1/login/google"
 );
 
 const headers = {
@@ -7603,7 +7603,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/login/social" \
+    "https://funhub-mobile-backend.test/api/v1/login/social" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -7614,7 +7614,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/login/social"
+    "https://funhub-mobile-backend.test/api/v1/login/social"
 );
 
 const headers = {
@@ -7752,7 +7752,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/reset-password-send-otp" \
+    "https://funhub-mobile-backend.test/api/v1/reset-password-send-otp" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -7763,7 +7763,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/reset-password-send-otp"
+    "https://funhub-mobile-backend.test/api/v1/reset-password-send-otp"
 );
 
 const headers = {
@@ -7891,7 +7891,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/reset-password" \
+    "https://funhub-mobile-backend.test/api/v1/reset-password" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -7904,7 +7904,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/reset-password"
+    "https://funhub-mobile-backend.test/api/v1/reset-password"
 );
 
 const headers = {
@@ -8057,7 +8057,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/logout" \
+    "https://funhub-mobile-backend.test/api/v1/logout" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -8065,7 +8065,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/logout"
+    "https://funhub-mobile-backend.test/api/v1/logout"
 );
 
 const headers = {
@@ -8197,7 +8197,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/complete-profile" \
+    "https://funhub-mobile-backend.test/api/v1/user/complete-profile" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8211,7 +8211,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/complete-profile"
+    "https://funhub-mobile-backend.test/api/v1/user/complete-profile"
 );
 
 const headers = {
@@ -8398,7 +8398,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/send-email-verification" \
+    "https://funhub-mobile-backend.test/api/v1/user/send-email-verification" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8410,7 +8410,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/send-email-verification"
+    "https://funhub-mobile-backend.test/api/v1/user/send-email-verification"
 );
 
 const headers = {
@@ -8550,7 +8550,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/verify-email" \
+    "https://funhub-mobile-backend.test/api/v1/user/verify-email" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -8562,7 +8562,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/verify-email"
+    "https://funhub-mobile-backend.test/api/v1/user/verify-email"
 );
 
 const headers = {
@@ -8713,19 +8713,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/public_article" \
+    --get "https://funhub-mobile-backend.test/api/v1/public_article" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"share_code\": \"pariatur\"
+    \"share_code\": \"tempora\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/public_article"
+    "https://funhub-mobile-backend.test/api/v1/public_article"
 );
 
 const headers = {
@@ -8735,7 +8735,7 @@ const headers = {
 };
 
 let body = {
-    "share_code": "pariatur"
+    "share_code": "tempora"
 };
 
 fetch(url, {
@@ -8764,465 +8764,528 @@ access-control-allow-origin: *
 <code class="language-json" style="max-height: 300px;">{
     &quot;message&quot;: &quot;&quot;,
     &quot;exception&quot;: &quot;Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException&quot;,
-    &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php&quot;,
+    &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php&quot;,
     &quot;line&quot;: 1144,
     &quot;trace&quot;: [
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php&quot;,
             &quot;line&quot;: 45,
             &quot;function&quot;: &quot;abort&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Application&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php&quot;,
             &quot;line&quot;: 1316,
             &quot;function&quot;: &quot;abort&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php&quot;,
             &quot;line&quot;: 54,
             &quot;function&quot;: &quot;getArticleForPublicView&quot;,
             &quot;class&quot;: &quot;App\\Http\\Controllers\\Api\\ArticleController&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php&quot;,
             &quot;line&quot;: 43,
             &quot;function&quot;: &quot;callAction&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Controller&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php&quot;,
-            &quot;line&quot;: 260,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php&quot;,
+            &quot;line&quot;: 21,
             &quot;function&quot;: &quot;dispatch&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php&quot;,
+            &quot;line&quot;: 31,
+            &quot;function&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\{closure}&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php&quot;,
+            &quot;line&quot;: 20,
+            &quot;function&quot;: &quot;wrapRouteDispatch&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\TracingRoutingDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php&quot;,
+            &quot;line&quot;: 259,
+            &quot;function&quot;: &quot;dispatch&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php&quot;,
             &quot;line&quot;: 205,
             &quot;function&quot;: &quot;runController&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Route&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
             &quot;line&quot;: 798,
             &quot;function&quot;: &quot;run&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Route&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 141,
             &quot;function&quot;: &quot;Illuminate\\Routing\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php&quot;,
             &quot;line&quot;: 50,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\SubstituteBindings&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php&quot;,
             &quot;line&quot;: 126,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php&quot;,
-            &quot;line&quot;: 102,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php&quot;,
+            &quot;line&quot;: 92,
             &quot;function&quot;: &quot;handleRequest&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php&quot;,
             &quot;line&quot;: 54,
             &quot;function&quot;: &quot;handleRequestUsingNamedLimiter&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 116,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
-            &quot;line&quot;: 799,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
+            &quot;line&quot;: 797,
             &quot;function&quot;: &quot;then&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
             &quot;line&quot;: 776,
             &quot;function&quot;: &quot;runRouteWithinStack&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
             &quot;line&quot;: 740,
             &quot;function&quot;: &quot;runRoute&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php&quot;,
             &quot;line&quot;: 729,
             &quot;function&quot;: &quot;dispatchToRoute&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php&quot;,
             &quot;line&quot;: 190,
             &quot;function&quot;: &quot;dispatch&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Router&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 141,
             &quot;function&quot;: &quot;Illuminate\\Foundation\\Http\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php&quot;,
+            &quot;line&quot;: 45,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;line&quot;: 180,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Http\\SetRequestIpMiddleware&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php&quot;,
+            &quot;line&quot;: 31,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;line&quot;: 180,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Http\\SetRequestMiddleware&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php&quot;,
             &quot;line&quot;: 19,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Livewire\\DisableBrowserCache&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php&quot;,
             &quot;line&quot;: 21,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php&quot;,
             &quot;line&quot;: 31,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php&quot;,
             &quot;line&quot;: 21,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php&quot;,
             &quot;line&quot;: 40,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\TrimStrings&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php&quot;,
             &quot;line&quot;: 27,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php&quot;,
             &quot;line&quot;: 86,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php&quot;,
             &quot;line&quot;: 62,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Http\\Middleware\\HandleCors&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php&quot;,
             &quot;line&quot;: 39,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Http\\Middleware\\TrustProxies&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php&quot;,
+            &quot;line&quot;: 87,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;line&quot;: 180,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Middleware&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
             &quot;line&quot;: 116,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php&quot;,
             &quot;line&quot;: 165,
             &quot;function&quot;: &quot;then&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php&quot;,
             &quot;line&quot;: 134,
             &quot;function&quot;: &quot;sendRequestThroughRouter&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
             &quot;line&quot;: 299,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Http\\Kernel&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
             &quot;line&quot;: 287,
             &quot;function&quot;: &quot;callLaravelOrLumenRoute&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
             &quot;line&quot;: 92,
             &quot;function&quot;: &quot;makeApiCall&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
             &quot;line&quot;: 45,
             &quot;function&quot;: &quot;makeResponseCall&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php&quot;,
             &quot;line&quot;: 35,
             &quot;function&quot;: &quot;makeResponseCallIfConditionsPass&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php&quot;,
             &quot;line&quot;: 209,
             &quot;function&quot;: &quot;__invoke&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php&quot;,
-            &quot;line&quot;: 166,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php&quot;,
+            &quot;line&quot;: 163,
             &quot;function&quot;: &quot;iterateThroughStrategies&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php&quot;,
             &quot;line&quot;: 95,
             &quot;function&quot;: &quot;fetchResponses&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php&quot;,
             &quot;line&quot;: 124,
             &quot;function&quot;: &quot;processRoute&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Extracting\\Extractor&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php&quot;,
             &quot;line&quot;: 71,
             &quot;function&quot;: &quot;extractEndpointsInfoFromLaravelApp&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php&quot;,
             &quot;line&quot;: 49,
             &quot;function&quot;: &quot;extractEndpointsInfoAndWriteToDisk&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php&quot;,
             &quot;line&quot;: 51,
             &quot;function&quot;: &quot;get&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php&quot;,
             &quot;line&quot;: 36,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Knuckles\\Scribe\\Commands\\GenerateDocumentation&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php&quot;,
             &quot;line&quot;: 41,
             &quot;function&quot;: &quot;Illuminate\\Container\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
             &quot;type&quot;: &quot;::&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php&quot;,
             &quot;line&quot;: 93,
             &quot;function&quot;: &quot;unwrapIfClosure&quot;,
             &quot;class&quot;: &quot;Illuminate\\Container\\Util&quot;,
             &quot;type&quot;: &quot;::&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php&quot;,
-            &quot;line&quot;: 37,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php&quot;,
+            &quot;line&quot;: 35,
             &quot;function&quot;: &quot;callBoundMethod&quot;,
             &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
             &quot;type&quot;: &quot;::&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php&quot;,
             &quot;line&quot;: 661,
             &quot;function&quot;: &quot;call&quot;,
             &quot;class&quot;: &quot;Illuminate\\Container\\BoundMethod&quot;,
             &quot;type&quot;: &quot;::&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php&quot;,
             &quot;line&quot;: 183,
             &quot;function&quot;: &quot;call&quot;,
             &quot;class&quot;: &quot;Illuminate\\Container\\Container&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Command/Command.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php&quot;,
             &quot;line&quot;: 326,
             &quot;function&quot;: &quot;execute&quot;,
             &quot;class&quot;: &quot;Illuminate\\Console\\Command&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php&quot;,
-            &quot;line&quot;: 153,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php&quot;,
+            &quot;line&quot;: 152,
             &quot;function&quot;: &quot;run&quot;,
             &quot;class&quot;: &quot;Symfony\\Component\\Console\\Command\\Command&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php&quot;,
             &quot;line&quot;: 1063,
             &quot;function&quot;: &quot;run&quot;,
             &quot;class&quot;: &quot;Illuminate\\Console\\Command&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php&quot;,
             &quot;line&quot;: 320,
             &quot;function&quot;: &quot;doRunCommand&quot;,
             &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/symfony/console/Application.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php&quot;,
             &quot;line&quot;: 174,
             &quot;function&quot;: &quot;doRun&quot;,
             &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php&quot;,
             &quot;line&quot;: 102,
             &quot;function&quot;: &quot;run&quot;,
             &quot;class&quot;: &quot;Symfony\\Component\\Console\\Application&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php&quot;,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php&quot;,
             &quot;line&quot;: 155,
             &quot;function&quot;: &quot;run&quot;,
             &quot;class&quot;: &quot;Illuminate\\Console\\Application&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
-            &quot;file&quot;: &quot;/Users/kahshinyip/Laravel/funhub-mobile-backend/artisan&quot;,
-            &quot;line&quot;: 37,
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/artisan&quot;,
+            &quot;line&quot;: 35,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Foundation\\Console\\Kernel&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
@@ -9318,10 +9381,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="share_code"                data-endpoint="GETapi-v1-public_article"
-               value="pariatur"
+               value="tempora"
                data-component="body">
     <br>
-<p>Example: <code>pariatur</code></p>
+<p>Example: <code>tempora</code></p>
         </div>
         </form>
 
@@ -9344,7 +9407,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/help/faqs" \
+    --get "https://funhub-mobile-backend.test/api/v1/help/faqs" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9352,7 +9415,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/faqs"
+    "https://funhub-mobile-backend.test/api/v1/help/faqs"
 );
 
 const headers = {
@@ -9498,7 +9561,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/help/faq_categories" \
+    --get "https://funhub-mobile-backend.test/api/v1/help/faq_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -9506,7 +9569,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/faq_categories"
+    "https://funhub-mobile-backend.test/api/v1/help/faq_categories"
 );
 
 const headers = {
@@ -9630,7 +9693,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/help/support_requests" \
+    --get "https://funhub-mobile-backend.test/api/v1/help/support_requests" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9649,7 +9712,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests"
 );
 
 const headers = {
@@ -9831,7 +9894,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/raise" \
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/raise" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -9850,7 +9913,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/raise"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/raise"
 );
 
 const headers = {
@@ -10032,7 +10095,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/18/reply" \
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/1/reply" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -10049,7 +10112,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/18/reply"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/1/reply"
 );
 
 const headers = {
@@ -10174,10 +10237,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="support_request_id"                data-endpoint="POSTapi-v1-help-support_requests--support_request_id--reply"
-               value="18"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the support request. Example: <code>18</code></p>
+<p>The ID of the support request. Example: <code>1</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -10231,7 +10294,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/help/support_requests/19/messages" \
+    --get "https://funhub-mobile-backend.test/api/v1/help/support_requests/1/messages" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10239,7 +10302,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/19/messages"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/1/messages"
 );
 
 const headers = {
@@ -10353,10 +10416,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="support_request_id"                data-endpoint="GETapi-v1-help-support_requests--support_request_id--messages"
-               value="19"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the support request. Example: <code>19</code></p>
+<p>The ID of the support request. Example: <code>1</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -10385,7 +10448,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/3/resolve" \
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/1/resolve" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -10393,7 +10456,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/3/resolve"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/1/resolve"
 );
 
 const headers = {
@@ -10507,10 +10570,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="support_request_id"                data-endpoint="POSTapi-v1-help-support_requests--support_request_id--resolve"
-               value="3"
+               value="1"
                data-component="url">
     <br>
-<p>The ID of the support request. Example: <code>3</code></p>
+<p>The ID of the support request. Example: <code>1</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
@@ -10539,7 +10602,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/help/support_requests/categories" \
+    --get "https://funhub-mobile-backend.test/api/v1/help/support_requests/categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -10551,7 +10614,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/categories"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/categories"
 );
 
 const headers = {
@@ -10698,16 +10761,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/attach" \
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/attach" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpnaF3e4" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpFaOIGE" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/help/support_requests/attach"
+    "https://funhub-mobile-backend.test/api/v1/help/support_requests/attach"
 );
 
 const headers = {
@@ -10843,7 +10906,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpnaF3e4</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpFaOIGE</code></p>
         </div>
         </form>
 
@@ -10865,7 +10928,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/interactions/users" \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions/users" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -10879,7 +10942,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/interactions/users"
+    "https://funhub-mobile-backend.test/api/v1/interactions/users"
 );
 
 const headers = {
@@ -11045,7 +11108,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/interactions" \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -11064,7 +11127,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/interactions"
+    "https://funhub-mobile-backend.test/api/v1/interactions"
 );
 
 const headers = {
@@ -11299,7 +11362,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/interactions" \
+    "https://funhub-mobile-backend.test/api/v1/interactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -11315,7 +11378,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/interactions"
+    "https://funhub-mobile-backend.test/api/v1/interactions"
 );
 
 const headers = {
@@ -11510,7 +11573,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/interactions/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/interactions/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -11518,7 +11581,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/interactions/1"
+    "https://funhub-mobile-backend.test/api/v1/interactions/1"
 );
 
 const headers = {
@@ -11661,7 +11724,7 @@ Only owner can call this method</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://funhub-mobile-backend.test/api/v1/interactions/1" \
+    "https://funhub-mobile-backend.test/api/v1/interactions/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -11669,7 +11732,7 @@ Only owner can call this method</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/interactions/1"
+    "https://funhub-mobile-backend.test/api/v1/interactions/1"
 );
 
 const headers = {
@@ -11793,7 +11856,40 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The id of the interaction. Example: <code>1</code></p>
+<p>The id of the interaction/interactable(article id). Example: <code>1</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>delete_by</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="delete_by"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="interactable,interaction"
+               data-component="url">
+    <br>
+<p>The type of delete, defaults to interaction. Example: <code>interactable,interaction</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="interactable"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="article,merchant_offer"
+               data-component="url">
+    <br>
+<p>The type of interactable (Required if delete_by is interactable). Example: <code>article,merchant_offer</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="type"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="like,dislike,share,bookmark"
+               data-component="url">
+    <br>
+<p>The type of interaction (Required if delete_by is interactable). Example: <code>like,dislike,share,bookmark</code></p>
             </div>
                     </form>
 
@@ -11815,7 +11911,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/locations" \
+    --get "https://funhub-mobile-backend.test/api/v1/locations" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -11833,7 +11929,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/locations"
+    "https://funhub-mobile-backend.test/api/v1/locations"
 );
 
 const headers = {
@@ -12049,7 +12145,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/locations/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/locations/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -12057,7 +12153,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/locations/1"
+    "https://funhub-mobile-backend.test/api/v1/locations/1"
 );
 
 const headers = {
@@ -12208,7 +12304,7 @@ Must only call one per file. If multiple files, call multiple times. URL generat
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/media/signed_upload" \
+    --get "https://funhub-mobile-backend.test/api/v1/media/signed_upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -12216,7 +12312,7 @@ Must only call one per file. If multiple files, call multiple times. URL generat
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/media/signed_upload"
+    "https://funhub-mobile-backend.test/api/v1/media/signed_upload"
 );
 
 const headers = {
@@ -12362,7 +12458,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/media/upload_complete" \
+    "https://funhub-mobile-backend.test/api/v1/media/upload_complete" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -12375,7 +12471,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/media/upload_complete"
+    "https://funhub-mobile-backend.test/api/v1/media/upload_complete"
 );
 
 const headers = {
@@ -12551,7 +12647,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/merchant/offers/my_bookmarks" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/my_bookmarks" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -12568,7 +12664,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/my_bookmarks"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/my_bookmarks"
 );
 
 const headers = {
@@ -12772,7 +12868,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/merchant/offers" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -12800,7 +12896,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers"
 );
 
 const headers = {
@@ -13104,7 +13200,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/claim" \
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/claim" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -13119,7 +13215,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/claim"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/claim"
 );
 
 const headers = {
@@ -13336,7 +13432,7 @@ This is when customer with claimed merchant offer wishes to redeem in store</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/redeem" \
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/redeem" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -13351,7 +13447,7 @@ This is when customer with claimed merchant offer wishes to redeem in store</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/redeem"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/redeem"
 );
 
 const headers = {
@@ -13528,7 +13624,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/cancel" \
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/cancel" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -13540,7 +13636,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/cancel"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/cancel"
 );
 
 const headers = {
@@ -13689,7 +13785,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/merchant/offers/my_claimed_offers" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/my_claimed_offers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13697,7 +13793,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/my_claimed_offers"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/my_claimed_offers"
 );
 
 const headers = {
@@ -13832,7 +13928,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/merchant/offers/deleniti?offer_id=1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/pariatur?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13840,7 +13936,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant/offers/deleniti"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/pariatur"
 );
 
 const params = {
@@ -13960,10 +14056,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="deleniti"
+               value="pariatur"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>deleniti</code></p>
+<p>The ID of the offer. Example: <code>pariatur</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -13994,7 +14090,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/merchant_categories" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -14012,7 +14108,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant_categories"
+    "https://funhub-mobile-backend.test/api/v1/merchant_categories"
 );
 
 const headers = {
@@ -14231,7 +14327,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/merchant_categories/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant_categories/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14239,7 +14335,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant_categories/1"
+    "https://funhub-mobile-backend.test/api/v1/merchant_categories/1"
 );
 
 const headers = {
@@ -14382,7 +14478,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/merchant-contact" \
+    "https://funhub-mobile-backend.test/api/v1/merchant-contact" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -14401,7 +14497,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/merchant-contact"
+    "https://funhub-mobile-backend.test/api/v1/merchant-contact"
 );
 
 const headers = {
@@ -14660,7 +14756,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/missions" \
+    --get "https://funhub-mobile-backend.test/api/v1/missions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -14668,7 +14764,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/missions"
+    "https://funhub-mobile-backend.test/api/v1/missions"
 );
 
 const headers = {
@@ -14832,7 +14928,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/missions/complete" \
+    "https://funhub-mobile-backend.test/api/v1/missions/complete" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -14844,7 +14940,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/missions/complete"
+    "https://funhub-mobile-backend.test/api/v1/missions/complete"
 );
 
 const headers = {
@@ -14992,7 +15088,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/missions/claimables" \
+    --get "https://funhub-mobile-backend.test/api/v1/missions/claimables" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15000,7 +15096,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/missions/claimables"
+    "https://funhub-mobile-backend.test/api/v1/missions/claimables"
 );
 
 const headers = {
@@ -15133,7 +15229,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/fcm-token" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/fcm-token" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -15145,7 +15241,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/fcm-token"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/fcm-token"
 );
 
 const headers = {
@@ -15286,7 +15382,7 @@ Ordered by latest one</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/notifications" \
+    --get "https://funhub-mobile-backend.test/api/v1/notifications" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -15298,7 +15394,7 @@ Ordered by latest one</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/notifications"
+    "https://funhub-mobile-backend.test/api/v1/notifications"
 );
 
 const headers = {
@@ -15451,7 +15547,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/notifications/mark_as_read" \
+    "https://funhub-mobile-backend.test/api/v1/notifications/mark_as_read" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -15463,7 +15559,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/notifications/mark_as_read"
+    "https://funhub-mobile-backend.test/api/v1/notifications/mark_as_read"
 );
 
 const headers = {
@@ -15603,7 +15699,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/notifications/mark_all_as_read" \
+    "https://funhub-mobile-backend.test/api/v1/notifications/mark_all_as_read" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15611,7 +15707,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/notifications/mark_all_as_read"
+    "https://funhub-mobile-backend.test/api/v1/notifications/mark_all_as_read"
 );
 
 const headers = {
@@ -15739,7 +15835,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/countries" \
+    --get "https://funhub-mobile-backend.test/api/v1/countries" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15747,7 +15843,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/countries"
+    "https://funhub-mobile-backend.test/api/v1/countries"
 );
 
 const headers = {
@@ -15871,7 +15967,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/states" \
+    --get "https://funhub-mobile-backend.test/api/v1/states" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -15879,7 +15975,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/states"
+    "https://funhub-mobile-backend.test/api/v1/states"
 );
 
 const headers = {
@@ -16006,7 +16102,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/points/my_balance/all" \
+    --get "https://funhub-mobile-backend.test/api/v1/points/my_balance/all" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16014,7 +16110,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/my_balance/all"
+    "https://funhub-mobile-backend.test/api/v1/points/my_balance/all"
 );
 
 const headers = {
@@ -16144,7 +16240,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/points/balance" \
+    --get "https://funhub-mobile-backend.test/api/v1/points/balance" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16152,7 +16248,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/balance"
+    "https://funhub-mobile-backend.test/api/v1/points/balance"
 );
 
 const headers = {
@@ -16275,7 +16371,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/points/components/balance" \
+    --get "https://funhub-mobile-backend.test/api/v1/points/components/balance" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -16287,7 +16383,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/components/balance"
+    "https://funhub-mobile-backend.test/api/v1/points/components/balance"
 );
 
 const headers = {
@@ -16428,7 +16524,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/points/rewards" \
+    --get "https://funhub-mobile-backend.test/api/v1/points/rewards" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16436,7 +16532,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/rewards"
+    "https://funhub-mobile-backend.test/api/v1/points/rewards"
 );
 
 const headers = {
@@ -16565,7 +16661,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/points/reward_combine" \
+    "https://funhub-mobile-backend.test/api/v1/points/reward_combine" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -16577,7 +16673,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/reward_combine"
+    "https://funhub-mobile-backend.test/api/v1/points/reward_combine"
 );
 
 const headers = {
@@ -16708,7 +16804,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/points/ledgers" \
+    --get "https://funhub-mobile-backend.test/api/v1/points/ledgers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16716,7 +16812,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/ledgers"
+    "https://funhub-mobile-backend.test/api/v1/points/ledgers"
 );
 
 const headers = {
@@ -16844,7 +16940,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/points/components/ledgers" \
+    --get "https://funhub-mobile-backend.test/api/v1/points/components/ledgers" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -16852,7 +16948,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/points/components/ledgers"
+    "https://funhub-mobile-backend.test/api/v1/points/components/ledgers"
 );
 
 const headers = {
@@ -16997,7 +17093,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/products/checkout" \
+    "https://funhub-mobile-backend.test/api/v1/products/checkout" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -17012,7 +17108,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/products/checkout"
+    "https://funhub-mobile-backend.test/api/v1/products/checkout"
 );
 
 const headers = {
@@ -17219,7 +17315,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/products/checkout/cancel" \
+    "https://funhub-mobile-backend.test/api/v1/products/checkout/cancel" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -17231,7 +17327,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/products/checkout/cancel"
+    "https://funhub-mobile-backend.test/api/v1/products/checkout/cancel"
 );
 
 const headers = {
@@ -17376,7 +17472,7 @@ Get all transactions of current logged in users paginated</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/transactions" \
+    --get "https://funhub-mobile-backend.test/api/v1/transactions" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -17389,7 +17485,7 @@ Get all transactions of current logged in users paginated</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/transactions"
+    "https://funhub-mobile-backend.test/api/v1/transactions"
 );
 
 const headers = {
@@ -17542,7 +17638,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/transactions/transaction_no" \
+    --get "https://funhub-mobile-backend.test/api/v1/transactions/transaction_no" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -17550,7 +17646,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/transactions/transaction_no"
+    "https://funhub-mobile-backend.test/api/v1/transactions/transaction_no"
 );
 
 const headers = {
@@ -17673,7 +17769,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/transactions/20" \
+    --get "https://funhub-mobile-backend.test/api/v1/transactions/7" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -17681,7 +17777,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/transactions/20"
+    "https://funhub-mobile-backend.test/api/v1/transactions/7"
 );
 
 const headers = {
@@ -17795,10 +17891,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="transaction_id"                data-endpoint="GETapi-v1-transactions--transaction_id-"
-               value="20"
+               value="7"
                data-component="url">
     <br>
-<p>The ID of the transaction. Example: <code>20</code></p>
+<p>The ID of the transaction. Example: <code>7</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>transaction</code></b>&nbsp;&nbsp;
@@ -17832,7 +17928,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/user/followings?query=John" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/followings?query=John" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -17840,7 +17936,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/followings"
+    "https://funhub-mobile-backend.test/api/v1/user/followings"
 );
 
 const params = {
@@ -18002,19 +18098,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/follow" \
+    "https://funhub-mobile-backend.test/api/v1/user/follow" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 14
+    \"user_id\": 15
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/follow"
+    "https://funhub-mobile-backend.test/api/v1/user/follow"
 );
 
 const headers = {
@@ -18024,7 +18120,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 14
+    "user_id": 15
 };
 
 fetch(url, {
@@ -18142,10 +18238,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="14"
+               value="15"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>14</code></p>
+<p>The id of the user to follow Example: <code>15</code></p>
         </div>
         </form>
 
@@ -18163,19 +18259,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/unfollow" \
+    "https://funhub-mobile-backend.test/api/v1/user/unfollow" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 13
+    \"user_id\": 16
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/unfollow"
+    "https://funhub-mobile-backend.test/api/v1/user/unfollow"
 );
 
 const headers = {
@@ -18185,7 +18281,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 13
+    "user_id": 16
 };
 
 fetch(url, {
@@ -18303,10 +18399,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="13"
+               value="16"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>13</code></p>
+<p>The id of the user to unfollow Example: <code>16</code></p>
         </div>
         </form>
 
@@ -18325,7 +18421,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/user/followers?query=John" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/followers?query=John" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -18333,7 +18429,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/followers"
+    "https://funhub-mobile-backend.test/api/v1/user/followers"
 );
 
 const params = {
@@ -18496,15 +18592,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/report" \
+    "https://funhub-mobile-backend.test/api/v1/user/report" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"user_id\": 1,
-    \"reason\": \"laborum\",
-    \"violation_level\": \"pariatur\",
-    \"violation_type\": \"mollitia\",
+    \"reason\": \"doloremque\",
+    \"violation_level\": \"itaque\",
+    \"violation_type\": \"vitae\",
     \"also_block_user\": true
 }"
 </code></pre></div>
@@ -18512,7 +18608,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/report"
+    "https://funhub-mobile-backend.test/api/v1/user/report"
 );
 
 const headers = {
@@ -18523,9 +18619,9 @@ const headers = {
 
 let body = {
     "user_id": 1,
-    "reason": "laborum",
-    "violation_level": "pariatur",
-    "violation_type": "mollitia",
+    "reason": "doloremque",
+    "violation_level": "itaque",
+    "violation_type": "vitae",
     "also_block_user": true
 };
 
@@ -18660,10 +18756,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-report"
-               value="laborum"
+               value="doloremque"
                data-component="body">
     <br>
-<p>Example: <code>laborum</code></p>
+<p>Example: <code>doloremque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -18671,10 +18767,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-user-report"
-               value="pariatur"
+               value="itaque"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>pariatur</code></p>
+<p>The violation level of this report Example: <code>itaque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -18682,10 +18778,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-user-report"
-               value="mollitia"
+               value="vitae"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>mollitia</code></p>
+<p>The violation type of this report Example: <code>vitae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>also_block_user</code></b>&nbsp;&nbsp;
@@ -18725,7 +18821,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/block" \
+    "https://funhub-mobile-backend.test/api/v1/user/block" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -18738,7 +18834,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/block"
+    "https://funhub-mobile-backend.test/api/v1/user/block"
 );
 
 const headers = {
@@ -18890,7 +18986,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/unblock" \
+    "https://funhub-mobile-backend.test/api/v1/user/unblock" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -18902,7 +18998,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/unblock"
+    "https://funhub-mobile-backend.test/api/v1/user/unblock"
 );
 
 const headers = {
@@ -19042,7 +19138,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/user/my_blocked_users" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/my_blocked_users" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -19050,7 +19146,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/my_blocked_users"
+    "https://funhub-mobile-backend.test/api/v1/user/my_blocked_users"
 );
 
 const headers = {
@@ -19173,19 +19269,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/delete" \
+    "https://funhub-mobile-backend.test/api/v1/user/delete" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"reason\": \"qui\"
+    \"reason\": \"nulla\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/delete"
+    "https://funhub-mobile-backend.test/api/v1/user/delete"
 );
 
 const headers = {
@@ -19195,7 +19291,7 @@ const headers = {
 };
 
 let body = {
-    "reason": "qui"
+    "reason": "nulla"
 };
 
 fetch(url, {
@@ -19304,10 +19400,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-delete"
-               value="qui"
+               value="nulla"
                data-component="body">
     <br>
-<p>Example: <code>qui</code></p>
+<p>Example: <code>nulla</code></p>
         </div>
         </form>
 
@@ -19325,19 +19421,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/users_by_id" \
+    --get "https://funhub-mobile-backend.test/api/v1/users_by_id" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_ids\": \"libero\"
+    \"user_ids\": \"eos\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/users_by_id"
+    "https://funhub-mobile-backend.test/api/v1/users_by_id"
 );
 
 const headers = {
@@ -19347,7 +19443,7 @@ const headers = {
 };
 
 let body = {
-    "user_ids": "libero"
+    "user_ids": "eos"
 };
 
 fetch(url, {
@@ -19468,10 +19564,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="user_ids"                data-endpoint="GETapi-v1-users_by_id"
-               value="libero"
+               value="eos"
                data-component="body">
     <br>
-<p>Example: <code>libero</code></p>
+<p>Example: <code>eos</code></p>
         </div>
         </form>
 
@@ -19489,7 +19585,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/user/16" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/3" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -19497,7 +19593,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/16"
+    "https://funhub-mobile-backend.test/api/v1/user/3"
 );
 
 const headers = {
@@ -19611,10 +19707,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="GETapi-v1-user--user_id-"
-               value="16"
+               value="3"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>16</code></p>
+<p>The ID of the user. Example: <code>3</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -19643,7 +19739,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/user" \
+    --get "https://funhub-mobile-backend.test/api/v1/user" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -19651,7 +19747,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user"
+    "https://funhub-mobile-backend.test/api/v1/user"
 );
 
 const headers = {
@@ -19775,7 +19871,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/public/user/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/public/user/3" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -19783,7 +19879,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/public/user/1"
+    "https://funhub-mobile-backend.test/api/v1/public/user/3"
 );
 
 const headers = {
@@ -19897,10 +19993,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="GETapi-v1-public-user--user_id-"
-               value="1"
+               value="3"
                data-component="url">
     <br>
-<p>The ID of the user. Example: <code>1</code></p>
+<p>The ID of the user. Example: <code>3</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
@@ -19929,7 +20025,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user" \
+    "https://funhub-mobile-backend.test/api/v1/user" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
@@ -19944,13 +20040,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "country_id=1" \
     --form "state_id=1" \
     --form "category_ids[]=1" \
-    --form "avatar=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpKu4RL1" \
-    --form "cover=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpwufMR7" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpSop5zb" \
+    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNeP2jz" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user"
+    "https://funhub-mobile-backend.test/api/v1/user"
 );
 
 const headers = {
@@ -20240,7 +20336,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload,Avatar of the user (Required if update<em>type is 'avatar'). Example: `/private/var/folders/v</em>/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpKu4RL1`</p>
+<p>One image file to upload,Avatar of the user (Required if update_type is 'avatar'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpSop5zb</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cover</code></b>&nbsp;&nbsp;
@@ -20251,7 +20347,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload,Cover of the user (Required if update<em>type is 'cover'). Example: `/private/var/folders/v</em>/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpwufMR7`</p>
+<p>One image file to upload,Cover of the user (Required if update_type is 'cover'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNeP2jz</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>category_ids</code></b>&nbsp;&nbsp;
@@ -20282,7 +20378,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/password" \
+    "https://funhub-mobile-backend.test/api/v1/user/password" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -20296,7 +20392,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/password"
+    "https://funhub-mobile-backend.test/api/v1/user/password"
 );
 
 const headers = {
@@ -20503,7 +20599,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/email" \
+    "https://funhub-mobile-backend.test/api/v1/user/email" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -20516,7 +20612,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/email"
+    "https://funhub-mobile-backend.test/api/v1/user/email"
 );
 
 const headers = {
@@ -20703,7 +20799,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/user/settings" \
+    --get "https://funhub-mobile-backend.test/api/v1/user/settings" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -20711,7 +20807,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings"
+    "https://funhub-mobile-backend.test/api/v1/user/settings"
 );
 
 const headers = {
@@ -20863,7 +20959,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/email" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/email" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -20875,7 +20971,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/email"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/email"
 );
 
 const headers = {
@@ -21034,7 +21130,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/verify/email" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/verify/email" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -21046,7 +21142,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/verify/email"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/verify/email"
 );
 
 const headers = {
@@ -21186,7 +21282,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/name" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/name" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -21198,7 +21294,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/name"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/name"
 );
 
 const headers = {
@@ -21348,7 +21444,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/article_categories" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/article_categories" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -21364,7 +21460,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/article_categories"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/article_categories"
 );
 
 const headers = {
@@ -21524,16 +21620,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phppU2jcs" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeKgIeP" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/avatar/upload"
 );
 
 const headers = {
@@ -21665,7 +21761,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phppU2jcs</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeKgIeP</code></p>
         </div>
         </form>
 
@@ -21683,16 +21779,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/cover/upload" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/cover/upload" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "cover=@/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpLVsC7e" </code></pre></div>
+    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php6JVARM" </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/cover/upload"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/cover/upload"
 );
 
 const headers = {
@@ -21824,7 +21920,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/v_/zs9yk3011xn9h14zwztnxvnm0000gn/T/phpLVsC7e</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php6JVARM</code></p>
         </div>
         </form>
 
@@ -21842,7 +21938,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/username" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/username" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -21854,7 +21950,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/username"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/username"
 );
 
 const headers = {
@@ -22004,7 +22100,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/bio" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/bio" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -22016,7 +22112,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/bio"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/bio"
 );
 
 const headers = {
@@ -22166,7 +22262,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/dob" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/dob" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -22180,7 +22276,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/dob"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/dob"
 );
 
 const headers = {
@@ -22354,19 +22450,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/gender" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/gender" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"gender\": \"female\"
+    \"gender\": \"male\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/gender"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/gender"
 );
 
 const headers = {
@@ -22376,7 +22472,7 @@ const headers = {
 };
 
 let body = {
-    "gender": "female"
+    "gender": "male"
 };
 
 fetch(url, {
@@ -22486,10 +22582,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="gender"                data-endpoint="POSTapi-v1-user-settings-gender"
-               value="female"
+               value="male"
                data-component="body">
     <br>
-<p>Example: <code>female</code></p>
+<p>Example: <code>male</code></p>
         </div>
         </form>
 
@@ -22507,7 +22603,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/location" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/location" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -22520,7 +22616,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/location"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/location"
 );
 
 const headers = {
@@ -22683,7 +22779,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/job-title" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/job-title" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -22695,7 +22791,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/job-title"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/job-title"
 );
 
 const headers = {
@@ -22845,7 +22941,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/user/settings/postUpdatePassword" \
+    "https://funhub-mobile-backend.test/api/v1/user/settings/postUpdatePassword" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -22859,7 +22955,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/user/settings/postUpdatePassword"
+    "https://funhub-mobile-backend.test/api/v1/user/settings/postUpdatePassword"
 );
 
 const headers = {
@@ -23044,7 +23140,7 @@ This is used for recording views for articles, comments, merchant offers, and us
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://funhub-mobile-backend.test/api/v1/views" \
+    "https://funhub-mobile-backend.test/api/v1/views" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -23057,7 +23153,7 @@ This is used for recording views for articles, comments, merchant offers, and us
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/views"
+    "https://funhub-mobile-backend.test/api/v1/views"
 );
 
 const headers = {
@@ -23210,7 +23306,7 @@ This is used for getting views for articles, comments, merchant offers, and user
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/user_profile/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/user_profile/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -23218,7 +23314,7 @@ This is used for getting views for articles, comments, merchant offers, and user
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/user_profile/1"
+    "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/user_profile/1"
 );
 
 const headers = {
