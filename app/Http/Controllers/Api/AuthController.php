@@ -613,6 +613,7 @@ class AuthController extends Controller
         $user = User::where('google_id', $socialid)
             ->orWhere('facebook_id', $socialid)
             ->orWhere('apple_id', $socialid)
+            ->orWhere('email', $firebase_user->email)
             ->first();
 
         if(!$user) {
