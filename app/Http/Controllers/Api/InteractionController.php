@@ -265,14 +265,28 @@ class InteractionController extends Controller
 
         $interaction = null;
         if ($deleteBy == 'interactable') {
-            Log::info('delete by interactable', ['interactable' => $request->interactable, 'type' => $request->type, 'id' => $id]);
+            $type = null;
+            switch($request->type) {
+                case 'like':
+                    $type = Interaction::TYPE_LIKE;
+                    break;
+                case 'dislike':
+                    $type = Interaction::TYPE_DISLIKE;
+                    break;
+                case 'share':
+                    $type = Interaction::TYPE_SHARE;
+                    break;
+                case 'bookmark':
+                    $type = Interaction::TYPE_BOOKMARK;
+                    break;
+            }
+
             $interaction = Interaction::where('interactable_type', $request->interactable)
                 ->where('interactable_id', $id)
                 ->where('user_id', auth()->id())
-                ->where('type', $request->type)
+                ->where('type', $type)
                 ->firstOrFail();
         } else {
-            Log::info('delete by interaction', ['id' => $id]);
             $interaction = Interaction::where('id', $id)
                 ->where('user_id', auth()->id())
                 ->firstOrFail();
