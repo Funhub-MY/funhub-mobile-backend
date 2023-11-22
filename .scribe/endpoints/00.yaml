@@ -27,12 +27,12 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: aperiam
+        example: tempora
         type: string
         enumValues: []
         custom: []
     cleanBodyParameters:
-      share_code: aperiam
+      share_code: tempora
     fileParameters: []
     responses:
       -
@@ -53,7 +53,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1285,
+                      "line": 1316,
                       "function": "abort"
                   },
                   {
@@ -581,7 +581,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fgDekE3cPZa4bvhd65V168a'
+      - 'Bearer Daakdb8fg6hPcZ1v4V56e3E'
     controller: null
     method: null
     route: null

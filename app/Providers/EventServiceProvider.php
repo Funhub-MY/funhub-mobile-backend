@@ -8,6 +8,8 @@ use App\Events\InteractionCreated;
 use App\Listeners\MediaListener;
 use App\Listeners\MissionEventListener;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Models\SupportRequestMessage;
+use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -51,7 +53,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        SupportRequestMessage::observe(SupportRequestMessageObserver::class);
     }
 
     /**

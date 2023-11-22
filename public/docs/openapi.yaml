@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 10
+                  example: 16
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: est
+                  example: voluptatum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptatem
+                  example: sed
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - rerum
+                    - non
                   items:
                     type: string
                 category_ids:
@@ -479,6 +479,10 @@ paths:
                     - 3
                   items:
                     type: string
+                city:
+                  type: string
+                  description: 'optional Filter by City Name.'
+                  example: 'Subang Jaya'
                 lat:
                   type: number
                   description: 'Filter by Lat of User (must provide lng).'
@@ -529,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - rerum
+                    - voluptate
                   items:
                     type: string
                 category_ids:
@@ -1159,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: dolores
+        example: sit
         required: true
         schema:
           type: string
@@ -1240,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ut
+                  example: dolor
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: culpa
+                  example: blanditiis
               required:
                 - comment_id
                 - reason
@@ -1480,7 +1484,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: ut
+        example: ratione
         required: true
         schema:
           type: string
@@ -2130,7 +2134,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1285
+                      line: 1316
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2594,7 +2598,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1285
+                        line: 1316
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3064,7 +3068,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: tempora
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -4206,7 +4210,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: commodi
+        example: pariatur
         required: true
         schema:
           type: string
@@ -5180,7 +5184,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 15
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5226,7 +5230,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 16
               required:
                 - user_id
   /api/v1/user/report:
@@ -5266,15 +5270,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: natus
+                  example: doloremque
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: at
+                  example: itaque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quaerat
+                  example: vitae
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5391,7 +5395,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: alias
+                  example: nulla
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5425,7 +5429,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: officia
+                  example: eos
               required:
                 - user_ids
     parameters:
@@ -5470,6 +5474,285 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/user:
+    get:
+      summary: 'Get auth user details'
+      operationId: getAuthUserDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\": {\n},\n\"token\": \"\""
+      tags:
+        - User
+    post:
+      summary: 'Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)'
+      operationId: updateUserDetailsnameUsernameBioJobTitleDobGenderLocationAvatarCoverArticleCategories
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\":\n{\n \"id\": 1,\n \"name\": \"John Doe\"\n \"username\": \"johndoe\"\n \"email\": \"johndoe@gmail.com\"\n \"verified_email\": true\n \"auth_provider\": \"email\"\n \"avatar\": \"https://domain.com/storage/avatars/1/avatar.jpg\"\n \"avatar_thumb\": \"https://domain.com/storage/avatars/1/avatar_thumb.jpg\"\n \"bio\": \"I am a developer\"\n \"cover\": \"https://domain.com/storage/covers/1/cover.jpg\"\n \"articles_published_count\": 0\n \"following_count\": 0\n \"followers_count\": 0\n \"has_completed_profile\": false\n \"has_avatar\": true\n \"point_balance\": 0\n \"unread_notifications_count\": 0\n \"is_following\": false\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"category_ids\": [1,2,3]\n},\n\"message\": \"Field updated\"\n\n}"
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        500:
+          description: 'Error updating user details'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Error updating user details'
+                  error: 'Error message'
+                properties:
+                  message:
+                    type: string
+                    example: 'Error updating user details'
+                  error:
+                    type: string
+                    example: 'Error message'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                update_type:
+                  type: string
+                  description: 'Field to update.'
+                  example: job_title
+                name:
+                  type: string
+                  description: "Name of the user (Required if update_type is 'name')."
+                  example: 'John Doe'
+                username:
+                  type: string
+                  description: "Username of the user (Required if update_type is 'username')."
+                  example: johndoe
+                bio:
+                  type: string
+                  description: "Bio of the user (Required if update_type is 'bio')."
+                  example: 'I am a developer'
+                job_title:
+                  type: string
+                  description: "Job title of the user (Required if update_type is 'job_title')."
+                  example: Developer
+                day:
+                  type: integer
+                  description: "Day of the date of birth (Required if update_type is 'dob')."
+                  example: 1
+                month:
+                  type: integer
+                  description: "Month of the date of birth (Required if update_type is 'dob')."
+                  example: 1
+                year:
+                  type: integer
+                  description: "Year of the date of birth (Required if update_type is 'dob')."
+                  example: 1990
+                country_id:
+                  type: integer
+                  description: "Country id of the user (Required if update_type is 'location')."
+                  example: 1
+                state_id:
+                  type: integer
+                  description: "State id of the user (Required if update_type is 'location')."
+                  example: 1
+                avatar:
+                  type: string
+                  format: binary
+                  description: "One image file to upload,Avatar of the user (Required if update_type is 'avatar')."
+                cover:
+                  type: string
+                  format: binary
+                  description: "One image file to upload,Cover of the user (Required if update_type is 'cover')."
+                category_ids:
+                  type: array
+                  description: "Array of article category ids (Required if update_type is 'article_categories')."
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - update_type
+  '/api/v1/public/user/{user_id}':
+    get:
+      summary: 'Get a public user'
+      operationId: getAPublicUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\": {\n}"
+      tags:
+        - User
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'The ID of the user.'
+        example: 3
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: user
+        description: 'The id of the user.'
+        example: '1'
+        required: true
+        schema:
+          type: string
+  /api/v1/user/password:
+    post:
+      summary: 'Update user password (only for login with OTP)'
+      operationId: updateUserPasswordonlyForLoginWithOTP
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Password updated\",\n\"user\":\n     * {\n \"id\": 1,\n \"name\": \"John Doe\"\n \"username\": \"johndoe\"\n \"email\": \"johndoe@gmail.com\"\n \"verified_email\": true\n \"auth_provider\": \"email\"\n \"avatar\": \"https://domain.com/storage/avatars/1/avatar.jpg\"\n \"avatar_thumb\": \"https://domain.com/storage/avatars/1/avatar_thumb.jpg\"\n \"bio\": \"I am a developer\"\n \"cover\": \"https://domain.com/storage/covers/1/cover.jpg\"\n \"articles_published_count\": 0\n \"following_count\": 0\n \"followers_count\": 0\n \"has_completed_profile\": false\n \"has_avatar\": true\n \"point_balance\": 0\n \"unread_notifications_count\": 0\n \"is_following\": false\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"category_ids\": [1,2,3]\n},\n}"
+        422:
+          description: 'validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: 'The old password of the user.'
+                  example: abcd1234
+                new_password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: abcd1234
+                new_password_confirmation:
+                  type: string
+                  description: 'The new password confirmation of the user.'
+                  example: abcd1234
+              required:
+                - old_password
+                - new_password
+                - new_password_confirmation
+  /api/v1/user/email:
+    post:
+      summary: 'Update User Email'
+      operationId: updateUserEmail
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email updated'
+                  email: johndoe@gmail.com
+                  user: {  }
+                properties:
+                  message:
+                    type: string
+                    example: 'Email updated'
+                  email:
+                    type: string
+                    example: johndoe@gmail.com
+                  user:
+                    type: object
+                    properties: {  }
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        422:
+          description: 'Email already verified for your account'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email already verified for your account'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email already verified for your account'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: ''
+                  example: null
+                new_email:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+                new_email_confirmation:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+              required:
+                - new_email
+                - new_email_confirmation
   /api/v1/user/settings:
     get:
       summary: 'Get settings of logged in user'

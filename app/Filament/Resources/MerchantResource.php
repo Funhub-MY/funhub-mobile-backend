@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
@@ -11,8 +12,12 @@ use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
 use App\Notifications\MerchantOnboardEmail;
@@ -20,7 +25,7 @@ use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
-use Filament\Notifications\Notification;
+use SebastianBergmann\Type\NullType;
 
 class MerchantResource extends Resource
 {
@@ -56,10 +61,25 @@ class MerchantResource extends Resource
                         TextInput::make('email')
                             ->label('Email (used for Login)')
                             ->email(true)
-                            ->unique(User::class, 'email', ignoreRecord: true)
                             ->helperText('System auto send an email with their Login Email, Password to this address when created.')
                             ->required()
-                            ->rules('required', 'email')
+                            ->rules(['email', 'required', function ($context, ?Model $record) {
+                                return function (string $attribute, $value, Closure $fail) use ($context, $record) {
+                                    if ($context === 'create' || !$record) {
+                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table, 
+                                            ->exists();
+                                    } elseif ($context === 'edit' && $record instanceof Model)  {
+                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table, 
+                                            ->where('id', '!=', $record->user_id) // excluding current user record in the table
+                                            ->exists();
+                                    }
+                                    
+                                    // Check the result and fail if the email already exists
+                                    if ($is_user_exists) {
+                                        $fail('The :attribute is exists');
+                                    }
+                                };
+                            }])
                     ]),
                 Forms\Components\Section::make('Business Information')
                     ->schema([

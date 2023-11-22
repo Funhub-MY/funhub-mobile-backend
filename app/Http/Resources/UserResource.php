@@ -7,6 +7,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    protected $isAuthUser;
+
+    public function __construct($resource, $isAuthUser = false)
+    {
+        parent::__construct($resource);
+        $this->isAuthUser = $isAuthUser;
+    }
+
+    /**
+     * The "data" wrapper that should be applied.
+     *
+     * @var string|null
+     */
+    // public static $wrap = 'user';
+
     /**
      * Transform the resource collection into an array.
      *
@@ -50,6 +65,12 @@ class UserResource extends JsonResource
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
             'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
+            'dob' => $this->when($this->isAuthUser, $this->dob),
+            'gender' => $this->when($this->isAuthUser, $this->gender),
+            'job_title' => $this->when($this->isAuthUser, $this->job_title),
+            'country_id' => $this->when($this->isAuthUser, $this->country_id),
+            'state_id' => $this->when($this->isAuthUser, $this->state_id),
+            'category_ids' => $this->when($this->isAuthUser, $this->articleCategoriesInterests->pluck('id')->toArray()),
         ];
     }
 }

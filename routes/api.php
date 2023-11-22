@@ -86,7 +86,8 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Interactions
         Route::get('interactions/users', \App\Http\Controllers\Api\InteractionController::class . '@getUsersOfInteraction');
-        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
+        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update', 'destroy']);
+        Route::delete('interactions/{id}', \App\Http\Controllers\Api\InteractionController::class . '@destroy');
 
         // User Following/Followers
         Route::get('user/followings', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowings']);
@@ -144,6 +145,14 @@ Route::group(['prefix' => 'v1'], function () {
         // TODO: secure this route
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
+
+        //user module consolidate api
+        Route::get('user', [\App\Http\Controllers\Api\UserController::class, 'getAuthUserDetails']);
+        Route::get('public/user/{user}', [\App\Http\Controllers\Api\UserController::class, 'getPublicUser']);
+        //single route to update user details(name, username, bio, job_title, dob, gender, location, avatar, cover, category_ids)
+        Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'postUpdateUserDetails']);
+        Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
+        Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
 
         // Views
         Route::prefix('/views')->group(function () {
