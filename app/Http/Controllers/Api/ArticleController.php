@@ -240,20 +240,20 @@ class ArticleController extends Controller
             ->paginate($paginatePerPage);
 
         // each data if type is video, fire view create
-        $data->each(function ($article) {
-            if ($article->type == 'video') { // create one impression per load
-                try {
-                    View::create([
-                        'user_id' => auth()->id(),
-                        'viewable_type' => Article::class,
-                        'viewable_id' => $article->id,
-                        'ip_address' => request()->ip(),
-                    ]);
-                } catch (Exception $e) {
-                    Log::error('Error creating view for article ' . $article->id . ' - ' . $e->getMessage());
-                }
-            }
-        });
+        // $data->each(function ($article) {
+        //     if ($article->type == 'video') { // create one impression per load
+        //         try {
+        //             View::create([
+        //                 'user_id' => auth()->id(),
+        //                 'viewable_type' => Article::class,
+        //                 'viewable_id' => $article->id,
+        //                 'ip_address' => request()->ip(),
+        //             ]);
+        //         } catch (Exception $e) {
+        //             Log::error('Error creating view for article ' . $article->id . ' - ' . $e->getMessage());
+        //         }
+        //     }
+        // });
 
         return ArticleResource::collection($data);
     }
