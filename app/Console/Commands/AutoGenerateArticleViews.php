@@ -34,7 +34,9 @@ class AutoGenerateArticleViews extends Command
         try {
             Log::info('[AutoGenerateArticleViews] Running AutoGenerateArticleViews');
     
-            $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())->get();
+            $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())
+                                ->where('is_processed', false)
+                                ->get();
     
             if ($viewQueueRecords->isNotEmpty()) {
                 foreach ($viewQueueRecords as $record) {
@@ -50,6 +52,8 @@ class AutoGenerateArticleViews extends Command
                             'is_system_generated' => true,
                         ]);
                     }
+
+                    $record->update(['is_processed' => true]);
 
                     Log::info('[AutoGenerateArticleViews] Generated ', ['scheduled_views' => $scheduledViews, 'article_id' => $articleId]);
                 }
