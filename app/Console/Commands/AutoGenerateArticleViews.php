@@ -7,6 +7,7 @@ use App\Models\View;
 use App\Models\ViewQueue;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use App\Models\Article;
 
 class AutoGenerateArticleViews extends Command
 {
