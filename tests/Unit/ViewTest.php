@@ -4,6 +4,7 @@ use Tests\TestCase;
 use App\Models\Article;
 use App\Models\Setting;
 use App\Models\User;
+use App\Models\View;
 use App\Models\ViewQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -103,6 +104,59 @@ class ViewTest extends TestCase
         // Assert that the data has a peak in the middle and is symmetric
         $this->assertTrue($isPeak);
         $this->assertTrue($isSymmetric);
+    }
+
+    //test for autogenerate views
+    public function testAutoGenerateViews()
+    {
+        $this->user = User::factory()->create();
+        Sanctum::actingAs($this->user,['*']);
+
+        // Create an article
+        $article = Article::factory()->create();
+
+        // Create a view queue entry for the article
+        ViewQueue::create([
+            'article_id' => $article->id,
+            'scheduled_views' => 100,
+            'scheduled_at' => now(),
+        ]);
+
+        // the command generate:article-views
+        $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())
+                            ->where('is_processed', false)
+                            ->get();
+
+        if ($viewQueueRecords->isNotEmpty()) {
+            foreach ($viewQueueRecords as $record) {
+                $articleId = $record->article_id;
+                $scheduledViews = $record->scheduled_views;
+
+                for ($i = 0; $i < $scheduledViews; $i++) {
+                    View::create([
+                        'user_id' => $this->user->id,
+                        'viewable_type' => Article::class,
+                        'viewable_id' => $articleId,
+                        'ip_address' => null,
+                        'is_system_generated' => true,
+                    ]);
+                }
+
+                $record->update(['is_processed' => true]);
+            }
+        }
+
+        // Check if the views were generated
+        $this->assertDatabaseHas('views', [
+            'viewable_type' => Article::class,
+            'viewable_id' => $article->id,
+        ]);
+
+        // Check if the ViewQueue record was processed
+        $this->assertDatabaseHas('view_queues', [
+            'article_id' => $article->id,
+            'is_processed' => true,
+        ]);
     }
 
     // Simulate the view generation for a specific article
