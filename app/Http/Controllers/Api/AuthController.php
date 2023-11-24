@@ -118,7 +118,11 @@ class AuthController extends Controller
             ->first();
 
         if ($user) {
-            return response()->json(['message' => 'Phone Number already registered'], 422);
+            if ($user->password) { // in scenario user havent fully complete profile setupo and decide to close the app, so password field is the checker here to verify user can resume their journey
+                return response()->json(['message' => 'Phone Number already registered'], 422);
+            } else {
+                return response()->json(['message' => 'Phone Number registered but incomplete profile setup, continue setup'], 200);
+            }
         } else {
             return response()->json(['message' => 'Phone Number not registered'], 200);
         }
@@ -160,7 +164,6 @@ class AuthController extends Controller
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
             ->first();
-
 
         // Generate new OTP
         $otp = rand(100000, 999999);
@@ -348,7 +351,7 @@ class AuthController extends Controller
      * @group Authentication
      * @authenticated
      * @bodyParam name string required The name of the use. Example: John Smith
-     * @bodyParam email string required The email of the user. Example: john@example.com
+     * @bodyParam email string required The email of the user(email verificatioin will be sent). Example: john@example.com
      * @bodyParam password string The password of the user(social login do not need to provide). Example: abcd1234
      *
      * @response scenario=success {"message" : "Profile Updated"}
@@ -360,7 +363,6 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'email|unique:users,email,' . auth()->user()->id,
         ]);
 
         // auth user if social login (has google_id or facebook_id) then no need to verify password required rule
@@ -378,11 +380,75 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->update([
             'name' => $request->name,
-            'email' => $request->email ?? null,
+            // 'email' => $request->email ?? null,
             'password' => ($request->password) ? Hash::make($request->password) : null,
         ]);
 
-        return response()->json(['message' => 'Profile Updated'], 200);
+        return response()->json(['message' => 'Profile Updated, Email verification sent'], 200);
+    }
+
+    /**
+     * Send Verification Email with Token Inside
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Authentication
+     * @authenticated
+     * @bodyParam email string required You can pass in email address here if user decide to change it again. Example: john@example.com
+     * @response scenario=success {"message" : "Verification Email Sent"}
+     */
+    public function postSendVerificationEmail(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email|unique:users,email,' . auth()->user()->id,
+        ]);
+
+        $user = auth()->user();
+        // update login user email first
+        $user->update([
+            'email' => $request->email,
+            'email_verified_at' => null
+        ]);
+
+        // resend verification email
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification Email Sent'], 200);
+    }
+
+    /**
+     * Verify Email with Token
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Authentication
+     * @authenticated
+     * @bodyParam token string required The email verification token. Example: 123456
+     * @response scenario=success {"message" : "Email Verified"}
+     * @response status=422 scenario="Invalid Token" {"message": "Invalid Token" ]}
+     */
+    public function postVerifyEmail(Request $request)
+    {
+        $this->validate($request, [
+            'token' => 'required|min:6|max:6'
+        ]);
+
+        $user = auth()->user();
+
+        // check token provided
+        if ($user->email_verification_token != $request->token) {
+            return response()->json(['message' => 'Invalid Token'], 422);
+        }
+
+        // update user token to null
+        $user->update(['email_verification_token' => null]);
+
+        // mark as verified email
+        $user->markEmailAsVerified();
+
+        return response()->json(['message' => 'Email Verified'], 200);
     }
 
     /**

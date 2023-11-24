@@ -2,9 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Mail\EmailVerification;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 
 class AuthTest extends TestCase
 {
@@ -16,7 +18,7 @@ class AuthTest extends TestCase
     }
 
     /**
-     * Test SendOtp API 
+     * Test SendOtp API
      */
     public function testSendOtp() {
         $response = $this->postJson('/api/v1/sendOtp', [
@@ -101,7 +103,7 @@ class AuthTest extends TestCase
     /**
      * Test Register with OTP success
      */
-    public function testRegisterWithOtpSuccess() 
+    public function testRegisterWithOtpSuccess()
     {
         $this->refreshDatabase();
         $user = User::factory()->create([
@@ -134,7 +136,7 @@ class AuthTest extends TestCase
     }
 
     /**
-     * Test Register with OTP success
+     * Test Register with OTP success with Email Verification Token as well
      * /api/v1/user/complete-profile
      */
     public function testCompleteProfile()
@@ -168,10 +170,34 @@ class AuthTest extends TestCase
             'otp' => null,
         ]);
 
+        // send email verification
+        $response = $this->postJson('/api/v1/user/send-email-verification', [
+            'email' => 'john@gmail.com',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['message']);
+
+        // get the token from the email
+        $token = User::where('email', 'john@gmail.com')->first()->email_verification_token;
+
+        // verify email address
+        $response = $this->postJson('/api/v1/user/verify-email', [
+            'token' => $token,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['message']);
+
+        // check database has email verified at for this user
+        $this->assertDatabaseHas('users', [
+            'email' => 'john@gmail.com',
+            'email_verified_at' => now()
+        ]);
+
         // complete profile
         $response = $this->postJson('/api/v1/user/complete-profile', [
             'name' => 'John Doe',
-            'email' => 'john@gmail.com',
             'password' => 'abcd1234',
         ]);
 
@@ -206,7 +232,6 @@ class AuthTest extends TestCase
         // complete profile
         $response = $this->postJson('/api/v1/user/complete-profile', [
             'name' => 'John Doe',
-            'email' => 'john@gmail.com',
         ]);
 
         $response->assertStatus(200)
@@ -217,7 +242,6 @@ class AuthTest extends TestCase
         // verify user is updated
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
-            'email' => 'john@gmail.com',
             'google_id' => $user->google_id
         ]);
     }
@@ -241,7 +265,7 @@ class AuthTest extends TestCase
             'email' => 'test@gmail.com',
             'password' => 'abcd1234'
         ]);
-        
+
         $response->assertStatus(403);
     }
 
@@ -260,7 +284,7 @@ class AuthTest extends TestCase
             ->assertJsonStructure([
                 'message'
             ]);
-        
+
         // check database ahas this phone no without zero at front
         $this->assertDatabaseHas('users', [
             'phone_no' => '1234567890',

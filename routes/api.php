@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::group(['prefix' => 'v1'], function () {
+    Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
 
     // primary otp login
     Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp
@@ -30,12 +33,17 @@ Route::group(['prefix' => 'v1'], function () {
     // forgot password
     Route::post('reset-password-send-otp', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordSendOtp']);
     Route::post('reset-password', [\App\Http\Controllers\Api\AuthController::class, 'postResetPasswordWithOtp']);
+
     /**
      * Authenticated routes
      */
     Route::group(['middleware' => ['auth:sanctum', 'checkStatus']],  function() {
         Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
         Route::post('user/complete-profile', [\App\Http\Controllers\Api\AuthController::class, 'postCompleteProfile']);
+
+        // set email address (used during complete profile), must be authenticated
+        Route::post('user/send-email-verification', [\App\Http\Controllers\Api\AuthController::class, 'postSendVerificationEmail']);
+        Route::post('user/verify-email', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyEmail']);
 
         // Country & State
         Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
@@ -106,6 +114,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
             Route::post('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
             Route::post('/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
+            Route::post('/verify/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'verifyEmail']);
             Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
             Route::post('/article_categories', [\App\Http\Controllers\Api\UserSettingsController::class, 'postLinkArticleCategoriesInterests']);
             Route::post('/avatar/upload', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUploadAvatar']);

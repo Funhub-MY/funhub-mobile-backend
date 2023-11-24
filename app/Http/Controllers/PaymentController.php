@@ -114,7 +114,7 @@ class PaymentController extends Controller
             } else { // failed
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
-                    'gateway_transaction_id' => $request->authCode,
+                    'gateway_transaction_id' => $request->mpay_ref_no,
                 ]);
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
@@ -283,7 +283,9 @@ class PaymentController extends Controller
                     // release voucher
                     $voucher_id = $claim->voucher_id;
                     if ($voucher_id) {
-                        $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
+                        $voucher = MerchantOfferVoucher::where('id', $voucher_id)
+                            ->where('owned_by_id', $claim->user_id)
+                            ->first();
                         if ($voucher) {
                             $voucher->owned_by_id = null;
                             $voucher->save();

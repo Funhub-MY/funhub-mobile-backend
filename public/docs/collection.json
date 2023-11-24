@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "df343794-6602-4f94-80c4-bec4b6a82383",
+        "_postman_id": "a03875d4-f1f2-4983-a79a-8233c9fb0c29",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":15,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"eveniet\",\"violation_level\":\"ratione\",\"article\":1}"
+                                    "raw": "{\"article_id\":17,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"quidem\",\"violation_level\":\"aut\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"eos\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"soluta\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -937,7 +937,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "impedit",
+                                            "value": "aperiam",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1037,7 +1037,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"cupiditate\",\"violation_type\":\"sit\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ab\",\"violation_type\":\"ut\"}"
                                 },
                                 "description": ""
                             },
@@ -1162,7 +1162,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "occaecati",
+                                            "value": "sequi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1805,6 +1805,144 @@
                             "name": "Invalid Form Fields"
                         }
                     ]
+                },
+                {
+                    "name": "Send Verification Email with Token Inside",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/send-email-verification",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/send-email-verification"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"john@example.com\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Verification Email Sent\"}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Verify Email with Token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/verify-email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/verify-email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"123456\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"message\" : \"Email Verified\"}",
+                            "name": "success"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Invalid Token\" ]}",
+                            "name": "Invalid Token"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Endpoints",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get Article (public)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/public_article",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/public_article"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"share_code\":\"modi\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "x-ratelimit-limit",
+                                    "value": "60"
+                                },
+                                {
+                                    "key": "x-ratelimit-remaining",
+                                    "value": "59"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\n    \"message\": \"\",\n    \"exception\": \"Symfony\\\\Component\\\\HttpKernel\\\\Exception\\\\NotFoundHttpException\",\n    \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Application.php\",\n    \"line\": 1144,\n    \"trace\": [\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/helpers.php\",\n            \"line\": 45,\n            \"function\": \"abort\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/app\/Http\/Controllers\/Api\/ArticleController.php\",\n            \"line\": 1140,\n            \"function\": \"abort\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Controller.php\",\n            \"line\": 54,\n            \"function\": \"getArticleForPublicView\",\n            \"class\": \"App\\\\Http\\\\Controllers\\\\Api\\\\ArticleController\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/ControllerDispatcher.php\",\n            \"line\": 43,\n            \"function\": \"callAction\",\n            \"class\": \"Illuminate\\\\Routing\\\\Controller\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php\",\n            \"line\": 259,\n            \"function\": \"dispatch\",\n            \"class\": \"Illuminate\\\\Routing\\\\ControllerDispatcher\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Route.php\",\n            \"line\": 205,\n            \"function\": \"runController\",\n            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php\",\n            \"line\": 798,\n            \"function\": \"run\",\n            \"class\": \"Illuminate\\\\Routing\\\\Route\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 141,\n            \"function\": \"Illuminate\\\\Routing\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Middleware\/SubstituteBindings.php\",\n            \"line\": 50,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\SubstituteBindings\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Middleware\/ThrottleRequests.php\",\n            \"line\": 126,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Middleware\/ThrottleRequests.php\",\n            \"line\": 92,\n            \"function\": \"handleRequest\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Middleware\/ThrottleRequests.php\",\n            \"line\": 54,\n            \"function\": \"handleRequestUsingNamedLimiter\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Routing\\\\Middleware\\\\ThrottleRequests\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 116,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php\",\n            \"line\": 797,\n            \"function\": \"then\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php\",\n            \"line\": 776,\n            \"function\": \"runRouteWithinStack\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php\",\n            \"line\": 740,\n            \"function\": \"runRoute\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php\",\n            \"line\": 729,\n            \"function\": \"dispatchToRoute\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php\",\n            \"line\": 190,\n            \"function\": \"dispatch\",\n            \"class\": \"Illuminate\\\\Routing\\\\Router\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 141,\n            \"function\": \"Illuminate\\\\Foundation\\\\Http\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/livewire\/livewire\/src\/DisableBrowserCache.php\",\n            \"line\": 19,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Livewire\\\\DisableBrowserCache\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php\",\n            \"line\": 21,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/ConvertEmptyStringsToNull.php\",\n            \"line\": 31,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ConvertEmptyStringsToNull\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php\",\n            \"line\": 21,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TrimStrings.php\",\n            \"line\": 40,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TransformsRequest\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\TrimStrings\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/ValidatePostSize.php\",\n            \"line\": 27,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\ValidatePostSize\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/PreventRequestsDuringMaintenance.php\",\n            \"line\": 86,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Middleware\\\\PreventRequestsDuringMaintenance\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/HandleCors.php\",\n            \"line\": 62,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Http\\\\Middleware\\\\HandleCors\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/TrustProxies.php\",\n            \"line\": 39,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 180,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Http\\\\Middleware\\\\TrustProxies\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php\",\n            \"line\": 116,\n            \"function\": \"Illuminate\\\\Pipeline\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php\",\n            \"line\": 165,\n            \"function\": \"then\",\n            \"class\": \"Illuminate\\\\Pipeline\\\\Pipeline\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php\",\n            \"line\": 134,\n            \"function\": \"sendRequestThroughRouter\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php\",\n            \"line\": 299,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Http\\\\Kernel\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php\",\n            \"line\": 287,\n            \"function\": \"callLaravelOrLumenRoute\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php\",\n            \"line\": 92,\n            \"function\": \"makeApiCall\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php\",\n            \"line\": 45,\n            \"function\": \"makeResponseCall\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Strategies\/Responses\/ResponseCalls.php\",\n            \"line\": 35,\n            \"function\": \"makeResponseCallIfConditionsPass\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Extractor.php\",\n            \"line\": 209,\n            \"function\": \"__invoke\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Strategies\\\\Responses\\\\ResponseCalls\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Extractor.php\",\n            \"line\": 163,\n            \"function\": \"iterateThroughStrategies\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Extractor\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Extracting\/Extractor.php\",\n            \"line\": 95,\n            \"function\": \"fetchResponses\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Extractor\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/GroupedEndpoints\/GroupedEndpointsFromApp.php\",\n            \"line\": 124,\n            \"function\": \"processRoute\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Extracting\\\\Extractor\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/GroupedEndpoints\/GroupedEndpointsFromApp.php\",\n            \"line\": 71,\n            \"function\": \"extractEndpointsInfoFromLaravelApp\",\n            \"class\": \"Knuckles\\\\Scribe\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/GroupedEndpoints\/GroupedEndpointsFromApp.php\",\n            \"line\": 49,\n            \"function\": \"extractEndpointsInfoAndWriteToDisk\",\n            \"class\": \"Knuckles\\\\Scribe\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/knuckleswtf\/scribe\/src\/Commands\/GenerateDocumentation.php\",\n            \"line\": 51,\n            \"function\": \"get\",\n            \"class\": \"Knuckles\\\\Scribe\\\\GroupedEndpoints\\\\GroupedEndpointsFromApp\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php\",\n            \"line\": 36,\n            \"function\": \"handle\",\n            \"class\": \"Knuckles\\\\Scribe\\\\Commands\\\\GenerateDocumentation\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Util.php\",\n            \"line\": 41,\n            \"function\": \"Illuminate\\\\Container\\\\{closure}\",\n            \"class\": \"Illuminate\\\\Container\\\\BoundMethod\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php\",\n            \"line\": 93,\n            \"function\": \"unwrapIfClosure\",\n            \"class\": \"Illuminate\\\\Container\\\\Util\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/BoundMethod.php\",\n            \"line\": 35,\n            \"function\": \"callBoundMethod\",\n            \"class\": \"Illuminate\\\\Container\\\\BoundMethod\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Container\/Container.php\",\n            \"line\": 661,\n            \"function\": \"call\",\n            \"class\": \"Illuminate\\\\Container\\\\BoundMethod\",\n            \"type\": \"::\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/Command.php\",\n            \"line\": 183,\n            \"function\": \"call\",\n            \"class\": \"Illuminate\\\\Container\\\\Container\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/symfony\/console\/Command\/Command.php\",\n            \"line\": 326,\n            \"function\": \"execute\",\n            \"class\": \"Illuminate\\\\Console\\\\Command\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/Command.php\",\n            \"line\": 152,\n            \"function\": \"run\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Command\\\\Command\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/symfony\/console\/Application.php\",\n            \"line\": 1063,\n            \"function\": \"run\",\n            \"class\": \"Illuminate\\\\Console\\\\Command\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/symfony\/console\/Application.php\",\n            \"line\": 320,\n            \"function\": \"doRunCommand\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/symfony\/console\/Application.php\",\n            \"line\": 174,\n            \"function\": \"doRun\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Console\/Application.php\",\n            \"line\": 102,\n            \"function\": \"run\",\n            \"class\": \"Symfony\\\\Component\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Console\/Kernel.php\",\n            \"line\": 155,\n            \"function\": \"run\",\n            \"class\": \"Illuminate\\\\Console\\\\Application\",\n            \"type\": \"->\"\n        },\n        {\n            \"file\": \"\/Users\/elson\/Documents\/Projects\/funhub-mobile-backend\/artisan\",\n            \"line\": 35,\n            \"function\": \"handle\",\n            \"class\": \"Illuminate\\\\Foundation\\\\Console\\\\Kernel\",\n            \"type\": \"->\"\n        }\n    ]\n}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         },
@@ -1823,7 +1961,21 @@
                                     "host": "{{baseUrl}}",
                                     "path": "api\/v1\/help\/faqs",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/faqs"
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/faqs",
+                                    "variable": [
+                                        {
+                                            "id": "category_ids",
+                                            "key": "category_ids",
+                                            "value": "1%2C2%2C3",
+                                            "description": "array optional Array of category ids."
+                                        },
+                                        {
+                                            "id": "query",
+                                            "key": "query",
+                                            "value": "How+to+...",
+                                            "description": "optional Search query."
+                                        }
+                                    ]
                                 },
                                 "method": "GET",
                                 "header": [
@@ -1836,10 +1988,7 @@
                                         "value": "application\/json"
                                     }
                                 ],
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"query\":\"How to ...\"}"
-                                },
+                                "body": null,
                                 "description": ""
                             },
                             "response": [
@@ -1964,10 +2113,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/help\/support_requests\/:id\/reply",
+                                    "path": "api\/v1\/help\/support_requests\/:support_request_id\/reply",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/reply",
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:support_request_id\/reply",
                                     "variable": [
+                                        {
+                                            "id": "support_request_id",
+                                            "key": "support_request_id",
+                                            "value": "1",
+                                            "description": "The ID of the support request."
+                                        },
                                         {
                                             "id": "id",
                                             "key": "id",
@@ -2007,10 +2162,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/help\/support_requests\/:id\/messages",
+                                    "path": "api\/v1\/help\/support_requests\/:support_request_id\/messages",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/messages",
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:support_request_id\/messages",
                                     "variable": [
+                                        {
+                                            "id": "support_request_id",
+                                            "key": "support_request_id",
+                                            "value": "1",
+                                            "description": "The ID of the support request."
+                                        },
                                         {
                                             "id": "id",
                                             "key": "id",
@@ -2047,10 +2208,16 @@
                             "request": {
                                 "url": {
                                     "host": "{{baseUrl}}",
-                                    "path": "api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "path": "api\/v1\/help\/support_requests\/:support_request_id\/resolve",
                                     "query": [],
-                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:id\/resolve",
+                                    "raw": "{{baseUrl}}\/api\/v1\/help\/support_requests\/:support_request_id\/resolve",
                                     "variable": [
+                                        {
+                                            "id": "support_request_id",
+                                            "key": "support_request_id",
+                                            "value": "1",
+                                            "description": "The ID of the support request."
+                                        },
                                         {
                                             "id": "id",
                                             "key": "id",
@@ -2104,7 +2271,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"type\":\"0=general,1=product,2=account,3=other\"}"
+                                    "raw": "{\"type\":\"complain,bug,feature_request,others\"}"
                                 },
                                 "description": ""
                             },
@@ -2555,7 +2722,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -2748,7 +2915,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "hic",
+                                            "value": "eos",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3785,7 +3952,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -3891,7 +4058,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"voluptatem\",\"violation_level\":\"quod\",\"violation_type\":\"atque\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"id\",\"violation_level\":\"placeat\",\"violation_type\":\"libero\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4048,7 +4215,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"aspernatur\"}"
+                            "raw": "{\"reason\":\"iusto\"}"
                         },
                         "description": ""
                     },
@@ -4091,7 +4258,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"sed\"}"
+                            "raw": "{\"user_ids\":\"dolorum\"}"
                         },
                         "description": ""
                     },
@@ -4238,6 +4405,47 @@
                             "code": 401,
                             "body": "{\"message\": \"Unauthenticated.\"}",
                             "name": "Unauthenticated"
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"message\": \"Email already verified for your account\"}",
+                            "name": "Email already verified for your account"
+                        }
+                    ]
+                },
+                {
+                    "name": "Verify User Email with Token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/user\/settings\/verify\/email",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/user\/settings\/verify\/email"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"123456\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"message\": \"Email Verified\"\n}",
+                            "name": "success"
                         }
                     ]
                 },

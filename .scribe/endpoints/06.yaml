@@ -1,16 +1,522 @@
-name: 'User Settings'
+name: Merchant
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/settings
+    uri: api/v1/merchant/offers/my_bookmarks
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Get settings of logged in user'
+      title: 'Get My Bookmarked Merchant Offers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      filter: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3bVv6Peg8Ef5a4aDZk1dh6c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get Offers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      category_ids:
+        name: category_ids
+        description: 'optional Merchant Category Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      available_only:
+        name: available_only
+        description: 'optional Filter by Available Only.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      category_ids:
+        - 1
+        - 2
+        - 3
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
+      available_only: true
+      filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ehPgDkb4E31cZa8a66dV5vf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/claim
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Claim Offer'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      offer_id:
+        name: offer_id
+        description: 'Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: points/fiat
+        type: string
+        custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        custom: []
+      quantity:
+        name: quantity
+        description: Quantity.
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      offer_id: 1
+      payment_method: points/fiat
+      fiat_payment_method: fpx/card
+      quantity: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Offer Claimed"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Insufficient Point Balance"
+          }
+        headers: []
+        description: insufficient_point_balance
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Offer is no longer valid"
+          }
+        headers: []
+        description: offer_no_longer_valid
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ahD4cZk8Ebdfge3vPV5a661'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/redeem
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: |-
+        Redeem a Merchant Offer (In-Store)
+        This is when customer with claimed merchant offer wishes to redeem in store
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      claim_id:
+        name: claim_id
+        description: 'Claim ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      offer_id:
+        name: offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      quantity:
+        name: quantity
+        description: 'Quantity to Redeem.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+      redeem_code:
+        name: redeem_code
+        description: 'Redemption Code Provided by Merchant.'
+        required: true
+        example: '123456'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      claim_id: 1
+      offer_id: 1
+      quantity: 1
+      redeem_code: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redeemed successfully",
+          "offer": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3hZ6VaD4bEaP8edgf615vck'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/cancel
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Cancel a Merchant Offer Transaction'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      merchant_offer_id:
+        name: merchant_offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      merchant_offer_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Transaction cancelled"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You have not claimed this offer"
+          }
+        headers: []
+        description: offer_pending_payment_not_found
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aZhcDag36f846bPkdE51eVv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/my_claimed_offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get My Merchant Offers (Logged in User)'
       description: ''
       authenticated: true
       custom: []
@@ -30,53 +536,89 @@ endpoints:
         status: 200
         content: |-
           {
-           "name": "John Doe",
-           "email": "johndoe@gmail.com"
-           "username": "johndoe",
-           "dob": "1990-01-01",
-           "gender": "male",
-           "bio": "Hello",
-           "job_title": "Engineer",
-           "country_id": 1,
-           "state_id": 1,
-           "avatar": "https://www.example.com/avatar.jpg",
-           "avatar_thumb": "https://www.example.com/avatar_thumb.jpg",
-           "category_ids": [1,2,3]
+          "data": []
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 404
-        content: '{"message": "No settings found yet."}'
-        headers: []
-        description: 'No settings found yet'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer d4eack6bfhP3agDZEV86v51'
+      - 'Bearer e8b345kPZfEh6v1dgDcVa6a'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/settings/email
+      - GET
+    uri: 'api/v1/merchant/offers/{offer_id}'
     metadata:
-      groupName: 'User Settings'
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Update User Email'
+      title: 'Get Offer By ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The ID of the offer.'
+        required: true
+        example: eos
+        type: string
+        custom: []
+    cleanUrlParameters:
+      offer_id: eos
+    queryParameters:
+      offer_id:
+        name: offer_id
+        description: 'Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      offer_id: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "offer": {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3fa5hPg6Ze6kd4aE1Vbc8Dv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant_categories
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Categories'
+      subgroupDescription: ''
+      title: 'Get popular Merchant Categories'
       description: ''
       authenticated: true
       custom: []
@@ -88,6 +630,124 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
+    bodyParameters:
+      is_featured:
+        name: is_featured
+        description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      is_featured: 1
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+<<<<<<< HEAD
+      - 'Bearer d4eack6bfhP3agDZEV86v51'
+=======
+      - 'Bearer 1dVkf3a4eZb5v8ha6gc6DPE'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchant_categories/{offer_id}'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Categories'
+      subgroupDescription: ''
+      title: 'Get Merchant Categories by offer id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The id of the merchant offer id.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      offer_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+<<<<<<< HEAD
     bodyParameters:
       email:
         name: email
@@ -396,28 +1056,32 @@ endpoints:
         custom: []
     cleanBodyParameters:
       username: johndoe
+=======
+    bodyParameters: []
+    cleanBodyParameters: []
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Username updated",
-          "username": "johndoe"
+          "categories": []
           }
         headers: []
         description: success
         custom: []
       -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
+        status: 404
+        content: ''
         headers: []
-        description: Unauthenticated
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
+<<<<<<< HEAD
       - 'Bearer vadV8cb1hD6PZg3ak6Ee4f5'
     controller: null
     method: null
@@ -811,6 +1475,9 @@ endpoints:
       - headers
       - Authorization
       - 'Bearer 1dfPaEveVD4Z385h6a6kbcg'
+=======
+      - 'Bearer Zvag5EhPa68beV36fkc14Dd'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     controller: null
     method: null
     route: null

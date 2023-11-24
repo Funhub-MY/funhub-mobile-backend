@@ -1,15 +1,16 @@
-name: Article
+name: Other
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/article_cities
+    uri: api/v1/countries
     metadata:
-      groupName: Article
+      groupName: Other
       groupDescription: ''
-      subgroup: ''
+      subgroup: Country
       subgroupDescription: ''
+<<<<<<< HEAD
       title: 'Get Article Cities (Unique)'
       description: ''
       authenticated: true
@@ -1528,6 +1529,9 @@ endpoints:
       subgroup: 'Article Categories'
       subgroupDescription: ''
       title: 'Get All Article Categories'
+=======
+      title: 'Get Countries'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
       description: ''
       authenticated: true
       custom: []
@@ -1547,22 +1551,20 @@ endpoints:
         status: 200
         content: |-
           {
-          "categories": []
+          ["id" => 1, "name" => "Nigeria", "code" => "NG"],
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 404
-        content: ''
-        headers: []
-        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
+<<<<<<< HEAD
       - 'Bearer ZVkfP6e1acDa85h6vdg34bE'
+=======
+      - 'Bearer ea5vdb6gE8V4Zck3hDP61fa'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     controller: null
     method: null
     route: null
@@ -1570,13 +1572,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/article_categories/{article_id}'
+    uri: api/v1/states
     metadata:
-      groupName: Article
+      groupName: Other
       groupDescription: ''
-      subgroup: 'Article Categories'
+      subgroup: State
       subgroupDescription: ''
-      title: 'Get Article Categories by article id'
+      title: 'Get States'
       description: ''
       authenticated: true
       custom: []
@@ -1584,16 +1586,8 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      article_id:
-        name: article_id
-        description: 'The id of the article.'
-        required: true
-        example: 1
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      article_id: 1
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1604,21 +1598,16 @@ endpoints:
         status: 200
         content: |-
           {
-          "categories": []
+          ["id" => 1, "name" => "Abia", "code" => "AB", "country_id" => 1],
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 404
-        content: ''
-        headers: []
-        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
+<<<<<<< HEAD
       - 'Bearer 4dEf6kcag6VhDve538b1PZa'
     controller: null
     method: null
@@ -2274,6 +2263,9 @@ endpoints:
       - headers
       - Authorization
       - 'Bearer 5faVZb3PcEv6ek81gD46dha'
+=======
+      - 'Bearer gv8PkEb6D16Zh5a3eV4cadf'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     controller: null
     method: null
     route: null

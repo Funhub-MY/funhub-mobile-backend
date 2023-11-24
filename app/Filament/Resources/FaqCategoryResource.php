@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FaqCategoryResource\Pages;
 use App\Filament\Resources\FaqCategoryResource\RelationManagers;
 use App\Models\FaqCategory;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
@@ -48,6 +49,19 @@ class FaqCategoryResource extends Resource
                         ])
                         ->default('cn')
                         ->required(),
+
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
+                        ->label('Icon')
+                        ->collection('icon')
+                        ->columnSpan('full')
+                        ->disk(function () {
+                            if (config('filesystems.default') === 's3') {
+                                return 's3_public';
+                            }
+                        })
+                        ->acceptedFileTypes(['image/*'])
+                        ->maxFiles(1)
+                        ->rules('image'),
 
                     Forms\Components\Toggle::make('is_featured')
                         ->label('Is Featured?')

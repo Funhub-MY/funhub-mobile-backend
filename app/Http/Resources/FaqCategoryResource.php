@@ -17,6 +17,7 @@ class FaqCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'icon' => new MediaResource($this->getFirstMedia('icon')),
             'is_featured' => $this->is_featured,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

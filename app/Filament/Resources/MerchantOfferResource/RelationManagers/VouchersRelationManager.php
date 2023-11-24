@@ -52,7 +52,7 @@ class VouchersRelationManager extends RelationManager
                 ->sortable()
                 ->searchable(),
 
-                Tables\Columns\BadgeColumn::make('claim.status')
+                Tables\Columns\BadgeColumn::make('latestSuccessfulClaim.status')
                 ->label('Financial Status')
                 ->default(0)
                     ->sortable()
@@ -88,7 +88,7 @@ class VouchersRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('claim.purchase_method')
+                Tables\Columns\TextColumn::make('latestSuccessfulClaim.purchase_method')
                     ->label('Purchase Method')
                     ->formatStateUsing(function ($state) {
                         if ($state == 'fiat') {
@@ -102,7 +102,7 @@ class VouchersRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('claim.net_amount')
+                Tables\Columns\TextColumn::make('latestSuccessfulClaim.net_amount')
                     ->formatStateUsing(function ($state) {
                         if ($state) {
                             return number_format($state, 2);
@@ -112,14 +112,14 @@ class VouchersRelationManager extends RelationManager
                     })
                     ->label('Amount'),
 
-                Tables\Columns\TextColumn::make('claim.created_at')
+                Tables\Columns\TextColumn::make('latestSuccessfulClaim.created_at')
                     ->label('Purchased At')
                     ->date('d/m/Y h:ia')
                     ->searchable()
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('claim.status')
+                SelectFilter::make('latestSuccessfulClaim.status')
                     ->options(MerchantOfferClaim::CLAIM_STATUS)
                     ->label('Financial Status'),
             ])

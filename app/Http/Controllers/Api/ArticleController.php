@@ -9,6 +9,7 @@ use App\Http\Requests\ArticleImagesUploadRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\MerchantOfferResource;
+use App\Http\Resources\PublicArticleResource;
 use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Models\ShareableLink;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -1110,8 +1112,45 @@ class ArticleController extends Controller
     {
         $merchantOffers = $article->merchantOffers()
             ->with('merchant')
+            ->published()
+            ->available()
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferResource::collection($merchantOffers);
+    }
+
+    /**
+     * Get Article (public)
+     *
+     * @param Article $article
+     * @return void
+     */
+    public function getArticleForPublicView(Request $request)
+    {
+        $this->validate($request, [
+            'share_code' => 'required|string'
+        ]);
+
+        // get article by ShareableLink
+        $share = ShareableLink::where('link', $request->share_code)
+            ->where('model_type', Article::class)
+            ->first();
+
+        if (!$share) {
+            return abort(404);
+        }
+        $article = $share->model;
+
+        // if article is published only return
+        if ($article->status != Article::STATUS_PUBLISHED) {
+            return abort(404);
+        }
+
+        $article->load('user', 'media', 'location', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
+
+        return response()->json([
+            'article' => new PublicArticleResource($article)
+        ]);
     }
 }

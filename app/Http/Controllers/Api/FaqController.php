@@ -18,8 +18,8 @@ class FaqController extends Controller
      *
      * @group Help Center
      * @subgroup FAQs
-     * @bodyParam category_ids array optional Array of category ids. Example: [1,2,3]
-     * @bodyParam query string optional Search query. Example: How to ...
+     * @urlParam category_ids array optional Array of category ids. Example: 1,2,3
+     * @urlParam query string optional Search query. Example: How to ...
      *
      * @response scenario="success" {
      * "data": []
@@ -29,9 +29,9 @@ class FaqController extends Controller
     public function index(Request $request)
     {
         $query = Faq::with('category')->published();
-
         if ($request->has('category_ids')) {
-            $query->whereIn('category_id', $request->category_ids);
+            $category_ids = explode(',', $request->category_ids);
+            $query->whereIn('faq_category_id', $category_ids);
         }
 
         if ($request->has('query')) {

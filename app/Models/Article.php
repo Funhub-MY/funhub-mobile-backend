@@ -177,6 +177,11 @@ class Article extends Model implements HasMedia
             ->withTimestamps();
     }
 
+    public function shareableLinks()
+    {
+        return $this->morphMany(ShareableLink::class, 'model');
+    }
+
     /**
      * Scope a query to only include published articles.
      */

@@ -18,10 +18,13 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Mail\EmailVerification;
+use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable implements HasMedia, FilamentUser
 {
     use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
+
 
     const USER_VIDEO_UPLOADS = 'user_video_uploads';
     const USER_AVATAR = 'user_avatar';
@@ -63,6 +66,20 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function canAccessFilament(): bool
     {
         return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super-admin') || $this->hasRole('merchant');
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $user = $this;
+
+        // generate 6 digit token
+        $token = rand(100000, 999999);
+        $user->update([
+            'email_verification_token' => $token,
+        ]);
+
+        // fire email verification notification
+        Mail::to($user->email)->send(new EmailVerification($user->name, $token));
     }
 
     /**

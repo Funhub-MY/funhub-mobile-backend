@@ -1,15 +1,16 @@
-name: Point
+name: Product
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v1/points/my_balance/all
+      - POST
+    uri: api/v1/products/checkout
     metadata:
-      groupName: Point
+      groupName: Product
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Product Rewards'
       subgroupDescription: ''
+<<<<<<< HEAD
       title: 'Get the point & point components balance of the logged in user.'
       description: ''
       authenticated: true
@@ -104,6 +105,9 @@ endpoints:
       subgroup: ''
       subgroupDescription: ''
       title: 'Get the point component balance of the user.'
+=======
+      title: 'Post Checkout'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
       description: ''
       authenticated: true
       custom: []
@@ -116,27 +120,51 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      type:
-        name: type
-        description: 'The type of point component.'
+      product_id:
+        name: product_id
+        description: 'Product ID.'
         required: true
-        example: egg
+        example: 1
+        type: integer
+        custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: fiat
         type: string
         custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        custom: []
+      quantity:
+        name: quantity
+        description: Quantity.
+        required: true
+        example: 1
+        type: integer
+        custom: []
     cleanBodyParameters:
-      type: egg
+      product_id: 1
+      payment_method: fiat
+      fiat_payment_method: fpx/card
+      quantity: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "type": "egg",
-          "balance": 100
+          "message": "Redirect to Gateway"
           }
         headers: []
         description: success
         custom: []
+<<<<<<< HEAD
     responseFields: []
     auth:
       - headers
@@ -171,26 +199,48 @@ endpoints:
     cleanBodyParameters: []
     fileParameters: []
     responses:
+=======
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
       -
         status: 200
         content: |-
           {
-          "rewards": [
-          {
-          "id": 1,
-          "name": "Funhub",
-          "description": "Funhub",
-          "components": [],
+          "message": "Product is sold out"
           }
-          ]
         headers: []
-        description: success
+        description: insufficient_product_quantity
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
+<<<<<<< HEAD
       - 'Bearer dP41eD6cgZ538fk6baEvhVa'
+=======
+      - 'Bearer ad45PDvhb3686kgeaVEZ1cf'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     controller: null
     method: null
     route: null
@@ -198,13 +248,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/points/reward_combine
+    uri: api/v1/products/checkout/cancel
     metadata:
-      groupName: Point
+      groupName: Product
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Combine Points Component to Form a Reward'
+      title: 'Cancel Product Checkout'
       description: ''
       authenticated: true
       custom: []
@@ -217,10 +267,11 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      quantity:
-        name: quantity
-        description: 'The quantity of the reward to form.'
+      transaction_no:
+        name: transaction_no
+        description: 'Transaction No.'
         required: true
+<<<<<<< HEAD
         example: 1
         type: integer
         custom: []
@@ -308,26 +359,20 @@ endpoints:
         description: 'Type of Component (name).'
         required: false
         example: egg
+=======
+        example: '11234455'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
         type: string
         custom: []
-    cleanUrlParameters:
-      filter_type: egg
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    cleanBodyParameters:
+      transaction_no: '11234455'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "data": [
-          {
-            "id": 1,
-            ...
-          }
-          ]
+          "message": "Transaction cancelled"
           }
         headers: []
         description: success
@@ -336,7 +381,11 @@ endpoints:
     auth:
       - headers
       - Authorization
+<<<<<<< HEAD
       - 'Bearer cZDbe85VaaEPf63d6h1vg4k'
+=======
+      - 'Bearer ae64vgh1Vb8f6k5dPaDZc3E'
+>>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     controller: null
     method: null
     route: null

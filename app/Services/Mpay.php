@@ -55,6 +55,11 @@ class Mpay {
         // 000000000100 = RM 1.00 000000001000 = RM 10.00 000000010000 = RM 100.00
         $amount = str_pad(number_format($amount, 2, '', ''), 12, '0', STR_PAD_LEFT);
 
+        if(!$email) {
+            $defaultEmail = $invoice_no . config('app.mpay_default_email_tld');
+            Log::info('[MPAY] Email is not set, using default email:'. $defaultEmail);
+        }
+
         $data = [
             'url' => $this->url .'/payment/eCommerce',
             'formData' => [
@@ -65,7 +70,7 @@ class Mpay {
                 'desc' => $desc,
                 'postURL' => $redirectUrl,
                 'phone' => $phoneNo,
-                'email' => $email,
+                'email' => $email ? $email : $defaultEmail,
                 'param' => $param
             ]
         ];

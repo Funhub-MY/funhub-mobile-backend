@@ -36,8 +36,7 @@ class SupportRequestController extends Controller
         // get all my own support requests
         $query = $request->user()->supportRequests()
             ->with('messages')
-            ->join(DB::raw('(SELECT id,created_at,support_request_id from support_requests_messages) AS support_requests_messages'), 'support_requests.id', '=', 'support_requests_messages.support_request_id')
-            ->orderBy('support_requests_messages.created_at', 'desc');
+            ->orderBy('created_at', 'desc');
 
         if ($request->has('query')) {
             $query->where('title', 'like', '%' . $request->query . '%');
@@ -242,20 +241,24 @@ class SupportRequestController extends Controller
      *
      * @group Help Center
      * @subgroup Support Requests
-     * @bodyParam type string optional Type of support request category. Example: 0=general,1=product,2=account,3=other
+     * @bodyParam type string optional Type of support request category. Example: complain,bug,feature_request,others
      */
     public function getSupportRequestsCategories(Request $request)
     {
         $query = SupportRequestCategory::published();
 
+        $types = explode(',', $request->type ?? '');
+
         if ($request->has('type')) {
             // validate type
-            if (!in_array($request->type, array_keys(SupportRequestCategory::TYPES))) {
-                return response()->json([
-                    'message' => 'Invalid type'
-                ], 422);
+            foreach ($types as $type) {
+                if (!in_array($type, SupportRequestCategory::TYPES)) {
+                    return response()->json([
+                        'message' => 'Invalid type'
+                    ], 422);
+                }
             }
-            $query->where('type', $request->type);
+            $query->whereIn('type', $types);
         }
 
         $supportRequestsCategories = $query->get();
