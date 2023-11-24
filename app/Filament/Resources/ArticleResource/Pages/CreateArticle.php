@@ -10,9 +10,11 @@ class CreateArticle extends CreateRecord
 {
     protected static string $resource = ArticleResource::class;
 
-    // protected function mutateFormDataBeforeCreate(array $data): array
-    // {
-    //     //dd($data);
-    //     return $data;
-    // }
+    protected function afterCreate(): void
+    {
+        if($this->data['locations']) {
+            $this->record->location()->sync($this->data['locations']);
+        }
+    }
+
 }

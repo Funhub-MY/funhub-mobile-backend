@@ -81,7 +81,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => new UserResource($user),
+            'user' => new UserResource($user, true),
             'token' => $token,
         ], 200);
     }
@@ -267,7 +267,7 @@ class AuthController extends Controller
             Auth::login($user);
 
             return response()->json([
-                'user' => new UserResource($user),
+                'user' => new UserResource($user, true),
                 'token' => $token->plainTextToken,
             ], 200);
         }
@@ -334,7 +334,7 @@ class AuthController extends Controller
              Auth::login($user);
 
              return response()->json([
-                 'user' => new UserResource($user),
+                 'user' => new UserResource($user, true),
                  'token' => $token->plainTextToken,
              ], 200);
         } else {
@@ -512,7 +512,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logged in successfully',
-            'user' => new UserResource($user),
+            'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
     }
@@ -554,7 +554,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logged in successfully',
-            'user' => new UserResource($user),
+            'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
     }
@@ -610,10 +610,17 @@ class AuthController extends Controller
         }
 
         //check if the user already exists in the database
+        // $user = User::where('google_id', $socialid)
+        //     ->orWhere('facebook_id', $socialid)
+        //     ->orWhere('apple_id', $socialid)
+        //     ->first();
+
         $user = User::where('google_id', $socialid)
             ->orWhere('facebook_id', $socialid)
             ->orWhere('apple_id', $socialid)
+            ->orWhere('email', $firebase_user->email)
             ->first();
+
 
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
@@ -676,7 +683,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logged in successfully',
-            'user' => new UserResource($user),
+            'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
 

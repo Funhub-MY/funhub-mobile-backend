@@ -34,6 +34,10 @@ class EditArticle extends EditRecord
             });
             $record->subCategories()->attach($data['sub_categories'], ['created_at' => now(), 'updated_at' => now()]);
         }
+
+        if ($data['locations']) {
+            $record->location()->sync($data['locations']);
+        }
         
         return $record;
     }
@@ -42,6 +46,7 @@ class EditArticle extends EditRecord
     {
         //dd($data);
         $data['sub_categories'] = $this->record->subCategories->pluck('id')->toArray();
+        $data['locations'] = $this->record->location->pluck('id')->toArray();
         //$data['images'] = $this->record->getMedia(Article::MEDIA_COLLECTION_NAME)->toArray();
         //$data['images'] = $this->record->media->pluck('uuid')->toArray();
         //dd($this->record->media->toArray());

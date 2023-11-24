@@ -8,6 +8,7 @@ use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\Loca
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
+use App\Models\Location;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -297,15 +298,15 @@ class ArticleResource extends Resource
                                 ->placeholder('Select tags...'),
                         ]),
 
-                        //temporary comment out, noted Elson removed multiple locations fo article
-                        // Forms\Components\Section::make('Location')->schema([
-                        //     Forms\Components\Select::make('locations')
-                        //         ->label('')
-                        //         ->relationship('location', 'name')
-                        //         // search
-                        //         ->searchable()
-                        //         ->placeholder('Select location...'),
-                        // ]),
+                        Forms\Components\Section::make('Location')->schema([
+                            Forms\Components\Select::make('locations')
+                                ->label('')
+                                ->options(Location::all()->pluck('name', 'id')->toArray())
+                                // search
+                                ->searchable()
+                                ->placeholder('Select location...'),
+                        ]),
+
 
                     ])
                     ->columnSpan(['lg' => 1]),
