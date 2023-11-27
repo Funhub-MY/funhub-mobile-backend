@@ -27,10 +27,10 @@ class UsersChart extends LineChartWidget
                 ->get();
         });
 
-        $data = $data ->groupBy(function ($user) {
+        $data = $data->groupBy(function ($user) {
             return $user->created_at->format('M');
         })->map(function ($user) {
-            return $user->count();
+            return $user->sum('id');
         });
 
         // fill in empty months with 0
