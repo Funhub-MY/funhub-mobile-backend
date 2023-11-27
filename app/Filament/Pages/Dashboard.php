@@ -36,7 +36,7 @@ class Dashboard extends BasePage
     {
         $widgets = [
             StatsOverview::class,
-            UsersChart::class,
+            // UsersChart::class,
             ArticleCountChartOverMonths::class,
             TopContributor::class,
             // ArticleUserEngagementCategory::class,
