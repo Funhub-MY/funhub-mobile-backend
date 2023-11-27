@@ -29,12 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: tempora
+        example: provident
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: tempora
+      share_code: provident
     fileParameters: []
     responses:
       -
@@ -55,7 +56,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1316,
+                      "line": 1332,
                       "function": "abort"
                   },
                   {
@@ -583,7 +584,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Daakdb8fg6hPcZ1v4V56e3E'
+      - 'Bearer gEd146kV36ZPevDfcabah58'
     controller: null
     method: null
     route: null

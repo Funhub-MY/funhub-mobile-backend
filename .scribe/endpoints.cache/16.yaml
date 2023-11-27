@@ -28,6 +28,7 @@ endpoints:
         example: '1,2,3'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       query:
         name: query
@@ -36,6 +37,7 @@ endpoints:
         example: 'How to ...'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       category_ids: '1,2,3'
@@ -59,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vhe8D5bcd64Zf6kEPg13aaV'
+      - 'Bearer Zv85eDE13dfbhg4a6VPkc6a'
     controller: null
     method: null
     route: null
@@ -102,7 +104,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cah84gv6kVf6ed51ZaEb3PD'
+      - 'Bearer bgPfZ4V3a5E6ahkve1Dd86c'
     controller: null
     method: null
     route: null
@@ -136,6 +138,7 @@ endpoints:
         example: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       category_ids:
         name: category_ids
@@ -147,6 +150,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       query:
         name: query
@@ -155,6 +159,7 @@ endpoints:
         example: 'my support request'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -163,6 +168,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       status: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
@@ -187,7 +193,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fv8Vg6Eka1cDh6Zeb43da5P'
+      - 'Bearer gV56Zaf1Pha3EvcdDb4ke86'
     controller: null
     method: null
     route: null
@@ -221,6 +227,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       title:
         name: title
@@ -229,6 +236,7 @@ endpoints:
         example: 'My support request'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       message:
         name: message
@@ -237,6 +245,7 @@ endpoints:
         example: 'This is my message'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       media_ids:
         name: media_ids
@@ -248,6 +257,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       category_id: 1
@@ -272,7 +282,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vg3eEPacV654Dhkbad6Zf81'
+      - 'Bearer gkahe6D3da46VvPZ18E5fcb'
     controller: null
     method: null
     route: null
@@ -302,6 +312,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       id:
         name: id
@@ -310,6 +321,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       support_request_id: 1
@@ -324,6 +336,7 @@ endpoints:
         example: 'This is my message'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       media_ids:
         name: media_ids
@@ -335,6 +348,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       message: 'This is my message'
@@ -358,7 +372,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EDP4V1Zv3caagbdf5e6k8h6'
+      - 'Bearer hgbVfPaZv61dae6cEk8345D'
     controller: null
     method: null
     route: null
@@ -388,6 +402,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       id:
         name: id
@@ -396,6 +411,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       support_request_id: 1
@@ -419,7 +435,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8ad6vcefaD43hP5EVb6g1Zk'
+      - 'Bearer 34ecD5gE8bf66ZkPhVv1daa'
     controller: null
     method: null
     route: null
@@ -449,6 +465,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       id:
         name: id
@@ -457,6 +474,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       support_request_id: 1
@@ -480,7 +498,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5h661DacEdbV4afeP3Zg8vk'
+      - 'Bearer gPVdaE6h4vZck35eb6Df1a8'
     controller: null
     method: null
     route: null
@@ -514,6 +532,7 @@ endpoints:
         example: 'complain,bug,feature_request,others'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       type: 'complain,bug,feature_request,others'
@@ -532,7 +551,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kP14fcbhV8dgavaE665eZD3'
+      - 'Bearer kEZv1ebhcda853g4PaDfV66'
     controller: null
     method: null
     route: null
@@ -566,6 +585,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -598,7 +618,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6fa6aZvhe4kb315PDV8dgEc'
+      - 'Bearer Zg85Pakvabf6ch6eVdE3D41'
     controller: null
     method: null
     route: null

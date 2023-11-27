@@ -66,7 +66,7 @@ class UserController extends Controller
         if ($user->status == User::STATUS_ARCHIVED) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        
+
         return new \App\Http\Resources\UserResource($user, false);
     }
 
@@ -435,7 +435,7 @@ class UserController extends Controller
         if ($user->status == User::STATUS_ARCHIVED) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        
+
         return new \App\Http\Resources\UserResource($user, false);
     }
 
@@ -457,11 +457,11 @@ class UserController extends Controller
      * @bodyParams gender string Male or Female (Required if update_type is 'gender'). Example: male,female
      * @bodyParam country_id integer Country id of the user (Required if update_type is 'location'). Example: 1
      * @bodyParam state_id integer State id of the user (Required if update_type is 'location'). Example: 1
-     * @bodyParam avatar file One image file to upload,Avatar of the user (Required if update_type is 'avatar'). 
+     * @bodyParam avatar file One image file to upload,Avatar of the user (Required if update_type is 'avatar').
      * @bodyParam cover file One image file to upload,Cover of the user (Required if update_type is 'cover').
      * @bodyParam category_ids array Array of article category ids (Required if update_type is 'article_categories'). Example: [1,2,3]
      * @response status=200 scenario="success" {
-     * "user": 
+     * "user":
      * {
      *  "id": 1,
      *  "name": "John Doe"
@@ -489,16 +489,17 @@ class UserController extends Controller
      *  "category_ids": [1,2,3]
      * },
      * "message": "Field updated"
-     * 
+     *
      * }
      * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
      * @response status=500 scenario="Error updating user details" {"message": "Error updating user details", "error": "Error message"}
      */
     public function postUpdateUserDetails(Request $request)
     {
+
         try {
                 $user = auth()->user();
-                
+
                 $request->validate([
                     'update_type' => 'required|string',
                 ]);
@@ -551,7 +552,7 @@ class UserController extends Controller
      * @bodyParam new_password_confirmation string required The new password confirmation of the user. Example: abcd1234
      * @response status=200 scenario="success" {
      * "message": "Password updated",
-     * "user": 
+     * "user":
      *      * {
      *  "id": 1,
      *  "name": "John Doe"
@@ -661,8 +662,10 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->save();
 
+        /*
         // send verification email
         $user->sendEmailVerificationNotification();
+        */
 
         $updatedUser = User::find(auth()->user()->id)->first();
 
@@ -690,7 +693,7 @@ class UserController extends Controller
             'user' => $userData,
         ]);
     }
-    
+
     protected function updateUsername(Request $request, $user)
     {
         $request->validate([
@@ -879,7 +882,7 @@ class UserController extends Controller
             'message' => 'Cover uploaded',
             'user' => $userData,
             'cover_id' => $uploadedCover->id,
-        ]);        
+        ]);
     }
 
     protected function linkArticleCategoriesInterests(Request $request, $user)

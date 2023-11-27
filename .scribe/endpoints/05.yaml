@@ -30,6 +30,7 @@ endpoints:
         example: 'article,merchant_offer'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       id:
         name: id
@@ -38,6 +39,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       type:
         name: type
@@ -46,6 +48,7 @@ endpoints:
         example: 'like,dislike,share,bookmark'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
@@ -69,7 +72,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ecb13Ek65D4g8Vfa6dahZvP'
+      - 'Bearer 3cV5DgahZfP8kbdeEv66a41'
     controller: null
     method: null
     route: null
@@ -103,6 +106,7 @@ endpoints:
         example: 'article,merchant_offer'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       id:
         name: id
@@ -111,6 +115,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter:
         name: filter
@@ -119,6 +124,7 @@ endpoints:
         example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -127,6 +133,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -135,6 +142,7 @@ endpoints:
         example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -143,6 +151,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -151,6 +160,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -159,6 +169,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
@@ -194,7 +205,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eV146kEfP5cvDh3agdab8Z6'
+      - 'Bearer 5ka8EbD6ea6cPV1vh3dg4Zf'
     controller: null
     method: null
     route: null
@@ -228,6 +239,7 @@ endpoints:
         example: 'article,merchant_offer'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       type:
         name: type
@@ -236,6 +248,7 @@ endpoints:
         example: 'like,dislike,share,bookmark'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       id:
         name: id
@@ -244,6 +257,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       code:
         name: code
@@ -252,6 +266,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       model_type:
         name: model_type
@@ -260,6 +275,7 @@ endpoints:
         example: 'article,merchant_offer'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       interactable: 'article,merchant_offer'
@@ -288,7 +304,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eD3aZkgd6bah1V56v4EcPf8'
+      - 'Bearer fbDZ6hadgV1k8e56PvE43ca'
     controller: null
     method: null
     route: null
@@ -318,6 +334,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -340,7 +357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cka1gVa86hb354fPZDd6veE'
+      - 'Bearer g35akZ6vcePhdf8V1Db4aE6'
     controller: null
     method: null
     route: null
@@ -367,11 +384,12 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'The id of the interaction/interactable(article id).'
+        description: 'The id of the interaction or interactable(article id).'
         required: true
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       delete_by:
         name: delete_by
@@ -380,6 +398,7 @@ endpoints:
         example: 'interactable,interaction'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       interactable:
         name: interactable
@@ -388,6 +407,7 @@ endpoints:
         example: 'article,merchant_offer'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       type:
         name: type
@@ -396,6 +416,7 @@ endpoints:
         example: 'like,dislike,share,bookmark'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -427,7 +448,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8153kc64bPdD6aEahZegfvV'
+      - 'Bearer 8afVD6bdg1hZP6cv5kE4a3e'
     controller: null
     method: null
     route: null

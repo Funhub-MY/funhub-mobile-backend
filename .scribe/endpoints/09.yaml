@@ -30,6 +30,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       fcm_token: '1'
@@ -48,7 +49,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8c4DPkV6g5vaEbeaf1hd63Z'
+      - 'Bearer 3DbV5dZeE1k686ca4Paghvf'
     controller: null
     method: null
     route: null
@@ -84,6 +85,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       per_page: 10
@@ -115,7 +117,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dvgPV6aEc4D5ha681Zkfe3b'
+      - 'Bearer 46Dhab63VkegZacvfdPE815'
     controller: null
     method: null
     route: null
@@ -149,6 +151,7 @@ endpoints:
         example: 058d0c3d-1028-4660-b905-7e30ad7eee9c
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       notification_id: 058d0c3d-1028-4660-b905-7e30ad7eee9c
@@ -167,7 +170,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vaDZd1k4Ech6V3gab5efP68'
+      - 'Bearer 5dZ4h6e1a8gfPckaEVv36Db'
     controller: null
     method: null
     route: null
@@ -210,7 +213,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eV1Pgba83kD56hfvZEac4d6'
+      - 'Bearer V6v465bdaE3eaZchDkg8Pf1'
     controller: null
     method: null
     route: null

@@ -28,6 +28,7 @@ endpoints:
         example: '"Kota"'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       search: '"Kota"'
@@ -50,7 +51,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bEahdP81keZ6DV6g4va53cf'
+      - 'Bearer 6ZvgbdaEf4DP8ek6c5V13ah'
     controller: null
     method: null
     route: null
@@ -84,6 +85,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       is_cover:
         name: is_cover
@@ -92,6 +94,7 @@ endpoints:
         example: true
         type: boolean
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       is_cover: true
@@ -125,7 +128,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v5gfVhabaeZd8P66D43c1kE'
+      - 'Bearer ZcD5PkEaad6648gbfeVvh13'
     controller: null
     method: null
     route: null
@@ -162,6 +165,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters: []
     fileParameters:
@@ -180,7 +184,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PZka38fvb5e66c4gDVh1Ead'
+      - 'Bearer DcgVZfhEPav8b56614d3eka'
     controller: null
     method: null
     route: null
@@ -214,6 +218,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       published_only:
         name: published_only
@@ -222,6 +227,7 @@ endpoints:
         example: true
         type: boolean
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter:
         name: filter
@@ -230,6 +236,7 @@ endpoints:
         example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -238,6 +245,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -246,6 +254,7 @@ endpoints:
         example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -254,6 +263,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -262,6 +272,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -270,6 +281,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       video_only:
         name: video_only
@@ -278,6 +290,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       user_id: 1
@@ -308,7 +321,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4P5v3VZhkdEaf68cDgabe16'
+      - 'Bearer aV3Df66a4de18hvEckb5gZP'
     controller: null
     method: null
     route: null
@@ -342,6 +355,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter:
         name: filter
@@ -350,6 +364,7 @@ endpoints:
         example: 'Filterable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -358,6 +373,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -366,6 +382,7 @@ endpoints:
         example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -374,6 +391,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -382,6 +400,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -390,6 +409,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       video_only:
         name: video_only
@@ -398,6 +418,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       user_id: 1
@@ -427,7 +448,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a35fhV8agDZ61cPekdb46Ev'
+      - 'Bearer 3f8E461cb5evPDdaZkgaV6h'
     controller: null
     method: null
     route: null
@@ -458,9 +479,10 @@ endpoints:
         name: article_id
         description: ''
         required: true
-        example: 16
+        example: 12
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       reason:
         name: reason
@@ -469,22 +491,25 @@ endpoints:
         example: 'Spam     * @bodyParam violation_type required The violation type of this report'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       violation_type:
         name: violation_type
         description: ''
         required: true
-        example: voluptatum
+        example: delectus
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: sed
+        example: sit
         type: required
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       article:
         name: article
@@ -493,12 +518,13 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      article_id: 16
+      article_id: 12
       reason: 'Spam     * @bodyParam violation_type required The violation type of this report'
-      violation_type: voluptatum
-      violation_level: sed
+      violation_type: delectus
+      violation_level: sit
       article: 1
     fileParameters: []
     responses:
@@ -527,7 +553,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6eva6EbPc18hga4dkV35fZD'
+      - 'Bearer gEfa6Zcahk36D5b8vPdV41e'
     controller: null
     method: null
     route: null
@@ -561,6 +587,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       article_id: 1
@@ -579,7 +606,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dv8Pgh3dba5aVZef64c6E1k'
+      - 'Bearer d4Df53Zca6gPVE61heva8kb'
     controller: null
     method: null
     route: null
@@ -613,6 +640,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       article_id: 1
@@ -635,7 +663,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bfVa4hc63v1g5aZkEPDd6e8'
+      - 'Bearer a56hg436fvbeac1PZ8kdVDE'
     controller: null
     method: null
     route: null
@@ -665,6 +693,7 @@ endpoints:
         example: 34
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       article:
         name: article
@@ -673,6 +702,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       article_id: 34
@@ -698,7 +728,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g3hDZba66cd45VP8kfeva1E'
+      - 'Bearer D3fdPaa6b1EZ6Vkg5ev8hc4'
     controller: null
     method: null
     route: null
@@ -730,9 +760,10 @@ endpoints:
         description: 'optional Article Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - non
+          - rerum
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       category_ids:
         name: category_ids
@@ -744,6 +775,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       video_only:
         name: video_only
@@ -752,6 +784,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       tag_ids:
         name: tag_ids
@@ -763,6 +796,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       city:
         name: city
@@ -771,6 +805,7 @@ endpoints:
         example: 'Subang Jaya'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       lat:
         name: lat
@@ -779,6 +814,7 @@ endpoints:
         example: 3.123456
         type: number
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       lng:
         name: lng
@@ -787,6 +823,7 @@ endpoints:
         example: 101.123456
         type: number
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       radius:
         name: radius
@@ -795,6 +832,7 @@ endpoints:
         example: 10000
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       include_own_article:
         name: include_own_article
@@ -803,6 +841,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -811,10 +850,11 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       article_ids:
-        - non
+        - rerum
       category_ids:
         - 1
         - 2
@@ -845,7 +885,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4ehvck5P6Vab8gZaD3d16Ef'
+      - 'Bearer ecfEvZ5gk31dV8PbD6a4a6h'
     controller: null
     method: null
     route: null
@@ -879,9 +919,10 @@ endpoints:
         description: 'optional Article Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - voluptate
+          - a
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       category_ids:
         name: category_ids
@@ -893,6 +934,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       video_only:
         name: video_only
@@ -901,6 +943,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       following_only:
         name: following_only
@@ -909,6 +952,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       tag_ids:
         name: tag_ids
@@ -920,6 +964,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       city:
         name: city
@@ -928,6 +973,7 @@ endpoints:
         example: 'Subang Jaya'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       lat:
         name: lat
@@ -936,6 +982,7 @@ endpoints:
         example: 3.123456
         type: number
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       lng:
         name: lng
@@ -944,6 +991,7 @@ endpoints:
         example: 101.123456
         type: number
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       radius:
         name: radius
@@ -952,6 +1000,7 @@ endpoints:
         example: 10000
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       location_id:
         name: location_id
@@ -960,6 +1009,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       include_own_article:
         name: include_own_article
@@ -968,6 +1018,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       build_recommendations:
         name: build_recommendations
@@ -976,6 +1027,7 @@ endpoints:
         example: true
         type: boolean
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       refresh_recommendations:
         name: refresh_recommendations
@@ -984,6 +1036,7 @@ endpoints:
         example: true
         type: boolean
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -992,10 +1045,11 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       article_ids:
-        - voluptate
+        - a
       category_ids:
         - 1
         - 2
@@ -1034,7 +1088,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZPahke4v68bdc65E13VaDf'
+      - 'Bearer cd6EZ4e13aPh5V8kDa6bgfv'
     controller: null
     method: null
     route: null
@@ -1068,6 +1122,7 @@ endpoints:
         example: 'This is a title'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       type:
         name: type
@@ -1076,6 +1131,7 @@ endpoints:
         example: 'multimedia,text,video'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       body:
         name: body
@@ -1084,6 +1140,7 @@ endpoints:
         example: 'This is a caption or body of article'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       status:
         name: status
@@ -1092,6 +1149,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       published_at:
         name: published_at
@@ -1100,6 +1158,7 @@ endpoints:
         example: '2021-02-21 12:00:00'
         type: datetime
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       categories:
         name: categories
@@ -1110,6 +1169,7 @@ endpoints:
           - 2
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       tags:
         name: tags
@@ -1120,6 +1180,7 @@ endpoints:
           - '#tag2'
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       images:
         name: images
@@ -1130,6 +1191,7 @@ endpoints:
           - 2
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       video:
         name: video
@@ -1138,6 +1200,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       excerpt:
         name: excerpt
@@ -1146,6 +1209,7 @@ endpoints:
         example: 'This is a excerpt of article'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       location:
         name: location
@@ -1154,6 +1218,7 @@ endpoints:
         example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       tagged_user_ids:
         name: tagged_user_ids
@@ -1164,6 +1229,7 @@ endpoints:
           - 2
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       title: 'This is a title'
@@ -1213,7 +1279,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EhfV6P4deZga5cvak1b8D36'
+      - 'Bearer d8Z6afagEbV3cDv1he64k5P'
     controller: null
     method: null
     route: null
@@ -1243,6 +1309,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -1271,7 +1338,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6vaac5Dke3bhV6gPEZ84df1'
+      - 'Bearer VZf41v6a6hcgd3kEP8beD5a'
     controller: null
     method: null
     route: null
@@ -1302,6 +1369,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -1315,6 +1383,7 @@ endpoints:
         example: 'This is a comment'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       status:
         name: status
@@ -1323,6 +1392,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       title:
         name: title
@@ -1331,6 +1401,7 @@ endpoints:
         example: 'This is a title'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       tags:
         name: tags
@@ -1341,6 +1412,7 @@ endpoints:
           - '#tag2'
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       categories:
         name: categories
@@ -1351,6 +1423,7 @@ endpoints:
           - 2
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       images:
         name: images
@@ -1359,6 +1432,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       video:
         name: video
@@ -1367,6 +1441,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       tagged_user_ids:
         name: tagged_user_ids
@@ -1377,6 +1452,7 @@ endpoints:
           - 2
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       location:
         name: location
@@ -1385,6 +1461,7 @@ endpoints:
         example: '{"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       body: 'This is a comment'
@@ -1429,7 +1506,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a45g6EcVZdP8e631bDafhkv'
+      - 'Bearer hbZP1ecDa4E66Vv5d8af3kg'
     controller: null
     method: null
     route: null
@@ -1459,6 +1536,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -1487,7 +1565,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cg6adVb1583fkDZvPeEh46a'
+      - 'Bearer Pd6a4fEDbkcVe385aghv1Z6'
     controller: null
     method: null
     route: null
@@ -1521,6 +1599,7 @@ endpoints:
         example: 'Filterable columns are: id, name, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -1529,6 +1608,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -1537,6 +1617,7 @@ endpoints:
         example: 'Sortable columns are: id, name, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -1545,6 +1626,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -1553,6 +1635,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -1561,6 +1644,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       filter: 'Filterable columns are: id, name, created_at, updated_at'
@@ -1590,7 +1674,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d5PbDeagh6Ef1v83aZ4cVk6'
+      - 'Bearer 1kEe85vhD4PbcZad66fa3gV'
     controller: null
     method: null
     route: null
@@ -1620,6 +1704,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       article_id: 1
@@ -1648,7 +1733,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a86PkVD5vgfEe6adZ13h4cb'
+      - 'Bearer vPd4aah1g5DVf6Ek3Zec68b'
     controller: null
     method: null
     route: null
@@ -1682,6 +1767,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter:
         name: filter
@@ -1690,6 +1776,7 @@ endpoints:
         example: 'Filterable columns are: id, name, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -1698,6 +1785,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -1706,6 +1794,7 @@ endpoints:
         example: 'Sortable columns are: id, name, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -1714,6 +1803,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -1722,6 +1812,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -1730,6 +1821,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       is_featured: 1
@@ -1760,7 +1852,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pg6kfevZhcEa6aDbV5d4381'
+      - 'Bearer a3bak6vZPVD6f5degc4E81h'
     controller: null
     method: null
     route: null
@@ -1809,7 +1901,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pdh8Db6a6kc4ZEv1eg3Vfa5'
+      - 'Bearer khZg1eE8fa56Dv4PbdV36ca'
     controller: null
     method: null
     route: null
@@ -1839,6 +1931,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       article_id: 1
@@ -1867,7 +1960,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1P3gcfZ56D4aEk8v6adVbeh'
+      - 'Bearer E1dbvaPV8kf5heg36Za46Dc'
     controller: null
     method: null
     route: null
@@ -1894,12 +1987,13 @@ endpoints:
         name: comment_id
         description: 'The ID of the comment.'
         required: true
-        example: sit
+        example: autem
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      comment_id: sit
+      comment_id: autem
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1910,6 +2004,7 @@ endpoints:
         example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -1918,6 +2013,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -1926,6 +2022,7 @@ endpoints:
         example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -1934,6 +2031,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -1942,6 +2040,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -1950,6 +2049,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       filter: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
@@ -1979,7 +2079,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vgEbef4Z538k1VchPd6a6Da'
+      - 'Bearer vgkafh86eZd3E1DaV5cbP64'
     controller: null
     method: null
     route: null
@@ -2013,6 +2113,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       comment_id: 1
@@ -2037,7 +2138,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer adPfvga5D1Z4Ebc86Vhe63k'
+      - 'Bearer VgEdkf54aD6cZhP361eav8b'
     controller: null
     method: null
     route: null
@@ -2071,6 +2172,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       reason:
         name: reason
@@ -2079,28 +2181,31 @@ endpoints:
         example: Spam
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: dolor
+        example: delectus
         type: required
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: blanditiis
+        example: temporibus
         type: required
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
       comment_id: 1
       reason: Spam
-      violation_level: dolor
-      violation_type: blanditiis
+      violation_level: delectus
+      violation_type: temporibus
     fileParameters: []
     responses:
       -
@@ -2128,7 +2233,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bEVh65Pagd3ce8k4DafvZ16'
+      - 'Bearer 5P63kEb6ava4fdZ1ch8geVD'
     controller: null
     method: null
     route: null
@@ -2162,6 +2267,7 @@ endpoints:
         example: article
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       id:
         name: id
@@ -2170,6 +2276,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       replies_per_comment:
         name: replies_per_comment
@@ -2178,6 +2285,7 @@ endpoints:
         example: 3
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter:
         name: filter
@@ -2186,6 +2294,7 @@ endpoints:
         example: 'Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       filter_value:
         name: filter_value
@@ -2194,6 +2303,7 @@ endpoints:
         example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       sort:
         name: sort
@@ -2202,6 +2312,7 @@ endpoints:
         example: 'Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       order:
         name: order
@@ -2210,6 +2321,7 @@ endpoints:
         example: 'Sortable directions are: asc, desc'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       limit:
         name: limit
@@ -2218,6 +2330,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       offset:
         name: offset
@@ -2226,6 +2339,7 @@ endpoints:
         example: 0
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       type: article
@@ -2262,7 +2376,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZgedfhDE5P634v6a8Vac1kb'
+      - 'Bearer vcP65e4VgaaEZd6fhkb1D83'
     controller: null
     method: null
     route: null
@@ -2296,6 +2410,7 @@ endpoints:
         example: article
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       id:
         name: id
@@ -2304,6 +2419,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       body:
         name: body
@@ -2312,6 +2428,7 @@ endpoints:
         example: 'This is a comment'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       parent_id:
         name: parent_id
@@ -2320,6 +2437,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       type: article
@@ -2353,7 +2471,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dvZbh6gck5386Daf1VeaPE4'
+      - 'Bearer D5b6VEZ84ke63agcd1fPhva'
     controller: null
     method: null
     route: null
@@ -2380,12 +2498,13 @@ endpoints:
         name: id
         description: 'The ID of the comment.'
         required: true
-        example: ratione
+        example: molestiae
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      id: ratione
+      id: molestiae
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -2396,6 +2515,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       replies_per_comment:
         name: replies_per_comment
@@ -2404,6 +2524,7 @@ endpoints:
         example: 3
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       id: 1
@@ -2435,7 +2556,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E8ke4gZP6b31hcf56avVdDa'
+      - 'Bearer dDfg4a6hEbk58VZvcPa316e'
     controller: null
     method: null
     route: null
@@ -2466,6 +2587,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -2479,6 +2601,7 @@ endpoints:
         example: 'This is a comment'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       body: 'This is a comment'
@@ -2509,7 +2632,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 54gdv1DPZ6fc86eV3Ekabha'
+      - 'Bearer 8b5a6Zca6Vkv1ef3hgPEDd4'
     controller: null
     method: null
     route: null
@@ -2539,6 +2662,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       id: 1
@@ -2552,7 +2676,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6a4VfPD6ZekhbgEa8vd351c'
+      - 'Bearer 8v6ZDPf3khE6b5acVe4d1ga'
     controller: null
     method: null
     route: null

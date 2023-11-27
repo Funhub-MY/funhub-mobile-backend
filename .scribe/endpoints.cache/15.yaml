@@ -34,6 +34,7 @@ endpoints:
         example: '2021-01-01'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       date_to:
         name: date_to
@@ -42,6 +43,7 @@ endpoints:
         example: '2021-01-31'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       date_from: '2021-01-01'
@@ -62,7 +64,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dk8gPfZ4Eb6V6he5caa31Dv'
+      - 'Bearer gake6d4hb5EV1Pcva6ZDf38'
     controller: null
     method: null
     route: null
@@ -105,7 +107,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8a6ak4hdPV36cgvEZ1be5Df'
+      - 'Bearer VvghckZa6dfa5ebD1E8P346'
     controller: null
     method: null
     route: null
@@ -135,6 +137,7 @@ endpoints:
         example: 7
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       transaction:
         name: transaction
@@ -143,6 +146,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       transaction_id: 7
@@ -166,7 +170,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EPV3kfv6184aah5Zgcd6eDb'
+      - 'Bearer hgbaP5DekEc664V8da1v3fZ'
     controller: null
     method: null
     route: null

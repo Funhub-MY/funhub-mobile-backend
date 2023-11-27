@@ -32,6 +32,7 @@ endpoints:
         example: '"KFC SS15"'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       state_id:
         name: state_id
@@ -40,6 +41,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       country_id:
         name: country_id
@@ -48,6 +50,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       city:
         name: city
@@ -56,6 +59,7 @@ endpoints:
         example: '"Subang Jaya"'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       lat:
         name: lat
@@ -64,6 +68,7 @@ endpoints:
         example: 3.073065
         type: number
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       lng:
         name: lng
@@ -72,6 +77,7 @@ endpoints:
         example: 101.607787
         type: number
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       radius:
         name: radius
@@ -80,6 +86,7 @@ endpoints:
         example: 10
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       name: '"KFC SS15"'
@@ -108,7 +115,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DVbfd56PgE3Zkc1vhae84a6'
+      - 'Bearer 63PveaVZbkEc8aDd1gfh564'
     controller: null
     method: null
     route: null
@@ -138,6 +145,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       location:
         name: location
@@ -146,6 +154,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       location_id: 1
@@ -170,7 +179,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8D153de6bcaVv6gEZhak4Pf'
+      - 'Bearer eVEkZd1465fvaDgbcP38ah6'
     controller: null
     method: null
     route: null
