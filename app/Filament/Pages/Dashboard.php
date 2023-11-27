@@ -7,6 +7,7 @@ use App\Filament\Widgets\ArticleUserEngagementCategory;
 use App\Filament\Widgets\Filters;
 use App\Filament\Widgets\RedemptionsOverview;
 use App\Filament\Widgets\RedemptionsValue;
+use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\TopContributor;
 use App\Filament\Widgets\UsersChart;
 use App\Filament\Widgets\VoucherAvailable;
@@ -34,10 +35,11 @@ class Dashboard extends BasePage
     protected function getWidgets(): array
     {
         $widgets = [
+            StatsOverview::class,
             UsersChart::class,
             ArticleCountChartOverMonths::class,
             TopContributor::class,
-            ArticleUserEngagementCategory::class,
+            // ArticleUserEngagementCategory::class,
         ];
 
         if (auth()->user()->hasRole('merchant')) {
