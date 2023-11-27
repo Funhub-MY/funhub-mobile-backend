@@ -35,10 +35,10 @@ class Dashboard extends BasePage
     protected function getWidgets(): array
     {
         $widgets = [
-            StatsOverview::class,
+            // StatsOverview::class,
             // UsersChart::class,
-            ArticleCountChartOverMonths::class,
-            TopContributor::class,
+            // ArticleCountChartOverMonths::class,
+            // TopContributor::class,
             // ArticleUserEngagementCategory::class,
         ];
 
