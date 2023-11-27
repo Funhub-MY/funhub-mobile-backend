@@ -26,6 +26,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       user_id: 1
@@ -37,6 +38,7 @@ endpoints:
         example: John
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanQueryParameters:
       query: John
@@ -63,7 +65,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DPV6dZh8ca56bgae3v4fk1E'
+      - 'Bearer Ve6dk31ahE6f84vaPZD5bcg'
     controller: null
     method: null
     route: null
@@ -93,6 +95,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       user_id: 1
@@ -104,6 +107,7 @@ endpoints:
         example: John
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanQueryParameters:
       query: John
@@ -130,7 +134,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8aZEPc6kv1VhgfDb53a6d4e'
+      - 'Bearer bZaf1ePadk34E6cVg865vhD'
     controller: null
     method: null
     route: null
@@ -161,12 +165,13 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 15
+        example: 8
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_id: 15
+      user_id: 8
     fileParameters: []
     responses:
       -
@@ -188,7 +193,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aD16eg38Vv4kacfhEb6d5ZP'
+      - 'Bearer Pc4aa8Zh5dke6vgV1D3Ef6b'
     controller: null
     method: null
     route: null
@@ -222,6 +227,7 @@ endpoints:
         example: 16
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
       user_id: 16
@@ -246,7 +252,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PbveaVDhE6a38fg14kZd65c'
+      - 'Bearer h6fEZkPe538Va1vbda46cgD'
     controller: null
     method: null
     route: null
@@ -280,30 +286,34 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       reason:
         name: reason
         description: ''
         required: true
-        example: doloremque
+        example: voluptas
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       violation_level:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: itaque
+        example: officia
         type: required
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       violation_type:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: vitae
+        example: fuga
         type: required
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       also_block_user:
         name: also_block_user
@@ -312,12 +322,13 @@ endpoints:
         example: true
         type: boolean
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: doloremque
-      violation_level: itaque
-      violation_type: vitae
+      reason: voluptas
+      violation_level: officia
+      violation_type: fuga
       also_block_user: true
     fileParameters: []
     responses:
@@ -346,7 +357,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZV15fb3a6eP486khdaDvEg'
+      - 'Bearer 6akVehdE36Dag1vPfb8c54Z'
     controller: null
     method: null
     route: null
@@ -380,6 +391,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       reason:
         name: reason
@@ -388,6 +400,7 @@ endpoints:
         example: Spam
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       user_id: 1
@@ -407,7 +420,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer chg3kbfVZveDa6d14Ea8P56'
+      - 'Bearer ek18hdcfZgv56D4EV3baaP6'
     controller: null
     method: null
     route: null
@@ -441,6 +454,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       user_id: 1
@@ -459,7 +473,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PgaV8156Za364eEdbkDcfvh'
+      - 'Bearer a63cEkab1g46hdvZDVPf85e'
     controller: null
     method: null
     route: null
@@ -502,7 +516,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V46k8bc5PagEeZ61hfvdD3a'
+      - 'Bearer c468ZDkgdea6h1E3bV5Pvfa'
     controller: null
     method: null
     route: null
@@ -533,12 +547,13 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: nulla
+        example: soluta
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      reason: nulla
+      reason: soluta
     fileParameters: []
     responses:
       -
@@ -554,7 +569,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aef3cd6DhbZk15vEP64Vg8a'
+      - 'Bearer cZgaDVa8e64fvd6hbEP35k1'
     controller: null
     method: null
     route: null
@@ -584,6 +599,7 @@ endpoints:
         example: '1,2,3'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       user_ids: '1,2,3'
@@ -594,12 +610,13 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: eos
+        example: sed
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_ids: eos
+      user_ids: sed
     fileParameters: []
     responses:
       -
@@ -616,7 +633,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kgPD68fd6aVha4v13EceZ5b'
+      - 'Bearer D1ag3Z6badV5PE8c4fkv6eh'
     controller: null
     method: null
     route: null
@@ -646,6 +663,7 @@ endpoints:
         example: 3
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       user:
         name: user
@@ -654,6 +672,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       user_id: 3
@@ -677,7 +696,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6g6cV1vk8fhePZ4abdE35Da'
+      - 'Bearer DhgvbdcPfa5ae4VZk61E638'
     controller: null
     method: null
     route: null
@@ -721,7 +740,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4Db5cad81aZvVk36efPgEh6'
+      - 'Bearer E6fgh8d65a3b4VDZva1Peck'
     controller: null
     method: null
     route: null
@@ -751,6 +770,7 @@ endpoints:
         example: 3
         type: integer
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       user:
         name: user
@@ -759,6 +779,7 @@ endpoints:
         example: '1'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       user_id: 3
@@ -782,7 +803,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4E83Pa1DZd6bekVf5gha6vc'
+      - 'Bearer kV4v6fdPcEZabegha8136D5'
     controller: null
     method: null
     route: null
@@ -816,6 +837,7 @@ endpoints:
         example: job_title
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       name:
         name: name
@@ -824,6 +846,7 @@ endpoints:
         example: 'John Doe'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       username:
         name: username
@@ -832,6 +855,7 @@ endpoints:
         example: johndoe
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       bio:
         name: bio
@@ -840,6 +864,7 @@ endpoints:
         example: 'I am a developer'
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       job_title:
         name: job_title
@@ -848,6 +873,7 @@ endpoints:
         example: Developer
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       day:
         name: day
@@ -856,6 +882,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       month:
         name: month
@@ -864,6 +891,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       year:
         name: year
@@ -872,6 +900,7 @@ endpoints:
         example: 1990
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       country_id:
         name: country_id
@@ -880,6 +909,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       state_id:
         name: state_id
@@ -888,6 +918,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       avatar:
         name: avatar
@@ -896,6 +927,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       cover:
         name: cover
@@ -904,6 +936,7 @@ endpoints:
         example: null
         type: file
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       category_ids:
         name: category_ids
@@ -915,6 +948,7 @@ endpoints:
           - 3
         type: 'string[]'
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       update_type: job_title
@@ -988,7 +1022,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64dakh3E5Vvab1DegP8Z6fc'
+      - 'Bearer vhV146fZDE8bP3adaeg56ck'
     controller: null
     method: null
     route: null
@@ -1022,6 +1056,7 @@ endpoints:
         example: abcd1234
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       new_password:
         name: new_password
@@ -1030,6 +1065,7 @@ endpoints:
         example: abcd1234
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       new_password_confirmation:
         name: new_password_confirmation
@@ -1038,6 +1074,7 @@ endpoints:
         example: abcd1234
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       old_password: abcd1234
@@ -1101,7 +1138,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68ka341dDbg6Pve5VcEZhfa'
+      - 'Bearer Ebg83P1adeZf6cvk6a5h4DV'
     controller: null
     method: null
     route: null
@@ -1135,6 +1172,7 @@ endpoints:
         example: null
         type: string
         enumValues: []
+        exampleWasSpecified: false
         custom: []
       new_email:
         name: new_email
@@ -1143,6 +1181,7 @@ endpoints:
         example: john@gmail.com
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       new_email_confirmation:
         name: new_email_confirmation
@@ -1151,6 +1190,7 @@ endpoints:
         example: john@gmail.com
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       new_email: john@gmail.com
@@ -1184,7 +1224,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dP8gaEc1DZe5hV63kvba6f4'
+      - 'Bearer e65VDhfka1g8Ebc46vZad3P'
     controller: null
     method: null
     route: null

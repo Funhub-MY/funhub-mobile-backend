@@ -32,6 +32,7 @@ endpoints:
         example: article/comment/merchant_offer/user_profile
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       viewable_id:
         name: viewable_id
@@ -40,6 +41,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
       viewable_type: article/comment/merchant_offer/user_profile
@@ -59,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bfZ4kdga5c6eh3V1aP6D8Ev'
+      - 'Bearer VbkPD54a38avfheE6gZd61c'
     controller: null
     method: null
     route: null
@@ -91,6 +93,7 @@ endpoints:
         example: article/comment/merchant_offer/user_profile
         type: string
         enumValues: []
+        exampleWasSpecified: true
         custom: []
       id:
         name: id
@@ -99,6 +102,7 @@ endpoints:
         example: 1
         type: integer
         enumValues: []
+        exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
       type: article/comment/merchant_offer/user_profile
@@ -123,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VZ68ckD461dvge3ahfabPE5'
+      - 'Bearer gaPVE6vadehZ4f86D3k15cb'
     controller: null
     method: null
     route: null

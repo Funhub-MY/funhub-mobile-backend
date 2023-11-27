@@ -662,8 +662,10 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->save();
 
+        /*
         // send verification email
         $user->sendEmailVerificationNotification();
+        */
 
         $updatedUser = User::find(auth()->user()->id)->first();
 
