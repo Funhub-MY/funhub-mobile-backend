@@ -30,8 +30,6 @@ class UsersChart extends LineChartWidget
             return $user->created_at->format('M');
         })->map(function ($user) {
             return $user->count();
-        })->scan(function ($sum, $value) {
-            return $sum + $value;
         });
 
         // fill in empty months with 0
