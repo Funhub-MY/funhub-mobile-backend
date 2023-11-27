@@ -17,7 +17,6 @@ class UsersChart extends LineChartWidget
             'precision' => 0
         ],
     ];
-
     protected function getData(): array
     {
         // get User count across period of 12 months
@@ -30,7 +29,9 @@ class UsersChart extends LineChartWidget
         $data = $data->groupBy(function ($user) {
             return $user->created_at->format('M');
         })->map(function ($user) {
-            return $user->sum('id');
+            return $user->count();
+        })->scan(function ($sum, $value) {
+            return $sum + $value;
         });
 
         // fill in empty months with 0
