@@ -77,8 +77,21 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             'email_verification_token' => $token,
         ]);
 
-        // fire email verification notification
-        Mail::to($user->email)->queue(new EmailVerification($user->name, $token));
+        try {
+            // fire email verification notification
+            Mail::to($user->email)->send(new EmailVerification($user->name, $token));
+
+            Log::info('[Email Verification] Send email verification notification', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'token' => $token,
+            ]);
+        } catch (\Exception $ex) {
+            Log::error('[Error] Send email verification notification ', [
+                'user' => $user,
+                'error' => $ex->getMessage()
+            ]);
+        }
     }
 
     /**

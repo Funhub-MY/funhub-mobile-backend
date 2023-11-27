@@ -14,6 +14,7 @@ class ViewQueue extends Model
     protected $fillable = [
         'article_id',
         'scheduled_views',
+        'is_processed',
         'scheduled_at',
     ];
 }
