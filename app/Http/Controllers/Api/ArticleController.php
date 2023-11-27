@@ -186,12 +186,12 @@ class ArticleController extends Controller
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
                     Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id . ' Expiry Hours: ' . config('app.recommendation_db_purge_hours') . ' - Last Built: ' . $lastBuilt);
-                    BuildRecommendationsForUser::dispatch(auth()->user());
+                    BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
                 }
             } else {
                 Log::info('No ranks found for user ' . auth()->user()->id);
                 // user never built recommendations, also fire job to rebuild
-                BuildRecommendationsForUser::dispatch(auth()->user());
+                BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
             }
 
             // shuffle ranking results

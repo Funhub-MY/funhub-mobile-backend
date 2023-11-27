@@ -16,4 +16,5 @@ class CreateArticle extends CreateRecord
             $this->record->location()->sync($this->data['locations']);
         }
     }
+
 }
