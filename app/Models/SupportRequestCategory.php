@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SupportRequestCategory extends Model
+class SupportRequestCategory extends BaseModel
 {
     use HasFactory;
 

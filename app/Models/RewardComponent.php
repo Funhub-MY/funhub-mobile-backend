@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
-class RewardComponent extends Model implements HasMedia
+class RewardComponent extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
@@ -33,7 +33,7 @@ class RewardComponent extends Model implements HasMedia
             ->withPivot('points')
             ->withTimestamps();
     }
-    
+
     public function getThumbnailUrlAttribute()
     {
         return $this->getFirstMediaUrl(static::COLLECTION_NAME);

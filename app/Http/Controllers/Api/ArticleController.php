@@ -35,6 +35,7 @@ use App\Jobs\BuildRecommendationsForUser;
 use App\Models\ShareableLink;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 use function PHPSTORM_META\map;
@@ -78,10 +79,10 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Article::published()
-            ->whereDoesntHave('hiddenUsers', function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            });
+        $query = Article::published();
+        // ->whereDoesntHave('hiddenUsers', function ($query) {
+        //     $query->where('user_id', auth()->user()->id);
+        // });
 
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
             // default to exclude own article
@@ -95,7 +96,7 @@ class ArticleController extends Controller
         }
 
         if ($request->has('category_ids')) {
-            $query->whereHas('categories', fn($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
+            $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
         }
 
         if ($request->has('article_ids')) {
@@ -103,11 +104,11 @@ class ArticleController extends Controller
         }
 
         if ($request->has('tag_ids')) {
-            $query->whereHas('tags', fn($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+            $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
         }
 
         // get articles from users whose this auth user is following only
-        if($request->has('following_only') && $request->following_only == 1) {
+        if ($request->has('following_only') && $request->following_only == 1) {
             $myFollowings = auth()->user()->followings;
 
             $query->whereHas('user', function ($query) use ($myFollowings) {
@@ -124,21 +125,42 @@ class ArticleController extends Controller
 
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
+            // DEPRECATED; see getArticlesNearby() instead
             $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
 
-            $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
-                ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
-                // add select to get distance from loc lat lng with request lat lng
-                ->selectRaw('articles.*, ( 6371 * acos( cos( radians(?) ) *
-                                cos( radians( loc.lat ) )
-                                * cos( radians( loc.lng ) - radians(?)
-                                ) + sin( radians(?) ) *
-                                sin( radians( loc.lat ) ) )
-                                )', [$request->lat, $request->lng, $request->lat]
-                )
-                ->whereHas('location', function ($query) use ($request, $radius) {
-                    $query->withinDistanceOf($request->lat, $request->lng, $radius);
+            if (config('app.search_location_use_algolia')) {
+                // algolia search,search all location ids first
+                $cacheKey = 'location_search_' . $request->lat . '_' . $request->lng . '_' . $radius;
+                $locationIds = cache()->remember($cacheKey, 60, function () use ($request, $radius) {
+                    return Location::search('')->with([
+                        'aroundLatLng' => $request->lat.','.$request->lng,
+                        'aroundRadius' => $radius * 1000,
+                        'aroundPrecision' => 50,
+                        'hitsPerPage' => 100,
+                    ])->raw()['hits'];
                 });
+
+                // query articles whereHas these location ids and sort by join
+                $query->whereHas('location', function ($query) use ($locationIds) {
+                    $query->whereIn('locations.id', Arr::pluck($locationIds, 'id'));
+                })
+                ->leftJoin(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                ->leftJoin(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                ->orderByRaw('FIELD(loc.id, ' . implode(',', Arr::pluck($locationIds, 'id')) . ')');
+            } else {
+                // use DB to search instead
+                $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
+                    ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
+                    // add select to get distance from loc lat lng with request lat lng
+                    ->selectRaw('articles.*, ROUND(ST_Distance_Sphere(
+                        point(lng, lat),
+                        point(?, ?)
+                    )) / 1000 as distance', [$request->lng, $request->lat])
+                    ->whereHas('location', function ($query) use ($request, $radius) {
+                        $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
+                    })
+                    ->orderBy('distance', 'asc');
+            }
         }
 
         // location id
@@ -148,9 +170,12 @@ class ArticleController extends Controller
             });
         }
 
-        // by defaulty off, unless provided build recommendations
+        // by default off, unless provided build recommendations
         if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
             $rankIds = auth()->user()->articleRanks()
+                // join articles order by article creeated at latest first
+                ->join('articles', 'articles.id', '=', 'user_article_ranks.article_id')
+                ->orderBy('articles.created_at', 'desc')
                 ->orderBy('score', 'desc')
                 ->take(500)
                 ->get();
@@ -160,7 +185,7 @@ class ArticleController extends Controller
                 // then dispatch job to rebuild for user
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
-                    Log::info('Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id. ' Expiry Hours: '. config('app.recommendation_db_purge_hours'). ' - Last Built: '. $lastBuilt);
+                    Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id . ' Expiry Hours: ' . config('app.recommendation_db_purge_hours') . ' - Last Built: ' . $lastBuilt);
                     BuildRecommendationsForUser::dispatch(auth()->user());
                 }
             } else {
@@ -204,16 +229,134 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        // query everything by latest
-        $query->latest();
+        if (!$request->has('lat') && !$request->has('lng')) {
+            $query->latest();
+        }
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
-        $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate($paginatePerPage);
 
+        // each data if type is video, fire view create
+        // $data->each(function ($article) {
+        //     if ($article->type == 'video') { // create one impression per load
+        //         try {
+        //             View::create([
+        //                 'user_id' => auth()->id(),
+        //                 'viewable_type' => Article::class,
+        //                 'viewable_id' => $article->id,
+        //                 'ip_address' => request()->ip(),
+        //             ]);
+        //         } catch (Exception $e) {
+        //             Log::error('Error creating view for article ' . $article->id . ' - ' . $e->getMessage());
+        //         }
+        //     }
+        // });
+
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Get Articles Nearby
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group Article
+     * @bodyParam article_ids array optional Article Ids to Filter. Example [1,2,3]
+     * @bodyParam category_ids array optional Category Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
+     * @bodyParam tag_ids array optional Tag Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam city string optional Filter by City Name. Example: Subang Jaya
+     * @bodyParam lat float required Filter by Lat of User (must provide lng). Example: 3.123456
+     * @bodyParam lng float required Filter by Lng of User (must provide lat). Example: 101.123456
+     * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
+     * @bodyParam limit integer optional Per Page Limit Override. Example: 10
+     *
+     * @response scenario=success {
+     * "data": [],
+     * }
+     */
+    public function getArticlesNearby(Request $request)
+    {
+        if (!config('app.search_location_use_algolia')) {
+            return ArticleResource::collection([]);
+        }
+
+        $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
+
+        if ($request->has('city')) {
+            // direct use city
+            $query = Article::query();
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+
+            // pass to query builder
+            $data = $this->articleQueryBuilder($query, $request)
+            ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        } else {
+            $data = Article::search('')->with([
+                'aroundLatLng' => $request->lat . ',' . $request->lng,
+                'aroundRadius' => $radius * 1000,
+                'aroundPrecision' => 50,
+            ])
+            ->query(function ($query) use ($request) {
+                $query = $this->articleQueryBuilder($query, $request);
+            })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        }
+
+        // get all article location ids
+        $locationIds = $data->pluck('location.0.id')->filter()->toArray();
+        $locatables = DB::table('locatables')->whereIn('location_id', $locationIds)
+        // make sure only published merchant offers are counted
+        ->rightJoin('merchant_offers', function ($join) {
+            $join->on('locatables.locatable_id', '=', 'merchant_offers.id')
+                ->where('locatables.locatable_type', '=', MerchantOffer::class)
+                ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED);
+        })->get();
+
+        $data->each(function ($article) use ($locatables) {
+            $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
+            $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+        });
+
+        return ArticleResource::collection($data);
+    }
+
+    public function articleQueryBuilder($query, $request) {
+        $query->published();
+
+        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+            // default to exclude own article
+            $query->where('user_id', '!=', auth()->user()->id);
+            // else it will also include own article
+        }
+
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
+
+        if ($request->has('category_ids')) {
+            $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
+        }
+
+        if ($request->has('article_ids')) {
+            $query->whereIn('id', explode(',', $request->article_ids));
+        }
+
+        if ($request->has('tag_ids')) {
+            $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+        }
+
+        $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
+
+        return $query;
     }
 
     /**
@@ -222,7 +365,7 @@ class ArticleController extends Controller
      * @param QueryBuilder $query
      * @return void
      */
-    protected function filterArticlesBlockedOrHidden(&$query) : void
+    protected function filterArticlesBlockedOrHidden(&$query): void
     {
         $excludedUserIds = [];
         // if i'm in someone's blocked list, i should not able to see that user's articles
@@ -305,6 +448,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      *
      * @response scenario=success {
      *  "data": [],
@@ -332,6 +476,11 @@ class ArticleController extends Controller
         }
 
         $query = Article::where('user_id', $user_id);
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
+
 
         if ($request->has('published_only')) {
             $query->where('status', Article::STATUS[1]);
@@ -341,8 +490,8 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        $data = $query->with('user', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'tags', 'location', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -362,6 +511,7 @@ class ArticleController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
+     * @bodyParam video_only integer optional Filter by Videos. Example: 1 or 0
      *
      * @response scenario=success {
      *  "data": [],
@@ -392,14 +542,19 @@ class ArticleController extends Controller
             $query->where('user_id', $user_id)
                 ->where('type', Interaction::TYPE_BOOKMARK);
         })->published()
-            ->whereDoesntHave('hiddenUsers', function ($query) use ($user_id){
+            ->whereDoesntHave('hiddenUsers', function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
             });
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
+        // video only
+        if ($request->has('video_only') && $request->video_only == 1) {
+            $query->where('type', 'video');
+        }
+
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -512,6 +667,10 @@ class ArticleController extends Controller
         // if request->video attach video from user_videos to article_videos collection media library
         if ($request->has('video')) {
             $userVideos = $user->getMedia(User::USER_VIDEO_UPLOADS)->whereIn('id', $request->video);
+            if (!$userVideos || count($userVideos) <= 0) { // TODO: in future completely remove line above, as all uploads will be synced to USER_VIDEO_UPLOADS
+                // get from user uplaods
+                $userVideos = $user->getMedia(User::USER_UPLOADS)->whereIn('id', $request->video);
+            }
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
@@ -565,7 +724,7 @@ class ArticleController extends Controller
 
         $article = $article->refresh();
         // load relations
-        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers');
+        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
@@ -581,7 +740,13 @@ class ArticleController extends Controller
      */
     private function createOrAttachLocation($article, $locationData)
     {
-        // check if lat and lng exists
+        // search by google_id first if there is in locationData
+        $location = null;
+        if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+            $location = Location::where('google_id', $locationData['google_id'])->first();
+        }
+
+        // if location cant be found by google_id, then find by lat,lng
         $location = Location::where('lat', $locationData['lat'])
             ->where('lng', $locationData['lng'])
             ->first();
@@ -596,6 +761,7 @@ class ArticleController extends Controller
             // create new location
             $loc = [
                 'name' => $locationData['name'],
+                'google_id' => isset($locationData['google_id']) ? $locationData['google_id'] : null,
                 'lat' => $locationData['lat'],
                 'lng' => $locationData['lng'],
                 'address' => $locationData['address'] ?? '',
@@ -620,7 +786,29 @@ class ArticleController extends Controller
                 $country = Country::where('id', $state->country_id)->first();
                 $loc['country_id'] = $country->id;
             } else {
-                throw new \Exception('State not found');
+                // create new state and country
+                // default to Malaysia
+                // check if locationData has country
+                $country = null;
+                if (isset($locationData['country']) && $locationData['country'] != 0) {
+                    $country = Country::where('name', 'like', '%' . $locationData['country'] . '%')->first();
+                }
+
+                if (!$country) {
+                    // defaults to malaysia
+                    $country = Country::where('name', 'Malaysia')->first();
+                }
+
+                // create state
+                $state = State::create([
+                    'name' => $locationData['state'],
+                    'code' => 'CUSTOM' . ucwords(Str::random(3)),
+                    'country_id' => $country->id,
+                ]);
+                Log::info('Created new state as state data not found', ['state' => $state]);
+
+                $loc['state_id'] = $state->id;
+                $loc['country_id'] = $country->id;
             }
 
             $location = $article->location()->create($loc);
@@ -659,9 +847,10 @@ class ArticleController extends Controller
      * }
      * @response status=404 scenario="Not Found" {"message": "Article not found"}
      */
-    public function show($id) {
+    public function show($id)
+    {
         $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -812,7 +1001,8 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
-
+            // load relations count
+            $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
             return response()->json(['message' => 'Article not found'], 404);
@@ -932,7 +1122,7 @@ class ArticleController extends Controller
                     ->toMediaCollection(
                         'user_uploads',
                         (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
-                );
+                    );
             });
             $uploaded->each(function ($image) use (&$images) {
                 $images[] = [
@@ -965,19 +1155,21 @@ class ArticleController extends Controller
      * "url" : "http://localhost:8000/storage/user_video_uploads/1/video.mp4"
      * }
      */
-    public function postVideoUpload(Request $request) {
+    public function postVideoUpload(Request $request)
+    {
         // validate video size must not larger than 500MB
         $request->validate([
-            'video' => 'required|file|max:'.config('app.max_size_per_video_kb'),
+            'video' => 'required|file|max:' . config('app.max_size_per_video_kb'),
         ]);
         $videoFile = $request->file('video');
         $user = auth()->user();
 
         // Create new media item in the "user_uploads" collection
         $media = $user->addMedia($videoFile)
-        ->toMediaCollection(User::USER_VIDEO_UPLOADS,
+            ->toMediaCollection(
+                User::USER_VIDEO_UPLOADS,
                 (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default'))
-        );
+            );
 
         $filesystem = config('filesystems.default');
 
@@ -1037,10 +1229,10 @@ class ArticleController extends Controller
     {
         // validate
         $request->validate([
-           'article_id' => 'required|integer',
-           'reason' => 'required|string',
-           'violation_type' => 'required|string',
-           'violation_level' => 'required|integer',
+            'article_id' => 'required|integer',
+            'reason' => 'required|string',
+            'violation_type' => 'required|string',
+            'violation_level' => 'required|integer',
         ]);
         // find article
         $article = Article::where('id', request('article_id'))->firstOrFail();

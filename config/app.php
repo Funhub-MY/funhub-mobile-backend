@@ -266,11 +266,27 @@ return [
 
     'recommendation_db_purge_hours' => env('RECOMMENDATION_DB_PURGE', 6),
 
-    'location_default_radius' => env('LOCATION_DEFAULT_RADIUS', 10),
+    'location_default_radius' => env('LOCATION_DEFAULT_RADIUS', 15),
 
     'recommendation_after_days' => env('RECOMMENDATION_AFTER_DAYS', 3),
 
     'mpay_default_email_tld' => env('MPAY_DEFAULT_EMAIL', '@funhub.my'),
 
+    'mpay_default_phone' => env('MPAY_DEFAULT_PHONE', '60123456789'),
+
     'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
+
+    'search_location_use_algolia' => env('SEARCH_LOCATION_USE_ALGOLIA', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Support Emails
+    |--------------------------------------------------------------------------
+    |
+    | Configure the support email addresses for the application.
+    |
+    */
+
+    'support_email1' => env('SUPPORT_EMAIL_1', 'admin@dreamax.my'),
+    'support_email2' => env('SUPPORT_EMAIL_2', 'content@funhub.my'),
 ];

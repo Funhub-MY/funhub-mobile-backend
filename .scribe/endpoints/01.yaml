@@ -28,6 +28,7 @@ endpoints:
         required: true
         example: '60'
         type: string
+        enumValues: []
         custom: []
       phone_no:
         name: phone_no
@@ -35,6 +36,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       country_code: '60'
@@ -54,14 +56,7 @@ endpoints:
         description: 'Invalid Form Fields'
         custom: []
     responseFields: []
-<<<<<<< HEAD
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer fa4VePhv158gZa63b6ckDdE'
-=======
     auth: []
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
     controller: null
     method: null
     route: null
@@ -93,6 +88,7 @@ endpoints:
         required: true
         example: '60'
         type: string
+        enumValues: []
         custom: []
       phone_no:
         name: phone_no
@@ -100,6 +96,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       country_code: '60'
@@ -154,6 +151,7 @@ endpoints:
         required: true
         example: '60'
         type: string
+        enumValues: []
         custom: []
       phone_no:
         name: phone_no
@@ -161,6 +159,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
       otp:
         name: otp
@@ -168,6 +167,7 @@ endpoints:
         required: true
         example: '123456'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       country_code: '60'
@@ -233,6 +233,7 @@ endpoints:
         required: true
         example: '60'
         type: string
+        enumValues: []
         custom: []
       phone_no:
         name: phone_no
@@ -240,6 +241,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
       password:
         name: password
@@ -247,6 +249,7 @@ endpoints:
         required: true
         example: abcd1234
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       country_code: '60'
@@ -309,6 +312,7 @@ endpoints:
         required: true
         example: '60'
         type: string
+        enumValues: []
         custom: []
       phone_no:
         name: phone_no
@@ -316,6 +320,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
       otp:
         name: otp
@@ -323,6 +328,7 @@ endpoints:
         required: true
         example: '123456'
         type: string
+        enumValues: []
         custom: []
       name:
         name: name
@@ -330,6 +336,7 @@ endpoints:
         required: true
         example: 'John Smith'
         type: string
+        enumValues: []
         custom: []
       password:
         name: password
@@ -337,6 +344,7 @@ endpoints:
         required: true
         example: abcd1234
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       country_code: '60'
@@ -398,6 +406,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       access_token: '1234567890'
@@ -436,6 +445,7 @@ endpoints:
         required: true
         example: '1234567890'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       access_token: '1234567890'
@@ -474,6 +484,7 @@ endpoints:
         required: true
         example: "'ey271236...'"
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       access_token: "'ey271236...'"
@@ -531,6 +542,7 @@ endpoints:
         required: true
         example: '0123456789'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       phone_no: '0123456789'
@@ -579,6 +591,7 @@ endpoints:
         required: true
         example: '0123456789'
         type: string
+        enumValues: []
         custom: []
       new_password:
         name: new_password
@@ -586,6 +599,7 @@ endpoints:
         required: true
         example: '123456'
         type: string
+        enumValues: []
         custom: []
       otp:
         name: otp
@@ -593,6 +607,7 @@ endpoints:
         required: true
         example: '123456'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       phone_no: '0123456789'
@@ -657,7 +672,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8baaeh6536vDdck4VEZfP1g'
+      - 'Bearer ZakE56Ve8Dd6hcf3Pvgba14'
     controller: null
     method: null
     route: null
@@ -690,6 +705,7 @@ endpoints:
         required: true
         example: 'John Smith'
         type: string
+        enumValues: []
         custom: []
       email:
         name: email
@@ -697,6 +713,7 @@ endpoints:
         required: true
         example: john@example.com
         type: string
+        enumValues: []
         custom: []
       password:
         name: password
@@ -704,6 +721,7 @@ endpoints:
         required: false
         example: abcd1234
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       name: 'John Smith'
@@ -739,7 +757,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aZkg3chDa6d1568bV4vfPeE'
+      - 'Bearer bcDPahae366vEdkVgZ84f51'
     controller: null
     method: null
     route: null
@@ -772,6 +790,7 @@ endpoints:
         required: true
         example: john@example.com
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       email: john@example.com
@@ -787,10 +806,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-<<<<<<< HEAD
-      - 'Bearer b6efDavad8E4kZ51gh6Vc3P'
-=======
-      - 'Bearer 8465ebZgh6D1Pvdf3caEkaV'
+      - 'Bearer 4Z5hgaE3f81Pd6V6acDevbk'
     controller: null
     method: null
     route: null
@@ -823,6 +839,7 @@ endpoints:
         required: true
         example: '123456'
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
       token: '123456'
@@ -844,8 +861,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v5cVZbke81fhEg3D6d64Paa'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      - 'Bearer da541bh6kgP6Vfae3vZc8DE'
     controller: null
     method: null
     route: null

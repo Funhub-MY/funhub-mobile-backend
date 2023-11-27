@@ -17,6 +17,7 @@ class BuildRecommendationsForUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 1200;
 
     protected $recommender, $user;
     /**
@@ -48,7 +49,7 @@ class BuildRecommendationsForUser implements ShouldQueue
     public function handle()
     {
         try {
-            Log::alert('Building recommendations for user ' . $this->user->id);
+            Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
             $this->recommender->build();
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

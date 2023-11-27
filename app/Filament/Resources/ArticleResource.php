@@ -7,6 +7,8 @@ use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\ArticleTag;
+use App\Models\Location;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -23,6 +25,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\FormsComponent;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\DB;
 
 class ArticleResource extends Resource
 {
@@ -33,7 +36,7 @@ class ArticleResource extends Resource
     protected static ?string $navigationGroup = 'Articles';
 
     protected static ?int $navigationSort = 1;
-    
+
     protected function getTableQuery(): Builder
     {
         return Article::query();
@@ -48,7 +51,7 @@ class ArticleResource extends Resource
                         Forms\Components\Card::make()->schema([
                             Forms\Components\Hidden::make('user_id')
                                 ->default(fn () => auth()->id()),
-                            
+
                             // default set source to backend because we need to flag it for flutter side to determine to use html or not
                             Forms\Components\Hidden::make('source')
                                 ->default('backend'),
@@ -66,7 +69,7 @@ class ArticleResource extends Resource
                             Forms\Components\Hidden::make('type')
                                 ->default(Article::TYPE[0])
                                 ->required(),
-                                
+
                             Forms\Components\RichEditor::make('body')
                                 ->required()
                                 ->placeholder('Write something...')
@@ -101,7 +104,7 @@ class ArticleResource extends Resource
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
-                                // disk is s3_public 
+                                // disk is s3_public
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
@@ -109,6 +112,7 @@ class ArticleResource extends Resource
                                 })
                                 ->acceptedFileTypes(['image/*'])
                                 ->maxFiles(20)
+                                //->enableReordering()
                                 ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
 
@@ -160,13 +164,13 @@ class ArticleResource extends Resource
                                 ->default('en')
                                 ->required()
                         ])->columnSpan('Language'),
-                        
+
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
-                            Forms\Components\DatePicker::make('published_at')
+                            Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
-                                               
+
                                 ->helperText('If you choose a future date, the article will be published at that date.')
                                 ->default(now())
                         ])->columnSpan('Status'),
@@ -254,8 +258,28 @@ class ArticleResource extends Resource
                                 ])
                                 // search
                                 ->searchable()
+                                ->getSearchResultsUsing(function (string $search) {
+                                    // search by name in article tags and unique name.
+                                    $tags  = DB::table('article_tags')
+                                    ->select(DB::raw('MAX(id) as id'),'name')
+                                    ->where('name', 'like', "%{$search}%")
+                                    ->groupBy('name')
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                                    return $tags;
+                                })
+                                ->getOptionLabelUsing(fn ($value): ?string => ArticleTag::find($value)?->name)
                                 ->multiple()
                                 ->placeholder('Select tags...'),
+                        ]),
+
+                        Forms\Components\Section::make('Location')->schema([
+                            Forms\Components\Select::make('locations')
+                                ->label('')
+                                ->options(Location::all()->pluck('name', 'id')->toArray())
+                                // search
+                                ->searchable()
+                                ->placeholder('Select location...'),
                         ]),
 
                     ])
@@ -301,7 +325,7 @@ class ArticleResource extends Resource
                 //     ->enum(Article::TYPE)
                 //     ->sortable()
                 //     ->searchable(),
-        
+
                 // likes count
                 Tables\Columns\TextColumn::make('likes_count')
                     ->sortable()

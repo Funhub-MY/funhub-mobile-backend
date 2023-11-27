@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class Comment extends BaseModel
 {
+    // protected $cacheCooldownSeconds = 300; // 5 minutes
+
     use HasFactory;
 
     const STATUS = [

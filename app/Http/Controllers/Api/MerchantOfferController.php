@@ -14,6 +14,7 @@ use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
+use App\Notifications\PurchasedOfferNotification;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -136,16 +137,26 @@ class MerchantOfferController extends Controller
      *
      * @group Merchant
      * @subgroup Merchant Offers
+     * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
      * @response scenario=success {
      * "data": []
      * }
      */
-    public function getMyMerchantOffers()
+    public function getMyMerchantOffers(Request $request)
     {
         // get merchant offers claimed by user
-        $claims = MerchantOfferClaim::where('user_id', auth()->user()->id)
-            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-            ->with('merchantOffer', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+        $query = MerchantOfferClaim::where('user_id', auth()->user()->id)
+            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+
+        if ($request->has('is_redeemed')) {
+            if ($request->get('is_redeemed') == 1) { // true
+                $query->whereHas('redeem');
+            } else if ($request->get('is_redeemed') == 0) { // false
+                $query->whereDoesntHave('redeem');
+            }
+        }
+
+        $claims = $query->with('merchantOffer', 'redeem', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferClaimResource::collection($claims);
@@ -253,9 +264,11 @@ class MerchantOfferController extends Controller
             }
 
             // direct claim
+            $orderNo = 'C' . date('Ymd') .strtoupper(Str::random(5));
+
             $offer->claims()->attach($user->id, [
                 // order no is CLAIM(YMd)
-                'order_no' => 'C' . date('Ymd') .strtoupper(Str::random(5)),
+                'order_no' => $orderNo,
                 'user_id' => $user->id,
                 'quantity' => $request->quantity,
                 'unit_price' => $offer->unit_price,
@@ -279,6 +292,11 @@ class MerchantOfferController extends Controller
 
             // fire event
             event(new MerchantOfferClaimed($offer, $user));
+
+            if ($user->email) {
+                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
+                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
+            }
 
             try {
                 // notify user offer claimed
@@ -314,7 +332,8 @@ class MerchantOfferController extends Controller
 
                 $mpayService = new \App\Services\Mpay(
                     config('services.mpay.mid'),
-                    config('services.mpay.hash_key')
+                    config('services.mpay.hash_key'),
+                    ($request->fiat_payment_method) ? $request->fiat_payment_method : false,
                 );
 
                 // generates required form post fields data for frontend(app) usages

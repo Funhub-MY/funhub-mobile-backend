@@ -18,11 +18,13 @@ class ArticleCountChartOverMonths extends BarChartWidget
     {
         // get User count across period of 12 months
         $publishedData = Article::withoutGlobalScope(SoftDeletingScope::class)
+            ->disableCache()
             ->published()
             ->where('created_at', '>=', now()->subMonths(12))
             ->get();
 
         $unpublishedData = Article::withoutGlobalScope(SoftDeletingScope::class)
+            ->disableCache()
             ->where('status', Article::STATUS_DRAFT)
             ->where('created_at', '>=', now()->subMonths(12))
             ->get();

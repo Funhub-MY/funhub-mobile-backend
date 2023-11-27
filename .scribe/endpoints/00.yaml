@@ -12,663 +12,6 @@ endpoints:
       subgroupDescription: ''
       title: 'Get Article (public)'
       description: ''
-<<<<<<< HEAD
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"message" : "Phone Number not registered"}'
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/sendOtp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Send OTP'
-      description: 'Send SMS OTP to phone number'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "message": "OTP Sent!"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/verifyOtp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Verify OTP'
-      description: 'Login user into the system with OTP'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid login details"}'
-        headers: []
-        description: 'Invalid Login details'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/loginWithPassword
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Password'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: 'Country code of phone number.'
-        required: true
-        example: '60'
-        type: string
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'Phone number.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-      password:
-        name: password
-        description: Password.
-        required: true
-        example: abcd1234
-        type: string
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      password: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {},
-           "token": "auth_token"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid Credentials"}'
-        headers: []
-        description: 'Invalid Credentials'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/register/otp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Register with OTP'
-      description: 'Register user with OTP'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        custom: []
-      name:
-        name: name
-        description: 'The name of the use.'
-        required: true
-        example: 'John Smith'
-        type: string
-        custom: []
-      password:
-        name: password
-        description: 'The password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-      name: 'John Smith'
-      password: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/facebook
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Facebook'
-      description: 'Login user with Facebook'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'The access token of the user from Facebook.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      access_token: '1234567890'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/google
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Google'
-      description: 'Login user with Google'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'The access token of the user from Google.'
-        required: true
-        example: '1234567890'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      access_token: '1234567890'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/social
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Social (via Firebase Auth)'
-      description: 'Login user with Social'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'Firebase Auth Token ().'
-        required: true
-        example: "'ey271236...'"
-        type: string
-        custom: []
-    cleanBodyParameters:
-      access_token: "'ey271236...'"
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Invalid Token" ]}'
-        headers: []
-        description: 'Invalid Token'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/reset-password-send-otp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Reset Password Send NEW OTP (Step 1)'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      phone_no:
-        name: phone_no
-        description: 'The phone no of the user.'
-        required: true
-        example: '0123456789'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      phone_no: '0123456789'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "status": "success",
-          "message": "OTP sent successfully"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/reset-password
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Reset Password with OTP (Step 2)'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      phone_no:
-        name: phone_no
-        description: 'The phone no of the user.'
-        required: true
-        example: '0123456789'
-        type: string
-        custom: []
-      new_password:
-        name: new_password
-        description: 'The new password of the user.'
-        required: true
-        example: '123456'
-        type: string
-        custom: []
-      otp:
-        name: otp
-        description: 'The otp of the user.'
-        required: true
-        example: '123456'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      phone_no: '0123456789'
-      new_password: '123456'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "status": "success",
-          "message": "Password reset successfully"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/logout
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: Logout
-      description: 'Log User Out and destroy any active tokens of user'
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"message" : "Logged Out"}'
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Access Denied"}'
-        headers: []
-        description: 'Access Denied'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer gPfc3EhV6D1Z6ab84d5aevk'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/complete-profile
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Complete Profile'
-      description: 'Complete user profile after registration'
-=======
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
       authenticated: true
       custom: []
     headers:
@@ -684,11 +27,12 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: modi
+        example: tempora
         type: string
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      share_code: modi
+      share_code: tempora
     fileParameters: []
     responses:
       -
@@ -709,7 +53,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1140,
+                      "line": 1316,
                       "function": "abort"
                   },
                   {
@@ -727,10 +71,31 @@ endpoints:
                       "type": "->"
                   },
                   {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php",
+                      "line": 21,
+                      "function": "dispatch",
+                      "class": "Illuminate\\Routing\\ControllerDispatcher",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php",
+                      "line": 31,
+                      "function": "Sentry\\Laravel\\Tracing\\Routing\\{closure}",
+                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php",
+                      "line": 20,
+                      "function": "wrapRouteDispatch",
+                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingRoutingDispatcher",
+                      "type": "->"
+                  },
+                  {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
                       "line": 259,
                       "function": "dispatch",
-                      "class": "Illuminate\\Routing\\ControllerDispatcher",
+                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing",
                       "type": "->"
                   },
                   {
@@ -846,6 +211,34 @@ endpoints:
                       "type": "->"
                   },
                   {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php",
+                      "line": 45,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "Sentry\\Laravel\\Http\\SetRequestIpMiddleware",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php",
+                      "line": 31,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "Sentry\\Laravel\\Http\\SetRequestMiddleware",
+                      "type": "->"
+                  },
+                  {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php",
                       "line": 19,
                       "function": "Illuminate\\Pipeline\\{closure}",
@@ -955,6 +348,20 @@ endpoints:
                       "line": 180,
                       "function": "handle",
                       "class": "Illuminate\\Http\\Middleware\\TrustProxies",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php",
+                      "line": 87,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "Sentry\\Laravel\\Tracing\\Middleware",
                       "type": "->"
                   },
                   {
@@ -1174,11 +581,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-<<<<<<< HEAD
-      - 'Bearer h6cDea31baVZfv6kE4dg5P8'
-=======
-      - 'Bearer af8V66b341daZDvkhegPcE5'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      - 'Bearer Daakdb8fg6hPcZ1v4V56e3E'
     controller: null
     method: null
     route: null

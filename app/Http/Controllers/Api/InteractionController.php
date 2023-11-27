@@ -12,9 +12,11 @@ use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\ShareableLink;
 use App\Models\User;
+use App\Models\View;
 use App\Notifications\ArticleInteracted;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class InteractionController extends Controller
@@ -189,6 +191,16 @@ class InteractionController extends Controller
             $interaction->interactable->user->notify(new ArticleInteracted($interaction));
         }
 
+        // if like, fire view as well
+        if ($request->interactable == Article::class && $request->type == Interaction::TYPE_LIKE) {
+            View::create([
+                'user_id' => auth()->id(),
+                'viewable_type' => $request->interactable,
+                'viewable_id' => $request->id,
+                'ip_address' => $request->ip(),
+            ]);
+        }
+
         return response()->json([
             'interaction' => new InteractionResource($interaction),
         ]);
@@ -223,20 +235,64 @@ class InteractionController extends Controller
      *
      * @group Interactions
      * @authenticated
-     * @urlParam id integer required The id of the interaction. Example: 1
+     * @urlParam id integer required The id of the interaction or interactable(article id). Example: 1
+     * @urlParam delete_by string The type of delete, defaults to interaction. Example: interactable,interaction
+     * @urlParam interactable string The type of interactable (Required if delete_by is interactable). Example: article,merchant_offer
+     * @urlParam type string The type of interaction (Required if delete_by is interactable). Example: like,dislike,share,bookmark
      * @response scenario=success {
      * "message": "Interaction deleted"
      * }
      *
      * @response status=404 scenario="Not Found" {['message' => 'Interaction not found']}
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $interaction = Interaction::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        $deleteBy = $request->input('delete_by');
+        if ($deleteBy == 'interactable') {
+            $this->validate($request, [
+                'interactable' => 'required',
+                'type' => 'required|string|in:like,dislike,share,bookmark',
+            ]);
 
-        if ($interaction->exists()) {
+            if ($request->interactable == 'article') {
+                $request->merge(['interactable' => Article::class]);
+            } else if ($request->interactable == 'merchant_offer') {
+                $request->merge(['interactable' => MerchantOffer::class]);
+            } else {
+                return response()->json(['message' => 'Invalid interactable'], 422);
+            }
+        }
+
+        $interaction = null;
+        if ($deleteBy == 'interactable') {
+            $type = null;
+            switch($request->type) {
+                case 'like':
+                    $type = Interaction::TYPE_LIKE;
+                    break;
+                case 'dislike':
+                    $type = Interaction::TYPE_DISLIKE;
+                    break;
+                case 'share':
+                    $type = Interaction::TYPE_SHARE;
+                    break;
+                case 'bookmark':
+                    $type = Interaction::TYPE_BOOKMARK;
+                    break;
+            }
+
+            $interaction = Interaction::where('interactable_type', $request->interactable)
+                ->where('interactable_id', $id)
+                ->where('user_id', auth()->id())
+                ->where('type', $type)
+                ->firstOrFail();
+        } else {
+            $interaction = Interaction::where('id', $id)
+                ->where('user_id', auth()->id())
+                ->firstOrFail();
+        }
+
+        if ($interaction && $interaction->exists()) {
             $interaction->delete();
             return response()->json(['message' => 'Interaction deleted']);
         } else {

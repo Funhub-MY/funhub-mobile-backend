@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
-class MerchantCategory extends Model implements HasMedia
+class MerchantCategory extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
@@ -22,7 +23,7 @@ class MerchantCategory extends Model implements HasMedia
         'created_at',
         'updated_at'
     ];
-    
+
 
     public function user()
     {

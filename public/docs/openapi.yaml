@@ -12,14 +12,7 @@ paths:
       summary: 'Get Article Cities (Unique)'
       operationId: getArticleCitiesUnique
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -55,14 +48,7 @@ paths:
       summary: 'Upload Images for Article'
       operationId: uploadImagesForArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -137,14 +123,7 @@ paths:
       summary: 'Upload Video for Article'
       operationId: uploadVideoForArticle
       description: "Video size must not larger than 500MB, will stream video response back to client on progress via header X-Upload-Progress / calculate your own using X-Content-Duration\n\nMust be able to stream completion percentage back to client"
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -178,14 +157,7 @@ paths:
       summary: 'Get Articles by User ID or Logged In User'
       operationId: getArticlesByUserIDOrLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -235,19 +207,16 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+                video_only:
+                  type: integer
+                  description: 'optional Filter by Videos.'
+                  example: 1
   /api/v1/articles/my_bookmarks:
     get:
       summary: 'Get Bookmarked Articles by User ID or Logged In User'
       operationId: getBookmarkedArticlesByUserIDOrLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -293,19 +262,16 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+                video_only:
+                  type: integer
+                  description: 'optional Filter by Videos.'
+                  example: 1
   /api/v1/articles/report:
     post:
       summary: 'Report an article'
       operationId: reportAnArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -333,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 16
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -341,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: quidem
+                  example: voluptatum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: sed
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -360,14 +326,7 @@ paths:
       summary: 'Hide Article When Not Interested By user'
       operationId: hideArticleWhenNotInterestedByUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -401,14 +360,7 @@ paths:
       summary: 'Get Tagged users of article'
       operationId: getTaggedUsersOfArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -437,14 +389,7 @@ paths:
       summary: 'Get Article Merchant Offers'
       operationId: getArticleMerchantOffers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -482,19 +427,91 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/articles/nearby:
+    get:
+      summary: 'Get Articles Nearby'
+      operationId: getArticlesNearby
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [],\n}"
+      tags:
+        - Article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                article_ids:
+                  type: array
+                  description: 'optional Article Ids to Filter. Example [1,2,3]'
+                  example:
+                    - non
+                  items:
+                    type: string
+                category_ids:
+                  type: array
+                  description: 'optional Category Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                video_only:
+                  type: integer
+                  description: 'optional Filter by Videos.'
+                  example: 1
+                tag_ids:
+                  type: array
+                  description: 'optional Tag Ids to Filter.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+                city:
+                  type: string
+                  description: 'optional Filter by City Name.'
+                  example: 'Subang Jaya'
+                lat:
+                  type: number
+                  description: 'Filter by Lat of User (must provide lng).'
+                  example: 3.123456
+                lng:
+                  type: number
+                  description: 'Filter by Lng of User (must provide lat).'
+                  example: 101.123456
+                radius:
+                  type: integer
+                  description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+                  example: 10000
+                include_own_article:
+                  type: integer
+                  description: 'optional Include own article.'
+                  example: 1
+                limit:
+                  type: integer
+                  description: 'optional Per Page Limit Override.'
+                  example: 10
+              required:
+                - lat
+                - lng
   /api/v1/articles:
     get:
       summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
       operationId: getArticlesForLoggedInUserforHomePageNoteUsersOwnPostsWillNotShowUpOnHomePage
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -516,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - soluta
+                    - voluptate
                   items:
                     type: string
                 category_ids:
@@ -585,14 +602,7 @@ paths:
       summary: 'Create New Article'
       operationId: createNewArticle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -703,14 +713,7 @@ paths:
       summary: 'Get One Article by ID'
       operationId: getOneArticleByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -723,7 +726,7 @@ paths:
                 properties:
                   article:
                     type: object
-                    properties: []
+                    properties: {  }
         404:
           description: 'Not Found'
           content:
@@ -742,14 +745,7 @@ paths:
       summary: 'Update article by ID. (Only owner of article can update)'
       operationId: updateArticleByIDOnlyOwnerOfArticleCanUpdate
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -842,14 +838,7 @@ paths:
       summary: 'Remove article by ID. (Only owner of article can delete)'
       operationId: removeArticleByIDOnlyOwnerOfArticleCanDelete
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -891,14 +880,7 @@ paths:
       summary: 'Get popular tags'
       operationId: getPopularTags
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -957,14 +939,7 @@ paths:
       summary: 'Get Tags by article id'
       operationId: getTagsByArticleId
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1001,14 +976,7 @@ paths:
       summary: 'Get popular Article Categories'
       operationId: getPopularArticleCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1071,14 +1039,7 @@ paths:
       summary: 'Get All Article Categories'
       operationId: getAllArticleCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1106,14 +1067,7 @@ paths:
       summary: 'Get Article Categories by article id'
       operationId: getArticleCategoriesByArticleId
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1150,14 +1104,7 @@ paths:
       summary: 'Get replies to a comment'
       operationId: getRepliesToAComment
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1216,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: aperiam
+        example: sit
         required: true
         schema:
           type: string
@@ -1225,14 +1172,7 @@ paths:
       summary: 'Toggle a Comment Like'
       operationId: toggleACommentLike
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1268,14 +1208,7 @@ paths:
       summary: 'Report a comment'
       operationId: reportAComment
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1311,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ab
+                  example: dolor
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ut
+                  example: blanditiis
               required:
                 - comment_id
                 - reason
@@ -1324,14 +1257,7 @@ paths:
       summary: 'Get comments on a commentable type (eg. Articles)'
       operationId: getCommentsOnACommentableTypeegArticles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1399,14 +1325,7 @@ paths:
       summary: 'Create a new comment by logged in user'
       operationId: createANewCommentByLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1463,14 +1382,7 @@ paths:
       summary: 'Show one comment by ID'
       operationId: showOneCommentByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1516,14 +1428,7 @@ paths:
       summary: 'Update comment by ID. (Only owner of comment can update)'
       operationId: updateCommentByIDOnlyOwnerOfCommentCanUpdate
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -1570,14 +1475,7 @@ paths:
       summary: 'Remove comment by ID. (Only owner of comment can delete)'
       operationId: removeCommentByIDOnlyOwnerOfCommentCanDelete
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses: {  }
       tags:
         - Article
@@ -1586,7 +1484,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sequi
+        example: ratione
         required: true
         schema:
           type: string
@@ -1762,7 +1660,7 @@ paths:
                 properties:
                   user:
                     type: object
-                    properties: []
+                    properties: {  }
                   token:
                     type: string
                     example: auth_token
@@ -2044,14 +1942,7 @@ paths:
       summary: Logout
       operationId: logout
       description: 'Log User Out and destroy any active tokens of user'
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2084,14 +1975,7 @@ paths:
       summary: 'Complete Profile'
       operationId: completeProfile
       description: 'Complete user profile after registration'
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2153,14 +2037,7 @@ paths:
       summary: 'Send Verification Email with Token Inside'
       operationId: sendVerificationEmailWithTokenInside
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2194,14 +2071,7 @@ paths:
       summary: 'Verify Email with Token'
       operationId: verifyEmailWithToken
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -2242,14 +2112,7 @@ paths:
       summary: 'Get Article (public)'
       operationId: getArticlepublic
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         404:
           description: ''
@@ -2271,7 +2134,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1140
+                      line: 1316
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2286,10 +2149,28 @@ paths:
                       class: Illuminate\Routing\Controller
                       type: '->'
                     -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
+                      line: 21
+                      function: dispatch
+                      class: Illuminate\Routing\ControllerDispatcher
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
+                      line: 31
+                      function: 'Sentry\Laravel\Tracing\Routing\{closure}'
+                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
+                      line: 20
+                      function: wrapRouteDispatch
+                      class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
+                      type: '->'
+                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                       line: 259
                       function: dispatch
-                      class: Illuminate\Routing\ControllerDispatcher
+                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -2388,6 +2269,30 @@ paths:
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
+                      line: 45
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: Sentry\Laravel\Http\SetRequestIpMiddleware
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
+                      line: 31
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: Sentry\Laravel\Http\SetRequestMiddleware
+                      type: '->'
+                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                       line: 19
                       function: 'Illuminate\Pipeline\{closure}'
@@ -2482,6 +2387,18 @@ paths:
                       line: 180
                       function: handle
                       class: Illuminate\Http\Middleware\TrustProxies
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
+                      line: 87
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: Sentry\Laravel\Tracing\Middleware
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -2681,7 +2598,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1140
+                        line: 1316
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2696,10 +2613,28 @@ paths:
                         class: Illuminate\Routing\Controller
                         type: '->'
                       -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
+                        line: 21
+                        function: dispatch
+                        class: Illuminate\Routing\ControllerDispatcher
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
+                        line: 31
+                        function: 'Sentry\Laravel\Tracing\Routing\{closure}'
+                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
+                        line: 20
+                        function: wrapRouteDispatch
+                        class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
+                        type: '->'
+                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                         line: 259
                         function: dispatch
-                        class: Illuminate\Routing\ControllerDispatcher
+                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -2798,6 +2733,30 @@ paths:
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
+                        line: 45
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: Sentry\Laravel\Http\SetRequestIpMiddleware
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
+                        line: 31
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: Sentry\Laravel\Http\SetRequestMiddleware
+                        type: '->'
+                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                         line: 19
                         function: 'Illuminate\Pipeline\{closure}'
@@ -2892,6 +2851,18 @@ paths:
                         line: 180
                         function: handle
                         class: Illuminate\Http\Middleware\TrustProxies
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
+                        line: 87
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: Sentry\Laravel\Tracing\Middleware
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -3097,7 +3068,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: modi
+                  example: tempora
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -3105,14 +3076,7 @@ paths:
       summary: 'Get All FAQs'
       operationId: getAllFAQs
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3162,14 +3126,7 @@ paths:
       summary: 'Get All FAQs Categories'
       operationId: getAllFAQsCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3190,14 +3147,7 @@ paths:
       summary: 'Get My Support Requests'
       operationId: getMySupportRequests
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3246,14 +3196,7 @@ paths:
       summary: 'Raise Support Request'
       operationId: raiseSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3262,15 +3205,11 @@ paths:
               schema:
                 type: object
                 example:
-                  message: {  }
-                  request: {  }
+                  data: []
                 properties:
-                  message:
-                    type: object
-                    properties: []
-                  request:
-                    type: object
-                    properties: []
+                  data:
+                    type: array
+                    example: []
       tags:
         - 'Help Center'
       requestBody:
@@ -3310,14 +3249,7 @@ paths:
       summary: 'Reply to Support Request'
       operationId: replyToSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3331,10 +3263,10 @@ paths:
                 properties:
                   message:
                     type: object
-                    properties: []
+                    properties: {  }
                   request:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - 'Help Center'
       requestBody:
@@ -3381,14 +3313,7 @@ paths:
       summary: 'Get Messages of Support Request'
       operationId: getMessagesOfSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3426,14 +3351,7 @@ paths:
       summary: 'Resolve Support Request'
       operationId: resolveSupportRequest
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3471,14 +3389,7 @@ paths:
       summary: 'Get Support Request Categories'
       operationId: getSupportRequestCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         401:
           description: ''
@@ -3510,14 +3421,7 @@ paths:
       summary: 'Upload Attachments(Images) for Support Messages'
       operationId: uploadAttachmentsImagesForSupportMessages
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3588,14 +3492,7 @@ paths:
       summary: 'Get Users of Interaction'
       operationId: getUsersOfInteraction
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3613,10 +3510,10 @@ paths:
                     example: []
                   links:
                     type: object
-                    properties: []
+                    properties: {  }
                   meta:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Interactions
       requestBody:
@@ -3647,14 +3544,7 @@ paths:
       summary: 'Get interactions on a interactable type (eg. Articles)'
       operationId: getInteractionsOnAInteractableTypeegArticles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3718,14 +3608,7 @@ paths:
       summary: 'Create an interaction for interactable type'
       operationId: createAnInteractionForInteractableType
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3738,7 +3621,7 @@ paths:
                 properties:
                   interaction:
                     type: object
-                    properties: []
+                    properties: {  }
         422:
           description: ''
           content:
@@ -3785,14 +3668,7 @@ paths:
       summary: 'Show one interaction by ID'
       operationId: showOneInteractionByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         401:
           description: ''
@@ -3812,14 +3688,7 @@ paths:
       summary: "Remove Interaction By ID\nOnly owner can call this method"
       operationId: removeInteractionByIDOnlyOwnerCanCallThisMethod
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3856,14 +3725,7 @@ paths:
       summary: 'Get Locations'
       operationId: getLocations
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3914,14 +3776,7 @@ paths:
       summary: 'Get One Location'
       operationId: getOneLocation
       description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -3934,7 +3789,7 @@ paths:
                 properties:
                   data:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Location
     parameters:
@@ -3954,19 +3809,79 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/media/signed_upload:
+    get:
+      summary: "Get Signed URL Upload Media (photos/videos)\nMust only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it."
+      operationId: getSignedURLUploadMediaphotosvideosMustOnlyCallOnePerFileIfMultipleFilesCallMultipleTimesURLGeneratedYouNeedToPUTABinaryFileToIt
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: failed
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Only applicable for S3 Storage'
+                  url: null
+                properties:
+                  message:
+                    type: string
+                    example: 'Only applicable for S3 Storage'
+                  url:
+                    type: string
+                    example: null
+      tags:
+        - Media
+    parameters:
+      -
+        in: path
+        name: filename
+        description: 'The filename of the media to be uploaded, filename must only contain alphabets and numbers.'
+        example: my-photo.jpg
+        required: true
+        schema:
+          type: string
+  /api/v1/media/upload_complete:
+    post:
+      summary: 'Upload Media Complete'
+      operationId: uploadMediaComplete
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Success\",\n\"uploaded\": [\n{\n\"id\": 1,\n\"name\": \"1619114400-608b7a10a3b3d_my-photo.jpg\",\n\"url\": \"https://your-bucket-name.s3-ap-southeast-1.amazonaws.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg\",\n\"size\": 12345,\n\"type\": \"image/jpeg\"\n},\n]\n}"
+      tags:
+        - Media
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                upload_ids:
+                  type: string
+                  description: 'The upload_ids from get signed upload link, can be multiple ids in a comma separated.'
+                  example: '1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e'
+                is_cover:
+                  type: boolean
+                  description: 'optional The is_cover flag, default false.'
+                  example: true
+              required:
+                - upload_ids
   /api/v1/merchant/offers/my_bookmarks:
     get:
       summary: 'Get My Bookmarked Merchant Offers'
       operationId: getMyBookmarkedMerchantOffers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4013,14 +3928,7 @@ paths:
       summary: 'Get Offers'
       operationId: getOffers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4100,14 +4008,7 @@ paths:
       summary: 'Claim Offer'
       operationId: claimOffer
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: offer_no_longer_valid
@@ -4155,14 +4056,7 @@ paths:
       summary: "Redeem a Merchant Offer (In-Store)\nThis is when customer with claimed merchant offer wishes to redeem in store"
       operationId: redeemAMerchantOfferInStoreThisIsWhenCustomerWithClaimedMerchantOfferWishesToRedeemInStore
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4179,7 +4073,7 @@ paths:
                     example: 'Redeemed successfully'
                   offer:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Merchant
       requestBody:
@@ -4215,14 +4109,7 @@ paths:
       summary: 'Cancel a Merchant Offer Transaction'
       operationId: cancelAMerchantOfferTransaction
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: offer_pending_payment_not_found
@@ -4256,14 +4143,7 @@ paths:
       summary: 'Get My Merchant Offers (Logged in User)'
       operationId: getMyMerchantOffersLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4279,6 +4159,21 @@ paths:
                     example: []
       tags:
         - Merchant
+    parameters:
+      -
+        in: path
+        name: is_redeemed
+        description: 'Optional parameter. optional Filter by Redeemed.'
+        required: true
+        schema:
+          type: number
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 0.0
   '/api/v1/merchant/offers/{offer_id}':
     get:
       summary: 'Get Offer By ID'
@@ -4295,13 +4190,6 @@ paths:
             type: integer
             description: 'Offer ID.'
             example: 1
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -4314,7 +4202,7 @@ paths:
                 properties:
                   offer:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - Merchant
     parameters:
@@ -4322,7 +4210,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: eos
+        example: pariatur
         required: true
         schema:
           type: string
@@ -4331,14 +4219,7 @@ paths:
       summary: 'Get popular Merchant Categories'
       operationId: getPopularMerchantCategories
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4401,14 +4282,7 @@ paths:
       summary: 'Get Merchant Categories by offer id'
       operationId: getMerchantCategoriesByOfferId
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4440,19 +4314,148 @@ paths:
         required: true
         schema:
           type: integer
+  /api/v1/merchant-contact:
+    post:
+      summary: 'Submit Merchant Contact Information'
+      operationId: submitMerchantContactInformation
+      description: 'Allows users to submit merchant contact information via the API.'
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Merchant contact information submitted successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Merchant contact information submitted successfully'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    name:
+                      - 'The Name field is required.'
+                    email:
+                      - 'The Email field must be a valid email address.'
+                    tel_no:
+                      - 'The Phone Number field is required.'
+                    company_name:
+                      - 'The Company Name field is required.'
+                    business_type:
+                      - 'The Business Type field is required.'
+                    message_type:
+                      - 'The Message Category field is required.'
+                    message:
+                      - 'The Message field is required.'
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      name:
+                        type: array
+                        example:
+                          - 'The Name field is required.'
+                        items:
+                          type: string
+                      email:
+                        type: array
+                        example:
+                          - 'The Email field must be a valid email address.'
+                        items:
+                          type: string
+                      tel_no:
+                        type: array
+                        example:
+                          - 'The Phone Number field is required.'
+                        items:
+                          type: string
+                      company_name:
+                        type: array
+                        example:
+                          - 'The Company Name field is required.'
+                        items:
+                          type: string
+                      business_type:
+                        type: array
+                        example:
+                          - 'The Business Type field is required.'
+                        items:
+                          type: string
+                      message_type:
+                        type: array
+                        example:
+                          - 'The Message Category field is required.'
+                        items:
+                          type: string
+                      message:
+                        type: array
+                        example:
+                          - 'The Message field is required.'
+                        items:
+                          type: string
+      tags:
+        - Merchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'The name of the contact person.'
+                  example: 'Alex Koh'
+                email:
+                  type: string
+                  description: 'The email address of the contact person.'
+                  example: alex@funhub.my
+                tel_no:
+                  type: string
+                  description: 'The telephone number of the contact person.'
+                  example: '182036794'
+                company_name:
+                  type: string
+                  description: 'The name of the company.'
+                  example: 'Funhub TV'
+                business_type:
+                  type: string
+                  description: 'The type of the business.'
+                  example: others
+                other_business_type:
+                  type: string
+                  description: 'required_if:business_type,others The type of the business.'
+                  example: 'IT Consult'
+                message_type:
+                  type: string
+                  description: 'The category of the message.'
+                  example: 'General Inquiry'
+                message:
+                  type: text
+                  description: 'The message or remarks.'
+                  example: 'This is a sample message.'
+              required:
+                - name
+                - email
+                - tel_no
+                - company_name
+                - business_type
+                - message_type
+                - message
   /api/v1/missions:
     get:
       summary: 'Get all missions available.'
       operationId: getAllMissionsAvailable
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4483,14 +4486,7 @@ paths:
       summary: 'Complete all missions or single mission'
       operationId: completeAllMissionsOrSingleMission
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4522,7 +4518,7 @@ paths:
                     properties:
                       object:
                         type: object
-                        properties: []
+                        properties: {  }
                       quantity:
                         type: integer
                         example: 1
@@ -4544,14 +4540,7 @@ paths:
       summary: 'Get latest claimable missions'
       operationId: getLatestClaimableMissions
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4567,14 +4556,7 @@ paths:
       summary: 'Update user fcm token'
       operationId: updateUserFcmToken
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4608,14 +4590,7 @@ paths:
       summary: "Get latest notifications of the user\nOrdered by latest one"
       operationId: getLatestNotificationsOfTheUserOrderedByLatestOne
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4642,14 +4617,7 @@ paths:
       summary: 'Mark a Single Notification as Read by Notification ID'
       operationId: markASingleNotificationAsReadByNotificationID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4683,14 +4651,7 @@ paths:
       summary: 'Mark all notifications as read'
       operationId: markAllNotificationsAsRead
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4711,14 +4672,7 @@ paths:
       summary: 'Get Countries'
       operationId: getCountries
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4734,14 +4688,7 @@ paths:
       summary: 'Get States'
       operationId: getStates
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4757,14 +4704,7 @@ paths:
       summary: 'Get the point & point components balance of the logged in user.'
       operationId: getThePointPointComponentsBalanceOfTheLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4780,14 +4720,7 @@ paths:
       summary: 'Get the point balance of the user.'
       operationId: getThePointBalanceOfTheUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4808,14 +4741,7 @@ paths:
       summary: 'Get the point component balance of the user.'
       operationId: getThePointComponentBalanceOfTheUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4853,14 +4779,7 @@ paths:
       summary: 'Get Rewards Available.'
       operationId: getRewardsAvailable
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4876,14 +4795,7 @@ paths:
       summary: 'Combine Points Component to Form a Reward'
       operationId: combinePointsComponentToFormAReward
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses: {  }
       tags:
         - Point
@@ -4905,14 +4817,7 @@ paths:
       summary: 'Get Point Ledger'
       operationId: getPointLedger
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4928,14 +4833,7 @@ paths:
       summary: 'Get Point Component Ledgers)'
       operationId: getPointComponentLedgers
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -4966,14 +4864,7 @@ paths:
       summary: 'Post Checkout'
       operationId: postCheckout
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: fiat_payment_mode
@@ -5016,14 +4907,7 @@ paths:
       summary: 'Cancel Product Checkout'
       operationId: cancelProductCheckout
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5057,14 +4941,7 @@ paths:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
       operationId: getAllMyTransactionsGetAllTransactionsOfCurrentLoggedInUsersPaginated
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5104,14 +4981,7 @@ paths:
       summary: 'Get Transaction by Transaction Number'
       operationId: getTransactionByTransactionNumber
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5127,14 +4997,7 @@ paths:
       summary: 'Get a Transaction By ID'
       operationId: getATransactionByID
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5178,13 +5041,6 @@ paths:
             type: string
             description: 'optional Search query for name of followings.'
             example: John
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -5243,13 +5099,6 @@ paths:
             type: string
             description: 'optional Search query for name of followers.'
             example: John
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
       responses:
         200:
           description: success
@@ -5297,14 +5146,7 @@ paths:
       summary: 'Follow another user'
       operationId: followAnotherUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5342,7 +5184,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 15
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5350,14 +5192,7 @@ paths:
       summary: 'Unfollow another user'
       operationId: unfollowAnotherUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5395,7 +5230,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 16
               required:
                 - user_id
   /api/v1/user/report:
@@ -5403,14 +5238,7 @@ paths:
       summary: 'Report a user'
       operationId: reportAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5442,15 +5270,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: id
+                  example: doloremque
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: placeat
+                  example: itaque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: libero
+                  example: vitae
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5463,14 +5291,7 @@ paths:
       summary: 'Block a user'
       operationId: blockAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5503,14 +5324,7 @@ paths:
       summary: 'Unblock a user'
       operationId: unblockAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5539,14 +5353,7 @@ paths:
       summary: 'Get My Blocked Users List'
       operationId: getMyBlockedUsersList
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5562,14 +5369,7 @@ paths:
       summary: 'Delete My Account'
       operationId: deleteMyAccount
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5595,7 +5395,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: iusto
+                  example: nulla
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5603,14 +5403,7 @@ paths:
       summary: 'Get Users By IDs'
       operationId: getUsersByIDs
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5623,7 +5416,7 @@ paths:
                 properties:
                   data:
                     type: object
-                    properties: []
+                    properties: {  }
       tags:
         - User
       requestBody:
@@ -5636,7 +5429,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: eos
               required:
                 - user_ids
     parameters:
@@ -5653,14 +5446,7 @@ paths:
       summary: 'Get a user'
       operationId: getAUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5688,19 +5474,291 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/user:
+    get:
+      summary: 'Get auth user details'
+      operationId: getAuthUserDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\": {\n},\n\"token\": \"\""
+      tags:
+        - User
+    post:
+      summary: 'Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)'
+      operationId: updateUserDetailsnameUsernameBioJobTitleDobGenderLocationAvatarCoverArticleCategories
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\":\n{\n \"id\": 1,\n \"name\": \"John Doe\"\n \"username\": \"johndoe\"\n \"email\": \"johndoe@gmail.com\"\n \"verified_email\": true\n \"auth_provider\": \"email\"\n \"avatar\": \"https://domain.com/storage/avatars/1/avatar.jpg\"\n \"avatar_thumb\": \"https://domain.com/storage/avatars/1/avatar_thumb.jpg\"\n \"bio\": \"I am a developer\"\n \"cover\": \"https://domain.com/storage/covers/1/cover.jpg\"\n \"articles_published_count\": 0\n \"following_count\": 0\n \"followers_count\": 0\n \"has_completed_profile\": false\n \"has_avatar\": true\n \"point_balance\": 0\n \"unread_notifications_count\": 0\n \"is_following\": false\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"category_ids\": [1,2,3]\n},\n\"message\": \"Field updated\"\n\n}"
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        500:
+          description: 'Error updating user details'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Error updating user details'
+                  error: 'Error message'
+                properties:
+                  message:
+                    type: string
+                    example: 'Error updating user details'
+                  error:
+                    type: string
+                    example: 'Error message'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                update_type:
+                  type: string
+                  description: 'Field to update.'
+                  example: job_title
+                name:
+                  type: string
+                  description: "Name of the user (Required if update_type is 'name')."
+                  example: 'John Doe'
+                username:
+                  type: string
+                  description: "Username of the user (Required if update_type is 'username')."
+                  example: johndoe
+                bio:
+                  type: string
+                  description: "Bio of the user (Required if update_type is 'bio')."
+                  example: 'I am a developer'
+                job_title:
+                  type: string
+                  description: "Job title of the user (Required if update_type is 'job_title')."
+                  example: Developer
+                day:
+                  type: integer
+                  description: "Day of the date of birth (Required if update_type is 'dob')."
+                  example: 1
+                month:
+                  type: integer
+                  description: "Month of the date of birth (Required if update_type is 'dob')."
+                  example: 1
+                year:
+                  type: integer
+                  description: "Year of the date of birth (Required if update_type is 'dob')."
+                  example: 1990
+                country_id:
+                  type: integer
+                  description: "Country id of the user (Required if update_type is 'location')."
+                  example: 1
+                state_id:
+                  type: integer
+                  description: "State id of the user (Required if update_type is 'location')."
+                  example: 1
+                avatar:
+                  type: string
+                  format: binary
+                  description: "One image file to upload,Avatar of the user (Required if update_type is 'avatar')."
+                cover:
+                  type: string
+                  format: binary
+                  description: "One image file to upload,Cover of the user (Required if update_type is 'cover')."
+                category_ids:
+                  type: array
+                  description: "Array of article category ids (Required if update_type is 'article_categories')."
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
+              required:
+                - update_type
+  '/api/v1/public/user/{user_id}':
+    get:
+      summary: 'Get a public user'
+      operationId: getAPublicUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\": {\n}"
+      tags:
+        - User
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'The ID of the user.'
+        example: 3
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: user
+        description: 'The id of the user.'
+        example: '1'
+        required: true
+        schema:
+          type: string
+  /api/v1/user/password:
+    post:
+      summary: 'Update user password (only for login with OTP)'
+      operationId: updateUserPasswordonlyForLoginWithOTP
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Password updated\",\n\"user\":\n     * {\n \"id\": 1,\n \"name\": \"John Doe\"\n \"username\": \"johndoe\"\n \"email\": \"johndoe@gmail.com\"\n \"verified_email\": true\n \"auth_provider\": \"email\"\n \"avatar\": \"https://domain.com/storage/avatars/1/avatar.jpg\"\n \"avatar_thumb\": \"https://domain.com/storage/avatars/1/avatar_thumb.jpg\"\n \"bio\": \"I am a developer\"\n \"cover\": \"https://domain.com/storage/covers/1/cover.jpg\"\n \"articles_published_count\": 0\n \"following_count\": 0\n \"followers_count\": 0\n \"has_completed_profile\": false\n \"has_avatar\": true\n \"point_balance\": 0\n \"unread_notifications_count\": 0\n \"is_following\": false\n \"dob\": \"1990-01-01\",\n \"gender\": \"male\",\n \"job_title\": \"Engineer\",\n \"country_id\": 1,\n \"state_id\": 1,\n \"category_ids\": [1,2,3]\n},\n}"
+        422:
+          description: 'validation error'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"The given data was invalid.\",\n\"errors\": {\n\"old_password\": [\n \"The old password is incorrect\"\n],\n\"password\": [\n\"The password confirmation does not match.\"\n]\n}"
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: 'The old password of the user.'
+                  example: abcd1234
+                new_password:
+                  type: string
+                  description: 'The new password of the user.'
+                  example: abcd1234
+                new_password_confirmation:
+                  type: string
+                  description: 'The new password confirmation of the user.'
+                  example: abcd1234
+              required:
+                - old_password
+                - new_password
+                - new_password_confirmation
+  /api/v1/user/email:
+    post:
+      summary: 'Update User Email'
+      operationId: updateUserEmail
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email updated'
+                  email: johndoe@gmail.com
+                  user: {  }
+                properties:
+                  message:
+                    type: string
+                    example: 'Email updated'
+                  email:
+                    type: string
+                    example: johndoe@gmail.com
+                  user:
+                    type: object
+                    properties: {  }
+        401:
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+        422:
+          description: 'Email already verified for your account'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Email already verified for your account'
+                properties:
+                  message:
+                    type: string
+                    example: 'Email already verified for your account'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: ''
+                  example: null
+                new_email:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+                new_email_confirmation:
+                  type: string
+                  description: 'Email of the user.'
+                  example: john@gmail.com
+              required:
+                - new_email
+                - new_email_confirmation
   /api/v1/user/settings:
     get:
       summary: 'Get settings of logged in user'
       operationId: getSettingsOfLoggedInUser
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5740,14 +5798,7 @@ paths:
       summary: 'Update User Email'
       operationId: updateUserEmail
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5809,14 +5860,7 @@ paths:
       summary: 'Verify User Email with Token'
       operationId: verifyUserEmailWithToken
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5850,14 +5894,7 @@ paths:
       summary: 'Update User Name'
       operationId: updateUserName
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5907,14 +5944,7 @@ paths:
       summary: 'Link Article Categories to User (used for interest tagging)'
       operationId: linkArticleCategoriesToUserusedForInterestTagging
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -5977,14 +6007,7 @@ paths:
       summary: 'Upload or Update User Profile Picture'
       operationId: uploadOrUpdateUserProfilePicture
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6038,14 +6061,7 @@ paths:
       summary: 'Upload or Update User Cover'
       operationId: uploadOrUpdateUserCover
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6099,14 +6115,7 @@ paths:
       summary: 'Update User Username'
       operationId: updateUserUsername
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6156,14 +6165,7 @@ paths:
       summary: 'Update User Bio'
       operationId: updateUserBio
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6213,14 +6215,7 @@ paths:
       summary: 'Update User Date of Birth'
       operationId: updateUserDateOfBirth
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6280,14 +6275,7 @@ paths:
       summary: 'Update User Save Gender'
       operationId: updateUserSaveGender
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6316,8 +6304,11 @@ paths:
               properties:
                 gender:
                   type: string
-                  description: 'Must be one of <code>male</code> or <code>female</code>.'
-                  example: female
+                  description: ''
+                  example: male
+                  enum:
+                    - male
+                    - female
               required:
                 - gender
   /api/v1/user/settings/location:
@@ -6325,14 +6316,7 @@ paths:
       summary: 'Update User Location'
       operationId: updateUserLocation
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6378,14 +6362,7 @@ paths:
       summary: 'Update User Job title'
       operationId: updateUserJobTitle
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6435,14 +6412,7 @@ paths:
       summary: 'Update user password (only for login with OTP)'
       operationId: updateUserPasswordonlyForLoginWithOTP
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6490,17 +6460,10 @@ paths:
                 - password_confirmation
   /api/v1/views:
     post:
-      summary: "Record view for viewable\nThis is used for recording views for articles, comments, and merchant offers"
-      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsAndMerchantOffers
+      summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, and user profiles"
+      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsMerchantOffersAndUserProfiles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6526,7 +6489,7 @@ paths:
                 viewable_type:
                   type: string
                   description: 'The type of the viewable.'
-                  example: article/comment/merchant_offer
+                  example: article/comment/merchant_offer/user_profile
                 viewable_id:
                   type: integer
                   description: 'The id of the viewable.'
@@ -6536,17 +6499,10 @@ paths:
                 - viewable_id
   '/api/v1/views/{type}/{id}':
     get:
-      summary: "Get views for viewable type\nThis is used for getting views for articles, comments, and merchant offers"
-      operationId: getViewsForViewableTypeThisIsUsedForGettingViewsForArticlesCommentsAndMerchantOffers
+      summary: "Get views for viewable type\nThis is used for getting views for articles, comments, merchant offers, and user profiles"
+      operationId: getViewsForViewableTypeThisIsUsedForGettingViewsForArticlesCommentsMerchantOffersAndUserProfiles
       description: ''
-      parameters:
-        -
-          in: header
-          name: Authorization
-          description: ''
-          example: 'Bearer {USER_TOKEN_KEY}'
-          schema:
-            type: string
+      parameters: []
       responses:
         200:
           description: success
@@ -6571,7 +6527,7 @@ paths:
         in: path
         name: type
         description: 'The type of the viewable.'
-        example: article/comment/merchant_offer
+        example: article/comment/merchant_offer/user_profile
         required: true
         schema:
           type: string
@@ -6601,6 +6557,9 @@ tags:
     description: ''
   -
     name: Location
+    description: ''
+  -
+    name: Media
     description: ''
   -
     name: Merchant
@@ -6637,7 +6596,7 @@ components:
     default:
       type: http
       scheme: bearer
-      description: ''
+      description: 'You will received a token to authenticate user requests after you logged in.'
 security:
   -
     default: []

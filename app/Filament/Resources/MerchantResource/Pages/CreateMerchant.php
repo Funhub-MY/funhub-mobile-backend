@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\MerchantResource\Pages;
 
-use App\Filament\Resources\MerchantResource;
+use App\Models\User;
 use App\Models\Merchant;
 use Filament\Pages\Actions;
+use Illuminate\Support\Str;
 use Filament\Resources\Pages\CreateRecord;
+use App\Notifications\MerchantOnboardEmail;
+use App\Filament\Resources\MerchantResource;
 
 class CreateMerchant extends CreateRecord
 {
@@ -21,6 +24,32 @@ class CreateMerchant extends CreateRecord
             $data['redeem_code'] = rand(100000, 999999);
             $maxTries++;
         }
+
+        $data['default_password'] = Str::random(8);
+
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $name = $this->record->name;
+        $email = $this->record->email;
+        $password = $this->record->default_password;
+
+        $user = new User([
+            'name' => $name,
+            'email' => $email,
+            'password' => bcrypt($password),
+        ]);
+
+        $user->save();
+
+        // attach merchant role
+        $user->assignRole('merchant');
+
+        $this->record->user_id = $user->id;
+        $this->record->save();
+
+        $user->notify(new MerchantOnboardEmail($name, $email, $password, $this->record->redeem_code));
     }
 }

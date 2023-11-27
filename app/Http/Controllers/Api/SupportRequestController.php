@@ -75,10 +75,8 @@ class SupportRequestController extends Controller
      * @bodyParam title string required Title of support request. Example: My support request
      * @bodyParam message string required Message to send. Example: This is my message
      * @bodyParam media_ids array optional Array of media ids. Example: [1,2,3]
-     *
      * @response scenario="success" {
-     * "message": {},
-     * "request": {}
+     * "data": []
      * }
      */
     public function postRaiseSupportRequest(Request $request)
@@ -105,7 +103,7 @@ class SupportRequestController extends Controller
 
         // move media to attached to message
         if ($request->has('media_ids')) {
-            $userUploads = auth()->user()->getMedia('support_uploads')
+            $userUploads = auth()->user()->getMedia(SupportRequestMessage::MEDIA_COLLECTION_NAME)
                 ->whereIn('id', $request->media_ids);
             $userUploads->each(function ($media) use ($message) {
                 $media->move($message, SupportRequestMessage::MEDIA_COLLECTION_NAME);
@@ -114,10 +112,10 @@ class SupportRequestController extends Controller
 
         $supportRequest->load('messages');
 
-        return response()->json([
+        return [
             'message' => new SupportRequestMessageResource($message),
             'request' => new SupportRequestResource($supportRequest)
-        ]);
+        ];
     }
 
     /**
@@ -159,7 +157,7 @@ class SupportRequestController extends Controller
 
         // move media to attached to message
         if ($request->has('media_ids')) {
-            $userUploads = auth()->user()->getMedia('support_uploads')
+            $userUploads = auth()->user()->getMedia(SupportRequestMessage::MEDIA_COLLECTION_NAME)
                 ->whereIn('id', $request->media_ids);
             $userUploads->each(function ($media) use ($message) {
                 $media->move($message, SupportRequestMessage::MEDIA_COLLECTION_NAME);
@@ -305,7 +303,7 @@ class SupportRequestController extends Controller
 
             $uploaded = $user->addMedia($request->images)
                 ->toMediaCollection(
-                    'support_uploads',
+                    SupportRequestMessage::MEDIA_COLLECTION_NAME,
                     (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
                 );
             return response()->json([
@@ -324,7 +322,7 @@ class SupportRequestController extends Controller
             $uploaded = collect($request->images)->map(function ($image) use ($user) {
                 return $user->addMedia($image)
                     ->toMediaCollection(
-                        'support_uploads',
+                        SupportRequestMessage::MEDIA_COLLECTION_NAME,
                         (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
                 );
             });

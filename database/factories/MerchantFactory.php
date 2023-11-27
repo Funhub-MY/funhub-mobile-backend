@@ -19,6 +19,7 @@ class MerchantFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
             'business_name' => fake()->company(),
             'redeem_code' => fake()->unique()->randomNumber(6),
             'business_phone_no' => fake()->randomNumber(9),

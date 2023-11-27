@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class SupportRequestMessage extends Model implements HasMedia
+class SupportRequestMessage extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
     protected $table = 'support_requests_messages';
 
-    const MEDIA_COLLECTION_NAME = 'support_requests_messages';
+    const MEDIA_COLLECTION_NAME = 'support_uploads';
 
     protected $guarded = ['id'];
 

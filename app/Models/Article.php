@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -9,7 +10,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Builder;
 
-class Article extends Model implements HasMedia
+class Article extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia, Searchable;
 
@@ -48,7 +49,7 @@ class Article extends Model implements HasMedia
      */
     public function searchableAs(): string
     {
-        return 'articles_index';
+        return config('scout.prefix').'articles_index';
     }
 
     public function toSearchableArray()
@@ -75,6 +76,10 @@ class Article extends Model implements HasMedia
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
                 'views' => $this->views->count()
             ],
+            '_geoloc' => ($this->location()->count() > 0) ? [
+                'lat' => floatval($this->location->first()->lat),
+                'lng' => floatval($this->location->first()->lng)
+            ] : null,
         ];
     }
 
@@ -110,6 +115,16 @@ class Article extends Model implements HasMedia
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function userFollowers()
+    {
+        return $this->hasManyThrough(User::class, UserFollowing::class, 'following_id', 'id', 'user_id', 'user_id');
+    }
+
+    public function userFollowings()
+    {
+        return $this->hasManyThrough(User::class, UserFollowing::class, 'user_id', 'id', 'user_id', 'following_id');
     }
 
     public function comments()
@@ -187,6 +202,6 @@ class Article extends Model implements HasMedia
      */
     public function scopePublished(Builder $query): void
     {
-         $query->where($this->getTable().'.status', self::STATUS_PUBLISHED);
+        $query->where($this->getTable() . '.status', self::STATUS_PUBLISHED);
     }
 }

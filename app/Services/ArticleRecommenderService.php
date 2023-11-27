@@ -1,11 +1,10 @@
 <?php
-namespace App\Services;
 
+namespace App\Services;
 use App\Models\Article;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
-
 class ArticleRecommenderService
 {
     protected $user;
@@ -16,98 +15,130 @@ class ArticleRecommenderService
 
     public function build()
     {
-        // Apply candidate filters to existing query
-        $articles = Article::published()
-            ->with(['views' => function ($query) {
-                $query->where('user_id', $this->user->id);
-            }, 'likes' => function ($query) {
-                $query->where('user_id', $this->user->id);
-            }, 'comments' => function ($query) {
-                $query->where('user_id', $this->user->id);
-            }, 'categories', 'imports'])
+        $user_id = $this->user->id;
+        $chunkSize = 100;
+        $scores = [];
+
+        Article::published()
+            ->disableCache()
+            ->with(['views', 'likes', 'comments', 'categories', 'imports'])
+            ->withCount(['views' => function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            }])
+            ->withCount(['likes' => function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            }])
+            ->withCount(['comments' => function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            }])
             ->where('user_id', '!=', $this->user->id)
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', $this->user->id);
             })
-            ->get();
-
-        // Get ID list
-        $ids = $articles->pluck('id');
-
-        // Get affinity and weight scores for each ID
-        $scored = Article::whereIn('articles.id', $ids)
-            ->withCount(['views', 'likes', 'comments'])
-            ->with(['categories' => function ($query) {
-                $query->whereIn('article_category_id', $this->user->articleCategoriesInterests()->pluck('article_category_id'));
-            }])
-            ->get()
-            ->map(function ($article) {
-                $affinity = $this->affinityScore($article);
-                $weight = $this->weightScore($article);
-
-                return [
-                    'article_id' => $article->id,
-                    'user_id' => $this->user->id,
-                    'affinity' => $affinity,
-                    'weight' => $weight,
-                    'score' => $affinity * $weight,
-                    'last_built' => Carbon::now()->toDateTimeString(),
-                ];
+            ->orderBy('created_at', 'desc')
+            ->chunk($chunkSize, function ($articles) use (&$scores) {
+                foreach ($articles as $article) {
+                    $affinity = $this->affinityScore($article);
+                    $weight = $this->weightScore($article);
+                    array_push($scores, [
+                        'article_id' => $article->id,
+                        'user_id' => $this->user->id,
+                        'affinity' => $affinity,
+                        'weight' => $weight,
+                        'score' => $affinity * $weight,
+                        'last_built' => Carbon::now()->toDateTimeString(),
+                    ]);
+                }
             });
 
-        // save to user->articleRanks update or create
-        $this->user->articleRanks()->delete();
-        $this->user->articleRanks()->createMany($scored->toArray());
+        Log::info('Finished building recommendations for user ' . $this->user->id, [
+            'scored_article_ids ' => Arr::pluck($scores, 'article_id'),
+            'scored_article_count' => count($scores),
+        ]);
 
-        return $scored;
+        if ($scores) {
+          // delete all article ranks
+          $this->user->articleRanks()->delete();
+          // recreate many from scores
+          $this->user->articleRanks()->createMany($scores);
+        }
+
+        // return latest
+        return $this->user->articleRanks;
     }
 
-    /**
-     * Calculate affinity score for article
-     *
-     * @param Article $article
-     * @return float
-     */
     private function affinityScore($article) {
         $affinity = 0;
         if ($article->likes_count > 0) {
             $affinity += 10;
         }
-        // increase affinity is user commented
+
         if ($article->comments_count > 0) {
             $affinity += 10;
         }
-        // decrease affinity if user view more than twice
-        if ($article->views_count > 2) {
-            $affinity -= 15;
+
+        // Adjusted view count mechanism to incorporate time decay
+        if ($article->views_count > 0) {
+            // my views
+            $latestCreatedAt = $article->views()->where('user_id', $this->user->id)
+                ->max('created_at');
+            if ($latestCreatedAt) {
+                $daysSinceLastView = Carbon::parse($latestCreatedAt)->diffInDays(Carbon::now());
+
+                $viewDecayFactor = 1 / (1 + $daysSinceLastView);
+                $affinity += $viewDecayFactor * 10;
+            }
         }
-        // increase affinity if user never viewed before
-        if ($article->views_count == 0) {
-            $affinity += 10;
+
+        // Incorporating category importance
+        foreach ($article->categories as $category) {
+            $affinity += $this->hasHighInteractionWithCategory($category) ? 15 : 10;
         }
-        // categories match user will increase affinity
-        $affinity += $article->categories->count() * 10;
         return $affinity;
     }
 
-    /**
-     * Calculate weight score for article
-     *
-     * @param Article $article
-     * @return float
-     */
     private function weightScore($article) {
-        // the older the article, then lesser weight
         $weight = 10;
 
-        // reduce weight if older the article 30% of entire weight
-        $weight -= $weight * ($article->created_at->diffInDays(Carbon::now()) / 100);
+        // if article is older penalize more, we want only latest articles
+        $daysSincePublished = Carbon::parse($article->created_at)->diffInDays(Carbon::now());
+        $weight -= $daysSincePublished * 0.1;
 
-        // reduce article weight if article is an imported article. weights the remainder 60%
         if ($article->imports()->exists()) {
             $weight -= $weight * 0.6;
         }
-
         return $weight;
+    }
+
+    /**
+    * Determines if the user has a high interaction rate with articles of a particular category.
+    *
+    * @param $category
+    * @return bool
+    */
+    private function hasHighInteractionWithCategory($category)
+    {
+        // Define a threshold for what constitutes "high" interaction.
+        // This can be based on metrics like views, likes, or comments, and might be adjusted based on data insights.
+        $interactionThreshold = 10;
+
+        // Fetch the number of articles from the given category that the user has interacted with.
+        // For simplicity, let's assume an interaction constitutes viewing, liking, or commenting on an article.
+
+        $interactions = Article::disableCache()->whereHas('categories', function ($query) use ($category) {
+            $query->where('article_category_id', $category->id);
+        })
+        ->whereHas('views', function ($query) {
+            $query->where('user_id', $this->user->id);
+        })
+        ->orWhereHas('likes', function ($query) {
+            $query->where('user_id', $this->user->id);
+        })
+        ->orWhereHas('comments', function ($query) {
+            $query->where('user_id', $this->user->id);
+        })
+        ->count();
+
+        return $interactions >= $interactionThreshold;
     }
 }

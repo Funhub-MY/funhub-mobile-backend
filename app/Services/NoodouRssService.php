@@ -106,6 +106,10 @@ class NoodouRssService
         }
         $article_tags = ArticleTag::Select(DB::raw('id, LOWER(name) as name'))->get();
         foreach($articles as $article) {
+            $article_exists = Article::where('title', htmlspecialchars_decode($article['title']))->first();
+            if ($article_exists) {
+                continue;
+            }
             try {
                 $new_article = new Article();
                 $new_article->title = htmlspecialchars_decode($article['title']);
@@ -143,7 +147,7 @@ class NoodouRssService
                     // save thumbnail first, as it need to be is_cover_picture = true.
                     if (isset($article['media_thumbnail']) && $article['media_thumbnail'] != null) {
                         $new_article->addMediaFromUrl($article['media_thumbnail'])
-                            ->withCustomProperties(['is_cover_picture' => true])
+                            ->withCustomProperties(['is_cover' => true])
                             ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                     } else {
                         // try get first image as thumbnail.
@@ -151,7 +155,7 @@ class NoodouRssService
                         if ($first_image_url !== '' && $first_image_url !== null) {
                             $this->current_image_url = $first_image_url;
                             $new_article->addMediaFromUrl($first_image_url)
-                                ->withCustomProperties(['is_cover_picture' => true])
+                                ->withCustomProperties(['is_cover' => true])
                                 ->toMediaCollection(Article::MEDIA_COLLECTION_NAME);
                         } else {
                             Log::info('Processing Articles of Channel ID: '.$channel->id .'\n'.'Channel Name: '.$channel->channel_name);

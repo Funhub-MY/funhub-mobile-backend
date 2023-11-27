@@ -2,25 +2,32 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
 use Closure;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use App\Models\User;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Reward;
+use App\Models\Approval;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Columns\SelectColumn;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use App\Services\PointService;
+use App\Models\ApprovalSetting;
+use App\Models\RewardComponent;
+use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\Select;
+use App\Services\PointComponentService;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\SelectColumn;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class UserResource extends Resource
 {
@@ -118,8 +125,8 @@ class UserResource extends Resource
                         SpatieMediaLibraryFileUpload::make('avatar')
                             ->maxFiles(1)
                             ->nullable()
-                             // disk is s3_public
-                             ->disk(function () {
+                            // disk is s3_public
+                            ->disk(function () {
                                 if (config('filesystems.default') === 's3') {
                                     return 's3_public';
                                 }
@@ -139,8 +146,8 @@ class UserResource extends Resource
                         Forms\Components\Radio::make('gender')
                             ->inline()
                             ->options([
-                              'male' => 'Male',
-                              'female' => 'Female'
+                                'male' => 'Male',
+                                'female' => 'Female'
                             ])
                             ->rules('nullable'),
 
@@ -216,6 +223,68 @@ class UserResource extends Resource
                             $record->update(['status' => User::STATUS_SUSPENDED]);
                         });
                     })->requiresConfirmation(),
+                BulkAction::make('reward')
+                    ->label('Reward')
+                    ->action(function (Collection $records, array $data): void {
+                        foreach ($records as $record) {
+                            $rewardType = $data['rewardType'];
+                            $quantity = $data['quantity'];
+                            $reward = Reward::first();
+                            $rewardComponentId = $data['rewardComponent'] ? $data['rewardComponent'] : null;
+                            $rewardComponent = RewardComponent::find($rewardComponentId);
+                            $user = User::find($record->id);
+
+                            switch ($rewardType) {
+                                case 'point':
+                                    $approvableType = 'App\Models\Reward';
+                                    $approvableId = $reward->id;
+                                    break;
+                                case 'point_component':
+                                    $approvableType = 'App\Models\RewardComponent';
+                                    $approvableId = $rewardComponent->id;
+                                    break;
+                            }
+
+                            $approvalSettings = ApprovalSetting::getSettingsForModel($approvableType);
+                                    
+                            foreach ($approvalSettings as $approvalSetting) {
+                                // Create new approval record(s)
+                                // Number of record(s) created based on no. of sequence available for each approvable_type 
+                                $approval = new Approval([
+                                    'approval_setting_id' => $approvalSetting->id,
+                                    'approver_id' => $approvalSetting->sequence === 1 ? auth()->user()->id : null,
+                                    'approvable_type' => $approvableType,
+                                    'approvable_id' => $approvableId,
+                                    'data' => json_encode([
+                                        'user' => $user->toArray(),
+                                        'reward_user_id' => $user->id,
+                                        'action' => 'reward-user',
+                                        'quantity' => $quantity,
+                                    ]),
+                                    'approved' => $approvalSetting->sequence === 1,
+                                ]);
+                                $approval->save();
+                            }
+                        }
+                    })
+                    ->form([
+                        Select::make('rewardType')
+                            ->label('Reward Type')
+                            ->options([
+                                'point' => 'Point',
+                                'point_component' => 'Point Component',
+                            ])
+                            ->required(),
+                        TextInput::make('quantity')
+                            ->label('Quantity')
+                            ->numeric()
+                            ->minValue(1)
+                            ->integer()
+                            ->required(),
+                        Select::make('rewardComponent')
+                            ->label('Reward Component')
+                            ->options(RewardComponent::all()->pluck('name', 'id'))
+                    ])
             ]);
     }
 

@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Services\Mpay;
+use App\Models\Product;
+use Illuminate\Http\Request;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
-use App\Models\MerchantOfferVoucher;
-use App\Models\Product;
 use App\Notifications\OfferClaimed;
-use App\Services\Mpay;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\MerchantOfferVoucher;
+use App\Notifications\PurchasedGiftCardNotification;
+use App\Notifications\PurchasedOfferNotification;
 
 class PaymentController extends Controller
 {
@@ -98,8 +100,20 @@ class PaymentController extends Controller
                 ]);
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
+
+                    if ($transaction->user->email) {
+                        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR'));
+                    }
+
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
+
+                    if ($transaction->user->email) {
+                        $product = Product::where('id', $transaction->transactionable_id)->first();
+                        $quantity = $transaction->amount / $product->unit_price;
+                        $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+                    }
                 }
 
                 // return with js
@@ -112,10 +126,20 @@ class PaymentController extends Controller
             } else if ($request->responseCode == 'PE') { // pending
                 return 'Transaction Still Pending';
             } else { // failed
+                Log::error('Payment return failed', [
+                    'error' => 'Transaction Failed',
+                    'request' => request()->all()
+                ]);
+                $gatewayId = $request->mpay_ref_no;
+                if (!$request->mpay_ref_no) {
+                    // dont have mpay ref no when failed then use responseCode
+                    $gatewayId = 'RES'.$request->responseCode;
+                }
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
-                    'gateway_transaction_id' => $request->mpay_ref_no,
+                    'gateway_transaction_id' => $gatewayId,
                 ]);
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
                 } else if ($transaction->transactionable_type == Product::class) {

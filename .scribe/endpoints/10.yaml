@@ -1,113 +1,18 @@
-name: Product
+name: View
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/products/checkout
+    uri: api/v1/views
     metadata:
-      groupName: Product
-      groupDescription: ''
-      subgroup: 'Product Rewards'
-      subgroupDescription: ''
-<<<<<<< HEAD
-      title: 'Get the point & point components balance of the logged in user.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
-          "point_components": {[
-            {"id": 1, "name": "rice", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 2, "name": "egg", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 3, "name": "vegetable", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 4, "name": "meat", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 5, "name": "fish", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-          ]}
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer e8h5kPVDZ61daf4aE36vcgb'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/balance
-    metadata:
-      groupName: Point
+      groupName: View
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get the point balance of the user.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "balance": 100
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer v6aZ3feE1aDdghcV465Pb8k'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/components/balance
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get the point component balance of the user.'
-=======
-      title: 'Post Checkout'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      title: |-
+        Record view for viewable
+        This is used for recording views for articles, comments, merchant offers, and user profiles
       description: ''
       authenticated: true
       custom: []
@@ -120,209 +25,32 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      product_id:
-        name: product_id
-        description: 'Product ID.'
+      viewable_type:
+        name: viewable_type
+        description: 'The type of the viewable.'
+        required: true
+        example: article/comment/merchant_offer/user_profile
+        type: string
+        enumValues: []
+        custom: []
+      viewable_id:
+        name: viewable_id
+        description: 'The id of the viewable.'
         required: true
         example: 1
         type: integer
-        custom: []
-      payment_method:
-        name: payment_method
-        description: 'Payment Method.'
-        required: true
-        example: fiat
-        type: string
-        custom: []
-      fiat_payment_method:
-        name: fiat_payment_method
-        description: 'required_if:payment_method,fiat Payment Method.'
-        required: false
-        example: fpx/card
-        type: string
-        custom: []
-      quantity:
-        name: quantity
-        description: Quantity.
-        required: true
-        example: 1
-        type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      product_id: 1
-      payment_method: fiat
-      fiat_payment_method: fpx/card
-      quantity: 1
+      viewable_type: article/comment/merchant_offer/user_profile
+      viewable_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Redirect to Gateway"
-          }
-        headers: []
-        description: success
-        custom: []
-<<<<<<< HEAD
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer v18DE3ha4ZgadVePbck66f5'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/rewards
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Rewards Available.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-=======
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Product is sold out"
-          }
-        headers: []
-        description: insufficient_product_quantity
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Redirect to gateway",
-          "gateway_data": [
-               'url' => $this->url .'/payment/eCommerce',
-                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
-                'mid' => $this->mid,
-                'invno' => $invoice_no,
-                'capture_amt' => $amount,
-                'desc' => $desc,
-                'postURL' => $redirectUrl,
-                'phone' => $phoneNo,
-                'email' => $email,
-                'param' => $param,
-                'authorize' => 'authorize'
-            ];
-          }
-        headers: []
-        description: fiat_payment_mode
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-<<<<<<< HEAD
-      - 'Bearer dP41eD6cgZ538fk6baEvhVa'
-=======
-      - 'Bearer ad45PDvhb3686kgeaVEZ1cf'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/products/checkout/cancel
-    metadata:
-      groupName: Product
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Cancel Product Checkout'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      transaction_no:
-        name: transaction_no
-        description: 'Transaction No.'
-        required: true
-<<<<<<< HEAD
-        example: 1
-        type: integer
-        custom: []
-    cleanBodyParameters:
-      quantity: 1
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Pc4kVEaf5a6geZbvdh81D36'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/ledgers
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Point Ledger'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": [
-          {
-            "id": 1,
-            ...
-          }
-          ]
+          "message": "View recorded"
           }
         headers: []
         description: success
@@ -331,7 +59,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E846edVkPfbaaD3h516vZgc'
+      - 'Bearer bfZ4kdga5c6eh3V1aP6D8Ev'
     controller: null
     method: null
     route: null
@@ -339,13 +67,15 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/points/components/ledgers
+    uri: 'api/v1/views/{type}/{id}'
     metadata:
-      groupName: Point
+      groupName: View
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Point Component Ledgers)'
+      title: |-
+        Get views for viewable type
+        This is used for getting views for articles, comments, merchant offers, and user profiles
       description: ''
       authenticated: true
       custom: []
@@ -354,25 +84,37 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      filter_type:
-        name: filter_type
-        description: 'Type of Component (name).'
-        required: false
-        example: egg
-=======
-        example: '11234455'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      type:
+        name: type
+        description: 'The type of the viewable.'
+        required: true
+        example: article/comment/merchant_offer/user_profile
         type: string
+        enumValues: []
         custom: []
-    cleanBodyParameters:
-      transaction_no: '11234455'
+      id:
+        name: id
+        description: 'The id of the viewable.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+    cleanUrlParameters:
+      type: article/comment/merchant_offer/user_profile
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Transaction cancelled"
+          "views": [],
+          "total": 0
           }
         headers: []
         description: success
@@ -381,11 +123,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-<<<<<<< HEAD
-      - 'Bearer cZDbe85VaaEPf63d6h1vg4k'
-=======
-      - 'Bearer ae64vgh1Vb8f6k5dPaDZc3E'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      - 'Bearer VZ68ckD461dvge3ahfabPE5'
     controller: null
     method: null
     route: null

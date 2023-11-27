@@ -16,7 +16,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         return $user->can('view_any_article');
     }
@@ -28,7 +28,7 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Article $article)
+    public function view(User $user, Article $article): bool
     {
         return $user->can('view_article');
     }
@@ -39,7 +39,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->can('create_article');
     }
@@ -51,7 +51,7 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Article $article)
+    public function update(User $user, Article $article): bool
     {
         return $user->can('update_article');
     }
@@ -63,7 +63,7 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Article $article)
+    public function delete(User $user, Article $article): bool
     {
         return $user->can('delete_article');
     }
@@ -74,7 +74,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_article');
     }
@@ -86,7 +86,7 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Article $article)
+    public function forceDelete(User $user, Article $article): bool
     {
         return $user->can('force_delete_article');
     }
@@ -97,7 +97,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_article');
     }
@@ -109,7 +109,7 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Article $article)
+    public function restore(User $user, Article $article): bool
     {
         return $user->can('restore_article');
     }
@@ -120,7 +120,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restoreAny(User $user)
+    public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_article');
     }
@@ -132,7 +132,7 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Article $article)
+    public function replicate(User $user, Article $article): bool
     {
         return $user->can('replicate_article');
     }
@@ -143,7 +143,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function reorder(User $user)
+    public function reorder(User $user): bool
     {
         return $user->can('reorder_article');
     }

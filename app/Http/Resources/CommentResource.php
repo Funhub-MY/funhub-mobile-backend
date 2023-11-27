@@ -35,7 +35,7 @@ class CommentResource extends JsonResource
             'body' => $commentBody,
             'liked_by_user' => $this->likes->contains('user_id', auth()->id()),
             'likes' => CommentLikeResource::collection($this->likes),
-            'replies' => CommentResource::collection($this->replies),
+            'replies' => ($this->parent_id) ? null : CommentResource::collection($this->replies), // only applicable for top level comment
             'is_reply' => $this->parent_id ? true : false,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

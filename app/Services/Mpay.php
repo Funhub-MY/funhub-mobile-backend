@@ -60,6 +60,11 @@ class Mpay {
             Log::info('[MPAY] Email is not set, using default email:'. $defaultEmail);
         }
 
+        if (!$phoneNo) {
+            $defaultPhone = config('app.mpay_default_phone');
+            Log::info('[MPAY] Phone is not set, using default phone:'. $defaultPhone);
+        }
+
         $data = [
             'url' => $this->url .'/payment/eCommerce',
             'formData' => [
@@ -69,7 +74,7 @@ class Mpay {
                 'amt' => $amount,
                 'desc' => $desc,
                 'postURL' => $redirectUrl,
-                'phone' => $phoneNo,
+                'phone' => $phoneNo ? $phoneNo : $defaultPhone,
                 'email' => $email ? $email : $defaultEmail,
                 'param' => $param
             ]

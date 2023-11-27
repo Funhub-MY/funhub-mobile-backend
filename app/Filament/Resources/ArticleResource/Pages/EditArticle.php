@@ -33,6 +33,10 @@ class EditArticle extends EditRecord
             });
             $record->subCategories()->attach($data['sub_categories'], ['created_at' => now(), 'updated_at' => now()]);
         }
+
+        if ($data['locations']) {
+            $record->location()->sync($data['locations']);
+        }
         
         return $record;
     }
@@ -40,6 +44,7 @@ class EditArticle extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data['sub_categories'] = $this->record->subCategories->pluck('id')->toArray();
+        $data['locations'] = $this->record->location->pluck('id')->toArray();
 
         return $data;
     }

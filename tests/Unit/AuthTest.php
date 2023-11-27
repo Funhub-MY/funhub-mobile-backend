@@ -80,6 +80,7 @@ class AuthTest extends TestCase
             ->first();
 
         // verify otp
+
         $response = $this->postJson('/api/v1/verifyOtp', [
             'country_code' => '60',
             'phone_no' => '1234567890', // fake phone number
@@ -96,7 +97,7 @@ class AuthTest extends TestCase
             'phone_no' => '1234567890',
             'phone_country_code' => '60',
             'otp' => null,
-            'otp_verified_at' => now()
+            'otp_verified_at' => now()->toDateTimeString()
         ]);
     }
 

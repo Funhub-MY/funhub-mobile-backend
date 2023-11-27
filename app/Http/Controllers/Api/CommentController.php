@@ -60,8 +60,8 @@ class CommentController extends Controller
             $request->merge(['commentable_type' => Article::class]);
         }
 
-        $query = Comment::where('commentable_type', $request->commentable_type)
-            ->where('commentable_id', $id);
+        $query = Comment::where('comments.commentable_type', $request->commentable_type)
+            ->where('comments.commentable_id', $id);
 
         if ($type == 'article') {
             // if type is article, ensure article is published and user is not hidden by article owner
@@ -71,7 +71,7 @@ class CommentController extends Controller
                     ->whereDoesntHave('hiddenUsers', function ($query) {
                         $query->where('user_id', auth()->id());
                     });
-            })->where('parent_id', null);
+            })->where('comments.parent_id', null);
         }
 
         $this->buildQuery($query, $request);
@@ -79,9 +79,8 @@ class CommentController extends Controller
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
-            ->with(['replies' => function ($query) use ($request) {
-                $query->latest()
-                    ->paginate($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
+            ->with(['replies' => function ($query) {
+                $query->latest();
             }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
@@ -92,7 +91,7 @@ class CommentController extends Controller
         $peopleWhoBlockedMeIds = auth()->user()->blockedBy()->pluck('user_id')->toArray();
 
         // filter out my blocked users ids comments and its replies
-        $query->whereNotIn('user_id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)));
+        $query->whereNotIn('comments.user_id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)));
 
         // filter out if replies parent user_id is someone i blocked
         // $query->whereDoesntHave('replies.user.usersBlocked', function ($query) {
@@ -102,6 +101,15 @@ class CommentController extends Controller
 
         $data = $query->paginate(config('app.paginate_per_page'));
 
+        // post process replies
+        // TODO: enhance this as the primary query will still call all replies
+        if ($data && request()->has('replies_per_comment')) {
+            // go to each comment and limit the replies to replies_per_comment (default: 3)
+            $replies_per_comment = $request->replies_per_comment ? $request->replies_per_comment : 3;
+            $data->map(function ($item, $key) use ($replies_per_comment) {
+                $item->replies = $item->replies->take($replies_per_comment);
+            });
+        }
         return CommentResource::collection($data);
     }
 
@@ -189,13 +197,20 @@ class CommentController extends Controller
     public function show($id, Request $request)
     {
         $comment = Comment::where('id', $id)->with('user')
-            ->with(['replies' => function ($query) use ($request) {
-                $query->latest()
-                    ->paginate($request->has('replies_per_comment') ? $request->replies_per_comment : 3);
+            ->with(['replies' => function ($query) {
+                $query->latest();
             }])
             ->with('replies.user')
             ->withCount('replies')
             ->firstOrFail();
+
+        if ($comment && request()->has('replies_per_comment')) {
+            // go to each comment and limit the replies to replies_per_comment (default: 3)
+            $replies_per_comment = $request->replies_per_comment ? $request->replies_per_comment : 3;
+            $comment->map(function ($item, $key) use ($replies_per_comment) {
+                $item->replies = $item->replies->take($replies_per_comment);
+            });
+        }
 
         // TODO: check if user is blocked to view comment
 
@@ -345,6 +360,8 @@ class CommentController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->with('user');
+
+        $data = $query->paginate(config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
     }

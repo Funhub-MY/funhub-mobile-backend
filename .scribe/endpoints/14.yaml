@@ -1,32 +1,16 @@
-<<<<<<< HEAD
-name: 'Help Center'
-=======
-name: Transaction
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+name: Location
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-<<<<<<< HEAD
-    uri: api/v1/help/faqs
+    uri: api/v1/locations
     metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: FAQs
-      subgroupDescription: ''
-      title: 'Get All FAQs'
-=======
-    uri: api/v1/transactions
-    metadata:
-      groupName: Transaction
+      groupName: Location
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: |-
-        Get all my transactions
-        Get all transactions of current logged in users paginated
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      title: 'Get Locations'
       description: ''
       authenticated: true
       custom: []
@@ -39,217 +23,81 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-<<<<<<< HEAD
-      category_ids:
-        name: category_ids
-        description: 'optional Array of category ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        custom: []
-      query:
-        name: query
+      name:
+        name: name
         description: 'optional Search query.'
         required: false
-        example: 'How to ...'
+        example: '"KFC SS15"'
         type: string
+        enumValues: []
         custom: []
-    cleanBodyParameters:
-      category_ids:
-        - 1
-        - 2
-        - 3
-      query: 'How to ...'
-=======
-      date_from:
-        name: date_from
-        description: 'Date from'
+      state_id:
+        name: state_id
+        description: 'optional Filter by state id.'
         required: false
-        example: '2021-01-01'
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      country_id:
+        name: country_id
+        description: 'optional Filter by country id.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by city.'
+        required: false
+        example: '"Subang Jaya"'
         type: string
+        enumValues: []
         custom: []
-      date_to:
-        name: date_to
-        description: 'Date to'
+      lat:
+        name: lat
+        description: 'optional Latitude of User GeoLoc.'
         required: false
-        example: '2021-01-31'
-        type: string
+        example: 3.073065
+        type: number
+        enumValues: []
         custom: []
-    cleanBodyParameters:
-      date_from: '2021-01-01'
-      date_to: '2021-01-31'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-<<<<<<< HEAD
-=======
-          "current_page": 1,
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-<<<<<<< HEAD
-      - 'Bearer Zdh1V48aaEDc5f3gbP6e6kv'
-=======
-      - 'Bearer 6g3fadEeDV146vkZcbP5h8a'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-<<<<<<< HEAD
-    uri: api/v1/help/faq_categories
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: FAQs
-      subgroupDescription: ''
-      title: 'Get All FAQs Categories'
-=======
-    uri: api/v1/transactions/transaction_no
-    metadata:
-      groupName: Transaction
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Transaction by Transaction Number'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-<<<<<<< HEAD
-          "data": []
-=======
-           data: {}
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-<<<<<<< HEAD
-      - 'Bearer Ef8a45Dg3Pa6bhd1cevV6kZ'
-=======
-      - 'Bearer a4gd66bZPvD3f1ae5EVh8kc'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-<<<<<<< HEAD
-    uri: api/v1/help/support_requests
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get My Support Requests'
-=======
-    uri: 'api/v1/transactions/{transaction_id}'
-    metadata:
-      groupName: Transaction
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get a Transaction By ID'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-<<<<<<< HEAD
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      status:
-        name: status
-        description: 'optional Status of support request.'
+      lng:
+        name: lng
+        description: 'optional Longitude of User GeoLoc.'
         required: false
-        example: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
-        type: string
+        example: 101.607787
+        type: number
+        enumValues: []
         custom: []
-      category_ids:
-        name: category_ids
-        description: 'optional Array of category ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        custom: []
-      query:
-        name: query
-        description: 'optional Search query.'
-        required: false
-        example: 'my support request'
-        type: string
-        custom: []
-      limit:
-        name: limit
-        description: 'optional Limit of results per page.'
+      radius:
+        name: radius
+        description: 'optional Radius (KM) of search if lat,lng provided.'
         required: false
         example: 10
         type: integer
+        enumValues: []
         custom: []
     cleanBodyParameters:
-      status: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
-      category_ids:
-        - 1
-        - 2
-        - 3
-      query: 'my support request'
-      limit: 10
+      name: '"KFC SS15"'
+      state_id: 1
+      country_id: 1
+      city: '"Subang Jaya"'
+      lat: 3.073065
+      lng: 101.607787
+      radius: 10
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "data": []
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
           }
         headers: []
         description: success
@@ -258,212 +106,48 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5geDvacP6ZV31adEhbf48k6'
+      - 'Bearer DVbfd56PgE3Zkc1vhae84a6'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/help/support_requests/raise
+      - GET
+    uri: 'api/v1/locations/{location_id}'
     metadata:
-      groupName: 'Help Center'
+      groupName: Location
       groupDescription: ''
-      subgroup: 'Support Requests'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Raise Support Request'
-      description: ''
+      title: 'Get One Location'
+      description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      category_id:
-        name: category_id
-        description: 'Category id.'
+    urlParameters:
+      location_id:
+        name: location_id
+        description: 'The ID of the location.'
         required: true
         example: 1
         type: integer
+        enumValues: []
         custom: []
-      title:
-        name: title
-        description: 'Title of support request.'
-        required: true
-        example: 'My support request'
-        type: string
-        custom: []
-      message:
-        name: message
-        description: 'Message to send.'
-        required: true
-        example: 'This is my message'
-        type: string
-        custom: []
-      media_ids:
-        name: media_ids
-        description: 'optional Array of media ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        custom: []
-    cleanBodyParameters:
-      category_id: 1
-      title: 'My support request'
-      message: 'This is my message'
-      media_ids:
-        - 1
-        - 2
-        - 3
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": {},
-          "request": {}
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer VgDhf13ePaa6k5vb8EZ64dc'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v1/help/support_requests/{id}/reply'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Reply to Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'Support Request ID.'
-=======
-    urlParameters:
-      transaction_id:
-        name: transaction_id
-        description: 'The ID of the transaction.'
-        required: true
-        example: 7
-        type: integer
-        custom: []
-      transaction:
-        name: transaction
-        description: 'Transaction ID'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      location:
+        name: location
+        description: 'Location ID.'
         required: true
         example: '1'
         type: string
+        enumValues: []
         custom: []
     cleanUrlParameters:
-<<<<<<< HEAD
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      message:
-        name: message
-        description: 'Message to send.'
-        required: true
-        example: 'This is my message'
-        type: string
-        custom: []
-      media_ids:
-        name: media_ids
-        description: 'optional Array of media ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        custom: []
-    cleanBodyParameters:
-      message: 'This is my message'
-      media_ids:
-        - 1
-        - 2
-        - 3
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": {},
-          "request": {}
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 3h1ZDedbcPvf6a65Vg8Eka4'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/help/support_requests/{id}/messages'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get Messages of Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        custom: []
-    cleanUrlParameters:
-      id: '1'
-=======
-      transaction_id: 7
-      transaction: '1'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      location_id: 1
+      location: '1'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -474,11 +158,8 @@ endpoints:
         status: 200
         content: |-
           {
-<<<<<<< HEAD
-          "data": []
-=======
-           data: {}
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+          "data": {
+          }
           }
         headers: []
         description: success
@@ -487,178 +168,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-<<<<<<< HEAD
-      - 'Bearer aP4hVbvkd63fDaZcg6E15e8'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v1/help/support_requests/{id}/resolve'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Resolve Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        custom: []
-    cleanUrlParameters:
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Support request resolved and closed"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 5bDPkeac146h63ZvVaf8gdE'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/support_requests/categories
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get Support Request Categories'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      type:
-        name: type
-        description: 'optional Type of support request category.'
-        required: false
-        example: '0=general,1=product,2=account,3=other'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      type: '0=general,1=product,2=account,3=other'
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8Z4f656bPcda1eD3VhkgEav'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/help/support_requests/attach
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Upload Attachments(Images) for Support Messages'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      images:
-        name: images
-        description: 'The images to upload.'
-        required: true
-        example: null
-        type: file
-        custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      images: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "uploaded": [
-              {
-                 "id": 1,
-                 "name": "image.jpg",
-                 "url": "http://localhost:8000/storage/user_uploads/1/image.jpg",
-                 "size": 12345,
-                 "type": "image/jpeg"
-             }
-          ]
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["images": ["The images field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer ehba3gcP18Dk6vd6faV45ZE'
-=======
-      - 'Bearer fZd6a1DEb4h5k6VePcv83ga'
->>>>>>> 1e89f459f0fa66b875301bb4eb49295231fb525c
+      - 'Bearer 8D153de6bcaVv6gEZhak4Pf'
     controller: null
     method: null
     route: null

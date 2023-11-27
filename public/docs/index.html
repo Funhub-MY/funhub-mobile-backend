@@ -30,9 +30,9 @@
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
-    <script src="../docs/js/tryitout-4.22.0.js"></script>
+    <script src="../docs/js/tryitout-4.25.0.js"></script>
 
-    <script src="../docs/js/theme-default-4.22.0.js"></script>
+    <script src="../docs/js/theme-default-4.25.0.js"></script>
 
 </head>
 
@@ -95,6 +95,9 @@
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles-merchant_offers--article_id-">
                                 <a href="#article-GETapi-v1-articles-merchant_offers--article_id-">Get Article Merchant Offers</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles-nearby">
+                                <a href="#article-GETapi-v1-articles-nearby">Get Articles Nearby</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="article-GETapi-v1-articles">
                                 <a href="#article-GETapi-v1-articles">Get Articles for Logged in user (for Home Page)
@@ -315,6 +318,20 @@ Only owner can call this method</a>
                             </li>
                                                                         </ul>
                             </ul>
+                    <ul id="tocify-header-media" class="tocify-header">
+                <li class="tocify-item level-1" data-unique="media">
+                    <a href="#media">Media</a>
+                </li>
+                                    <ul id="tocify-subheader-media" class="tocify-subheader">
+                                                    <li class="tocify-item level-2" data-unique="media-GETapi-v1-media-signed_upload">
+                                <a href="#media-GETapi-v1-media-signed_upload">Get Signed URL Upload Media (photos/videos)
+Must only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it.</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="media-POSTapi-v1-media-upload_complete">
+                                <a href="#media-POSTapi-v1-media-upload_complete">Upload Media Complete</a>
+                            </li>
+                                                                        </ul>
+                            </ul>
                     <ul id="tocify-header-merchant" class="tocify-header">
                 <li class="tocify-item level-1" data-unique="merchant">
                     <a href="#merchant">Merchant</a>
@@ -356,6 +373,14 @@ This is when customer with claimed merchant offer wishes to redeem in store</a>
                                         </li>
                                                                             <li class="tocify-item level-3" data-unique="merchant-GETapi-v1-merchant_categories--offer_id-">
                                             <a href="#merchant-GETapi-v1-merchant_categories--offer_id-">Get Merchant Categories by offer id</a>
+                                        </li>
+                                                                    </ul>
+                                                                                <li class="tocify-item level-2" data-unique="merchant-merchant-contact">
+                                <a href="#merchant-merchant-contact">Merchant Contact</a>
+                            </li>
+                                                            <ul id="tocify-subheader-merchant-merchant-contact" class="tocify-subheader">
+                                                                            <li class="tocify-item level-3" data-unique="merchant-POSTapi-v1-merchant-contact">
+                                            <a href="#merchant-POSTapi-v1-merchant-contact">Submit Merchant Contact Information</a>
                                         </li>
                                                                     </ul>
                                                                         </ul>
@@ -540,6 +565,21 @@ Get all transactions of current logged in users paginated</a>
                                                                                 <li class="tocify-item level-2" data-unique="user-GETapi-v1-user--user_id-">
                                 <a href="#user-GETapi-v1-user--user_id-">Get a user</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-GETapi-v1-user">
+                                <a href="#user-GETapi-v1-user">Get auth user details</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-GETapi-v1-public-user--user_id-">
+                                <a href="#user-GETapi-v1-public-user--user_id-">Get a public user</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-POSTapi-v1-user">
+                                <a href="#user-POSTapi-v1-user">Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-POSTapi-v1-user-password">
+                                <a href="#user-POSTapi-v1-user-password">Update user password (only for login with OTP)</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-POSTapi-v1-user-email">
+                                <a href="#user-POSTapi-v1-user-email">Update User Email</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-user-settings" class="tocify-header">
@@ -598,11 +638,11 @@ Get all transactions of current logged in users paginated</a>
                                     <ul id="tocify-subheader-view" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="view-POSTapi-v1-views">
                                 <a href="#view-POSTapi-v1-views">Record view for viewable
-This is used for recording views for articles, comments, and merchant offers</a>
+This is used for recording views for articles, comments, merchant offers, and user profiles</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="view-GETapi-v1-views--type---id-">
                                 <a href="#view-GETapi-v1-views--type---id-">Get views for viewable type
-This is used for getting views for articles, comments, and merchant offers</a>
+This is used for getting views for articles, comments, merchant offers, and user profiles</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -615,7 +655,7 @@ This is used for getting views for articles, comments, and merchant offers</a>
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: October 9, 2023</li>
+        <li>Last updated: November 20, 2023</li>
     </ul>
 </div>
 
@@ -801,7 +841,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
     --form "is_cover=1" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpa4o7hz" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpV318y0" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -943,7 +983,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpa4o7hz</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpV318y0</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
@@ -987,7 +1027,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php2vM7S6" </code></pre></div>
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpsNRb2E" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -1113,7 +1153,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php2vM7S6</code></p>
+<p>The video to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpsNRb2E</code></p>
         </div>
         </form>
 
@@ -1143,7 +1183,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"sort\": \"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",
     \"order\": \"Sortable directions are: asc, desc\",
     \"limit\": 10,
-    \"offset\": 0
+    \"offset\": 0,
+    \"video_only\": 1
 }"
 </code></pre></div>
 
@@ -1167,7 +1208,8 @@ let body = {
     "sort": "Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at",
     "order": "Sortable directions are: asc, desc",
     "limit": 10,
-    "offset": 0
+    "offset": 0,
+    "video_only": 1
 };
 
 fetch(url, {
@@ -1372,6 +1414,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Offset Override. Example: <code>0</code></p>
         </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>video_only</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="video_only"                data-endpoint="GETapi-v1-articles-my_articles"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Filter by Videos. Example: <code>1</code></p>
+        </div>
         </form>
 
                     <h2 id="article-GETapi-v1-articles-my_bookmarks">Get Bookmarked Articles by User ID or Logged In User</h2>
@@ -1399,7 +1452,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"sort\": \"Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at\",
     \"order\": \"Sortable directions are: asc, desc\",
     \"limit\": 10,
-    \"offset\": 0
+    \"offset\": 0,
+    \"video_only\": 1
 }"
 </code></pre></div>
 
@@ -1422,7 +1476,8 @@ let body = {
     "sort": "Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at",
     "order": "Sortable directions are: asc, desc",
     "limit": 10,
-    "offset": 0
+    "offset": 0,
+    "video_only": 1
 };
 
 fetch(url, {
@@ -1605,6 +1660,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
                data-component="body">
     <br>
 <p>Offset Override. Example: <code>0</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>video_only</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="video_only"                data-endpoint="GETapi-v1-articles-my_bookmarks"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Filter by Videos. Example: <code>1</code></p>
         </div>
         </form>
 
@@ -2072,6 +2138,301 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                     </form>
 
+                    <h2 id="article-GETapi-v1-articles-nearby">Get Articles Nearby</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-articles-nearby">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/articles/nearby" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"article_ids\": [
+        \"non\"
+    ],
+    \"category_ids\": [
+        1,
+        2,
+        3
+    ],
+    \"video_only\": 1,
+    \"tag_ids\": [
+        1,
+        2,
+        3
+    ],
+    \"city\": \"Subang Jaya\",
+    \"lat\": 3.123456,
+    \"lng\": 101.123456,
+    \"radius\": 10000,
+    \"include_own_article\": 1,
+    \"limit\": 10
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/articles/nearby"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "article_ids": [
+        "non"
+    ],
+    "category_ids": [
+        1,
+        2,
+        3
+    ],
+    "video_only": 1,
+    "tag_ids": [
+        1,
+        2,
+        3
+    ],
+    "city": "Subang Jaya",
+    "lat": 3.123456,
+    "lng": 101.123456,
+    "radius": 10000,
+    "include_own_article": 1,
+    "limit": 10
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-articles-nearby">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;data&quot;: [],
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-articles-nearby" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-articles-nearby"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-articles-nearby"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-articles-nearby" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-articles-nearby">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-articles-nearby" data-method="GET"
+      data-path="api/v1/articles/nearby"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-articles-nearby', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-articles-nearby"
+                    onclick="tryItOut('GETapi-v1-articles-nearby');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-articles-nearby"
+                    onclick="cancelTryOut('GETapi-v1-articles-nearby');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-articles-nearby"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/articles/nearby</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-articles-nearby"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-articles-nearby"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-articles-nearby"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>article_ids</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="article_ids[0]"                data-endpoint="GETapi-v1-articles-nearby"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="article_ids[1]"                data-endpoint="GETapi-v1-articles-nearby"
+               data-component="body">
+    <br>
+<p>optional Article Ids to Filter. Example [1,2,3]</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>category_ids</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="category_ids[0]"                data-endpoint="GETapi-v1-articles-nearby"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="category_ids[1]"                data-endpoint="GETapi-v1-articles-nearby"
+               data-component="body">
+    <br>
+<p>optional Category Ids to Filter.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>video_only</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="video_only"                data-endpoint="GETapi-v1-articles-nearby"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Filter by Videos. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>tag_ids</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="tag_ids[0]"                data-endpoint="GETapi-v1-articles-nearby"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="tag_ids[1]"                data-endpoint="GETapi-v1-articles-nearby"
+               data-component="body">
+    <br>
+<p>optional Tag Ids to Filter.</p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>city</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="city"                data-endpoint="GETapi-v1-articles-nearby"
+               value="Subang Jaya"
+               data-component="body">
+    <br>
+<p>optional Filter by City Name. Example: <code>Subang Jaya</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>lat</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="lat"                data-endpoint="GETapi-v1-articles-nearby"
+               value="3.123456"
+               data-component="body">
+    <br>
+<p>Filter by Lat of User (must provide lng). Example: <code>3.123456</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>lng</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="lng"                data-endpoint="GETapi-v1-articles-nearby"
+               value="101.123456"
+               data-component="body">
+    <br>
+<p>Filter by Lng of User (must provide lat). Example: <code>101.123456</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>radius</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="radius"                data-endpoint="GETapi-v1-articles-nearby"
+               value="10000"
+               data-component="body">
+    <br>
+<p>optional Filter by Radius (in meters) if provided lat, lng. Example: <code>10000</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>include_own_article</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="include_own_article"                data-endpoint="GETapi-v1-articles-nearby"
+               value="1"
+               data-component="body">
+    <br>
+<p>optional Include own article. Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>limit</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="limit"                data-endpoint="GETapi-v1-articles-nearby"
+               value="10"
+               data-component="body">
+    <br>
+<p>optional Per Page Limit Override. Example: <code>10</code></p>
+        </div>
+        </form>
+
                     <h2 id="article-GETapi-v1-articles">Get Articles for Logged in user (for Home Page)
 Note: user&#039;s own posts will not show up on home page</h2>
 
@@ -2093,7 +2454,7 @@ Note: user&#039;s own posts will not show up on home page</h2>
     --header "Accept: application/json" \
     --data "{
     \"article_ids\": [
-        \"soluta\"
+        \"voluptate\"
     ],
     \"category_ids\": [
         1,
@@ -2133,7 +2494,7 @@ const headers = {
 
 let body = {
     "article_ids": [
-        "soluta"
+        "voluptate"
     ],
     "category_ids": [
         1,
@@ -2964,8 +3325,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --form "categories[]=1" \
     --form "tagged_user_ids[]=1" \
     --form "location={"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpB3mAzk" \
-    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpv6UTuW" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHonagM" \
+    --form "video=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYsQXeK" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3190,7 +3551,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpB3mAzk</code></p>
+<p>The images ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpHonagM</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>video</code></b>&nbsp;&nbsp;
@@ -3201,7 +3562,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpv6UTuW</code></p>
+<p>The video ID of the article. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYsQXeK</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>tagged_user_ids</code></b>&nbsp;&nbsp;
@@ -3401,10 +3762,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"article_id\": 17,
+    \"article_id\": 16,
     \"reason\": \"Spam     * @bodyParam violation_type required The violation type of this report\",
-    \"violation_type\": \"quidem\",
-    \"violation_level\": \"aut\",
+    \"violation_type\": \"voluptatum\",
+    \"violation_level\": \"sed\",
     \"article\": 1
 }"
 </code></pre></div>
@@ -3422,10 +3783,10 @@ const headers = {
 };
 
 let body = {
-    "article_id": 17,
+    "article_id": 16,
     "reason": "Spam     * @bodyParam violation_type required The violation type of this report",
-    "violation_type": "quidem",
-    "violation_level": "aut",
+    "violation_type": "voluptatum",
+    "violation_level": "sed",
     "article": 1
 };
 
@@ -3549,10 +3910,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="article_id"                data-endpoint="POSTapi-v1-articles-report"
-               value="17"
+               value="16"
                data-component="body">
     <br>
-<p>Example: <code>17</code></p>
+<p>Example: <code>16</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>reason</code></b>&nbsp;&nbsp;
@@ -3571,10 +3932,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-articles-report"
-               value="quidem"
+               value="voluptatum"
                data-component="body">
     <br>
-<p>Example: <code>quidem</code></p>
+<p>Example: <code>voluptatum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -3582,10 +3943,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-articles-report"
-               value="aut"
+               value="sed"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>aut</code></p>
+<p>The violation level of this report Example: <code>sed</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>article</code></b>&nbsp;&nbsp;
@@ -4516,7 +4877,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/aperiam" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/replies/sit" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4533,7 +4894,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/replies/aperiam"
+    "https://funhub-mobile-backend.test/api/v1/comments/replies/sit"
 );
 
 const headers = {
@@ -4666,10 +5027,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="comment_id"                data-endpoint="GETapi-v1-comments-replies--comment_id-"
-               value="aperiam"
+               value="sit"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>aperiam</code></p>
+<p>The ID of the comment. Example: <code>sit</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -4920,8 +5281,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --data "{
     \"comment_id\": 1,
     \"reason\": \"Spam\",
-    \"violation_level\": \"ab\",
-    \"violation_type\": \"ut\"
+    \"violation_level\": \"dolor\",
+    \"violation_type\": \"blanditiis\"
 }"
 </code></pre></div>
 
@@ -4940,8 +5301,8 @@ const headers = {
 let body = {
     "comment_id": 1,
     "reason": "Spam",
-    "violation_level": "ab",
-    "violation_type": "ut"
+    "violation_level": "dolor",
+    "violation_type": "blanditiis"
 };
 
 fetch(url, {
@@ -5086,10 +5447,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-comments-report"
-               value="ab"
+               value="dolor"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>ab</code></p>
+<p>The violation level of this report Example: <code>dolor</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -5097,10 +5458,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-comments-report"
-               value="ut"
+               value="blanditiis"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>ut</code></p>
+<p>The violation type of this report Example: <code>blanditiis</code></p>
         </div>
         </form>
 
@@ -5590,7 +5951,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/comments/sequi" \
+    --get "https://funhub-mobile-backend.test/api/v1/comments/ratione" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -5603,7 +5964,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/comments/sequi"
+    "https://funhub-mobile-backend.test/api/v1/comments/ratione"
 );
 
 const headers = {
@@ -5737,10 +6098,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="id"                data-endpoint="GETapi-v1-comments--id-"
-               value="sequi"
+               value="ratione"
                data-component="url">
     <br>
-<p>The ID of the comment. Example: <code>sequi</code></p>
+<p>The ID of the comment. Example: <code>ratione</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -8357,7 +8718,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"share_code\": \"modi\"
+    \"share_code\": \"tempora\"
 }"
 </code></pre></div>
 
@@ -8374,7 +8735,7 @@ const headers = {
 };
 
 let body = {
-    "share_code": "modi"
+    "share_code": "tempora"
 };
 
 fetch(url, {
@@ -8415,7 +8776,7 @@ access-control-allow-origin: *
         },
         {
             &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php&quot;,
-            &quot;line&quot;: 1140,
+            &quot;line&quot;: 1316,
             &quot;function&quot;: &quot;abort&quot;
         },
         {
@@ -8433,10 +8794,31 @@ access-control-allow-origin: *
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php&quot;,
+            &quot;line&quot;: 21,
+            &quot;function&quot;: &quot;dispatch&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php&quot;,
+            &quot;line&quot;: 31,
+            &quot;function&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\{closure}&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php&quot;,
+            &quot;line&quot;: 20,
+            &quot;function&quot;: &quot;wrapRouteDispatch&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\TracingRoutingDispatcher&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
             &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php&quot;,
             &quot;line&quot;: 259,
             &quot;function&quot;: &quot;dispatch&quot;,
-            &quot;class&quot;: &quot;Illuminate\\Routing\\ControllerDispatcher&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
@@ -8552,6 +8934,34 @@ access-control-allow-origin: *
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php&quot;,
+            &quot;line&quot;: 45,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;line&quot;: 180,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Http\\SetRequestIpMiddleware&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php&quot;,
+            &quot;line&quot;: 31,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;line&quot;: 180,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Http\\SetRequestMiddleware&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
             &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php&quot;,
             &quot;line&quot;: 19,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
@@ -8661,6 +9071,20 @@ access-control-allow-origin: *
             &quot;line&quot;: 180,
             &quot;function&quot;: &quot;handle&quot;,
             &quot;class&quot;: &quot;Illuminate\\Http\\Middleware\\TrustProxies&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php&quot;,
+            &quot;line&quot;: 87,
+            &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
+            &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
+            &quot;type&quot;: &quot;-&gt;&quot;
+        },
+        {
+            &quot;file&quot;: &quot;/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php&quot;,
+            &quot;line&quot;: 180,
+            &quot;function&quot;: &quot;handle&quot;,
+            &quot;class&quot;: &quot;Sentry\\Laravel\\Tracing\\Middleware&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
@@ -8957,10 +9381,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="share_code"                data-endpoint="GETapi-v1-public_article"
-               value="modi"
+               value="tempora"
                data-component="body">
     <br>
-<p>Example: <code>modi</code></p>
+<p>Example: <code>tempora</code></p>
         </div>
         </form>
 
@@ -9524,8 +9948,7 @@ fetch(url, {
                 <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: {},
-    &quot;request&quot;: {}
+    &quot;data&quot;: []
 }</code>
  </pre>
     </span>
@@ -10342,7 +10765,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpP6ztvK" </code></pre></div>
+    --form "images=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpFaOIGE" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -10483,7 +10906,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpP6ztvK</code></p>
+<p>The images to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpFaOIGE</code></p>
         </div>
         </form>
 
@@ -11433,7 +11856,40 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value="1"
                data-component="url">
     <br>
-<p>The id of the interaction. Example: <code>1</code></p>
+<p>The id of the interaction/interactable(article id). Example: <code>1</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>delete_by</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="delete_by"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="interactable,interaction"
+               data-component="url">
+    <br>
+<p>The type of delete, defaults to interaction. Example: <code>interactable,interaction</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>interactable</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="interactable"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="article,merchant_offer"
+               data-component="url">
+    <br>
+<p>The type of interactable (Required if delete_by is interactable). Example: <code>article,merchant_offer</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="type"                data-endpoint="DELETEapi-v1-interactions--id-"
+               value="like,dislike,share,bookmark"
+               data-component="url">
+    <br>
+<p>The type of interaction (Required if delete_by is interactable). Example: <code>like,dislike,share,bookmark</code></p>
             </div>
                     </form>
 
@@ -11828,6 +12284,349 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Location ID. Example: <code>1</code></p>
             </div>
                     </form>
+
+                <h1 id="media">Media</h1>
+
+    
+
+                                <h2 id="media-GETapi-v1-media-signed_upload">Get Signed URL Upload Media (photos/videos)
+Must only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it.</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-media-signed_upload">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/media/signed_upload" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/media/signed_upload"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-media-signed_upload">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;id&quot;: &quot;1619114400-608b7a10a3b3d&quot;,
+    &quot;url&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/your-bucket-name/user_uploads/my-photo.jpg?AWSAccessKeyId=your-access-key-id&amp;Expires=1619114400&amp;Signature=your-signature&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (200, failed):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Only applicable for S3 Storage&quot;,
+    &quot;url&quot;: null
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-media-signed_upload" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-media-signed_upload"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-media-signed_upload"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-media-signed_upload" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-media-signed_upload">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-media-signed_upload" data-method="GET"
+      data-path="api/v1/media/signed_upload"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-media-signed_upload', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-media-signed_upload"
+                    onclick="tryItOut('GETapi-v1-media-signed_upload');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-media-signed_upload"
+                    onclick="cancelTryOut('GETapi-v1-media-signed_upload');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-media-signed_upload"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/media/signed_upload</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-media-signed_upload"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-media-signed_upload"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-media-signed_upload"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>filename</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="filename"                data-endpoint="GETapi-v1-media-signed_upload"
+               value="my-photo.jpg"
+               data-component="url">
+    <br>
+<p>The filename of the media to be uploaded, filename must only contain alphabets and numbers. Example: <code>my-photo.jpg</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="media-POSTapi-v1-media-upload_complete">Upload Media Complete</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-media-upload_complete">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/media/upload_complete" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"upload_ids\": \"1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e\",
+    \"is_cover\": true
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/media/upload_complete"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "upload_ids": "1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e",
+    "is_cover": true
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-media-upload_complete">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Success&quot;,
+&quot;uploaded&quot;: [
+{
+&quot;id&quot;: 1,
+&quot;name&quot;: &quot;1619114400-608b7a10a3b3d_my-photo.jpg&quot;,
+&quot;url&quot;: &quot;https://your-bucket-name.s3-ap-southeast-1.amazonaws.com/user_uploads/1619114400-608b7a10a3b3d_my-photo.jpg&quot;,
+&quot;size&quot;: 12345,
+&quot;type&quot;: &quot;image/jpeg&quot;
+},
+]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-media-upload_complete" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-media-upload_complete"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-media-upload_complete"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-media-upload_complete" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-media-upload_complete">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-media-upload_complete" data-method="POST"
+      data-path="api/v1/media/upload_complete"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-media-upload_complete', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-media-upload_complete"
+                    onclick="tryItOut('POSTapi-v1-media-upload_complete');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-media-upload_complete"
+                    onclick="cancelTryOut('POSTapi-v1-media-upload_complete');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-media-upload_complete"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/media/upload_complete</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-media-upload_complete"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-media-upload_complete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-media-upload_complete"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>upload_ids</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="upload_ids"                data-endpoint="POSTapi-v1-media-upload_complete"
+               value="1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e"
+               data-component="body">
+    <br>
+<p>The upload_ids from get signed upload link, can be multiple ids in a comma separated. Example: <code>1619114400-608b7a10a3b3d,1619114400-608b7a10a3b3e</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>is_cover</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+<i>optional</i> &nbsp;
+                <label data-endpoint="POSTapi-v1-media-upload_complete" style="display: none">
+            <input type="radio" name="is_cover"
+                   value="true"
+                   data-endpoint="POSTapi-v1-media-upload_complete"
+                   data-component="body"             >
+            <code>true</code>
+        </label>
+        <label data-endpoint="POSTapi-v1-media-upload_complete" style="display: none">
+            <input type="radio" name="is_cover"
+                   value="false"
+                   data-endpoint="POSTapi-v1-media-upload_complete"
+                   data-component="body"             >
+            <code>false</code>
+        </label>
+    <br>
+<p>optional The is_cover flag, default false. Example: <code>true</code></p>
+        </div>
+        </form>
 
                 <h1 id="merchant">Merchant</h1>
 
@@ -13101,7 +13900,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        </form>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>is_redeemed</code></b>&nbsp;&nbsp;
+<small>number</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="is_redeemed"                data-endpoint="GETapi-v1-merchant-offers-my_claimed_offers"
+               value="0"
+               data-component="url">
+    <br>
+<p>optional Filter by Redeemed. Example: <code>0</code></p>
+            </div>
+                    </form>
 
                     <h2 id="merchant-GETapi-v1-merchant-offers--offer_id-">Get Offer By ID</h2>
 
@@ -13117,7 +13928,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/eos?offer_id=1" \
+    --get "https://funhub-mobile-backend.test/api/v1/merchant/offers/pariatur?offer_id=1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -13125,7 +13936,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/merchant/offers/eos"
+    "https://funhub-mobile-backend.test/api/v1/merchant/offers/pariatur"
 );
 
 const params = {
@@ -13245,10 +14056,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="offer_id"                data-endpoint="GETapi-v1-merchant-offers--offer_id-"
-               value="eos"
+               value="pariatur"
                data-component="url">
     <br>
-<p>The ID of the offer. Example: <code>eos</code></p>
+<p>The ID of the offer. Example: <code>pariatur</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -13651,6 +14462,281 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>The id of the merchant offer id. Example: <code>1</code></p>
             </div>
                     </form>
+
+                                <h2 id="merchant-merchant-contact">Merchant Contact</h2>
+                                                    <h2 id="merchant-POSTapi-v1-merchant-contact">Submit Merchant Contact Information</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+<p>Allows users to submit merchant contact information via the API.</p>
+
+<span id="example-requests-POSTapi-v1-merchant-contact">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/merchant-contact" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"name\": \"Alex Koh\",
+    \"email\": \"alex@funhub.my\",
+    \"tel_no\": \"182036794\",
+    \"company_name\": \"Funhub TV\",
+    \"business_type\": \"others\",
+    \"other_business_type\": \"IT Consult\",
+    \"message_type\": \"General Inquiry\",
+    \"message\": \"This is a sample message.\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/merchant-contact"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "name": "Alex Koh",
+    "email": "alex@funhub.my",
+    "tel_no": "182036794",
+    "company_name": "Funhub TV",
+    "business_type": "others",
+    "other_business_type": "IT Consult",
+    "message_type": "General Inquiry",
+    "message": "This is a sample message."
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-merchant-contact">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Merchant contact information submitted successfully&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Invalid Form Fields):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;errors&quot;: {
+        &quot;name&quot;: [
+            &quot;The Name field is required.&quot;
+        ],
+        &quot;email&quot;: [
+            &quot;The Email field must be a valid email address.&quot;
+        ],
+        &quot;tel_no&quot;: [
+            &quot;The Phone Number field is required.&quot;
+        ],
+        &quot;company_name&quot;: [
+            &quot;The Company Name field is required.&quot;
+        ],
+        &quot;business_type&quot;: [
+            &quot;The Business Type field is required.&quot;
+        ],
+        &quot;message_type&quot;: [
+            &quot;The Message Category field is required.&quot;
+        ],
+        &quot;message&quot;: [
+            &quot;The Message field is required.&quot;
+        ]
+    }
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-merchant-contact" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-merchant-contact"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-merchant-contact"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-merchant-contact" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-merchant-contact">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-merchant-contact" data-method="POST"
+      data-path="api/v1/merchant-contact"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-merchant-contact', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-merchant-contact"
+                    onclick="tryItOut('POSTapi-v1-merchant-contact');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-merchant-contact"
+                    onclick="cancelTryOut('POSTapi-v1-merchant-contact');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-merchant-contact"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/merchant-contact</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-merchant-contact"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="name"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="Alex Koh"
+               data-component="body">
+    <br>
+<p>The name of the contact person. Example: <code>Alex Koh</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="email"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="alex@funhub.my"
+               data-component="body">
+    <br>
+<p>The email address of the contact person. Example: <code>alex@funhub.my</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>tel_no</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="tel_no"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="182036794"
+               data-component="body">
+    <br>
+<p>The telephone number of the contact person. Example: <code>182036794</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>company_name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="company_name"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="Funhub TV"
+               data-component="body">
+    <br>
+<p>The name of the company. Example: <code>Funhub TV</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>business_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="business_type"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="others"
+               data-component="body">
+    <br>
+<p>The type of the business. Example: <code>others</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>other_business_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="other_business_type"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="IT Consult"
+               data-component="body">
+    <br>
+<p>required_if:business_type,others The type of the business. Example: <code>IT Consult</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="message_type"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="General Inquiry"
+               data-component="body">
+    <br>
+<p>The category of the message. Example: <code>General Inquiry</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>message</code></b>&nbsp;&nbsp;
+<small>text</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="message"                data-endpoint="POSTapi-v1-merchant-contact"
+               value="This is a sample message."
+               data-component="body">
+    <br>
+<p>The message or remarks. Example: <code>This is a sample message.</code></p>
+        </div>
+        </form>
 
                 <h1 id="mission">Mission</h1>
 
@@ -17017,7 +18103,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 3
+    \"user_id\": 15
 }"
 </code></pre></div>
 
@@ -17034,7 +18120,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 3
+    "user_id": 15
 };
 
 fetch(url, {
@@ -17152,10 +18238,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-follow"
-               value="3"
+               value="15"
                data-component="body">
     <br>
-<p>The id of the user to follow Example: <code>3</code></p>
+<p>The id of the user to follow Example: <code>15</code></p>
         </div>
         </form>
 
@@ -17178,7 +18264,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_id\": 12
+    \"user_id\": 16
 }"
 </code></pre></div>
 
@@ -17195,7 +18281,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 12
+    "user_id": 16
 };
 
 fetch(url, {
@@ -17313,10 +18399,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-v1-user-unfollow"
-               value="12"
+               value="16"
                data-component="body">
     <br>
-<p>The id of the user to unfollow Example: <code>12</code></p>
+<p>The id of the user to unfollow Example: <code>16</code></p>
         </div>
         </form>
 
@@ -17512,9 +18598,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Accept: application/json" \
     --data "{
     \"user_id\": 1,
-    \"reason\": \"id\",
-    \"violation_level\": \"placeat\",
-    \"violation_type\": \"libero\",
+    \"reason\": \"doloremque\",
+    \"violation_level\": \"itaque\",
+    \"violation_type\": \"vitae\",
     \"also_block_user\": true
 }"
 </code></pre></div>
@@ -17533,9 +18619,9 @@ const headers = {
 
 let body = {
     "user_id": 1,
-    "reason": "id",
-    "violation_level": "placeat",
-    "violation_type": "libero",
+    "reason": "doloremque",
+    "violation_level": "itaque",
+    "violation_type": "vitae",
     "also_block_user": true
 };
 
@@ -17670,10 +18756,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-report"
-               value="id"
+               value="doloremque"
                data-component="body">
     <br>
-<p>Example: <code>id</code></p>
+<p>Example: <code>doloremque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_level</code></b>&nbsp;&nbsp;
@@ -17681,10 +18767,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_level"                data-endpoint="POSTapi-v1-user-report"
-               value="placeat"
+               value="itaque"
                data-component="body">
     <br>
-<p>The violation level of this report Example: <code>placeat</code></p>
+<p>The violation level of this report Example: <code>itaque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>violation_type</code></b>&nbsp;&nbsp;
@@ -17692,10 +18778,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="violation_type"                data-endpoint="POSTapi-v1-user-report"
-               value="libero"
+               value="vitae"
                data-component="body">
     <br>
-<p>The violation type of this report Example: <code>libero</code></p>
+<p>The violation type of this report Example: <code>vitae</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>also_block_user</code></b>&nbsp;&nbsp;
@@ -18188,7 +19274,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"reason\": \"iusto\"
+    \"reason\": \"nulla\"
 }"
 </code></pre></div>
 
@@ -18205,7 +19291,7 @@ const headers = {
 };
 
 let body = {
-    "reason": "iusto"
+    "reason": "nulla"
 };
 
 fetch(url, {
@@ -18314,10 +19400,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="reason"                data-endpoint="POSTapi-v1-user-delete"
-               value="iusto"
+               value="nulla"
                data-component="body">
     <br>
-<p>Example: <code>iusto</code></p>
+<p>Example: <code>nulla</code></p>
         </div>
         </form>
 
@@ -18340,7 +19426,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"user_ids\": \"dolorum\"
+    \"user_ids\": \"eos\"
 }"
 </code></pre></div>
 
@@ -18357,7 +19443,7 @@ const headers = {
 };
 
 let body = {
-    "user_ids": "dolorum"
+    "user_ids": "eos"
 };
 
 fetch(url, {
@@ -18478,10 +19564,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="user_ids"                data-endpoint="GETapi-v1-users_by_id"
-               value="dolorum"
+               value="eos"
                data-component="body">
     <br>
-<p>Example: <code>dolorum</code></p>
+<p>Example: <code>eos</code></p>
         </div>
         </form>
 
@@ -18638,6 +19724,1062 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>The id of the user. Example: <code>1</code></p>
             </div>
                     </form>
+
+                    <h2 id="user-GETapi-v1-user">Get auth user details</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-user">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/user" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/user"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-user">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;user&quot;: {
+},
+&quot;token&quot;: &quot;&quot;</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-user" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-user"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-user"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-user" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-user">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-user" data-method="GET"
+      data-path="api/v1/user"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-user', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-user"
+                    onclick="tryItOut('GETapi-v1-user');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-user"
+                    onclick="cancelTryOut('GETapi-v1-user');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-user"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/user</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-user"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-user"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-user"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="user-GETapi-v1-public-user--user_id-">Get a public user</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-public-user--user_id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "https://funhub-mobile-backend.test/api/v1/public/user/3" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/public/user/3"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-public-user--user_id-">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;user&quot;: {
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-public-user--user_id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-public-user--user_id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-public-user--user_id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-public-user--user_id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-public-user--user_id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-public-user--user_id-" data-method="GET"
+      data-path="api/v1/public/user/{user_id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-public-user--user_id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-public-user--user_id-"
+                    onclick="tryItOut('GETapi-v1-public-user--user_id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-public-user--user_id-"
+                    onclick="cancelTryOut('GETapi-v1-public-user--user_id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-public-user--user_id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/public/user/{user_id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-public-user--user_id-"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-v1-public-user--user_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-v1-public-user--user_id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="user_id"                data-endpoint="GETapi-v1-public-user--user_id-"
+               value="3"
+               data-component="url">
+    <br>
+<p>The ID of the user. Example: <code>3</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>user</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="user"                data-endpoint="GETapi-v1-public-user--user_id-"
+               value="1"
+               data-component="url">
+    <br>
+<p>The id of the user. Example: <code>1</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="user-POSTapi-v1-user">Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/user" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: multipart/form-data" \
+    --header "Accept: application/json" \
+    --form "update_type=job_title" \
+    --form "name=John Doe" \
+    --form "username=johndoe" \
+    --form "bio=I am a developer" \
+    --form "job_title=Developer" \
+    --form "day=1" \
+    --form "month=1" \
+    --form "year=1990" \
+    --form "country_id=1" \
+    --form "state_id=1" \
+    --form "category_ids[]=1" \
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpSop5zb" \
+    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNeP2jz" </code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/user"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "multipart/form-data",
+    "Accept": "application/json",
+};
+
+const body = new FormData();
+body.append('update_type', 'job_title');
+body.append('name', 'John Doe');
+body.append('username', 'johndoe');
+body.append('bio', 'I am a developer');
+body.append('job_title', 'Developer');
+body.append('day', '1');
+body.append('month', '1');
+body.append('year', '1990');
+body.append('country_id', '1');
+body.append('state_id', '1');
+body.append('category_ids[]', '1');
+body.append('avatar', document.querySelector('input[name="avatar"]').files[0]);
+body.append('cover', document.querySelector('input[name="cover"]').files[0]);
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;user&quot;:
+{
+ &quot;id&quot;: 1,
+ &quot;name&quot;: &quot;John Doe&quot;
+ &quot;username&quot;: &quot;johndoe&quot;
+ &quot;email&quot;: &quot;johndoe@gmail.com&quot;
+ &quot;verified_email&quot;: true
+ &quot;auth_provider&quot;: &quot;email&quot;
+ &quot;avatar&quot;: &quot;https://domain.com/storage/avatars/1/avatar.jpg&quot;
+ &quot;avatar_thumb&quot;: &quot;https://domain.com/storage/avatars/1/avatar_thumb.jpg&quot;
+ &quot;bio&quot;: &quot;I am a developer&quot;
+ &quot;cover&quot;: &quot;https://domain.com/storage/covers/1/cover.jpg&quot;
+ &quot;articles_published_count&quot;: 0
+ &quot;following_count&quot;: 0
+ &quot;followers_count&quot;: 0
+ &quot;has_completed_profile&quot;: false
+ &quot;has_avatar&quot;: true
+ &quot;point_balance&quot;: 0
+ &quot;unread_notifications_count&quot;: 0
+ &quot;is_following&quot;: false
+ &quot;dob&quot;: &quot;1990-01-01&quot;,
+ &quot;gender&quot;: &quot;male&quot;,
+ &quot;job_title&quot;: &quot;Engineer&quot;,
+ &quot;country_id&quot;: 1,
+ &quot;state_id&quot;: 1,
+ &quot;category_ids&quot;: [1,2,3]
+},
+&quot;message&quot;: &quot;Field updated&quot;
+
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (401, Unauthenticated):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Unauthenticated.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (500, Error updating user details):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Error updating user details&quot;,
+    &quot;error&quot;: &quot;Error message&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-user" data-method="POST"
+      data-path="api/v1/user"
+      data-authed="1"
+      data-hasfiles="1"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user"
+                    onclick="tryItOut('POSTapi-v1-user');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user"
+                    onclick="cancelTryOut('POSTapi-v1-user');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-user"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-user"
+               value="multipart/form-data"
+               data-component="header">
+    <br>
+<p>Example: <code>multipart/form-data</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-user"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>update_type</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="update_type"                data-endpoint="POSTapi-v1-user"
+               value="job_title"
+               data-component="body">
+    <br>
+<p>Field to update. Example: <code>job_title</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="name"                data-endpoint="POSTapi-v1-user"
+               value="John Doe"
+               data-component="body">
+    <br>
+<p>Name of the user (Required if update_type is 'name'). Example: <code>John Doe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>username</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="username"                data-endpoint="POSTapi-v1-user"
+               value="johndoe"
+               data-component="body">
+    <br>
+<p>Username of the user (Required if update_type is 'username'). Example: <code>johndoe</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>bio</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="bio"                data-endpoint="POSTapi-v1-user"
+               value="I am a developer"
+               data-component="body">
+    <br>
+<p>Bio of the user (Required if update_type is 'bio'). Example: <code>I am a developer</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>job_title</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="job_title"                data-endpoint="POSTapi-v1-user"
+               value="Developer"
+               data-component="body">
+    <br>
+<p>Job title of the user (Required if update_type is 'job_title'). Example: <code>Developer</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>day</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="day"                data-endpoint="POSTapi-v1-user"
+               value="1"
+               data-component="body">
+    <br>
+<p>Day of the date of birth (Required if update_type is 'dob'). Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>month</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="month"                data-endpoint="POSTapi-v1-user"
+               value="1"
+               data-component="body">
+    <br>
+<p>Month of the date of birth (Required if update_type is 'dob'). Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>year</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="year"                data-endpoint="POSTapi-v1-user"
+               value="1990"
+               data-component="body">
+    <br>
+<p>Year of the date of birth (Required if update_type is 'dob'). Example: <code>1990</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>country_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="country_id"                data-endpoint="POSTapi-v1-user"
+               value="1"
+               data-component="body">
+    <br>
+<p>Country id of the user (Required if update_type is 'location'). Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>state_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="state_id"                data-endpoint="POSTapi-v1-user"
+               value="1"
+               data-component="body">
+    <br>
+<p>State id of the user (Required if update_type is 'location'). Example: <code>1</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>avatar</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="file" style="display: none"
+               name="avatar"                data-endpoint="POSTapi-v1-user"
+               value=""
+               data-component="body">
+    <br>
+<p>One image file to upload,Avatar of the user (Required if update_type is 'avatar'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpSop5zb</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>cover</code></b>&nbsp;&nbsp;
+<small>file</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="file" style="display: none"
+               name="cover"                data-endpoint="POSTapi-v1-user"
+               value=""
+               data-component="body">
+    <br>
+<p>One image file to upload,Cover of the user (Required if update_type is 'cover'). Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpNeP2jz</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>category_ids</code></b>&nbsp;&nbsp;
+<small>string[]</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="category_ids[0]"                data-endpoint="POSTapi-v1-user"
+               data-component="body">
+        <input type="text" style="display: none"
+               name="category_ids[1]"                data-endpoint="POSTapi-v1-user"
+               data-component="body">
+    <br>
+<p>Array of article category ids (Required if update_type is 'article_categories').</p>
+        </div>
+        </form>
+
+                    <h2 id="user-POSTapi-v1-user-password">Update user password (only for login with OTP)</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user-password">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/user/password" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"old_password\": \"abcd1234\",
+    \"new_password\": \"abcd1234\",
+    \"new_password_confirmation\": \"abcd1234\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/user/password"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "old_password": "abcd1234",
+    "new_password": "abcd1234",
+    "new_password_confirmation": "abcd1234"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user-password">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;Password updated&quot;,
+&quot;user&quot;:
+     * {
+ &quot;id&quot;: 1,
+ &quot;name&quot;: &quot;John Doe&quot;
+ &quot;username&quot;: &quot;johndoe&quot;
+ &quot;email&quot;: &quot;johndoe@gmail.com&quot;
+ &quot;verified_email&quot;: true
+ &quot;auth_provider&quot;: &quot;email&quot;
+ &quot;avatar&quot;: &quot;https://domain.com/storage/avatars/1/avatar.jpg&quot;
+ &quot;avatar_thumb&quot;: &quot;https://domain.com/storage/avatars/1/avatar_thumb.jpg&quot;
+ &quot;bio&quot;: &quot;I am a developer&quot;
+ &quot;cover&quot;: &quot;https://domain.com/storage/covers/1/cover.jpg&quot;
+ &quot;articles_published_count&quot;: 0
+ &quot;following_count&quot;: 0
+ &quot;followers_count&quot;: 0
+ &quot;has_completed_profile&quot;: false
+ &quot;has_avatar&quot;: true
+ &quot;point_balance&quot;: 0
+ &quot;unread_notifications_count&quot;: 0
+ &quot;is_following&quot;: false
+ &quot;dob&quot;: &quot;1990-01-01&quot;,
+ &quot;gender&quot;: &quot;male&quot;,
+ &quot;job_title&quot;: &quot;Engineer&quot;,
+ &quot;country_id&quot;: 1,
+ &quot;state_id&quot;: 1,
+ &quot;category_ids&quot;: [1,2,3]
+},
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, validation error):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+&quot;message&quot;: &quot;The given data was invalid.&quot;,
+&quot;errors&quot;: {
+&quot;old_password&quot;: [
+ &quot;The old password is incorrect&quot;
+],
+&quot;password&quot;: [
+&quot;The password confirmation does not match.&quot;
+]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user-password" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user-password"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-password"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user-password" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user-password">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-user-password" data-method="POST"
+      data-path="api/v1/user/password"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user-password', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user-password"
+                    onclick="tryItOut('POSTapi-v1-user-password');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user-password"
+                    onclick="cancelTryOut('POSTapi-v1-user-password');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user-password"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user/password</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-user-password"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-user-password"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-user-password"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>old_password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="old_password"                data-endpoint="POSTapi-v1-user-password"
+               value="abcd1234"
+               data-component="body">
+    <br>
+<p>The old password of the user. Example: <code>abcd1234</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>new_password</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="new_password"                data-endpoint="POSTapi-v1-user-password"
+               value="abcd1234"
+               data-component="body">
+    <br>
+<p>The new password of the user. Example: <code>abcd1234</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>new_password_confirmation</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="new_password_confirmation"                data-endpoint="POSTapi-v1-user-password"
+               value="abcd1234"
+               data-component="body">
+    <br>
+<p>The new password confirmation of the user. Example: <code>abcd1234</code></p>
+        </div>
+        </form>
+
+                    <h2 id="user-POSTapi-v1-user-email">Update User Email</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-POSTapi-v1-user-email">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "https://funhub-mobile-backend.test/api/v1/user/email" \
+    --header "Authorization: Bearer {USER_TOKEN_KEY}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --data "{
+    \"new_email\": \"john@gmail.com\",
+    \"new_email_confirmation\": \"john@gmail.com\"
+}"
+</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "https://funhub-mobile-backend.test/api/v1/user/email"
+);
+
+const headers = {
+    "Authorization": "Bearer {USER_TOKEN_KEY}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "new_email": "john@gmail.com",
+    "new_email_confirmation": "john@gmail.com"
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-v1-user-email">
+            <blockquote>
+            <p>Example response (200, success):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Email updated&quot;,
+    &quot;email&quot;: &quot;johndoe@gmail.com&quot;,
+    &quot;user&quot;: {}
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (401, Unauthenticated):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Unauthenticated.&quot;
+}</code>
+ </pre>
+            <blockquote>
+            <p>Example response (422, Email already verified for your account):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;message&quot;: &quot;Email already verified for your account&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-POSTapi-v1-user-email" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-v1-user-email"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-user-email"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-v1-user-email" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-v1-user-email">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-v1-user-email" data-method="POST"
+      data-path="api/v1/user/email"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-user-email', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-v1-user-email"
+                    onclick="tryItOut('POSTapi-v1-user-email');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-v1-user-email"
+                    onclick="cancelTryOut('POSTapi-v1-user-email');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-v1-user-email"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/v1/user/email</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-user-email"
+               value="Bearer {USER_TOKEN_KEY}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {USER_TOKEN_KEY}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-v1-user-email"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-v1-user-email"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="email"                data-endpoint="POSTapi-v1-user-email"
+               value=""
+               data-component="body">
+    <br>
+
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>new_email</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="new_email"                data-endpoint="POSTapi-v1-user-email"
+               value="john@gmail.com"
+               data-component="body">
+    <br>
+<p>Email of the user. Example: <code>john@gmail.com</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>new_email_confirmation</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="new_email_confirmation"                data-endpoint="POSTapi-v1-user-email"
+               value="john@gmail.com"
+               data-component="body">
+    <br>
+<p>Email of the user. Example: <code>john@gmail.com</code></p>
+        </div>
+        </form>
 
                 <h1 id="user-settings">User Settings</h1>
 
@@ -19482,7 +21624,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phppE2TnH" </code></pre></div>
+    --form "avatar=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeKgIeP" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -19619,7 +21761,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phppE2TnH</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpeKgIeP</code></p>
         </div>
         </form>
 
@@ -19641,7 +21783,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYT4uRw" </code></pre></div>
+    --form "cover=@/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php6JVARM" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -19778,7 +21920,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                value=""
                data-component="body">
     <br>
-<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/phpYT4uRw</code></p>
+<p>One image file to upload. Example: <code>/private/var/folders/2z/p2n1w3yx3y539675t9j_cg600000gn/T/php6JVARM</code></p>
         </div>
         </form>
 
@@ -20313,7 +22455,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"gender\": \"female\"
+    \"gender\": \"male\"
 }"
 </code></pre></div>
 
@@ -20330,7 +22472,7 @@ const headers = {
 };
 
 let body = {
-    "gender": "female"
+    "gender": "male"
 };
 
 fetch(url, {
@@ -20440,10 +22582,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="gender"                data-endpoint="POSTapi-v1-user-settings-gender"
-               value="female"
+               value="male"
                data-component="body">
     <br>
-<p>Must be one of <code>male</code> or <code>female</code>. Example: <code>female</code></p>
+<p>Example: <code>male</code></p>
         </div>
         </form>
 
@@ -20984,7 +23126,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     
 
                                 <h2 id="view-POSTapi-v1-views">Record view for viewable
-This is used for recording views for articles, comments, and merchant offers</h2>
+This is used for recording views for articles, comments, merchant offers, and user profiles</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -21003,7 +23145,7 @@ This is used for recording views for articles, comments, and merchant offers</h2
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"viewable_type\": \"article\\/comment\\/merchant_offer\",
+    \"viewable_type\": \"article\\/comment\\/merchant_offer\\/user_profile\",
     \"viewable_id\": 1
 }"
 </code></pre></div>
@@ -21021,7 +23163,7 @@ const headers = {
 };
 
 let body = {
-    "viewable_type": "article\/comment\/merchant_offer",
+    "viewable_type": "article\/comment\/merchant_offer\/user_profile",
     "viewable_id": 1
 };
 
@@ -21131,10 +23273,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="viewable_type"                data-endpoint="POSTapi-v1-views"
-               value="article/comment/merchant_offer"
+               value="article/comment/merchant_offer/user_profile"
                data-component="body">
     <br>
-<p>The type of the viewable. Example: <code>article/comment/merchant_offer</code></p>
+<p>The type of the viewable. Example: <code>article/comment/merchant_offer/user_profile</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>viewable_id</code></b>&nbsp;&nbsp;
@@ -21150,7 +23292,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </form>
 
                     <h2 id="view-GETapi-v1-views--type---id-">Get views for viewable type
-This is used for getting views for articles, comments, and merchant offers</h2>
+This is used for getting views for articles, comments, merchant offers, and user profiles</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -21164,7 +23306,7 @@ This is used for getting views for articles, comments, and merchant offers</h2>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/1" \
+    --get "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/user_profile/1" \
     --header "Authorization: Bearer {USER_TOKEN_KEY}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -21172,7 +23314,7 @@ This is used for getting views for articles, comments, and merchant offers</h2>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/1"
+    "https://funhub-mobile-backend.test/api/v1/views/article/comment/merchant_offer/user_profile/1"
 );
 
 const headers = {
@@ -21287,10 +23429,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="type"                data-endpoint="GETapi-v1-views--type---id-"
-               value="article/comment/merchant_offer"
+               value="article/comment/merchant_offer/user_profile"
                data-component="url">
     <br>
-<p>The type of the viewable. Example: <code>article/comment/merchant_offer</code></p>
+<p>The type of the viewable. Example: <code>article/comment/merchant_offer/user_profile</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;

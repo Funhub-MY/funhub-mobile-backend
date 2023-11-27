@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PointComponentLedger extends Model
+class PointComponentLedger extends BaseModel
 {
     use HasFactory;
 

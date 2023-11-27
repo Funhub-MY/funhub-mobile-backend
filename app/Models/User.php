@@ -25,7 +25,6 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 {
     use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
 
-
     const USER_VIDEO_UPLOADS = 'user_video_uploads';
     const USER_AVATAR = 'user_avatar';
     const USER_UPLOADS = 'user_uploads';
@@ -65,7 +64,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
 
     public function canAccessFilament(): bool
     {
-        return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super-admin') || $this->hasRole('merchant');
+        return $this->hasRole('staff') || $this->hasRole('admin') || $this->hasRole('super_admin') || $this->hasRole('merchant');
     }
 
     public function sendEmailVerificationNotification()
@@ -78,8 +77,21 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             'email_verification_token' => $token,
         ]);
 
-        // fire email verification notification
-        Mail::to($user->email)->send(new EmailVerification($user->name, $token));
+        try {
+            // fire email verification notification
+            Mail::to($user->email)->send(new EmailVerification($user->name, $token));
+
+            Log::info('[Email Verification] Send email verification notification', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'token' => $token,
+            ]);
+        } catch (\Exception $ex) {
+            Log::error('[Error] Send email verification notification ', [
+                'user' => $user,
+                'error' => $ex->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -108,7 +120,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
      */
     public function searchableAs(): string
     {
-        return 'users_index';
+        return config('scout.prefix').'users_index';
     }
 
     public function toSearchableArray()
@@ -490,5 +502,10 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function unfollow($user)
     {
         return $this->followings()->detach($user->id);
+    }
+
+    public function views()
+    {
+        return $this->morphMany(View::class, 'viewable');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,10 @@ Route::group(['prefix' => 'v1'], function () {
         // Articles
         Route::get('article_cities', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleCities']);
 
+        // Media
+        Route::get('media/signed_upload', [\App\Http\Controllers\Api\MediaController::class, 'getSignedUploadLink']);
+        Route::post('media/upload_complete', [\App\Http\Controllers\Api\MediaController::class, 'postUploadMediaComplete']);
+
         // Post gallery upload
         Route::post('articles/gallery', [\App\Http\Controllers\Api\ArticleController::class, 'postGalleryUpload']);
         Route::post('articles/video-upload', [\App\Http\Controllers\Api\ArticleController::class, 'postVideoUpload']);
@@ -62,8 +67,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
 
+        Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
-
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
         Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
@@ -81,7 +86,8 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Interactions
         Route::get('interactions/users', \App\Http\Controllers\Api\InteractionController::class . '@getUsersOfInteraction');
-        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update']);
+        Route::resource('interactions', \App\Http\Controllers\Api\InteractionController::class)->except(['create', 'edit', 'update', 'destroy']);
+        Route::delete('interactions/{id}', \App\Http\Controllers\Api\InteractionController::class . '@destroy');
 
         // User Following/Followers
         Route::get('user/followings', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowings']);
@@ -108,6 +114,9 @@ Route::group(['prefix' => 'v1'], function () {
         // Merchant Categories
         Route::get('merchant_categories', \App\Http\Controllers\Api\MerchantCategoryController::class . '@index');
         Route::get('merchant_categories/{offer_id}', \App\Http\Controllers\Api\MerchantCategoryController::class . '@getMerchantCategoryByOfferId');
+
+        //Merchant Contacts
+        Route::post('merchant-contact', \App\Http\Controllers\Api\MerchantContactController::class . '@postMerchantContact');
 
         // User Settings
         Route::prefix('/user/settings')->group(function () {
@@ -136,6 +145,14 @@ Route::group(['prefix' => 'v1'], function () {
         // TODO: secure this route
         Route::get('users_by_id', [\App\Http\Controllers\Api\UserController::class, 'getUsersByIds']);
         Route::get('user/{user}', [\App\Http\Controllers\Api\UserController::class, 'show']);
+
+        //user module consolidate api
+        Route::get('user', [\App\Http\Controllers\Api\UserController::class, 'getAuthUserDetails']);
+        Route::get('public/user/{user}', [\App\Http\Controllers\Api\UserController::class, 'getPublicUser']);
+        //single route to update user details(name, username, bio, job_title, dob, gender, location, avatar, cover, category_ids)
+        Route::post('user', [\App\Http\Controllers\Api\UserController::class, 'postUpdateUserDetails']);
+        Route::post('user/password', [\App\Http\Controllers\Api\UserController::class, 'postUpdatePassword']);
+        Route::post('user/email', [\App\Http\Controllers\Api\UserController::class, 'postUpdateEmail']);
 
         // Views
         Route::prefix('/views')->group(function () {
