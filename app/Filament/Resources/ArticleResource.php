@@ -118,29 +118,6 @@ class ArticleResource extends Resource
                                 ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                 ->rules('image'),
 
-                            // Repeater::make('images')
-                            //     ->schema([
-                            //         Forms\Components\SpatieMediaLibraryFileUpload::make('image')
-                            //             ->label('Image')
-                            //             ->collection(Article::MEDIA_COLLECTION_NAME)
-                            //             ->columnSpan('full')
-                            //             ->customProperties(['is_cover' => false])
-                            //             // disk is s3_public 
-                            //             ->disk(function () {
-                            //                 if (config('filesystems.default') === 's3') {
-                            //                     return 's3_public';
-                            //                 }
-                            //             })
-                            //             ->acceptedFileTypes(['image/*'])
-                            //             ->maxFiles(1)
-                            //             ->rules('image'),
-                            //     ])
-                            //     ->maxItems(20)
-                            //     ->collapsible()
-                            //     ->columnSpan('full')
-                            //     ->orderable('order_column')
-                            //     ->hidden(fn (Closure $get) => $get('type') !== 'multimedia'),
-
                             //  video upload
                             // image upload for video thumbnail
                             Forms\Components\SpatieMediaLibraryFileUpload::make('video_thumbnail')
