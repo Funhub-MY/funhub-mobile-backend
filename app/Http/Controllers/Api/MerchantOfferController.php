@@ -232,7 +232,6 @@ class MerchantOfferController extends Controller
         // check offer is still valid by checking available_at and available_until
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
-            ->disableCache()
             ->with('user', 'user.merchant', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
@@ -246,7 +245,7 @@ class MerchantOfferController extends Controller
         }
 
         // double check quantity via unclaimed vouchers
-        if ($offer->disableCache()->unclaimedVouchers()->count() < $request->quantity) {
+        if ($offer->unclaimedVouchers()->count() < $request->quantity) {
             return response()->json([
                 'message' => 'Offer is sold out'
             ], 422);
