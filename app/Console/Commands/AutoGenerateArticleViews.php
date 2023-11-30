@@ -43,6 +43,9 @@ class AutoGenerateArticleViews extends Command
                 foreach ($viewQueueRecords as $record) {
                     $articleId = $record->article_id;
                     $scheduledViews = $record->scheduled_views;
+                    if ($record->updated_scheduled_views) {
+                        $scheduledViews = $record->updated_scheduled_views;
+                    }
     
                     for ($i = 0; $i < $scheduledViews; $i++) {
                         View::create([
