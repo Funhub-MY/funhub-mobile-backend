@@ -16,6 +16,7 @@ use Kreait\Firebase\Exception\FirebaseException;
 use Laravel\Socialite\Facades\Socialite;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Laravel\Firebase\Facades\Firebase;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -582,7 +583,6 @@ class AuthController extends Controller
         // get access token from
         $token = $request->input('access_token');
         $firebase_auth = Firebase::auth();
-        // get verify ID, wrap it in a try catch.
 
         try {
             $verified_id = $firebase_auth->verifyIdToken($token);
@@ -609,45 +609,51 @@ class AuthController extends Controller
             Log::info('socialid via uid: ' . $socialid);
         }
 
-        //check if the user already exists in the database
-        // $user = User::where('google_id', $socialid)
-        //     ->orWhere('facebook_id', $socialid)
-        //     ->orWhere('apple_id', $socialid)
-        //     ->first();
-
         $user = User::where('google_id', $socialid)
             ->orWhere('facebook_id', $socialid)
             ->orWhere('apple_id', $socialid)
             ->orWhere('email', $firebase_user->email)
             ->first();
 
+
+        // latest provider id if providerdata > 1
+        $providerId = (count($firebase_user->providerData) > 0) ? $firebase_user->providerData[0]->providerId : $firebase_user->providerData[count($firebase_user->providerData) - 1]->providerId;
+        $name = null;
+        if ($firebase_user->displayName == null || $firebase_user->displayName == '') {
+            $pattern = '/(.*)@.*$/';
+            preg_match($pattern, $firebase_user->email, $matches);
+            $textBeforeDomain = trim($matches[1]);
+            $cleanedText = preg_replace('/[^a-zA-Z0-9]+/', '', $textBeforeDomain);
+            $name = $cleanedText;
+        } else {
+            $name = $firebase_user->displayName;
+        }
+
+        // if name still null,  then generate random name with mix of character n number at the end
+        if ($name == null || $name == '') {
+            $name = Str::random(5).rand(1000, 9999);
+        }
+
+        Log::info('Social login user, provider data: ', [
+            'name' => $name,
+            'providerData' => $firebase_user->providerData
+        ]);
+
         if(!$user) {
-            //if user does not exist in the database, create a new user using the Facebook data
-            $user = new User();
-
-            if ($firebase_user->displayName == null || $firebase_user->displayName == '') {
-                $pattern = '/(.*)@.*$/';
-                preg_match($pattern, $firebase_user->email, $matches);
-                $textBeforeDomain = trim($matches[1]);
-                $cleanedText = preg_replace('/[^a-zA-Z0-9]+/', '', $textBeforeDomain);
-                $user->name = $cleanedText;
-            } else {
-                $user->name = $firebase_user->displayName;
-            }
-
-            $user->email = $firebase_user->email;
-
-            Log::info('providerData: ', [
+            Log::info('Social login user not exists, create new user', [
                 'providerData' => $firebase_user->providerData
             ]);
+            $user = new User();
+            $user->name = $name;
+            $user->email = $firebase_user->email;
 
             // Save IDs to associated fields in DB for social providers
-            if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
+            if ($providerId == 'google.com') { // Google Login
                 $user->google_id = $firebase_user->providerData[0]->uid;
-            } else if ($firebase_user->providerData[0]->providerId == 'facebook.com'){ // Facebook Login
+            } else if ($providerId == 'facebook.com'){ // Facebook Login
                 // need to get facebook_id.
                 $user->facebook_id = $firebase_user->uid; // use uid at the moment.
-            } else if ($firebase_user->providerData[0]->providerId == 'apple.com') { // Apple Login
+            } else if ($providerId == 'apple.com') { // Apple Login
                 $user->apple_id = $firebase_user->uid; // use uid at the moment.
             }
 
@@ -667,7 +673,6 @@ class AuthController extends Controller
 
             $user->refresh();
             // set ids based on providerId
-            $providerId = $firebase_user->providerData[0]->providerId;
             if ($providerId == 'google.com') {
                 $user->google_id = $firebase_user->providerData[0]->uid;
             } else if ($providerId == 'facebook.com') {
@@ -686,6 +691,11 @@ class AuthController extends Controller
                     Log::error($e->getMessage());
                }
             }
+
+            // update name if null
+            if ($user->name == null || $user->name == '') {
+                $user->update(['name' => $name]);
+            }
         }
 
         //log the new user in
@@ -698,8 +708,8 @@ class AuthController extends Controller
             'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
-
     }
+
     // TODO:: functions below can be deleted once flutter end finish login implementation. It was created for unit testing purpose.
     public function redirectToGoogle()
     {
