@@ -698,10 +698,7 @@ class AuthController extends Controller
             }
         }
 
-        // refresh user object first without cache
-        $user = User::disableCache()
-            ->where('user_id', $user->id)
-            ->first();
+        $user = $user->refresh();
 
         //log the new user in
         auth()->login($user);
