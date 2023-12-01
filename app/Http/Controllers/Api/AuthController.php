@@ -700,6 +700,11 @@ class AuthController extends Controller
 
         $user = $user->refresh();
 
+        Log::info('Social login user, after update', [
+            'user' => $user,
+            'providerData' => $firebase_user->providerData
+        ]);
+
         //log the new user in
         auth()->login($user);
         $sanctumToken = $user->createToken('authToken');

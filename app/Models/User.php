@@ -440,6 +440,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             return 'google';
         } elseif ($this->facebook_id) {
             return 'facebook';
+        } elseif($this->apple_id) {
+            return 'apple';
         } else {
             return 'phone_no';
         }
