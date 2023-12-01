@@ -621,7 +621,6 @@ class AuthController extends Controller
             ->orWhere('email', $firebase_user->email)
             ->first();
 
-
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
             $user = new User();
@@ -674,6 +673,16 @@ class AuthController extends Controller
                 $user->apple_id = $firebase_user->uid;
             }
             $user->save();
+
+            // update latest email if not same
+            if ($user->email != $firebase_user->email) {
+                // check db unique email
+               try {
+                    $user->update(['email' => $firebase_user->email]);
+               } catch (\Exception $e) {
+                    Log::error($e->getMessage());
+               }
+            }
         }
 
         //log the new user in
