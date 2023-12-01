@@ -440,6 +440,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser
             return 'google';
         } elseif ($this->facebook_id) {
             return 'facebook';
+        } elseif($this->apple_id) {
+            return 'apple';
         } else {
             return 'phone_no';
         }
@@ -453,7 +455,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         // ensure name and email are set for social auth user
         // else ensure name, email, password are set for phone no sms otp login user
         if ($this->auth_provider == 'phone_no') {
-            return $this->name && $this->email && $this->password;
+            return $this->name && $this->password;
         } else {
             return $this->name && $this->email;
         }
