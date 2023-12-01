@@ -698,6 +698,9 @@ class AuthController extends Controller
             }
         }
 
+        // refresh user object first without cache
+        $user = User::where('id', $user->id)->disableCache()->first();
+
         //log the new user in
         auth()->login($user);
         $sanctumToken = $user->createToken('authToken');
