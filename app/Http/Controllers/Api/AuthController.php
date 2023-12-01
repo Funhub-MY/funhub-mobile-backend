@@ -637,7 +637,9 @@ class AuthController extends Controller
 
             $user->email = $firebase_user->email;
 
-            Log::info('providerData: ' . $firebase_user->providerData[0]->providerId);
+            Log::info('providerData: ', [
+                'providerData' => $firebase_user->providerData
+            ]);
 
             // Save IDs to associated fields in DB for social providers
             if ($firebase_user->providerData[0]->providerId == 'google.com') { // Google Login
@@ -653,8 +655,9 @@ class AuthController extends Controller
         } else {
             // user exists
             // clear all google_id,facebook_id,apple_id
-            Log::info('user exists, clear all google_id,facebook_id,apple_id', [
-                'user' => $user
+            Log::info('Social login user exists, clear all google_id,facebook_id,apple_id first', [
+                'user' => $user,
+                'providerData' => $firebase_user->providerData
             ]);
             $user->update([
                 'google_id' => null,
