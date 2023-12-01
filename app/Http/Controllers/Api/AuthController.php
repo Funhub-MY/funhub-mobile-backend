@@ -617,7 +617,7 @@ class AuthController extends Controller
 
 
         // latest provider id if providerdata > 1
-        $providerId = (count($firebase_user->providerData) > 0) ? $firebase_user->providerData[0]->providerId : $firebase_user->providerData[count($firebase_user->providerData) - 1]->providerId;
+        $providerId = (count($firebase_user->providerData) > 1) ? $firebase_user->providerData[count($firebase_user->providerData) - 1]->providerId : $firebase_user->providerData[0]->providerId;
         $name = null;
         if ($firebase_user->displayName == null || $firebase_user->displayName == '') {
             $pattern = '/(.*)@.*$/';
