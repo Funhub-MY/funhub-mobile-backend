@@ -43,6 +43,9 @@ class AutoGenerateArticleViews extends Command
                 foreach ($viewQueueRecords as $record) {
                     $articleId = $record->article_id;
                     $scheduledViews = $record->scheduled_views;
+                    if ($record->updated_scheduled_views) {
+                        $scheduledViews = $record->updated_scheduled_views;
+                    }
     
                     for ($i = 0; $i < $scheduledViews; $i++) {
                         View::create([
@@ -66,26 +69,7 @@ class AutoGenerateArticleViews extends Command
             Log::error('[AutoGenerateArticleViews] Error: ' . $e->getMessage());
             return Command::FAILURE;
         }
-        // $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())->get();
-
-        // if ($viewQueueRecords) {
-        //     foreach ($viewQueueRecords as $record) {
-        //         $articleId = $record->article_id;
-        //         $scheduledViews = $record->scheduled_views;
-    
-        //         for ($i = 0; $i < $scheduledViews; $i++) {
-        //             View::create([
-        //                 'user_id' => $this->getSuperAdminUserId(),
-        //                 'viewable_type' => Article::class,
-        //                 'viewable_id' => $articleId,
-        //                 'ip_address' => null,
-        //                 'is_system_generated' => true,
-        //             ]);
-        //         }
-        //     }
-        // }
-
-        // return Command::SUCCESS;
+        
     }
 
     protected function getSuperAdminUserId() {

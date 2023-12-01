@@ -11,10 +11,12 @@ class ViewQueue extends Model
 
     protected $table = 'view_queues';
 
-    protected $fillable = [
-        'article_id',
-        'scheduled_views',
-        'is_processed',
-        'scheduled_at',
-    ];
+    protected $guarded = ['id'];
+
+    // protected $fillable = [
+    //     'article_id',
+    //     'scheduled_views',
+    //     'is_processed',
+    //     'scheduled_at',
+    // ];
 }

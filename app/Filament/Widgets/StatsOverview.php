@@ -61,7 +61,7 @@ class StatsOverview extends BaseWidget
 
     protected function getCards(): array
     {
-        $humanReadable = new NumberFormatter('en_US', NumberFormatter::PADDING_POSITION);
+        $humanReadable = new NumberFormatter(locale_get_default(), NumberFormatter::PADDING_POSITION);
         $userData = $this->getUserTotal();
         $activeUserData = $this->getActiveUserTotal();
 
@@ -87,7 +87,7 @@ class StatsOverview extends BaseWidget
     }
 
     protected function getChangeMessage($value) {
-        $humanReadable = new NumberFormatter('en_US', NumberFormatter::PADDING_POSITION);
+        $humanReadable = new NumberFormatter( locale_get_default(), NumberFormatter::PADDING_POSITION);
 
         if ($value > 0) {
             return $humanReadable->format(abs($value)). '% increased from last month';
