@@ -66,7 +66,7 @@ class NewSupportRequestMessage extends Notification implements ShouldQueue
             'link_to' => '', // if link to url false, means get link_to_object
             'link_to_object' => $this->message->id, // if link to url false, means get link_to_object
             'action' => 'new_support_request_message_received',
-            'from' => $this->message->user->name,
+            'from' => '小饭',
             'from_id' => $this->message->user->id,
             'title' => $this->message->user->name,
             'message' => '您的申诉有一条新消息，快去看看吧',
