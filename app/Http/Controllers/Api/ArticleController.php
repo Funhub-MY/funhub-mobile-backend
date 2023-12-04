@@ -744,12 +744,12 @@ class ArticleController extends Controller
         $location = null;
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $location = Location::where('google_id', $locationData['google_id'])->first();
+        } else {
+            // if location cant be found by google_id, then find by lat,lng
+            $location = Location::where('lat', $locationData['lat'])
+                ->where('lng', $locationData['lng'])
+                ->first();
         }
-
-        // if location cant be found by google_id, then find by lat,lng
-        $location = Location::where('lat', $locationData['lat'])
-            ->where('lng', $locationData['lng'])
-            ->first();
 
         // detach existing location first
         $article->location()->detach(); // detaches all
@@ -757,6 +757,12 @@ class ArticleController extends Controller
         if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
+
+            // update google id if there is
+            if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+                $location->google_id = $locationData['google_id'];
+                $location->save();
+            }
         } else {
             // create new location
             $loc = [

@@ -3,6 +3,7 @@
 use Tests\TestCase;
 use App\Models\Article;
 use App\Models\Setting;
+use App\Models\Location;
 use App\Models\User;
 use App\Models\View;
 use App\Models\ViewQueue;
@@ -70,6 +71,53 @@ class ViewTest extends TestCase
 
         $this->assertDatabaseHas('views', [
             'viewable_type' => Article::class,
+            'viewable_id' => 1,
+        ]);
+    }
+
+    public function testPostViewLocation()
+    {
+        $data = [
+            'viewable_type' => 'location',
+            'viewable_id' => 1,
+        ];
+
+        $response = $this->postJson('/api/v1/views', $data);
+
+        $response
+            ->assertOk()
+            ->assertJson(['message' => 'View recorded']);
+
+        $this->assertDatabaseHas('views', [
+            'viewable_type' => Location::class,
+            'viewable_id' => 1,
+        ]);
+    }
+
+    public function testGetViewsLocation()
+    {
+        //add data
+        $data = [
+            'viewable_type' => 'location',
+            'viewable_id' => 1,
+        ];
+
+        $post_response = $this->postJson('/api/v1/views', $data);
+
+        $type = 'location';
+        $id = 1;
+
+        $response = $this->getJson("/api/v1/views/{$type}/{$id}");
+
+        $response
+            ->assertOk()
+            ->assertJsonStructure([
+                'views',
+                'total',
+            ]);
+
+        $this->assertDatabaseHas('views', [
+            'viewable_type' => Location::class,
             'viewable_id' => 1,
         ]);
     }
