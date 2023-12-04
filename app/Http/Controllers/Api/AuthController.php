@@ -404,6 +404,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email,' . auth()->user()->id,
         ]);
 
+        
         $user = auth()->user();
         // update login user email first
         $user->update([
