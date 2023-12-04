@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\Location;
 use App\Models\MerchantOffer;
 use App\Models\User;
 use App\Models\View;
@@ -14,13 +15,13 @@ class ViewController extends Controller
 {
     /**
      * Record view for viewable
-     * This is used for recording views for articles, comments, merchant offers, and user profiles
+     * This is used for recording views for articles, comments, merchant offers, user profiles and location
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      * 
      * @group View
-     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile
+     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location
      * @bodyParam viewable_id int required The id of the viewable. Example: 1
      * @response scenario="success" {
      * "message": "View recorded"
@@ -29,7 +30,7 @@ class ViewController extends Controller
     public function postView(Request $request)
     {
         $this->validate($request, [
-            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile',
+            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile,location',
             'viewable_id' => 'required|integer',
         ]);
 
@@ -45,6 +46,9 @@ class ViewController extends Controller
                 break;
             case 'user_profile':
                 $request->merge(['viewable_type' => User::class]);
+                break;
+            case 'location':
+                $request->merge(['viewable_type' => Location::class]);
                 break;
         }
 

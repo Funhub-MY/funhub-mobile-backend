@@ -213,6 +213,7 @@ class MerchantOfferResource extends Resource
                                     ->label('Available Quantity')
                                     ->required()
                                     ->numeric()
+                                    ->disabledOn('edit')
                                     // ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
                                     // ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
                                     ->minValue(1),

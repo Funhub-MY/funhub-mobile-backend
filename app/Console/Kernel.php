@@ -18,7 +18,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune')->daily();
         $schedule->command('fetch:news-feed')->hourly();
 
-        $schedule->command('generate:article-views')->hourly();
+        $schedule->command('generate:article-views')->everyTwoHours();
+        $schedule->command('update:scheduled-views')->everyTwoHours();        
 
         // run every 15minutes for release merchant
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();

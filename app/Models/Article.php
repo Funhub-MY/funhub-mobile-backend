@@ -88,6 +88,24 @@ class Article extends BaseModel implements HasMedia
         return $this->status === self::STATUS_PUBLISHED;
     }
 
+    public function calculateInteractionScore()
+    {
+        $viewCount = $this->views()->where('is_system_generated', false)->count();
+        $bookmarkCount = $this->interactions()->where('type', Interaction::TYPE_BOOKMARK)->count();
+        $likeCount = $this->interactions()->where('type', Interaction::TYPE_LIKE)->count();
+        $commentCount = $this->comments()->count();
+
+        //in future,adjust the weights as needed
+        $viewWeight = 1;
+        $bookmarkWeight = 1;
+        $likeWeight = 1;
+        $commentWeight = 1;
+    
+        $interactionScore = ($viewCount * $viewWeight) + ($bookmarkCount * $bookmarkWeight) + ($likeCount * $likeWeight) + ($commentCount * $commentWeight);
+    
+        return $interactionScore;
+    }
+
     /**
      * Relationships
      */
