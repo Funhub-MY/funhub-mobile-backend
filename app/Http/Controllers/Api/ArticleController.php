@@ -744,12 +744,12 @@ class ArticleController extends Controller
         $location = null;
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $location = Location::where('google_id', $locationData['google_id'])->first();
+        } else {
+            // if location cant be found by google_id, then find by lat,lng
+            $location = Location::where('lat', $locationData['lat'])
+                ->where('lng', $locationData['lng'])
+                ->first();
         }
-
-        // if location cant be found by google_id, then find by lat,lng
-        $location = Location::where('lat', $locationData['lat'])
-            ->where('lng', $locationData['lng'])
-            ->first();
 
         // detach existing location first
         $article->location()->detach(); // detaches all
