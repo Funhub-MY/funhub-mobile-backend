@@ -457,7 +457,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         if ($this->auth_provider == 'phone_no') {
             return $this->name && $this->password;
         } else if ($this->auth_provider == 'facebook') {
-            return $this->name;
+            return !is_null($this->name) && !empty($this->name);
         } else {
             return $this->name && $this->email;
         }
