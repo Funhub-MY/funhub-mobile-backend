@@ -757,6 +757,12 @@ class ArticleController extends Controller
         if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
+
+            // update google id if there is
+            if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+                $location->google_id = $locationData['google_id'];
+                $location->save();
+            }
         } else {
             // create new location
             $loc = [
