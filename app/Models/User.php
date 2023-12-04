@@ -456,6 +456,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         // else ensure name, email, password are set for phone no sms otp login user
         if ($this->auth_provider == 'phone_no') {
             return $this->name && $this->password;
+        } else if ($this->auth_provider == 'facebook') {
+            return $this->name;
         } else {
             return $this->name && $this->email;
         }
