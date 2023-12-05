@@ -722,6 +722,9 @@ class ArticleController extends Controller
 
         event(new ArticleCreated($article));
 
+        // trigger scout to reindex this article
+        $article->searchable();
+
         $article = $article->refresh();
         // load relations
         $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
@@ -1007,6 +1010,8 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
+            // trigger scout to reindex this article
+            $article->searchable();
             // load relations count
             $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
