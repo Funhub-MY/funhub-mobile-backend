@@ -15,13 +15,13 @@ class StatsOverview extends BaseWidget
     use HasWidgetShield;
 
     protected function getUserTotal() {
-        $currentTotal = User::count();
+        $currentTotal = User::selectRaw('COUNT(*) as total')->value('total');
         // last month total
-        $upToLastMonthTotal = User::where('created_at', '<', now()->subMonth())->count();
+        $upToLastMonthTotal = User::where('created_at', '<', now()->subMonth())->selectRaw('COUNT(*) as total')->value('total');
 
         $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
         return [
-            'total' => User::count(),
+            'total' => $currentTotal,
             'changes_compared_last_month' => $changesSinceLastMonthPercent,
             'increased' => $changesSinceLastMonthPercent > 0,
         ];
@@ -29,10 +29,10 @@ class StatsOverview extends BaseWidget
 
     protected function getActiveUserTotal(){
         // get active user by view activity from last month
-        $currentTotal = View::where('created_at', '>', now()->startOfMonth())->distinct('user_id')->count('user_id');
+        $currentTotal = View::where('created_at', '>', now()->startOfMonth())->distinct('user_id')->selectRaw('COUNT(DISTINCT user_id) as total')->value('total');
 
         // get active user by view activity from last 1 months
-        $upToLastMonthTotal = View::where('created_at', '>', now()->subMonth()->startOfMonth())->distinct('user_id')->count('user_id');
+        $upToLastMonthTotal = View::where('created_at', '>', now()->subMonth()->startOfMonth())->distinct('user_id')->selectRaw('COUNT(DISTINCT user_id) as total')->value('total');
 
         $changesSinceLastMonthPercent = 0;
         if ($currentTotal != 0) {
@@ -46,18 +46,17 @@ class StatsOverview extends BaseWidget
     }
 
     protected function getArticlesPublished() {
-        $currentTotal = Article::published()->count();
+        $currentTotal = Article::published()->selectRaw('COUNT(*) as total')->value('total');
         // last month total
-        $upToLastMonthTotal = Article::published()->where('created_at', '<', now()->subMonth())->count();
+        $upToLastMonthTotal = Article::published()->where('created_at', '<', now()->subMonth())->selectRaw('COUNT(*) as total')->value('total');
 
         $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
         return [
-            'total' => Article::published()->count(),
+            'total' => $currentTotal,
             'changes_compared_last_month' => $changesSinceLastMonthPercent,
             'increased' => $changesSinceLastMonthPercent > 0,
         ];
     }
-
 
     protected function getCards(): array
     {
