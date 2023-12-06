@@ -189,7 +189,7 @@ class ArticleController extends Controller
                     BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
                 }
             } else {
-                Log::info('No ranks found for user ' . auth()->user()->id);
+                Log::info('[ArticleController] No ranks found for user ' . auth()->user()->id);
                 // user never built recommendations, also fire job to rebuild
                 BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
             }
@@ -228,6 +228,9 @@ class ArticleController extends Controller
         }
 
         $this->filterArticlesBlockedOrHidden($query);
+
+        // only show those thats is not hidden from home
+        $query->notHiddenFromHome();
 
         if (!$request->has('lat') && !$request->has('lng')) {
             $query->latest();
@@ -383,6 +386,7 @@ class ArticleController extends Controller
             $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
         }
         $query->whereNotIn('user_id', $excludedUserIds);
+
     }
 
     /**

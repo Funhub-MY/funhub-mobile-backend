@@ -27,6 +27,7 @@ use Filament\Forms\FormsComponent;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Toggle;
 
 class ArticleResource extends Resource
 {
@@ -105,7 +106,7 @@ class ArticleResource extends Resource
                                 ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->customProperties(['is_cover' => false])
-                                // disk is s3_public 
+                                // disk is s3_public
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
@@ -170,6 +171,9 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
+                            Toggle::make('hidden_from_home')
+                                ->label('Hide from Home?')
+                                ->default(false),
                             Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
 
