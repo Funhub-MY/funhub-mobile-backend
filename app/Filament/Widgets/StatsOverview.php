@@ -60,38 +60,34 @@ class StatsOverview extends BaseWidget
 
     protected function getCards(): array
     {
-        $humanReadable = new NumberFormatter(locale_get_default(), NumberFormatter::PADDING_POSITION);
         $userData = $this->getUserTotal();
         $activeUserData = $this->getActiveUserTotal();
 
         $articleData = $this->getArticlesPublished();
 
         return [
-            Card::make('Total Users', $humanReadable->format($userData['total']))
+            Card::make('Total Users', $this->number_format_short($userData['total']))
                 ->description($this->getChangeMessage($userData['changes_compared_last_month']))
                 ->descriptionIcon($this->getChangeIcon($userData['changes_compared_last_month']))
                 ->color($this->getChangeColor($userData['changes_compared_last_month'])),
 
-            Card::make('Active Users', $humanReadable->format($activeUserData['total']))
+            Card::make('Active Users', $this->number_format_short($activeUserData['total']))
                 ->description($this->getChangeMessage($activeUserData['changes_compared_last_month']))
                 ->descriptionIcon($this->getChangeIcon($activeUserData['changes_compared_last_month']))
                 ->color($this->getChangeColor($activeUserData['changes_compared_last_month'])),
 
-            Card::make('Total Published Articles', $humanReadable->format($articleData['total']))
+            Card::make('Total Published Articles', number_format($articleData['total']))
                 ->description($this->getChangeMessage($articleData['changes_compared_last_month']))
                 ->descriptionIcon($this->getChangeIcon($articleData['changes_compared_last_month']))
                 ->color($this->getChangeColor($articleData['changes_compared_last_month'])),
-
         ];
     }
 
     protected function getChangeMessage($value) {
-        $humanReadable = new NumberFormatter( locale_get_default(), NumberFormatter::PADDING_POSITION);
-
         if ($value > 0) {
-            return $humanReadable->format(abs($value)). '% increased from last month';
+            return $this->number_format_short(abs($value)). '% increased from last month';
         } else if ($value < 0) {
-            return $humanReadable->format(abs($value)). '% decreased from last month';
+            return $this->number_format_short(abs($value)). '% decreased from last month';
         } else {
             return 'No change from last month';
         }
@@ -116,4 +112,38 @@ class StatsOverview extends BaseWidget
             return '';
         }
     }
+
+    protected function number_format_short( $n, $precision = 1 ) {
+        if ($n < 900) {
+            // 0 - 900
+            $n_format = number_format($n, $precision);
+            $suffix = '';
+        } else if ($n < 900000) {
+            // 0.9k-850k
+            $n_format = number_format($n / 1000, $precision);
+            $suffix = 'K';
+        } else if ($n < 900000000) {
+            // 0.9m-850m
+            $n_format = number_format($n / 1000000, $precision);
+            $suffix = 'M';
+        } else if ($n < 900000000000) {
+            // 0.9b-850b
+            $n_format = number_format($n / 1000000000, $precision);
+            $suffix = 'B';
+        } else {
+            // 0.9t+
+            $n_format = number_format($n / 1000000000000, $precision);
+            $suffix = 'T';
+        }
+
+      // Remove unecessary zeroes after decimal. "1.0" -> "1"; "1.00" -> "1"
+      // Intentionally does not affect partials, eg "1.50" -> "1.50"
+        if ( $precision > 0 ) {
+            $dotzero = '.' . str_repeat( '0', $precision );
+            $n_format = str_replace( $dotzero, '', $n_format );
+        }
+
+        return $n_format . $suffix;
+    }
+
 }
