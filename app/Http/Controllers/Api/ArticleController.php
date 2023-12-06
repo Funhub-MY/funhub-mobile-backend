@@ -189,7 +189,7 @@ class ArticleController extends Controller
                     BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
                 }
             } else {
-                Log::info('No ranks found for user ' . auth()->user()->id);
+                Log::info('[ArticleController] No ranks found for user ' . auth()->user()->id);
                 // user never built recommendations, also fire job to rebuild
                 BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
             }
@@ -228,6 +228,9 @@ class ArticleController extends Controller
         }
 
         $this->filterArticlesBlockedOrHidden($query);
+
+        // only show those thats is not hidden from home
+        $query->notHiddenFromHome();
 
         if (!$request->has('lat') && !$request->has('lng')) {
             $query->latest();
@@ -383,6 +386,7 @@ class ArticleController extends Controller
             $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
         }
         $query->whereNotIn('user_id', $excludedUserIds);
+
     }
 
     /**
@@ -722,6 +726,9 @@ class ArticleController extends Controller
 
         event(new ArticleCreated($article));
 
+        // trigger scout to reindex this article
+        $article->searchable();
+
         $article = $article->refresh();
         // load relations
         $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
@@ -1007,6 +1014,8 @@ class ArticleController extends Controller
 
             // refresh article with its relations
             $article = $article->refresh();
+            // trigger scout to reindex this article
+            $article->searchable();
             // load relations count
             $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
             return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);

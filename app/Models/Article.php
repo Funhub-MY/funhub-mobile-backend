@@ -100,9 +100,9 @@ class Article extends BaseModel implements HasMedia
         $bookmarkWeight = 1;
         $likeWeight = 1;
         $commentWeight = 1;
-    
+
         $interactionScore = ($viewCount * $viewWeight) + ($bookmarkCount * $bookmarkWeight) + ($likeCount * $likeWeight) + ($commentCount * $commentWeight);
-    
+
         return $interactionScore;
     }
 
@@ -221,5 +221,10 @@ class Article extends BaseModel implements HasMedia
     public function scopePublished(Builder $query): void
     {
         $query->where($this->getTable() . '.status', self::STATUS_PUBLISHED);
+    }
+
+    public function scopeNotHiddenFromHome(Builder $query): void
+    {
+        $query->where($this->getTable() . '.hidden_from_home', false);
     }
 }
