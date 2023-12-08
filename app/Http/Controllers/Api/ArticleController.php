@@ -253,8 +253,11 @@ class ArticleController extends Controller
         })->get();
 
         $data->each(function ($article) use ($locatables) {
-            $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
-            $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+            // only apply to article with location
+            if ($article->location->count() > 0) {
+                $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
+                $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+            }
         });
 
         return ArticleResource::collection($data);
