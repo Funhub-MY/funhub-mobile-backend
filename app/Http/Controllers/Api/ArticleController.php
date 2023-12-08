@@ -242,21 +242,20 @@ class ArticleController extends Controller
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate($paginatePerPage);
 
-        // each data if type is video, fire view create
-        // $data->each(function ($article) {
-        //     if ($article->type == 'video') { // create one impression per load
-        //         try {
-        //             View::create([
-        //                 'user_id' => auth()->id(),
-        //                 'viewable_type' => Article::class,
-        //                 'viewable_id' => $article->id,
-        //                 'ip_address' => request()->ip(),
-        //             ]);
-        //         } catch (Exception $e) {
-        //             Log::error('Error creating view for article ' . $article->id . ' - ' . $e->getMessage());
-        //         }
-        //     }
-        // });
+        // get all article location ids
+        $locationIds = $data->pluck('location.0.id')->filter()->toArray();
+        $locatables = DB::table('locatables')->whereIn('location_id', $locationIds)
+        // make sure only published merchant offers are counted
+        ->rightJoin('merchant_offers', function ($join) {
+            $join->on('locatables.locatable_id', '=', 'merchant_offers.id')
+                ->where('locatables.locatable_type', '=', MerchantOffer::class)
+                ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED);
+        })->get();
+
+        $data->each(function ($article) use ($locatables) {
+            $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
+            $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+        });
 
         return ArticleResource::collection($data);
     }
