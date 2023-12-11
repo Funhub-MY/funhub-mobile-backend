@@ -6,6 +6,7 @@ use App\Filament\Resources\SupportRequestResource\Pages;
 use App\Filament\Resources\SupportRequestResource\RelationManagers;
 use App\Filament\Resources\SupportRequestResource\RelationManagers\MessagesRelationManager;
 use App\Models\SupportRequest;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
@@ -59,7 +60,29 @@ class SupportRequestResource extends Resource
                                 ->searchable(),
 
                             Select::make('assignee_id')
-                                ->relationship('assignee', 'name')
+                                ->label('Assignee (Admin/Staff)')
+                                ->preload()
+                                ->getSearchResultsUsing(function (string $search): array {
+                                    return User::query()
+                                        ->where(function (Builder $builder) use ($search) {
+                                            $searchString = "%$search%";
+                                            $builder->where('name', 'like', $searchString);
+                                        })
+                                        ->whereHas('roles', function ($query) {
+                                            $query->whereIn('name', ['super_admin', 'moderator', 'staff']);
+                                        })
+                                        ->limit(50)
+                                        ->get()
+                                        ->mapWithKeys(function (User $user) {
+                                            return [$user->id => $user->name.' ('.$user->email.')'];
+                                        })
+                                        ->toArray();
+                                })
+                                ->getOptionLabelUsing(function ($value) {
+                                    $user = User::find($value);
+                                    return $user->name.' ('.$user->email.')';
+                                })
+                                ->preload()
                                 ->searchable(),
                         ])
                 ])->columnSpan(['lg' => 2])
