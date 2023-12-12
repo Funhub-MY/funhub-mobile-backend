@@ -44,6 +44,9 @@ class UserFollowingController extends Controller
         // logged in user follow anothe user
         auth()->user()->followings()->attach($request->user_id);
 
+        // remove model cache
+        auth()->user()->load('followings');
+
         $followedUser = User::find($request->user_id);
         event(new FollowedUser(auth()->user(), $followedUser));
 
@@ -83,6 +86,10 @@ class UserFollowingController extends Controller
         auth()->user()->followings()->detach($request->user_id);
 
         $unfollowedUser = User::find($request->user_id);
+
+        // remove model cache
+        auth()->user()->load('followings');
+
         if ($unfollowedUser) {
             // detach myself from all articles of this user that i just unfollowed as i'm no longer a follower cant be tagged
             $articlesImTaggedIn = $unfollowedUser->articles()->whereHas('taggedUsers', function ($query) use ($request) {
