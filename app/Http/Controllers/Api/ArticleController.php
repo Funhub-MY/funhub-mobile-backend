@@ -432,6 +432,8 @@ class ArticleController extends Controller
         }
 
         $taggedUsers = $article->taggedUsers()
+            // where not suspended
+            ->where('status', User::STATUS_ACTIVE)
             ->whereNotIn('users.id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)))
             ->paginate(config('app.paginate_per_page'));
 
