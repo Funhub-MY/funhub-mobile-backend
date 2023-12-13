@@ -263,7 +263,7 @@ class UserResource extends Resource
                                         'action' => 'reward-user',
                                         'quantity' => $quantity,
                                     ]),
-                                    'approved' => $approvalSetting->sequence === 1,
+                                    'approved' => false
                                 ]);
                                 $approval->save();
                             }
