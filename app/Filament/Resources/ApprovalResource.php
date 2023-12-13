@@ -25,6 +25,9 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ApprovalResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ApprovalResource\RelationManagers;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Model;
 
 class ApprovalResource extends Resource
 {
@@ -33,6 +36,29 @@ class ApprovalResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
     protected static ?string $navigationGroup = 'Approvals';
+
+    protected static function getNavigationBadge(): ?string
+    {
+        $pendingApprovals = static::getModel()::where('approved', false)->count();
+        return ($pendingApprovals > 0) ? $pendingApprovals : null;
+    }
+
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -60,26 +86,71 @@ class ApprovalResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('approvable_type')
-                    ->label('Approvable Type')
+                TextColumn::make('approvable_id')
+                    ->label('ID')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('approvable.name')
-                    ->label('Approvable Name')
+                TextColumn::make('approvable.created_at')
+                    ->label('Requested At')
+                    ->date('d/m/Y h:iA')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('data')
-                    ->label('Data')
-                    ->limit(30),
+
                 BadgeColumn::make('approved')
                     ->label('Status')
                     ->enum([
                         '1' => 'Approved',
                         '0' => 'Pending',
                     ])
+                    ->colors([
+                        '1' => 'success',
+                        '0' => 'warning',
+                    ]),
+                TextColumn::make('approvable_type')
+                    ->label('Approvable Type')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('approvable.name')
+                    ->label('Item Name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('data')
+                ->label('Action')
+                ->getStateUsing(function (Model $record) {
+                        $data = json_decode($record->data, true);
+                        $user = User::where('id', $data['user']['id'])->first();
+                        $user = $user ? $user->name . '('.$user->email.')' : '';
+
+                        $html = '';
+                        if ($record->approvable_type == Reward::class) {
+                            $reward = Reward::find($record->approvable_id);
+                            $html .= 'Credit <b>' . $data['quantity'] . '</b> '. $reward->name . ' to <b>' . $user . '</b>';
+                        } elseif ($record->approvable_type == RewardComponent::class) {
+                            $rewardComponent = RewardComponent::find($record->approvable_id);
+                            $html .= 'Credit <b>' . $data['quantity'] . '</b> '. $rewardComponent->name . ' to <b>' . $user . '</b>';
+                        } else {
+                            $html .= $record->data; // raw
+                        }
+
+                        return $html;
+                    })
+                    ->html()
+
             ])
             ->filters([
-                //
+                SelectFilter::make('approvable_type')
+                    ->label('Approvable Type')
+                    ->options([
+                        'App\Models\Reward' => 'Reward',
+                        'App\Models\RewardComponent' => 'Reward Component',
+                    ]),
+
+                SelectFilter::make('approved')
+                    ->label('Status')
+                    ->options([
+                        '1' => 'Approved',
+                        '0' => 'Pending',
+                    ]),
             ])
             ->actions([
                 //
@@ -95,6 +166,15 @@ class ApprovalResource extends Resource
                                 ->whereHas('approvals', function ($query) {
                                     $query->where('approved', true);
                                 })->exists();
+
+                            // check if only have one sequence in all approval settings
+                            $onlyOneSequence = ApprovalSetting::where('approvable_type', $record->approvable_type)
+                                ->count() == 1;
+
+                            // if only one sequence then prevsequence approved auto pass
+                            if ($onlyOneSequence) {
+                                $prevSequenceApproved = true;
+                            }
 
                             if ($prevSequenceApproved) {
                                 $user = auth()->user();
@@ -130,6 +210,10 @@ class ApprovalResource extends Resource
                                             }
                                             break;
                                     }
+
+                                    Notification::make()
+                                        ->title('Approved ID: '.$record->id)
+                                        ->send();
                                 }
                             } else {
                                 Notification::make()
@@ -142,6 +226,14 @@ class ApprovalResource extends Resource
                 BulkAction::make('reject')
                     ->label('Reject')
                     ->action(function (Approval $record): void {
+                        // if record already approved warning and ignore
+                        if ($record->approved) {
+                            Notification::make()
+                                ->title('Unable to reject. Record already approved.')
+                                ->warning()
+                                ->send();
+                            return;
+                        }
                         $record->update(['approved' => false]);
                     }),
             ]);

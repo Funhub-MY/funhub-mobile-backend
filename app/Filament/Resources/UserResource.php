@@ -201,6 +201,8 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('full_phone_no')->label('Phone No'),
                 Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
+                Tables\Columns\TextColumn::make('point_balance')
+                    ->label('Funhub Balance'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()
             ])
             ->filters([
@@ -246,10 +248,10 @@ class UserResource extends Resource
                             }
 
                             $approvalSettings = ApprovalSetting::getSettingsForModel($approvableType);
-                                    
+
                             foreach ($approvalSettings as $approvalSetting) {
                                 // Create new approval record(s)
-                                // Number of record(s) created based on no. of sequence available for each approvable_type 
+                                // Number of record(s) created based on no. of sequence available for each approvable_type
                                 $approval = new Approval([
                                     'approval_setting_id' => $approvalSetting->id,
                                     'approver_id' => $approvalSetting->sequence === 1 ? auth()->user()->id : null,
