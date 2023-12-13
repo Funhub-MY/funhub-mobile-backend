@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('campaigns_questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('campaign_id');
+            $table->string('brand')->nullable();
             $table->text('question');
             $table->text('answer')->nullable();
             $table->boolean('is_active')->nullable()->default(false);

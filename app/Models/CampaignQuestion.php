@@ -11,6 +11,8 @@ class CampaignQuestion extends Model
 
     protected $guarded = ['id'];
 
+    protected $table = 'campaigns_questions';
+
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'campaign_id');
@@ -18,6 +20,6 @@ class CampaignQuestion extends Model
 
     public function answers()
     {
-        return $this->belongsToMany(CampaignQuestionAnswer::class, 'campaigns_questions_answers_users', 'campaign_question_id', 'answer_id');
+        return $this->hasMany(CampaignQuestionAnswer::class, 'campaign_question_id');
     }
 }

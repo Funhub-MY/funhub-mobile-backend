@@ -6,6 +6,10 @@ use App\Filament\Resources\CampaignResource\Pages;
 use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -19,11 +23,26 @@ class CampaignResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationGroup = 'Campaigns';
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Section::make('Campaign Details')
+                    ->schema([
+                        TextInput::make('name')
+                            ->autofocus()
+                            ->required(),
+                        Textarea::make('description')
+                            ->autofocus()
+                            ->required(),
+                        Toggle::make('is_active')
+                            ->autofocus()
+                            ->required(),
+                    ]),
             ]);
     }
 
@@ -31,7 +50,12 @@ class CampaignResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -43,14 +67,14 @@ class CampaignResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -58,5 +82,5 @@ class CampaignResource extends Resource
             'create' => Pages\CreateCampaign::route('/create'),
             'edit' => Pages\EditCampaign::route('/{record}/edit'),
         ];
-    }    
+    }
 }
