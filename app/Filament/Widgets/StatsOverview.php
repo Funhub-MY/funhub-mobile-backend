@@ -9,55 +9,73 @@ use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use NumberFormatter;
+use Illuminate\Support\Facades\Cache;
 
 class StatsOverview extends BaseWidget
 {
     use HasWidgetShield;
 
-    protected function getUserTotal() {
-        $currentTotal = User::selectRaw('COUNT(*) as total')->value('total');
-        // last month total
-        $upToLastMonthTotal = User::where('created_at', '<', now()->subMonth())->selectRaw('COUNT(*) as total')->value('total');
+    protected function getUserTotal()
+    {
+        $cacheKey = 'user_total';
+        $cacheDuration = 60; // 60 minutes
 
-        $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
-        return [
-            'total' => $currentTotal,
-            'changes_compared_last_month' => $changesSinceLastMonthPercent,
-            'increased' => $changesSinceLastMonthPercent > 0,
-        ];
-    }
+        return Cache::remember($cacheKey, $cacheDuration, function () {
+            $currentTotal = User::selectRaw('COUNT(*) as total')->value('total');
+            // last month total
+            $upToLastMonthTotal = User::where('created_at', '<', now()->subMonth())->selectRaw('COUNT(*) as total')->value('total');
 
-    protected function getActiveUserTotal(){
-        // get active user by view activity from last month
-        $currentTotal = View::where('created_at', '>', now()->startOfMonth())->distinct('user_id')->selectRaw('COUNT(DISTINCT user_id) as total')->value('total');
-
-        // get active user by view activity from last 1 months
-        $upToLastMonthTotal = View::where('created_at', '>', now()->subMonth()->startOfMonth())->distinct('user_id')->selectRaw('COUNT(DISTINCT user_id) as total')->value('total');
-
-        $changesSinceLastMonthPercent = 0;
-        if ($currentTotal != 0) {
             $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
-        }
-        return [
-            'total' => $currentTotal,
-            'changes_compared_last_month' => $changesSinceLastMonthPercent,
-            'increased' => $changesSinceLastMonthPercent > 0,
-        ];
+            return [
+                'total' => $currentTotal,
+                'changes_compared_last_month' => $changesSinceLastMonthPercent,
+                'increased' => $changesSinceLastMonthPercent > 0,
+            ];
+        });
     }
 
-    protected function getArticlesPublished() {
-        $currentTotal = Article::published()->selectRaw('COUNT(*) as total')->value('total');
-        // last month total
-        $upToLastMonthTotal = Article::published()->where('created_at', '<', now()->subMonth())->selectRaw('COUNT(*) as total')->value('total');
+    protected function getActiveUserTotal()
+    {
+        $cacheKey = 'active_user_total';
+        $cacheDuration = 60; // 60 minutes
 
-        $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
-        return [
-            'total' => $currentTotal,
-            'changes_compared_last_month' => $changesSinceLastMonthPercent,
-            'increased' => $changesSinceLastMonthPercent > 0,
-        ];
+        return Cache::remember($cacheKey, $cacheDuration, function () {
+            // get active user by view activity from last month
+            $currentTotal = View::where('created_at', '>', now()->startOfMonth())->distinct('user_id')->selectRaw('COUNT(DISTINCT user_id) as total')->value('total');
+
+            // get active user by view activity from last 1 months
+            $upToLastMonthTotal = View::where('created_at', '>', now()->subMonth()->startOfMonth())->distinct('user_id')->selectRaw('COUNT(DISTINCT user_id) as total')->value('total');
+
+            $changesSinceLastMonthPercent = 0;
+            if ($currentTotal != 0) {
+                $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
+            }
+            return [
+                'total' => $currentTotal,
+                'changes_compared_last_month' => $changesSinceLastMonthPercent,
+                'increased' => $changesSinceLastMonthPercent > 0,
+            ];
+        });
     }
 
+    protected function getArticlesPublished()
+    {
+        $cacheKey = 'articles_published';
+        $cacheDuration = 60; // 60 minutes
+
+        return Cache::remember($cacheKey, $cacheDuration, function () {
+            $currentTotal = Article::published()->selectRaw('COUNT(*) as total')->value('total');
+            // last month total
+            $upToLastMonthTotal = Article::published()->where('created_at', '<', now()->subMonth())->selectRaw('COUNT(*) as total')->value('total');
+
+            $changesSinceLastMonthPercent = (($currentTotal - $upToLastMonthTotal) / $currentTotal) * 100;
+            return [
+                'total' => $currentTotal,
+                'changes_compared_last_month' => $changesSinceLastMonthPercent,
+                'increased' => $changesSinceLastMonthPercent > 0,
+            ];
+        });
+    }
     protected function getCards(): array
     {
         $userData = $this->getUserTotal();

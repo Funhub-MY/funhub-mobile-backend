@@ -90,6 +90,7 @@ class ApprovalResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('approvable.created_at')
                     ->label('Requested At')
                     ->date('d/m/Y h:iA')
