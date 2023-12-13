@@ -33,11 +33,15 @@ class CampaignResource extends Resource
             ->schema([
                 Section::make('Campaign Details')
                     ->schema([
-                        TextInput::make('name')
+                        TextInput::make('title')
                             ->autofocus()
                             ->required(),
                         Textarea::make('description')
                             ->autofocus()
+                            ->required(),
+                        TextInput::make('url')
+                            ->label('Campaign Mobile Site (URL)')
+                            ->rule('url')
                             ->required(),
                         Toggle::make('is_active')
                             ->autofocus()
@@ -50,7 +54,7 @@ class CampaignResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_active')

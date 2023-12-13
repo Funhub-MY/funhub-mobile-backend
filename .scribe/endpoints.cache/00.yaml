@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: provident
+        example: fuga
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: provident
+      share_code: fuga
     fileParameters: []
     responses:
       -
@@ -56,7 +56,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1332,
+                      "line": 1351,
                       "function": "abort"
                   },
                   {
@@ -584,7 +584,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gEd146kV36ZPevDfcabah58'
+      - 'Bearer 38vb1a6P6ED4c5efZhVadkg'
     controller: null
     method: null
     route: null

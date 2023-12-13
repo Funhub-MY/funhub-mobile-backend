@@ -18,8 +18,8 @@ class CampaignQuestion extends Model
         return $this->belongsTo(Campaign::class, 'campaign_id');
     }
 
-    public function answers()
+    public function usersAnswers()
     {
-        return $this->hasMany(CampaignQuestionAnswer::class, 'campaign_question_id');
+        return $this->belongsToMany(User::class, 'campaigns_questions_answers_users', 'campaign_question_id', 'user_id');
     }
 }

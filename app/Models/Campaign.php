@@ -15,4 +15,11 @@ class Campaign extends Model
     {
         return $this->hasMany(CampaignQuestion::class, 'campaign_id');
     }
+
+    public function activeQuestionsByBrand()
+    {
+        return $this->hasMany(CampaignQuestion::class, 'campaign_id')
+            ->where('is_active', true)
+            ->groupBy('brand');
+    }
 }
