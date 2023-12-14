@@ -73,6 +73,9 @@ class CampaignQuestionResource extends Resource
                             ->rules('array')
                             ->hidden(fn (Closure $get) => $get('answer_type') == 'text')
                             ->rules('min:1'),
+
+                        Textarea::make('default_answer')
+                            ->helperText('To be displayed at end of questionaire submisison.'),
                     ]),
                 Section::make('Media')
                     ->columns(2)
