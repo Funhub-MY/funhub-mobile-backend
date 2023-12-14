@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: fuga
+        example: illo
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: fuga
+      share_code: illo
     fileParameters: []
     responses:
       -
@@ -582,7 +582,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 38vb1a6P6ED4c5efZhVadkg'
+      - 'Bearer v16Pdc8bhZe5VEg4Dafak36'
     controller: null
     method: null
     route: null

@@ -27,7 +27,7 @@ class CampaignQuestionResource extends JsonResource
               'question' => $this->question,
               'question_banner' => $this->getFirstMediaUrl(CampaignQuestion::QUESTION_BANNER),
               'footer_banner' => $this->getFirstMediaUrl(CampaignQuestion::FOOTER_BANNER),
-              'answers' => $answers
+              'answers' => $answers,
         ];
     }
 }

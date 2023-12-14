@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "03831d7a-2a9e-4a43-ac7b-442e7aff74ad",
+        "_postman_id": "123ad3bc-2e3e-44b7-a742-3c8f2bb2d66b",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":17,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"voluptatum\",\"violation_level\":\"ut\",\"article\":1}"
+                                    "raw": "{\"article_id\":11,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"est\",\"violation_level\":\"at\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptas\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"pariatur\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -449,7 +449,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"qui\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"harum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -972,7 +972,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "dicta",
+                                            "value": "optio",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1072,7 +1072,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"quibusdam\",\"violation_type\":\"velit\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"qui\",\"violation_type\":\"excepturi\"}"
                                 },
                                 "description": ""
                             },
@@ -1197,7 +1197,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "sequi",
+                                            "value": "id",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1999,7 +1999,7 @@
                             "query": [],
                             "raw": "{{baseUrl}}\/api\/v1\/campaigns\/answers_by_campaign_brand"
                         },
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
@@ -2021,6 +2021,76 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"campaign\": {},\n\"answers\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Questions by Campaign",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/campaigns\/questions_by_campaign",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/campaigns\/questions_by_campaign"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"campaign_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"campaign\": {},\n\"questions\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Questions by Campaign and Brand",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/campaigns\/questions_by_brand_campaign",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/campaigns\/questions_by_brand_campaign"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"brand\":\"Brand A\",\"campaign_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"campaign\": {},\n\"questions\": []\n}",
                             "name": "success"
                         }
                     ]
@@ -2053,7 +2123,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"fuga\"}"
+                            "raw": "{\"share_code\":\"illo\"}"
                         },
                         "description": ""
                     },
@@ -3171,7 +3241,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "autem",
+                                            "value": "a",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -4214,7 +4284,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":10}"
+                                    "raw": "{\"user_id\":14}"
                                 },
                                 "description": ""
                             },
@@ -4255,7 +4325,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":11}"
                                 },
                                 "description": ""
                             },
@@ -4361,7 +4431,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"molestias\",\"violation_level\":\"beatae\",\"violation_type\":\"consequatur\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"odit\",\"violation_level\":\"doloremque\",\"violation_type\":\"quis\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4518,7 +4588,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"voluptate\"}"
+                            "raw": "{\"reason\":\"numquam\"}"
                         },
                         "description": ""
                     },
@@ -4561,7 +4631,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"ea\"}"
+                            "raw": "{\"user_ids\":\"et\"}"
                         },
                         "description": ""
                     },

@@ -223,7 +223,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::prefix('/campaigns')->group(function () {
             Route::get('/active', [\App\Http\Controllers\Api\CampaignController::class, 'getActiveCampaigns']);
             Route::post('/save/single_aswer', [\App\Http\Controllers\Api\CampaignController::class, 'postSingleAnswer']);
-            Route::post('/answers_by_campaign_brand', [\App\Http\Controllers\Api\CampaignController::class, 'getMyAnswersByCampaignAndBrand']);
+            Route::get('/answers_by_campaign_brand', [\App\Http\Controllers\Api\CampaignController::class, 'getMyAnswersByCampaignAndBrand']);
+            Route::get('/questions_by_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getQuestionsByCampaign']);
+            Route::get('/questions_by_brand_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getCampaignQuestionsByBrand']);
         });
     });
 });

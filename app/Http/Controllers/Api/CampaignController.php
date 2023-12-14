@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CampaignQuestionResource;
 use App\Http\Resources\CampaignResource;
 use App\Models\Campaign;
 use App\Models\CampaignQuestion;
@@ -23,12 +24,87 @@ class CampaignController extends Controller
      */
     public function getActiveCampaigns()
     {
-        $campaigns = Campaign::with(['activeQuestionsByBrand'])
-            ->where('is_active', true)->get();
+        $campaigns = Campaign::where('is_active', true)->get();
 
         return response()->json([
             'has_active_campaign' => $campaigns,
             'campaigns' => CampaignResource::collection($campaigns),
+        ]);
+    }
+
+    /**
+     * Get Questions by Campaign
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Campaigns
+     * @bodyParam campaign_id integer required The ID of the campaign. Example: 1
+     * @response scenario="success" {
+     * "campaign": {},
+     * "questions": []
+     * }
+     */
+    public function getQuestionsByCampaign(Request $request)
+    {
+        $this->validate($request, [
+            'campaign_id' => 'required|exists:campaigns,id',
+        ]);
+
+        $campaign = Campaign::find($request->campaign_id);
+
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
+
+        $questions = CampaignQuestion::where('campaign_id', $request->campaign_id)
+            ->where('is_active', true)
+            ->get();
+
+        return response()->json([
+            'campaign' => new CampaignResource($campaign),
+            'questions' => new CampaignQuestionResource($questions),
+        ]);
+    }
+
+    /**
+     * Get Questions by Campaign and Brand
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Campaigns
+     * @bodyParam campaign_id integer required The ID of the campaign. Example: 1
+     * @bodyParam brand string required The brand of the campaign. Example: Brand A
+     * @response scenario="success" {
+     * "campaign": {},
+     * "questions": []
+     * }
+     */
+    public function getCampaignQuestionsByBrand(Request $request)
+    {
+        $this->validate($request, [
+            'brand' => 'required',
+        ]);
+
+        $campaign = Campaign::find($request->campaign_id);
+
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
+
+        $questions = CampaignQuestion::where('campaign_id', $request->campaign_id)
+            ->where('brand', $request->brand)
+            ->where('is_active', true)
+            ->get();
+
+        return response()->json([
+            'campaign' => new CampaignResource($campaign),
+            'questions' => new CampaignQuestionResource($questions),
         ]);
     }
 

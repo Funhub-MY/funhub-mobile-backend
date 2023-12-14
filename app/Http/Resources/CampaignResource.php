@@ -22,7 +22,6 @@ class CampaignResource extends JsonResource
             'description' => $this->description,
             'banner' => $this->getFirstMediaUrl(Campaign::BANNER_COLLECTION),
             'icon' => $this->getFirstMediaUrl(Campaign::ICON_COLLECTION),
-            'active_questions' => CampaignQuestionResource::collection($this->activeQuestionsByBrand),
         ];
     }
 }

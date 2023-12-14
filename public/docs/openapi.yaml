@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 11
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: voluptatum
+                  example: est
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ut
+                  example: at
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptas
+                    - pariatur
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - qui
+                    - harum
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: dicta
+        example: optio
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quibusdam
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: velit
+                  example: excepturi
               required:
                 - comment_id
                 - reason
@@ -1484,7 +1484,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sequi
+        example: id
         required: true
         schema:
           type: string
@@ -2172,7 +2172,7 @@ paths:
                 - question_id
                 - answer
   /api/v1/campaigns/answers_by_campaign_brand:
-    post:
+    get:
       summary: 'Get My Answers by Campaign and Brand'
       operationId: getMyAnswersByCampaignAndBrand
       description: ''
@@ -2214,6 +2214,87 @@ paths:
               required:
                 - campaign_id
                 - brand
+  /api/v1/campaigns/questions_by_campaign:
+    get:
+      summary: 'Get Questions by Campaign'
+      operationId: getQuestionsByCampaign
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  campaign: {  }
+                  questions: []
+                properties:
+                  campaign:
+                    type: object
+                    properties: {  }
+                  questions:
+                    type: array
+                    example: []
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+              required:
+                - campaign_id
+  /api/v1/campaigns/questions_by_brand_campaign:
+    get:
+      summary: 'Get Questions by Campaign and Brand'
+      operationId: getQuestionsByCampaignAndBrand
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  campaign: {  }
+                  questions: []
+                properties:
+                  campaign:
+                    type: object
+                    properties: {  }
+                  questions:
+                    type: array
+                    example: []
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand:
+                  type: string
+                  description: 'The brand of the campaign.'
+                  example: 'Brand A'
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+              required:
+                - brand
+                - campaign_id
   /api/v1/public_article:
     get:
       summary: 'Get Article (public)'
@@ -3175,7 +3256,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: fuga
+                  example: illo
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -4317,7 +4398,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: autem
+        example: a
         required: true
         schema:
           type: string
@@ -5291,7 +5372,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 10
+                  example: 14
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5337,7 +5418,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 19
+                  example: 11
               required:
                 - user_id
   /api/v1/user/report:
@@ -5377,15 +5458,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: molestias
+                  example: odit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: beatae
+                  example: doloremque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: consequatur
+                  example: quis
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5502,7 +5583,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: voluptate
+                  example: numquam
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5536,7 +5617,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: ea
+                  example: et
               required:
                 - user_ids
     parameters:
