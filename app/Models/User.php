@@ -326,7 +326,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser
     public function campaignAnswers()
     {
         return $this->belongsToMany(CampaignQuestion::class, 'campaigns_questions_answers_users', 'user_id', 'campaign_question_id')
-          ->withPivot('answer');
+          ->withPivot('answer')
+          ->withTimestamps();
     }
 
     /**
