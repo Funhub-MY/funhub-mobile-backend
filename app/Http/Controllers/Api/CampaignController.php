@@ -27,7 +27,7 @@ class CampaignController extends Controller
         $campaigns = Campaign::where('is_active', true)->get();
 
         return response()->json([
-            'has_active_campaign' => $campaigns,
+            'has_active_campaign' => ($campaigns) ? true : false,
             'campaigns' => CampaignResource::collection($campaigns),
         ]);
     }
@@ -65,7 +65,7 @@ class CampaignController extends Controller
 
         return response()->json([
             'campaign' => new CampaignResource($campaign),
-            'questions' => new CampaignQuestionResource($questions),
+            'questions' => CampaignQuestionResource::collection($questions),
         ]);
     }
 
@@ -104,7 +104,7 @@ class CampaignController extends Controller
 
         return response()->json([
             'campaign' => new CampaignResource($campaign),
-            'questions' => new CampaignQuestionResource($questions),
+            'questions' => CampaignQuestionResource::collection($questions),
         ]);
     }
 

@@ -21,13 +21,14 @@ class CampaignQuestionResource extends JsonResource
         }
 
         return [
+              'campaign_id' => $this->campaign_id,
               'id' => $this->id,
               'brand' => $this->brand,
               'type' => $this->answer_type,
               'question' => $this->question,
               'question_banner' => $this->getFirstMediaUrl(CampaignQuestion::QUESTION_BANNER),
               'footer_banner' => $this->getFirstMediaUrl(CampaignQuestion::FOOTER_BANNER),
-              'answers' => $answers,
+              'answer' => $answers,
               'default_answer' => $this->default_answer,
         ];
     }
