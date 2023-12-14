@@ -27,7 +27,7 @@ class CampaignController extends Controller
         $campaigns = Campaign::where('is_active', true)->get();
 
         return response()->json([
-            'has_active_campaign' => ($campaigns) ? true : false,
+            'has_active_campaign' => ($campaigns->count() > 0) ? true : false,
             'campaigns' => CampaignResource::collection($campaigns),
         ]);
     }
