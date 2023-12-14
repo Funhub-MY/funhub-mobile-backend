@@ -15,7 +15,7 @@ class CampaignQuestionResource extends JsonResource
      */
     public function toArray($request)
     {
-        $answers = [];
+        $answers = $this->answer;
         if ($this->answer_type !== 'text') {
             $answers = json_decode($this->answer);
         }
