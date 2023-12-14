@@ -129,7 +129,11 @@ class CampaignController extends Controller
         ]);
         $user = auth()->user();
 
-        $user->campaignAnswers()->syncWithoutDetaching($request->question_id, [
+        // deatch this quesiton id answer first
+        $user->campaignAnswers()->detach($request->question_id);
+
+        // attach with pivot answer
+        $user->campaignAnswers()->attach($request->question_id, [
             'answer' => $request->answer,
         ]);
 

@@ -105,4 +105,65 @@ class CampaignTest extends TestCase
             $this->assertEquals($question['type'], $questions[$key]['answer_type']);
         });
     }
+
+    public function testSaveSingleAnswerByLoggedInUser()
+    {
+        // create campaign and three questions
+        $campaign = Campaign::factory()->create([
+            'is_active' => true
+        ]);
+
+        $questions = [
+            [
+                'campaign_id' => $campaign->id,
+                'brand' => 'brand1',
+                'question' => 'question1',
+                'answer_type' => 'text',
+                'answer' => 'answer1',
+                'is_active' => true
+            ],
+            [
+                'campaign_id' => $campaign->id,
+                'brand' => 'brand1',
+                'question' => 'question2',
+                'answer' => 'answer2',
+                'answer_type' => 'text',
+                'is_active' => true
+            ],
+            [
+                'campaign_id' => $campaign->id,
+                'brand' => 'brand1',
+                'question' => 'question3',
+                'answer' => 'answer3',
+                'answer_type' => 'text',
+                'is_active' => true
+            ],
+        ];
+
+        CampaignQuestion::insert($questions);
+
+        $dbQuestions = CampaignQuestion::where('campaign_id', $campaign->id)
+            ->where('is_active', true)
+            ->get();
+
+        // user answer each question one by one
+        collect($dbQuestions)->each(function ($question, $key) {
+            $response = $this->postJson('/api/v1/campaigns/save/single_aswer', [
+                'question_id' => $question['id'],
+                'answer' => $question['answer']
+            ]);
+
+            $response->assertStatus(200)
+                ->assertJson([
+                    'message' => 'Answer saved successfully'
+                ]);
+
+            // assert db has correct records on table campaigns_questions_answers_users
+            $this->assertDatabaseHas('campaigns_questions_answers_users', [
+                'campaign_question_id' => $question['id'],
+                'user_id' => $this->user->id,
+                'answer' => $question['answer']
+            ]);
+        });
+    }
 }
