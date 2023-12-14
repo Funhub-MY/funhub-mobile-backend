@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\CampaignQuestion;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CampaignQuestionResource extends JsonResource
@@ -14,11 +15,19 @@ class CampaignQuestionResource extends JsonResource
      */
     public function toArray($request)
     {
+        $answers = [];
+        if ($this->answer_type !== 'text') {
+            $answers = json_decode($this->answer);
+        }
+
         return [
               'id' => $this->id,
               'brand' => $this->brand,
+              'type' => $this->answer_type,
               'question' => $this->question,
-              'official_answer' => $this->answer,
+              'question_banner' => $this->getFirstMediaUrl(CampaignQuestion::QUESTION_BANNER),
+              'footer_banner' => $this->getFirstMediaUrl(CampaignQuestion::FOOTER_BANNER),
+              'answers' => $answers
         ];
     }
 }

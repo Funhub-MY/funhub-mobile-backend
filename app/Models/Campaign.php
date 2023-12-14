@@ -4,12 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Campaign extends Model
+class Campaign extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $guarded = ['id'];
+
+    const MEDIA_COLLECTION_NAME = 'campaign_gallery';
+    const BANNER_COLLECTION = 'campaign_banners';
+    const ICON_COLLECTION = 'campaign_icons';
 
     public function questions()
     {

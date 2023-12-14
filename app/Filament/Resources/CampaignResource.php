@@ -42,7 +42,40 @@ class CampaignResource extends Resource
                         TextInput::make('url')
                             ->label('Campaign Mobile Site (URL)')
                             ->rule('url')
+                            ->helperText('Will be displayed as web view in app.')
                             ->required(),
+
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
+                            ->label('Banner Image')
+                            ->collection(Campaign::BANNER_COLLECTION)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image'),
+
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
+                            ->label('Icon Image')
+                            ->collection(Campaign::ICON_COLLECTION)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image'),
+
+
                         Toggle::make('is_active')
                             ->autofocus()
                             ->required(),

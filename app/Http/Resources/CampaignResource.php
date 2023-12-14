@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Campaign;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CampaignResource extends JsonResource
@@ -19,6 +20,8 @@ class CampaignResource extends JsonResource
             'title' => $this->title,
             'url' => $this->url,
             'description' => $this->description,
+            'banner' => $this->getFirstMediaUrl(Campaign::BANNER_COLLECTION),
+            'icon' => $this->getFirstMediaUrl(Campaign::ICON_COLLECTION),
             'active_questions' => CampaignQuestionResource::collection($this->activeQuestionsByBrand),
         ];
     }
