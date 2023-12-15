@@ -323,6 +323,13 @@ class User extends Authenticatable implements HasMedia, FilamentUser
         return $this->hasMany(SupportRequest::class, 'requestor_id');
     }
 
+    public function campaignAnswers()
+    {
+        return $this->belongsToMany(CampaignQuestion::class, 'campaigns_questions_answers_users', 'user_id', 'campaign_question_id')
+          ->withPivot('answer')
+          ->withTimestamps();
+    }
+
     /**
      * Get the user's point balance
      */

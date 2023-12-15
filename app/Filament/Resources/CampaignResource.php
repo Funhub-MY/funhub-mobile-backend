@@ -33,12 +33,49 @@ class CampaignResource extends Resource
             ->schema([
                 Section::make('Campaign Details')
                     ->schema([
-                        TextInput::make('name')
+                        TextInput::make('title')
                             ->autofocus()
                             ->required(),
                         Textarea::make('description')
                             ->autofocus()
                             ->required(),
+                        TextInput::make('url')
+                            ->label('Campaign Mobile Site (URL)')
+                            ->rule('url')
+                            ->helperText('Will be displayed as web view in app.')
+                            ->required(),
+
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('banner')
+                            ->label('Banner Image')
+                            ->collection(Campaign::BANNER_COLLECTION)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image'),
+
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
+                            ->label('Icon Image')
+                            ->collection(Campaign::ICON_COLLECTION)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image'),
+
+
                         Toggle::make('is_active')
                             ->autofocus()
                             ->required(),
@@ -50,7 +87,7 @@ class CampaignResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_active')

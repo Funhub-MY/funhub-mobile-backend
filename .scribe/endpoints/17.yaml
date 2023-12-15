@@ -1,0 +1,292 @@
+name: Campaigns
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/active
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Active Campaigns'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "has_active_campaign": true,
+          "campaigns": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3f16dbVa65P4caZkDhE8evg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/campaigns/save/single_aswer
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Save Single Answer to a Question'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      question_id:
+        name: question_id
+        description: 'The ID of the question.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      answer:
+        name: answer
+        description: 'The answer to the question.'
+        required: true
+        example: Yes/A/B/C/D/Text
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      question_id: 1
+      answer: Yes/A/B/C/D/Text
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Answer saved successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a5aEP1d3Zv8Vbf6g6hDc4ke'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/answers_by_campaign_brand
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get My Answers by Campaign and Brand'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      brand:
+        name: brand
+        description: 'The brand of the campaign.'
+        required: true
+        example: 'Brand A'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+      brand: 'Brand A'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "campaign": {},
+          "answers": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer EfbVPg6ha18Z56e4kDa3cvd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/questions_by_campaign
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Questions by Campaign'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "campaign": {},
+          "questions": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer faa863cghEdebkV4Pv1D65Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/questions_by_brand_campaign
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Questions by Campaign and Brand'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      brand:
+        name: brand
+        description: 'The brand of the campaign.'
+        required: true
+        example: 'Brand A'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      brand: 'Brand A'
+      campaign_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "campaign": {},
+          "questions": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8Pk6dEabe5fcvZg6Va13D4h'
+    controller: null
+    method: null
+    route: null
+    custom: []

@@ -5,8 +5,8 @@
 <body>
 <script>
     window.flutter_inappwebview.callHandler('paymentData', {
-        'success': {{ $success }}, 
-        'transaction_id': "{{ $transaction_id }}" 
+        'success': {{ $success }},
+        'transaction_id': "{{ $transaction_id }}"
     });
 </script>
 <b>{{ $message }}</b>

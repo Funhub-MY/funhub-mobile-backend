@@ -12,7 +12,7 @@ endpoints:
       subgroupDescription: ''
       title: |-
         Record view for viewable
-        This is used for recording views for articles, comments, merchant offers, and user profiles
+        This is used for recording views for articles, comments, merchant offers, user profiles and location
       description: ''
       authenticated: true
       custom: []
@@ -29,7 +29,7 @@ endpoints:
         name: viewable_type
         description: 'The type of the viewable.'
         required: true
-        example: article/comment/merchant_offer/user_profile
+        example: article/comment/merchant_offer/user_profile/location
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -44,7 +44,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      viewable_type: article/comment/merchant_offer/user_profile
+      viewable_type: article/comment/merchant_offer/user_profile/location
       viewable_id: 1
     fileParameters: []
     responses:
@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dhc6eav3Pd8gVaEZ51b4f6k'
+      - 'Bearer c6b5D3Pvk8VZeE6g4fahad1'
     controller: null
     method: null
     route: null
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fE5ZVhgac43Pe68ba6kvDd1'
+      - 'Bearer dP61Eavc635hebaD8Vk4gfZ'
     controller: null
     method: null
     route: null

@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 12
+                  example: 11
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: delectus
+                  example: est
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sit
+                  example: at
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - rerum
+                    - pariatur
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - a
+                    - harum
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: autem
+        example: optio
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: delectus
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: temporibus
+                  example: excepturi
               required:
                 - comment_id
                 - reason
@@ -1484,7 +1484,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: molestiae
+        example: id
         required: true
         schema:
           type: string
@@ -2107,6 +2107,194 @@ paths:
                   example: '123456'
               required:
                 - token
+  /api/v1/campaigns/active:
+    get:
+      summary: 'Get Active Campaigns'
+      operationId: getActiveCampaigns
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  has_active_campaign: true
+                  campaigns: []
+                properties:
+                  has_active_campaign:
+                    type: boolean
+                    example: true
+                  campaigns:
+                    type: array
+                    example: []
+      tags:
+        - Campaigns
+  /api/v1/campaigns/save/single_aswer:
+    post:
+      summary: 'Save Single Answer to a Question'
+      operationId: saveSingleAnswerToAQuestion
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Answer saved successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Answer saved successfully'
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question_id:
+                  type: integer
+                  description: 'The ID of the question.'
+                  example: 1
+                answer:
+                  type: string
+                  description: 'The answer to the question.'
+                  example: Yes/A/B/C/D/Text
+              required:
+                - question_id
+                - answer
+  /api/v1/campaigns/answers_by_campaign_brand:
+    get:
+      summary: 'Get My Answers by Campaign and Brand'
+      operationId: getMyAnswersByCampaignAndBrand
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  campaign: {  }
+                  answers: []
+                properties:
+                  campaign:
+                    type: object
+                    properties: {  }
+                  answers:
+                    type: array
+                    example: []
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+                brand:
+                  type: string
+                  description: 'The brand of the campaign.'
+                  example: 'Brand A'
+              required:
+                - campaign_id
+                - brand
+  /api/v1/campaigns/questions_by_campaign:
+    get:
+      summary: 'Get Questions by Campaign'
+      operationId: getQuestionsByCampaign
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  campaign: {  }
+                  questions: []
+                properties:
+                  campaign:
+                    type: object
+                    properties: {  }
+                  questions:
+                    type: array
+                    example: []
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+              required:
+                - campaign_id
+  /api/v1/campaigns/questions_by_brand_campaign:
+    get:
+      summary: 'Get Questions by Campaign and Brand'
+      operationId: getQuestionsByCampaignAndBrand
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  campaign: {  }
+                  questions: []
+                properties:
+                  campaign:
+                    type: object
+                    properties: {  }
+                  questions:
+                    type: array
+                    example: []
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand:
+                  type: string
+                  description: 'The brand of the campaign.'
+                  example: 'Brand A'
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+              required:
+                - brand
+                - campaign_id
   /api/v1/public_article:
     get:
       summary: 'Get Article (public)'
@@ -2134,7 +2322,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1332
+                      line: 1351
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -2598,7 +2786,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1332
+                        line: 1351
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3068,7 +3256,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: provident
+                  example: illo
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -4210,7 +4398,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: aut
+        example: a
         required: true
         schema:
           type: string
@@ -5184,7 +5372,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 14
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5230,7 +5418,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 11
               required:
                 - user_id
   /api/v1/user/report:
@@ -5270,15 +5458,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: est
+                  example: odit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: eos
+                  example: doloremque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quod
+                  example: quis
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5395,7 +5583,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: est
+                  example: numquam
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5429,7 +5617,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quia
+                  example: et
               required:
                 - user_ids
     parameters:
@@ -6305,7 +6493,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   enum:
                     - male
                     - female
@@ -6460,8 +6648,8 @@ paths:
                 - password_confirmation
   /api/v1/views:
     post:
-      summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, and user profiles"
-      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsMerchantOffersAndUserProfiles
+      summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, user profiles and location"
+      operationId: recordViewForViewableThisIsUsedForRecordingViewsForArticlesCommentsMerchantOffersUserProfilesAndLocation
       description: ''
       parameters: []
       responses:
@@ -6489,7 +6677,7 @@ paths:
                 viewable_type:
                   type: string
                   description: 'The type of the viewable.'
-                  example: article/comment/merchant_offer/user_profile
+                  example: article/comment/merchant_offer/user_profile/location
                 viewable_id:
                   type: integer
                   description: 'The id of the viewable.'
@@ -6545,6 +6733,9 @@ tags:
     description: ''
   -
     name: Authentication
+    description: ''
+  -
+    name: Campaigns
     description: ''
   -
     name: Endpoints

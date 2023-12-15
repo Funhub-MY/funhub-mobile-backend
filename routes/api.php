@@ -219,5 +219,13 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/support_requests/categories', [\App\Http\Controllers\Api\SupportRequestController::class, 'getSupportRequestsCategories']);
             Route::post('/support_requests/attach', [\App\Http\Controllers\Api\SupportRequestController::class, 'postAttachmentsUpload']);
         });
+
+        Route::prefix('/campaigns')->group(function () {
+            Route::get('/active', [\App\Http\Controllers\Api\CampaignController::class, 'getActiveCampaigns']);
+            Route::post('/save/single_aswer', [\App\Http\Controllers\Api\CampaignController::class, 'postSingleAnswer']);
+            Route::get('/answers_by_campaign_brand', [\App\Http\Controllers\Api\CampaignController::class, 'getMyAnswersByCampaignAndBrand']);
+            Route::get('/questions_by_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getQuestionsByCampaign']);
+            Route::get('/questions_by_brand_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getCampaignQuestionsByBrand']);
+        });
     });
 });

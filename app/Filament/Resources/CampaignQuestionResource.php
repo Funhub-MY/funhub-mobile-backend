@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CampaignQuestionResource\Pages;
 use App\Filament\Resources\CampaignQuestionResource\RelationManagers;
 use App\Models\CampaignQuestion;
+use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -33,22 +35,81 @@ class CampaignQuestionResource extends Resource
         return $form
             ->schema([
                 Section::make('Campaign Question Details')
-                    ->columns(2)
+                    ->columns(1)
                     ->schema([
                         Select::make('campaign_id')
                             ->relationship('campaign', 'title')
                             ->searchable()
+                            ->preload()
                             ->required(),
                         TextInput::make('brand')
                             ->required(),
                         Textarea::make('question')
                             ->required(),
-                        Textarea::make('answer')
-                            ->required(),
                         Toggle::make('is_active')
                             ->default(true)
                             ->required(),
                     ]),
+                Section::make('Answers')
+                    ->columns(2)
+                    ->schema([
+                        Select::make('answer_type')
+                            ->options([
+                                'text' => 'Text',
+                                'multichoice' => 'Multichoice Checkbox',
+                                'singlechoice' => 'Single Choice',
+                                'select' => 'Select',
+                            ])
+                            ->reactive()
+                            ->default('text')
+                            ->required(),
+
+                        Repeater::make('answers')
+                            ->schema([
+                                TextInput::make('answer')
+                                    ->required(),
+                            ])
+                            ->orderable()
+                            ->rules('array')
+                            ->hidden(fn (Closure $get) => $get('answer_type') == 'text')
+                            ->rules('min:1'),
+
+                        Textarea::make('default_answer')
+                            ->helperText('To be displayed at end of questionaire submisison.'),
+                    ]),
+                Section::make('Media')
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('question_banner')
+                            ->label('Question Banner')
+                            ->collection(CampaignQuestion::QUESTION_BANNER)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image'),
+
+                        Forms\Components\SpatieMediaLibraryFileUpload::make('footer_banner')
+                            ->label('Footer Banner')
+                            ->collection(CampaignQuestion::FOOTER_BANNER)
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->maxFiles(20)
+                            ->enableReordering()
+                            ->appendFiles()
+                            ->rules('image'),
+                    ])
             ]);
     }
 
