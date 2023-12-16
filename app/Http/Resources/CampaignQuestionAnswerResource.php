@@ -15,9 +15,11 @@ class CampaignQuestionAnswerResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user_id' => $this->pivot->user_id,
-            'question_id' => $this->pivot->question_id,
-            'answer' => $this->pivot->answer,
+            'question_id' => $this->question_id,
+            'user_id' => $this->user_id,
+            'answer' => $this->answer,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

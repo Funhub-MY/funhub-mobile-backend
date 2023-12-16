@@ -8,6 +8,7 @@ use App\Http\Resources\CampaignQuestionResource;
 use App\Http\Resources\CampaignResource;
 use App\Models\Campaign;
 use App\Models\CampaignQuestion;
+use App\Models\CampaignQuestionAnswer;
 use Illuminate\Http\Request;
 
 class CampaignController extends Controller
@@ -165,18 +166,30 @@ class CampaignController extends Controller
         ]);
 
         $campaign = Campaign::find($request->campaign_id);
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
 
-        $questions = CampaignQuestion::where('campaign_id', $request->campaign_id)
+        // get question id from campaign and brand
+        $campaignQuestion = CampaignQuestion::where('campaign_id', $request->campaign_id)
             ->where('brand', $request->brand)
-            ->where('is_active', true)
-            ->with(['usersAnswers' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            }])
+            ->first();
+        if (!$campaignQuestion) {
+            return response()->json([
+                'message' => 'Question not found',
+            ], 404);
+        }
+
+        $answers = CampaignQuestionAnswer::where('campaign_question_id', $campaignQuestion->id)
+            ->where('user_id', auth()->user()->id)
             ->get();
 
         return response()->json([
             'campaign' => new CampaignResource($campaign),
-            'answers' => CampaignQuestionAnswerResource::collection($questions->usersAnswers),
+            'campaign_question' => new CampaignQuestionResource($campaignQuestion),
+            'answers' => CampaignQuestionAnswerResource::collection($answers),
         ]);
     }
 }
