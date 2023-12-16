@@ -172,23 +172,25 @@ class CampaignController extends Controller
             ], 404);
         }
 
-        // get question id from campaign and brand
-        $campaignQuestion = CampaignQuestion::where('campaign_id', $request->campaign_id)
+        // get questions of this campaign
+        $campaignQuestions = CampaignQuestion::where('campaign_id', $request->campaign_id)
             ->where('brand', $request->brand)
-            ->first();
-        if (!$campaignQuestion) {
+            ->orderBy('brand', 'asc')
+            ->get();
+
+        if (!$campaignQuestions) {
             return response()->json([
-                'message' => 'Question not found',
+                'message' => 'Question(s) not found',
             ], 404);
         }
 
-        $answers = CampaignQuestionAnswer::where('campaign_question_id', $campaignQuestion->id)
+        $answers = CampaignQuestionAnswer::whereIn('campaign_question_id', $campaignQuestions->pluck('id')->toArray())
             ->where('user_id', auth()->user()->id)
             ->get();
 
         return response()->json([
             'campaign' => new CampaignResource($campaign),
-            'campaign_question' => new CampaignQuestionResource($campaignQuestion),
+            'campaign_questions' => CampaignQuestionResource::collection($campaignQuestions),
             'answers' => CampaignQuestionAnswerResource::collection($answers),
         ]);
     }

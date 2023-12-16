@@ -15,7 +15,7 @@ class CampaignQuestionAnswerResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'question_id' => $this->question_id,
+            'question_id' => $this->campaign_question_id,
             'user_id' => $this->user_id,
             'answer' => $this->answer,
             'created_at' => $this->created_at,
