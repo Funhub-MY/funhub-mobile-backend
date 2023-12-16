@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CampaignQuestionAnswerResource;
 use App\Http\Resources\CampaignQuestionResource;
 use App\Http\Resources\CampaignResource;
 use App\Models\Campaign;
@@ -165,7 +166,7 @@ class CampaignController extends Controller
 
         $campaign = Campaign::find($request->campaign_id);
 
-        $answers = CampaignQuestion::where('campaign_id', $request->campaign_id)
+        $questions = CampaignQuestion::where('campaign_id', $request->campaign_id)
             ->where('brand', $request->brand)
             ->where('is_active', true)
             ->with(['usersAnswers' => function ($query) {
@@ -175,7 +176,7 @@ class CampaignController extends Controller
 
         return response()->json([
             'campaign' => new CampaignResource($campaign),
-            'answers' => $answers,
+            'answers' => CampaignQuestionAnswerResource::collection($questions->usersAnswers),
         ]);
     }
 }
