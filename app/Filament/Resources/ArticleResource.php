@@ -356,13 +356,18 @@ class ArticleResource extends Resource
                 ->sortable()
                 ->label('Organic Views')
                 ->getStateUsing(function (Article $record) {
-                    $num_organic_views = View::query()
-                         ->where('viewable_id', $record->id)
-                         ->where('viewable_type', Article::class)
-                         ->where('is_system_generated', false)
-                         ->count();
+
+                    if ($record->status === Article::STATUS_PUBLISHED) {
+                        $num_organic_views = View::query()
+                        ->where('viewable_id', $record->id)
+                        ->where('viewable_type', Article::class)
+                        ->where('is_system_generated', false)
+                        ->count();
+                    } else { 
+                        $num_organic_views = 0;
+                    }
              
-                     return $num_organic_views;
+                    return $num_organic_views;
                  }),
 
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d/m/Y')
