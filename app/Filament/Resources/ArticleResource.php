@@ -10,6 +10,7 @@ use App\Models\ArticleCategory;
 use App\Models\ArticleTag;
 use App\Models\Location;
 use App\Models\User;
+use App\Models\View;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Form;
@@ -350,6 +351,19 @@ class ArticleResource extends Resource
                     ->counts('views')
                     ->sortable()
                     ->label('Views'),
+
+                Tables\Columns\TextColumn::make('organic_views_count')
+                ->sortable()
+                ->label('Organic Views')
+                ->getStateUsing(function (Article $record) {
+                    $num_organic_views = View::query()
+                         ->where('viewable_id', $record->id)
+                         ->where('viewable_type', Article::class)
+                         ->where('is_system_generated', false)
+                         ->count();
+             
+                     return $num_organic_views;
+                 }),
 
                 Tables\Columns\TextColumn::make('published_at')->dateTime('d/m/Y')
                     ->sortable()
