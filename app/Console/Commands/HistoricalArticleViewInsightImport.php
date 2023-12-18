@@ -48,11 +48,22 @@ class HistoricalArticleViewInsightImport extends Command
             config('scout.algolia.secret')
         );
 
+        // get numer of view records can be synced
+        $totalViews = View::where('viewable_type', Article::class)
+            ->where('is_system_generated', false)
+            ->count();
+
+        $this->info('Total Views Records to Sync: ' . $totalViews);
+
         // get views by batches
         $views = View::where('viewable_type', Article::class)
+            ->where('is_system_generated', false)
             ->orderBy('id')
             ->chunk(500, function ($views) {
                 $this->batchSendInsights($views);
+                $views->each(function ($view) {
+                    $this->info('Processing ID:' .$view->id);
+                });
             });
 
         return Command::SUCCESS;
