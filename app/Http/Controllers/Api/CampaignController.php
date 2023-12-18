@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CampaignQuestionAnswerResource;
 use App\Http\Resources\CampaignQuestionResource;
 use App\Http\Resources\CampaignResource;
 use App\Models\Campaign;
 use App\Models\CampaignQuestion;
+use App\Models\CampaignQuestionAnswer;
 use Illuminate\Http\Request;
 
 class CampaignController extends Controller
@@ -164,18 +166,32 @@ class CampaignController extends Controller
         ]);
 
         $campaign = Campaign::find($request->campaign_id);
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
 
-        $answers = CampaignQuestion::where('campaign_id', $request->campaign_id)
+        // get questions of this campaign
+        $campaignQuestions = CampaignQuestion::where('campaign_id', $request->campaign_id)
             ->where('brand', $request->brand)
-            ->where('is_active', true)
-            ->with(['usersAnswers' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            }])
+            ->orderBy('brand', 'asc')
+            ->get();
+
+        if (!$campaignQuestions) {
+            return response()->json([
+                'message' => 'Question(s) not found',
+            ], 404);
+        }
+
+        $answers = CampaignQuestionAnswer::whereIn('campaign_question_id', $campaignQuestions->pluck('id')->toArray())
+            ->where('user_id', auth()->user()->id)
             ->get();
 
         return response()->json([
             'campaign' => new CampaignResource($campaign),
-            'answers' => $answers,
+            'campaign_questions' => CampaignQuestionResource::collection($campaignQuestions),
+            'answers' => CampaignQuestionAnswerResource::collection($answers),
         ]);
     }
 }

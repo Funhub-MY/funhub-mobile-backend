@@ -10,16 +10,18 @@ use App\Models\MerchantOffer;
 use App\Models\User;
 use App\Models\View;
 use Illuminate\Http\Request;
+use Algolia\AlgoliaSearch\InsightsClient;
+use Illuminate\Support\Facades\Log;
 
 class ViewController extends Controller
 {
     /**
      * Record view for viewable
      * This is used for recording views for articles, comments, merchant offers, user profiles and location
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group View
      * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location
      * @bodyParam viewable_id int required The id of the viewable. Example: 1
@@ -60,6 +62,11 @@ class ViewController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
+        // record insights
+        if ($view->viewable_type === Article::class) {
+            $this->recordInsights($view);
+        }
+
         return response()->json([
             'message' => 'View recorded',
         ]);
@@ -68,12 +75,12 @@ class ViewController extends Controller
     /**
      * Get views for viewable type
      * This is used for getting views for articles, comments, merchant offers, and user profiles
-     * 
+     *
      * @param string $type
      * @param int $id
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group View
      * @urlParam type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile
      * @urlParam id int required The id of the viewable. Example: 1
@@ -87,10 +94,42 @@ class ViewController extends Controller
         $views = View::where('viewable_type', $type)
             ->where('viewable_id', $id)
             ->get();
-    
+
         return response()->json([
             'views' => $views,
             'total' => $views->count(),
         ]);
+    }
+
+    public function recordInsights($view)
+    {
+        // check if algolia is enabled
+        if (!config('scout.algolia.id') || !config('scout.algolia.secret')) {
+            return false;
+        }
+
+        // check if scout package is installed
+        if (!class_exists(InsightsClient::class)) {
+            return false;
+        }
+
+        $insights = InsightsClient::create(
+            config('scout.algolia.id'),
+            config('scout.algolia.secret')
+        );
+
+        try {
+            $response = $insights->sendEvent([
+                    'eventType' => 'click',
+                    'eventName' => 'Article Clicked',
+                    'index' => config('scout.prefix').'articles_index',
+                    'userToken' => (string) auth()->id(),
+                    'objectIDs' => [(string) $view->viewable_id],
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::error('[recordInsights] Error sending events to Algolia', ['error' => $e->getMessage(), 'view' => $view]);
+        }
+        return true;
     }
 }
