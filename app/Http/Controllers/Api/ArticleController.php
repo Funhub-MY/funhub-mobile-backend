@@ -866,9 +866,9 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::with('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports')
-            ->published()
+        $article = Article::with('user', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
             })
