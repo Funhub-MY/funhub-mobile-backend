@@ -42,18 +42,18 @@ class NotifyMerchantOffersRedeemExpiration extends Command
                     $expiryDays = $merchantOfferWithoutRedeem->merchantOffer->expiry_days;
                     //check if expiry days is set
                     if ($expiryDays !== null) {
-                        $createdAt = $merchantOfferWithoutRedeem->created_at;
-                        $expirationDate = $createdAt->addDays($expiryDays);
+                        $createdAt = $merchantOfferWithoutRedeem->created_at->startOfDay();
+                        $expirationDate = $createdAt->addDays($expiryDays)->endOfDay();
                         $daysLeft = now()->diffInDays($expirationDate);
     
                         if ($daysLeft === 3 || $daysLeft === 1) {
                             $merchantOfferWithoutRedeem->user->notify(new \App\Notifications\RedemptionExpirationNotification($merchantOfferWithoutRedeem->merchantOffer, $merchantOfferWithoutRedeem->user, $daysLeft));
-                                                // Log the information for each record
-                    Log::info('[NotifyMerchantOffersRedeemExpiration]', [
-                        'merchant_offer_id' => $merchantOfferWithoutRedeem->merchant_offer_id,
-                        'user_id' => $merchantOfferWithoutRedeem->user_id,
-                        'days_left' => $daysLeft,
-                    ]);
+                        // Log the information for each record
+                        Log::info('[NotifyMerchantOffersRedeemExpiration]', [
+                            'merchant_offer_id' => $merchantOfferWithoutRedeem->merchant_offer_id,
+                            'user_id' => $merchantOfferWithoutRedeem->user_id,
+                            'days_left' => $daysLeft,
+                        ]);
                         }
                     }
                 }
