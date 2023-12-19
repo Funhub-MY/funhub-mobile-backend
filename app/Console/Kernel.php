@@ -35,6 +35,9 @@ class Kernel extends ConsoleKernel
 
         // run auto archieve merchant offers every midnight 23:55
         $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:00');
+
+        // auto archive media partners articles that matches keywords
+        $schedule->command('article:auto-archive')->dailyAt('00:00');
     }
 
     /**
