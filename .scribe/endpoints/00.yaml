@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: illo
+        example: neque
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: illo
+      share_code: neque
     fileParameters: []
     responses:
       -
@@ -582,7 +582,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v16Pdc8bhZe5VEg4Dafak36'
+      - 'Bearer f3EkcZ8aVead56h41DPb6gv'
     controller: null
     method: null
     route: null

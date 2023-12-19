@@ -42,7 +42,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3f16dbVa65P4caZkDhE8evg'
+      - 'Bearer bgE6Peckd846Vafh5Z13Dva'
     controller: null
     method: null
     route: null
@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a5aEP1d3Zv8Vbf6g6hDc4ke'
+      - 'Bearer d1Zhv8bVaE65gaePc43kf6D'
     controller: null
     method: null
     route: null
@@ -169,7 +169,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EfbVPg6ha18Z56e4kDa3cvd'
+      - 'Bearer d5h6bacvE8D3aefV4PZk16g'
     controller: null
     method: null
     route: null
@@ -223,7 +223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer faa863cghEdebkV4Pv1D65Z'
+      - 'Bearer fD65ahPZc4Vge6avEd813bk'
     controller: null
     method: null
     route: null
@@ -287,7 +287,110 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8Pk6dEabe5fcvZg6Va13D4h'
+      - 'Bearer 1D8kZ6EbdhvVgea3f45aP6c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/campaigns/save/respondant_details
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Respondant Details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      name:
+        name: name
+        description: 'The name of the respondant.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      email:
+        name: email
+        description: 'The email of the respondant. Example:'
+        required: true
+        example: upagac@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      phone:
+        name: phone
+        description: 'The phone of the respondant.'
+        required: true
+        example: '0123456789'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      ic:
+        name: ic
+        description: 'The ic of the respondant.'
+        required: true
+        example: '123456789012'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      address:
+        name: address
+        description: 'The address of the respondant.'
+        required: true
+        example: '123, Jalan ABC, 12345, Kuala Lumpur'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+      name: 'John Doe'
+      email: upagac@example.com
+      phone: '0123456789'
+      ic: '123456789012'
+      address: '123, Jalan ABC, 12345, Kuala Lumpur'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Respondant details created successfully"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kfabv164aZegP8h536dcVED'
     controller: null
     method: null
     route: null
