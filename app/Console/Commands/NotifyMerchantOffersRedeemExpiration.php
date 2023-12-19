@@ -46,7 +46,7 @@ class NotifyMerchantOffersRedeemExpiration extends Command
                         $expirationDate = $createdAt->addDays($expiryDays)->endOfDay();
                         $daysLeft = now()->diffInDays($expirationDate);
     
-                        if ($daysLeft === 3 || $daysLeft === 1) {
+                        if ($daysLeft === 3 || $daysLeft === 7) {
                             $merchantOfferWithoutRedeem->user->notify(new \App\Notifications\RedemptionExpirationNotification($merchantOfferWithoutRedeem->merchantOffer, $merchantOfferWithoutRedeem->user, $daysLeft));
                         // Log the information for each record
                         Log::info('[NotifyMerchantOffersRedeemExpiration]', [
