@@ -32,7 +32,9 @@ class NotifyMerchantOffersRedeemExpiration extends Command
     {
         try {
             //get the users' merchant offer claims that doesn't have any redemption
-            $merchantOffersWithoutRedeem = MerchantOfferClaim::whereDoesntHave('redeem')->get();
+            $merchantOffersWithoutRedeem = MerchantOfferClaim::whereDoesntHave('redeem')
+            ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+            ->get();
 
             if ($merchantOffersWithoutRedeem) {
                 foreach ($merchantOffersWithoutRedeem as $merchantOfferWithoutRedeem) {
