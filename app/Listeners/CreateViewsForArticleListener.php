@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ArticleCreated;
+use App\Models\BlacklistSeederUser;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\ViewQueue;
@@ -31,6 +32,19 @@ class CreateViewsForArticleListener
      */
     public function handle(ArticleCreated $event)
     {
+        $article = $event->article;
+
+        // Check if the user associated with the article is blacklisted
+        $user = $article->user;
+        if ($user && $this->isUserBlacklisted($user)) {
+            // User is blacklisted, do not generate view queue
+            Log::info('[CreateViewsForArticleListener] User is blacklisted. Skipping view generation.', [
+                'article_id' => $article->id,
+                'user_id' => $user->id,
+            ]);
+            return;
+        }
+
         $view_seeder_on = Setting::where('key', 'view_seeder_on')->first(); //check if view_seeder_on is 'true' or 'false'
 
         if ($view_seeder_on) {
@@ -140,6 +154,11 @@ class CreateViewsForArticleListener
     protected function bellCurve($x, $peak, $stdDev) {
         $exponent = -0.5 * (($x - $peak) / $stdDev) ** 2;
         return (1 / ($stdDev * sqrt(2 * M_PI))) * exp($exponent);
+    }
+
+    private function isUserBlacklisted($user)
+    {
+        return BlacklistSeederUser::where('user_id', $user->id)->exists();
     }
 }
 
