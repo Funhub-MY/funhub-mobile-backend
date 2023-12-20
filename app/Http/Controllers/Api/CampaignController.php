@@ -194,8 +194,10 @@ class CampaignController extends Controller
         $brands = $campaignQuestions->pluck('brand')->unique();
         foreach ($brands as $brand) {
             $answered = CampaignQuestionAnswer::whereIn('campaign_question_id', $campaignQuestions->pluck('id')->toArray())
+                ->whereHas('question', function ($query) use ($brand) {
+                    $query->where('brand', $brand);
+                })
                 ->where('user_id', auth()->user()->id)
-                ->where('brand', $brand)
                 ->count();
 
             // total brand questions
