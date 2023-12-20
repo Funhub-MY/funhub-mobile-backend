@@ -65,9 +65,33 @@ class CampaignController extends Controller
             ->where('is_active', true)
             ->get();
 
+        // check if user has completed questions by brand
+        $hasUserCompleted = [];
+        // get brands unique from campaign questions
+        $brands = $questions->pluck('brand')->unique();
+        foreach ($brands as $brand) {
+            $answered = CampaignQuestionAnswer::whereIn('campaign_question_id', $questions->pluck('id')->toArray())
+                ->whereHas('question', function ($query) use ($brand) {
+                    $query->where('brand', $brand);
+                })
+                ->where('user_id', auth()->user()->id)
+                ->count();
+
+            // total brand questions
+            $total = $questions->where('brand', $brand)->count();
+
+            // if match means user has completed
+            if ($answered == $total) {
+                $hasUserCompleted[$brand] = true;
+            } else {
+                $hasUserCompleted[$brand] = false;
+            }
+        }
+
         return response()->json([
             'campaign' => new CampaignResource($campaign),
             'questions' => CampaignQuestionResource::collection($questions),
+            'questions_completed' => $hasUserCompleted,
         ]);
     }
 
@@ -214,7 +238,7 @@ class CampaignController extends Controller
         return response()->json([
             'campaign' => new CampaignResource($campaign),
             'campaign_questions' => CampaignQuestionResource::collection($campaignQuestions),
-            'campaign_questions_completed' => $hasUserCompleted,
+            'questions_completed' => $hasUserCompleted,
             'answers' => CampaignQuestionAnswerResource::collection($answers),
         ]);
     }
