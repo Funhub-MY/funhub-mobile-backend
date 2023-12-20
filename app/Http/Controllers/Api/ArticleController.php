@@ -239,8 +239,14 @@ class ArticleController extends Controller
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
-            ->paginate($paginatePerPage);
+            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
+
+        // if has article ids, then dont need paginate
+        if ($request->has('article_ids')) {
+            $data->get(); // since this typically used by search only with speicfic set of articles
+        } else {
+            $data->paginate($paginatePerPage);
+        }
 
         // get all article location ids
         $locationIds = $data->pluck('location.0.id')->filter()->toArray();
