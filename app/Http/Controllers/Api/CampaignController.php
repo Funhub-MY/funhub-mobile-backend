@@ -280,6 +280,7 @@ class CampaignController extends Controller
         }
 
         $campaign->respondantDetails()->create([
+            'user_id' => auth()->user()->id,
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
