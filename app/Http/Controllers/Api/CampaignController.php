@@ -65,9 +65,33 @@ class CampaignController extends Controller
             ->where('is_active', true)
             ->get();
 
+        // check if user has completed questions by brand
+        $hasUserCompleted = [];
+        // get brands unique from campaign questions
+        $brands = $questions->pluck('brand')->unique();
+        foreach ($brands as $brand) {
+            $answered = CampaignQuestionAnswer::whereIn('campaign_question_id', $questions->pluck('id')->toArray())
+                ->whereHas('question', function ($query) use ($brand) {
+                    $query->where('brand', $brand);
+                })
+                ->where('user_id', auth()->user()->id)
+                ->count();
+
+            // total brand questions
+            $total = $questions->where('brand', $brand)->count();
+
+            // if match means user has completed
+            if ($answered == $total) {
+                $hasUserCompleted[$brand] = true;
+            } else {
+                $hasUserCompleted[$brand] = false;
+            }
+        }
+
         return response()->json([
             'campaign' => new CampaignResource($campaign),
             'questions' => CampaignQuestionResource::collection($questions),
+            'questions_completed' => $hasUserCompleted,
         ]);
     }
 
@@ -188,10 +212,118 @@ class CampaignController extends Controller
             ->where('user_id', auth()->user()->id)
             ->get();
 
+        // check if user has completed questions by brand
+        $hasUserCompleted = [];
+        // get brands unique from campaign questions
+        $brands = $campaignQuestions->pluck('brand')->unique();
+        foreach ($brands as $brand) {
+            $answered = CampaignQuestionAnswer::whereIn('campaign_question_id', $campaignQuestions->pluck('id')->toArray())
+                ->whereHas('question', function ($query) use ($brand) {
+                    $query->where('brand', $brand);
+                })
+                ->where('user_id', auth()->user()->id)
+                ->count();
+
+            // total brand questions
+            $total = $campaignQuestions->where('brand', $brand)->count();
+
+            // if match means user has completed
+            if ($answered == $total) {
+                $hasUserCompleted[$brand] = true;
+            } else {
+                $hasUserCompleted[$brand] = false;
+            }
+        }
+
         return response()->json([
             'campaign' => new CampaignResource($campaign),
             'campaign_questions' => CampaignQuestionResource::collection($campaignQuestions),
+            'questions_completed' => $hasUserCompleted,
             'answers' => CampaignQuestionAnswerResource::collection($answers),
+        ]);
+    }
+
+    /**
+     * Create Respondant Details
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Campaigns
+     * @bodyParam campaign_id integer required The ID of the campaign. Example: 1
+     * @bodyParam name string required The name of the respondant. Example: John Doe
+     * @bodyParam email string required The email of the respondant. Example:
+     * @bodyParam phone string required The phone of the respondant. Example: 0123456789
+     * @bodyParam ic string required The ic of the respondant. Example: 123456789012
+     * @bodyParam address string required The address of the respondant. Example: 123, Jalan ABC, 12345, Kuala Lumpur
+     *
+     * @response scenario="success" {
+     * "message": "Respondant details created successfully"
+     * }
+     */
+    public function postCreateCampaignRespondantDetails(Request $request)
+    {
+        $this->validate($request, [
+            'campaign_id' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'ic' => 'required',
+            'address' => 'required'
+        ]);
+
+        $campaign = Campaign::find($request->campaign_id);
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
+
+        $campaign->respondantDetails()->create([
+            'user_id' => auth()->user()->id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'ic' => $request->ic,
+            'address' => $request->address,
+        ]);
+
+        return response()->json([
+            'message' => 'Respondant details created successfully'
+        ]);
+    }
+
+    /**
+     * Get Respondant Details of User
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Campaigns
+     * @bodyParam campaign_id integer required The ID of the campaign. Example: 1
+     * @response scenario="success" {
+     * "respondant_details": {},
+     * "has_submitted_respondant_details": true
+     * }
+     */
+    public function getRespondantDetails(Request $request)
+    {
+        $this->validate($request, [
+            'campaign_id' => 'required',
+        ]);
+
+        $campaign = Campaign::find($request->campaign_id);
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
+
+        $respondantDetails = $campaign->respondantDetails()->where('user_id', auth()->user()->id)->first();
+
+        return response()->json([
+            'respondant_details' => $respondantDetails,
+            'has_submitted_respondant_details' => ($respondantDetails) ? true : false,
         ]);
     }
 }

@@ -30,6 +30,7 @@ class CampaignQuestionResource extends JsonResource
               'footer_banner' => $this->getFirstMediaUrl(CampaignQuestion::FOOTER_BANNER),
               'answer' => $answers,
               'default_answer' => $this->default_answer,
+              'has_user_completed' => $this->hasUserCompleted,
         ];
     }
 }

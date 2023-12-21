@@ -176,9 +176,39 @@ class MerchantOfferVoucherResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('latestSuccessfulClaim.status')
-                    ->options(MerchantOfferClaim::CLAIM_STATUS)
+                SelectFilter::make('claimStatus')
+                    // ->options(MerchantOfferClaim::CLAIM_STATUS)
+                    ->options([
+                        null => 'Unclaimed',
+                        1 => MerchantOfferClaim::CLAIM_STATUS[1],
+                        2 => MerchantOfferClaim::CLAIM_STATUS[2],
+                        3 => MerchantOfferClaim::CLAIM_STATUS[3],
+                    ])
+                    // ->relationship('claim', 'status')
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['value'] == null) {
+                            $query->whereDoesntHave('latestSuccessfulClaim');
+                        } else {
+                            $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
+                                $q->where('status', $data['value']);
+                            });
+                        }
+                    })
                     ->label('Financial Status'),
+                SelectFilter::make('getVoucherRedeemedAttribute')
+                    // ->relationship('redeem', 'id')
+                    ->options([
+                        false => 'Not Redeemed',
+                        true => 'Redeemed'
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['value'] == false) {
+                            $query->whereDoesntHave('redeem');
+                        } else {
+                            $query->whereHas('redeem');
+                        }
+                    })
+                    ->label('Redemption Status'),
                 SelectFilter::make('merchant_offer_id')
                     ->relationship('merchant_offer', 'name')
                     ->searchable()

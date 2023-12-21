@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 3
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: est
+                  example: nihil
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: at
+                  example: natus
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - pariatur
+                    - tempora
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - harum
+                    - facere
                   items:
                     type: string
                 category_ids:
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: similique
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: excepturi
+                  example: illo
               required:
                 - comment_id
                 - reason
@@ -1484,7 +1484,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: id
+        example: et
         required: true
         schema:
           type: string
@@ -2294,6 +2294,103 @@ paths:
                   example: 1
               required:
                 - brand
+                - campaign_id
+  /api/v1/campaigns/save/respondant_details:
+    post:
+      summary: 'Create Respondant Details'
+      operationId: createRespondantDetails
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Respondant details created successfully'
+                properties:
+                  message:
+                    type: string
+                    example: 'Respondant details created successfully'
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+                name:
+                  type: string
+                  description: 'The name of the respondant.'
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: 'The email of the respondant. Example:'
+                  example: alfred.shanahan@example.com
+                phone:
+                  type: string
+                  description: 'The phone of the respondant.'
+                  example: '0123456789'
+                ic:
+                  type: string
+                  description: 'The ic of the respondant.'
+                  example: '123456789012'
+                address:
+                  type: string
+                  description: 'The address of the respondant.'
+                  example: '123, Jalan ABC, 12345, Kuala Lumpur'
+              required:
+                - campaign_id
+                - name
+                - email
+                - phone
+                - ic
+                - address
+  /api/v1/campaigns/respondant_details:
+    get:
+      summary: 'Get Respondant Details of User'
+      operationId: getRespondantDetailsOfUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  respondant_details: {  }
+                  has_submitted_respondant_details: true
+                properties:
+                  respondant_details:
+                    type: object
+                    properties: {  }
+                  has_submitted_respondant_details:
+                    type: boolean
+                    example: true
+      tags:
+        - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_id:
+                  type: integer
+                  description: 'The ID of the campaign.'
+                  example: 1
+              required:
                 - campaign_id
   /api/v1/public_article:
     get:
@@ -3256,7 +3353,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: illo
+                  example: odit
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -4398,7 +4495,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: a
+        example: quis
         required: true
         schema:
           type: string
@@ -5372,7 +5469,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 10
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -5418,7 +5515,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 11
+                  example: 12
               required:
                 - user_id
   /api/v1/user/report:
@@ -5458,15 +5555,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: odit
+                  example: dolorem
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: doloremque
+                  example: sed
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quis
+                  example: inventore
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -5583,7 +5680,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: numquam
+                  example: occaecati
               required:
                 - reason
   /api/v1/users_by_id:
@@ -5617,7 +5714,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: et
+                  example: quasi
               required:
                 - user_ids
     parameters:
@@ -6493,7 +6590,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female

@@ -30,8 +30,14 @@ class Kernel extends ConsoleKernel
         // run publish merchant offers every midnight
         $schedule->command('merchant-offers:publish')->dailyAt('00:00');
 
+        // run send notification merchant offer redemption is expiring
+        $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:00');
+
         // run auto archieve merchant offers every midnight 23:55
         $schedule->command('merchant-offers:auto-archieve')->dailyAt('00:00');
+
+        // auto archive media partners articles that matches keywords
+        $schedule->command('article:auto-archive')->dailyAt('00:00');
     }
 
     /**

@@ -226,6 +226,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/answers_by_campaign_brand', [\App\Http\Controllers\Api\CampaignController::class, 'getMyAnswersByCampaignAndBrand']);
             Route::get('/questions_by_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getQuestionsByCampaign']);
             Route::get('/questions_by_brand_campaign', [\App\Http\Controllers\Api\CampaignController::class, 'getCampaignQuestionsByBrand']);
+            Route::post('/save/respondant_details', [\App\Http\Controllers\Api\CampaignController::class, 'postCreateCampaignRespondantDetails']);
+            Route::get('/respondant_details', [\App\Http\Controllers\Api\CampaignController::class, 'getRespondantDetails']);
         });
     });
 });

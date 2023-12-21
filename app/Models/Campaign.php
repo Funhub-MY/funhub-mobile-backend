@@ -29,4 +29,9 @@ class Campaign extends Model implements HasMedia
             ->where('is_active', true)
             ->groupBy('brand');
     }
+
+    public function respondantDetails()
+    {
+        return $this->hasMany(CampaignRespondantDetail::class, 'campaign_id');
+    }
 }
