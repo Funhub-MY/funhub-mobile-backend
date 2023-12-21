@@ -292,4 +292,38 @@ class CampaignController extends Controller
             'message' => 'Respondant details created successfully'
         ]);
     }
+
+    /**
+     * Get Respondant Details of User
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Campaigns
+     * @bodyParam campaign_id integer required The ID of the campaign. Example: 1
+     * @response scenario="success" {
+     * "respondant_details": {},
+     * "has_submitted_respondant_details": true
+     * }
+     */
+    public function getRespondantDetails(Request $request)
+    {
+        $this->validate($request, [
+            'campaign_id' => 'required',
+        ]);
+
+        $campaign = Campaign::find($request->campaign_id);
+        if (!$campaign) {
+            return response()->json([
+                'message' => 'Campaign not found',
+            ], 404);
+        }
+
+        $respondantDetails = $campaign->respondantDetails()->where('user_id', auth()->user()->id)->first();
+
+        return response()->json([
+            'respondant_details' => $respondantDetails,
+            'has_submitted_respondant_details' => ($respondantDetails) ? true : false,
+        ]);
+    }
 }

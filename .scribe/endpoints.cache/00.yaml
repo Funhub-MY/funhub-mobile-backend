@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: neque
+        example: odit
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: neque
+      share_code: odit
     fileParameters: []
     responses:
       -
@@ -584,7 +584,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f3EkcZ8aVead56h41DPb6gv'
+      - 'Bearer ckDPf1658Vg64ah3edbvEaZ'
     controller: null
     method: null
     route: null

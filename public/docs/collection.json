@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "90b41e2d-9b2e-4d6a-9941-a83eed47defb",
+        "_postman_id": "2ef5a513-c9e2-4310-982d-e853d6f93d91",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":19,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"voluptas\",\"violation_level\":\"similique\",\"article\":1}"
+                                    "raw": "{\"article_id\":3,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"nihil\",\"violation_level\":\"natus\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"eum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"tempora\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -449,7 +449,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"sapiente\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"facere\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -972,7 +972,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "et",
+                                            "value": "optio",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1072,7 +1072,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"corrupti\",\"violation_type\":\"at\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"similique\",\"violation_type\":\"illo\"}"
                                 },
                                 "description": ""
                             },
@@ -1197,7 +1197,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "eligendi",
+                                            "value": "et",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2117,7 +2117,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"upagac@example.com\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"alfred.shanahan@example.com\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2126,6 +2126,41 @@
                             "header": [],
                             "code": 200,
                             "body": "{\n\"message\": \"Respondant details created successfully\"\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Respondant Details of User",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/campaigns\/respondant_details",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/campaigns\/respondant_details"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"campaign_id\":1}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"respondant_details\": {},\n\"has_submitted_respondant_details\": true\n}",
                             "name": "success"
                         }
                     ]
@@ -2158,7 +2193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"neque\"}"
+                            "raw": "{\"share_code\":\"odit\"}"
                         },
                         "description": ""
                     },
@@ -3276,7 +3311,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "ab",
+                                            "value": "quis",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -4319,7 +4354,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":20}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -4360,7 +4395,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -4466,7 +4501,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"aut\",\"violation_level\":\"tempore\",\"violation_type\":\"dolorem\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"dolorem\",\"violation_level\":\"sed\",\"violation_type\":\"inventore\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4623,7 +4658,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"placeat\"}"
+                            "raw": "{\"reason\":\"occaecati\"}"
                         },
                         "description": ""
                     },
@@ -4666,7 +4701,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"ut\"}"
+                            "raw": "{\"user_ids\":\"quasi\"}"
                         },
                         "description": ""
                     },
