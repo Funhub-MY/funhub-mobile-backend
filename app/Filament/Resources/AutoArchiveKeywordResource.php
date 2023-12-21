@@ -17,6 +17,11 @@ use Filament\Tables\Columns\TextColumn;
 
 class AutoArchiveKeywordResource extends Resource
 {
+
+    protected static ?string $navigationGroup = 'Articles';
+
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $model = AutoArchiveKeyword::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
@@ -50,14 +55,14 @@ class AutoArchiveKeywordResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -65,5 +70,5 @@ class AutoArchiveKeywordResource extends Resource
             'create' => Pages\CreateAutoArchiveKeyword::route('/create'),
             'edit' => Pages\EditAutoArchiveKeyword::route('/{record}/edit'),
         ];
-    }    
+    }
 }
