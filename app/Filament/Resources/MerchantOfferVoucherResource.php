@@ -196,11 +196,18 @@ class MerchantOfferVoucherResource extends Resource
                     })
                     ->label('Financial Status'),
                 SelectFilter::make('getVoucherRedeemedAttribute')
-                    ->relationship('redeem', 'id')
+                    // ->relationship('redeem', 'id')
                     ->options([
-                        null => 'Not Redeemed',
+                        false => 'Not Redeemed',
                         true => 'Redeemed'
                     ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['value'] == false) {
+                            $query->whereDoesntHave('redeem');
+                        } else {
+                            $query->whereHas('redeem');
+                        }
+                    })
                     ->label('Redemption Status'),
                 SelectFilter::make('merchant_offer_id')
                     ->relationship('merchant_offer', 'name')
