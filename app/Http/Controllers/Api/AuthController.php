@@ -405,7 +405,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email,' . auth()->user()->id,
         ]);
 
-        
+
         $user = auth()->user();
         // update login user email first
         $user->update([
@@ -616,6 +616,7 @@ class AuthController extends Controller
             ->orWhere('email', $firebase_user->email)
             ->first();
 
+        Log::info('User ID: ' . $user->id);
 
         // latest provider id if providerdata > 1
         $providerId = (count($firebase_user->providerData) > 1) ? $firebase_user->providerData[count($firebase_user->providerData) - 1]->providerId : $firebase_user->providerData[0]->providerId;
