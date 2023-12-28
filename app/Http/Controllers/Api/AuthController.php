@@ -610,13 +610,16 @@ class AuthController extends Controller
             Log::info('socialid via uid: ' . $socialid);
         }
 
+        Log::info('[Social Login] Firebase User Data: ', [
+            'uid' => $uid,
+            'providerData' => $firebase_user->providerData,
+            'socialid' => $socialid
+        ]);
+
         $user = User::where('google_id', $socialid)
             ->orWhere('facebook_id', $socialid)
             ->orWhere('apple_id', $socialid)
-            ->orWhere('email', $firebase_user->email)
             ->first();
-
-        Log::info('User ID: ' . $user->id);
 
         // latest provider id if providerdata > 1
         $providerId = (count($firebase_user->providerData) > 1) ? $firebase_user->providerData[count($firebase_user->providerData) - 1]->providerId : $firebase_user->providerData[0]->providerId;
