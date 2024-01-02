@@ -1,7 +1,7 @@
 <x-mail::message>
 Dear Admin,
 
-### Kindly note that a new support request has been raised<br>
+### {{ $content }}<br>
 
 Category: {{ $category }}<br>
 Title: {{ $title }}<br>

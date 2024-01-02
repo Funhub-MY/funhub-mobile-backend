@@ -27,13 +27,21 @@ class SupportRequestMessageObserver
                 Log::error('Error sending notification: ' . $e->getMessage());
             }
         } else {
-            // if NOT admin created message && if this is the first message of the request, send email based on request category type
+            // if NOT admin created message
             // Determine the admin email address based on the request category type
             $supportEmail = ($supportRequestMessage->request->category['type'] === 'complain') ? config('app.support_email2') : config('app.support_email1');
 
             try {
-                Notification::route('mail', $supportEmail)
-                    ->notify(new NewSupportRequestRaised($supportRequestMessage));
+                // Check if this support_request_id already existed more than once in the SupportRequestMessage table
+                $existingMessagesCount = SupportRequestMessage::where('support_request_id', $supportRequestMessage->request->id)->count();
+
+                if ($existingMessagesCount === 1) { // If this is the first message of the request, send NewSupportRequestRaised email
+                    Notification::route('mail', $supportEmail)
+                        ->notify(new NewSupportRequestRaised($supportRequestMessage));
+                } elseif ($existingMessagesCount > 0) { // If this id existed more than once, send update email to support admin
+                    Notification::route('mail', $supportEmail)
+                        ->notify(new NewSupportRequestRaised($supportRequestMessage, 'update'));
+                }
             } catch (\Exception $e) {
                 Log::error('Error sending support request email to admin: ' . $e->getMessage());
             }
