@@ -43,14 +43,24 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Brand Name of Branches')
                         ->required()
                         ->placeholder('Enter Brand Name'),
-                        TextInput::make('address')
+                        TextInput::make('address') //merchant's table 'address'
                         ->label('Company Address')
                         ->required()
                         ->placeholder('Enter Location'),
-                        TextInput::make('address_postcode')
-                        ->label('Company Address Postcode')
+                        TextInput::make('address_postcode') //merchant's table 'address_postcode'
+                        ->rules('numeric')
+                        ->label('Postcode')
                         ->required()
                         ->placeholder('Enter Company Address Postcode'),
+                        // Select::make('state_id') //merchant's table 'state_id'
+                        //     ->label('State')
+                        //     ->required()
+                        //     ->relationship('state', 'name'),
+                        // Select::make('country_id') //merchant's table 'coutry_id'
+                        //     ->label('Country')
+                        //     ->default(131)
+                        //     ->required()
+                        //     ->relationship('country', 'name'),
                         SpatieMediaLibraryFileUpload::make('company_logo')
                         ->label('Company Logo')
                         ->maxFiles(1)
@@ -66,23 +76,23 @@ class MerchantRegister extends Component implements HasForms
                     ]),
                 Wizard\Step::make('PIC')
                     ->schema([
-                        TextInput::make('name')
+                        TextInput::make('pic_name') //merchant's table 'pic_name'
                         ->label('PIC Name')
                         ->required()
                         ->placeholder('Enter PIC Name'),
-                        TextInput::make('designation')
+                        TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
                         ->label('Designation')
                         ->required()
                         ->placeholder('Enter Designation'),
-                        TextInput::make('ic_no')
+                        TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
                         ->label('IC Number')
                         ->required()
                         ->placeholder('Enter IC Number'),
-                        TextInput::make('contact_no')
+                        TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
                         ->label('Contact Number')
                         ->required()
                         ->placeholder('Enter Contact Number'),
-                        TextInput::make('email')
+                        TextInput::make('email') //merchant's table column 'pic_email'
                         ->label('PIC Email')
                         ->required()
                         ->placeholder('Enter Email'),
@@ -91,23 +101,28 @@ class MerchantRegister extends Component implements HasForms
                     ->schema([
                         Repeater::make('Stores')
                             ->schema([
-                                TextInput::make('name')
+                                TextInput::make('name') //stores table 'name'
                                 ->required()
                                 ->label('Store Name')
                                 ->columnSpan('full')
                                 ->placeholder('Enter Store Name'),
-                                TextInput::make('manager_name')
+                                TextInput::make('manager_name') //stores table new column 'manager_name'
                                 ->label('Manager Name')
                                 ->required()
                                 ->placeholder('Enter Manager Name'),
-                                TextInput::make('contact_no')
+                                TextInput::make('manager_contact_no') //stores table new column 'manager_contact_no'
                                 ->label('Contact Number')
                                 ->required()
                                 ->placeholder('Enter Contact Number'),
-                                TextInput::make('store_address')
+                                TextInput::make('address') //stores table 'address'
                                 ->label('Store Address')
                                 ->required()
                                 ->placeholder('Enter Location')
+                                ->columnSpan('full'),
+                                TextInput::make('address_postcode') //stores table 'address_postcode'
+                                ->label('Store Address Postcode')
+                                ->required()
+                                ->placeholder('Enter Store Address Postcode')
                                 ->columnSpan('full'),
                                 Repeater::make('Business Hours')
                                     ->schema([
