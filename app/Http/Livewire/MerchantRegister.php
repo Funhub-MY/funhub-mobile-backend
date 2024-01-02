@@ -3,13 +3,18 @@
 namespace App\Http\Livewire;
 
 use App\Models\Merchant;
+use Closure;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Wizard;
-use Filament\Forms\Components\FileUpload;
 
 class MerchantRegister extends Component implements HasForms
 {
@@ -26,23 +31,27 @@ class MerchantRegister extends Component implements HasForms
             Wizard::make([
                 Wizard\Step::make('Company')
                     ->schema([
-                        TextInput::make('business_name')
+                        TextInput::make('business_name') //merchant's table 'business_name'
                         ->label('Company Name')
-                        // ->required()
+                        ->required()
                         ->placeholder('Enter Company Name'),
-                        TextInput::make('registration_no')
+                        TextInput::make('registration_no') //merchant's table new column 'company_reg_no'
                         ->label('Registration Number')
-                        // ->required()
+                        ->required()
                         ->placeholder('Enter Registration Number'),
-                        TextInput::make('brand_name')
+                        TextInput::make('brand_name') //merchant's table new column 'brand_name'
                         ->label('Brand Name of Branches')
-                        // ->required()
+                        ->required()
                         ->placeholder('Enter Brand Name'),
                         TextInput::make('address')
                         ->label('Company Address')
-                        // ->required()
+                        ->required()
                         ->placeholder('Enter Location'),
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('company_logo')
+                        TextInput::make('address_postcode')
+                        ->label('Company Address Postcode')
+                        ->required()
+                        ->placeholder('Enter Company Address Postcode'),
+                        SpatieMediaLibraryFileUpload::make('company_logo')
                         ->label('Company Logo')
                         ->maxFiles(1)
                         ->required()
@@ -80,13 +89,93 @@ class MerchantRegister extends Component implements HasForms
                     ]),
                 Wizard\Step::make('Store')
                     ->schema([
-                        // ...
+                        Repeater::make('Stores')
+                            ->schema([
+                                TextInput::make('name')
+                                ->required()
+                                ->label('Store Name')
+                                ->columnSpan('full')
+                                ->placeholder('Enter Store Name'),
+                                TextInput::make('manager_name')
+                                ->label('Manager Name')
+                                ->required()
+                                ->placeholder('Enter Manager Name'),
+                                TextInput::make('contact_no')
+                                ->label('Contact Number')
+                                ->required()
+                                ->placeholder('Enter Contact Number'),
+                                TextInput::make('store_address')
+                                ->label('Store Address')
+                                ->required()
+                                ->placeholder('Enter Location')
+                                ->columnSpan('full'),
+                                Repeater::make('Business Hours')
+                                    ->schema([
+                                        Select::make('day')
+                                            ->options([
+                                                'Monday' => 'Monday',
+                                                'Tuesday' => 'Tuesday',
+                                                'Wednesday' => 'Wednesday',
+                                                'Thursday' => 'Thursday',
+                                                'Friday' => 'Friday',
+                                                'Saturday' => 'Saturday',
+                                                'Sunday' => 'Sunday',
+                                            ])
+                                            ->required()
+                                            ->label('Day')
+                                            ->columnSpan('full'),
+                                            Grid::make(2)
+                                            ->schema([
+                                                TimePicker::make('open_time')
+                                                    ->withoutSeconds()
+                                                    ->withoutDate()
+                                                    ->required()
+                                                    ->default(function ($record) {
+                                                        if ($record) {
+                                                            return $record->opening_hours['open_time'];
+                                                        } else {
+                                                            return '09:00';
+                                                        }
+                                                    })
+                                                    ->label('Open Time'),
+                                                TimePicker::make('close_time')
+                                                    ->withoutSeconds()
+                                                    ->withoutDate()
+                                                    ->required()
+                                                    ->default(function ($record) {
+                                                        if ($record) {
+                                                            return $record->opening_hours['close_time'];
+                                                        } else {
+                                                            return '17:00';
+                                                        }
+                                                    })
+                                                    ->label('Close Time'),
+                                            ]),
+                                    ])
+                                    ->columns(2)
+                                    ->columnSpan('full'),
+                            ])
+                            ->columns(2)
                     ]),
                 Wizard\Step::make('Login')
                     ->schema([
-                        // ...
+                        TextInput::make('company_email')
+                        ->label('Company Email')
+                        ->required()
+                        ->placeholder('Enter Email'),
+                        TextInput::make('password')
+                        ->password()
+                        ->required()
+                        ->label('Password')
+                        ->placeholder('Enter Password'),
+                        TextInput::make('passwordConfirmation')
+                        ->password()
+                        ->required()
+                        ->label('Confirm Password')
+                        ->placeholder('Confirm Password'),
                     ]),
             ])
+            ->skippable(),
                 ];
     }
 
