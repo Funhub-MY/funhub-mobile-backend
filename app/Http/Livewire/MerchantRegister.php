@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Country;
 use App\Models\Merchant;
+use App\Models\State;
 use Closure;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Http\Request;
@@ -52,15 +54,15 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Postcode')
                         ->required()
                         ->placeholder('Enter Company Address Postcode'),
-                        // Select::make('state_id') //merchant's table 'state_id'
-                        //     ->label('State')
-                        //     ->required()
-                        //     ->relationship('state', 'name'),
-                        // Select::make('country_id') //merchant's table 'coutry_id'
-                        //     ->label('Country')
-                        //     ->default(131)
-                        //     ->required()
-                        //     ->relationship('country', 'name'),
+                        Select::make('state_id') //merchant's table 'state_id'
+                            ->label('State')
+                            ->required()
+                            ->options(State::all()->pluck('name', 'id')->toArray()),
+                        Select::make('country_id') //merchant's table 'coutry_id'
+                            ->label('Country')
+                            ->default(131)
+                            ->required()
+                            ->options(Country::all()->pluck('name', 'id')->toArray()),
                         SpatieMediaLibraryFileUpload::make('company_logo')
                         ->label('Company Logo')
                         ->maxFiles(1)
@@ -124,7 +126,7 @@ class MerchantRegister extends Component implements HasForms
                                 ->required()
                                 ->placeholder('Enter Store Address Postcode')
                                 ->columnSpan('full'),
-                                Repeater::make('Business Hours')
+                                Repeater::make('business_hours') //stores table new column 'business_hours'(json)
                                     ->schema([
                                         Select::make('day')
                                             ->options([
@@ -174,11 +176,11 @@ class MerchantRegister extends Component implements HasForms
                     ]),
                 Wizard\Step::make('Login')
                     ->schema([
-                        TextInput::make('company_email')
+                        TextInput::make('company_email') //users table and merchant's table column 'email'
                         ->label('Company Email')
                         ->required()
                         ->placeholder('Enter Email'),
-                        TextInput::make('password')
+                        TextInput::make('password') //users table column 'password'
                         ->password()
                         ->required()
                         ->label('Password')
