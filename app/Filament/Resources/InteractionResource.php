@@ -2,19 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\InteractionResource\Pages;
-use App\Filament\Resources\InteractionResource\RelationManagers;
+use Filament\Forms;
+use App\Models\User;
+use Filament\Tables;
 use App\Models\Article;
 use App\Models\Interaction;
-use App\Models\MerchantOffer;
-use App\Models\User;
-use Filament\Forms;
 use Filament\Resources\Form;
-use Filament\Resources\Resource;
+use App\Models\MerchantOffer;
 use Filament\Resources\Table;
-use Filament\Tables;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\InteractionResource\Pages;
+use App\Filament\Resources\InteractionResource\RelationManagers;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class InteractionResource extends Resource
 {
@@ -101,7 +102,7 @@ class InteractionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

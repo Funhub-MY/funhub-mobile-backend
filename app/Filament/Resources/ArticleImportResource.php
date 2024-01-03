@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ArticleImportResource\Pages;
-use App\Filament\Resources\ArticleImportResource\RelationManagers;
-use App\Models\ArticleImport;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use App\Models\ArticleImport;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
+use App\Filament\Resources\ArticleImportResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\ArticleImportResource\RelationManagers;
 
 class ArticleImportResource extends Resource
 {
@@ -89,6 +90,7 @@ class ArticleImportResource extends Resource
     {
         return [
             RelationManagers\ArticlesRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 

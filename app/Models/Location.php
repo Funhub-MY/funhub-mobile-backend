@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +13,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Netsells\GeoScope\Traits\GeoScopeTrait;
 
-class Location extends BaseModel implements HasMedia
+class Location extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, InteractsWithMedia, GeoScopeTrait, Searchable;
+    use HasFactory, InteractsWithMedia, GeoScopeTrait, Searchable, \OwenIt\Auditing\Auditable;
 
     protected $guarded = ['id'];
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -10,9 +11,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Builder;
 
-class Article extends BaseModel implements HasMedia
+class Article extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, InteractsWithMedia, Searchable;
+    use HasFactory, InteractsWithMedia, Searchable, \OwenIt\Auditing\Auditable;
 
     const MEDIA_COLLECTION_NAME = 'article_gallery';
 

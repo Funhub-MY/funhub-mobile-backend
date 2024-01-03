@@ -2,20 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ArticleCategoryResource\Pages;
-use App\Filament\Resources\ArticleCategoryResource\RelationManagers;
-use App\Models\ArticleCategory;
 use Closure;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use App\Models\ArticleCategory;
+use Filament\Resources\Resource;
+use Spatie\MediaLibrary\HasMedia;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-use Spatie\MediaLibrary\HasMedia;
+use App\Filament\Resources\ArticleCategoryResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\ArticleCategoryResource\RelationManagers;
 
 class ArticleCategoryResource extends Resource
 {
@@ -127,7 +128,7 @@ class ArticleCategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

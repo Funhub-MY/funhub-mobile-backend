@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MerchantCategoryResource\Pages;
-use App\Filament\Resources\MerchantCategoryResource\RelationManagers;
-use App\Models\MerchantCategory;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use App\Models\MerchantCategory;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
+use App\Filament\Resources\MerchantCategoryResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\MerchantCategoryResource\RelationManagers;
 
 class MerchantCategoryResource extends Resource
 {
@@ -71,7 +72,7 @@ class MerchantCategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
     

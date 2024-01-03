@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class CampaignQuestion extends Model implements HasMedia
+class CampaignQuestion extends Model implements HasMedia, Auditable
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, \OwenIt\Auditing\Auditable;
 
     protected $guarded = ['id'];
 

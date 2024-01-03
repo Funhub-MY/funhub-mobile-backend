@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,9 +22,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Mail\EmailVerification;
 use Illuminate\Support\Facades\Mail;
 
-class User extends Authenticatable implements HasMedia, FilamentUser
+class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
 {
-    use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable;
+    use SoftDeletes, HasApiTokens, HasFactory, Notifiable, HasRoles, InteractsWithMedia, Searchable, \OwenIt\Auditing\Auditable;
 
     const USER_VIDEO_UPLOADS = 'user_video_uploads';
     const USER_AVATAR = 'user_avatar';

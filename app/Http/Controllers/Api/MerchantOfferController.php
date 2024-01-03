@@ -15,6 +15,7 @@ use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
 use App\Notifications\PurchasedOfferNotification;
+use App\Notifications\VoucherRedeemedNotification;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -625,6 +626,17 @@ class MerchantOfferController extends Controller
             auth()->user()->notify(new OfferRedeemed($offer, auth()->user()));
         } catch (\Exception $e) {
             Log::error('Error sending offer redeemed notification', [$e->getMessage()]);
+        }
+
+        // Send notification to merchant user email
+        try {
+            if ($offer->user->email) {
+                $username = auth()->user()->username;
+
+                $offer->user->notify(new VoucherRedeemedNotification($username, $offer->user->name, $offer));
+            }
+        } catch (\Exception $e) {
+            Log::error('Error sending offer redeemed notification to merchant', [$e->getMessage()]);
         }
 
         return response()->json([

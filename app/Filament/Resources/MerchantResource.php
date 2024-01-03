@@ -13,6 +13,7 @@ use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\Type\NullType;
 use Filament\Tables\Actions\BulkAction;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Component;
@@ -25,7 +26,7 @@ use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
-use SebastianBergmann\Type\NullType;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class MerchantResource extends Resource
 {
@@ -165,7 +166,7 @@ class MerchantResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 
