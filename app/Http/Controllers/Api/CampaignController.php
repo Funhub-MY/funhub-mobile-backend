@@ -269,7 +269,6 @@ class CampaignController extends Controller
             'email' => 'required|email',
             'phone' => 'required',
             'ic' => 'required',
-            'address' => 'required'
         ]);
 
         $campaign = Campaign::find($request->campaign_id);
@@ -285,7 +284,7 @@ class CampaignController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'ic' => $request->ic,
-            'address' => $request->address,
+            'address' => ($request->address) ? $request->address : null,
         ]);
 
         return response()->json([
