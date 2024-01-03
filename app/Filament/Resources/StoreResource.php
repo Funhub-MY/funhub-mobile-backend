@@ -2,18 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StoreResource\Pages;
-use App\Filament\Resources\StoreResource\RelationManagers;
-use App\Models\Merchant;
-use App\Models\Store;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Store;
+use App\Models\Merchant;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\StoreResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StoreResource\RelationManagers;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
 {
@@ -96,7 +97,8 @@ class StoreResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\MerchantOffersRelationManager::class
+            RelationManagers\MerchantOffersRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 

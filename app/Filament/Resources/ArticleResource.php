@@ -2,33 +2,34 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ArticleResource\Pages;
-use App\Filament\Resources\ArticleResource\RelationManagers;
-use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
-use App\Models\Article;
-use App\Models\ArticleCategory;
-use App\Models\ArticleTag;
-use App\Models\Location;
+use Closure;
+use Filament\Forms;
 use App\Models\User;
 use App\Models\View;
-use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Collection;
+use App\Models\Article;
+use App\Models\Location;
+use App\Models\ArticleTag;
 use Illuminate\Support\Str;
-use Closure;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use App\Models\ArticleCategory;
+use Filament\Resources\Resource;
 use Filament\Forms\FormsComponent;
-use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Filament\Forms\Components\Repeater;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ArticleResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ArticleResource\RelationManagers;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
 
 class ArticleResource extends Resource
 {
@@ -450,6 +451,7 @@ class ArticleResource extends Resource
             RelationManagers\InteractionsRelationManager::class,
             RelationManagers\LocationsRelationManager::class,
             RelationManagers\MerchantOffersRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 

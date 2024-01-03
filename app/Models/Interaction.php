@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Interaction extends BaseModel
+class Interaction extends BaseModel implements Auditable
 {
-    use HasFactory;
+    use HasFactory, \OwenIt\Auditing\Auditable;
 
     protected $cacheCooldownSeconds = 300; // 5 minutes
 

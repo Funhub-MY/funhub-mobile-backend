@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends BaseModel
+class Comment extends BaseModel implements Auditable
 {
     // protected $cacheCooldownSeconds = 300; // 5 minutes
 
-    use HasFactory;
+    use HasFactory, \OwenIt\Auditing\Auditable;
 
     const STATUS = [
         0 => 'Draft',

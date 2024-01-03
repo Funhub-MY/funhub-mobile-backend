@@ -2,18 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BlacklistSeederUserResource\Pages;
-use App\Filament\Resources\BlacklistSeederUserResource\RelationManagers;
-use App\Models\BlacklistSeederUser;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use App\Models\BlacklistSeederUser;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Select;
+use App\Filament\Resources\BlacklistSeederUserResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\BlacklistSeederUserResource\RelationManagers;
 
 class BlacklistSeederUserResource extends Resource
 {
@@ -56,7 +57,7 @@ class BlacklistSeederUserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
     

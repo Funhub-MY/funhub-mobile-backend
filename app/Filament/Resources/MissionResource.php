@@ -2,26 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MissionResource\Pages;
-use App\Filament\Resources\MissionResource\RelationManagers;
-use App\Models\Mission;
-use App\Models\Reward;
-use App\Models\RewardComponent;
-use Filament\Forms;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\MorphToSelect;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Closure;
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\Reward;
+use App\Models\Mission;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use App\Models\RewardComponent;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\MorphToSelect;
+use App\Filament\Resources\MissionResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\MissionResource\RelationManagers;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class MissionResource extends Resource
 {
@@ -172,7 +173,7 @@ class MissionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
     

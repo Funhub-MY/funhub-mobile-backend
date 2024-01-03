@@ -2,32 +2,33 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MerchantOfferVoucherResource\Pages;
-use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
-use App\Models\MerchantOfferClaim;
-use App\Models\MerchantOfferVoucher;
 use Filament\Forms;
-use Filament\Tables\Actions\Action;
-use Filament\Forms\Components\Card;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use App\Models\MerchantOfferClaim;
+use Filament\Forms\Components\Card;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use App\Models\MerchantOfferVoucher;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\DateTimePicker;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use App\Filament\Resources\MerchantOfferVoucherResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
 
 class MerchantOfferVoucherResource extends Resource
 {
@@ -253,7 +254,7 @@ class MerchantOfferVoucherResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

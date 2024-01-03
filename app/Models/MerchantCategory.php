@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
-class MerchantCategory extends BaseModel implements HasMedia
+class MerchantCategory extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, \OwenIt\Auditing\Auditable;
 
     protected $guarded = [
         'id'

@@ -2,34 +2,35 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MerchantOfferResource\Pages;
-use App\Filament\Resources\MerchantOfferResource\RelationManagers;
-use App\Models\Merchant;
-use App\Models\MerchantCategory;
-use App\Models\MerchantOffer;
-use App\Models\Store;
-use App\Models\User;
-use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Closure;
-use Filament\Forms\Components\Fieldset;
+use Filament\Forms;
+use App\Models\User;
+use Filament\Tables;
+use App\Models\Store;
+use App\Models\Merchant;
+use Filament\Resources\Form;
+use App\Models\MerchantOffer;
+use Filament\Resources\Table;
+use App\Models\MerchantCategory;
+use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
+use Filament\Forms\Components\Fieldset;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
-use Filament\Tables\Actions\ReplicateAction;
-use Filament\Tables\Actions\Action;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
+use Filament\Tables\Actions\ReplicateAction;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Filament\Resources\MerchantOfferResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\MerchantOfferResource\RelationManagers;
 
 class MerchantOfferResource extends Resource
 {
@@ -496,6 +497,7 @@ class MerchantOfferResource extends Resource
             // RelationManagers\UsersRelationManager::class,
             RelationManagers\VouchersRelationManager::class,
             RelationManagers\LocationRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
 

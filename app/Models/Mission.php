@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
-class Mission extends BaseModel implements HasMedia
+class Mission extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, SoftDeletes, InteractsWithMedia, \OwenIt\Auditing\Auditable;
 
     const MEDIA_COLLECTION_NAME = 'mission_gallery';
 

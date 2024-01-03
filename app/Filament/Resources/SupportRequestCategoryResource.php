@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SupportRequestCategoryResource\Pages;
-use App\Filament\Resources\SupportRequestCategoryResource\RelationManagers;
-use App\Models\SupportRequestCategory;
 use Filament\Forms;
+use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
+use App\Models\SupportRequestCategory;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SupportRequestCategoryResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\SupportRequestCategoryResource\RelationManagers;
 
 class SupportRequestCategoryResource extends Resource
 {
@@ -124,6 +125,7 @@ class SupportRequestCategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
+            AuditsRelationManager::class,
         ];
     }
 

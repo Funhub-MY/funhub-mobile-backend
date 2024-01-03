@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ArticleTagResource\Pages;
-use App\Filament\Resources\ArticleTagResource\RelationManagers;
-use App\Models\ArticleTag;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use App\Models\ArticleTag;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ArticleTagResource\Pages;
+use App\Filament\Resources\ArticleTagResource\RelationManagers;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class ArticleTagResource extends Resource
 {
@@ -56,7 +57,7 @@ class ArticleTagResource extends Resource
     public static function getRelations(): array
     {
         return [
-
+            AuditsRelationManager::class,
         ];
     }
 
