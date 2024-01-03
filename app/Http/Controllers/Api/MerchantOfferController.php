@@ -630,10 +630,16 @@ class MerchantOfferController extends Controller
 
         // Send notification to merchant user email
         try {
-            if ($offer->user->email) {
-                $username = auth()->user()->username;
+            $user = auth()->user();
+            $username = $user->username;
+            $userEmail = null;
 
-                $offer->user->notify(new VoucherRedeemedNotification($username, $offer->user->name, $offer));
+            if ($user->email) {
+                $userEmail = $user->email;
+            }
+
+            if ($offer->user->email) {
+                $offer->user->notify(new VoucherRedeemedNotification($username, $userEmail, $offer->user->name, $offer));
             }
         } catch (\Exception $e) {
             Log::error('Error sending offer redeemed notification to merchant', [$e->getMessage()]);

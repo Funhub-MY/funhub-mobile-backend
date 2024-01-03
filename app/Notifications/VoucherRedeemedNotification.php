@@ -11,16 +11,17 @@ class VoucherRedeemedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $username, $merchantName, $merchantOffer;
+    protected $username, $userEmail, $merchantName, $merchantOffer;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($username, $merchantName, $offer)
+    public function __construct($username, $userEmail, $merchantName, $offer)
     {
         $this->username = $username;
+        $this->userEmail = $userEmail;
         $this->merchantName = $merchantName;
         $this->merchantOffer = $offer;
     }
@@ -44,13 +45,16 @@ class VoucherRedeemedNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-        ->subject('A User Has Redeemed Your Voucher')
-        ->markdown('emails.voucher-redeemed', [
-            'username' => $this->username,
-            'merchantName' => $this->merchantName,
-            'merchantOffer' => $this->merchantOffer->name,
-        ]);
+        $mailMessage = (new MailMessage)
+            ->subject('A User Has Redeemed Your Voucher')
+            ->markdown('emails.voucher-redeemed', [
+                'username' => $this->username,
+                'userEmail' => $this->userEmail,
+                'merchantName' => $this->merchantName,
+                'merchantOffer' => $this->merchantOffer->name,
+            ]);
+
+        return $mailMessage;
     }
 
     /**
