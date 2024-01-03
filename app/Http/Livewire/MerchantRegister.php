@@ -4,7 +4,9 @@ namespace App\Http\Livewire;
 
 use App\Models\Country;
 use App\Models\Merchant;
+use App\Models\User;
 use App\Models\State;
+use App\Models\Store;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Closure;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -19,9 +21,11 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Pages\Actions\Action;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Log;
 
 class MerchantRegister extends Component implements HasForms
 {
@@ -38,10 +42,115 @@ class MerchantRegister extends Component implements HasForms
         $data = $this->validate([
             'business_name' => 'required',
             'company_reg_no' => 'required',
-            
+            'brand_name' => 'required',
+            'business_phone_no' => 'required',
+            'address' => 'required',
+            'company_logo' => 'required',
+            'auto_complete_address' => 'nullable',
+            'location' => 'nullable',
+            'zip_code' => 'required|numeric',
+            'state_id' => 'nullable',
+            'country_id' => 'nullable',
+            'pic_name' => 'required',
+            'pic_designation' => 'required',
+            'pic_ic_no' => 'required|numeric',
+            'pic_phone_no' => 'required',
+            'pic_email' => 'required|email',
+            'stores' => 'required',
+            'stores.*.name' => 'required',
+            'stores.*.is_hq' => 'boolean',
+            'stores.*.manager_name' => 'required',
+            'stores.*.business_phone_no' => 'required',
+            'stores.*.address' => 'required',
+            'stores.*.zip_code' => 'required|numeric',
+            'stores.*.business_hours' => 'required',
+            'stores.*.business_hours.*.day' => 'required',
+            'stores.*.business_hours.*.open_time' => 'required',
+            'stores.*.business_hours.*.close_time' => 'required',
+            'company_email' => 'required|email|unique:users,email',
+            'password' => 'required',
         ]);
         
+        //check only 1 store is hq
+        $hq_count = 0;
+        foreach ($data['stores'] as $store) {
+            if ($store['is_hq']) {
+                $hq_count++;
+            }
+        }
+        if ($hq_count != 1) {
+            return response()->json(['error' => 'Please select only 1 store as HQ.'], 500);
+        }
 
+        //create user using the company_email and password
+        try {
+            $user = User::create([
+                'name' => $data['brand_name'],
+                'email' => $data['company_email'],
+                'password' => bcrypt($data['password']),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('[MerchantOnboarding] User creation failed: ' . $e->getMessage());
+            return response()->json(['error' => 'User creation failed. Please try again.'], 500);
+        }
+
+        //create merchant using the data from the form and user_id
+        //brand name -> name (eg. Nedex Solutions)
+        //company name -> business name  (eg. NEDEX GROUP SDN BHD)
+        try {
+            $merchant = Merchant::create([
+                'user_id' => $user->id,
+                'name' => $data['brand_name'],
+                'email' => $data['company_email'],
+                'business_name' => $data['business_name'],
+                'company_reg_no' => $data['company_reg_no'],
+                'business_phone_no' => $data['business_phone_no'],
+                'address' => $data['address'],
+                'address_postcode' => $data['zip_code'],
+                'state_id' => $data['state_id'],
+                'country_id' => $data['country_id'],
+                'pic_name' => $data['pic_name'],
+                'pic_designation' => $data['pic_designation'],
+                'pic_ic_no' => $data['pic_ic_no'],
+                'pic_phone_no' => $data['pic_phone_no'],
+                'pic_email' => $data['pic_email'],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('[MerchantOnboarding] Merchant creation failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Merchant creation failed. Please try again.'], 500);
+        }
+
+        //create store using the data from the form and user_id
+        try {
+            foreach ($data['stores'] as $store) {
+                //process business hours
+                $businessHours = [];
+                foreach ($store['business_hours'] as $businessHour) {
+                    $businessHours[$businessHour['day']] = [
+                        'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
+                        'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
+                    ];
+                }
+
+                $store = Store::create([
+                    'user_id' => $user->id,
+                    'name' => $store['name'],
+                    'manager_name' => $store['manager_name'],
+                    'business_phone_no' => $store['business_phone_no'],
+                    'business_hours' => json_encode($businessHours),
+                    'address' => $store['address'],
+                    'address_postcode' => $store['zip_code'],
+                    'lang' => $data['location']['lat'],
+                    'long' => $data['location']['lng'],
+                    'is_hq' => $store['is_hq'],
+                    'state_id' => $data['state_id'],
+                    'country_id' => $data['country_id'],
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('[MerchantOnboarding] Store creation failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Store creation failed. Please try again.'], 500);
+        }
 
     }
 
@@ -52,10 +161,10 @@ class MerchantRegister extends Component implements HasForms
                 Wizard\Step::make('Company')
                     ->schema([
                         TextInput::make('business_name') //merchant's table 'business_name'
-                        ->label('Company Name')
+                        ->label('Company Name (as per SSM)')
                         ->required()
                         ->placeholder('Enter Company Name'),
-                        TextInput::make('registration_no') //merchant's table new column 'company_reg_no'
+                        TextInput::make('company_reg_no') //merchant's table new column 'company_reg_no'
                         ->label('Registration Number')
                         ->required()
                         ->placeholder('Enter Registration Number'),
@@ -63,36 +172,15 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Brand Name of Branches')
                         ->required()
                         ->placeholder('Enter Brand Name'),
+                        TextInput::make('business_phone_no') //merchant's table column 'business_phone_no'
+                        ->label('Contact Number')
+                        ->required()
+                        ->placeholder('Enter Contact Number'),
                         TextInput::make('address') //merchant's table 'address'
                         ->label('Company Address')
                         ->required()
                         ->placeholder('Enter Location'),
-                        // TextInput::make('address_postcode') //merchant's table 'address_postcode'
-                        // ->rules('numeric')
-                        // ->label('Postcode')
-                        // ->required()
-                        // ->placeholder('Enter Company Address Postcode'),
-                        // Select::make('state_id') //merchant's table 'state_id'
-                        //     ->label('State')
-                        //     ->required()
-                        //     ->options(State::all()->pluck('name', 'id')->toArray()),
-                        // Select::make('country_id') //merchant's table 'coutry_id'
-                        //     ->label('Country')
-                        //     ->default(131)
-                        //     ->required()
-                        //     ->options(Country::all()->pluck('name', 'id')->toArray()),
-                        SpatieMediaLibraryFileUpload::make('company_logo')
-                        ->label('Company Logo')
-                        ->maxFiles(1)
-                        ->required()
-                        ->columnSpan('full')
-                        ->disk(function () {
-                            if (config('filesystems.default') === 's3') {
-                                return 's3_public';
-                            }
-                        })
-                        ->acceptedFileTypes(['image/*'])
-                        ->rules('image'),
+
                         Group::make([
                             Section::make('Location Details')
                                 ->schema([
@@ -139,15 +227,25 @@ class MerchantRegister extends Component implements HasForms
                                         ->required(),
                                     Select::make('state_id') //merchant's table 'state_id'
                                         ->label('State')
-                                        ->required()
                                         ->options(State::all()->pluck('name', 'id')->toArray()),
                                     Select::make('country_id') //merchant's table 'country_id'
                                         ->label('Country')
                                         ->default(131)
-                                        ->required()
                                         ->options(Country::all()->pluck('name', 'id')->toArray()),
                                 ])
                         ])->columnSpan(['lg' => 1]),
+                        SpatieMediaLibraryFileUpload::make('company_logo')
+                        ->label('Company Logo')
+                        ->maxFiles(1)
+                        ->required()
+                        ->columnSpan('full')
+                        ->disk(function () {
+                            if (config('filesystems.default') === 's3') {
+                                return 's3_public';
+                            }
+                        })
+                        ->acceptedFileTypes(['image/*'])
+                        ->rules('image'),
                     ]),
                 Wizard\Step::make('PIC')
                     ->schema([
@@ -167,49 +265,105 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Contact Number')
                         ->required()
                         ->placeholder('Enter Contact Number'),
-                        TextInput::make('email') //merchant's table column 'pic_email'
+                        TextInput::make('pic_email') //merchant's table column 'pic_email'
                         ->label('PIC Email')
                         ->required()
                         ->placeholder('Enter Email'),
                     ]),
                 Wizard\Step::make('Store')
                     ->schema([
-                        Repeater::make('Stores')
+                        Repeater::make('stores')
                             ->schema([
                                 TextInput::make('name') //stores table 'name'
                                 ->required()
                                 ->label('Store Name')
                                 ->columnSpan('full')
                                 ->placeholder('Enter Store Name'),
+                                Toggle::make('is_hq')
+                                ->label('Is Headquarters?')
+                                ->columnSpan('full'),
                                 TextInput::make('manager_name') //stores table new column 'manager_name'
                                 ->label('Manager Name')
                                 ->required()
                                 ->placeholder('Enter Manager Name'),
-                                TextInput::make('manager_contact_no') //stores table new column 'manager_contact_no'
+                                TextInput::make('business_phone_no') //stores table column 'business_phone_no'
                                 ->label('Contact Number')
                                 ->required()
                                 ->placeholder('Enter Contact Number'),
-                                TextInput::make('address') //stores table 'address'
-                                ->label('Store Address')
-                                ->required()
-                                ->placeholder('Enter Location')
-                                ->columnSpan('full'),
-                                TextInput::make('address_postcode') //stores table 'address_postcode'
-                                ->label('Store Address Postcode')
-                                ->required()
-                                ->placeholder('Enter Store Address Postcode')
-                                ->columnSpan('full'),
+                                // TextInput::make('address') //stores table 'address'
+                                // ->label('Store Address')
+                                // ->required()
+                                // ->placeholder('Enter Location')
+                                // ->columnSpan('full'),
+                                // TextInput::make('address_postcode') //stores table 'address_postcode'
+                                // ->label('Store Address Postcode')
+                                // ->required()
+                                // ->placeholder('Enter Store Address Postcode')
+                                // ->columnSpan('full'),
+                                Group::make([
+                                    Section::make('Location Details')
+                                        ->schema([
+                                            TextInput::make('auto_complete_address')
+                                                ->label('Find a Location')
+                                                ->placeholder('Start typing an address ...'),
+                                                
+                                            Map::make('location')
+                                                ->autocomplete(
+                                                    fieldName: 'auto_complete_address',
+                                                    placeField: 'name',
+                                                    countries: ['MY'],
+                                                )
+                                                ->reactive()
+                                                ->defaultZoom(15)
+                                                ->defaultLocation([
+                                                    // klang valley coordinates
+                                                    'lat' => 3.1390,
+                                                    'lng' => 101.6869,
+                                                ])
+                                                ->reverseGeocode([
+                                                    'city'   => '%L',
+                                                    'zip'    => '%z',
+                                                    'state'  => '%D',
+                                                    'zip_code' => '%z',
+                                                    'address' => '%n %S',
+                                                ])
+                                                ->mapControls([
+                                                    'mapTypeControl'    => true,
+                                                    'scaleControl'      => true,
+                                                    'streetViewControl' => false,
+                                                    'rotateControl'     => true,
+                                                    'fullscreenControl' => true,
+                                                    'searchBoxControl'  => false, // creates geocomplete field inside map
+                                                    'zoomControl'       => false,
+                                                ])
+                                                ->clickable(true),
+                
+                                            TextInput::make('address')
+                                                ->required(),
+                                            TextInput::make('zip_code') //stores table 'address_postcode'
+                                                ->rules('numeric')
+                                                ->label('Postcode')
+                                                ->required(),
+                                            Select::make('state_id') //stores table 'state_id'
+                                                ->label('State')
+                                                ->options(State::all()->pluck('name', 'id')->toArray()),
+                                            Select::make('country_id') //stores table 'country_id'
+                                                ->label('Country')
+                                                ->default(131)
+                                                ->options(Country::all()->pluck('name', 'id')->toArray()),
+                                        ])
+                                ])->columnSpan('full'),
                                 Repeater::make('business_hours') //stores table new column 'business_hours'(json)
                                     ->schema([
                                         Select::make('day')
                                             ->options([
-                                                'Monday' => 'Monday',
-                                                'Tuesday' => 'Tuesday',
-                                                'Wednesday' => 'Wednesday',
-                                                'Thursday' => 'Thursday',
-                                                'Friday' => 'Friday',
-                                                'Saturday' => 'Saturday',
-                                                'Sunday' => 'Sunday',
+                                                '1' => 'Monday',
+                                                '2' => 'Tuesday',
+                                                '3' => 'Wednesday',
+                                                '4' => 'Thursday',
+                                                '5' => 'Friday',
+                                                '6' => 'Saturday',
+                                                '7' => 'Sunday',
                                             ])
                                             ->required()
                                             ->label('Day')
@@ -220,25 +374,13 @@ class MerchantRegister extends Component implements HasForms
                                                     ->withoutSeconds()
                                                     ->withoutDate()
                                                     ->required()
-                                                    ->default(function ($record) {
-                                                        if ($record) {
-                                                            return $record->opening_hours['open_time'];
-                                                        } else {
-                                                            return '09:00';
-                                                        }
-                                                    })
+                                                    ->default('09:00')
                                                     ->label('Open Time'),
                                                 TimePicker::make('close_time')
                                                     ->withoutSeconds()
                                                     ->withoutDate()
                                                     ->required()
-                                                    ->default(function ($record) {
-                                                        if ($record) {
-                                                            return $record->opening_hours['close_time'];
-                                                        } else {
-                                                            return '17:00';
-                                                        }
-                                                    })
+                                                    ->default('17:00')
                                                     ->label('Close Time'),
                                             ]),
                                     ])
