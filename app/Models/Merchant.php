@@ -11,6 +11,8 @@ class Merchant extends BaseModel implements Auditable
 {
     use HasFactory, \OwenIt\Auditing\Auditable;
 
+    const MEDIA_COLLECTION_NAME = 'merchant_logos';
+
     protected $guarded = ['id'];
 
     public function user()

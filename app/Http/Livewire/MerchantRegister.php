@@ -69,6 +69,7 @@ class MerchantRegister extends Component implements HasForms
             'stores.*.business_hours.*.close_time' => 'required',
             'company_email' => 'required|email|unique:users,email',
             'password' => 'required',
+            'passwordConfirmation' => 'required|same:password',
         ]);
         
         //check only 1 store is hq
@@ -79,7 +80,7 @@ class MerchantRegister extends Component implements HasForms
             }
         }
         if ($hq_count != 1) {
-            return response()->json(['error' => 'Please select only 1 store as HQ.'], 500);
+            session()->flash('error', 'Please select only 1 store as HQ.');
         }
 
         //create user using the company_email and password
@@ -91,7 +92,7 @@ class MerchantRegister extends Component implements HasForms
             ]);
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] User creation failed: ' . $e->getMessage());
-            return response()->json(['error' => 'User creation failed. Please try again.'], 500);
+            session()->flash('error', 'User creation failed. Please try again.');
         }
 
         //create merchant using the data from the form and user_id
@@ -117,7 +118,7 @@ class MerchantRegister extends Component implements HasForms
             ]);
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Merchant creation failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Merchant creation failed. Please try again.'], 500);
+            session()->flash('error', 'Merchant creation failed. Please try again.');
         }
 
         //create store using the data from the form and user_id
@@ -149,7 +150,12 @@ class MerchantRegister extends Component implements HasForms
             }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Store creation failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Store creation failed. Please try again.'], 500);
+            session()->flash('error', 'Store creation failed. Please try again.');
+        }
+
+        if ($user && $merchant && $store) {
+            session()->flash('message', 'Merchant created successfully.');
+            return redirect()->route('merchant.register');
         }
 
     }
@@ -237,6 +243,7 @@ class MerchantRegister extends Component implements HasForms
                         SpatieMediaLibraryFileUpload::make('company_logo')
                         ->label('Company Logo')
                         ->maxFiles(1)
+                        ->collection(Merchant::MEDIA_COLLECTION_NAME)
                         ->required()
                         ->columnSpan('full')
                         ->disk(function () {
