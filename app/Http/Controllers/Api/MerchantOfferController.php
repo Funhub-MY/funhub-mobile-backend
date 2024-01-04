@@ -96,6 +96,8 @@ class MerchantOfferController extends Controller
 
         if ($request->has('flash_only') && $request->flash_only) {
             $query->flash();
+        } else {
+            $query->where('flash_deal', false);
         }
 
         // get articles by city
