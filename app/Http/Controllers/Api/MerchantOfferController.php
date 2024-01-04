@@ -94,9 +94,11 @@ class MerchantOfferController extends Controller
             $query->available();
         }
 
-        if ($request->has('flash_only') && $request->flash_only) {
+        if ($request->has('flash_only') && $request->flash_only == 1) {
             $query->flash();
-        } else {
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 0) {
             $query->where('flash_deal', false);
         }
 
