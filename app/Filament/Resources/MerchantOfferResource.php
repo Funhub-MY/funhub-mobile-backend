@@ -31,6 +31,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Filament\Resources\MerchantOfferResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferResource\RelationManagers;
+use Illuminate\Support\HtmlString;
 
 class MerchantOfferResource extends Resource
 {
@@ -102,6 +103,7 @@ class MerchantOfferResource extends Resource
                                     ->label('SKU')
                                     ->required(),
 
+
                                 Forms\Components\DateTimePicker::make('available_at')
                                     ->required()
                                     ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
@@ -112,6 +114,11 @@ class MerchantOfferResource extends Resource
                                     ->label('Expire in (Days) After Purchase')
                                     ->helperText('Leave blank if no expiry. Available until user redeemed it.')
                                     ->numeric(),
+
+                                Forms\Components\Toggle::make('flash_deal')
+                                    ->label('Flash Deal')
+                                    ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
+                                    ->default(false),
                                 Forms\Components\Textarea::make('description')
                                     ->rows(5)
                                     ->cols(10)
@@ -292,6 +299,15 @@ class MerchantOfferResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->getStateUsing(function ($record) {
+                        $name = $record->name;
+                        if ($record->flash_deal) {
+                            $name .= new HtmlString('<span class="font-bold ml-2 text-danger-700 uppercase">Flash</span>');
+                        }
+
+                        return $name;
+                    })
+                    ->html()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')

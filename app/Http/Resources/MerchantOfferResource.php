@@ -54,6 +54,7 @@ class MerchantOfferResource extends JsonResource
                 'user' => new UserResource($this->user),
             ],
             'name' => $this->name,
+            'is_flash' => $this->flash_deal,
             'description' => $this->description,
             'fine_print' => $this->fine_print,
             'redemption_policy' => $this->redemption_policy,
