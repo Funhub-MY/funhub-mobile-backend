@@ -38,6 +38,9 @@ class Kernel extends ConsoleKernel
 
         // auto archive media partners articles that matches keywords
         $schedule->command('article:auto-archive')->dailyAt('00:00');
+
+        // run every 5 mins to check for scheduled custom notifications
+        $schedule->command('send-custom-notification')->everyFiveMinutes();
     }
 
     /**
