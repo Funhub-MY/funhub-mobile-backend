@@ -13,6 +13,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
@@ -38,11 +39,12 @@ class MerchantRegister extends Component implements HasForms
 
     public function register(Request $request)
     {
-        //dd($this);
+        //dd(array_values($this->company_logo)[0]->getRealPath());
         $data = $this->validate([
             'business_name' => 'required',
             'company_reg_no' => 'required',
             'brand_name' => 'required',
+            'phone_country_code' => 'required',
             'business_phone_no' => 'required',
             'address' => 'required',
             'company_logo' => 'required',
@@ -88,6 +90,8 @@ class MerchantRegister extends Component implements HasForms
             $user = User::create([
                 'name' => $data['brand_name'],
                 'email' => $data['company_email'],
+                'phone_no' => $data['business_phone_no'],
+                'phone_country_code' => $data['phone_country_code'],
                 'password' => bcrypt($data['password']),
             ]);
         } catch (\Exception $e) {
@@ -105,7 +109,7 @@ class MerchantRegister extends Component implements HasForms
                 'email' => $data['company_email'],
                 'business_name' => $data['business_name'],
                 'company_reg_no' => $data['company_reg_no'],
-                'business_phone_no' => $data['business_phone_no'],
+                'business_phone_no' => $data['phone_country_code'].$data['business_phone_no'],
                 'address' => $data['address'],
                 'address_postcode' => $data['zip_code'],
                 'state_id' => $data['state_id'],
@@ -120,6 +124,20 @@ class MerchantRegister extends Component implements HasForms
             Log::error('[MerchantOnboarding] Merchant creation failed: ' . $e->getMessage());
             session()->flash('error', 'Merchant creation failed. Please try again.');
         }
+
+        //save the company logo to the merchant's media collection
+        //dd($data['company_logo']);
+        try {
+            $company_logo_livewire_tmp = array_values($data['company_logo'])[0];
+            Log::info($company_logo_livewire_tmp);
+            Log::info('[MerchantOnboarding] Company logo upload: ' . $company_logo_livewire_tmp->getRealPath());
+            $merchant->addMedia($company_logo_livewire_tmp->getRealPath())
+                ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
+        } catch (\Exception $e) {
+            Log::error('[MerchantOnboarding] Company logo upload failed: ' . $e->getMessage());
+            session()->flash('error', 'Company logo upload failed. Please try again.');
+        }
+        $merchant->save();
 
         //create store using the data from the form and user_id
         try {
@@ -178,10 +196,30 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Brand Name of Branches')
                         ->required()
                         ->placeholder('Enter Brand Name'),
-                        TextInput::make('business_phone_no') //merchant's table column 'business_phone_no'
-                        ->label('Contact Number')
-                        ->required()
-                        ->placeholder('Enter Contact Number'),
+                        // TextInput::make('business_phone_no') //merchant's table column 'business_phone_no'
+                        // ->label('Contact Number')
+                        // ->required()
+                        // ->placeholder('Enter Contact Number'),
+                        // inline phone_country_code and phone_no without labels but placeholders textinputs
+                        Fieldset::make('Phone Number')
+                        ->schema([
+                            TextInput::make('phone_country_code')
+                                ->placeholder('60')
+                                ->label('')
+                                ->afterStateHydrated(function ($component, $state) {
+                                    // ensure no symbols only numbers
+                                    $component->state(preg_replace('/[^0-9]/', '', $state));
+                                })
+                                ->rules('required', 'max:255')->columnSpan(['lg' => 1]),
+                            TextInput::make('business_phone_no')
+                                ->placeholder('eg. 123456789')
+                                ->label('')
+                                ->afterStateHydrated(function ($component, $state) {
+                                    // ensure no symbols only numbers
+                                    $component->state(preg_replace('/[^0-9]/', '', $state));
+                                })
+                                ->rules('required', 'max:255')->columnSpan(['lg' => 3]),
+                        ])->columns(4),
                         TextInput::make('address') //merchant's table 'address'
                         ->label('Company Address')
                         ->required()
