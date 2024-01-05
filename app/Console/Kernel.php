@@ -42,8 +42,8 @@ class Kernel extends ConsoleKernel
         // run every 5 mins to check for scheduled custom notifications
         $schedule->command('send-custom-notification')->everyFiveMinutes();
 
-        // run scheduled maintenance every midnight
-        $schedule->command('manage-maintenance-status')->dailyAt('00:00');
+        // run scheduled maintenance every 5 mins
+        $schedule->command('manage-maintenance-status')->everyFiveMinutes();
     }
 
     /**

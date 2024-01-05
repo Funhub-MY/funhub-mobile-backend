@@ -9,12 +9,10 @@ class MaintenanceController extends Controller
 {
     public function getMaintenanceInfo()
     {
-        $maintenance = Maintenance::latest()->first();
+        $maintenance = Maintenance::paginate(config('app.paginate_per_page'));
 
         return response()->json([
-            'start_date' => $maintenance->start_date,
-            'end_date' => $maintenance->end_date,
-            'is_active' => $maintenance->is_active,
+            'data' => $maintenance
         ]);
     }
 }

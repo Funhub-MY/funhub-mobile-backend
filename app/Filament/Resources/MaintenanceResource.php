@@ -14,8 +14,8 @@ use Illuminate\Support\HtmlString;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Columns\BadgeColumn;
-use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DateTimePicker;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MaintenanceResource\Pages;
 use App\Filament\Resources\MaintenanceResource\RelationManagers;
@@ -33,16 +33,21 @@ class MaintenanceResource extends Resource
     {
         return $form
             ->schema([
-                DatePicker::make('start_date')
-                    ->minDate(now()->addDay()->startOfDay())
-                    ->helperText('System will change maintenance status to active at 00:01 of selected date.')
-                    ->label('Start Date'),
-                DatePicker::make('end_date')
-                    ->minDate(now()->addDay()->startOfDay())
-                    ->dehydrateStateUsing(function ($state) {
-                        return CarbonImmutable::parse($state)->endOfDay();
-                    })
-                    ->helperText('Maintenance status will be deactivated after 23:59:59 of the selected date.')
+                DateTimePicker::make('start_date')
+                    ->withoutSeconds()
+                    ->label('Start Date')
+                    ->rules([
+                        function () {
+                            return function (string $attribute, $value, Closure $fail) {
+                                if ($value < now()) {
+                                    $fail('The :attribute and Time must be more than a minute from now');
+                                }
+                            };
+                        }
+                    ]),
+                DateTimePicker::make('end_date')
+                    ->after('start_date')
+                    ->withoutSeconds()
                     ->label('End Date'),
             ]);
     }
