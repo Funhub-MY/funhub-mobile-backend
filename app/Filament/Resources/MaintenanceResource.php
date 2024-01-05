@@ -38,6 +38,7 @@ class MaintenanceResource extends Resource
                     ->helperText('System will change maintenance status to active at 00:01 of selected date.')
                     ->label('Start Date'),
                 DatePicker::make('end_date')
+                    ->minDate(now()->addDay()->startOfDay())
                     ->dehydrateStateUsing(function ($state) {
                         return CarbonImmutable::parse($state)->endOfDay();
                     })
