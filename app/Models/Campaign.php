@@ -8,7 +8,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Campaign extends Model implements HasMedia
+class Campaign extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 

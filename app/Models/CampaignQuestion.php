@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class CampaignQuestion extends Model implements HasMedia
+class CampaignQuestion extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
