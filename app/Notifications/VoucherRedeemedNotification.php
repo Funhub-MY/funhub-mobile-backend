@@ -46,7 +46,7 @@ class VoucherRedeemedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $mailMessage = (new MailMessage)
-            ->subject('A User Has Redeemed Your Voucher')
+            ->subject('A User ('.$this->username.') Has Redeemed Your Voucher')
             ->markdown('emails.voucher-redeemed', [
                 'username' => $this->username,
                 'userEmail' => $this->userEmail,
