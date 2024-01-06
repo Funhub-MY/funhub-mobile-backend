@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8b6V4de5kgZ3afcPhaE1v6D'
+      - 'Bearer h5a1VDaP43gb68fcdZk6eEv'
     controller: null
     method: null
     route: null
@@ -198,6 +198,15 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      flash_only:
+        name: flash_only
+        description: 'optional Filter by Flash Deals Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       filter:
         name: filter
         description: 'Column to Filter.'
@@ -263,6 +272,7 @@ endpoints:
       radius: 10000
       location_id: 1
       available_only: true
+      flash_only: true
       filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
@@ -288,7 +298,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V6ge85ED1fP4da6hbvZcak'
+      - 'Bearer V8gc1ZEDab6453adevk6Phf'
     controller: null
     method: null
     route: null
@@ -411,7 +421,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5a6VEhvfZc4be3D8agPk16d'
+      - 'Bearer d6e8f6D5Ek3avbgc4hPZ1aV'
     controller: null
     method: null
     route: null
@@ -498,7 +508,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 636ad4V1hkfcEvPe8gZ5aDb'
+      - 'Bearer d66Vba4e8cfZvE51P3Dkagh'
     controller: null
     method: null
     route: null
@@ -560,7 +570,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vg164ka36hvaZED5db8ecPf'
+      - 'Bearer 5vceZ864f3kVEdbDa6hP1ag'
     controller: null
     method: null
     route: null
@@ -613,7 +623,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 15caavf8D6Vh43gkP6ZEbed'
+      - 'Bearer Ecbh35ZD6V8dg64eP1vakaf'
     controller: null
     method: null
     route: null
@@ -640,13 +650,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: quis
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: quis
+      offer_id: est
     queryParameters:
       offer_id:
         name: offer_id
@@ -676,7 +686,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ve3adg6hE5V8ZDPcfbak164'
+      - 'Bearer bkhDdeEZ586gVfa4Pvc6a31'
     controller: null
     method: null
     route: null
@@ -795,7 +805,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cEegDvaa5PkZ813b6fh46Vd'
+      - 'Bearer 46ZgPa8kaf615hEDVvcd3be'
     controller: null
     method: null
     route: null
@@ -854,7 +864,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PVg65vadcfk61hZbDea43E8'
+      - 'Bearer f85da4bZagekDc13VvPhE66'
     controller: null
     method: null
     route: null
@@ -994,7 +1004,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bf1ZeV8akcv356hdDPEg4a'
+      - 'Bearer ehaE83acb14Dvkf6VgPdZ56'
     controller: null
     method: null
     route: null

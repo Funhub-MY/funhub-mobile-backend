@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -10,9 +11,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Builder;
 
-class MerchantOffer extends BaseModel implements HasMedia
+class MerchantOffer extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, InteractsWithMedia, Searchable;
+    use HasFactory, InteractsWithMedia, Searchable, \OwenIt\Auditing\Auditable;
 
     const MEDIA_COLLECTION_NAME = 'merchant_offer_gallery';
     const MEDIA_COLLECTION_HORIZONTAL_BANNER = 'merchant_offer_horizontal_banner';
@@ -198,6 +199,11 @@ class MerchantOffer extends BaseModel implements HasMedia
     {
         // available_at must be past
         $query->where('available_at', '<=', now());
+    }
+
+    public function scopeFlash(Builder $query): void
+    {
+        $query->where('flash_deal', true);
     }
 
     /**

@@ -2,19 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CommentResource\Pages;
-use App\Filament\Resources\CommentResource\RelationManagers;
+use Filament\Forms;
+use App\Models\User;
+use Filament\Tables;
 use App\Models\Article;
 use App\Models\Comment;
-use App\Models\User;
-use Filament\Forms;
 use Filament\Resources\Form;
-use Filament\Resources\Resource;
+use App\Policies\AuditPolicy;
 use Filament\Resources\Table;
-use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CommentResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CommentResource\RelationManagers;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class CommentResource extends Resource
 {
@@ -89,7 +91,7 @@ class CommentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

@@ -15,6 +15,7 @@ use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
 use App\Notifications\PurchasedOfferNotification;
+use App\Notifications\VoucherRedeemedNotification;
 use App\Services\Mpay;
 use App\Services\PointService;
 use App\Services\TransactionService;
@@ -53,6 +54,7 @@ class MerchantOfferController extends Controller
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam available_only boolean optional Filter by Available Only. Example: true
+     * @bodyParam flash_only boolean optional Filter by Flash Deals Only. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -90,6 +92,14 @@ class MerchantOfferController extends Controller
 
         if ($request->has('available_only')) {
             $query->available();
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 1) {
+            $query->flash();
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 0) {
+            $query->where('flash_deal', false);
         }
 
         // get articles by city
@@ -625,6 +635,23 @@ class MerchantOfferController extends Controller
             auth()->user()->notify(new OfferRedeemed($offer, auth()->user()));
         } catch (\Exception $e) {
             Log::error('Error sending offer redeemed notification', [$e->getMessage()]);
+        }
+
+        // Send notification to merchant user email
+        try {
+            $user = auth()->user();
+            $username = $user->username;
+            $userEmail = null;
+
+            if ($user->email) {
+                $userEmail = $user->email;
+            }
+
+            if ($offer->user->email) {
+                $offer->user->notify(new VoucherRedeemedNotification($username, $userEmail, $offer->user->name, $offer));
+            }
+        } catch (\Exception $e) {
+            Log::error('Error sending offer redeemed notification to merchant', [$e->getMessage()]);
         }
 
         return response()->json([

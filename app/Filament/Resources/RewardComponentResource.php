@@ -2,19 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RewardComponentResource\Pages;
-use App\Filament\Resources\RewardComponentResource\RelationManagers;
-use App\Filament\Resources\RewardComponentResource\RelationManagers\RewardsRelationManager;
-use App\Models\RewardComponent;
 use Closure;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use App\Models\RewardComponent;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\RewardComponentResource\Pages;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\RewardComponentResource\RelationManagers;
+use App\Filament\Resources\RewardComponentResource\RelationManagers\RewardsRelationManager;
 
 class RewardComponentResource extends Resource
 {
@@ -97,6 +98,7 @@ class RewardComponentResource extends Resource
     {
         return [
             RewardsRelationManager::class,
+            AuditsRelationManager::class,
         ];
     }
     

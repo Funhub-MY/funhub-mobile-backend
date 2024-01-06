@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('fetch:news-feed')->hourly();
 
         $schedule->command('generate:article-views')->everyTwoHours();
-        $schedule->command('update:scheduled-views')->everyTwoHours();        
+        $schedule->command('update:scheduled-views')->everyTwoHours();
 
         // run every 15minutes for release merchant
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
@@ -38,6 +38,12 @@ class Kernel extends ConsoleKernel
 
         // auto archive media partners articles that matches keywords
         $schedule->command('article:auto-archive')->dailyAt('00:00');
+
+        // run every 5 mins to check for scheduled custom notifications
+        // $schedule->command('send-custom-notification')->everyFiveMinutes();
+
+        // run scheduled maintenance every 5 mins
+        $schedule->command('manage-maintenance-status')->everyFiveMinutes();
     }
 
     /**

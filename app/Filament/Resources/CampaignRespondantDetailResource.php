@@ -2,20 +2,21 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CampaignRespondantDetailResource\Pages;
-use App\Filament\Resources\CampaignRespondantDetailResource\RelationManagers;
-use App\Models\CampaignRespondantDetail;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\TextColumn;
+use App\Models\CampaignRespondantDetail;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use App\Filament\Resources\CampaignRespondantDetailResource\Pages;
+use App\Filament\Resources\CampaignRespondantDetailResource\RelationManagers;
 
 class CampaignRespondantDetailResource extends Resource
 {
@@ -114,7 +115,7 @@ class CampaignRespondantDetailResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuditsRelationManager::class,
         ];
     }
 

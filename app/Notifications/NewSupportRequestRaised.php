@@ -12,16 +12,17 @@ class NewSupportRequestRaised extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $message, $category, $title;
+    protected $message, $category, $title, $notificationType;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(SupportRequestMessage $message)
+    public function __construct(SupportRequestMessage $message, $notificationType = 'initial')
     {
         $this->message = $message;
+        $this->notificationType = $notificationType;
     }
 
     /**
@@ -43,11 +44,16 @@ class NewSupportRequestRaised extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $subject = ($this->notificationType === 'initial') ? 'New Support Request Has Been Raised' : 'Support Request Updated';
+
+        $content = ($this->notificationType === 'initial') ? 'Kindly note that a new support request has been raised' : 'Kindly note that a support request has been updated';
+
         return (new MailMessage)
-            ->subject('New Support Request Has Been Raised')
+            ->subject($subject)
             ->markdown('emails.new-support-request-raised', [
                 'category' => $this->message->request->category->name,
                 'title' => $this->message->request['title'],
+                'content' => $content,
             ]);
     }
 

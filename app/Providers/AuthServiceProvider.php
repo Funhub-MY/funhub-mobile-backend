@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\Audit;
+use App\Policies\AuditPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use OwenIt\Auditing\Models\Audit as ModelsAudit;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        ModelsAudit::class => AuditPolicy::class,
     ];
 
     /**
@@ -25,6 +29,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('audit', function ($user) {
+            return $user->hasRole('super_admin');
+        });
+
+        Gate::define('restoreAudit', function ($user) {
+            return $user->hasRole('super_admin');
+        });
     }
 }
