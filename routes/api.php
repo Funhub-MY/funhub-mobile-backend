@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\ArticleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\MaintenanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -229,5 +230,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/save/respondant_details', [\App\Http\Controllers\Api\CampaignController::class, 'postCreateCampaignRespondantDetails']);
             Route::get('/respondant_details', [\App\Http\Controllers\Api\CampaignController::class, 'getRespondantDetails']);
         });
+
+        // Maintenance
+        Route::get('/maintenance', [MaintenanceController::class, 'getMaintenanceInfo']);
     });
 });

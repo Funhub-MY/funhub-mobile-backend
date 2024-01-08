@@ -284,7 +284,7 @@ class CampaignController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'ic' => $request->ic,
-            'address' => ($request->address) ? $request->address : null,
+            'address' => ($request->has('address')) ? $request->address : null,
         ]);
 
         return response()->json([
