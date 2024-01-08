@@ -131,7 +131,7 @@ class MerchantRegister extends Component implements HasForms
             $company_logo_livewire_tmp = array_values($data['company_logo'])[0];
             Log::info($company_logo_livewire_tmp);
             Log::info('[MerchantOnboarding] Company logo upload: ' . $company_logo_livewire_tmp->getRealPath());
-            $merchant->addMedia($company_logo_livewire_tmp->getRealPath())
+            $merchant->addMediaFromDisk($company_logo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                 ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Company logo upload failed: ' . $e->getMessage());
@@ -284,11 +284,6 @@ class MerchantRegister extends Component implements HasForms
                         ->collection(Merchant::MEDIA_COLLECTION_NAME)
                         ->required()
                         ->columnSpan('full')
-                        ->disk(function () {
-                            if (config('filesystems.default') === 's3') {
-                                return 's3_public';
-                            }
-                        })
                         ->acceptedFileTypes(['image/*'])
                         ->rules('image'),
                     ]),
