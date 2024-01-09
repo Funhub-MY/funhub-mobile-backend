@@ -68,7 +68,7 @@ class CampaignQuestionAnswerResource extends Resource
                     ->searchable(),
 
                 // brand
-                TextColumn::make('question.question.brand')
+                TextColumn::make('question.brand')
                     ->label('Brand')
                     ->searchable(),
 
