@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CampaignQuestionAnswerResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\CampaignQuestionAnswerResource\RelationManagers;
+use Filament\Tables\Columns\TextColumn;
 
 class CampaignQuestionAnswerResource extends Resource
 {
@@ -64,13 +65,22 @@ class CampaignQuestionAnswerResource extends Resource
 
                 Tables\Columns\TextColumn::make('question.question')
                     ->label('Campaign Question')
-
                     ->searchable(),
+
+                // brand
+                TextColumn::make('question.brand')
+                    ->label('Brand')
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('user.name')
+                    ->searchable()
                     ->label('User'),
 
                 Tables\Columns\TextColumn::make('answer')
                     ->searchable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()
             ])
             ->filters([
                 SelectFilter::make('campaign_question_id')
