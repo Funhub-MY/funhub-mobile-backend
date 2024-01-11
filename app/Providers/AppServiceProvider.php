@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
             Filament::serving(function () {
                 // so assets load by https for filament
                 URL::forceScheme('https');
+                
             });
         }
     }

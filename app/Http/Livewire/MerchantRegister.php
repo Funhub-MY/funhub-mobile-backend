@@ -99,6 +99,13 @@ class MerchantRegister extends Component implements HasForms
             session()->flash('error', 'User creation failed. Please try again.');
         }
 
+        //assign merchant role to the user
+        try {
+            $user->assignRole('merchant');
+        } catch (\Exception $e) {
+            Log::error('[MerchantOnboarding] User role assignment failed: ' . $e->getMessage());
+            session()->flash('error', 'User role assignment failed. Please try again.');
+        }
         //create merchant using the data from the form and user_id
         //brand name -> name (eg. Nedex Solutions)
         //company name -> business name  (eg. NEDEX GROUP SDN BHD)
