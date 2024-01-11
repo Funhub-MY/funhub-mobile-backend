@@ -34,11 +34,8 @@ class SendCustomNotification extends Command
         try {
             $currentTime = now();
 
-            $fiveMinutesFromNow = now()->addMinutes(5);
-
             // Check for notification scheduled at now to 5 minutes from now
             $systemNotifications = SystemNotification::where('scheduled_at', '>=', $currentTime)
-                ->where('scheduled_at', '<=', $fiveMinutesFromNow)
                 ->whereNull('sent_at')
                 ->get();
 
@@ -46,11 +43,10 @@ class SendCustomNotification extends Command
                 // no scheduled notification
                 return Command::SUCCESS;
             } else {
-                Log::info('[Custom Notification] Sending custom notification to selected users', [
-                    'ids' => $systemNotifications->pluck('id')->toArray(),
-                ]);
+                $this->info('Found ' . $systemNotifications->count() . ' scheduled notification(s)');
 
                 foreach ($systemNotifications as $systemNotification) {
+                    $this->info('Sending notification: ' . $systemNotification->id);
                     Log::info('[Custom Notification] Running Notification', [
                         'notification' => json_encode($systemNotification),
                     ]);
