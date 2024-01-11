@@ -12,8 +12,11 @@ use App\Models\MerchantOfferClaim;
 use Filament\Forms\Components\Card;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\Log;
+use Pages\ViewMerchantOfferVoucher;
 use App\Models\MerchantOfferVoucher;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
@@ -29,6 +32,7 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use App\Filament\Resources\MerchantOfferVoucherResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
+use App\Filament\Resources\MerchantOfferVoucherResource\Pages\MerchantOfferVouchersRelationManager;
 
 class MerchantOfferVoucherResource extends Resource
 {
@@ -175,6 +179,20 @@ class MerchantOfferVoucherResource extends Resource
                     ->date('d/m/Y h:ia')
                     ->searchable()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('voided')
+                    ->label('Voided')
+                    ->formatStateUsing(function ($state) {
+                        switch ($state) {
+                            case 0: 
+                                return 'False';
+                                break;
+                            case 1:
+                                return 'True';
+                                break;
+                        }
+                    })
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('claimStatus')
@@ -216,6 +234,33 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Merchant Offer'),
             ])
             ->actions([
+                ViewAction::make(),
+                Action::make('voided')
+                    ->label('Void')
+                    // ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                    ->visible(function (Model $record) {
+                        return auth()->user()->hasRole('super_admin') && 
+                            $record->latestSuccessfulClaim &&
+                            $record->latestSuccessfulClaim->status == MerchantOfferClaim::CLAIM_SUCCESS &&
+                            !$record->voucher_redeemed;
+                    })
+                    ->action(function (Model $record) {
+                        // Set 'voided' to true
+                        $record->update([
+                            'voided' => true,
+                            'owned_by_id' => null,
+                        ]);
+
+                        MerchantOfferClaim::where('voucher_id', $record->id)
+                            ->update([
+                                'voucher_id' => null, // Update 'voucher_id' in merchant_offer_user table to null --> Financial status will revert back to false ('Not Redeemed'),
+                                'status' => MerchantOfferClaim::CLAIM_FAILED, // Update claim_status in merchant_offer_user table to failed 
+                            ]);
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Void Claimed Voucher')
+                    ->modalSubheading('Are you sure you\'d like to void this claimed voucher? This cannot be undone.')
+                    ->modalButton('Yes, void claimed voucher')
                 // Action::make('claim')
                 //     ->visible(fn () => auth()->user()->hasRole('merchant'))
                 //     ->requiresConfirmation()
@@ -254,7 +299,7 @@ class MerchantOfferVoucherResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AuditsRelationManager::class,
+            MerchantOfferVouchersRelationManager::class,
         ];
     }
 
@@ -263,6 +308,7 @@ class MerchantOfferVoucherResource extends Resource
         return [
             'index' => Pages\ListMerchantOfferVouchers::route('/'),
             'create' => Pages\CreateMerchantOfferVoucher::route('/create'),
+            'view' => Pages\ViewMerchantOffers::route('/{record}'),
             'edit' => Pages\EditMerchantOfferVoucher::route('/{record}/edit'),
         ];
     }

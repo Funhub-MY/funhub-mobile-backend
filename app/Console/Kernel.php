@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('article:auto-archive')->dailyAt('00:00');
 
         // run every 5 mins to check for scheduled custom notifications
-        // $schedule->command('send-custom-notification')->everyFiveMinutes();
+        $schedule->command('send-custom-notification')->everyFiveMinutes();
 
         // run scheduled maintenance every 5 mins
         $schedule->command('manage-maintenance-status')->everyFiveMinutes();
