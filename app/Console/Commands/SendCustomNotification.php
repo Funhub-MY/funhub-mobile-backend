@@ -32,11 +32,9 @@ class SendCustomNotification extends Command
     public function handle()
     {
         try {
-            $currentTime = now();
-
-            $systemNotifications = SystemNotification::where('scheduled_at', '>=', $currentTime)
+            $systemNotifications = SystemNotification::where('scheduled_at', '>=', now())
                 // where scheduled_at is between now and 10 minutes from now
-                ->where('scheduled_at', '<=', $currentTime->addMinutes(10)) // due to the command runs every 5 min, should check any pending notifications within 10min gap
+                ->where('scheduled_at', '<=', now()->addMinutes(10)) // due to the command runs every 5 min, should check any pending notifications within 10min gap
                 ->whereNull('sent_at')
                 ->get();
 
