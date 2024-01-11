@@ -40,8 +40,10 @@ class SendCustomNotification extends Command
                 ->whereNull('sent_at')
                 ->get();
 
-            if (!$systemNotifications) {
+            if ($systemNotifications->count() == 0) {
                 // no scheduled notification
+                $this->info('No scheduled notification found');
+
                 return Command::SUCCESS;
             } else {
                 $this->info('Found ' . $systemNotifications->count() . ' scheduled notification(s)');
