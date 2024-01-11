@@ -72,7 +72,7 @@ class SystemNotificationResource extends Resource
                             ->required(),
 
                         DateTimePicker::make('scheduled_at')
-                            ->minDate(now()->addDay()->startOfDay()) 
+                            ->minDate(now())
                             ->label('Schedule Blast Time')
                             ->required(),
                     ])
@@ -110,7 +110,7 @@ class SystemNotificationResource extends Resource
                                     foreach ($state as $s) {
                                         $stateData[] = intval($s);
                                     }
-                                
+
                                     return json_encode($stateData);
                                 }),
 
