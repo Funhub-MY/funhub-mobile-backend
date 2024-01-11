@@ -43,9 +43,13 @@ class SendCustomNotification extends Command
                 ->get();
 
             if (!$systemNotifications) {
-                Log::info('No scheduled notification found within the next 5 minutes.');
+                // no scheduled notification
                 return Command::SUCCESS;
             } else {
+                Log::info('[Custom Notification] Sending custom notification to selected users', [
+                    'ids' => $systemNotifications->pluck('id')->toArray(),
+                ]);
+
                 foreach ($systemNotifications as $systemNotification) {
                     // Get the selected user Ids
                     if ($systemNotification->all_active_users) {
@@ -56,11 +60,12 @@ class SendCustomNotification extends Command
 
                     foreach ($selectedUserIds as $userId) {
                         $user = User::where('id', $userId)->first();
-
                         $user->notify(new CustomNotification($systemNotification));
-
-                        Log::info('Scheduled notification has been sent to selected users'. $userId);
                     }
+
+                    Log::info('[Custom Notification] Scheduled notification has been sent to selected users', [
+                        'user_ids' => $selectedUserIds,
+                    ]);
 
                     // After sending notification, add timestamp to sent_at column in table
                     $systemNotification->update(['sent_at' => now()]);
