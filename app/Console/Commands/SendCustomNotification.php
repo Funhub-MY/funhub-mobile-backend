@@ -51,6 +51,10 @@ class SendCustomNotification extends Command
                 ]);
 
                 foreach ($systemNotifications as $systemNotification) {
+                    Log::info('[Custom Notification] Running Notification', [
+                        'notification' => json_encode($systemNotification),
+                    ]);
+
                     // Get the selected user Ids
                     if ($systemNotification->all_active_users) {
                         $selectedUserIds = User::where('status', 1)->pluck('id')->toArray();
