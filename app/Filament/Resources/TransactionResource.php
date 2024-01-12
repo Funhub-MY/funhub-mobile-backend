@@ -88,6 +88,7 @@ class TransactionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('transaction_no')
@@ -112,7 +113,7 @@ class TransactionResource extends Resource
                     ->label('Amount (RM)'),
                 TextColumn::make('payment_method')
                     ->label('Payment Method'),
-                TextColumn::make('transaction_date_time')
+                TextColumn::make('created_at')
                     ->label('Date Time')
                     ->sortable(),                
             ])
