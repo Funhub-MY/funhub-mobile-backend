@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SystemNotificationResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\SystemNotificationResource\RelationManagers;
+use Carbon\Carbon;
 
 class SystemNotificationResource extends Resource
 {
@@ -72,8 +73,16 @@ class SystemNotificationResource extends Resource
                             ->required(),
 
                         DateTimePicker::make('scheduled_at')
-                            ->minDate(now()->addDay()->startOfDay()) 
                             ->label('Schedule Blast Time')
+                            ->rules([
+                                function () {
+                                    return function (string $attribute, $value, Closure $fail) {
+                                        if (now()->greaterThan(Carbon::parse($value))) {
+                                            $fail('The :attribute cannot be in the past');
+                                        }
+                                    };
+                                }
+                            ])
                             ->required(),
                     ])
                     ->columns(2),
@@ -110,7 +119,7 @@ class SystemNotificationResource extends Resource
                                     foreach ($state as $s) {
                                         $stateData[] = intval($s);
                                     }
-                                
+
                                     return json_encode($stateData);
                                 }),
 

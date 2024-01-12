@@ -70,6 +70,7 @@ class NotificationResource extends JsonResource
             'article_cover' => $article_cover,
             'link_to_url' => $this->data['link_to_url'] ?? null,
             'link_to_object' => $this->data['link_to_object'] ?? null,
+            'link_to' => $this->data['link_to'] ?? null,
             'action' => $this->data['action'] ?? null,
             'from_user' => new UserResource($this->from_user) ?? null,
             'is_read' => $this->read_at ? true : false,

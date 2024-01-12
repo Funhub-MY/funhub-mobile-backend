@@ -2,20 +2,21 @@
 
 namespace Tests\Unit;
 
-use App\Models\MerchantCategory;
-use App\Models\PointLedger;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 use Tests\TestCase;
-use App\Models\Merchant;
-use App\Models\MerchantOffer;
-use App\Models\MerchantOfferVoucher;
-use App\Models\Store;
-use App\Models\Transaction;
 use App\Models\User;
-use Database\Factories\MerchantFactory;
+use App\Models\Store;
+use App\Models\Merchant;
+use App\Models\PointLedger;
+use App\Models\Transaction;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
+use App\Models\MerchantOffer;
+use App\Models\MerchantCategory;
+use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferVoucher;
+use Database\Factories\MerchantFactory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MerchantOfferTest extends TestCase
 {
@@ -549,5 +550,87 @@ class MerchantOfferTest extends TestCase
             'status' => Transaction::STATUS_FAILED,
             'payment_method' => 'fpx'
         ]);
+    }
+
+    /**
+     * Test voided vouchers are not shown when users claim offers.
+     * Steps:
+     * 1. Claim offer by logged in user.
+     * 2. Check /merchant/offers/my_claimed_offers to ensure claimed voucher is shown.
+     * 3. Void voucher claimed by logged in user.
+     * 4. Check /merchant/offers/my_claimed_offers again to ensure void voucher is NOT shown.
+     */
+    public function testMyClaimedOffersDoNotIncludeVoidedVouchers()
+    {
+        // 1. Claim offer by logged in user
+        PointLedger::create([
+            'user_id' => $this->loggedInUser->id,
+            'pointable_type' => get_class($this->loggedInUser),
+            'pointable_id' => $this->loggedInUser->id,
+            'title' => 'First topup simulation',
+            'amount' => 1000,
+            'credit' => 1,
+            'debit' => 0,
+            'balance' => 1000,
+            'remarks' => 'Simulation topup points for user.',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        // get one merchant offer, set available_at as today, until as tomorrow to ensure the offer is valid.
+        $merchant_offer = $this->merchant_offer->random(1)->first();
+        $merchant_offer->available_at = now();
+        $merchant_offer->available_until = now()->addDay();
+        $merchant_offer->save();
+
+        $response = $this->postJson('/api/v1/merchant/offers/claim', [
+            'offer_id' => $merchant_offer->id,
+            'quantity' => 1,
+            'payment_method' => 'points'
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'offer'
+            ]);
+
+        // 2. Check /merchant/offers/my_claimed_offers to ensure claimed voucher is shown.
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta'
+            ]);
+
+        // check my response.data matches $merchant_offer->id
+        $this->assertEquals($merchant_offer->id, $response->json('data')[0]['merchant_offer']['id']);
+
+        // check count is 1
+        $this->assertEquals(1, $response->json('meta.total'));
+
+        // 3. Void voucher claimed by logged in user.
+        $voucherId = $merchant_offer->claims()->where('user_id', $this->loggedInUser->id)->first()->pivot->voucher_id;
+
+        MerchantOfferVoucher::where('id', $voucherId)
+            ->update([
+                'voided' => true,
+                'owned_by_id' => null,
+            ]);
+
+        MerchantOfferClaim::where('voucher_id', $voucherId)
+            ->update([
+                'status' => MerchantOfferClaim::CLAIM_FAILED,
+            ]);
+
+        // 4. Check /merchant/offers/my_claimed_offers again to ensure void voucher is NOT shown.
+        $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta'
+            ]);
+
+        // check count is 0
+        $this->assertEquals(0, $response->json('meta.total'));
     }
 }
