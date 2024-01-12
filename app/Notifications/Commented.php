@@ -9,6 +9,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
+use NotificationChannels\Fcm\Resources\AndroidNotification;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
 class Commented extends Notification implements ShouldQueue
 {
@@ -50,6 +55,16 @@ class Commented extends Notification implements ShouldQueue
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
                 ->setBody( $this->comment->user->name . '评论了你的探文"' . $this->comment->commentable->title.'"')
+            )
+            ->setApns(
+                ApnsConfig::create()
+                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios'))
+                    ->setPayload(['aps' => ['sound' => 'default']])
+            )
+            ->setAndriod(
+                AndroidConfig::create()
+                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics_android'))
+                    ->setNotification(AndroidNotification::create()->setSound('default'))
             );
     }
 
