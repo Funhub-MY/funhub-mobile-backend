@@ -593,7 +593,7 @@ class MerchantOfferTest extends TestCase
                 'message',
                 'offer'
             ]);
-        
+
         // 2. Check /merchant/offers/my_claimed_offers to ensure claimed voucher is shown.
         $response = $this->getJson('/api/v1/merchant/offers/my_claimed_offers');
         $response->assertStatus(200)
@@ -619,8 +619,7 @@ class MerchantOfferTest extends TestCase
 
         MerchantOfferClaim::where('voucher_id', $voucherId)
             ->update([
-                'voucher_id' => null,
-                'status' => MerchantOfferClaim::CLAIM_FAILED, 
+                'status' => MerchantOfferClaim::CLAIM_FAILED,
             ]);
 
         // 4. Check /merchant/offers/my_claimed_offers again to ensure void voucher is NOT shown.

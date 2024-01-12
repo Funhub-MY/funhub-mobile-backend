@@ -184,7 +184,7 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Voided')
                     ->formatStateUsing(function ($state) {
                         switch ($state) {
-                            case 0: 
+                            case 0:
                                 return 'False';
                                 break;
                             case 1:
@@ -239,7 +239,7 @@ class MerchantOfferVoucherResource extends Resource
                     ->label('Void')
                     // ->visible(fn () => auth()->user()->hasRole('super_admin'))
                     ->visible(function (Model $record) {
-                        return auth()->user()->hasRole('super_admin') && 
+                        return auth()->user()->hasRole('super_admin') &&
                             $record->latestSuccessfulClaim &&
                             $record->latestSuccessfulClaim->status == MerchantOfferClaim::CLAIM_SUCCESS &&
                             !$record->voucher_redeemed;
@@ -253,8 +253,8 @@ class MerchantOfferVoucherResource extends Resource
 
                         MerchantOfferClaim::where('voucher_id', $record->id)
                             ->update([
-                                'voucher_id' => null, // Update 'voucher_id' in merchant_offer_user table to null --> Financial status will revert back to false ('Not Redeemed'),
-                                'status' => MerchantOfferClaim::CLAIM_FAILED, // Update claim_status in merchant_offer_user table to failed 
+                                // 'voucher_id' => null, // Update 'voucher_id' in merchant_offer_user table to null --> Financial status will revert back to false ('Not Redeemed'),
+                                'status' => MerchantOfferClaim::CLAIM_FAILED, // Update claim_status in merchant_offer_user table to failed
                             ]);
                     })
                     ->requiresConfirmation()
