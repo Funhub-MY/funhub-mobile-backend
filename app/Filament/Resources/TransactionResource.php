@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
+use Filament\Tables\Filters\SelectFilter;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class TransactionResource extends Resource
@@ -111,10 +112,17 @@ class TransactionResource extends Resource
                     ->label('Amount (RM)'),
                 TextColumn::make('payment_method')
                     ->label('Payment Method'),
-                
+                TextColumn::make('transaction_date_time')
+                    ->label('Date Time')
+                    ->sortable(),                
             ])
             ->filters([
-                //
+               SelectFilter::make('transactionable_type')
+                ->label('Transactionable Type')
+                ->options([
+                    'App\Models\MerchantOffer' => 'Merchant Offer',
+                    'App\Models\Product' => 'Product',
+                ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

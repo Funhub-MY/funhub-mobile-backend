@@ -21,6 +21,7 @@ use App\Filament\Resources\SupportRequestResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\SupportRequestResource\RelationManagers;
 use App\Filament\Resources\SupportRequestResource\RelationManagers\MessagesRelationManager;
+use Filament\Tables\Filters\SelectFilter;
 
 class SupportRequestResource extends Resource
 {
@@ -93,6 +94,7 @@ class SupportRequestResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('created_at')
                     ->label('Created At')
@@ -133,7 +135,28 @@ class SupportRequestResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        0 => 'Pending',
+                        1 => 'In Progress',
+                        2 => 'Pending Info',
+                        3 => 'Closed',
+                        4 => 'Reoepend',
+                        5 => 'Invalid',
+                    ])
+                    ->label('Status'),
+                    
+                SelectFilter::make('assignee_id')
+                    ->label('Assignee')
+                    ->relationship('assignee', 'name', function (Builder $query) {
+                        $query->whereNotNull('name')->withTrashed();  
+                    }),
+
+                SelectFilter::make('requestor_id')
+                    ->label('Requestor')
+                    ->relationship('requestor', 'name', function (Builder $query) {
+                        $query->whereNotNull('name')->withTrashed();  
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
