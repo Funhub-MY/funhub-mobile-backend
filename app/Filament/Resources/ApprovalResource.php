@@ -40,7 +40,7 @@ class ApprovalResource extends Resource
 
     protected static function getNavigationBadge(): ?string
     {
-        $pendingApprovals = static::getModel()::where('approved', false)->count();
+        $pendingApprovals = static::getModel()::where('approver_id', auth()->user()->id)->where('approved', false)->count();
         return ($pendingApprovals > 0) ? $pendingApprovals : null;
     }
 
@@ -70,7 +70,11 @@ class ApprovalResource extends Resource
 
         $query->whereHas('approvalSetting', function ($query) use ($roles) {
             $query->whereIn('role_id', $roles);
-        })->where('approved', false);
+        });
+        // ->where('approved', false);
+
+        $query->orderBy('approved', 'asc') 
+        ->orderBy('created_at', 'desc');
 
         return $query;
     }
@@ -105,8 +109,8 @@ class ApprovalResource extends Resource
                         '0' => 'Pending',
                     ])
                     ->colors([
-                        '1' => 'success',
-                        '0' => 'warning',
+                        'success' => 1,
+                        'warning' => 0,
                     ]),
                 TextColumn::make('approvable_type')
                     ->label('Approvable Type')
