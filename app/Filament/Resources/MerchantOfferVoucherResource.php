@@ -33,6 +33,7 @@ use App\Filament\Resources\MerchantOfferVoucherResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
 use App\Filament\Resources\MerchantOfferVoucherResource\Pages\MerchantOfferVouchersRelationManager;
+use Filament\Notifications\Notification;
 
 class MerchantOfferVoucherResource extends Resource
 {
@@ -97,21 +98,23 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->label('Voucher Code')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->where('code', strtoupper($search)); // exact match with upper case
+                    }),
 
                 TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
                     ->formatStateUsing(function ($state) {
                         return Str::limit($state, 20, '...') ?? '-';
                     })
-                    ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
 
                 // sku
                 TextColumn::make('merchant_offer.sku')
-                ->label('SKU')
-                ->sortable()
-                ->searchable(),
+                    ->label('SKU')
+                    ->searchable()
+                    ->sortable(),
 
                 // financial status (claim status)
                 Tables\Columns\BadgeColumn::make('latestSuccessfulClaim.status')
@@ -161,7 +164,6 @@ class MerchantOfferVoucherResource extends Resource
                             return '-';
                         }
                     })
-                    ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('latestSuccessfulClaim.net_amount')
@@ -177,7 +179,6 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\TextColumn::make('latestSuccessfulClaim.created_at')
                     ->label('Purchased At')
                     ->date('d/m/Y h:ia')
-                    ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('voided')
@@ -185,10 +186,10 @@ class MerchantOfferVoucherResource extends Resource
                     ->formatStateUsing(function ($state) {
                         switch ($state) {
                             case 0:
-                                return 'False';
+                                return 'No';
                                 break;
                             case 1:
-                                return 'True';
+                                return 'Yes';
                                 break;
                         }
                     })
@@ -206,7 +207,7 @@ class MerchantOfferVoucherResource extends Resource
                     // ->relationship('claim', 'status')
                     ->query(function (Builder $query, array $data) {
                         if ($data['value'] == null) {
-                            $query->whereDoesntHave('latestSuccessfulClaim');
+                            // no filter
                         } else {
                             $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
                                 $q->where('status', $data['value']);
@@ -222,7 +223,7 @@ class MerchantOfferVoucherResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data) {
                         if ($data['value'] == false) {
-                            $query->whereDoesntHave('redeem');
+                            // no filter
                         } else {
                             $query->whereHas('redeem');
                         }
@@ -235,6 +236,8 @@ class MerchantOfferVoucherResource extends Resource
             ])
             ->actions([
                 ViewAction::make(),
+
+                // Void by Admin
                 Action::make('voided')
                     ->label('Void')
                     // ->visible(fn () => auth()->user()->hasRole('super_admin'))
@@ -260,34 +263,46 @@ class MerchantOfferVoucherResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Void Claimed Voucher')
                     ->modalSubheading('Are you sure you\'d like to void this claimed voucher? This cannot be undone.')
-                    ->modalButton('Yes, void claimed voucher')
-                // Action::make('claim')
-                //     ->visible(fn () => auth()->user()->hasRole('merchant'))
-                //     ->requiresConfirmation()
-                //     ->form([
-                //         TextInput::make('unique_code')
-                //             ->label('Unique Code Generated on Customer\'s App')
-                //             ->placeholder('ABCDE')
-                //             ->required(),
-                //         DateTimePicker::make('claim_date_time')
-                //             ->default(now())
-                //             ->disabled()
-                //             ->required()
-                //             ->label('Claim Date Time'),
-                //         Placeholder::make('disclaimer')
-                //             ->label('Disclaimer: Once click confirmed, the voucher will be marked as claimed and is not reversible.')
-                //     ])
-                //     ->action(function (MerchantOfferVoucher $record, array $data) {
-                //         $offer = $record->merchant_offer;
+                    ->modalButton('Yes, void claimed voucher'),
 
-                //         // get claim id of the user via
+                // Redeem by admin
+                Action::make('Redeem')
+                    ->label('Redeem')
+                    ->visible(function (Model $record) {
+                        return auth()->user()->hasRole('super_admin') &&
+                            $record->latestSuccessfulClaim &&
+                            $record->latestSuccessfulClaim->status == MerchantOfferClaim::CLAIM_SUCCESS &&
+                            !$record->voucher_redeemed;
+                    })
+                    ->action(function (Model $record) {
+                        $userId = $record->owner->id;
+                        $offer = $record->merchant_offer;
+                        $claim = MerchantOfferClaim::where('voucher_id', $record->id)
+                            ->where('user_id', $userId)
+                            ->first();
 
-                //         // merchant code validated proceed create redeems
-                //         // $redeem = $offer->redeems()->attach(auth()->user()->id, [
-                //         //     'claim_id' => $request->claim_id,
-                //         //     'quantity' => $request->quantity,
-                //         // ]);
-                //     }),
+                        if ($offer && $claim) {
+                            $offer->redeems()->attach($record->owner->id, [
+                                'claim_id' => $claim->id,
+                                'quantity' => 1,
+                            ]);
+
+                            Notification::make()
+                                ->success()
+                                ->title('Voucher '.$record->code.' Redeemed')
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->danger()
+                                ->title('Voucher '.$record->code.' Redeem Failed. Offer or claim record not valid.')
+                                ->send();
+                        }
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Redeem Claimed Voucher')
+                    ->modalSubheading('Are you sure you\'d like to redeem this claimed voucher? This cannot be undone. User cannot redeem the voucher again in merchant store.')
+                    ->modalButton('Yes, Redeem Voucher'),
+
             ])
             ->bulkActions([
                 ExportBulkAction::make()->exports([
