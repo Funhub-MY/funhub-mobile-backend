@@ -34,31 +34,43 @@ class SendCustomNotification extends Command
         try {
             $currentTime = now();
 
-            $fiveMinutesFromNow = now()->addMinutes(5);
+            $systemNotifications = SystemNotification::whereBetween('scheduled_at', [$currentTime->copy()->subMinutes(10), $currentTime->copy()->addMinutes(10)])
+                ->whereNull('sent_at')
+                ->get();
 
-            // Check for notification scheduled at now to 5 minutes from now
-            $systemNotification = SystemNotification::where('scheduled_at', '>=', $currentTime)
-                ->where('scheduled_at', '<=', $fiveMinutesFromNow)
-                ->first();
+            if ($systemNotifications->count() == 0) {
+                // no scheduled notification
+                $this->info('No scheduled notification found');
 
-            if (!$systemNotification) {
-                Log::info('No scheduled notification found within the next 5 minutes.');
                 return Command::SUCCESS;
             } else {
-                // Get the selected user Ids
-                if ($systemNotification->all_active_users) {
-                    $selectedUserIds = User::where('status', 1)->pluck('id')->toArray();
-                } else {
-                    $selectedUserIds = json_decode($systemNotification->user);
+                $this->info('Found ' . $systemNotifications->count() . ' scheduled notification(s)');
+
+                foreach ($systemNotifications as $systemNotification) {
+                    $this->info('Sending notification ID: ' . $systemNotification->id);
+                    Log::info('[Custom Notification] Running Notification', [
+                        'notification' => json_encode($systemNotification),
+                    ]);
+
+                    // Get the selected user Ids
+                    if ($systemNotification->all_active_users) {
+                        $selectedUserIds = User::where('status', 1)->pluck('id')->toArray();
+                    } else {
+                        $selectedUserIds = json_decode($systemNotification->user);
+                    }
+
+                    foreach ($selectedUserIds as $userId) {
+                        $user = User::where('id', $userId)->first();
+                        $user->notify(new CustomNotification($systemNotification));
+                    }
+
+                    Log::info('[Custom Notification] Scheduled notification has been sent to selected users', [
+                        'user_ids' => $selectedUserIds,
+                    ]);
+
+                    // After sending notification, add timestamp to sent_at column in table
+                    $systemNotification->update(['sent_at' => now()]);
                 }
-
-                foreach ($selectedUserIds as $userId) {
-                    $user = User::where('id', $userId)->first();
-
-                    $user->notify(new CustomNotification($systemNotification));
-                }
-
-                Log::info('Scheduled notification has been sent to selected users');
                 return Command::SUCCESS;
             }
         } catch (\Exception $e) {

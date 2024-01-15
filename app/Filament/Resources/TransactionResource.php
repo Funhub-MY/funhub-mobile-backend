@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
+use App\Filament\Resources\UserResource\Pages\EditUser;
+use Filament\Tables\Filters\SelectFilter;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class TransactionResource extends Resource
@@ -87,8 +91,14 @@ class TransactionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('id'),
+                TextColumn::make('created_at')
+                    ->label('Date Time')
+                    ->date('d/m/Y H:i:s')
+                    ->sortable(),
+
                 TextColumn::make('transaction_no')
                     ->sortable()
                     ->searchable()
@@ -106,31 +116,42 @@ class TransactionResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->label('User'),
-                TextColumn::make('transactionable.name'),
+                TextColumn::make('transactionable.name')
+                    ->label('Item')
+                    ->sortable(),
                 TextColumn::make('amount')
+                    ->sortable()
                     ->label('Amount (RM)'),
                 TextColumn::make('payment_method')
                     ->label('Payment Method'),
-                
+
             ])
             ->filters([
-                //
+               SelectFilter::make('transactionable_type')
+                ->label('Item Type')
+                ->options([
+                    'App\Models\MerchantOffer' => 'Merchant Offer',
+                    'App\Models\Product' => 'Product',
+                ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ])
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             AuditsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -138,5 +159,5 @@ class TransactionResource extends Resource
             'create' => Pages\CreateTransaction::route('/create'),
             'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
-    }    
+    }
 }

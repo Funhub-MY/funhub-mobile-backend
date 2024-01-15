@@ -3,15 +3,17 @@
 namespace App\Filament\Resources\SupportRequestResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Components\Hidden;
-use Filament\Resources\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Illuminate\Support\Facades\Log;
+use Filament\Forms\Components\Hidden;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
+use Illuminate\Support\HtmlString;
 
 class MessagesRelationManager extends RelationManager
 {
@@ -49,12 +51,13 @@ class MessagesRelationManager extends RelationManager
                     ->label('Message')
                     ->getStateUsing( function (Model $record){
                         $mediaLinks = $record->getMedia('support_uploads')->map(function ($media) {
-                            return '<a href="' . $media->getUrl() . '" target="_blank">' . $media->file_name . '</a>';
-                        })->implode('<br>');
-
-                        return $record->message . ($mediaLinks ? '<br>' . $mediaLinks : '');
-                     })
-                     ->html()
+                            if (strpos($media->file_name, 'scaled_') !== 0) {
+                                return '<a href="' . $media->getUrl() . '" target="_blank" style="color: blue; text-decoration: underline;">' . $media->file_name . '</a>';
+                            }
+                        })->filter()->implode('<br>');
+                        return new HtmlString($record->message . ($mediaLinks ? '<br>' . $mediaLinks : ''));
+                    })
+                    // ->html()
                     ->sortable()
                     ->searchable(),
             ])

@@ -203,7 +203,9 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
 
     public function scopeFlash(Builder $query): void
     {
-        $query->where('flash_deal', true);
+        $query->where('flash_deal', true)
+            ->where('available_until', '>=', now()) // must not be expired
+            ->where('quantity', '>', 0); // must not be sold out
     }
 
     /**
