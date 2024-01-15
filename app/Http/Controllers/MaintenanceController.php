@@ -22,7 +22,8 @@ class MaintenanceController extends Controller
      */
     public function getMaintenanceInfo()
     {
-        $maintenance = Maintenance::paginate(config('app.paginate_per_page'));
+        $maintenance = Maintenance::orderBy('created_at', 'desc')
+            ->paginate(config('app.paginate_per_page'));
 
         // is there active maintenance
         $hasActiveMaintenance = Maintenance::where('is_active', true)->exists();
