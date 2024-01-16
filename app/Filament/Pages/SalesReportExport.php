@@ -16,10 +16,22 @@ class SalesReportExport extends Page
 
     protected static ?string $navigationGroup = 'Sales';
 
+    // dont register menu if role is merchant
+    public static function registerNavigationItems(): void
+    {
+        if (! static::shouldRegisterNavigation()) {
+            return;
+        }
+
+        if (auth()->user()->hasRole('merchant')) {
+            return;
+        }
+    }
+
     protected function getHeaderWidgets(): array
     {
         return [
-            SalesReportsExporter::class
+            // SalesReportsExporter::class
         ];
     }
 
