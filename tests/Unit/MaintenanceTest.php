@@ -42,12 +42,11 @@ class MaintenanceTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'data' => [
-                'data'
-            ],
+            'is_active',
+            'schedules'
         ]);
 
-        $testData = $response->json('data')['data'][0];
+        $testData = $response->json('schedules')[0];
 
         $this->assertArrayHasKey('start_date', $testData);
         $this->assertArrayHasKey('end_date', $testData);

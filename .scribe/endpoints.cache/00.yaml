@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: possimus
+        example: iure
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: possimus
+      share_code: iure
     fileParameters: []
     responses:
       -
@@ -576,7 +576,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '59'
+          x-ratelimit-remaining: '56'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -584,7 +584,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3akcvdeE518aghZf4D6bPV6'
+      - 'Bearer c8a4Zdh65e6VPvEgbafk13D'
     controller: null
     method: null
     route: null

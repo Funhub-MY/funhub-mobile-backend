@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 11
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: quas
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quia
+                  example: atque
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - architecto
+                    - et
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: cumque
+        example: consequatur
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: corporis
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: vel
+                  example: repellendus
               required:
                 - comment_id
                 - reason
@@ -1496,7 +1496,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: dolorum
+        example: at
         required: true
         schema:
           type: string
@@ -4526,7 +4526,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: adaline.rogahn@example.net
+                  example: cwiegand@example.org
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5545,7 +5545,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: possimus
+                  example: iure
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -5773,7 +5773,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -5811,7 +5811,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -5849,7 +5849,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -6286,6 +6286,22 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/maintenance:
+    get:
+      summary: 'Get maintenance info'
+      operationId: getMaintenanceInfo
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n}"
+      tags:
+        - Maintenance
   /api/v1/media/signed_upload:
     get:
       summary: "Get Signed URL Upload Media (photos/videos)\nMust only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it."
@@ -6691,7 +6707,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: est
+        example: nostrum
         required: true
         schema:
           type: string
@@ -7677,7 +7693,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 9
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -7723,7 +7739,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 6
+                  example: 20
               required:
                 - user_id
   /api/v1/user/report:
@@ -7763,15 +7779,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: voluptates
+                  example: est
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quia
+                  example: et
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: qui
+                  example: ut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -7888,7 +7904,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: repellendus
+                  example: cupiditate
               required:
                 - reason
   /api/v1/users_by_id:
@@ -7922,7 +7938,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: facere
+                  example: sint
               required:
                 - user_ids
     parameters:
@@ -9053,6 +9069,9 @@ tags:
     description: ''
   -
     name: Location
+    description: ''
+  -
+    name: Maintenance
     description: ''
   -
     name: Media

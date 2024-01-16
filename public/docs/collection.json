@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "38763719-c0b4-4c43-99d3-cc42b43e4db8",
+        "_postman_id": "ff5fa466-b2de-4c7c-8990-ffc56d789641",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":5,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"voluptatem\",\"violation_level\":\"quia\",\"article\":1}"
+                                    "raw": "{\"article_id\":11,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"quas\",\"violation_level\":\"atque\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"architecto\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"et\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -972,7 +972,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "cumque",
+                                            "value": "consequatur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1072,7 +1072,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"corporis\",\"violation_type\":\"vel\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"qui\",\"violation_type\":\"repellendus\"}"
                                 },
                                 "description": ""
                             },
@@ -1197,7 +1197,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "dolorum",
+                                            "value": "at",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1634,7 +1634,7 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "58"
+                                    "value": "55"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
@@ -1693,7 +1693,7 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "57"
+                                    "value": "54"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
@@ -2193,7 +2193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"adaline.rogahn@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"cwiegand@example.org\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2269,7 +2269,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"possimus\"}"
+                            "raw": "{\"share_code\":\"iure\"}"
                         },
                         "description": ""
                     },
@@ -2290,7 +2290,7 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "59"
+                                    "value": "56"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
@@ -2479,7 +2479,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "1",
+                                            "value": "10",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2528,7 +2528,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "1",
+                                            "value": "10",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -2574,7 +2574,7 @@
                                         {
                                             "id": "support_request_id",
                                             "key": "support_request_id",
-                                            "value": "1",
+                                            "value": "10",
                                             "description": "The ID of the support request."
                                         },
                                         {
@@ -3035,6 +3035,44 @@
             ]
         },
         {
+            "name": "Maintenance",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get maintenance info",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/maintenance",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/maintenance"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n \"data\": [],\n}",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Media",
             "description": "",
             "item": [
@@ -3387,7 +3425,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "est",
+                                            "value": "nostrum",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -4450,7 +4488,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":19}"
                                 },
                                 "description": ""
                             },
@@ -4491,7 +4529,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":6}"
+                                    "raw": "{\"user_id\":20}"
                                 },
                                 "description": ""
                             },
@@ -4597,7 +4635,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"voluptates\",\"violation_level\":\"quia\",\"violation_type\":\"qui\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"est\",\"violation_level\":\"et\",\"violation_type\":\"ut\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4754,7 +4792,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"repellendus\"}"
+                            "raw": "{\"reason\":\"cupiditate\"}"
                         },
                         "description": ""
                     },
@@ -4797,7 +4835,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"facere\"}"
+                            "raw": "{\"user_ids\":\"sint\"}"
                         },
                         "description": ""
                     },
