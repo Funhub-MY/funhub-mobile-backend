@@ -7,10 +7,13 @@ use App\Filament\Widgets\RedemptionTrend;
 use App\Filament\Widgets\TopContributor;
 use App\Filament\Widgets\TransactionAmountByPeriod;
 use App\Filament\Widgets\TransactionsOverview;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Page;
 
 class SalesAnalytics extends Page
 {
+    use HasPageShield;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.sales-report';
