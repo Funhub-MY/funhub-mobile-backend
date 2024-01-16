@@ -31,18 +31,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Filament::registerRenderHook(
-            'panels::scripts.before',
-            fn () => new HtmlString(html: "
+            name: 'scripts.start',
+            callback: fn () => new HtmlString(html: "
                 <script>
                     document.addEventListener('DOMContentLoaded', function(){
-                        setTimeout(() => {
-                            const activeSidebarItem = document.querySelector('.fi-sidebar-item-active');
-                            const sidebarWrapper = document.querySelector('.fi-sidebar-nav');
-
-                            sidebarWrapper.style.scrollBehavior = 'smooth';
-
-                            sidebarWrapper.scrollTo(0, activeSidebarItem.offsetTop - 250);
-                        }, 300)
+                       let sidebar_item = document.querySelector('.filament-sidebar-item-active');
+                               if( sidebar_item ) {
+                                    sidebar_item.scrollIntoView({ behavior: \"auto\", block: \"center\", inline: \"center\" });
+                               }
                     });
                 </script>
         "));
