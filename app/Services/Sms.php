@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class Sms
@@ -25,8 +26,8 @@ class Sms {
 
     /**
      * Send SMS
-     * 
-     * @param $to string phone number with country code 
+     *
+     * @param $to string phone number with country code
      * @param $message  string message to send
      * @return bool|\Psr\Http\Message\ResponseInterface
      */
@@ -62,6 +63,27 @@ class Sms {
             ]);
         } catch (\GuzzleHttp\Exception\GuzzleException $e) {
             Log::error($e->getMessage(), $data);
+            try {
+                if ($data['error'] && $data['error']['code'] == 408) {
+                    // send email to tech@funhub.my
+                    // get current server public ip
+                    $ip  = file_get_contents('https://api.ipify.org');
+                    Mail::raw('SMS API IP changes, need whitelist :' . $ip , function ($message) use ($ip) {
+                        $message->to(config('app.tech_support'))
+                            ->subject('[URGENT] SMS API Whitelist New Server IP: ' . $ip);
+                    });
+                }
+
+                if ($data['error'] && ($data['error']['code'] == 416 || $data['error']['code'] == 417)) {
+                    // send email to tech@funhub
+                    Mail::raw('SMS API Error, INSUFFICIENT BALANCE' , function ($message) {
+                        $message->to(config('app.tech_support'))
+                            ->subject('[URGENT] SMS API INSUFFICIENT BALANCE PLEASE TOP UP');
+                    });
+                }
+            } catch (\Exception $e) {
+                Log::error('Error sending emails on sms failures' . $e->getMessage());
+            }
             return false;
         }
 

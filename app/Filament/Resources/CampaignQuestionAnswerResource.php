@@ -18,6 +18,9 @@ use App\Filament\Resources\CampaignQuestionAnswerResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\CampaignQuestionAnswerResource\RelationManagers;
 use Filament\Tables\Columns\TextColumn;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class CampaignQuestionAnswerResource extends Resource
 {
@@ -92,6 +95,19 @@ class CampaignQuestionAnswerResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make()->fromTable()->withColumns([
+                        Column::make('user.id')->heading('User ID'),
+                        Column::make('user.name')->heading('User Name'),
+                        Column::make('user.email')->heading('User Email'),
+                        Column::make('question.brand')->heading('Brand'),
+                        Column::make('question.question')->heading('Question'),
+                        Column::make('answer'),
+                        Column::make('created_at')->heading('Created At'),
+                    ]),
+                ]),
+
             ]);
     }
 

@@ -289,4 +289,5 @@ return [
 
     'support_email1' => env('SUPPORT_EMAIL_1', 'admin@dreamax.my'),
     'support_email2' => env('SUPPORT_EMAIL_2', 'content@funhub.my'),
+    'tech_support' => env('TECH_SUPPORT', 'tech@funhub.my'),
 ];

@@ -17,7 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\CampaignRespondantDetailResource\Pages;
 use App\Filament\Resources\CampaignRespondantDetailResource\RelationManagers;
-
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 class CampaignRespondantDetailResource extends Resource
 {
     protected static ?string $model = CampaignRespondantDetail::class;
@@ -109,6 +110,10 @@ class CampaignRespondantDetailResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ]),
             ]);
     }
 
