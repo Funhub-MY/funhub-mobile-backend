@@ -4,10 +4,10 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use App\Models\Audit;
-use App\Policies\AuditPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use OwenIt\Auditing\Models\Audit as ModelsAudit;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -17,7 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        ModelsAudit::class => AuditPolicy::class,
+        // ModelsAudit::class => App\Providers\AuditPolicy::class,
     ];
 
     /**
