@@ -13,13 +13,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 
-class BuildRecommendationsForUser implements ShouldQueue
+class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 1200;
 
-    protected $recommender, $user;
+    /**
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
+    public $uniqueFor = 3600;
+
+    public $recommender, $user;
+
     /**
      * Create a new job instance.
      *
@@ -29,6 +37,11 @@ class BuildRecommendationsForUser implements ShouldQueue
     {
         $this->user = $user;
         $this->recommender = new ArticleRecommenderService($user);
+    }
+
+    public function uniqueId(): string
+    {
+        return $this->user->id;
     }
 
     /**
