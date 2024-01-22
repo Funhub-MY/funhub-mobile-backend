@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "ff5fa466-b2de-4c7c-8990-ffc56d789641",
+        "_postman_id": "b3acd9c9-060e-4723-926b-1722e92a0f0a",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":11,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"quas\",\"violation_level\":\"atque\",\"article\":1}"
+                                    "raw": "{\"article_id\":16,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"esse\",\"violation_level\":\"repudiandae\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"et\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"est\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -449,7 +449,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"aut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"sit\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -972,7 +972,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "consequatur",
+                                            "value": "eos",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1072,7 +1072,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"qui\",\"violation_type\":\"repellendus\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"placeat\",\"violation_type\":\"accusamus\"}"
                                 },
                                 "description": ""
                             },
@@ -1197,7 +1197,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "at",
+                                            "value": "velit",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1634,7 +1634,7 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "55"
+                                    "value": "58"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
@@ -1693,7 +1693,7 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "54"
+                                    "value": "57"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
@@ -2193,7 +2193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"cwiegand@example.org\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"madisyn.blick@example.org\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2269,7 +2269,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"iure\"}"
+                            "raw": "{\"share_code\":\"quis\"}"
                         },
                         "description": ""
                     },
@@ -2290,7 +2290,7 @@
                                 },
                                 {
                                     "key": "x-ratelimit-remaining",
-                                    "value": "56"
+                                    "value": "59"
                                 },
                                 {
                                     "key": "access-control-allow-origin",
@@ -3425,7 +3425,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "nostrum",
+                                            "value": "laboriosam",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -4410,6 +4410,85 @@
             "description": "",
             "item": [
                 {
+                    "name": "Contacts",
+                    "description": "",
+                    "item": [
+                        {
+                            "name": "Import User Contacts",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/import-contacts",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/import-contacts"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"contacts\":[{\"country_code\":\"60\",\"phone_no\":\"123456789\",\"name\":\"John Doe\"}]}"
+                                },
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"Contacts imported successfully\"",
+                                    "name": ""
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Get Contacts not yet followed",
+                            "request": {
+                                "url": {
+                                    "host": "{{baseUrl}}",
+                                    "path": "api\/v1\/user\/contacts-friends",
+                                    "query": [],
+                                    "raw": "{{baseUrl}}\/api\/v1\/user\/contacts-friends"
+                                },
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application\/json"
+                                    },
+                                    {
+                                        "key": "Accept",
+                                        "value": "application\/json"
+                                    }
+                                ],
+                                "body": null,
+                                "description": ""
+                            },
+                            "response": [
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"users\": []\n}",
+                                    "name": "success"
+                                },
+                                {
+                                    "header": [],
+                                    "code": 200,
+                                    "body": "{\n\"message\": \"No friends found\"\n}",
+                                    "name": "error"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "Followings",
                     "description": "",
                     "item": [
@@ -4488,7 +4567,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":5}"
                                 },
                                 "description": ""
                             },
@@ -4529,7 +4608,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":20}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -4635,7 +4714,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"est\",\"violation_level\":\"et\",\"violation_type\":\"ut\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"repudiandae\",\"violation_level\":\"molestiae\",\"violation_type\":\"corporis\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -4792,7 +4871,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"reason\":\"cupiditate\"}"
+                            "raw": "{\"reason\":\"eum\"}"
                         },
                         "description": ""
                     },
@@ -4835,7 +4914,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"sint\"}"
+                            "raw": "{\"user_ids\":\"perferendis\"}"
                         },
                         "description": ""
                     },
@@ -5649,7 +5728,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },

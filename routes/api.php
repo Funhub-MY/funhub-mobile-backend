@@ -47,6 +47,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('user/send-email-verification', [\App\Http\Controllers\Api\AuthController::class, 'postSendVerificationEmail']);
         Route::post('user/verify-email', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyEmail']);
 
+        // Import contacts
+        Route::post('user/import-contacts', [\App\Http\Controllers\Api\UserContactsController::class, 'postImportContacts']);
+        Route::get('user/contacts-friends', [\App\Http\Controllers\Api\UserContactsController::class, 'getContactsNotYetFollowed']);
+
         // Country & State
         Route::get('countries', [\App\Http\Controllers\Api\CountryController::class, 'getCountries']);
         Route::get('states', [\App\Http\Controllers\Api\StateController::class, 'getStates']);

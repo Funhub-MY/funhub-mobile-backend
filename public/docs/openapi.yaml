@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 11
+                  example: 16
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: quas
+                  example: esse
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: atque
+                  example: repudiandae
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - et
+                    - est
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - aut
+                    - sit
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: consequatur
+        example: eos
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: placeat
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: repellendus
+                  example: accusamus
               required:
                 - comment_id
                 - reason
@@ -1496,7 +1496,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: at
+        example: velit
         required: true
         schema:
           type: string
@@ -4526,7 +4526,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: cwiegand@example.org
+                  example: madisyn.blick@example.org
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5545,7 +5545,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: iure
+                  example: quis
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -6707,7 +6707,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: nostrum
+        example: laboriosam
         required: true
         schema:
           type: string
@@ -7534,6 +7534,60 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/user/import-contacts:
+    post:
+      summary: 'Import User Contacts'
+      operationId: importUserContacts
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Contacts imported successfully\""
+      tags:
+        - User
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contacts:
+                  type: array
+                  description: required.
+                  example:
+                    -
+                      country_code: '60'
+                      phone_no: '123456789'
+                      name: 'John Doe'
+                  items:
+                    type: string
+  /api/v1/user/contacts-friends:
+    get:
+      summary: 'Get Contacts not yet followed'
+      operationId: getContactsNotYetFollowed
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No friends found'
+                properties:
+                  message:
+                    type: string
+                    example: 'No friends found'
+      tags:
+        - User
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -7693,7 +7747,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 19
+                  example: 5
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -7739,7 +7793,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 20
+                  example: 6
               required:
                 - user_id
   /api/v1/user/report:
@@ -7779,15 +7833,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: est
+                  example: repudiandae
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: molestiae
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ut
+                  example: corporis
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -7904,7 +7958,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: cupiditate
+                  example: eum
               required:
                 - reason
   /api/v1/users_by_id:
@@ -7938,7 +7992,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: sint
+                  example: perferendis
               required:
                 - user_ids
     parameters:
@@ -8814,7 +8868,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female
