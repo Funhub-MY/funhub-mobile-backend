@@ -107,21 +107,21 @@ class UserContactsController extends Controller
      */
     public function getContactsNotYetFollowed()
     {
-        $contacts = UserContact::whereNull('related_user_id')
+        $contacts = UserContact::whereNotNull('related_user_id')
             ->where('imported_by_id', auth()->user()->id)
             ->get();
 
+        Log::info('Contacts imported with related user', [
+            'contacts' => $contacts,
+        ]);
+
         // find current user followings
         $following_ids = auth()->user()->followings()->pluck('following_id')->toArray();
-
-        Log::info('following_ids', $following_ids);
 
         // filter contacts not yet followed by current user
         $contacts = $contacts->filter(function ($contact) use ($following_ids) {
             return !in_array($contact->related_user_id, $following_ids);
         });
-
-        Log::info('contacts', json_encode($contacts));
 
         // return user list by contacts's related_user_id
         $contacts = User::whereIn('id', $contacts->pluck('related_user_id')->toArray())
