@@ -54,7 +54,7 @@ class UserContactsController extends Controller
                 'phone_country_code' => $contact['country_code'],
                 'phone_no' => $phone_no,
             ], [
-                'name' => (isset($contact['name']) ? $contact['name'] : null),
+                'name' => (isset($contact['name']) ? $contact['name'] : '-'),
                 'imported_by_id' => auth()->user()->id,
             ]);
         }
