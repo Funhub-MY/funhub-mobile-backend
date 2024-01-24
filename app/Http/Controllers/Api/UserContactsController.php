@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserContact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserContactsController extends Controller
 {
@@ -113,10 +114,14 @@ class UserContactsController extends Controller
         // find current user followings
         $following_ids = auth()->user()->followings()->pluck('following_id')->toArray();
 
+        Log::info('following_ids', $following_ids);
+
         // filter contacts not yet followed by current user
         $contacts = $contacts->filter(function ($contact) use ($following_ids) {
             return !in_array($contact->related_user_id, $following_ids);
         });
+
+        Log::info('contacts', $contacts);
 
         // return user list by contacts's related_user_id
         $contacts = User::whereIn('id', $contacts->pluck('related_user_id')->toArray())
