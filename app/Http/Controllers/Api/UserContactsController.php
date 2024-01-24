@@ -121,7 +121,7 @@ class UserContactsController extends Controller
             return !in_array($contact->related_user_id, $following_ids);
         });
 
-        Log::info('contacts', $contacts);
+        Log::info('contacts', json_encode($contacts));
 
         // return user list by contacts's related_user_id
         $contacts = User::whereIn('id', $contacts->pluck('related_user_id')->toArray())
