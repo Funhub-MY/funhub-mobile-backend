@@ -91,12 +91,12 @@ class ApprovalResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('approvable_id')
+                TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('approvable.created_at')
+                TextColumn::make('created_at')
                     ->label('Requested At')
                     ->date('d/m/Y h:iA')
                     ->searchable()
@@ -105,8 +105,8 @@ class ApprovalResource extends Resource
                 BadgeColumn::make('approved')
                     ->label('Status')
                     ->enum([
-                        '1' => 'Approved',
-                        '0' => 'Pending',
+                        1 => 'Approved',
+                        0 => 'Pending',
                     ])
                     ->colors([
                         'success' => 1,
