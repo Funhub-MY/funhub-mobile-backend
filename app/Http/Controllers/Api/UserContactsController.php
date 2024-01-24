@@ -111,11 +111,11 @@ class UserContactsController extends Controller
             ->get();
 
         // find current user followings
-        $followings = auth()->user()->followings()->pluck('id')->toArray();
+        $following_ids = auth()->user()->followings()->pluck('following_id')->toArray();
 
         // filter contacts not yet followed by current user
-        $contacts = $contacts->filter(function ($contact) use ($followings) {
-            return !in_array($contact->related_user_id, $followings);
+        $contacts = $contacts->filter(function ($contact) use ($following_ids) {
+            return !in_array($contact->related_user_id, $following_ids);
         });
 
         // return user list by contacts's related_user_id
