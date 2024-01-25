@@ -45,8 +45,7 @@ class ProcessArticleToCategoriesML extends Command
         $this->info('All Sub Categories Name: '. $subCategories->pluck('name')->implode(', '));
 
         $this->info('Articles published that has no sub categories: '. $articles->count());
-        // first article
-        $articles = $articles->take(10);
+
 
         $totalArticlesProcessed = 0;
         $totalSubcategoriesAttached = 0;
