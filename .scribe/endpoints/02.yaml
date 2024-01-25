@@ -1,16 +1,16 @@
-name: Other
+name: User
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v1/countries
+      - POST
+    uri: api/v1/user/import-contacts
     metadata:
-      groupName: Other
+      groupName: User
       groupDescription: ''
-      subgroup: Country
+      subgroup: Contacts
       subgroupDescription: ''
-      title: 'Get Countries'
+      title: 'Import User Contacts'
       description: ''
       authenticated: true
       custom: []
@@ -22,24 +22,59 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      contacts:
+        name: contacts
+        description: required.
+        required: false
+        example:
+          -
+            country_code: '60'
+            phone_no: '123456789'
+            name: 'John Doe'
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      'contacts[].country_code':
+        name: 'contacts[].country_code'
+        description: ''
+        required: true
+        example: itaque
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      'contacts[].phone_no':
+        name: 'contacts[].phone_no'
+        description: ''
+        required: true
+        example: quas
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      contacts:
+        -
+          country_code: '60'
+          phone_no: '123456789'
+          name: 'John Doe'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          ["id" => 1, "name" => "Nigeria", "code" => "NG"],
-          }
+          "message": "Contacts imported successfully"
         headers: []
-        description: success
+        description: ''
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer a8vhk6VDPcgbaf3edE14Z65'
+      - 'Bearer 15Z6aeE6c3bgh48dakvfVDP'
     controller: null
     method: null
     route: null
@@ -47,13 +82,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/states
+    uri: api/v1/user/contacts-friends
     metadata:
-      groupName: Other
+      groupName: User
       groupDescription: ''
-      subgroup: State
+      subgroup: Contacts
       subgroupDescription: ''
-      title: 'Get States'
+      title: 'Get Contacts not yet followed'
       description: ''
       authenticated: true
       custom: []
@@ -73,7 +108,440 @@ endpoints:
         status: 200
         content: |-
           {
-          ["id" => 1, "name" => "Abia", "code" => "AB", "country_id" => 1],
+          "users": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "No friends found"
+          }
+        headers: []
+        description: error
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PDEbga6VdeZfa1v583k64ch'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/followings
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followings
+      subgroupDescription: ''
+      title: 'Get all followings of user id or logged in user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'optional The id of the user, if not provided will use Logged In User ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
+    queryParameters:
+      query:
+        name: query
+        description: 'optional Search query for name of followings.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      query: John
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "followings": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "User not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 31b4fVg6kZ56vEh8PaedDca'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/followers
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followers
+      subgroupDescription: ''
+      title: 'Get all followers of user id or logged in user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'optional The id of the user, if not provided will use Logged In User ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      user_id: 1
+    queryParameters:
+      query:
+        name: query
+        description: 'optional Search query for name of followers.'
+        required: false
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      query: John
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "followers": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: '{"message": "User not found"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hbE1cPga53e8aDZ6fv46Vkd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/follow
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followings
+      subgroupDescription: ''
+      title: 'Follow another user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user to follow'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      user_id: 5
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You are now following this user"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 400
+        content: '{"message": "You are already following this user"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V54E3Dcaf1Pkb8agvhed6Z6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/unfollow
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Followings
+      subgroupDescription: ''
+      title: 'Unfollow another user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user to unfollow'
+        required: true
+        example: 6
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      user_id: 6
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You are now unfollowing this user"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 400
+        content: '{"message": "You are not following this user"}'
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer gZDEfdae8vhbV5P3c61ka46'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/report
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Reports
+      subgroupDescription: ''
+      title: 'Report a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the comment.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: repudiandae
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      violation_level:
+        name: violation_level
+        description: 'The violation level of this report'
+        required: false
+        example: molestiae
+        type: required
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      violation_type:
+        name: violation_type
+        description: 'The violation type of this report'
+        required: false
+        example: corporis
+        type: required
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      also_block_user:
+        name: also_block_user
+        description: 'optional Whether to block the user or not.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      reason: repudiandae
+      violation_level: molestiae
+      violation_type: corporis
+      also_block_user: true
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Comment reported",
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["user_id": ["The User Id field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+      -
+        status: 422
+        content: '{"message": "You have already reported this comment" ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer adv8h4fVPEebgD63akc156Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/block
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Block a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      reason:
+        name: reason
+        description: 'optional The reason for blocking the user.'
+        required: false
+        example: Spam
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+      reason: Spam
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User blocked",
           }
         headers: []
         description: success
@@ -82,7 +550,811 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6dPca4E8vZ1gk635haeVbDf'
+      - 'Bearer 38gh5V6fa4EvcDe6db1PZak'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/unblock
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Unblock a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_id:
+        name: user_id
+        description: 'The id of the user.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      user_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "User unblocked",
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hZv8akfDa56ceE1P634Vdbg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/my_blocked_users
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: Blocks
+      subgroupDescription: ''
+      title: 'Get My Blocked Users List'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fkag5v616a8EbZdce34PDhV'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/delete
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete My Account'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reason:
+        name: reason
+        description: ''
+        required: true
+        example: eum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      reason: eum
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Account deleted successfully."
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer d5eaVa63g4Dh6P8cbfEvZ1k'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/users_by_id
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Users By IDs'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_ids:
+        name: user_ids
+        description: 'The ids of the users.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      user_ids: '1,2,3'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      user_ids:
+        name: user_ids
+        description: ''
+        required: true
+        example: perferendis
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      user_ids: perferendis
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hVk5af3D46bEP1cd8g6aveZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/user/{user_id}'
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      user:
+        name: user
+        description: 'The id of the user.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      user_id: 3
+      user: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": {
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Pf6he5ka4Ec8abdDv1g36VZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get auth user details'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user": {
+          },
+          "token": ""
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8316PbDeZ6EfVd5kgaahv4c'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/public/user/{user_id}'
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a public user'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      user:
+        name: user
+        description: 'The id of the user.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      user_id: 3
+      user: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user": {
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aDPZ3e86bd41aEf5ck6Vvhg'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Details (name, username, bio, job_title, dob, gender, location, avatar, cover, article_categories)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      update_type:
+        name: update_type
+        description: 'Field to update.'
+        required: true
+        example: job_title
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      name:
+        name: name
+        description: "Name of the user (Required if update_type is 'name')."
+        required: false
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      username:
+        name: username
+        description: "Username of the user (Required if update_type is 'username')."
+        required: false
+        example: johndoe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      bio:
+        name: bio
+        description: "Bio of the user (Required if update_type is 'bio')."
+        required: false
+        example: 'I am a developer'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      job_title:
+        name: job_title
+        description: "Job title of the user (Required if update_type is 'job_title')."
+        required: false
+        example: Developer
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      day:
+        name: day
+        description: "Day of the date of birth (Required if update_type is 'dob')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      month:
+        name: month
+        description: "Month of the date of birth (Required if update_type is 'dob')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      year:
+        name: year
+        description: "Year of the date of birth (Required if update_type is 'dob')."
+        required: false
+        example: 1990
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      country_id:
+        name: country_id
+        description: "Country id of the user (Required if update_type is 'location')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      state_id:
+        name: state_id
+        description: "State id of the user (Required if update_type is 'location')."
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      avatar:
+        name: avatar
+        description: "One image file to upload,Avatar of the user (Required if update_type is 'avatar')."
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      cover:
+        name: cover
+        description: "One image file to upload,Cover of the user (Required if update_type is 'cover')."
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      category_ids:
+        name: category_ids
+        description: "Array of article category ids (Required if update_type is 'article_categories')."
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      update_type: job_title
+      name: 'John Doe'
+      username: johndoe
+      bio: 'I am a developer'
+      job_title: Developer
+      day: 1
+      month: 1
+      year: 1990
+      country_id: 1
+      state_id: 1
+      category_ids:
+        - 1
+        - 2
+        - 3
+    fileParameters:
+      avatar: null
+      cover: null
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user":
+          {
+           "id": 1,
+           "name": "John Doe"
+           "username": "johndoe"
+           "email": "johndoe@gmail.com"
+           "verified_email": true
+           "auth_provider": "email"
+           "avatar": "https://domain.com/storage/avatars/1/avatar.jpg"
+           "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg"
+           "bio": "I am a developer"
+           "cover": "https://domain.com/storage/covers/1/cover.jpg"
+           "articles_published_count": 0
+           "following_count": 0
+           "followers_count": 0
+           "has_completed_profile": false
+           "has_avatar": true
+           "point_balance": 0
+           "unread_notifications_count": 0
+           "is_following": false
+           "dob": "1990-01-01",
+           "gender": "male",
+           "job_title": "Engineer",
+           "country_id": 1,
+           "state_id": 1,
+           "category_ids": [1,2,3]
+          },
+          "message": "Field updated"
+
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 500
+        content: '{"message": "Error updating user details", "error": "Error message"}'
+        headers: []
+        description: 'Error updating user details'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a6g3kvd64ZhPaDeVb8f1cE5'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/password
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user password (only for login with OTP)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      old_password:
+        name: old_password
+        description: 'The old password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      new_password:
+        name: new_password
+        description: 'The new password of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      new_password_confirmation:
+        name: new_password_confirmation
+        description: 'The new password confirmation of the user.'
+        required: true
+        example: abcd1234
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      old_password: abcd1234
+      new_password: abcd1234
+      new_password_confirmation: abcd1234
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Password updated",
+          "user":
+               * {
+           "id": 1,
+           "name": "John Doe"
+           "username": "johndoe"
+           "email": "johndoe@gmail.com"
+           "verified_email": true
+           "auth_provider": "email"
+           "avatar": "https://domain.com/storage/avatars/1/avatar.jpg"
+           "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg"
+           "bio": "I am a developer"
+           "cover": "https://domain.com/storage/covers/1/cover.jpg"
+           "articles_published_count": 0
+           "following_count": 0
+           "followers_count": 0
+           "has_completed_profile": false
+           "has_avatar": true
+           "point_balance": 0
+           "unread_notifications_count": 0
+           "is_following": false
+           "dob": "1990-01-01",
+           "gender": "male",
+           "job_title": "Engineer",
+           "country_id": 1,
+           "state_id": 1,
+           "category_ids": [1,2,3]
+          },
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "The given data was invalid.",
+          "errors": {
+          "old_password": [
+           "The old password is incorrect"
+          ],
+          "password": [
+          "The password confirmation does not match."
+          ]
+          }
+        headers: []
+        description: 'validation error'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DZPbf1vd48cE6keagha5V36'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/email
+    metadata:
+      groupName: User
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update User Email'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      new_email:
+        name: new_email
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      new_email_confirmation:
+        name: new_email_confirmation
+        description: 'Email of the user.'
+        required: true
+        example: john@gmail.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      new_email: john@gmail.com
+      new_email_confirmation: john@gmail.com
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Email updated",
+          "email": "johndoe@gmail.com",
+          "user": {}
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Unauthenticated."}'
+        headers: []
+        description: Unauthenticated
+        custom: []
+      -
+        status: 422
+        content: '{"message": "Email already verified for your account"}'
+        headers: []
+        description: 'Email already verified for your account'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Zhc6g4a8EPk1eb6a35vfDVd'
     controller: null
     method: null
     route: null

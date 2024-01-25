@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: iure
+        example: quis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: iure
+      share_code: quis
     fileParameters: []
     responses:
       -
@@ -574,7 +574,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '56'
+          x-ratelimit-remaining: '59'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -582,7 +582,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c8a4Zdh65e6VPvEgbafk13D'
+      - 'Bearer 3v6456gEZh8cdPka1VeaDbf'
     controller: null
     method: null
     route: null

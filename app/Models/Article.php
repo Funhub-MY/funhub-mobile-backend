@@ -77,6 +77,13 @@ class Article extends BaseModel implements HasMedia, Auditable
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
                 'views' => $this->views->count()
             ],
+            'location' => ($this->location()->count() > 0) ? [
+                'name' => floatval($this->location->first()->name),
+                'city' => ($this->location->first()->city) ?: null,
+                'state' => ($this->location->first()->state) ?: null,
+                'city_similar_name_1' => $this->location->first()->city_similar_name_1,
+                'city_similar_name_2' => $this->location->first()->city_similar_name_2,
+            ] : null,
             '_geoloc' => ($this->location()->count() > 0) ? [
                 'lat' => floatval($this->location->first()->lat),
                 'lng' => floatval($this->location->first()->lng)
