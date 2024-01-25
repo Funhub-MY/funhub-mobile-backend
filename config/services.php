@@ -58,5 +58,9 @@ return [
         'hash_key_card_only' => env('MPAY_HASH_KEY_CARD_ONLY'),
         'mid_fpx_only' => env('MPAY_MID_FPX_ONLY'),
         'hash_key_fpx_only' => env('MPAY_HASH_KEY_FPX_ONLY'),
-    ]
+    ],
+
+    'openai' => [
+        'secret' => env('OPENAI_SECRET'),
+    ],
 ];
