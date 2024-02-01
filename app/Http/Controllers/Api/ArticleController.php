@@ -484,9 +484,12 @@ class ArticleController extends Controller
         }
 
         if ($user->profile_is_private && $user->id !== auth()->id()) {
-            return response()->json([
-                'message' => 'User profile is private'
-            ], 404);
+            // check if this user followers has authenticated user
+            if (!auth()->user()->followings()->where('following_id', $user_id)->exists()) {
+                return response()->json([
+                    'message' => 'User profile is private'
+                ], 404);
+            }
         }
 
         $query = Article::where('user_id', $user_id);
