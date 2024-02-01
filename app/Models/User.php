@@ -477,7 +477,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         }
     }
 
-    public function getUserProfileIsPrivateAttribute()
+    public function getProfileIsPrivateAttribute()
     {
         $privacy = $this->profilePrivacySettings()
             ->order('id', 'desc')
