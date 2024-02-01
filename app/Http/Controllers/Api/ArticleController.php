@@ -470,8 +470,10 @@ class ArticleController extends Controller
     public function getMyArticles(Request $request)
     {
         $user_id = auth()->user()->id;
+        $user = auth()->user();
+
         if ($request->has('user_id')) { // check if 'user_id' is present in the request
-            $user = User::find($request->user_id);
+            $user = User::find($request->user_id); // override
             if ($user) {
                 $user_id = $user->id;
                 // check if this user blocked authenticated user
