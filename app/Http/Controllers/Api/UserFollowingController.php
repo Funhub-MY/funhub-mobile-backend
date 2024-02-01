@@ -134,6 +134,12 @@ class UserFollowingController extends Controller
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
 
+        if ($user->profile_is_private && $user->id !== auth()->id()) {
+            return response()->json([
+                'message' => 'User profile is private'
+            ], 404);
+        }
+
         $query = $user->followers();
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
@@ -162,6 +168,13 @@ class UserFollowingController extends Controller
     {
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
+
+        if ($user->profile_is_private && $user->id !== auth()->id()) {
+            return response()->json([
+                'message' => 'User profile is private'
+            ], 404);
+        }
+
         $query = $user->followings();
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');

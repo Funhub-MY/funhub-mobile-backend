@@ -145,6 +145,9 @@ Route::group(['prefix' => 'v1'], function () {
 
             // Update password if user is logged in with phone no
             Route::post('/postUpdatePassword', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdatePassword']);
+
+            // Update profile privacy
+            Route::post('/profile-privacy', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdateProfilePrivacy']);
         });
 
         // TODO: secure this route

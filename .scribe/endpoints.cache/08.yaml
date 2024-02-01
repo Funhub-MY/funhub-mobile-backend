@@ -64,7 +64,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ad6g1f3ck6VEPhaeb8v4D5Z'
+      - 'Bearer DgEZ1V6fcPav5bkda364e8h'
     controller: null
     method: null
     route: null
@@ -130,7 +130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v5kD63eaZdg4hf1c8VbaE6P'
+      - 'Bearer E5bZfhaV6kg41aced68PDv3'
     controller: null
     method: null
     route: null
@@ -183,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g4c6E3bk68hevDaZadP15Vf'
+      - 'Bearer Ebf6h6vaZ8DgekaPVd341c5'
     controller: null
     method: null
     route: null
@@ -243,7 +243,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4c38EfgheDb6vPa1adZV6k5'
+      - 'Bearer 3h64a5aZDv6e1PEkcdVbfg8'
     controller: null
     method: null
     route: null
@@ -309,7 +309,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P6agd61Zac3hf84v5kEDVeb'
+      - 'Bearer e3ak86bVPaD1hv6f4gcdEZ5'
     controller: null
     method: null
     route: null
@@ -370,7 +370,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gPh6c3aD48V1a65deEbvfkZ'
+      - 'Bearer P31g8hcdEeDva5fVkZa66b4'
     controller: null
     method: null
     route: null
@@ -431,7 +431,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Deg8fdZ614haacvkV6P53Eb'
+      - 'Bearer 5Ze1d8kvahVDf3EP66cb4ga'
     controller: null
     method: null
     route: null
@@ -491,7 +491,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vgck6fa64PZhdbe3ED158av'
+      - 'Bearer D16VcEfv8Z6h3Pa4bedak5g'
     controller: null
     method: null
     route: null
@@ -551,7 +551,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k6fDZEPe8ba3g16acV54vhd'
+      - 'Bearer b6Pda4fgkEvh6e1ZDaV58c3'
     controller: null
     method: null
     route: null
@@ -631,7 +631,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afPgvDZd81k6Eh4ab3Vc65e'
+      - 'Bearer hV56EeP84adDk63Za1fvbcg'
     controller: null
     method: null
     route: null
@@ -662,7 +662,7 @@ endpoints:
         name: gender
         description: ''
         required: true
-        example: female
+        example: male
         type: string
         enumValues:
           - male
@@ -670,7 +670,7 @@ endpoints:
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      gender: female
+      gender: male
     fileParameters: []
     responses:
       -
@@ -687,7 +687,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5E6g48D3c6PadV1keZhbfva'
+      - 'Bearer c4k5aeP63abvdD1Vhf8gE6Z'
     controller: null
     method: null
     route: null
@@ -758,7 +758,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dhfg4V5a6c3bdkev816EZaP'
+      - 'Bearer e6hE3g8fVab5164aDZPdkcv'
     controller: null
     method: null
     route: null
@@ -818,7 +818,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fPkEahb46av6gZecD3V18d5'
+      - 'Bearer dhc1eD5gE8f6aka4bPZV63v'
     controller: null
     method: null
     route: null
@@ -907,7 +907,61 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5V3DhEbkd1gP8ef664vaaZ'
+      - 'Bearer 5ae6chD31gbE46aVfPkvZ8d'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/profile-privacy
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Profile Privacy Setting'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      profile_privacy:
+        name: profile_privacy
+        description: 'The profile privacy of the user.'
+        required: true
+        example: public
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      profile_privacy: public
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Profile privacy updated",
+          "profile_privacy": "public"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 34dPVEg6DZ6vfe51a8khbac'
     controller: null
     method: null
     route: null

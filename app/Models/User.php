@@ -61,6 +61,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'auth_provider',
         'has_completed_profile',
         'cover_url',
+        'profile_is_private'
     ];
 
     public function canAccessFilament(): bool
@@ -331,6 +332,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
           ->withTimestamps();
     }
 
+    public function profilePrivacySettings()
+    {
+        return $this->hasMany(UserProfilePrivateSetting::class, 'user_id');
+    }
+
     /**
      * Get the user's point balance
      */
@@ -469,6 +475,15 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         } else {
             return $this->name && $this->email;
         }
+    }
+
+    public function getUserProfileIsPrivateAttribute()
+    {
+        $privacy = $this->profilePrivacySettings()
+            ->order('id', 'desc')
+            ->first();
+
+         return $privacy ? !($privacy->profile == 'public') : false;
     }
 
     /**

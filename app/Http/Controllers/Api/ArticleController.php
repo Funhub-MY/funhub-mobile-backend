@@ -483,12 +483,17 @@ class ArticleController extends Controller
             }
         }
 
+        if ($user->profile_is_private && $user->id !== auth()->id()) {
+            return response()->json([
+                'message' => 'User profile is private'
+            ], 404);
+        }
+
         $query = Article::where('user_id', $user_id);
         // video only
         if ($request->has('video_only') && $request->video_only == 1) {
             $query->where('type', 'video');
         }
-
 
         if ($request->has('published_only')) {
             $query->where('status', Article::STATUS[1]);

@@ -7,6 +7,7 @@ use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserSettingsController extends Controller
 {
@@ -571,6 +572,50 @@ class UserSettingsController extends Controller
 
         return response()->json([
             'message' => 'Password updated',
+        ]);
+    }
+
+    /**
+     * Profile Privacy Setting
+     *
+     * @param Request $request
+     * @return void
+     *
+     * @group User Settings
+     * @bodyParam profile_privacy string required The profile privacy of the user. Example: public
+     *
+     * @response status=200 scenario="success" {
+     * "message": "Profile privacy updated",
+     * "profile_privacy": "public"
+     * }
+     */
+    public function postUpdateProfilePrivacy(Request $request)
+    {
+        $request->validate([
+            'profile_privacy' => 'required|in:public,private',
+        ]);
+
+        $user = auth()->user();
+
+        $latestSettings = $user->profilePrivacySettings()->orderBy('id', 'desc')->first();
+
+        if ($latestSettings && $latestSettings->profile == $request->profile_privacy) {
+            return response()->json([
+                'message' => 'Profile privacy already set to ' . $request->profile_privacy,
+                'profile_privacy' => $latestSettings->profile,
+            ]);
+        } else {
+            $user->profilePrivacySettings()->create([
+                'profile' => $request->profile_privacy,
+                'articles' => ($latestSettings) ? $latestSettings->articles : 'public',
+            ]);
+        }
+
+        Log::info('Profile privacy updated', ['user_id' => $user->id, 'profile_privacy' => $request->profile_privacy, 'latest' => $user->profilePrivacySettings()->orderBy('id', 'desc')->first()]);
+
+        return response()->json([
+            'message' => 'Profile privacy updated',
+            'profile_privacy' => $user->profilePrivacySettings()->orderBy('id', 'desc')->first()->profile,
         ]);
     }
 }

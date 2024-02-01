@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: quis
+        example: vitae
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: quis
+      share_code: vitae
     fileParameters: []
     responses:
       -
@@ -582,7 +582,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3v6456gEZh8cdPka1VeaDbf'
+      - 'Bearer b865DZa4ekf3dhvaEg1c6PV'
     controller: null
     method: null
     route: null
