@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\SupportRequestCategoryResource;
-use App\Http\Resources\SupportRequestMessageResource;
-use App\Http\Resources\SupportRequestResource;
-use App\Models\SupportRequest;
-use App\Models\SupportRequestCategory;
-use App\Models\SupportRequestMessage;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\SupportRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Models\SupportRequestMessage;
+use App\Models\SupportRequestCategory;
+use App\Http\Resources\SupportRequestResource;
+use App\Http\Resources\SupportRequestMessageResource;
+use App\Http\Resources\SupportRequestCategoryResource;
 
 class SupportRequestController extends Controller
 {
@@ -32,7 +33,8 @@ class SupportRequestController extends Controller
      * "data": []
      * }
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         // get all my own support requests
         $query = $request->user()->supportRequests()
             ->with('messages')
@@ -110,12 +112,21 @@ class SupportRequestController extends Controller
             });
         }
 
-        // create a default system message for the support request
-        $systemMessage = $supportRequest->messages()->create([
-            'user_id' => 3,
-            'support_request_id' =>  $supportRequest->id,
-            'message' => "你好，我们已收到你的反馈。\n客服服务时间：星期一至星期五 11.00am - 7.00pm\n我们会在24小时内尽快回复你。\n若遇到周末和公假，回复时间会比较长。还请理解，非常感谢"
-        ]);
+        // create a default system message for the support request if there is user with 'Support' role
+        try {
+            $supportUser = User::whereHas('roles', function ($query) {
+                $query->where('name', 'Support');
+            })->firstOrFail();
+
+            $systemMessage = $supportRequest->messages()->create([
+                'user_id' => $supportUser->id,
+                'support_request_id' =>  $supportRequest->id,
+                'message' => "你好，我们已收到你的反馈。\n客服服务时间：星期一至星期五 11.00am - 7.00pm\n我们会在24小时内尽快回复你。\n若遇到周末和公假，回复时间会比较长。还请理解，非常感谢"
+            ]);
+        } catch (\Exception $e) {
+            // Catch error if no user with the role 'Support' is found
+            Log::error('No user with support role is found');
+        }
 
         $supportRequest->load('messages');
 
@@ -296,7 +307,7 @@ class SupportRequestController extends Controller
      */
     public function postAttachmentsUpload(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'images' => 'required',
             'images.*' => 'image|mimes:jpg,jpeg,png,gif,heic'
         ]);
@@ -331,7 +342,7 @@ class SupportRequestController extends Controller
                     ->toMediaCollection(
                         SupportRequestMessage::MEDIA_COLLECTION_NAME,
                         (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
-                );
+                    );
             });
             $uploaded->each(function ($image) use (&$images) {
                 $images[] = [
@@ -347,5 +358,4 @@ class SupportRequestController extends Controller
             ]);
         }
     }
-
 }
