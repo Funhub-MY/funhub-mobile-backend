@@ -110,6 +110,13 @@ class SupportRequestController extends Controller
             });
         }
 
+        // create a default system message for the support request
+        $systemMessage = $supportRequest->messages()->create([
+            'user_id' => 3,
+            'support_request_id' =>  $supportRequest->id,
+            'message' => "你好，我们已收到你的反馈。\n客服服务时间：星期一至星期五 11.00am - 7.00pm\n我们会在24小时内尽快回复你。\n若遇到周末和公假，回复时间会比较长。还请理解，非常感谢"
+        ]);
+
         $supportRequest->load('messages');
 
         return [
