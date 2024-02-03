@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\FollowRequest;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\UserFollowing;
@@ -314,5 +315,155 @@ class UserFollowingTest extends TestCase
             'article_id' => $articleId,
             'user_id' => $this->user->id,
         ]);
+    }
+
+    public function testFollowAPrivateProfileUser()
+    {
+        // create a new user
+        $user = User::factory()->create();
+
+        // make user profile private
+        // change to private
+        $this->actingAs($user);
+        $response = $this->postJson('/api/v1/user/settings/profile-privacy', [
+            'profile_privacy' => 'private',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'profile_privacy' => 'private',
+        ]);
+
+        // change back to current user
+        $this->actingAs($this->user);
+
+        // follow the private profile user
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // message should be requested
+        $response->assertJson([
+            'message' => 'Follow request sent',
+        ]);
+
+        // check if follow request is sent in db
+        $this->assertDatabaseHas('follow_requests', [
+            'user_id' => $this->user->id,
+            'following_id' => $user->id,
+            'accepted' => false
+        ]);
+
+        $this->actingAs($user); // acting as the user who is being followed
+        // get my following requests
+        $response = $this->getJson('/api/v1/user/request_follows');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // $user accept the follow request
+        $response = $this->postJson('/api/v1/user/request_follow/accept', [
+            'user_id' => $this->user->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // check if follow request is accepted in db
+        $this->assertDatabaseHas('follow_requests', [
+            'user_id' => $this->user->id,
+            'following_id' => $user->id,
+            'accepted' => true
+        ]);
+
+        // check user followings table
+        $this->assertDatabaseHas('users_followings', [
+            'user_id' => $this->user->id,
+            'following_id' => $user->id
+        ]);
+    }
+
+    public function testRejectAFollowRequest() {
+        // create a new user
+        $user = User::factory()->create();
+
+        // make user profile private
+        // change to private
+        $this->actingAs($user);
+        $response = $this->postJson('/api/v1/user/settings/profile-privacy', [
+            'profile_privacy' => 'private',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'profile_privacy' => 'private',
+        ]);
+
+        // change back to current user
+        $this->actingAs($this->user);
+
+        // follow the private profile user
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // message should be requested
+        $response->assertJson([
+            'message' => 'Follow request sent',
+        ]);
+
+        // check if follow request is sent in db
+        $this->assertDatabaseHas('follow_requests', [
+            'user_id' => $this->user->id,
+            'following_id' => $user->id,
+            'accepted' => false
+        ]);
+
+        $this->actingAs($user); // acting as the user who is being followed
+        // get my following requests
+        $response = $this->getJson('/api/v1/user/request_follows');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data'
+            ]);
+
+        // $user reject the follow request
+        $response = $this->postJson('/api/v1/user/request_follow/reject', [
+            'user_id' => $this->user->id,
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message'
+            ]);
+
+        // check if follow request is rejected in db
+        $this->assertDatabaseMissing('follow_requests', [
+            'user_id' => $this->user->id,
+            'following_id' => $user->id,
+            'accepted' => true
+        ]);
+
+        // check user followings table
+        $this->assertDatabaseMissing('users_followings', [
+            'user_id' => $this->user->id,
+            'following_id' => $user->id
+        ]);
+
     }
 }

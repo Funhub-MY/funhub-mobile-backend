@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: vitae
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: vitae
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -54,7 +54,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1351,
+                      "line": 1361,
                       "function": "abort"
                   },
                   {
@@ -582,7 +582,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b865DZa4ekf3dhvaEg1c6PV'
+      - 'Bearer 3h66agEkVPe5cDZa8dv14bf'
     controller: null
     method: null
     route: null

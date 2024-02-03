@@ -325,6 +325,16 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(SupportRequest::class, 'requestor_id');
     }
 
+    public function followRequests()
+    {
+        return $this->hasMany(FollowRequest::class, 'user_id');
+    }
+
+    public function beingFollowedRequests()
+    {
+        return $this->hasMany(FollowRequest::class, 'following_id');
+    }
+
     public function campaignAnswers()
     {
         return $this->belongsToMany(CampaignQuestion::class, 'campaigns_questions_answers_users', 'user_id', 'campaign_question_id')

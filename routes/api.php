@@ -99,6 +99,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('user/followers', [\App\Http\Controllers\Api\UserFollowingController::class, 'getFollowers']);
         Route::post('user/follow', [\App\Http\Controllers\Api\UserFollowingController::class, 'follow']);
         Route::post('user/unfollow', [\App\Http\Controllers\Api\UserFollowingController::class, 'unfollow']);
+
+        //  Follow requests if profile private
+        Route::post('user/request_follow/accept', [\App\Http\Controllers\Api\UserFollowingController::class, 'postAcceptFollowRequest']);
+        Route::post('user/request_follow/reject', [\App\Http\Controllers\Api\UserFollowingController::class, 'postRejectFollowRequest']);
+        Route::get('user/request_follows', [\App\Http\Controllers\Api\UserFollowingController::class, 'getMyFollowRequests']);
+
         Route::post('user/report', [\App\Http\Controllers\Api\UserController::class, 'postReportUser']);
         Route::post('user/block', [\App\Http\Controllers\Api\UserController::class, 'postBlockUser']);
         Route::post('user/unblock', [\App\Http\Controllers\Api\UserController::class, 'postUnblockUser']);
