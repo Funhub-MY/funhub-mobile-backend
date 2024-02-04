@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Services\ArticleRecommenderService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,14 +18,14 @@ class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 1200;
+    public $timeout = 1800;
 
     /**
      * The number of seconds after which the job's unique lock will be released.
      *
      * @var int
      */
-    public $uniqueFor = 3600;
+    public $uniqueFor = 1800;
 
     public $recommender, $user;
 
@@ -61,11 +62,12 @@ class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-        try {
-            Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
-            $this->recommender->build();
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-        }
+        Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
+        $this->recommender->build();
+    }
+
+    public function failed(Exception $exception)
+    {
+        Log::error($exception->getMessage());
     }
 }

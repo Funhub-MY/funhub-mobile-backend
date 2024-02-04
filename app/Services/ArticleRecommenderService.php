@@ -16,11 +16,14 @@ class ArticleRecommenderService
     public function build()
     {
         $user_id = $this->user->id;
-        $chunkSize = 100;
+        $chunkSize = 50;
+        $buildLimit = 500;
         $scores = [];
 
-        Article::published()
-            ->disableCache()
+        Log::info('[ArticleRecommenderService] Starting Building recommendations for user ' . $this->user->id);
+
+        $articles = Article::published()
+            // ->disableCache()
             ->with(['views', 'likes', 'comments', 'categories', 'imports'])
             ->withCount(['views' => function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
@@ -36,22 +39,25 @@ class ArticleRecommenderService
                 $query->where('user_id', $this->user->id);
             })
             ->orderBy('created_at', 'desc')
-            ->chunk($chunkSize, function ($articles) use (&$scores) {
-                foreach ($articles as $article) {
-                    $affinity = $this->affinityScore($article);
-                    $weight = $this->weightScore($article);
-                    array_push($scores, [
-                        'article_id' => $article->id,
-                        'user_id' => $this->user->id,
-                        'affinity' => $affinity,
-                        'weight' => $weight,
-                        'score' => $affinity * $weight,
-                        'last_built' => Carbon::now()->toDateTimeString(),
-                    ]);
-                }
-            });
+            ->take($buildLimit)
+            ->get();
 
-        Log::info('Finished building recommendations for user ' . $this->user->id, [
+        Log::info('[ArticleRecommenderService] Fetched ' . count($articles) . ' articles for user ' . $this->user->id);
+
+        foreach ($articles as $article) {
+            $affinity = $this->affinityScore($article);
+            $weight = $this->weightScore($article);
+            array_push($scores, [
+                'article_id' => $article->id,
+                'user_id' => $this->user->id,
+                'affinity' => $affinity,
+                'weight' => $weight,
+                'score' => $affinity * $weight,
+                'last_built' => Carbon::now()->toDateTimeString(),
+            ]);
+        }
+
+        Log::info('[ArticleRecommenderService] Finished building recommendations for user ' . $this->user->id, [
             'scored_article_ids ' => Arr::pluck($scores, 'article_id'),
             'scored_article_count' => count($scores),
         ]);
