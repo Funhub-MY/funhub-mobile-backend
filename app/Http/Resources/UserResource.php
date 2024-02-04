@@ -65,7 +65,7 @@ class UserResource extends JsonResource
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
             'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
-            'has_requested_follow' => ($request->user()) ? $this->resource->followRequests->contains('user_id', $request->user()->id) : false,
+            'has_requested_follow' => ($request->user()) ? $this->resource->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
             'is_profile_private' => $this->profile_is_private,
             'dob' => $this->when($this->isAuthUser, $this->dob),
             'gender' => $this->when($this->isAuthUser, $this->gender),
