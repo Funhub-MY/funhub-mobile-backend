@@ -40,12 +40,12 @@ class ProcessArticleToCategoriesML extends Command
         // get articles that are published and has no sub categories
         $articles = Article::published()->whereDoesntHave('imports')
             ->whereDoesntHave('subCategories')
+            ->orderBy('created_at', 'DESC') // latest first
             ->get();
 
         $this->info('All Sub Categories Name: '. $subCategories->pluck('name')->implode(', '));
 
         $this->info('Articles published that has no sub categories: '. $articles->count());
-
 
         $totalArticlesProcessed = 0;
         $totalSubcategoriesAttached = 0;
@@ -118,6 +118,14 @@ class ProcessArticleToCategoriesML extends Command
         $this->info('Total Subcategories Attached: '. $totalSubcategoriesAttached);
         $this->info('Total Parent Categories Attached: '. $totalParentCategoriesAttached);
         $this->info('Total Tokens Used: '. $totalTokens);
+
+        // log to info
+        Log::info('[ProcessArticleCategories] Results Run on '. now()->toDateTimeString(), [
+            'total_articles_processed' => $totalArticlesProcessed,
+            'total_subcategories_attached' => $totalSubcategoriesAttached,
+            'total_parent_categories_attached' => $totalParentCategoriesAttached,
+            'total_tokens_used' => $totalTokens
+        ]);
 
         return Command::SUCCESS;
     }
