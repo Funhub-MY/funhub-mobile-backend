@@ -45,15 +45,15 @@ class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
         return $this->user->id;
     }
 
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-    public function middleware(): array
-    {
-        return [(new WithoutOverlapping($this->user->id))->dontRelease()];
-    }
+    // /**
+    //  * Get the middleware the job should pass through.
+    //  *
+    //  * @return array<int, object>
+    //  */
+    // public function middleware(): array
+    // {
+    //     return [(new WithoutOverlapping($this->user->id))->dontRelease()];
+    // }
 
     /**
      * Execute the job.
