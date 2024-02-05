@@ -57,7 +57,8 @@ class UserFollowingController extends Controller
                     $user->notify(new \App\Notifications\NewFollowRequest(auth()->user()));
                 }
                 return response()->json([
-                    'message' => 'Follow request sent'
+                    'message' => 'Follow request sent',
+                    'status' => 'requested'
                 ], 200);
             }
         }
@@ -77,7 +78,8 @@ class UserFollowingController extends Controller
         }
 
         return response()->json([
-            'message' => 'You are now following this user'
+            'message' => 'You are now following this user',
+            'status' => 'followed'
         ], 200);
     }
 
@@ -112,7 +114,8 @@ class UserFollowingController extends Controller
             }
 
             return response()->json([
-                'message' => 'Follow request removed'
+                'message' => 'Follow request removed',
+                'status' => 'request_removed'
             ], 200);
         }
 
@@ -145,7 +148,8 @@ class UserFollowingController extends Controller
         event(new UnfollowedUser(auth()->user(), User::find($request->user_id)));
 
         return response()->json([
-            'message' => 'You are now unfollowing this user'
+            'message' => 'You are now unfollowing this user',
+            'status' => 'unfollowed'
         ], 200);
     }
 
