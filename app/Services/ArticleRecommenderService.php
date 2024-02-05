@@ -24,7 +24,7 @@ class ArticleRecommenderService
 
         $articles = Article::published()
             // ->disableCache()
-            ->with(['views', 'likes', 'comments', 'categories', 'imports'])
+            // ->with(['views', 'likes', 'comments', 'categories', 'imports'])
             ->withCount(['views' => function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
             }])
