@@ -98,25 +98,25 @@ class UserFollowingController extends Controller
      */
     public function unfollow(Request $request)
     {
+         // check if user profile is private and user already requesting follow, if yes delete the follow request
+         $user = User::find($request->user_id);
+         if ($user->profile_is_private) {
+             $followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
+             if ($followRequest) {
+                 $followRequest->delete();
+             }
+
+             return response()->json([
+                 'message' => 'Follow request removed',
+                 'status' => 'request_removed'
+             ], 200);
+         }
+
         // check if user already following user or not
         if (!auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
                 'message' => 'You are not following this user'
             ], 400);
-        }
-
-        // check if user profile is private and user already requesting follow, if yes delete the follow request
-        $user = User::find($request->user_id);
-        if ($user->profile_is_private) {
-            $followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
-            if ($followRequest) {
-                $followRequest->delete();
-            }
-
-            return response()->json([
-                'message' => 'Follow request removed',
-                'status' => 'request_removed'
-            ], 200);
         }
 
         // logged in user unfollow anothe user
