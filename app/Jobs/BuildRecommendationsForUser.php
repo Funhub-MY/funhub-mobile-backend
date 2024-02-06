@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Services\ArticleRecommenderService;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,13 +14,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 
-class BuildRecommendationsForUser implements ShouldQueue
+class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 1200;
+    public $timeout = 1800;
 
-    protected $recommender, $user;
+    /**
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
+    public $uniqueFor = 1800;
+
+    public $recommender, $user;
+
     /**
      * Create a new job instance.
      *
@@ -31,15 +40,20 @@ class BuildRecommendationsForUser implements ShouldQueue
         $this->recommender = new ArticleRecommenderService($user);
     }
 
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array<int, object>
-     */
-    public function middleware(): array
+    public function uniqueId(): string
     {
-        return [(new WithoutOverlapping($this->user->id))->dontRelease()];
+        return $this->user->id;
     }
+
+    // /**
+    //  * Get the middleware the job should pass through.
+    //  *
+    //  * @return array<int, object>
+    //  */
+    // public function middleware(): array
+    // {
+    //     return [(new WithoutOverlapping($this->user->id))->dontRelease()];
+    // }
 
     /**
      * Execute the job.
@@ -48,11 +62,12 @@ class BuildRecommendationsForUser implements ShouldQueue
      */
     public function handle()
     {
-        try {
-            Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
-            $this->recommender->build();
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-        }
+        Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
+        $this->recommender->build();
+    }
+
+    public function failed(Exception $exception)
+    {
+        Log::error($exception->getMessage());
     }
 }

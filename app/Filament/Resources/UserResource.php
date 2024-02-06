@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
@@ -185,6 +187,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make(name: 'name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name: 'username')->sortable()->searchable(),
                 // status
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum([
@@ -214,6 +217,12 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ]),
+
+                // Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\BulkAction::make('Unsuspend User')
                     ->action(function (Collection $records) {
                         $records->each(function (User $record) {

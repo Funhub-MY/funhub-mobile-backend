@@ -104,9 +104,9 @@ class MerchantOfferVoucherResource extends Resource
 
                 TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
-                    ->formatStateUsing(function ($state) {
-                        return Str::limit($state, 20, '...') ?? '-';
-                    })
+                    // ->formatStateUsing(function ($state) {
+                    //     return Str::limit($state, 20, '...') ?? '-';
+                    // })
                     ->searchable()
                     ->sortable(),
 

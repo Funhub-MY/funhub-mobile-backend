@@ -46,7 +46,7 @@ class LocationResource extends Resource
                                 ->label('Cover')
                                 ->collection(Location::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
-                                // disk is s3_public 
+                                // disk is s3_public
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
@@ -85,7 +85,7 @@ class LocationResource extends Resource
                             TextInput::make('auto_complete_address')
                                 ->label('Find a Location')
                                 ->placeholder('Start typing an address ...'),
-                                
+
                             Map::make('location')
                                 ->autocomplete(
                                     fieldName: 'auto_complete_address',
@@ -122,6 +122,10 @@ class LocationResource extends Resource
                             Forms\Components\TextInput::make('address_2'),
                             Forms\Components\TextInput::make('city')
                                 ->required(),
+                            Forms\Components\TextInput::make('city_similar_name_1')
+                                ->label('City Similar Name 1'),
+                            Forms\Components\TextInput::make('city_similar_name_2')
+                                ->label('City Similar Name 2'),
                             Forms\Components\TextInput::make('zip_code')
                                 ->rules('numeric')
                                 ->label('Postcode')
@@ -148,13 +152,19 @@ class LocationResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('merchant.name')
-                    ->searchable()
-                    ->sortable(),
-
                 TextColumn::make('address'),
 
-                TextColumn::make('city'),
+                TextColumn::make('city')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('city_similar_name_1')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('city_similar_name_2')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('state.name'),
 
@@ -170,14 +180,14 @@ class LocationResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             AuditsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -185,5 +195,5 @@ class LocationResource extends Resource
             'create' => Pages\CreateLocation::route('/create'),
             'edit' => Pages\EditLocation::route('/{record}/edit'),
         ];
-    }    
+    }
 }

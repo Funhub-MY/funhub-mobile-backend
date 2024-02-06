@@ -23,6 +23,9 @@ class UserFollowingController extends Controller
      * @response scenario="success" {
      * "message": "You are now following this user"
      * }
+     * @response scenario="if user profile is private and not following" {
+     * "message": "Follow request sent"
+     * }
      * @response status=400 scenario="Not Found" {"message": "You are already following this user"}
      */
     public function follow(Request $request)
@@ -41,6 +44,25 @@ class UserFollowingController extends Controller
             ], 400);
         }
 
+        // if user profile is private then create a new follow request if not exist
+        $user = User::find($request->user_id);
+        if ($user->profile_is_private) {
+            $followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
+            if (!$followRequest) {
+                auth()->user()->followRequests()->create([
+                    'following_id' => $request->user_id
+                ]);
+
+                if ($user && $user->id !== auth()->user()->id) {
+                    $user->notify(new \App\Notifications\NewFollowRequest(auth()->user()));
+                }
+                return response()->json([
+                    'message' => 'Follow request sent',
+                    'status' => 'requested'
+                ], 200);
+            }
+        }
+
         // logged in user follow anothe user
         auth()->user()->followings()->attach($request->user_id);
 
@@ -56,7 +78,8 @@ class UserFollowingController extends Controller
         }
 
         return response()->json([
-            'message' => 'You are now following this user'
+            'message' => 'You are now following this user',
+            'status' => 'followed'
         ], 200);
     }
 
@@ -75,6 +98,20 @@ class UserFollowingController extends Controller
      */
     public function unfollow(Request $request)
     {
+         // check if user profile is private and user already requesting follow, if yes delete the follow request
+         $user = User::find($request->user_id);
+         if ($user->profile_is_private) {
+             $followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
+             if ($followRequest) {
+                 $followRequest->delete();
+             }
+
+             return response()->json([
+                 'message' => 'Follow request removed',
+                 'status' => 'request_removed'
+             ], 200);
+         }
+
         // check if user already following user or not
         if (!auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
@@ -111,7 +148,8 @@ class UserFollowingController extends Controller
         event(new UnfollowedUser(auth()->user(), User::find($request->user_id)));
 
         return response()->json([
-            'message' => 'You are now unfollowing this user'
+            'message' => 'You are now unfollowing this user',
+            'status' => 'unfollowed'
         ], 200);
     }
 
@@ -133,6 +171,12 @@ class UserFollowingController extends Controller
     {
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
+
+        if ($user->profile_is_private && $user->id !== auth()->id()) {
+            return response()->json([
+                'message' => 'User profile is private'
+            ], 404);
+        }
 
         $query = $user->followers();
         if ($request->has('query')) {
@@ -162,6 +206,13 @@ class UserFollowingController extends Controller
     {
         $user_id = $request->input('user_id') ?? auth()->id();
         $user = User::findOrFail($user_id);
+
+        if ($user->profile_is_private && $user->id !== auth()->id()) {
+            return response()->json([
+                'message' => 'User profile is private'
+            ], 404);
+        }
+
         $query = $user->followings();
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
@@ -169,5 +220,98 @@ class UserFollowingController extends Controller
         $followings = $query->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followings);
+    }
+
+    /**
+     * My Follow Requests
+     *
+     * @return void
+     *
+     * @group User
+     * @subgroup Followings
+     * @response scenario="success" {
+     * "users": []
+     * }
+     */
+    public function getMyFollowRequests()
+    {
+        $followRequests = auth()->user()->beingFollowedRequests()
+            ->where('accepted', false)
+            ->get();
+
+        $users = User::whereIn('id', $followRequests->pluck('user_id'))->paginate(config('app.paginate_per_page'));
+
+        return UserResource::collection($users);
+    }
+
+    /**
+     * Accept Follow Request
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User
+     * @subgroup Followings
+     * @bodyParam user_id int required The id of the user to accept follow request
+     * @response scenario="success" {
+     * "message": "You are now following this user"
+     * }
+     * @response status=400 scenario="Not Found" {"message": "Follow request not found"}
+     */
+    public function postAcceptFollowRequest(Request $request)
+    {
+        $followRequest = auth()->user()->beingFollowedRequests()
+            ->where('user_id', $request->user_id)
+            ->where('accepted', false)
+            ->first();
+
+        if (!$followRequest) {
+            return response()->json([
+                'message' => 'Follow request not found'
+            ], 404);
+        }
+
+        auth()->user()->followers()->attach($request->user_id);
+
+        $followRequest->accepted = true;
+        $followRequest->save();
+
+        return response()->json([
+            'message' => 'Accepted following request'
+        ], 200);
+    }
+
+    /**
+     * Reject Follow Request
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User
+     * @subgroup Followings
+     * @bodyParam user_id int required The id of the user to reject follow request
+     * @response scenario="success" {
+     * "message": "Follow request removed"
+     * }
+     */
+    public function postRejectFollowRequest(Request $request)
+    {
+        $followRequest = auth()->user()->beingFollowedRequests()
+            ->where('user_id', $request->user_id)
+            ->where('accepted', false)
+            ->first();
+
+        if (!$followRequest) {
+            return response()->json([
+                'message' => 'Follow request not found'
+            ], 404);
+        }
+
+        // remove record
+        $followRequest->delete();
+
+        return response()->json([
+            'message' => 'Rejected following request'
+        ], 200);
     }
 }

@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 17
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: provident
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quia
+                  example: rerum
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - architecto
+                    - cupiditate
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - aut
+                    - asperiores
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: cumque
+        example: fugit
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: corporis
+                  example: inventore
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: vel
+                  example: occaecati
               required:
                 - comment_id
                 - reason
@@ -1496,7 +1496,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: dolorum
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -4526,7 +4526,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: adaline.rogahn@example.net
+                  example: zhoeger@example.org
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4611,7 +4611,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1351
+                      line: 1361
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5075,7 +5075,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1351
+                        line: 1361
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5545,7 +5545,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: possimus
+                  example: est
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -5773,7 +5773,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -5811,7 +5811,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -5849,7 +5849,7 @@ paths:
         in: path
         name: support_request_id
         description: 'The ID of the support request.'
-        example: 1
+        example: 10
         required: true
         schema:
           type: integer
@@ -6286,6 +6286,22 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/maintenance:
+    get:
+      summary: 'Get maintenance info'
+      operationId: getMaintenanceInfo
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n}"
+      tags:
+        - Maintenance
   /api/v1/media/signed_upload:
     get:
       summary: "Get Signed URL Upload Media (photos/videos)\nMust only call one per file. If multiple files, call multiple times. URL generated you need to PUT a binary file to it."
@@ -6691,7 +6707,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: est
+        example: sed
         required: true
         schema:
           type: string
@@ -7518,6 +7534,60 @@ paths:
         required: true
         schema:
           type: string
+  /api/v1/user/import-contacts:
+    post:
+      summary: 'Import User Contacts'
+      operationId: importUserContacts
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"message\": \"Contacts imported successfully\""
+      tags:
+        - User
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contacts:
+                  type: array
+                  description: required.
+                  example:
+                    -
+                      country_code: '60'
+                      phone_no: '123456789'
+                      name: 'John Doe'
+                  items:
+                    type: string
+  /api/v1/user/contacts-friends:
+    get:
+      summary: 'Get Contacts not yet followed'
+      operationId: getContactsNotYetFollowed
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: error
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No friends found'
+                properties:
+                  message:
+                    type: string
+                    example: 'No friends found'
+      tags:
+        - User
   /api/v1/user/followings:
     get:
       summary: 'Get all followings of user id or logged in user'
@@ -7642,17 +7712,17 @@ paths:
       parameters: []
       responses:
         200:
-          description: success
+          description: 'if user profile is private and not following'
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'You are now following this user'
+                  message: 'Follow request sent'
                 properties:
                   message:
                     type: string
-                    example: 'You are now following this user'
+                    example: 'Follow request sent'
         400:
           description: 'Not Found'
           content:
@@ -7677,7 +7747,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 9
+                  example: 13
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -7723,9 +7793,110 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 6
+                  example: 9
               required:
                 - user_id
+  /api/v1/user/request_follow/accept:
+    post:
+      summary: 'Accept Follow Request'
+      operationId: acceptFollowRequest
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You are now following this user'
+                properties:
+                  message:
+                    type: string
+                    example: 'You are now following this user'
+        400:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Follow request not found'
+                properties:
+                  message:
+                    type: string
+                    example: 'Follow request not found'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'The id of the user to accept follow request'
+                  example: 5
+              required:
+                - user_id
+  /api/v1/user/request_follow/reject:
+    post:
+      summary: 'Reject Follow Request'
+      operationId: rejectFollowRequest
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Follow request removed'
+                properties:
+                  message:
+                    type: string
+                    example: 'Follow request removed'
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'The id of the user to reject follow request'
+                  example: 16
+              required:
+                - user_id
+  /api/v1/user/request_follows:
+    get:
+      summary: 'My Follow Requests'
+      operationId: myFollowRequests
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  users: []
+                properties:
+                  users:
+                    type: array
+                    example: []
+      tags:
+        - User
   /api/v1/user/report:
     post:
       summary: 'Report a user'
@@ -7763,15 +7934,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: voluptates
+                  example: nam
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quia
+                  example: omnis
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: qui
+                  example: atque
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -7888,7 +8059,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: repellendus
+                  example: blanditiis
               required:
                 - reason
   /api/v1/users_by_id:
@@ -7922,7 +8093,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: facere
+                  example: atque
               required:
                 - user_ids
     parameters:
@@ -8798,7 +8969,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female
@@ -8951,6 +9122,44 @@ paths:
                 - old_password
                 - password
                 - password_confirmation
+  /api/v1/user/settings/profile-privacy:
+    post:
+      summary: 'Profile Privacy Setting'
+      operationId: profilePrivacySetting
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Profile privacy updated'
+                  profile_privacy: public
+                properties:
+                  message:
+                    type: string
+                    example: 'Profile privacy updated'
+                  profile_privacy:
+                    type: string
+                    example: public
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                profile_privacy:
+                  type: string
+                  description: 'The profile privacy of the user.'
+                  example: public
+              required:
+                - profile_privacy
   /api/v1/views:
     post:
       summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, user profiles and location"
@@ -9053,6 +9262,9 @@ tags:
     description: ''
   -
     name: Location
+    description: ''
+  -
+    name: Maintenance
     description: ''
   -
     name: Media

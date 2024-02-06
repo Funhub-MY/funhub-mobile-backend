@@ -5,6 +5,7 @@ namespace App\Providers;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +30,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Filament::registerRenderHook(
+            name: 'scripts.start',
+            callback: fn () => new HtmlString(html: "
+                <script>
+                    document.addEventListener('DOMContentLoaded', function(){
+                       let sidebar_item = document.querySelector('.filament-sidebar-item-active');
+                               if( sidebar_item ) {
+                                    sidebar_item.scrollIntoView({ behavior: \"auto\", block: \"center\", inline: \"center\" });
+                               }
+                    });
+                </script>
+        "));
+
         if ($this->app->environment('production')) {
             // if filament is serving
             Filament::serving(function () {

@@ -470,8 +470,10 @@ class ArticleController extends Controller
     public function getMyArticles(Request $request)
     {
         $user_id = auth()->user()->id;
+        $user = auth()->user();
+
         if ($request->has('user_id')) { // check if 'user_id' is present in the request
-            $user = User::find($request->user_id);
+            $user = User::find($request->user_id); // override
             if ($user) {
                 $user_id = $user->id;
                 // check if this user blocked authenticated user
@@ -483,12 +485,20 @@ class ArticleController extends Controller
             }
         }
 
+        if ($user->profile_is_private && $user->id !== auth()->id()) {
+            // check if this user followers has authenticated user
+            if (!auth()->user()->followings()->where('following_id', $user_id)->exists()) {
+                return response()->json([
+                    'message' => 'User profile is private'
+                ], 404);
+            }
+        }
+
         $query = Article::where('user_id', $user_id);
         // video only
         if ($request->has('video_only') && $request->video_only == 1) {
             $query->where('type', 'video');
         }
-
 
         if ($request->has('published_only')) {
             $query->where('status', Article::STATUS[1]);

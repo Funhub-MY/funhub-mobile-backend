@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: possimus
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: possimus
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -56,7 +56,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1351,
+                      "line": 1361,
                       "function": "abort"
                   },
                   {
@@ -584,7 +584,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3akcvdeE518aghZf4D6bPV6'
+      - 'Bearer 3h66agEkVPe5cDZa8dv14bf'
     controller: null
     method: null
     route: null

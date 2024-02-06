@@ -73,7 +73,7 @@ class ApprovalResource extends Resource
         });
         // ->where('approved', false);
 
-        $query->orderBy('approved', 'asc') 
+        $query->orderBy('approved', 'asc')
         ->orderBy('created_at', 'desc');
 
         return $query;
@@ -91,12 +91,12 @@ class ApprovalResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('approvable_id')
+                TextColumn::make('id')
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('approvable.created_at')
+                TextColumn::make('created_at')
                     ->label('Requested At')
                     ->date('d/m/Y h:iA')
                     ->searchable()
@@ -105,8 +105,8 @@ class ApprovalResource extends Resource
                 BadgeColumn::make('approved')
                     ->label('Status')
                     ->enum([
-                        '1' => 'Approved',
-                        '0' => 'Pending',
+                        1 => 'Approved',
+                        0 => 'Pending',
                     ])
                     ->colors([
                         'success' => 1,
@@ -125,7 +125,12 @@ class ApprovalResource extends Resource
                 ->getStateUsing(function (Model $record) {
                         $data = json_decode($record->data, true);
                         $user = User::where('id', $data['user']['id'])->first();
-                        $user = $user ? $user->name . '('.$user->email.')' : '';
+                        $userIdentifiable = $user->email;
+                        if (!$userIdentifiable) {
+                            $userIdentifiable = '+'. $user->phone_country_code . $user->phone_no;
+                        }
+
+                        $user = $user ? $user->name . '('.$userIdentifiable.')' : '';
 
                         $html = '';
                         if ($record->approvable_type == Reward::class) {
@@ -218,6 +223,7 @@ class ApprovalResource extends Resource
                                     }
 
                                     Notification::make()
+                                        ->success()
                                         ->title('Approved ID: '.$record->id)
                                         ->send();
                                 }
@@ -228,7 +234,9 @@ class ApprovalResource extends Resource
                                     ->send();
                             }
                         }
-                    }),
+                    })
+                    ->icon('heroicon-o-check-circle')
+                    ->requiresConfirmation(),
                 BulkAction::make('reject')
                     ->label('Reject')
                     ->action(function (Approval $record): void {
@@ -241,7 +249,9 @@ class ApprovalResource extends Resource
                             return;
                         }
                         $record->update(['approved' => false]);
-                    }),
+                    })
+                    ->icon('heroicon-o-x-circle')
+                    ->requiresConfirmation(),
             ]);
     }
 
