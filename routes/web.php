@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
 use Kreait\Laravel\Firebase\Facades\Firebase;
+use App\Http\Livewire\MerchantRegister;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,3 +56,5 @@ Route::get('/auth/facebook/callback',function () {
 });
 // this call back is use for socialite callback only for unit test. not using at any place.
 Route::get('/auth/google/callback', [\App\Http\Controllers\Api\AuthController::class, 'googleCallBack']);
+
+Route::get('/merchants/register', MerchantRegister::class)->name('merchant.register');

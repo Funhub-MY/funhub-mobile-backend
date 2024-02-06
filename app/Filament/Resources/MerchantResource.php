@@ -172,10 +172,10 @@ class MerchantResource extends Resource
 
     public static function getPages(): array
     {
-        return [
-            'index' => Pages\ListMerchants::route('/'),
-            'create' => Pages\CreateMerchant::route('/create'),
-            'edit' => Pages\EditMerchant::route('/{record}/edit'),
-        ];
+            return [
+                'index' => Pages\ListMerchants::route('/'),
+                'create' => Pages\CreateMerchant::route('/create'),
+                'edit' => Pages\EditMerchant::route('/{record}/edit'),
+            ];
     }
 }
