@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: officiis
+        example: ratione
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: officiis
+      share_code: ratione
     fileParameters: []
     responses:
       -
@@ -521,7 +521,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DPa6gkfcdeb84aE613h5VZv'
+      - 'Bearer he4kPb85cZa6VE6g1fvDda3'
     controller: null
     method: null
     route: null

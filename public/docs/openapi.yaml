@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 1
+                  example: 3
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: qui
+                  example: inventore
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: numquam
+                  example: quos
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - et
+                    - exercitationem
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - labore
+                    - ipsa
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: sit
+        example: et
         required: true
         schema:
           type: string
@@ -1244,11 +1244,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: neque
+                  example: ex
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: eligendi
+                  example: et
               required:
                 - comment_id
                 - reason
@@ -1494,6 +1494,15 @@ paths:
                   type: string
                   description: 'The body of the comment.'
                   example: 'This is a comment'
+                tagged_users:
+                  type: array
+                  description: 'List of user ids tagged in comment.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
               required:
                 - body
     delete:
@@ -1521,7 +1530,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: provident
+        example: ab
         required: true
         schema:
           type: string
@@ -4335,7 +4344,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: yhansen@example.com
+                  example: brutherford@example.net
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5246,7 +5255,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: officiis
+                  example: ratione
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -6408,7 +6417,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: cupiditate
+        example: quia
         required: true
         schema:
           type: string
@@ -7448,7 +7457,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 19
+                  example: 16
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -7494,7 +7503,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 2
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -7540,7 +7549,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 9
+                  example: 17
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -7574,7 +7583,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 19
+                  example: 9
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -7635,15 +7644,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: voluptas
+                  example: libero
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: odio
+                  example: est
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: vel
+                  example: ullam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -7760,7 +7769,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: esse
+                  example: cum
               required:
                 - reason
   /api/v1/users_by_id:
@@ -7794,7 +7803,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quasi
+                  example: dolor
               required:
                 - user_ids
     parameters:

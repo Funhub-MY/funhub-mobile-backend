@@ -249,6 +249,7 @@ class CommentController extends Controller
      * @authenticated
      * @urlParam id integer required The id of the comment. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
+     * @bodyParam tagged_users array List of user ids tagged in comment. Example: [1, 2, 3]
      *
      * @response scenario=success {
      * "message": "Comment updated",
@@ -264,8 +265,28 @@ class CommentController extends Controller
 
         // check if owner of comment
         $comment = Comment::where('id', $id)->where('user_id', auth()->id());
+
         if ($comment->exists()) {
             $comment->update($request->only(['body']));
+
+            // update tagged_users as well
+            if ($request->has('tagged_users')) {
+                // old list
+                $oldTaggedUsers = $comment->taggedUsers->pluck('id')->toArray();
+
+                $comment->taggedUsers()->sync($request->tagged_users);
+
+                // send notification to newly tagged user
+                $newTaggedUsers = array_diff($request->tagged_users, $oldTaggedUsers);
+
+                $comment->taggedUsers->whereIn('id', $newTaggedUsers)->each(function ($taggedUser) use ($comment) {
+                    try {
+                        $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
+                    } catch (\Exception $e) {
+                        Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                    }
+                });
+            }
             return response()->json(['message' => 'Comment updated']);
         } else {
             return response()->json(['message' => 'Comment not found'], 404);
