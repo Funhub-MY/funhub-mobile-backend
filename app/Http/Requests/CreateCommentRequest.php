@@ -27,6 +27,8 @@ class CreateCommentRequest extends FormRequest
             'type' => 'required',
             'id' => 'required',
             'body' => 'required',
+            // tagged_users only validate if it's not empty and must be array of integers
+            'tagged_users' => 'nullable|array',
         ];
     }
 

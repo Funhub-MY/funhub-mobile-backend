@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\User;
 use App\Notifications\Commented;
+use App\Notifications\TaggedUserInComment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
@@ -218,7 +219,7 @@ class CommentTest extends TestCase
             ->assertJsonStructure([
                 'message'
             ]);
-        
+
         $this->assertDatabaseHas('comments_likes', [
             'comment_id' => $comment->id,
             'user_id' => $this->user->id,
@@ -231,7 +232,6 @@ class CommentTest extends TestCase
             ->assertJsonStructure([
                 'comment'
             ]);
-        Log::info($response->json());
 
 
         $this->assertEquals(1, $response->json('comment.counts.likes'));
@@ -258,13 +258,13 @@ class CommentTest extends TestCase
              ->assertJsonStructure([
                  'comment'
              ]);
- 
+
          $this->assertEquals(0, $response->json('comment.counts.likes'));
     }
 
     /**
      * Test Delete a comment where its liked
-     * 
+     *
      * /api/v1/comments
      */
     public function testLikedCommentAndDeleteComment()
@@ -344,6 +344,72 @@ class CommentTest extends TestCase
 
         Notification::assertSentTo(
             [$user], Commented::class,
+            function ($notification, $channels) {
+                return in_array('database', $channels);
+            }
+        );
+    }
+
+    public function testTagFollowerInComment()
+    {
+        Notification::fake();
+
+        // create a fake user
+        $userA = User::factory()->create();
+        $userB = User::factory()->create();
+
+        // follow logged in user
+        $this->actingAs($userA);
+         // $this->user follows this $user first
+         $this->postJson('/api/v1/user/follow', [
+            'user_id' => $this->user->id,
+        ]);
+
+        // act as default user again
+        $this->actingAs($this->user);
+
+        // create a new artcile
+        $article = Article::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        // get taggable users
+        $response = $this->getJson('/api/v1/comments/taggable_users');
+        $response->assertStatus(200);
+
+        $this->assertEquals(1, count($response->json('data')));
+
+        // total count of pagination is 1
+        $this->assertEquals(1, $response->json('meta.total'));
+
+        // data first object id is userA id
+        $this->assertEquals($userA->id, $response->json('data.0.id'));
+
+        // create a comment tagging user A  (as logged in user)
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'test reply to comment',
+            'tagged_users' => [$userA->id]
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'comment'
+            ]);
+
+        // check database comments_users has record
+        $this->assertDatabaseHas('comments_users', [
+            'comment_id' => $response->json('comment.id'),
+            'user_id' => $userA->id,
+        ]);
+
+        // check repsonse comment->tagged_users has userA
+        $this->assertEquals($userA->id, $response->json('comment.tagged_users.0.id'));
+
+        // assert notification sent to userA
+        Notification::assertSentTo(
+            [$userA], TaggedUserInComment::class,
             function ($notification, $channels) {
                 return in_array('database', $channels);
             }

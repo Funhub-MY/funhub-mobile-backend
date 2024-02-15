@@ -347,6 +347,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(UserProfilePrivateSetting::class, 'user_id');
     }
 
+    public function commentsTagged()
+    {
+        $this->belongsToMany(Comment::class, 'comments_users', 'user_id', 'comment_id')
+            ->withTimestamps();
+    }
+
     /**
      * Get the user's point balance
      */

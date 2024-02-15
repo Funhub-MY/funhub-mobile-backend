@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 17
+                  example: 1
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: provident
+                  example: qui
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: rerum
+                  example: numquam
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - cupiditate
+                    - et
                   items:
                     type: string
                 category_ids:
@@ -533,7 +533,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - asperiores
+                    - labore
                   items:
                     type: string
                 category_ids:
@@ -1163,7 +1163,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: fugit
+        example: sit
         required: true
         schema:
           type: string
@@ -1244,14 +1244,30 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: inventore
+                  example: neque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: occaecati
+                  example: eligendi
               required:
                 - comment_id
                 - reason
+  /api/v1/comments/taggable_users:
+    get:
+      summary: "Get taggable users in comment\nOnly users whos is followers of logged in user can be tag in article"
+      operationId: getTaggableUsersInCommentOnlyUsersWhosIsFollowersOfLoggedInUserCanBeTagInArticle
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"data\": [],\n}"
+      tags:
+        - Article
   /api/v1/comments:
     get:
       summary: 'Get comments on a commentable type (eg. Articles)'
@@ -1369,6 +1385,15 @@ paths:
                   type: string
                   description: 'The body of the comment.'
                   example: 'This is a comment'
+                tagged_users:
+                  type: array
+                  description: 'List of user ids tagged in comment.'
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                  items:
+                    type: string
                 parent_id:
                   type: integer
                   description: 'The id of the parent comment (For Replies).'
@@ -1496,7 +1521,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: voluptatem
+        example: provident
         required: true
         schema:
           type: string
@@ -1894,28 +1919,10 @@ paths:
                       class: Illuminate\Routing\Controller
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                      line: 21
-                      function: dispatch
-                      class: Illuminate\Routing\ControllerDispatcher
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
-                      line: 31
-                      function: 'Sentry\Laravel\Tracing\Routing\{closure}'
-                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                      line: 20
-                      function: wrapRouteDispatch
-                      class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
-                      type: '->'
-                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                       line: 259
                       function: dispatch
-                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                      class: Illuminate\Routing\ControllerDispatcher
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -2014,30 +2021,6 @@ paths:
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
-                      line: 45
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Http\SetRequestIpMiddleware
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
-                      line: 31
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Http\SetRequestMiddleware
-                      type: '->'
-                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                       line: 19
                       function: 'Illuminate\Pipeline\{closure}'
@@ -2132,18 +2115,6 @@ paths:
                       line: 180
                       function: handle
                       class: Illuminate\Http\Middleware\TrustProxies
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
-                      line: 87
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Tracing\Middleware
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -2432,28 +2403,10 @@ paths:
                         class: Illuminate\Routing\Controller
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                        line: 21
-                        function: dispatch
-                        class: Illuminate\Routing\ControllerDispatcher
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
-                        line: 31
-                        function: 'Sentry\Laravel\Tracing\Routing\{closure}'
-                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                        line: 20
-                        function: wrapRouteDispatch
-                        class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
-                        type: '->'
-                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                         line: 259
                         function: dispatch
-                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                        class: Illuminate\Routing\ControllerDispatcher
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -2552,30 +2505,6 @@ paths:
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
-                        line: 45
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Http\SetRequestIpMiddleware
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
-                        line: 31
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Http\SetRequestMiddleware
-                        type: '->'
-                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                         line: 19
                         function: 'Illuminate\Pipeline\{closure}'
@@ -2670,18 +2599,6 @@ paths:
                         line: 180
                         function: handle
                         class: Illuminate\Http\Middleware\TrustProxies
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
-                        line: 87
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Tracing\Middleware
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -3007,28 +2924,10 @@ paths:
                       class: Illuminate\Routing\Controller
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                      line: 21
-                      function: dispatch
-                      class: Illuminate\Routing\ControllerDispatcher
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
-                      line: 31
-                      function: 'Sentry\Laravel\Tracing\Routing\{closure}'
-                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                      line: 20
-                      function: wrapRouteDispatch
-                      class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
-                      type: '->'
-                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                       line: 259
                       function: dispatch
-                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                      class: Illuminate\Routing\ControllerDispatcher
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -3127,30 +3026,6 @@ paths:
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
-                      line: 45
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Http\SetRequestIpMiddleware
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
-                      line: 31
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Http\SetRequestMiddleware
-                      type: '->'
-                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                       line: 19
                       function: 'Illuminate\Pipeline\{closure}'
@@ -3245,18 +3120,6 @@ paths:
                       line: 180
                       function: handle
                       class: Illuminate\Http\Middleware\TrustProxies
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
-                      line: 87
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Tracing\Middleware
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -3545,28 +3408,10 @@ paths:
                         class: Illuminate\Routing\Controller
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                        line: 21
-                        function: dispatch
-                        class: Illuminate\Routing\ControllerDispatcher
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
-                        line: 31
-                        function: 'Sentry\Laravel\Tracing\Routing\{closure}'
-                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                        line: 20
-                        function: wrapRouteDispatch
-                        class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
-                        type: '->'
-                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                         line: 259
                         function: dispatch
-                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                        class: Illuminate\Routing\ControllerDispatcher
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -3665,30 +3510,6 @@ paths:
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
-                        line: 45
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Http\SetRequestIpMiddleware
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
-                        line: 31
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Http\SetRequestMiddleware
-                        type: '->'
-                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                         line: 19
                         function: 'Illuminate\Pipeline\{closure}'
@@ -3783,18 +3604,6 @@ paths:
                         line: 180
                         function: handle
                         class: Illuminate\Http\Middleware\TrustProxies
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
-                        line: 87
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Tracing\Middleware
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -4526,7 +4335,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: zhoeger@example.org
+                  example: yhansen@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4626,28 +4435,10 @@ paths:
                       class: Illuminate\Routing\Controller
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                      line: 21
-                      function: dispatch
-                      class: Illuminate\Routing\ControllerDispatcher
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
-                      line: 31
-                      function: 'Sentry\Laravel\Tracing\Routing\{closure}'
-                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                      line: 20
-                      function: wrapRouteDispatch
-                      class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
-                      type: '->'
-                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                       line: 259
                       function: dispatch
-                      class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                      class: Illuminate\Routing\ControllerDispatcher
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -4746,30 +4537,6 @@ paths:
                       class: Illuminate\Foundation\Http\Kernel
                       type: '->'
                     -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
-                      line: 45
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Http\SetRequestIpMiddleware
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
-                      line: 31
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Http\SetRequestMiddleware
-                      type: '->'
-                    -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                       line: 19
                       function: 'Illuminate\Pipeline\{closure}'
@@ -4864,18 +4631,6 @@ paths:
                       line: 180
                       function: handle
                       class: Illuminate\Http\Middleware\TrustProxies
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
-                      line: 87
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Sentry\Laravel\Tracing\Middleware
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -5090,28 +4845,10 @@ paths:
                         class: Illuminate\Routing\Controller
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                        line: 21
-                        function: dispatch
-                        class: Illuminate\Routing\ControllerDispatcher
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php
-                        line: 31
-                        function: 'Sentry\Laravel\Tracing\Routing\{closure}'
-                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php
-                        line: 20
-                        function: wrapRouteDispatch
-                        class: Sentry\Laravel\Tracing\Routing\TracingRoutingDispatcher
-                        type: '->'
-                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
                         line: 259
                         function: dispatch
-                        class: Sentry\Laravel\Tracing\Routing\TracingControllerDispatcherTracing
+                        class: Illuminate\Routing\ControllerDispatcher
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
@@ -5210,30 +4947,6 @@ paths:
                         class: Illuminate\Foundation\Http\Kernel
                         type: '->'
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php
-                        line: 45
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Http\SetRequestIpMiddleware
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php
-                        line: 31
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Http\SetRequestMiddleware
-                        type: '->'
-                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
                         line: 19
                         function: 'Illuminate\Pipeline\{closure}'
@@ -5328,18 +5041,6 @@ paths:
                         line: 180
                         function: handle
                         class: Illuminate\Http\Middleware\TrustProxies
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php
-                        line: 87
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Sentry\Laravel\Tracing\Middleware
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
@@ -5545,7 +5246,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: est
+                  example: officiis
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -6707,7 +6408,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: sed
+        example: cupiditate
         required: true
         schema:
           type: string
@@ -7747,7 +7448,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 13
+                  example: 19
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -7793,7 +7494,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 9
+                  example: 15
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -7839,7 +7540,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 5
+                  example: 9
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -7873,7 +7574,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 16
+                  example: 19
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -7934,15 +7635,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: nam
+                  example: voluptas
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: omnis
+                  example: odio
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: atque
+                  example: vel
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -8059,7 +7760,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: blanditiis
+                  example: esse
               required:
                 - reason
   /api/v1/users_by_id:
@@ -8093,7 +7794,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: atque
+                  example: quasi
               required:
                 - user_ids
     parameters:

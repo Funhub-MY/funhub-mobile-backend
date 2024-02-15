@@ -23,6 +23,36 @@ class CommentResource extends JsonResource
             $commentBody = $this->body;
         }
 
+        // get taggeed users
+        $taggedUsers = [];
+        if ($this->taggedUsers) {
+            foreach ($this->taggedUsers as $taggedUser) {
+                $name = null;
+                $username = null;
+                $avatar_url = null;
+                $avatar_thumb_url = null;
+                if ($taggedUser->status == User::STATUS_ARCHIVED) {
+                    $name = '用户已注销';
+                    $username = '用户已注销';
+                    $avatar_url = null;
+                    $avatar_thumb_url = null;
+                } else {
+                    $name = $taggedUser->name;
+                    $username = $taggedUser->username;
+                    $avatar_url = $taggedUser->avatar_url;
+                    $avatar_thumb_url = $taggedUser->avatar_thumb_url;
+                }
+
+                $taggedUsers[] = [
+                    'id' => $taggedUser->id,
+                    'name' => $name,
+                    'username' => $username,
+                    'avatar_url' => $avatar_url,
+                    'avatar_thumb' => $avatar_thumb_url,
+                ];
+            }
+        }
+
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
@@ -32,6 +62,7 @@ class CommentResource extends JsonResource
                 'likes' => $this->likes()->count(),
                 'replies' => $this->replies()->count(),
             ],
+            'tagged_users' => $taggedUsers,
             'body' => $commentBody,
             'liked_by_user' => $this->likes->contains('user_id', auth()->id()),
             'likes' => CommentLikeResource::collection($this->likes),

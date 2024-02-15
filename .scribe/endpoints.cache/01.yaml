@@ -552,31 +552,10 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php",
-                      "line": 21,
-                      "function": "dispatch",
-                      "class": "Illuminate\\Routing\\ControllerDispatcher",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php",
-                      "line": 31,
-                      "function": "Sentry\\Laravel\\Tracing\\Routing\\{closure}",
-                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php",
-                      "line": 20,
-                      "function": "wrapRouteDispatch",
-                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingRoutingDispatcher",
-                      "type": "->"
-                  },
-                  {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
                       "line": 259,
                       "function": "dispatch",
-                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing",
+                      "class": "Illuminate\\Routing\\ControllerDispatcher",
                       "type": "->"
                   },
                   {
@@ -692,34 +671,6 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php",
-                      "line": 45,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Sentry\\Laravel\\Http\\SetRequestIpMiddleware",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php",
-                      "line": 31,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Sentry\\Laravel\\Http\\SetRequestMiddleware",
-                      "type": "->"
-                  },
-                  {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php",
                       "line": 19,
                       "function": "Illuminate\\Pipeline\\{closure}",
@@ -829,20 +780,6 @@ endpoints:
                       "line": 180,
                       "function": "handle",
                       "class": "Illuminate\\Http\\Middleware\\TrustProxies",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php",
-                      "line": 87,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Sentry\\Laravel\\Tracing\\Middleware",
                       "type": "->"
                   },
                   {
@@ -1220,31 +1157,10 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php",
-                      "line": 21,
-                      "function": "dispatch",
-                      "class": "Illuminate\\Routing\\ControllerDispatcher",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingRoutingDispatcher.php",
-                      "line": 31,
-                      "function": "Sentry\\Laravel\\Tracing\\Routing\\{closure}",
-                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Routing/TracingControllerDispatcherTracing.php",
-                      "line": 20,
-                      "function": "wrapRouteDispatch",
-                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingRoutingDispatcher",
-                      "type": "->"
-                  },
-                  {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
                       "line": 259,
                       "function": "dispatch",
-                      "class": "Sentry\\Laravel\\Tracing\\Routing\\TracingControllerDispatcherTracing",
+                      "class": "Illuminate\\Routing\\ControllerDispatcher",
                       "type": "->"
                   },
                   {
@@ -1360,34 +1276,6 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestIpMiddleware.php",
-                      "line": 45,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Sentry\\Laravel\\Http\\SetRequestIpMiddleware",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Http/SetRequestMiddleware.php",
-                      "line": 31,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Sentry\\Laravel\\Http\\SetRequestMiddleware",
-                      "type": "->"
-                  },
-                  {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php",
                       "line": 19,
                       "function": "Illuminate\\Pipeline\\{closure}",
@@ -1497,20 +1385,6 @@ endpoints:
                       "line": 180,
                       "function": "handle",
                       "class": "Illuminate\\Http\\Middleware\\TrustProxies",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/sentry/sentry-laravel/src/Sentry/Laravel/Tracing/Middleware.php",
-                      "line": 87,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Sentry\\Laravel\\Tracing\\Middleware",
                       "type": "->"
                   },
                   {
@@ -1952,7 +1826,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vbegZEc564fdPaa38V6Dhk1'
+      - 'Bearer ae143ac8PEf5Vgd6vZ6khDb'
     controller: null
     method: null
     route: null
@@ -2040,7 +1914,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3hDa6Ek48d1f5aZvceg6bPV'
+      - 'Bearer baV14dgPa5E6ceZ6vD3f8hk'
     controller: null
     method: null
     route: null
@@ -2090,7 +1964,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vaZD643eEfbPh5gka61d8cV'
+      - 'Bearer 1aDhVg835f6ebvdP6kZa4cE'
     controller: null
     method: null
     route: null
@@ -2146,7 +2020,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bfvD66EkcVha415P8gdaeZ3'
+      - 'Bearer 8Dh4aedEk63ZPv5abcfVg16'
     controller: null
     method: null
     route: null
