@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\BadgeColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
 use App\Notifications\MerchantOnboardEmail;
@@ -37,6 +38,24 @@ class MerchantResource extends Resource
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 2;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        $pendingApprovals = Merchant::where('status', Merchant::STATUS_PENDING)->count();
+
+        return ($pendingApprovals > 0) ? (string) $pendingApprovals : null;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $query
+        ->orderBy('status', 'asc')
+        ->orderBy('created_at', 'desc');
+
+        return $query;
+    }
 
     public static function form(Form $form): Form
     {
@@ -118,6 +137,18 @@ class MerchantResource extends Resource
     {
         return $table
             ->columns([
+                BadgeColumn::make('status')
+                    ->label('Status')
+                    ->enum([
+                        0 => 'Pending',
+                        1 => 'Approved',
+                        2 => 'Rejected',
+                    ])
+                    ->colors([
+                        'warning' => 0,
+                        'success' => 1,
+                        'danger' => 2,
+                    ]),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
@@ -159,7 +190,56 @@ class MerchantResource extends Resource
                         }
                     })
                     ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
+
+                BulkAction::make('Approve Merchant')
+                    ->label('Approve Merchant')
+                    ->action(function (Collection $records, array $data): void {
+                        foreach ($records as $record) {
+                            $record->update(['status' => Merchant::STATUS_APPROVED]);
+
+                            if (empty($record->default_password)) {
+                                $record->default_password = Str::random(8);
+                                $record->save();
+
+                                $user = $record->user;
+                                $user->password = bcrypt($record->default_password);
+                                $user->save();
+                            }
+                            $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
+
+                            Notification::make()
+                                ->success()
+                                ->title('Approved Merchant ID: '.$record->id)
+                                ->send();
+                        }
+                    })
+                    ->icon('heroicon-o-check-circle')
                     ->deselectRecordsAfterCompletion()
+                    ->requiresConfirmation(),
+                BulkAction::make('Reject Merchant')
+                    ->label('Reject Merchant')
+                    ->action(function (Collection $records, array $data): void {
+                        foreach ($records as $record) {
+                            // if record already approved warning and ignore
+                            if ($record['status'] === Merchant::STATUS_APPROVED) {
+                                Notification::make()
+                                    ->title('Unable to reject Merchant ID: '.$record->id. ' Record already approved.')
+                                    ->warning()
+                                    ->send();
+                            } else {
+                                $record->update(['status' => Merchant::STATUS_REJECTED]);
+
+                                Notification::make()
+                                    ->success()
+                                    ->title('Rejected Merchant ID: '.$record->id)
+                                    ->send();
+                            }
+                        }
+                    })
+                    ->icon('heroicon-o-x-circle')
+                    ->deselectRecordsAfterCompletion()
+                    ->requiresConfirmation(),
             ]);
     }
 

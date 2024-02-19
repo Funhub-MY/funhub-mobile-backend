@@ -15,6 +15,16 @@ class Merchant extends BaseModel implements HasMedia, Auditable
 
     const MEDIA_COLLECTION_NAME = 'merchant_logos';
 
+    const STATUS = [
+        0 => 'Pending',
+        1 => 'Approved',
+        2 => 'Rejected'
+    ];
+
+    const STATUS_PENDING = 0;
+    const STATUS_APPROVED = 1;
+    const STATUS_REJECTED = 2;
+
     protected $guarded = ['id'];
 
     public function user()

@@ -58,32 +58,42 @@ class MerchantRegister extends Component implements HasForms
             'pic_ic_no' => 'required|numeric',
             'pic_phone_no' => 'required',
             'pic_email' => 'required|email',
-            'stores' => 'required',
-            'stores.*.name' => 'required',
-            'stores.*.is_hq' => 'boolean',
-            'stores.*.manager_name' => 'required',
-            'stores.*.business_phone_no' => 'required',
-            'stores.*.address' => 'required',
-            'stores.*.zip_code' => 'required|numeric',
-            'stores.*.business_hours' => 'required',
-            'stores.*.business_hours.*.day' => 'required',
-            'stores.*.business_hours.*.open_time' => 'required',
-            'stores.*.business_hours.*.close_time' => 'required',
+            // 'stores' => 'required',
+            // 'stores.*.name' => 'required',
+            // 'stores.*.is_hq' => 'boolean',
+            // 'stores.*.manager_name' => 'required',
+            // 'stores.*.business_phone_no' => 'required',
+            // 'stores.*.address' => 'required',
+            // 'stores.*.zip_code' => 'required|numeric',
+            // 'stores.*.business_hours' => 'required',
+            // 'stores.*.business_hours.*.day' => 'required',
+            // 'stores.*.business_hours.*.open_time' => 'required',
+            // 'stores.*.business_hours.*.close_time' => 'required',
+            'name' => 'required',
+            'is_hq' => 'boolean',
+            'manager_name' => 'required',
+            'business_phone_no' => 'required',
+            'address' => 'required',
+            'zip_code' => 'required|numeric',
+            'business_hours' => 'required',
+            'business_hours.*.day' => 'required',
+            'business_hours.*.open_time' => 'required',
+            'business_hours.*.close_time' => 'required',
             'company_email' => 'required|email|unique:users,email',
             'password' => 'required',
             'passwordConfirmation' => 'required|same:password',
         ]);
         
         //check only 1 store is hq
-        $hq_count = 0;
-        foreach ($data['stores'] as $store) {
-            if ($store['is_hq']) {
-                $hq_count++;
-            }
-        }
-        if ($hq_count != 1) {
-            session()->flash('error', 'Please select only 1 store as HQ.');
-        }
+        // $hq_count = 0;
+        // foreach ($data['stores'] as $store) {
+        //     if ($store['is_hq']) {
+        //         $hq_count++;
+        //     }
+        // }
+        // if ($hq_count != 1) {
+        //     session()->flash('error', 'Please select only 1 store as HQ.');
+        // }
 
         //create user using the company_email and password
         try {
@@ -148,10 +158,10 @@ class MerchantRegister extends Component implements HasForms
 
         //create store using the data from the form and user_id
         try {
-            foreach ($data['stores'] as $store) {
+            // foreach ($data['stores'] as $store) {
                 //process business hours
                 $businessHours = [];
-                foreach ($store['business_hours'] as $businessHour) {
+                foreach ($data['business_hours'] as $businessHour) {
                     $businessHours[$businessHour['day']] = [
                         'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
                         'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
@@ -160,19 +170,34 @@ class MerchantRegister extends Component implements HasForms
 
                 $store = Store::create([
                     'user_id' => $user->id,
-                    'name' => $store['name'],
-                    'manager_name' => $store['manager_name'],
-                    'business_phone_no' => $store['business_phone_no'],
+                    'name' => $data['name'],
+                    'manager_name' => $data['manager_name'],
+                    'business_phone_no' => $data['business_phone_no'],
                     'business_hours' => json_encode($businessHours),
-                    'address' => $store['address'],
-                    'address_postcode' => $store['zip_code'],
+                    'address' => $data['address'],
+                    'address_postcode' => $data['zip_code'],
                     'lang' => $data['location']['lat'],
                     'long' => $data['location']['lng'],
-                    'is_hq' => $store['is_hq'],
+                    'is_hq' => $data['is_hq'],
                     'state_id' => $data['state_id'],
                     'country_id' => $data['country_id'],
                 ]);
-            }
+
+                // $store = Store::create([
+                //     'user_id' => $user->id,
+                //     'name' => $store['name'],
+                //     'manager_name' => $store['manager_name'],
+                //     'business_phone_no' => $store['business_phone_no'],
+                //     'business_hours' => json_encode($businessHours),
+                //     'address' => $store['address'],
+                //     'address_postcode' => $store['zip_code'],
+                //     'lang' => $data['location']['lat'],
+                //     'long' => $data['location']['lng'],
+                //     'is_hq' => $store['is_hq'],
+                //     'state_id' => $data['state_id'],
+                //     'country_id' => $data['country_id'],
+                // ]);
+            // }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Store creation failed: ' . $e->getMessage());
             session()->flash('error', 'Store creation failed. Please try again.');
@@ -319,8 +344,8 @@ class MerchantRegister extends Component implements HasForms
                     ]),
                 Wizard\Step::make('Store')
                     ->schema([
-                        Repeater::make('stores')
-                            ->schema([
+                        // Repeater::make('stores')
+                        //     ->schema([
                                 TextInput::make('name') //stores table 'name'
                                 ->required()
                                 ->label('Store Name')
@@ -433,8 +458,8 @@ class MerchantRegister extends Component implements HasForms
                                     ])
                                     ->columns(2)
                                     ->columnSpan('full'),
-                            ])
-                            ->columns(2)
+                            // ])
+                            // ->columns(2)
                     ]),
                 Wizard\Step::make('Login')
                     ->schema([
