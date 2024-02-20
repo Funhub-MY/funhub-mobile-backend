@@ -79,6 +79,11 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // check if user is active
+        if ($user->status != User::STATUS_ACTIVE) {
+            return response()->json(['message' => 'User not active'], 401);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -709,6 +714,11 @@ class AuthController extends Controller
             'user' => $user,
             'providerData' => $firebase_user->providerData
         ]);
+
+        // check if user is active
+        if ($user->status != User::STATUS_ACTIVE) {
+            return response()->json(['message' => 'User not active'], 401);
+        }
 
         //log the new user in
         auth()->login($user);
