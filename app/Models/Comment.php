@@ -71,6 +71,11 @@ class Comment extends BaseModel implements Auditable
         return $this->morphMany(View::class, 'viewable');
     }
 
+    public function taggedUsers()
+    {
+        return $this->belongsToMany(User::class, 'comments_users', 'comment_id', 'user_id');
+    }
+
     /**
      * Scopes
      */

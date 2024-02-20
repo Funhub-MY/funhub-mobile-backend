@@ -47,7 +47,7 @@ class GenerateArticleRanks extends Command
         // rebuild rank for users
         foreach ($users as $user) {
             if ($user) {
-                Log::info('[GenerateArticleRanks] Rebuilding recommendations for user ' . $user->id);
+                $this->info('Rebuilding recommendations for user ' . $user->id);
                 $recommender = new ArticleRecommenderService($user);
                 $recommender->build();
             }
@@ -66,7 +66,7 @@ class GenerateArticleRanks extends Command
 
         // build rank for users
         foreach ($users as $user) {
-            Log::info('[GenerateArticleRanks] Building recommendations for user ' . $user->id);
+            $this->info('Building recommendations for user ' . $user->id);
             $recommender = new ArticleRecommenderService($user);
             $recommender->build();
         }

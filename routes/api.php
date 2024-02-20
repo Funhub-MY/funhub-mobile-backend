@@ -19,6 +19,7 @@ use App\Http\Controllers\MaintenanceController;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
+    Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
 
     // primary otp login
     Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp
@@ -87,6 +88,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('comments/replies/{comment_id}', \App\Http\Controllers\Api\CommentController::class . '@getRepliesByCommentId');
         Route::post('comments/like_toggle', \App\Http\Controllers\Api\CommentController::class . '@postLikeToggle');
         Route::post('comments/report', \App\Http\Controllers\Api\CommentController::class . '@postReportComment');
+        Route::get('comments/taggable_users', \App\Http\Controllers\Api\CommentController::class . '@getTaggableUsersInComment');
+
         Route::resource('comments', \App\Http\Controllers\Api\CommentController::class)->except(['create', 'edit']);
 
         // Interactions

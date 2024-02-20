@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCommentRequest;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\Comment;
+use App\Models\User;
+use App\Models\UserBlock;
+use App\Notifications\TaggedUserInComment;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -126,6 +130,7 @@ class CommentController extends Controller
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
+     * @bodyParam tagged_users array List of user ids tagged in comment. Example: [1, 2, 3]
      *
      * @response scenario=success {
      *  "comment": {},
@@ -159,6 +164,19 @@ class CommentController extends Controller
             'parent_id' => $parent ? $parent->id : null,
             'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
+
+        if ($request->has('tagged_users')) {
+            $comment->taggedUsers()->sync($request->tagged_users);
+
+            // notifiy tagged user
+            $comment->taggedUsers->each(function ($taggedUser) use ($comment) {
+                try {
+                    $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
+                } catch (\Exception $e) {
+                    Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                }
+            });
+        }
 
         event(new \App\Events\CommentCreated($comment)); // fires event
 
@@ -231,6 +249,7 @@ class CommentController extends Controller
      * @authenticated
      * @urlParam id integer required The id of the comment. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
+     * @bodyParam tagged_users array List of user ids tagged in comment. Example: [1, 2, 3]
      *
      * @response scenario=success {
      * "message": "Comment updated",
@@ -246,8 +265,28 @@ class CommentController extends Controller
 
         // check if owner of comment
         $comment = Comment::where('id', $id)->where('user_id', auth()->id());
+
         if ($comment->exists()) {
             $comment->update($request->only(['body']));
+
+            // update tagged_users as well
+            if ($request->has('tagged_users')) {
+                // old list
+                $oldTaggedUsers = $comment->taggedUsers->pluck('id')->toArray();
+
+                $comment->taggedUsers()->sync($request->tagged_users);
+
+                // send notification to newly tagged user
+                $newTaggedUsers = array_diff($request->tagged_users, $oldTaggedUsers);
+
+                $comment->taggedUsers->whereIn('id', $newTaggedUsers)->each(function ($taggedUser) use ($comment) {
+                    try {
+                        $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
+                    } catch (\Exception $e) {
+                        Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                    }
+                });
+            }
             return response()->json(['message' => 'Comment updated']);
         } else {
             return response()->json(['message' => 'Comment not found'], 404);
@@ -407,5 +446,67 @@ class CommentController extends Controller
             event(new \App\Events\CommentLiked($comment, false)); // fires event
             return response()->json(['message' => 'Comment Un-Liked']);
         }
+    }
+
+    /**
+     * Get taggable users in comment
+     * Only users whos is followers of logged in user can be tag in article
+     *
+     * @group Article
+     * @subgroup Comments
+     * @response scenario=success {
+     * "data": [],
+     * }
+     *
+     *
+     * @return JsonResource
+     */
+    public function getTaggableUsersInComment()
+    {
+        // get my followers
+        $myFollowers = auth()->user()->followers->pluck('id')->toArray();
+
+        $taggableUsers = User::where('id', '!=', auth()->id())
+            ->where('status', User::STATUS_ACTIVE)
+            ->whereIn('id', $myFollowers)
+            ->paginate(config('app.paginate_per_page'));
+
+        return UserResource::collection($taggableUsers);
+    }
+
+    /**
+     * Untag user in comment
+     *
+     * @group Article
+     * @subgroup Comments
+     * @bodyParam comment_id integer required The id of the comment. Example: 1
+     *
+     * @response scenario=success {
+     * "message": "User untagged from comment",
+     * "comment": {},
+     * }
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function postUntagUserFromComment(Request $request)
+    {
+        $request->validate([
+            'comment_id' => 'required|integer'
+        ]);
+
+        // get comment
+        $comment = Comment::where('id', request('comment_id'))->firstOrFail();
+
+        // untag user
+        $comment->taggedUsers()->detach(auth()->id());
+
+        // refresh comment
+        $comment->refresh();
+
+        return response()->json([
+            'message' => 'User untagged from comment',
+            'comment' => CommentResource::make($comment),
+        ]);
     }
 }

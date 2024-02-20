@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PublicArticleResource;
+use App\Http\Resources\PublicUserResource;
 use App\Http\Resources\UserBlockResource;
 use App\Http\Resources\UserResource;
 use App\Models\Article;
@@ -916,6 +918,41 @@ class UserController extends Controller
             'message' => 'Article categories linked to user',
             'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
             'user' => $userData,
+        ]);
+    }
+
+    public function getProfileForPublicView(Request $request)
+    {
+        $this->validate($request, [
+            'username' => 'required|string'
+        ]);
+
+        // find user by username
+        $user = User::where('username', $request->username)
+            ->where('status', User::STATUS_ACTIVE)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        // check if user profile is private
+        $latestSettings = $user->profilePrivacySettings()->orderBy('id', 'desc')->first();
+
+        if ($latestSettings && $latestSettings->profile == 'private') {
+            return response()->json(['message' => 'User profile private'], 404);
+        }
+
+        // get 6 recent articles
+        $recentArticles = $user->articles()
+            ->where('status', Article::STATUS_PUBLISHED)
+            ->orderBy('created_at', 'desc')
+            ->paginate(6);
+
+        // return user profile
+        return response()->json([
+            'user' => new PublicUserResource($user),
+            'articles' => PublicArticleResource::collection($recentArticles),
         ]);
     }
 

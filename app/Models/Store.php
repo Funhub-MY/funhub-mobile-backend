@@ -12,7 +12,9 @@ class Store extends BaseModel implements Auditable
 
     protected $fillable = [
         'name',
+        'manager_name',
         'business_phone_no',
+        'business_hours',
         'address',
         'address_postcode',
         'lang',

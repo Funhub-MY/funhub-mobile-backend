@@ -19,8 +19,8 @@ class MerchantOfferClaimResource extends JsonResource
         $hasExpired = false;
         $expiringAt = null;
         if ($this->merchantOffer->expiry_days && $this->merchantOffer->expiry_days > 0) {
-            $hasExpired = Carbon::parse($this->created_at)->addDays($this->merchantOffer->expiry_days)->isPast();
-            $expiringAt = Carbon::parse($this->created_at)->addDays($this->merchantOffer->expiry_days)->format('Y-m-d H:i:s');
+            $hasExpired = Carbon::parse($this->created_at)->addDays($this->merchantOffer->expiry_days)->endOfDay()->isPast();
+            $expiringAt = Carbon::parse($this->created_at)->addDays($this->merchantOffer->expiry_days)->endOfDay()->format('Y-m-d H:i:s');
         }
 
         return [
