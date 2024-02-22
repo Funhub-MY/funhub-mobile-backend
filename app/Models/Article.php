@@ -27,6 +27,9 @@ class Article extends BaseModel implements HasMedia, Auditable
     const STATUS_PUBLISHED = 1;
     const STATUS_ARCHIVED = 2;
 
+    const VISIBILITY_PRIVATE = 'private';
+    const VISIBILITY_PUBLIC = 'public';
+
     const TYPE = [
         'multimedia', 'text', 'video'
     ];
@@ -93,7 +96,8 @@ class Article extends BaseModel implements HasMedia, Auditable
 
     public function shouldBeSearchable(): bool
     {
-        return $this->status === self::STATUS_PUBLISHED;
+        // only if published and is public is searcheable
+        return $this->status === self::STATUS_PUBLISHED && $this->visibility === self::VISIBILITY_PUBLIC;
     }
 
     public function calculateInteractionScore()
@@ -229,6 +233,11 @@ class Article extends BaseModel implements HasMedia, Auditable
     public function scopePublished(Builder $query): void
     {
         $query->where($this->getTable() . '.status', self::STATUS_PUBLISHED);
+    }
+
+    public function scopePublic(Builder $query): void
+    {
+        $query->where($this->getTable() . '.visibility', self::VISIBILITY_PUBLIC);
     }
 
     public function scopeNotHiddenFromHome(Builder $query): void

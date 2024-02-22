@@ -114,6 +114,11 @@ class ArticleController extends Controller
             $query->whereHas('user', function ($query) use ($myFollowings) {
                 $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
             });
+
+            // allow private and public articles
+        } else {
+            // public articles only
+            $query->public();
         }
 
         // get articles by city
@@ -633,6 +638,7 @@ class ArticleController extends Controller
      * @bodyParam excerpt string The excerpt of the article. Example: This is a excerpt of article
      * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
      * @bodyParam tagged_user_ids array The tagged users IDs. Example: [1, 2]
+     * @bodyParam visibility string The visibility of the article. Example: public,private
      *
      * @response scenario=success {
      * "message": "Article updated",
@@ -661,6 +667,14 @@ class ArticleController extends Controller
             $taggedUsers = User::whereIn('id', $request->tagged_user_ids)->get();
         }
 
+        // get user profile settings from privacy
+        $privateProfile = $user->profile_is_private;
+
+        // by default if visibility not set and user is private profile, all articles created will set to private first
+        if ($privateProfile && !$request->has('visibility')) {
+            $request->merge(['visibility' => 'private']);
+        }
+
         $article = Article::create([
             'title' => $request->title,
             'type' => $request->type,
@@ -671,7 +685,9 @@ class ArticleController extends Controller
             'status' => $request->status, // default is draft
             'published_at' => ($request->published_at) ? Carbon::parse($request->published_at)->toDateTimeString() : null,
             'user_id' => $user->id,
+            'visibility' => $request->visibility ?? 'public',
         ]);
+
 
         // if request->images attach images from user_uploads to article_images collection media library
         if ($request->has('images')) {
@@ -854,9 +870,12 @@ class ArticleController extends Controller
                 ]);
             }
 
-            // recalculate average ratings
-            $location->average_ratings = $location->ratings()->avg('rating');
-            $location->save();
+            // only add to average ratings if article is public
+            if ($article->visibility == Article::VISIBILITY_PUBLIC) {
+                // recalculate average ratings
+                $location->average_ratings = $location->ratings()->avg('rating');
+                $location->save();
+            }
         }
         return $location;
     }
@@ -907,6 +926,7 @@ class ArticleController extends Controller
      * @bodyParam video file The video ID of the article.
      * @bodyParam tagged_user_ids array The tagged user IDs of the article. Example: [1, 2]
      * @bodyParam location string The location of the article. Example: {"lat": 123, "lng": 123, "name": "location name", "address": "location address", "address_2" : "", "city": "city", "state": "state name/id", "postcode": "010000", "rating": "5"}
+     * @bodyParam visibility string The visibility of the article. Example: public,private
      *
      * @response scenario=success {
      * "message": "Article updated",
@@ -949,6 +969,13 @@ class ArticleController extends Controller
                 'body' => $request->body,
                 'status' => $request->status,
             ]);
+
+            // update visibility if there is
+            if ($request->has('visibility')) {
+                $article->visibility = $request->visibility;
+                $article->save();
+                Log::info('Visibility updated for article ID'. $article->id, ['visibility' => $request->visibility]);
+            }
 
             // if request->images attach images from user_uploads to article_images collection media library
             if ($request->has('images')) {
