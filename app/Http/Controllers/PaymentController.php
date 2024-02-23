@@ -90,7 +90,31 @@ class PaymentController extends Controller
                     'success' => false
                 ]);
             }
-            // check response code status
+            // check if transaction already a success or failed
+            if ($transaction->status != \App\Models\Transaction::STATUS_PENDING) {
+                Log::info('Payment return/callback already processed', [
+                    'error' => 'Transaction already processed',
+                    'request' => request()->all()
+                ]);
+
+                if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
+                    return view('payment-return', [
+                        'message' => 'Transaction Success',
+                        'transaction_id' => $transaction->id,
+                        'success' => true
+                    ]);
+                } else {
+                    if ($request->responseCode == 'PE') {
+                        return 'Transaction Still Pending';
+                    } else {
+                        return view('payment-return', [
+                            'message' => 'Transaction Failed',
+                            'transaction_id' => $transaction->id,
+                            'success' => false
+                        ]);
+                    }
+                }
+            }
 
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
                   // update transaction status to success first with gateway transaction id

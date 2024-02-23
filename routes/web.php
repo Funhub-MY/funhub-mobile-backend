@@ -37,6 +37,7 @@ Route::get('/firebase/social/login', [\App\Http\Controllers\Api\AuthController::
 Route::get('/s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::class, 'load']);
 
 Route::post('/payment/return', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);
+Route::post('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);
 
 // any route other than /s redirect to /admin/login
 Route::get('/{any}', function () {
