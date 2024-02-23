@@ -34,7 +34,8 @@ class PaymentController extends Controller
      */
     public function paymentReturn(Request $request)
     {
-        Log::info('Payment return', [
+        Log::info('Payment return/callback', [
+            'headers' => request()->header(),
             'request' => request()->all()
         ]);
 
