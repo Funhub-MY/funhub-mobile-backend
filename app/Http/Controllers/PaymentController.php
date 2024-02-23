@@ -65,6 +65,11 @@ class PaymentController extends Controller
         // get transaction record via $request->invno
         $transaction = \App\Models\Transaction::where('transaction_no', request()->invno)->first();
 
+        Log::info('Transaction found', [
+            'transaction' => $transaction,
+            'request' => request()->all()
+        ]);
+
         if ($transaction) {
             // initiate mpay instance based on transaction type
             $this->gateway = new Mpay(
