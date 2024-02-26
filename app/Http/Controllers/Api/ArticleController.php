@@ -114,11 +114,11 @@ class ArticleController extends Controller
             $query->whereHas('user', function ($query) use ($myFollowings) {
                 $query->whereIn('users.id', $myFollowings->pluck('id')->toArray());
             });
+        }
 
-            // allow private and public articles
-        } else {
-            // public articles only
-            $query->public();
+        // if dont have following only , hide all private articles
+        if (!$request->has('following_only')) {
+            $query->where('visibility', 'public');
         }
 
         // get articles by city
