@@ -6,11 +6,13 @@ use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
+use App\Http\Resources\PublicMerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
+use App\Models\ShareableLink;
 use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
@@ -658,5 +660,41 @@ class MerchantOfferController extends Controller
             'message' => 'Redeemed Successfully',
             'offer' => new MerchantOfferResource($offer)
         ], 200);
+    }
+
+    /**
+     * Get Merchant Offer Public
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getPublicOfferPublicView(Request $request)
+    {
+        $this->validate($request, [
+            'share_code' => 'required|string'
+        ]);
+
+        // get article by ShareableLink
+        $share = ShareableLink::where('link', $request->share_code)
+            ->where('model_type', MerchantOffer::class)
+            ->first();
+
+        if (!$share) {
+            return abort(404);
+        }
+
+        // find offer by model_id
+        $offer = MerchantOffer::where('id', $share->model_id)
+            ->published()
+            ->first();
+
+        if (!$offer) {
+            return response()->json(['message' => 'Deal not found'], 404);
+        }
+
+        // return user profile
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
     }
 }
