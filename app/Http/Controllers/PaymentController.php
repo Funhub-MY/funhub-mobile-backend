@@ -146,6 +146,11 @@ class PaymentController extends Controller
                     }
                 }
 
+                Log::info('Payment return/callback success', [
+                    'transaction_id' => $transaction->id,
+                    'request' => request()->all()
+                ]);
+
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
                 return view('payment-return', [
@@ -154,6 +159,10 @@ class PaymentController extends Controller
                     'success' => true
                 ]);
             } else if ($request->responseCode == 'PE') { // pending
+                Log::info('Payment return/callback pending', [
+                    'transaction_id' => $transaction->id,
+                    'request' => request()->all()
+                ]);
                 return 'Transaction Still Pending';
             } else { // failed
                 Log::error('Payment return failed', [
