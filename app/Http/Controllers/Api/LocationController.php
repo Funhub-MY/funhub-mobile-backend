@@ -16,6 +16,7 @@ class LocationController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      * 
      * @group Location
+     * @bodyParam location_ids array optional Location Ids to Filter. Example [1,2,3]
      * @bodyParam name string optional Search query. Example: "KFC SS15"
      * @bodyParam state_id integer optional Filter by state id. Example: 1
      * @bodyParam country_id integer optional Filter by country id. Example: 1
@@ -36,6 +37,10 @@ class LocationController extends Controller
     {
         $query = Location::with('state', 'country', 'ratings')
             ->published();
+
+        if ($request->has('location_ids')) {
+            $query->whereIn('id', explode(',', $request->location_ids));
+        }
 
         if ($request->has('name')) {
             $query->where('name', 'like', '%' . $request->get('q') . '%');

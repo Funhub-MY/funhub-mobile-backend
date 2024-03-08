@@ -23,6 +23,16 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      location_ids:
+        name: location_ids
+        description: 'optional Location Ids to Filter. Example [1,2,3]'
+        required: false
+        example:
+          - laudantium
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
       name:
         name: name
         description: 'optional Search query.'
@@ -87,6 +97,8 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
+      location_ids:
+        - laudantium
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -113,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dVv66P4e5gba1fcE8ahk3ZD'
+      - 'Bearer ag4b56kca6E83v1fdZehDPV'
     controller: null
     method: null
     route: null
@@ -177,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fv5k64agD8ZEcabe61Vhd3P'
+      - 'Bearer c856e1hfkPaE43adD6gVZbv'
     controller: null
     method: null
     route: null

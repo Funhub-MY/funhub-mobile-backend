@@ -173,6 +173,16 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
+
+                            Forms\Components\Select::make('visibility')
+                                ->default(Article::VISIBILITY_PUBLIC)
+                                ->helperText('If articles are private, only visible if you followed the author. Location ratings will not be public as well.')
+                                ->label('Visibility')
+                                ->options([
+                                    Article::VISIBILITY_PRIVATE => 'Private',
+                                    Article::VISIBILITY_PUBLIC => 'Public',
+                                ]),
+
                             Toggle::make('hidden_from_home')
                                 ->label('Hide from Home?')
                                 ->default(false),
@@ -327,6 +337,19 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\BadgeColumn::make('visibility')
+                    ->label('Visibility')
+                    ->enum([
+                        Article::VISIBILITY_PRIVATE => 'Private',
+                        Article::VISIBILITY_PUBLIC => 'Public',
+                    ])
+                    ->colors([
+                        'secondary' => Article::VISIBILITY_PRIVATE,
+                        'success' => Article::VISIBILITY_PUBLIC,
+                    ])
+                    ->sortable()
+                    ->searchable(),
+
                 // Tables\Columns\TextColumn::make('excerpt')
                 //     ->sortable()
                 //     ->searchable()->wrap(),
@@ -364,10 +387,10 @@ class ArticleResource extends Resource
                         ->where('viewable_type', Article::class)
                         ->where('is_system_generated', false)
                         ->count();
-                    } else { 
+                    } else {
                         $num_organic_views = 0;
                     }
-             
+
                     return $num_organic_views;
                  }),
 

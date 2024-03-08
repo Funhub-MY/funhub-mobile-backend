@@ -80,6 +80,7 @@ class ArticleResource extends JsonResource
             'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'lang' => $this->lang,
+            'visibility' => $this->visibility,
             'is_imported' => $this->imports->count() > 0,
             'source' => $this->source,
             'created_at' => $this->created_at,

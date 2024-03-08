@@ -6,11 +6,13 @@ use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
+use App\Http\Resources\PublicMerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
+use App\Models\ShareableLink;
 use App\Models\Transaction;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
@@ -48,6 +50,7 @@ class MerchantOfferController extends Controller
      * @subgroup Merchant Offers
      *
      * @bodyParam category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
+     * @bodyParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example [1,2,3]
      * @bodyParam city string optional Filter by City. Example: Subang Jaya
      * @bodyParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
@@ -88,6 +91,10 @@ class MerchantOfferController extends Controller
                     $q->whereIn('merchant_categories.id', $category_ids);
                 });
             }
+        }
+
+        if ($request->has('merchant_offer_ids')) {
+            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
         }
 
         if ($request->has('available_only')) {
@@ -658,5 +665,41 @@ class MerchantOfferController extends Controller
             'message' => 'Redeemed Successfully',
             'offer' => new MerchantOfferResource($offer)
         ], 200);
+    }
+
+    /**
+     * Get Merchant Offer Public
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getPublicOfferPublicView(Request $request)
+    {
+        $this->validate($request, [
+            'share_code' => 'required|string'
+        ]);
+
+        // get article by ShareableLink
+        $share = ShareableLink::where('link', $request->share_code)
+            ->where('model_type', MerchantOffer::class)
+            ->first();
+
+        if (!$share) {
+            return abort(404);
+        }
+
+        // find offer by model_id
+        $offer = MerchantOffer::where('id', $share->model_id)
+            ->published()
+            ->first();
+
+        if (!$offer) {
+            return response()->json(['message' => 'Deal not found'], 404);
+        }
+
+        // return user profile
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
     }
 }

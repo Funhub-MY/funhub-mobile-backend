@@ -34,7 +34,8 @@ class PaymentController extends Controller
      */
     public function paymentReturn(Request $request)
     {
-        Log::info('Payment return', [
+        Log::info('Payment return/callback', [
+            'headers' => request()->header(),
             'request' => request()->all()
         ]);
 
@@ -64,6 +65,11 @@ class PaymentController extends Controller
         // get transaction record via $request->invno
         $transaction = \App\Models\Transaction::where('transaction_no', request()->invno)->first();
 
+        Log::info('Transaction found', [
+            'transaction' => $transaction,
+            'request' => request()->all()
+        ]);
+
         if ($transaction) {
             // initiate mpay instance based on transaction type
             $this->gateway = new Mpay(
@@ -90,7 +96,31 @@ class PaymentController extends Controller
                     'success' => false
                 ]);
             }
-            // check response code status
+            // check if transaction already a success or failed
+            if ($transaction->status != \App\Models\Transaction::STATUS_PENDING) {
+                Log::info('Payment return/callback already processed', [
+                    'error' => 'Transaction already processed',
+                    'request' => request()->all()
+                ]);
+
+                if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
+                    return view('payment-return', [
+                        'message' => 'Transaction Success',
+                        'transaction_id' => $transaction->id,
+                        'success' => true
+                    ]);
+                } else {
+                    if ($request->responseCode == 'PE') {
+                        return 'Transaction Still Pending';
+                    } else {
+                        return view('payment-return', [
+                            'message' => 'Transaction Failed',
+                            'transaction_id' => $transaction->id,
+                            'success' => false
+                        ]);
+                    }
+                }
+            }
 
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
                   // update transaction status to success first with gateway transaction id
@@ -116,6 +146,11 @@ class PaymentController extends Controller
                     }
                 }
 
+                Log::info('Payment return/callback success', [
+                    'transaction_id' => $transaction->id,
+                    'request' => request()->all()
+                ]);
+
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
                 return view('payment-return', [
@@ -124,6 +159,10 @@ class PaymentController extends Controller
                     'success' => true
                 ]);
             } else if ($request->responseCode == 'PE') { // pending
+                Log::info('Payment return/callback pending', [
+                    'transaction_id' => $transaction->id,
+                    'request' => request()->all()
+                ]);
                 return 'Transaction Still Pending';
             } else { // failed
                 Log::error('Payment return failed', [
