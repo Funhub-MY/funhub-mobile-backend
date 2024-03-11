@@ -39,12 +39,12 @@ class UserDetails extends Page implements HasForms
     public $auditData;
     protected static string $resource = UserResource::class;
     protected static ?string $model = User::class;
-    protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?string $navigationGroup = 'Users';
-    protected static ?string $title = 'User Details';
-    protected static ?string $navigationLabel = 'User Details';
-    protected static ?string $slug = 'user-details';
-    protected static string $view = 'filament.pages.user-details';
+    // protected static ?string $navigationIcon = 'heroicon-o-user';
+    // protected static ?string $navigationGroup = 'Users';
+    // protected static ?string $title = 'User Details';
+    // protected static ?string $navigationLabel = 'User Details';
+    // protected static ?string $slug = 'user-details';
+    // protected static string $view = 'filament.pages.user-details';
 
     public function mount(): void
     {
