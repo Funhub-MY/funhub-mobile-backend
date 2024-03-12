@@ -23,13 +23,13 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\SelectColumn;
 use Illuminate\Database\Eloquent\Builder;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
@@ -213,6 +213,7 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -313,6 +314,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            'view' => Pages\ViewUserDetails::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
