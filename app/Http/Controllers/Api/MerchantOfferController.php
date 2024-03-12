@@ -477,74 +477,79 @@ class MerchantOfferController extends Controller
                     ->where('merchant_offer_user.status', MerchantOffer::CLAIM_AWAIT_PAYMENT);
             })->first();
 
-        if ($offer) {
-            // release quantity back to MerchantOffer
-            $offer->quantity = $offer->quantity + $offer->claims()->where('user_id', auth()->user()->id)
-                ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
-                ->first()->pivot->quantity;
-            $offer->save();
+        Log::info('[ProductController] User cancelled transaction, but status maintain PENDING, offer quantity still locked', ['offer' => $offer, 'user_id' => auth()->user()->id]);
 
-            $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
-                ->where('user_id', auth()->user()->id)
-                ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
-                ->latest()
-                ->first();
+        return response()->json([
+            'message' => 'Transaction cancelled'
+        ], 200);
+        // if ($offer) {
+            // // release quantity back to MerchantOffer
+            // $offer->quantity = $offer->quantity + $offer->claims()->where('user_id', auth()->user()->id)
+            //     ->wherePivot('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+            //     ->first()->pivot->quantity;
+            // $offer->save();
 
-            // release voucher back to MerchantOfferVoucher
-            // get voucher_id from claims
-            $voucher_id = $claim->voucher_id;
+            // $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
+            //     ->where('user_id', auth()->user()->id)
+            //     ->where('status', MerchantOffer::CLAIM_AWAIT_PAYMENT)
+            //     ->latest()
+            //     ->first();
 
-            if ($voucher_id) {
-                $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
-                if ($voucher) {
-                    $voucher->owned_by_id = null;
-                    $voucher->save();
-                    Log::info('[MerchantOfferController] Voucher released', [$voucher->toArray()]);
-                }
-            } else {
-                Log::info('[MerchantOfferController] Voucher not found not able to release', [
-                    'offer_id' => $offer->id,
-                    'offer_claims_data' => $claim->toArray(),
-                    'user_id' => auth()->user()->id,
-                ]);
-            }
+            // // release voucher back to MerchantOfferVoucher
+            // // get voucher_id from claims
+            // $voucher_id = $claim->voucher_id;
 
-            // change status to failed
-            $claim->update([
-                'status' => MerchantOffer::CLAIM_FAILED,
-                'voucher_id' => null
-            ]);
+            // if ($voucher_id) {
+            //     $voucher = MerchantOfferVoucher::where('id', $voucher_id)->first();
+            //     if ($voucher) {
+            //         $voucher->owned_by_id = null;
+            //         $voucher->save();
+            //         Log::info('[MerchantOfferController] Voucher released', [$voucher->toArray()]);
+            //     }
+            // } else {
+            //     Log::info('[MerchantOfferController] Voucher not found not able to release', [
+            //         'offer_id' => $offer->id,
+            //         'offer_claims_data' => $claim->toArray(),
+            //         'user_id' => auth()->user()->id,
+            //     ]);
+            // }
 
-            Log::info('[MerchantOfferController] Offer quantity released and voucher released', [
-                'offer_id' => $offer->id,
-                'user_id' => auth()->user()->id,
-            ]);
+            // // change status to failed
+            // $claim->update([
+            //     'status' => MerchantOffer::CLAIM_FAILED,
+            //     'voucher_id' => null
+            // ]);
 
-            // change associated transaction status to failed
-            $transactionRecord = $offer->transactions()->where('user_id', auth()->user()->id)
-                ->where('status', Transaction::STATUS_PENDING)
-                ->first();
-            if ($transactionRecord) {
-                $transaction = $this->transactionService->updateTransactionStatus($transactionRecord->id, Transaction::STATUS_FAILED);
-                Log::info('[MerchantOfferController] Transaction status updated', [
-                    'transaction_id' => $transaction->toArray(),
-                    'status' => Transaction::STATUS_FAILED,
-                    'user_id' => auth()->user()->id,
-                ]);
-            }
+            // Log::info('[MerchantOfferController] Offer quantity released and voucher released', [
+            //     'offer_id' => $offer->id,
+            //     'user_id' => auth()->user()->id,
+            // ]);
 
-            return response()->json([
-                'message' => 'Transaction cancelled'
-            ], 200);
-        } else {
-            Log::info('[MerchantOfferController] Offer pending payment not found', [
-                'offer_id' => $request->merchant_offer_id,
-                'user_id' => auth()->user()->id,
-            ]);
-            return response()->json([
-                'message' => 'You have not claimed this offer'
-            ], 422);
-        }
+            // // change associated transaction status to failed
+            // $transactionRecord = $offer->transactions()->where('user_id', auth()->user()->id)
+            //     ->where('status', Transaction::STATUS_PENDING)
+            //     ->first();
+            // if ($transactionRecord) {
+            //     $transaction = $this->transactionService->updateTransactionStatus($transactionRecord->id, Transaction::STATUS_FAILED);
+            //     Log::info('[MerchantOfferController] Transaction status updated', [
+            //         'transaction_id' => $transaction->toArray(),
+            //         'status' => Transaction::STATUS_FAILED,
+            //         'user_id' => auth()->user()->id,
+            //     ]);
+            // }
+
+            // return response()->json([
+            //     'message' => 'Transaction cancelled'
+            // ], 200);
+        // } else {
+        //     Log::info('[MerchantOfferController] Offer pending payment not found', [
+        //         'offer_id' => $request->merchant_offer_id,
+        //         'user_id' => auth()->user()->id,
+        //     ]);
+        //     return response()->json([
+        //         'message' => 'You have not claimed this offer'
+        //     ], 422);
+        // }
     }
 
     /**

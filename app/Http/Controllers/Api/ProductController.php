@@ -183,8 +183,11 @@ class ProductController extends Controller
             ], 404);
         }
 
+        Log::info('[ProductController] User cancelled transaction, but status maintain PENDING', ['transaction' => $transaction]);
+
         // update transaction status to FAILED
-        $transaction = $this->transactionService->updateTransactionStatus($transaction->id, Transaction::STATUS_FAILED);
+        // dont update to failed directly
+        // $transaction = $this->transactionService->updateTransactionStatus($transaction->id, Transaction::STATUS_FAILED);
 
         return response()->json([
             'message' => 'Transaction cancelled'
