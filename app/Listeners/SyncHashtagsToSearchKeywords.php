@@ -39,8 +39,13 @@ class SyncHashtagsToSearchKeywords implements ShouldQueue
                     $this->article->searchKeywords()->syncWithoutDetaching([$searchKeyword->id]);
                 } else {
                     // if no, then create a new search_keyword and add the article_id and search_keyword_id to the search_keywords_articles table
+
+                    // remove any # and trim tag->name
+                    $tag_name = str_replace('#', '', $tag->name);
+                    $tag_name = trim($tag->name);
+
                     $newSearchKeyword = \App\Models\SearchKeyword::create([
-                        'keyword' => $tag->name,
+                        'keyword' => $tag_name,
                     ]);
 
                     $this->article->searchKeywords()->syncWithoutDetaching([$newSearchKeyword->id]);
