@@ -75,6 +75,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
 
         Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
+        Route::get('/articles/keyword', [ArticleController::class, 'getArticlesByKeywordId']);
+
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');

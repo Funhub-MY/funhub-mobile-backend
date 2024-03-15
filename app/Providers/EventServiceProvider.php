@@ -8,6 +8,7 @@ use App\Events\InteractionCreated;
 use App\Listeners\MediaListener;
 use App\Listeners\MissionEventListener;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Models\SupportRequestMessage;
 use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Events\Registered;
@@ -43,6 +44,7 @@ class EventServiceProvider extends ServiceProvider
         ArticleCreated::class => [
             MissionEventListener::class,
             CreateViewsForArticleListener::class,
+            SyncHashtagsToSearchKeywords::class,
         ],
     ];
 
