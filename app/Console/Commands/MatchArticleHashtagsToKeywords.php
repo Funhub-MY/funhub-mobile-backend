@@ -65,9 +65,12 @@ class MatchArticleHashtagsToKeywords extends Command
                     $this->info('Search keyword added to article: ' . $searchKeyword->name);
                 } else {
                     $this->info('Search keyword not found: ' . $hashtag->name);
+                    // remove any # and trim tag->name
+                    $tag_name = str_replace('#', '', $hashtag->name);
+                    $tag_name = trim($hashtag->name);
 
                     $newSearchKeyword = \App\Models\SearchKeyword::create([
-                        'keyword' => $hashtag->name,
+                        'keyword' => $tag_name,
                     ]);
 
                     $article->searchKeywords()->syncWithoutDetaching([$newSearchKeyword->id]);
