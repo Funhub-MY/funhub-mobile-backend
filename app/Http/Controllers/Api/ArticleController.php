@@ -1436,6 +1436,9 @@ class ArticleController extends Controller
         ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
         ->paginate(config('app.paginate_per_page'));
 
+        // increase keyword hits
+        SearchKeyword::find($keyword)->increment('hits');
+
         return ArticleResource::collection($articles);
     }
 }
