@@ -67,7 +67,7 @@ class MatchArticleHashtagsToKeywords extends Command
                     $this->info('Search keyword not found: ' . $hashtag->name);
 
                     $newSearchKeyword = \App\Models\SearchKeyword::create([
-                        'name' => $hashtag->name,
+                        'keyword' => $hashtag->name,
                     ]);
 
                     $article->searchKeywords()->syncWithoutDetaching([$newSearchKeyword->id]);
