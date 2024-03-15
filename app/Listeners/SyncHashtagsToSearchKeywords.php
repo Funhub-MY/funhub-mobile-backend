@@ -4,12 +4,9 @@ namespace App\Listeners;
 
 use App\Models\Article;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class SyncHashtagsToSearchKeywords implements ShouldQueue
 {
-    use InteractsWithQueue, ShouldQueue;
-
     protected $article;
     /**
      * Create the event listener.
