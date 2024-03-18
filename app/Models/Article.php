@@ -227,6 +227,12 @@ class Article extends BaseModel implements HasMedia, Auditable
         return $this->morphMany(ShareableLink::class, 'model');
     }
 
+    public function searchKeywords()
+    {
+        return $this->belongsToMany(SearchKeyword::class, 'search_keywords_articles', 'article_id', 'search_keyword_id')
+            ->withTimestamps();
+    }
+
     /**
      * Scope a query to only include published articles.
      */

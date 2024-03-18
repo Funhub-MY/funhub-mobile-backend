@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Models\SearchKeyword;
 use App\Models\ShareableLink;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
@@ -1400,5 +1401,44 @@ class ArticleController extends Controller
         return response()->json([
             'article' => new PublicArticleResource($article)
         ]);
+    }
+
+    /**
+     * Get Articles by Keyword ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam keyword_id ID required The id of the keyword. Example: 1
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getArticlesByKeywordId(Request $request)
+    {
+        $this->validate($request, [
+            'keyword_id' => 'required|integer|exists:search_keywords,id'
+        ]);
+
+        $keyword = $request->keyword_id;
+
+        // get associated articles with this keyword
+        $articles = Article::whereHas('searchKeywords', function ($query) use ($keyword) {
+            $query->where('search_keywords.id', $keyword);
+        })
+        ->published()
+        ->where('visibility', 'public') // public articles only!
+        ->whereDoesntHave('hiddenUsers', function ($query) {
+            $query->where('user_id', auth()->user()->id);
+        })
+        ->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->paginate(config('app.paginate_per_page'));
+
+        // increase keyword hits
+        SearchKeyword::find($keyword)->increment('hits');
+
+        return ArticleResource::collection($articles);
     }
 }
