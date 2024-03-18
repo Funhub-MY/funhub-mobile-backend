@@ -34,6 +34,8 @@ use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
 {
+    protected $user;
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -213,7 +215,11 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('View')
+                    ->action(function ($record) {
+                        return redirect(UserResource::getUrl('view', ['record' => $record->id]));
+                    })
+                    ->icon('heroicon-s-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -314,7 +320,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'view' => Pages\ViewUserDetails::route('/{record}'),
+            'view' => Pages\ViewUsers::route('/{record}/view'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
