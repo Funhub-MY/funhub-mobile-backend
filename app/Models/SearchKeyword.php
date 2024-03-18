@@ -28,6 +28,7 @@ class SearchKeyword extends BaseModel
             'blacklisted' => $this->blacklisted,
             'sponsored_from' => $this->sponsored_from,
             'sponsored_to' => $this->sponsored_to,
+            'total_articles' => $this->articles->count(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
