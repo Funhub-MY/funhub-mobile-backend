@@ -36,14 +36,14 @@ class ArticleCategoryResource extends Resource
                     ->required()
                     ->lazy()
                     ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
-                    
+
                 // add parent category relationship
                 Forms\Components\Select::make('parent_id')
                     ->searchable()
                     ->relationship('parent', 'name')
                     ->nullable()
                     ->columnSpan('full'),
-                
+
                 // is featured boolean
                 Forms\Components\Toggle::make('is_featured')
                     ->label('Is Featured On Homepage?')
@@ -58,7 +58,7 @@ class ArticleCategoryResource extends Resource
                     ->required()
                     ->unique(ArticleCategory::class, 'slug', ignoreRecord: true),
 
-        
+
                 Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
                     ->label('Icon')
                     ->multiple()
@@ -73,20 +73,20 @@ class ArticleCategoryResource extends Resource
                     ->maxFiles(1)
                     ->rules('image'),
 
-                Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
-                    ->label('Icon')
-                    ->multiple()
-                    ->collection('article_category')
-                    ->columnSpan('full')
-                    ->disk(function () {
-                        if (config('filesystems.default') === 's3') {
-                            return 's3_public';
-                        }
-                    })
-                    ->acceptedFileTypes(['image/*'])
-                    ->maxFiles(1)
-                    ->rules('image'),
-                
+                // Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
+                //     ->label('Icon')
+                //     ->multiple()
+                //     ->collection('article_category')
+                //     ->columnSpan('full')
+                //     ->disk(function () {
+                //         if (config('filesystems.default') === 's3') {
+                //             return 's3_public';
+                //         }
+                //     })
+                //     ->acceptedFileTypes(['image/*'])
+                //     ->maxFiles(1)
+                //     ->rules('image'),
+
                 Forms\Components\RichEditor::make('description')
                     ->columnSpan('full'),
                 Forms\Components\Hidden::make('user_id')
@@ -105,7 +105,7 @@ class ArticleCategoryResource extends Resource
 
                 Tables\Columns\TextColumn::make('parent.name')->label('Parent Category')
                     ->sortable()->searchable(),
-                    
+
                 // is_featured
                 Tables\Columns\ToggleColumn::make('is_featured')->sortable()->searchable(),
                 // is_active
