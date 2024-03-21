@@ -707,4 +707,81 @@ class MerchantOfferController extends Controller
             'offer' => new PublicMerchantOfferResource($offer)
         ]);
     }
+
+    /**
+     * Get Merchant Offer Nearby
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getMerchantOffersNearby(Request $request)
+    {
+        $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius');
+
+        if ($request->has('city')) {
+            // Directly filter by city
+            $query = MerchantOffer::query();
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+
+            // pass to query builder
+            $data = $this->merchantOfferQueryBuilder($query, $request)
+                ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        } else {
+            $data = MerchantOffer::search('')->with([
+                'aroundLatLng' => $request->lat . ',' . $request->lng,
+                'aroundRadius' => $radius * 1000,
+                'aroundPrecision' => 50,
+            ])
+                ->query(function ($query) use ($request) {
+                    $query = $this->merchantOfferQueryBuilder($query, $request);
+                })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        }
+
+        return MerchantOfferResource::collection($data);
+    }
+
+    public function merchantOfferQueryBuilder($query, $request)
+    {
+        $query->published();
+
+        // category_ids filter
+        if ($request->has('category_ids')) {
+            // explode categories ids
+            $category_ids = explode(',', $request->category_ids);
+            if (count($category_ids) > 0) {
+                $query->whereHas('categories', function ($q) use ($category_ids) {
+                    $q->whereIn('merchant_categories.id', $category_ids);
+                });
+            }
+        }
+
+        if ($request->has('merchant_offer_ids')) {
+            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+        }
+
+        if ($request->has('available_only')) {
+            $query->available();
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 1) {
+            $query->flash();
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 0) {
+            $query->where('flash_deal', false);
+        }
+
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        $query->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user', 'location', 'location.ratings');
+
+        return $query;
+    }
 }

@@ -119,6 +119,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {
+            Route::get('/nearby', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMerchantOffersNearby']);
             Route::get('/my_bookmarks', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyBookmarkedMerchantOffers']);
             Route::get('/', [\App\Http\Controllers\Api\MerchantOfferController::class, 'index']);
             Route::post('/claim', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postClaimOffer']);

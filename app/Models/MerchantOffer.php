@@ -97,6 +97,10 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
+            '_geoloc' => ($this->location()->count() > 0) ? [
+                'lat' => floatval($this->location->first()->lat),
+                'lng' => floatval($this->location->first()->lng)
+            ] : null,
         ];
     }
 
