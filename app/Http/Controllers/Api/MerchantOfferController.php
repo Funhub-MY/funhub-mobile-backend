@@ -709,10 +709,27 @@ class MerchantOfferController extends Controller
     }
 
     /**
-     * Get Merchant Offer Nearby
+     * Get Merchant Offers Nearby
      *
      * @param Request $request
      * @return void
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * 
+     * @queryParam  category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
+     * @queryParam  merchant_offer_ids array optional Merchant Offer Ids to Filter. Example [1,2,3]
+     * @queryParam  city string optional Filter by City Name. Example: Subang Jaya
+     * @queryParam  lat float required Filter by Lat of User (must provide lng). Example: 3.123456
+     * @queryParam  lng float required Filter by Lng of User (must provide lat). Example: 101.123456
+     * @queryParam  radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @queryParam  available_only boolean optional Filter by Available Only. Example: true
+     * @queryParam  flash_only boolean optional Filter by Flash Deals Only. Example: true
+     * @queryParam  limit integer optional Per Page Limit Override. Example: 10
+     *
+     * @response scenario=success {
+     * "data": [],
+     * }
      */
     public function getMerchantOffersNearby(Request $request)
     {
@@ -771,13 +788,6 @@ class MerchantOfferController extends Controller
 
         if ($request->has('flash_only') && $request->flash_only == 0) {
             $query->where('flash_deal', false);
-        }
-
-        // get articles by city
-        if ($request->has('city')) {
-            $query->whereHas('location', function ($query) use ($request) {
-                $query->where('city', 'like', '%' . $request->city . '%');
-            });
         }
 
         $query->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user', 'location', 'location.ratings');
