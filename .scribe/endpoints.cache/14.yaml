@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - aliquid
+          - asperiores
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -100,7 +100,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - aliquid
+        - asperiores
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Zgv541PaaeDEcbV668kh3df'
+      - 'Bearer b41gDav5Zad83ehE6fPkVc6'
     controller: null
     method: null
     route: null
@@ -191,7 +191,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bV6d56aZe48f1vPaEkDgh3c'
+      - 'Bearer 5vD8b6agdcha63feP4E1kZV'
     controller: null
     method: null
     route: null

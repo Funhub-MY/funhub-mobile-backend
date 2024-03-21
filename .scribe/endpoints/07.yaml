@@ -4,6 +4,147 @@ endpoints:
   -
     httpMethods:
       - GET
+    uri: api/v1/merchant/offers/nearby
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get Merchant Offers Nearby'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      category_ids:
+        name: category_ids
+        description: 'optional Merchant Category Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      merchant_offer_ids:
+        name: merchant_offer_ids
+        description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
+        required: false
+        example:
+          - vitae
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City Name.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      lat:
+        name: lat
+        description: 'Filter by Lat of User (must provide lng).'
+        required: true
+        example: 3.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      lng:
+        name: lng
+        description: 'Filter by Lng of User (must provide lat).'
+        required: true
+        example: 101.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      available_only:
+        name: available_only
+        description: 'optional Filter by Available Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      flash_only:
+        name: flash_only
+        description: 'optional Filter by Flash Deals Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanQueryParameters:
+      category_ids:
+        - 1
+        - 2
+        - 3
+      merchant_offer_ids:
+        - vitae
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      available_only: true
+      flash_only: true
+      limit: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [],
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer E6dg4cD6h1ZaPk35efa8Vvb'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
     uri: api/v1/merchant/offers/my_bookmarks
     metadata:
       groupName: Merchant
@@ -103,7 +244,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6ZcgVkPve6Dhdb5af83Ea41'
+      - 'Bearer E51ZfDa8eP6acv46hkgVb3d'
     controller: null
     method: null
     route: null
@@ -147,7 +288,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - consectetur
+          - consequuntur
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -275,7 +416,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - consectetur
+        - consequuntur
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -308,7 +449,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D66dehZE15fk3vb4agaVPc8'
+      - 'Bearer Eb16eP6kvDfd38gacZ4a5Vh'
     controller: null
     method: null
     route: null
@@ -431,7 +572,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fkDZvPh1a346daVEec8b56g'
+      - 'Bearer kc46vaZ1PfdbE6De58ha3gV'
     controller: null
     method: null
     route: null
@@ -518,7 +659,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dag61PV5c6aE83kvfhbe4DZ'
+      - 'Bearer b35aageE6Dfhkd48ZV6v1Pc'
     controller: null
     method: null
     route: null
@@ -580,7 +721,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afZ58Vg3e1DEchabPv6d4k6'
+      - 'Bearer 1v3EdaVebgkZf6D68c5aP4h'
     controller: null
     method: null
     route: null
@@ -633,7 +774,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fga63Pad5ckE46hDZb18eVv'
+      - 'Bearer 64abvaDgPZcf56h8dVEk13e'
     controller: null
     method: null
     route: null
@@ -660,13 +801,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: laborum
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: laborum
+      offer_id: et
     queryParameters:
       offer_id:
         name: offer_id
@@ -696,7 +837,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DkE65fVgd1vaPb3Zah48c6e'
+      - 'Bearer D6bh1fg4P86a3EvkacVe5dZ'
     controller: null
     method: null
     route: null
@@ -815,7 +956,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 85DdEaVP3Z1eak4vbcgf66h'
+      - 'Bearer EdgPacVh6f63D1v84Z5ebak'
     controller: null
     method: null
     route: null
@@ -874,7 +1015,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZP4ah6a5v3cfe8gEkDV61bd'
+      - 'Bearer Zfk3vd6c6a8DE51PaV4ebgh'
     controller: null
     method: null
     route: null
@@ -1014,7 +1155,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P6bcVfvD5aZ6a1Ee3d4ghk8'
+      - 'Bearer edg4h53kZ1PcaEDb66fva8V'
     controller: null
     method: null
     route: null
