@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\Api\MerchantOfferCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,6 +129,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
+
+        // Merchant Offer Categories
+        Route::get('merchant_offer_categories', \App\Http\Controllers\Api\MerchantOfferCategoryController::class . '@index');
 
         // Merchant Categories
         Route::get('merchant_categories', \App\Http\Controllers\Api\MerchantCategoryController::class . '@index');

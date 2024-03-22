@@ -115,6 +115,21 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     //     return $this->hasOneThrough(Merchant::class, User::class, 'id', 'id', 'user_id', 'merchant_id');
     // }
 
+    public function offerCategories()
+    {
+        return $this->belongsToMany(MerchantOfferCategory::class, 'merchant_offer_merchant_offer_categories')
+            ->where('parent_id', null)
+            ->withTimestamps();
+    }
+
+    // NOTE since this is a self-referencing relationship, sync will override offerCategories!
+    public function offerSubCategories()
+    {
+        return $this->belongsToMany(MerchantOfferCategory::class, 'merchant_offer_merchant_offer_categories')
+            ->where('parent_id', '!=', null)
+            ->withTimestamps();
+    }
+
     public function store()
     {
         return $this->belongsTo(Store::class);
