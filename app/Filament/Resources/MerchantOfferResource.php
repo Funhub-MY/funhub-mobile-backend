@@ -266,14 +266,22 @@ class MerchantOfferResource extends Resource
                             Forms\Components\Section::make('Categories')->schema([
                                 Forms\Components\Select::make('categories')
                                     ->label('')
-                                    ->relationship('categories', 'name')->createOptionForm([
+                                    ->preload()
+                                    ->relationship('allOfferCategories', 'name')->createOptionForm([
                                         Forms\Components\TextInput::make('name')
                                             ->required()
                                             ->placeholder('Category name'),
+
+                                        Select::make('parent_id')
+                                            ->label('Parent Category')
+                                            ->relationship('parent', 'name')
+                                            ->preload()
+                                            ->nullable(),
                                         // slug
                                         Forms\Components\TextInput::make('slug')
                                             ->required()
                                             ->placeholder('Category slug')
+                                            ->helperText('Must not have space, replace space with dash. eg. food-and-beverage')
                                             ->unique(MerchantCategory::class, 'slug', ignoreRecord: true),
                                         Forms\Components\RichEditor::make('description')
                                             ->placeholder('Category description'),
@@ -283,7 +291,7 @@ class MerchantOfferResource extends Resource
                                     ])
                                     ->multiple()
                                     ->searchable()
-                                    ->placeholder('Select categories...'),
+                                    ->placeholder('Select offer categories...'),
                             ])->columns(1),
                     ])->columnSpan(['lg' => 1]),
             ])
