@@ -34,7 +34,7 @@ class CustomNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [FcmChannel::class];
+        return [FcmChannel::class, 'database'];
     }
 
     /**
