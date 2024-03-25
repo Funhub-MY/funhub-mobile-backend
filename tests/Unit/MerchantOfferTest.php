@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use App\Models\MerchantOffer;
 use App\Models\MerchantCategory;
+use App\Models\MerchantOfferCategory;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use Database\Factories\MerchantFactory;
@@ -21,7 +22,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class MerchantOfferTest extends TestCase
 {
     use RefreshDatabase;
-    protected $user, $merchant, $store, $merchant_offer, $merchant_category, $loggedInUser;
+    protected $user, $merchant, $store, $merchant_offer, $merchant_category, $merchant_offer_categories, $loggedInUser;
     public function setUp(): void
     {
         parent::setUp();
@@ -47,9 +48,10 @@ class MerchantOfferTest extends TestCase
             }
         });
         $this->merchant_category = MerchantCategory::factory()->for($this->merchant->user)->create();
+        $this->merchant_offer_categories = MerchantOfferCategory::factory()->count(5)->create();
         // attach offer with category
         foreach($this->merchant_offer as $offer) {
-            $offer->categories()->attach($this->merchant_category);
+            $offer->allOfferCategories()->attach($this->merchant_offer_categories);
         }
         Sanctum::actingAs($this->user, ['*']);
         Sanctum::actingAs($this->loggedInUser, ['*']);
@@ -82,7 +84,7 @@ class MerchantOfferTest extends TestCase
     public function testGetOfferByCategories()
     {
         // mock api with hard-coded category, as when setup we only set 1 category.
-        $response = $this->getJson('/api/v1/merchant/offers?category_ids='.implode(',' ,$this->merchant_category->pluck('id')->toArray()));
+        $response = $this->getJson('/api/v1/merchant/offers?category_ids='.implode(',' ,$this->merchant_offer_categories->pluck('id')->toArray()));
         $response->assertStatus(200)
                 ->assertJsonStructure([
                     'data',
@@ -92,7 +94,7 @@ class MerchantOfferTest extends TestCase
         $this->assertEquals(5, $total);
 
         // then create new category and offer
-        $merchant_category = MerchantCategory::factory()->for($this->merchant->user)->create();
+        $merchant_category = MerchantOfferCategory::factory()->create();
         $merchant_offer = MerchantOffer::factory()->for($this->merchant->user)->create();
         for($i = 0; $i < $merchant_offer->quantity; $i++) {
             MerchantOfferVoucher::create([
@@ -101,11 +103,11 @@ class MerchantOfferTest extends TestCase
             ]);
         }
 
-        $merchant_offer->categories()->attach($merchant_category);
+        $merchant_offer->allOfferCategories()->attach($merchant_category);
         // need look all $merchant_category again.
-        $this->merchant_category = MerchantCategory::orderBy('id', 'DESC');
+        $this->merchant_offer_categories = MerchantOfferCategory::orderBy('id', 'DESC');
         // then fetch post another category
-        $response = $this->getJson('/api/v1/merchant/offers?category_ids='.implode(',' , $this->merchant_category->pluck('id')->toArray()));
+        $response = $this->getJson('/api/v1/merchant/offers?category_ids='.implode(',' , $this->merchant_offer_categories->pluck('id')->toArray()));
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data',
