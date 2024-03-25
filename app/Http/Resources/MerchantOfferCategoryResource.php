@@ -19,7 +19,7 @@ class MerchantOfferCategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'slug' => $this->slug,
-            'icon' => null,
+            'icon' => $this->getFirstMediaUrl('merchant_offer_category'),
             'cover_media_id' => $this->cover_media_id,
             'is_child' => ($this->parent_id) ?? false,
             'parent' => ($this->parent_id) ? new MerchantOfferCategoryResource($this->parent) : null,

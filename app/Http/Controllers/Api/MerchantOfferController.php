@@ -87,8 +87,8 @@ class MerchantOfferController extends Controller
             // explode categories ids
             $category_ids = explode(',', $request->category_ids);
             if (count($category_ids) > 0) {
-                $query->whereHas('categories', function ($q) use ($category_ids) {
-                    $q->whereIn('merchant_categories.id', $category_ids);
+                $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
+                    $q->whereIn('merchant_offer_categories.id', $category_ids);
                 });
             }
         }
@@ -716,7 +716,7 @@ class MerchantOfferController extends Controller
      *
      * @group Merchant
      * @subgroup Merchant Offers
-     * 
+     *
      * @queryParam  category_ids array optional Merchant Category Ids to Filter. Example: [1, 2, 3]
      * @queryParam  merchant_offer_ids array optional Merchant Offer Ids to Filter. Example [1,2,3]
      * @queryParam  city string optional Filter by City Name. Example: Subang Jaya

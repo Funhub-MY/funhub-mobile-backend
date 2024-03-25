@@ -54,6 +54,7 @@ class MerchantOfferCategoryResource extends Resource
                     TextInput::make('slug')
                         ->required()
                         ->unique(MerchantOfferCategory::class, 'slug', ignoreRecord: true)
+                        ->helperText('Must not have space, replace space with dash. eg. food-and-beverage')
                         ->columnSpanFull(),
 
                     Select::make('parent_id')
@@ -66,10 +67,10 @@ class MerchantOfferCategoryResource extends Resource
                         ->schema([
                             Toggle::make('is_featured')
                                 ->label('Is Featured On Homepage?'),
-    
+
                             Toggle::make('is_active')
                                 ->label('Is Active?'),
-                        ]),                   
+                        ]),
 
                     Forms\Components\SpatieMediaLibraryFileUpload::make('icon')
                         ->label('Icon')
