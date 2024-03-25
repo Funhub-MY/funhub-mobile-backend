@@ -55,7 +55,7 @@ class UserSettingsController extends Controller
         if ($settings) {
             return response()->json($settings);
         } else {
-            return response()->json(['message' => 'No settings found yet.'], 404);
+            return response()->json(['message' => __('messages.error.user_settings_controller.No_settings_found_yet')], 404);
         }
     }
 
@@ -83,7 +83,7 @@ class UserSettingsController extends Controller
 
         // if user email still same with current email then reject
         if ($request->has('email') && auth()->user()->email == $request->email) {
-            return response()->json(['message' => 'Email already verified for your account'], 422);
+            return response()->json(['message' => __('messages.error.user_settings_controller.Email_already_verified_for_your_account')], 422);
         }
 
         $user = auth()->user();
@@ -94,7 +94,7 @@ class UserSettingsController extends Controller
         $user->sendEmailVerificationNotification();
 
         return response()->json([
-            'message' => 'Email updated and verification email sent',
+             'message' => __('messages.success.user_settings_controller.Email_updated_and_verification_email_sent'),
              'email' => $user->email
         ]);
     }
@@ -119,10 +119,10 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         // check token provided
         if ($user->email_verification_token != $request->token) {
-            return response()->json(['message' => 'Invalid Token'], 422);
+            return response()->json(['message' => __('messages.error.user_settings_controller.Invalid_Token')], 422);
         }
         $user->markEmailAsVerified();
-        return response()->json(['message' => 'Email Verified'], 200);
+        return response()->json(['message' => __('messages.success.user_settings_controller.Email_Verified')], 200);
     }
 
     /**
@@ -150,7 +150,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Name updated',
+            'message' => __('messages.success.user_settings_controller.Name_updated'),
             'name' => $user->name,
         ]);
     }
@@ -180,7 +180,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Username updated',
+            'message' => __('messages.success.user_settings_controller.Username_updated'),
             'username' => $user->username,
         ]);
     }
@@ -210,7 +210,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Bio updated',
+            'message' => __('messages.success.user_settings_controller.Bio_updated'),
             'bio' => $user->bio,
         ]);
     }
@@ -240,7 +240,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Job Title updated',
+            'message' => __('messages.success.user_settings_controller.Job_Title_updated'),
             'job_title' => $user->job_title,
         ]);
     }
@@ -275,7 +275,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Date of birth updated',
+            'message' => __('messages.success.user_settings_controller.Date_of_birth_updated'),
             'dob' => $user->dob,
         ]);
     }
@@ -305,7 +305,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Gender updated',
+            'message' => __('messages.success.user_settings_controller.Gender_updated'),
             'gender' => $user->gender
         ]);
     }
@@ -341,7 +341,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Location updated',
+            'message' => __('messages.success.user_settings_controller.Location_updated'),
             'country_id' => $user->country_id,
             'state_id' => $user->state_id,
         ]);
@@ -373,7 +373,7 @@ class UserSettingsController extends Controller
 
         if ($categories->count() != count($request->category_ids)) {
             return response()->json([
-                'message' => 'One or more article category ids not found',
+                'message' => __('messages.error.user_settings_controller.One_or_more_article_category_ids_not_found'),
             ], 422);
         }
 
@@ -387,7 +387,7 @@ class UserSettingsController extends Controller
         // check if article category ids exists only sync
         $user->articleCategoriesInterests()->sync($request->category_ids);
         return response()->json([
-            'message' => 'Article categories linked to user',
+            'message' => __('messages.success.user_settings_controller.Article_categories_linked_to_user'),
             'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
         ]);
     }
@@ -440,7 +440,7 @@ class UserSettingsController extends Controller
         cache()->forget('user_avatar_' . $user->id);
 
         return response()->json([
-            'message' => 'Avatar uploaded',
+            'message' => __('messages.success.user_settings_controller.Avatar_uploaded'),
             'avatar_id' => $uploadedAvatar->id,
             'avatar' => $uploadedAvatar->getUrl(),
             'avatar_thumb' => $uploadedAvatar->getUrl('thumb'),
@@ -494,7 +494,7 @@ class UserSettingsController extends Controller
         cache()->forget('user_cover_' . $user->id);
 
         return response()->json([
-            'message' => 'Cover uploaded',
+            'message' => __('messages.success.user_settings_controller.Cover_uploaded'),
             'cover_id' => $uploadedCover->id,
             'cover' => $uploadedCover->getUrl(),
         ]);
@@ -550,7 +550,7 @@ class UserSettingsController extends Controller
 
         if ($user->google_id || $user->facebook_id) {
             return response()->json([
-                'message' => 'You cannot change your password if you are logged in with Google or Facebook',
+                'message' => __('messages.error.user_settings_controller.You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook'),
             ], 403);
         }
 
@@ -562,7 +562,7 @@ class UserSettingsController extends Controller
         // check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
             return response()->json([
-                'message' => 'Old password is incorrect',
+                'message' => __('messages.error.user_settings_controller.Old_password_is_incorrect'),
             ], 422);
         }
 
@@ -571,7 +571,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Password updated',
+            'message' => __('messages.success.user_settings_controller.Password_updated'),
         ]);
     }
 
@@ -601,7 +601,7 @@ class UserSettingsController extends Controller
 
         if ($latestSettings && $latestSettings->profile == $request->profile_privacy) {
             return response()->json([
-                'message' => 'Profile privacy already set to ' . $request->profile_privacy,
+                'message' => __('messages.success.user_settings_controller.Profile_privacy_already_set_to', $request->profile_privacy),
                 'profile_privacy' => $latestSettings->profile,
             ]);
         } else {
@@ -614,7 +614,7 @@ class UserSettingsController extends Controller
         Log::info('Profile privacy updated', ['user_id' => $user->id, 'profile_privacy' => $request->profile_privacy, 'latest' => $user->profilePrivacySettings()->orderBy('id', 'desc')->first()]);
 
         return response()->json([
-            'message' => 'Profile privacy updated',
+            'message' => __('messages.success.user_settings_controller.Profile_privacy_updated'),
             'profile_privacy' => $user->profilePrivacySettings()->orderBy('id', 'desc')->first()->profile,
         ]);
     }

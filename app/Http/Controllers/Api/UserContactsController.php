@@ -87,7 +87,7 @@ class UserContactsController extends Controller
         }
 
         return response()->json([
-            'message' => 'Contacts imported successfully',
+            'message' => __('messages.success.user_contacts_controller.Contacts_imported_successfully'),
         ]);
     }
 
@@ -129,7 +129,7 @@ class UserContactsController extends Controller
 
         if ($contacts->count() == 0) {
             return response()->json([
-                'message' => 'No friends found',
+                'message' => __('messages.error.user_contacts_controller.No_friends_found'),
             ]);
         }
 

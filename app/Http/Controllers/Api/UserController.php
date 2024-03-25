@@ -61,12 +61,12 @@ class UserController extends Controller
     {
         // ensure user is not blocking me or i'm blocking this user
         if (auth()->user()->isBlocking($user) || $user->isBlocking(auth()->user())) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
         // if user status is archived, 404
         if ($user->status == User::STATUS_ARCHIVED) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
         return new \App\Http\Resources\UserResource($user, false);
@@ -147,10 +147,10 @@ class UserController extends Controller
                 ]);
             }
         } else {
-            return response()->json(['message' => 'You have already reported this comment'], 422);
+            return response()->json(['message' => __('messages.error.user_controller.You_have_already_reported_this_comment')], 422);
         }
 
-        return response()->json(['message' => 'Comment reported']);
+        return response()->json(['message' => __('messages.success.user_controller.Comment_reported')]);
     }
 
     /**
@@ -194,9 +194,9 @@ class UserController extends Controller
             $userToBlock->unfollow(auth()->user());
             auth()->user()->unfollow($userToBlock);
 
-            return response()->json(['message' => 'User blocked']);
+            return response()->json(['message' => __('messages.success.user_controller.User_blocked')]);
         } else {
-            return response()->json(['message' => 'You have already blocked this user'], 422);
+            return response()->json(['message' => __('messages.error.user_controller.You_have_already_blocked_this_user')], 422);
         }
     }
 
@@ -230,9 +230,9 @@ class UserController extends Controller
             // delete block
             $userBlockedByMe->delete();
 
-            return response()->json(['message' => 'User unblocked']);
+            return response()->json(['message' => __('messages.success.user_controller.User_unblocked')]);
         } else {
-            return response()->json(['message' => 'You have not blocked this user'], 422);
+            return response()->json(['message' => __('messages.error.user_controller.You_have_not_blocked_this_user')], 422);
         }
     }
 
@@ -257,7 +257,7 @@ class UserController extends Controller
             ->get();
 
         if ($blockedUsers->count() <= 0) {
-            return response()->json(['message' => 'No blocked users'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.No_blocked_users')], 404);
         }
 
         $users = User::whereIn('id', $blockedUsers->pluck('blockable_id')->toArray())
@@ -377,7 +377,7 @@ class UserController extends Controller
         $user->status = User::STATUS_ARCHIVED;
         $user->save();
 
-        return response()->json(['message' => 'Account deleted successfully.']);
+        return response()->json(['message' => __('messages.success.user_controller.Account_deleted_successfully')]);
     }
 
     /**
@@ -400,7 +400,7 @@ class UserController extends Controller
         $user = User::find($userId);
         // if user status is archived, 404
         if ($user->status == User::STATUS_ARCHIVED) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
         $userData = new UserResource($user, true);
@@ -430,12 +430,12 @@ class UserController extends Controller
     {
         // ensure user is not blocking me or i'm blocking this user
         if (auth()->user()->isBlocking($user) || $user->isBlocking(auth()->user())) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
         // if user status is archived, 404
         if ($user->status == User::STATUS_ARCHIVED) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
         return new \App\Http\Resources\UserResource($user, false);
@@ -531,12 +531,12 @@ class UserController extends Controller
                         return $this->linkArticleCategoriesInterests($request, $user);
                     default:
                         return response()->json([
-                            'message' => 'Invalid update type',
+                            'message' => __('messages.error.user_controller.Invalid_update_type'),
                         ], 422);
                 }
             } catch (\Exception $e) {
                 return response()->json([
-                    'message' => 'Error updating user details',
+                    'message' => __('messages.error.user_controller.Error_updating_user_details'),
                     'error' => $e->getMessage(),
                 ], 500);
             }
@@ -600,7 +600,7 @@ class UserController extends Controller
 
         if ($user->google_id || $user->facebook_id) {
             return response()->json([
-                'message' => 'You cannot change your password if you are logged in with Google or Facebook',
+                'message' => __('messages.error.user_controller.You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook'),
             ], 403);
         }
 
@@ -612,7 +612,7 @@ class UserController extends Controller
         // check if old password is correct
         if (!Hash::check($request->old_password, $user->password)) {
             return response()->json([
-                'message' => 'Old password is incorrect',
+                'message' => __('messages.error.user_controller.Old_password_is_incorrect'),
             ], 422);
         }
 
@@ -623,7 +623,7 @@ class UserController extends Controller
         $updatedUser = User::find(auth()->user()->id)->first();
 
         return response()->json([
-            'message' => 'Password updated',
+            'message' => __('messages.success.user_controller.Password_updated'),
             // 'old_password' => $request->old_password,
             // 'new_password' => $request->new_password,
             // 'hash_old_password' => Hash::make($request->old_password),
@@ -657,7 +657,7 @@ class UserController extends Controller
 
         // if user email still same with current email then reject
         if ($request->has('email') && auth()->user()->email == $request->email) {
-            return response()->json(['message' => 'Email already verified for your account'], 422);
+            return response()->json(['message' => __('messages.error.user_controller.Email_already_verified_for_your_account')], 422);
         }
 
         $user = auth()->user();
@@ -672,7 +672,7 @@ class UserController extends Controller
         $updatedUser = User::find(auth()->user()->id)->first();
 
         return response()->json([
-            'message' => 'Email updated and verification email sent',
+             'message' => __('messages.success.user_controller.Email_updated_and_verification_email_sent'),
              'email' => $updatedUser->email,
              'user' => new UserResource($updatedUser, true),
         ]);
@@ -691,7 +691,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Name updated',
+            'message' => __('messages.success.user_controller.Name_updated'),
             'user' => $userData,
         ]);
     }
@@ -709,7 +709,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Username updated',
+            'message' => __('messages.success.user_controller.Username_updated'),
             'user' => $userData,
         ]);
     }
@@ -727,7 +727,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Bio updated',
+            'message' => __('messages.success.user_controller.Bio_updated'),
             'user' => $userData,
         ]);
     }
@@ -745,7 +745,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Job Title updated',
+            'message' => __('messages.success.user_controller.Job_Title_updated'),
             'user' => $userData,
         ]);
     }
@@ -765,7 +765,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Date of birth updated',
+            'message' => __('messages.success.user_controller.Date_of_birth_updated'),
             'user' => $userData,
         ]);
     }
@@ -783,7 +783,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Gender updated',
+            'message' => __('messages.success.user_controller.Gender_updated'),
             'user' => $userData,
         ]);
     }
@@ -803,7 +803,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Location updated',
+            'message' => __('messages.success.user_controller.Location_updated'),
             'user' => $userData,
         ]);
     }
@@ -842,7 +842,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Avatar uploaded',
+            'message' => __('messages.success.user_controller.Avatar_uploaded'),
             'user' => $userData,
             'avatar_id' => $uploadedAvatar->id,
         ]);
@@ -881,7 +881,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Cover uploaded',
+            'message' => __('messages.success.user_controller.Cover_uploaded'),
             'user' => $userData,
             'cover_id' => $uploadedCover->id,
         ]);
@@ -899,7 +899,7 @@ class UserController extends Controller
 
         if ($categories->count() != count($request->category_ids)) {
             return response()->json([
-                'message' => 'One or more article category ids not found',
+                'message' => __('messages.error.user_controller.One_or_more_article_category_ids_not_found'),
             ], 422);
         }
 
@@ -915,7 +915,7 @@ class UserController extends Controller
         $userData = new UserResource($updatedUser, true);
 
         return response()->json([
-            'message' => 'Article categories linked to user',
+            'message' => __('messages.success.user_controller.Article_categories_linked_to_user'),
             'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
             'user' => $userData,
         ]);
@@ -933,14 +933,14 @@ class UserController extends Controller
             ->first();
 
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
 
         // check if user profile is private
         $latestSettings = $user->profilePrivacySettings()->orderBy('id', 'desc')->first();
 
         if ($latestSettings && $latestSettings->profile == 'private') {
-            return response()->json(['message' => 'User profile private'], 404);
+            return response()->json(['message' => __('messages.error.user_controller.User_profile_private')], 404);
         }
 
         // get 6 recent articles

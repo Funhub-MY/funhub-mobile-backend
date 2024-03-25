@@ -57,7 +57,7 @@ class CampaignController extends Controller
 
         if (!$campaign) {
             return response()->json([
-                'message' => 'Campaign not found',
+                'message' => __('messages.error.campaign_controller.Campaign_not_found'),
             ], 404);
         }
 
@@ -119,7 +119,7 @@ class CampaignController extends Controller
 
         if (!$campaign) {
             return response()->json([
-                'message' => 'Campaign not found',
+                'message' => __('messages.error.campaign_controller.Campaign_not_found'),
             ], 404);
         }
 
@@ -164,7 +164,7 @@ class CampaignController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Answer saved successfully',
+            'message' => __('messages.success.campaign_controller.Answer_saved_successfully'),
         ]);
     }
 
@@ -192,7 +192,7 @@ class CampaignController extends Controller
         $campaign = Campaign::find($request->campaign_id);
         if (!$campaign) {
             return response()->json([
-                'message' => 'Campaign not found',
+                'message' => __('messages.error.campaign_controller.Campaign_not_found'),
             ], 404);
         }
 
@@ -204,7 +204,7 @@ class CampaignController extends Controller
 
         if (!$campaignQuestions) {
             return response()->json([
-                'message' => 'Question(s) not found',
+                'message' => __('messages.error.campaign_controller.Question(s)_not_found'),
             ], 404);
         }
 
@@ -274,7 +274,7 @@ class CampaignController extends Controller
         $campaign = Campaign::find($request->campaign_id);
         if (!$campaign) {
             return response()->json([
-                'message' => 'Campaign not found',
+                'message' => __('messages.error.campaign_controller.Campaign_not_found'),
             ], 404);
         }
 
@@ -288,7 +288,7 @@ class CampaignController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Respondant details created successfully'
+            'message' => __('messages.success.campaign_controller.Respondant_details_created_successfully')
         ]);
     }
 
@@ -314,7 +314,7 @@ class CampaignController extends Controller
         $campaign = Campaign::find($request->campaign_id);
         if (!$campaign) {
             return response()->json([
-                'message' => 'Campaign not found',
+                'message' => __('messages.error.campaign_controller.Campaign_not_found'),
             ], 404);
         }
 

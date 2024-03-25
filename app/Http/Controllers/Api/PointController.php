@@ -191,7 +191,7 @@ class PointController extends Controller
             ->firstOrFail();
 
         if ($reward->rewardComponents->count() == 0) {
-            return response()->json(['message' => 'Reward has no components to form yet'], 422);
+            return response()->json(['message' => __('messages.error.point_controller.Reward_has_no_components_to_form_yet')], 422);
         }
 
         $user = $request->user();
@@ -199,7 +199,7 @@ class PointController extends Controller
         foreach($reward->rewardComponents as $component) {
             if ($component->pivot->points * $request->quantity > $this->pointComponentService->getBalanceByComponent($user, $component)) {
                 return response()->json([
-                    'message' => 'User does not have enough points to form this reward',
+                    'message' => __('messages.error.point_controller.User_does_not_have_enough_points_to_form_this_reward'),
                     'component' => $component->name,
                     'required_balance' => $component->pivot->points * $request->quantity,
                 ], 422);
@@ -213,7 +213,7 @@ class PointController extends Controller
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage(), ['user_id' => $user->id, 'reward_id' => $reward->id, 'quantity' => $request->quantity]);
-            return response()->json(['message' => 'Error while deducting points from user'], 422);
+            return response()->json(['message' => __('messages.error.point_controller.Error_while_deducting_points_from_user')], 422);
         }
 
         // credit to reward
@@ -222,7 +222,7 @@ class PointController extends Controller
 
         return response()->json([
             'point_balance' => $user->point_balance,
-            'message' => 'Reward Formed'
+            'message' => __('messages.success.point_controller.Reward_Formed')
         ]);
     }
 

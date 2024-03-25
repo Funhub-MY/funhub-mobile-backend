@@ -68,7 +68,7 @@ class ViewController extends Controller
         }
 
         return response()->json([
-            'message' => 'View recorded',
+            'message' => __('messages.success.view_controller.View_recorded'),
         ]);
     }
 

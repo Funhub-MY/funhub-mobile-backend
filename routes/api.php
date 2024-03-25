@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\MerchantOfferCategoryController;
 */
 
 
-Route::group(['prefix' => 'v1'], function () {
+Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);

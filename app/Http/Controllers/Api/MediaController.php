@@ -41,7 +41,7 @@ class MediaController extends Controller
             // reject file name if non alphabets letters exists
             if (!preg_match('/^[a-zA-Z0-9-_\.]+$/', $request->get('filename'))) {
                 return response()->json([
-                    'message' => 'Invalid filename, only alphabets letters or numbers are allowed',
+                    'message' => __('messages.error.media_controller.Invalid_filename_only_alphabets_letters_or_numbers_are_allowed'),
                     'url' => null,
                 ]);
             }
@@ -64,7 +64,7 @@ class MediaController extends Controller
        }
 
        return response()->json([
-            'message' => 'Only applicable for S3 Storage',
+            'message' => __('messages.error.media_controller.Only_applicable_for_S3_Storage'),
             'url' => null,
        ]);
     }
@@ -96,7 +96,7 @@ class MediaController extends Controller
         // only applicable if storage is s3
         if (config('filesystems.default') != 's3') {
             return response()->json([
-                'message' => 'Only applicable for S3 Storage',
+                'message' => __('messages.error.media_controller.Only_applicable_for_S3_Storage'),
                 'media_ids' => null,
             ]);
         }
@@ -131,7 +131,7 @@ class MediaController extends Controller
                         'uploadId' => $uploadId,
                     ]);
                     return response()->json([
-                        'message' => 'Error completing upload file for upload ID: ' . $uploadId . ' ' . $e->getMessage(),
+                        'message' => __('messages.error.media_controller.Error_completing_upload_file_for_upload_ID', $uploadId),
                         'media_ids' => null,
                     ]);
                 }
@@ -177,7 +177,7 @@ class MediaController extends Controller
         }
 
         return response()->json([
-            'message' => 'Success',
+            'message' => __('messages.success.media_controller.Success'),
             'uploaded' => $medias,
         ]);
     }

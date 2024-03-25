@@ -257,14 +257,14 @@ class MerchantOfferController extends Controller
 
         if (!$offer) {
             return response()->json([
-                'message' => 'Offer is no longer valid'
+                'message' => __('messages.error.merchant_offer_controller.Offer_is_no_longer_valid')
             ], 422);
         }
 
         // double check quantity via unclaimed vouchers
         if ($offer->unclaimedVouchers()->count() < $request->quantity) {
             return response()->json([
-                'message' => 'Offer is sold out'
+                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out')
             ], 422);
         }
 
@@ -276,7 +276,7 @@ class MerchantOfferController extends Controller
             // check if enough points
             if ($user->point_balance < $net_amount) {
                 return response()->json([
-                    'message' => 'Insufficient Point Balance'
+                    'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance')
                 ], 422);
             }
 
@@ -329,7 +329,7 @@ class MerchantOfferController extends Controller
             // check if user has verified email address
             if (!$user->hasVerifiedEmail()) {
                 return response()->json([
-                    'message' => 'Please verify your email address first.'
+                    'message' => __('messages.error.merchant_offer_controller.Please_verify_your_email_address_first')
                 ], 422);
             }
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
@@ -388,7 +388,7 @@ class MerchantOfferController extends Controller
 
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([
-                    'message' => 'Redirect to Gateway',
+                    'message' => __('messages.success.merchant_offer_controller.Redirect_to_Gateway'),
                     'gateway_data' => $mpayData
                 ], 200);
             }
@@ -397,7 +397,7 @@ class MerchantOfferController extends Controller
         // refresh offer with latest data
         $offer->refresh();
         return response()->json([
-            'message' => 'Claimed successfully',
+            'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
             'offer' => new MerchantOfferResource($offer)
         ], 200);
     }
@@ -480,7 +480,7 @@ class MerchantOfferController extends Controller
         Log::info('[ProductController] User cancelled transaction, but status maintain PENDING, offer quantity still locked', ['offer' => $offer, 'user_id' => auth()->user()->id]);
 
         return response()->json([
-            'message' => 'Transaction cancelled'
+            'message' => __('messages.success.merchant_offer_controller.Transaction_cancelled')
         ], 200);
         // if ($offer) {
             // // release quantity back to MerchantOffer
@@ -589,7 +589,7 @@ class MerchantOfferController extends Controller
 
         if (!$offer) {
             return response()->json([
-                'message' => 'You have not claimed this offer'
+                'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer')
             ], 422);
         }
 
@@ -603,7 +603,7 @@ class MerchantOfferController extends Controller
 
             if (Carbon::parse($userClaim->pivot->created_at)->addDays($offer->expiry_days)->isPast()) {
                 return response()->json([
-                    'message' => 'This offer has expired'
+                    'message' => __('messages.error.merchant_offer_controller.This_offer_has_expired')
                 ], 422);
             }
         }
@@ -617,7 +617,7 @@ class MerchantOfferController extends Controller
         // already redeemed fully
         if (!$claim || $claim->quantity < $request->quantity) {
             return response()->json([
-                'message' => 'You do not have enough to redeem'
+                'message' => __('messages.error.merchant_offer_controller.You_do_not_have_enough_to_redeem')
             ], 422);
         }
 
@@ -629,7 +629,7 @@ class MerchantOfferController extends Controller
 
         if (!$merchant) {
             return response()->json([
-                'message' => 'Invalid merchant redeem code'
+                'message' => __('messages.error.merchant_offer_controller.Invalid_merchant_redeem_code')
             ], 422);
         }
 
@@ -667,7 +667,7 @@ class MerchantOfferController extends Controller
         }
 
         return response()->json([
-            'message' => 'Redeemed Successfully',
+            'message' => __('messages.success.merchant_offer_controller.Redeemed_Successfully'),
             'offer' => new MerchantOfferResource($offer)
         ], 200);
     }
@@ -699,7 +699,7 @@ class MerchantOfferController extends Controller
             ->first();
 
         if (!$offer) {
-            return response()->json(['message' => 'Deal not found'], 404);
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
         }
 
         // return user profile

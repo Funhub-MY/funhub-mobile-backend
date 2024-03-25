@@ -33,14 +33,14 @@ class UserFollowingController extends Controller
         // ensure user_id is not self
         if ($request->user_id === auth()->user()->id) {
             return response()->json([
-                'message' => 'You cannot follow yourself'
+                'message' => __('messages.error.user_following_controller.You_cannot_follow_yourself')
             ], 400);
         }
 
         // check if user already following user or not
         if (auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
-                'message' => 'You are already following this user'
+                'message' => __('messages.error.user_following_controller.You_are_already_following_this_user')
             ], 400);
         }
 
@@ -57,7 +57,7 @@ class UserFollowingController extends Controller
                     $user->notify(new \App\Notifications\NewFollowRequest(auth()->user()));
                 }
                 return response()->json([
-                    'message' => 'Follow request sent',
+                    'message' => __('messages.success.user_following_controller.Follow_request_sent'),
                     'status' => 'requested'
                 ], 200);
             }
@@ -78,7 +78,7 @@ class UserFollowingController extends Controller
         }
 
         return response()->json([
-            'message' => 'You are now following this user',
+            'message' => __('messages.success.user_following_controller.You_are_now_following_this_user'),
             'status' => 'followed'
         ], 200);
     }
@@ -107,7 +107,7 @@ class UserFollowingController extends Controller
              }
 
              return response()->json([
-                 'message' => 'Follow request removed',
+                 'message' => __('messages.success.user_following_controller.Follow_request_removed'),
                  'status' => 'request_removed'
              ], 200);
          }
@@ -115,7 +115,7 @@ class UserFollowingController extends Controller
         // check if user already following user or not
         if (!auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
             return response()->json([
-                'message' => 'You are not following this user'
+                'message' => __('messages.error.user_following_controller.You_are_not_following_this_user')
             ], 400);
         }
 
@@ -148,7 +148,7 @@ class UserFollowingController extends Controller
         event(new UnfollowedUser(auth()->user(), User::find($request->user_id)));
 
         return response()->json([
-            'message' => 'You are now unfollowing this user',
+            'message' => __('messages.success.user_following_controller.You_are_now_unfollowing_this_user'),
             'status' => 'unfollowed'
         ], 200);
     }
@@ -174,7 +174,7 @@ class UserFollowingController extends Controller
 
         if ($user->profile_is_private && $user->id !== auth()->id()) {
             return response()->json([
-                'message' => 'User profile is private'
+                'message' => __('messages.error.user_following_controller.User_profile_is_private')
             ], 404);
         }
 
@@ -209,7 +209,7 @@ class UserFollowingController extends Controller
 
         if ($user->profile_is_private && $user->id !== auth()->id()) {
             return response()->json([
-                'message' => 'User profile is private'
+                'message' => __('messages.error.user_following_controller.User_profile_is_private')
             ], 404);
         }
 
@@ -267,7 +267,7 @@ class UserFollowingController extends Controller
 
         if (!$followRequest) {
             return response()->json([
-                'message' => 'Follow request not found'
+                'message' => __('messages.error.user_following_controller.Follow_request_not_found')
             ], 404);
         }
 
@@ -277,7 +277,7 @@ class UserFollowingController extends Controller
         $followRequest->save();
 
         return response()->json([
-            'message' => 'Accepted following request'
+            'message' => __('messages.error.user_following_controller.Accepted_following_request')
         ], 200);
     }
 
@@ -303,7 +303,7 @@ class UserFollowingController extends Controller
 
         if (!$followRequest) {
             return response()->json([
-                'message' => 'Follow request not found'
+                'message' => __('messages.error.user_following_controller.Follow_request_not_found')
             ], 404);
         }
 
@@ -311,7 +311,7 @@ class UserFollowingController extends Controller
         $followRequest->delete();
 
         return response()->json([
-            'message' => 'Rejected following request'
+            'message' => __('messages.success.user_following_controller.Rejected_following_request')
         ], 200);
     }
 }

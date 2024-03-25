@@ -433,7 +433,7 @@ class ArticleController extends Controller
 
         if (!$article) {
             return response()->json([
-                'message' => 'Article not found'
+                'message' => __('messages.error.article_controller.Article_not_found')
             ], 404);
         }
 
@@ -485,7 +485,7 @@ class ArticleController extends Controller
                 // check if this user blocked authenticated user
                 if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
                     return response()->json([
-                        'message' => 'You are not allowed to view this user articles'
+                        'message' => __('messages.error.article_controller.You_are_not_allowed_to_view_this_user_articles')
                     ], 403);
                 }
             }
@@ -495,7 +495,7 @@ class ArticleController extends Controller
             // check if this user followers has authenticated user
             if (!auth()->user()->followings()->where('following_id', $user_id)->exists()) {
                 return response()->json([
-                    'message' => 'User profile is private'
+                    'message' => __('messages.error.article_controller.User_profile_is_private')
                 ], 404);
             }
         }
@@ -556,7 +556,7 @@ class ArticleController extends Controller
                 $user_id = $user->id;
                 if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
                     return response()->json([
-                        'message' => 'You are not allowed to view this user articles'
+                        'message' => __('messages.error.article_controller.You_are_not_allowed_to_view_this_user_articles')
                     ], 403);
                 }
             }
@@ -605,7 +605,7 @@ class ArticleController extends Controller
         $article = Article::find($request->article_id);
         if (!$article) {
             return response()->json([
-                'message' => 'Article not found'
+                'message' => __('messages.error.article_controller.Article_not_found')
             ], 404);
         }
 
@@ -615,7 +615,7 @@ class ArticleController extends Controller
         auth()->user()->articleRanks()->where('article_id', $article->id)->delete();
 
         return response()->json([
-            'message' => 'Article marked as not interested'
+            'message' => __('messages.success.article_controller.Article_marked_as_not_interested')
         ]);
     }
 
@@ -661,7 +661,7 @@ class ArticleController extends Controller
             $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
             if ($followers->count() != count($request->tagged_user_ids)) {
                 return response()->json([
-                    'message' => 'You can only tag your followers.',
+                    'message' => __('messages.error.article_controller.You_can_only_tag_your_followers'),
                 ], 422);
             }
 
@@ -764,7 +764,7 @@ class ArticleController extends Controller
         // load relations
         $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
         return response()->json([
-            'message' => 'Article created',
+            'message' => __('messages.success.article_controller.Article_created'),
             'article' => new ArticleResource($article),
         ]);
     }
@@ -950,7 +950,7 @@ class ArticleController extends Controller
                 $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
                 if ($followers->count() != count($request->tagged_user_ids)) {
                     return response()->json([
-                        'message' => 'You can only tag your followers.',
+                        'message' => __('messages.error.article_controller.You_can_only_tag_your_followers'),
                     ], 422);
                 }
 
@@ -1060,9 +1060,9 @@ class ArticleController extends Controller
             $article->searchable();
             // load relations count
             $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
-            return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
+            return response()->json(['message' => __('messages.success.article_controller.Article_updated'), 'article' => new ArticleResource($article)]);
         } else {
-            return response()->json(['message' => 'Article not found'], 404);
+            return response()->json(['message' => __('messages.error.article_controller.Article_not_found')], 404);
         }
     }
 
@@ -1117,9 +1117,9 @@ class ArticleController extends Controller
 
             // delete article
             $article->delete();
-            return response()->json(['message' => 'Article deleted']);
+            return response()->json(['message' => __('messages.success.article_controller.Article_deleted')]);
         } else {
-            return response()->json(['message' => 'Article not found'], 404);
+            return response()->json(['message' => __('messages.error.article_controller.Article_not_found')], 404);
         }
     }
 
@@ -1302,9 +1302,9 @@ class ArticleController extends Controller
                 'violation_level' => request('violation_level'),
             ]);
         } else {
-            return response()->json(['message' => 'You have already reported this comment'], 422);
+            return response()->json(['message' => __('messages.error.article_controller.You_have_already_reported_this_comment')], 422);
         }
-        return response()->json(['message' => 'Comment reported']);
+        return response()->json(['message' => __('messages.success.article_controller.Comment_reported')]);
     }
 
     /**

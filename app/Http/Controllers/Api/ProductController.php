@@ -84,7 +84,7 @@ class ProductController extends Controller
        // check if user has verified email address
         if (!auth()->user()->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Please verify your email address first.'
+                'message' => __('messages.error.product_controller.Please_verify_your_email_address_first')
             ], 422);
         }
 
@@ -95,14 +95,14 @@ class ProductController extends Controller
 
         if (!$product) {
             return response()->json([
-                'message' => 'Product is no longer valid'
+                'message' => __('messages.error.product_controller.Product_is_no_longer_valid')
             ], 422);
         }
 
         if ($product->unlimited_supply == 0) { //this product has limited supply
             if ($product->quantity < $request->quantity) {
                 return response()->json([
-                    'message' => 'Product is sold out'
+                    'message' => __('messages.error.product_controller.Product_is_sold_out')
                 ], 422);
             }
         }
@@ -146,7 +146,7 @@ class ProductController extends Controller
             }
 
             return response()->json([
-                'message' => 'Redirect to Gateway',
+                'message' => __('messages.success.product_controller.Redirect_to_Gateway'),
                 'transaction_no' => $transaction->transaction_no,
                 'gateway_data' => $mpayData
             ], 200);
@@ -179,7 +179,7 @@ class ProductController extends Controller
 
         if (!$transaction) {
             return response()->json([
-                'message' => 'Transaction not found'
+                'message' => __('messages.error.product_controller.Transaction_not_found')
             ], 404);
         }
 
@@ -190,7 +190,7 @@ class ProductController extends Controller
         // $transaction = $this->transactionService->updateTransactionStatus($transaction->id, Transaction::STATUS_FAILED);
 
         return response()->json([
-            'message' => 'Transaction cancelled'
+            'message' => __('messages.success.product_controller.Transaction_cancelled')
         ], 200);
     }
 
