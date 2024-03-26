@@ -21,9 +21,7 @@ class SetLocaleFromHeader
     {
         // Get the language from the request header
         $locale = $request->header('X-Locale');
-
-        // Check if the locale is supported by your application
-        $supportedLocales = ['en', 'cn'];
+        $supportedLocales = ['en', 'zh'];
         if (in_array($locale, $supportedLocales)) {
             // Set the locale for the current request
             App::setLocale($locale);
