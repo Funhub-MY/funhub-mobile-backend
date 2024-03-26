@@ -131,7 +131,7 @@ class MediaController extends Controller
                         'uploadId' => $uploadId,
                     ]);
                     return response()->json([
-                        'message' => __('messages.error.media_controller.Error_completing_upload_file_for_upload_ID', $uploadId),
+                        'message' => __('messages.error.media_controller.Error_completing_upload_file_for_upload_ID', ['uploadId' => $uploadId]),
                         'media_ids' => null,
                     ]);
                 }

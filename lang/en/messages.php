@@ -108,7 +108,7 @@ return [
             'Avatar_uploaded' => 'Avatar uploaded',
             'Cover_uploaded' => 'Cover uploaded',
             'Password_updated' => 'Password updated',
-            'Profile_privacy_already_set_to' => 'Profile privacy already set to ',
+            'Profile_privacy_already_set_to' => 'Profile privacy already set to :setting',
             'Profile_privacy_updated' => 'Profile privacy updated',
         ],
         'view_controller' => [
@@ -153,7 +153,7 @@ return [
         'media_controller' => [
             'Invalid_filename_only_alphabets_letters_or_numbers_are_allowed' => 'Invalid filename, only alphabets letters or numbers are allowed',
             'Only_applicable_for_S3_Storage' => 'Only applicable for S3 Storage',
-            'Error_completing_upload_file_for_upload_ID' => 'Error completing upload file for upload ID ',
+            'Error_completing_upload_file_for_upload_ID' => 'Error completing upload file for upload ID :uploadId',
         ],
         'merchant_offer_controller' => [
             'Offer_is_no_longer_valid' => 'Offer is no longer valid',

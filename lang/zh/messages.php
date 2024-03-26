@@ -108,7 +108,7 @@ return [
             'Avatar_uploaded' => '头像已上传',
             'Cover_uploaded' => '封面已上传',
             'Password_updated' => '密码已更新',
-            'Profile_privacy_already_set_to' => '个人资料隐私设置已设为',
+            'Profile_privacy_already_set_to' => '个人资料隐私设置已设为 :setting',
             'Profile_privacy_updated' => '个人资料隐私已更新',
         ],
         'view_controller' => [

@@ -601,7 +601,7 @@ class UserSettingsController extends Controller
 
         if ($latestSettings && $latestSettings->profile == $request->profile_privacy) {
             return response()->json([
-                'message' => __('messages.success.user_settings_controller.Profile_privacy_already_set_to', $request->profile_privacy),
+                'message' => __('messages.success.user_settings_controller.Profile_privacy_already_set_to', ['setting' => $request->profile_privacy]),
                 'profile_privacy' => $latestSettings->profile,
             ]);
         } else {
