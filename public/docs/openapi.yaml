@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 15
+                  example: 3
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: dolorem
+                  example: quia
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: unde
+                  example: repellat
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - sint
+                    - repellat
                   items:
                     type: string
                 category_ids:
@@ -582,7 +582,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatem
+                    - distinctio
                   items:
                     type: string
                 category_ids:
@@ -1220,7 +1220,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: pariatur
+        example: delectus
         required: true
         schema:
           type: string
@@ -1301,11 +1301,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quia
+                  example: qui
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dolore
+                  example: optio
               required:
                 - comment_id
                 - reason
@@ -1587,7 +1587,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: expedita
+        example: vitae
         required: true
         schema:
           type: string
@@ -1812,6 +1812,65 @@ paths:
                 - phone_no
                 - password
       security: []
+  /api/v1/loginWithOtp:
+    post:
+      summary: 'Login with OTP'
+      operationId: loginWithOTP
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n\"user\": {\n   id: 1,\n  name: \"John Smith\"\n},\n\"token\": \"AuthenticationTokenHere\"\n}"
+        401:
+          description: 'Invalid Login details'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Invalid login details'
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid login details'
+        422:
+          description: 'Invalid Form Fields'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: "The country code of user's phone number."
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'The Phone No of the user.'
+                  example: '1234567890'
+                otp:
+                  type: string
+                  description: "The OTP sent to user's phone number."
+                  example: '123456'
+              required:
+                - country_code
+                - phone_no
+                - otp
+      security: []
   /api/v1/register/otp:
     post:
       summary: 'Register with OTP'
@@ -1968,7 +2027,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                      line: 501
+                      line: 569
                       function: userFromToken
                       class: Laravel\Socialite\Two\AbstractProvider
                       type: '->'
@@ -2007,6 +2066,18 @@ paths:
                       line: 141
                       function: 'Illuminate\Routing\{closure}'
                       class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                      line: 35
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: App\Http\Middleware\SetLocaleFromHeader
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
@@ -2452,7 +2523,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                        line: 501
+                        line: 569
                         function: userFromToken
                         class: Laravel\Socialite\Two\AbstractProvider
                         type: '->'
@@ -2491,6 +2562,18 @@ paths:
                         line: 141
                         function: 'Illuminate\Routing\{closure}'
                         class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                        line: 35
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: App\Http\Middleware\SetLocaleFromHeader
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
@@ -2973,7 +3056,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                      line: 543
+                      line: 611
                       function: userFromToken
                       class: Laravel\Socialite\Two\AbstractProvider
                       type: '->'
@@ -3012,6 +3095,18 @@ paths:
                       line: 141
                       function: 'Illuminate\Routing\{closure}'
                       class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                      line: 35
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: App\Http\Middleware\SetLocaleFromHeader
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
@@ -3457,7 +3552,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                        line: 543
+                        line: 611
                         function: userFromToken
                         class: Laravel\Socialite\Two\AbstractProvider
                         type: '->'
@@ -3496,6 +3591,18 @@ paths:
                         line: 141
                         function: 'Illuminate\Routing\{closure}'
                         class: Illuminate\Routing\Router
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                        line: 35
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: App\Http\Middleware\SetLocaleFromHeader
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
@@ -4401,7 +4508,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: eichmann.isabel@example.net
+                  example: rschumm@example.org
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4523,6 +4630,18 @@ paths:
                       line: 141
                       function: 'Illuminate\Routing\{closure}'
                       class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                      line: 35
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: App\Http\Middleware\SetLocaleFromHeader
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
@@ -4935,6 +5054,18 @@ paths:
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                        line: 35
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: App\Http\Middleware\SetLocaleFromHeader
+                        type: '->'
+                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
                         line: 50
                         function: 'Illuminate\Pipeline\{closure}'
@@ -5312,7 +5443,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: vitae
+                  example: dolorum
               required:
                 - share_code
   /api/v1/public_user:
@@ -5346,7 +5477,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: exercitationem
+                  example: vero
               required:
                 - username
   /api/v1/public_offer:
@@ -5413,6 +5544,18 @@ paths:
                       line: 141
                       function: 'Illuminate\Routing\{closure}'
                       class: Illuminate\Routing\Router
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                      line: 35
+                      function: 'Illuminate\Pipeline\{closure}'
+                      class: Illuminate\Pipeline\Pipeline
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                      line: 180
+                      function: handle
+                      class: App\Http\Middleware\SetLocaleFromHeader
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
@@ -5825,6 +5968,18 @@ paths:
                         class: Illuminate\Routing\Router
                         type: '->'
                       -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
+                        line: 35
+                        function: 'Illuminate\Pipeline\{closure}'
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: handle
+                        class: App\Http\Middleware\SetLocaleFromHeader
+                        type: '->'
+                      -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
                         line: 50
                         function: 'Illuminate\Pipeline\{closure}'
@@ -6202,7 +6357,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: id
+                  example: omnis
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -6881,7 +7036,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - eaque
+                    - voluptatem
                   items:
                     type: string
                 name:
@@ -7062,13 +7217,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - illum
+            - voluptas
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - illum
+              - voluptas
             items:
               type: string
         -
@@ -7234,7 +7389,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - ducimus
+                    - fugiat
                   items:
                     type: string
                 city:
@@ -7496,7 +7651,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: quas
+        example: aut
         required: true
         schema:
           type: string
@@ -8598,7 +8753,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 6
+                  example: 3
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8690,7 +8845,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 19
+                  example: 15
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -8724,7 +8879,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 16
+                  example: 14
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -8785,15 +8940,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aliquid
+                  example: quae
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptatem
+                  example: in
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: consequatur
+                  example: quas
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -8910,7 +9065,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: laborum
+                  example: fugit
               required:
                 - reason
   /api/v1/users_by_id:

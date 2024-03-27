@@ -93,6 +93,74 @@ class AuthController extends Controller
     }
 
     /**
+     * Login with OTP
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Authentication
+     * @unauthenticated
+     * @bodyParam country_code string required The country code of user's phone number. Example: 60
+     * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
+     * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
+     * @response scenario=success {
+     * "user": {
+     *    id: 1,
+     *   name: "John Smith"
+     * },
+     * "token": "AuthenticationTokenHere"
+     * }
+     *
+     * @response status=401 scenario="Invalid Login details" {"message": "Invalid login details"}
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}
+     */
+    public function loginwithOtp(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+            'otp' => 'required|string',
+        ]);
+
+        // check phone no has prefix 0 remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // check phone no has prefix + remove it first
+        if (substr($request->phone_no, 0, 1) == '+') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        }
+
+        $user = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->where('otp', $request->otp)
+            ->first();
+
+        if ($user) {
+            // user exists in system
+            // update otp to null
+            $user->update([
+                'otp' => null,
+                'otp_expiry' => null,
+                'otp_verified_at' => now(),
+            ]);
+            // log user in
+            $token = $user->createToken('authToken');
+            Auth::login($user);
+
+            return response()->json([
+                'user' => new UserResource($user, true),
+                'token' => $token->plainTextToken,
+            ], 200);
+        }
+
+        return response()->json(['message' => __('messages.error.auth_controller.OTP_Invalid_or_Expired')], 422);
+    }
+
+    /**
      * Check phone no exists or not
      *
      * @param Request $request
