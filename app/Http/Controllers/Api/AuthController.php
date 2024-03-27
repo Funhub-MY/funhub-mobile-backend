@@ -197,7 +197,7 @@ class AuthController extends Controller
                     'registered' => true,
                     'has_password' => true,
                     'message' => __('messages.error.auth_controller.Phone_Number_already_registered')
-                ], 422);
+                ], 200);
             } else {
                 return response()->json([
                     'registered' => true,
