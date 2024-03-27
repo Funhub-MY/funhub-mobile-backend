@@ -9,10 +9,12 @@ use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Group;
 use App\Models\MerchantOfferCategory;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\KeyValue;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
@@ -22,7 +24,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MerchantOfferCategoryResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferCategoryResource\RelationManagers;
-use Filament\Forms\Components\Group;
 
 class MerchantOfferCategoryResource extends Resource
 {
@@ -41,11 +42,67 @@ class MerchantOfferCategoryResource extends Resource
                 Card::make([
                     TextInput::make('name')
                         ->label('Category Name')
+                        ->helperText("This will show as default category name in admin backend system regardless of the app language set.")
                         ->autofocus()
                         ->required()
-                        ->unique()
                         ->lazy()
                         ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null)
+                        ->columnSpanFull(),
+
+                    KeyValue::make('name_translation')
+                        ->label('Category Name Translation')
+                        ->keyLabel('Language')
+                        ->valueLabel('Category Name Translation')
+                        ->disableAddingRows()
+                        ->disableDeletingRows()
+                        ->disableEditingKeys()
+                        ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                            // Retrieve available locales
+                            $locales = config('app.available_locales', []);
+
+                            // If in edit context, retrieve the existing translations from the database
+                            if ($context === 'edit' && $record) {
+                                // Fetch the existing translations for this record
+                                $translations = json_decode($record->name_translation ?? [], true);
+
+                                // Map available locales to keys of KeyValue component with corresponding values
+                                foreach ($locales as $locale => $language) {
+                                    // Search for the key (language code) corresponding to the current language name
+                                    $languageCode = array_search($language, $locales);
+
+                                    // Set the value for the corresponding key and value in the state
+                                    $set("name_translation.$language", $translations[$languageCode] ?? '');
+                                }
+                            } else {
+                                // For other contexts or new records, map available locales to keys of KeyValue component with empty values
+                                foreach ($locales as $locale => $language) {
+                                    // Set the value for the corresponding key in the state
+                                    $set("name_translation.$language", '');
+                                }
+                            }
+                        })
+                        ->dehydrateStateUsing(function ($state) {
+                            // Retrieve available locales
+                            $locales = config('app.available_locales', []);
+
+                            $transformedState = [];
+
+                            // Iterate over the keys in $state
+                            foreach ($state as $key => $value) {
+                                // Search for the corresponding key in $locales
+                                $localeKey = array_search($key, $locales);
+
+                                // If a corresponding key is found, use it to replace the key in $state
+                                if ($localeKey !== false) {
+                                    $transformedState[$localeKey] = $value;
+                                }
+                            }
+
+                            // Convert the transformed state to JSON
+                            $stateJson = json_encode($transformedState);
+
+                            return $stateJson;
+                        })
                         ->columnSpanFull(),
 
                     RichEditor::make('description')
@@ -85,7 +142,7 @@ class MerchantOfferCategoryResource extends Resource
                         ->columnSpanFull(),
 
                     Hidden::make('user_id')
-                        ->default(fn() => auth()->id()),
+                        ->default(fn () => auth()->id()),
                 ])->columns(2)
             ]);
     }

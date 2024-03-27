@@ -11,7 +11,9 @@ use Filament\Resources\Table;
 use App\Models\ArticleCategory;
 use Filament\Resources\Resource;
 use Spatie\MediaLibrary\HasMedia;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\KeyValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ArticleCategoryResource\Pages;
@@ -32,10 +34,70 @@ class ArticleCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->lazy()
-                    ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+                Card::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Category Name')
+                            ->helperText("This will show as default category name in admin backend system regardless of the app language set.")
+                            ->required()
+                            ->lazy()
+                            ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+
+                        KeyValue::make('name_translation')
+                            ->label('Category Name Translation')
+                            ->keyLabel('Language')
+                            ->valueLabel('Category Name Translation')
+                            ->disableAddingRows()
+                            ->disableDeletingRows()
+                            ->disableEditingKeys()
+                            ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                                // Retrieve available locales
+                                $locales = config('app.available_locales', []);
+    
+                                // If in edit context, retrieve the existing translations from the database
+                                if ($context === 'edit' && $record) {
+                                    // Fetch the existing translations for this record
+                                    $translations = json_decode($record->name_translation ?? [], true);
+    
+                                    // Map available locales to keys of KeyValue component with corresponding values
+                                    foreach ($locales as $locale => $language) {
+                                        // Search for the key (language code) corresponding to the current language name
+                                        $languageCode = array_search($language, $locales);
+    
+                                        // Set the value for the corresponding key and value in the state
+                                        $set("name_translation.$language", $translations[$languageCode] ?? '');
+                                    }
+                                } else {
+                                    // For other contexts or new records, map available locales to keys of KeyValue component with empty values
+                                    foreach ($locales as $locale => $language) {
+                                        // Set the value for the corresponding key in the state
+                                        $set("name_translation.$language", '');
+                                    }
+                                }
+                            })
+                            ->dehydrateStateUsing(function ($state) {
+                                // Retrieve available locales
+                                $locales = config('app.available_locales', []);
+
+                                $transformedState = [];
+
+                                // Iterate over the keys in $state
+                                foreach ($state as $key => $value) {
+                                    // Search for the corresponding key in $locales
+                                    $localeKey = array_search($key, $locales);
+
+                                    // If a corresponding key is found, use it to replace the key in $state
+                                    if ($localeKey !== false) {
+                                        $transformedState[$localeKey] = $value;
+                                    }
+                                }
+
+                                // Convert the transformed state to JSON
+                                $stateJson = json_encode($transformedState);
+
+                                return $stateJson;
+                            })
+                    ]),
 
                 // add parent category relationship
                 Forms\Components\Select::make('parent_id')
