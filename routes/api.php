@@ -28,6 +28,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
     Route::post('verifyOtp', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyOtp']); // verify otp
     Route::post('loginWithPassword', [\App\Http\Controllers\Api\AuthController::class, 'loginWithPassword']); // login with phone no + password
+    Route::post('loginWithOtp', [\App\Http\Controllers\Api\AuthController::class, 'loginWithOtp']); // login with phone no + otp
     Route::post('register/otp', [\App\Http\Controllers\Api\AuthController::class, 'registerWithOtp']);
 
     // social provider logins

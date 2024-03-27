@@ -300,6 +300,91 @@ endpoints:
   -
     httpMethods:
       - POST
+    uri: api/v1/loginWithOtp
+    metadata:
+      groupName: Authentication
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Login with OTP'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      country_code:
+        name: country_code
+        description: "The country code of user's phone number."
+        required: true
+        example: '60'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      phone_no:
+        name: phone_no
+        description: 'The Phone No of the user.'
+        required: true
+        example: '1234567890'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      otp:
+        name: otp
+        description: "The OTP sent to user's phone number."
+        required: true
+        example: '123456'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      country_code: '60'
+      phone_no: '1234567890'
+      otp: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "user": {
+             id: 1,
+            name: "John Smith"
+          },
+          "token": "AuthenticationTokenHere"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 401
+        content: '{"message": "Invalid login details"}'
+        headers: []
+        description: 'Invalid Login details'
+        custom: []
+      -
+        status: 422
+        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
+        headers: []
+        description: 'Invalid Form Fields'
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
     uri: api/v1/register/otp
     metadata:
       groupName: Authentication
@@ -532,7 +617,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php",
-                      "line": 501,
+                      "line": 569,
                       "function": "userFromToken",
                       "class": "Laravel\\Socialite\\Two\\AbstractProvider",
                       "type": "->"
@@ -577,6 +662,20 @@ endpoints:
                       "line": 141,
                       "function": "Illuminate\\Routing\\{closure}",
                       "class": "Illuminate\\Routing\\Router",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
+                      "line": 35,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
                       "type": "->"
                   },
                   {
@@ -1137,7 +1236,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php",
-                      "line": 543,
+                      "line": 611,
                       "function": "userFromToken",
                       "class": "Laravel\\Socialite\\Two\\AbstractProvider",
                       "type": "->"
@@ -1182,6 +1281,20 @@ endpoints:
                       "line": 141,
                       "function": "Illuminate\\Routing\\{closure}",
                       "class": "Illuminate\\Routing\\Router",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
+                      "line": 35,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
                       "type": "->"
                   },
                   {
@@ -1826,7 +1939,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h5fkec3Edva6aDV1gb48Z6P'
+      - 'Bearer gfk66e3avcDE1hV58Pd4abZ'
     controller: null
     method: null
     route: null
@@ -1914,7 +2027,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aDcva14PZ6k3Vg6h8dfEe5b'
+      - 'Bearer cav8Pe6b34E5kf6g1DZhVda'
     controller: null
     method: null
     route: null
@@ -1964,7 +2077,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dgc5a86fZP1kv6he3abE4dV'
+      - 'Bearer 51b3Vg4P6Ed6ZafvaeDhc8k'
     controller: null
     method: null
     route: null
@@ -2020,7 +2133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PDvZV686heEagbc31fa4d5k'
+      - 'Bearer edVZv41g3kabc6E8DahP6f5'
     controller: null
     method: null
     route: null

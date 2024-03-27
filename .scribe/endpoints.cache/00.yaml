@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: vitae
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: vitae
+      share_code: dolorum
     fileParameters: []
     responses:
       -
@@ -99,6 +99,20 @@ endpoints:
                       "line": 141,
                       "function": "Illuminate\\Routing\\{closure}",
                       "class": "Illuminate\\Routing\\Router",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
+                      "line": 35,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
                       "type": "->"
                   },
                   {
@@ -521,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8hcaD3ZagEd1bvf6e456kPV'
+      - 'Bearer EPZ6acaV48bgevh5kfd36D1'
     controller: null
     method: null
     route: null
@@ -552,13 +566,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: exercitationem
+        example: vero
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: exercitationem
+      username: vero
     fileParameters: []
     responses:
       -
@@ -576,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6fhkedbE8cZDvVaP6a5134'
+      - 'Bearer Z543cgfa8Da6kd61PEvehVb'
     controller: null
     method: null
     route: null
@@ -607,13 +621,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: id
+        example: omnis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: id
+      share_code: omnis
     fileParameters: []
     responses:
       -
@@ -677,6 +691,20 @@ endpoints:
                       "line": 141,
                       "function": "Illuminate\\Routing\\{closure}",
                       "class": "Illuminate\\Routing\\Router",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
+                      "line": 35,
+                      "function": "Illuminate\\Pipeline\\{closure}",
+                      "class": "Illuminate\\Pipeline\\Pipeline",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+                      "line": 180,
+                      "function": "handle",
+                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
                       "type": "->"
                   },
                   {
@@ -1099,7 +1127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kZa5Dh8cb6gfd14PE6va3eV'
+      - 'Bearer Dvef841gEb3P6ac5kVhaZ6d'
     controller: null
     method: null
     route: null
