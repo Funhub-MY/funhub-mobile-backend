@@ -193,12 +193,24 @@ class AuthController extends Controller
 
         if ($user) {
             if ($user->password) { // in scenario user havent fully complete profile setupo and decide to close the app, so password field is the checker here to verify user can resume their journey
-                return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
+                return response()->json([
+                    'registered' => true,
+                    'has_password' => true,
+                    'message' => __('messages.error.auth_controller.Phone_Number_already_registered')
+                ], 422);
             } else {
-                return response()->json(['message' => __('messages.success.auth_controller.Phone_Number_registered_but_incomplete_profile_setup_continue_setup')], 200);
+                return response()->json([
+                    'registered' => true,
+                    'has_password' => false,
+                    'message' => __('messages.success.auth_controller.Phone_Number_registered_but_incomplete_profile_setup_continue_setup')
+                ], 200);
             }
         } else {
-            return response()->json(['message' => __('messages.success.auth_controller.Phone_Number_not_registered')], 200);
+            return response()->json([
+                'registered' => false,
+                'has_password' => false,
+                'message' => __('messages.success.auth_controller.Phone_Number_not_registered')
+            ], 200);
         }
     }
 
