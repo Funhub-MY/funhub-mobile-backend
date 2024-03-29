@@ -1672,6 +1672,24 @@ class ArticleTest extends TestCase
             ->assertStatus(200);
 
         $this->assertContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
+
+        // if get is_following means all is shown, use this user follow article author first
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $this->user->id,
+        ]);
+        $response->assertStatus(200);
+
+        // delete from whitelist
+        ArticleFeedWhitelistUser::where('user_id', $this->user->id)->delete();
+
+        // act as other user
+        $this->actingAs($otherUser);
+
+        // get articles from home should show see the article even though hidden from home is true
+        $response = $this->getJson('/api/v1/articles?following_only=1')
+            ->assertStatus(200);
+
+        $this->assertContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
     }
 
 
