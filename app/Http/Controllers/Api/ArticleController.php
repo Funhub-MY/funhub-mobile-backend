@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
 use App\Models\SearchKeyword;
+use App\Models\Setting;
 use App\Models\ShareableLink;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
@@ -236,7 +237,15 @@ class ArticleController extends Controller
         $this->filterArticlesBlockedOrHidden($query);
 
         // only show those thats is not hidden from home
-        $query->notHiddenFromHome();
+        // only applicable if not get articles is_following
+        if (!$request->has('following_only')) {
+            // query only get articles that author is in articleFeedWhitelist or not hidden_from_home
+            $query->where(function ($query) {
+                $query
+                ->has('user.articleFeedWhitelist')
+                ->orWhere('hidden_from_home', false);
+            });
+        }
 
         if (!$request->has('lat') && !$request->has('lng')) {
             $query->latest();
@@ -433,7 +442,7 @@ class ArticleController extends Controller
 
         if (!$article) {
             return response()->json([
-                'message' => __('messages.error.article_controller.Article_not_found')
+                'message' => 'Article not found'
             ], 404);
         }
 
@@ -485,7 +494,7 @@ class ArticleController extends Controller
                 // check if this user blocked authenticated user
                 if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
                     return response()->json([
-                        'message' => __('messages.error.article_controller.You_are_not_allowed_to_view_this_user_articles')
+                        'message' => 'You are not allowed to view this user articles'
                     ], 403);
                 }
             }
@@ -495,7 +504,7 @@ class ArticleController extends Controller
             // check if this user followers has authenticated user
             if (!auth()->user()->followings()->where('following_id', $user_id)->exists()) {
                 return response()->json([
-                    'message' => __('messages.error.article_controller.User_profile_is_private')
+                    'message' => 'User profile is private'
                 ], 404);
             }
         }
@@ -556,7 +565,7 @@ class ArticleController extends Controller
                 $user_id = $user->id;
                 if ($user && $user->usersBlocked->contains(auth()->user()->id)) {
                     return response()->json([
-                        'message' => __('messages.error.article_controller.You_are_not_allowed_to_view_this_user_articles')
+                        'message' => 'You are not allowed to view this user articles'
                     ], 403);
                 }
             }
@@ -605,7 +614,7 @@ class ArticleController extends Controller
         $article = Article::find($request->article_id);
         if (!$article) {
             return response()->json([
-                'message' => __('messages.error.article_controller.Article_not_found')
+                'message' => 'Article not found'
             ], 404);
         }
 
@@ -615,7 +624,7 @@ class ArticleController extends Controller
         auth()->user()->articleRanks()->where('article_id', $article->id)->delete();
 
         return response()->json([
-            'message' => __('messages.success.article_controller.Article_marked_as_not_interested')
+            'message' => 'Article marked as not interested'
         ]);
     }
 
@@ -661,7 +670,7 @@ class ArticleController extends Controller
             $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
             if ($followers->count() != count($request->tagged_user_ids)) {
                 return response()->json([
-                    'message' => __('messages.error.article_controller.You_can_only_tag_your_followers'),
+                    'message' => 'You can only tag your followers.',
                 ], 422);
             }
 
@@ -676,6 +685,12 @@ class ArticleController extends Controller
             $request->merge(['visibility' => 'private']);
         }
 
+        // settings "new_article_hide_from_home" is true, then set hide_from_home to true
+        $hideFromHome = Setting::where('key', 'new_article_hide_from_home')->first();
+        if ($hideFromHome && ($hideFromHome->value == 1 || $hideFromHome->value == 'true')) {
+            $request->merge(['hidden_from_home' => true]);
+        }
+
         $article = Article::create([
             'title' => $request->title,
             'type' => $request->type,
@@ -687,6 +702,7 @@ class ArticleController extends Controller
             'published_at' => ($request->published_at) ? Carbon::parse($request->published_at)->toDateTimeString() : null,
             'user_id' => $user->id,
             'visibility' => $request->visibility ?? 'public',
+            'hidden_from_home' => $request->hidden_from_home ?? false,
         ]);
 
 
@@ -764,7 +780,7 @@ class ArticleController extends Controller
         // load relations
         $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
         return response()->json([
-            'message' => __('messages.success.article_controller.Article_created'),
+            'message' => 'Article created',
             'article' => new ArticleResource($article),
         ]);
     }
@@ -950,7 +966,7 @@ class ArticleController extends Controller
                 $followers = $user->followers()->whereIn('users.id', $request->tagged_user_ids)->get();
                 if ($followers->count() != count($request->tagged_user_ids)) {
                     return response()->json([
-                        'message' => __('messages.error.article_controller.You_can_only_tag_your_followers'),
+                        'message' => 'You can only tag your followers.',
                     ], 422);
                 }
 
@@ -1060,9 +1076,9 @@ class ArticleController extends Controller
             $article->searchable();
             // load relations count
             $article->loadCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
-            return response()->json(['message' => __('messages.success.article_controller.Article_updated'), 'article' => new ArticleResource($article)]);
+            return response()->json(['message' => 'Article updated', 'article' => new ArticleResource($article)]);
         } else {
-            return response()->json(['message' => __('messages.error.article_controller.Article_not_found')], 404);
+            return response()->json(['message' => 'Article not found'], 404);
         }
     }
 
@@ -1117,9 +1133,9 @@ class ArticleController extends Controller
 
             // delete article
             $article->delete();
-            return response()->json(['message' => __('messages.success.article_controller.Article_deleted')]);
+            return response()->json(['message' => 'Article deleted']);
         } else {
-            return response()->json(['message' => __('messages.error.article_controller.Article_not_found')], 404);
+            return response()->json(['message' => 'Article not found'], 404);
         }
     }
 
@@ -1302,9 +1318,9 @@ class ArticleController extends Controller
                 'violation_level' => request('violation_level'),
             ]);
         } else {
-            return response()->json(['message' => __('messages.error.article_controller.You_have_already_reported_this_comment')], 422);
+            return response()->json(['message' => 'You have already reported this comment'], 422);
         }
-        return response()->json(['message' => __('messages.success.article_controller.Comment_reported')]);
+        return response()->json(['message' => 'Comment reported']);
     }
 
     /**

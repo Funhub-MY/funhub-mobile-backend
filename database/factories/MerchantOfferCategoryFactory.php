@@ -19,7 +19,11 @@ class MerchantOfferCategoryFactory extends Factory
     {
         $name =  $this->faker->name;
         return [
-            'name' => $this->faker->name,
+            'name' => $name,
+            'name_translation' => json_encode([
+                'en' => $name,
+                'zh' => $name,
+            ]),
             'slug' => Str::slug($name),
             'cover_media_id' => null,
             'description' => $this->faker->text,
