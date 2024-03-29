@@ -1,0 +1,230 @@
+<?php
+
+// lang/en/messages.php
+
+return [
+    'success' => [
+        'article_controller' => [
+            'Article_marked_as_not_interested' => '已标记为不感兴趣的探文',
+            'Article_created' => '已创建探文',
+            'Article_updated' => '已更新探文',
+            'Article_deleted' => '探文已被删除',
+            'Comment_reported' => '评论已被举报',
+        ],
+        'auth_controller' => [
+            'Phone_Number_registered_but_incomplete_profile_setup_continue_setup' => '电话号码已被注册，但个人资料设置尚未完成，请继续设置。',
+            'Phone_Number_not_registered' => '电话号码未被注册',
+            'OTP_sent' => 'OTP 已发送',
+            'Profile_Updated_Email_verification_sent' => '个人资料已更新，邮件验证已发送',
+            'Verification_Email_Sent' => '电邮验证已发送',
+            'Email_Verified' => '邮箱已验证',
+            'Logged_out' => '退出登录',
+            'Logged_in_successfully' => '成功登录',
+            'OTP_expired_please_request_again' => 'OTP 已失效，请重新请求。',
+            'Password_updated_successfully' => '密码已成功更新',
+        ],
+        'campaign_controller' => [
+            'Answer_saved_successfully' => '回答已成功保存',
+            'Respondant_details_created_successfully' => '回复者资料已成功创建',
+        ],
+        'comment_controller' => [
+            'Comment_updated' => '已更新评论',
+            'Comment_deleted' => '评论已被删除',
+            'Comment_reported' => '评论已被举报',
+            'Comment_liked' => '已点赞评论',
+            'Comment_Un-Liked' => '取消点赞评论',
+            'User_untagged_from_comment' => '用户已取消评论中的标记',
+        ],
+        'interaction_controller' => [
+            'Interaction_deleted' => '互动已被删除',
+        ],
+        'media_controller' => [
+            'Success' => '成功',
+        ],
+        'merchant_contact_controller' => [
+            'Merchant_contact_information_submitted_successfully' => '商家联系信息已成功提交',
+        ],
+        'merchant_offer_controller' => [
+            'Redirect_to_Gateway' => '重定向到网关',
+            'Claimed_successfully' => '领取成功',
+            'Transaction_cancelled' => '交易已取消',
+            'Redeemed_Successfully' => '兑换成功',
+        ],
+        'mission_controller' => [
+            'Mission(s)_completed_successfully' => '任务已成功完成',
+        ],
+        'notification_controller' => [
+            'Notifications_marked_as_read' => '通知已标记为已读',
+        ],
+        'point_controller' => [
+            'Reward_Formed' => '奖励已形成',
+        ],
+        'product_controller' => [
+            'Redirect_to_Gateway' => '重定向到网关',
+            'Transaction_cancelled' => '交易已取消',
+        ],
+        'support_request_controller' => [
+            'Support_request_resolved_and_closed' => '支持请求已解决并关闭',
+        ],
+        'user_contacts_controller' => [
+            'Contacts_imported_successfully' => '联系人成功导入',
+        ],
+        'user_controller' => [
+            'Comment_reported' => '评论已被举报',
+            'User_blocked' => '该玩家已被屏蔽',
+            'User_unblocked' => '该玩家已被解除屏蔽',
+            'Account_deleted_successfully' => '账号已成功删除',
+            'Password_updated' => '密码已更新',
+            'Email_updated_and_verification_email_sent' => '电邮已更新，并已发送验证邮件',
+            'Name_updated' => '姓名已更新',
+            'Username_updated' => '用户名已更新',
+            'Bio_updated' => '个人简介已更新',
+            'Job_Title_updated' => '职位头衔已更新',
+            'Date_of_birth_updated' => '出生日期已更新',
+            'Gender_updated' => '性别已更新',
+            'Location_updated' => '地点已更新',
+            'Avatar_uploaded' => '头像已上传',
+            'Cover_uploaded' => '封面已上传',
+            'Article_categories_linked_to_user' => '探文类别已与用户连接',
+        ],
+        'user_following_controller' => [
+            'Follow_request_sent' => '已发送关注请求',
+            'You_are_now_following_this_user' => '您已关注该用户',
+            'Follow_request_removed' => '已取消关注请求',
+            'You_are_now_unfollowing_this_user' => '您已取消关注该用户',
+            'Rejected_following_request' => '已拒绝关注请求',
+        ],
+        'user_settings_controller' => [
+            'Email_updated_and_verification_email_sent' => '电邮已更新，并已发送验证邮件',
+            'Email_Verified' => '电邮已完成验证',
+            'Name_updated' => '姓名已更新',
+            'Username_updated' => '用户名已更新',
+            'Bio_updated' => '个人简介已更新',
+            'Job_Title_updated' => '职位头衔已更新',
+            'Date_of_birth_updated' => '出生日期已更新',
+            'Gender_updated' => '性别已更新',
+            'Location_updated' => '位置信息已更新',
+            'Article_categories_linked_to_user' => '探文类别已与用户连接',
+            'Avatar_uploaded' => '头像已上传',
+            'Cover_uploaded' => '封面已上传',
+            'Password_updated' => '密码已更新',
+            'Profile_privacy_already_set_to' => '个人资料隐私设置已设为 :setting',
+            'Profile_privacy_updated' => '个人资料隐私已更新',
+        ],
+        'view_controller' => [
+            'View_recorded' => '已记录观看数',
+        ]
+    ],
+    'error' => [
+        'article_controller' => [
+            'Article_not_found' => '探文不存在',
+            'You_are_not_allowed_to_view_this_user_articles' => '您无法查看此用戶的探文',
+            'User_profile_is_private' => '该玩家为私密账号',
+            'You_can_only_tag_your_followers' => '您只能标记您的粉丝',
+            'You_have_already_reported_this_comment' => '您已经举报此评论',
+        ],
+        'auth_controller' => [
+            'Invalid_Credentials' => '密码错误',
+            'User_not_active' => '用户未激活',
+            'Phone_Number_already_registered' => '电话号码已注册',
+            'Failed_to_send_OTP' => 'OTP发送失败',
+            'OTP_Invalid_or_Expired' => 'OTP无效或已过期',
+            'Please_verify_your_phone_number_first' => '请先验证您的电话号码',
+            'Invalid_Token' => '登录失败，请稍后重试',
+            'User_not_found' => '用户不存在',
+            'Unable_to_reset_password_for_google/facebook_account' => '无法重置透过Google/Facebook登录的账号密码',
+        ],
+        'campaign_controller' => [
+            'Campaign_not_found' => '活动不存在',
+            'Question(s)_not_found' => '答题不存在',
+        ],
+        'comment_controller' => [
+            'Comment_not_found' => '评论不存在',
+            'You_have_already_reported_this_comment' => '您已经举报此评论',
+        ],
+        'interaction_controller' => [
+            'Shareable_link_already_exists_provide_new_code' => '可共享链接已存在。请提供新代码。',
+            'Invalid_interactable' => '无效互动内容',
+            'Interaction_not_found' => '未找到互动',
+        ],
+        'location_controller' => [
+            'Location_not_found' => '位置信息不存在',
+        ],
+        'media_controller' => [
+            'Invalid_filename_only_alphabets_letters_or_numbers_are_allowed' => '无效文件名，只允许使用字母或数字',
+            'Only_applicable_for_S3_Storage' => '只适用于S3 Storage',
+            'Error_completing_upload_file_for_upload_ID' => '文件上传失败',
+        ],
+        'merchant_contact_controller' => [
+            'Merchant_contact_information_submitted_successfully' => 'Merchant contact information submitted successfully',
+        ],
+        'merchant_offer_controller' => [
+            'Offer_is_no_longer_valid' => '优惠券已失效',
+            'Offer_is_sold_out' => '优惠券已售罄',
+            'Insufficient_Point_Balance' => '积分余额不足',
+            'Please_verify_your_email_address_first' => '请先验证您的电子邮件地址',
+            'You_have_not_claimed_this_offer' => '您尚未领取此优惠',
+            'This_offer_has_expired' => '此优惠已过期',
+            'You_do_not_have_enough_to_redeem' => '您的余额不足以兑换',
+            'Invalid_merchant_redeem_code' => '商家兑换码无效',
+            'Deal_not_found' => '优惠券不存在',
+        ],
+        'notification_controller' => [
+            'Notification_not_found' => '通知不存在',
+        ],
+        'point_controller' => [
+            'Reward_has_no_components_to_form_yet' => '奖励未能形成组成',
+            'User_does_not_have_enough_points_to_form_this_reward' => '用户没有足够积分兑换此奖励',
+            'Error_while_deducting_points_from_user' => '用户扣除积分时出错',
+        ],
+        'product_controller' => [
+            'Please_verify_your_email_address_first' => '请先验证您的电邮地址',
+            'Product_is_no_longer_valid' => '该产品已失效',
+            'Product_is_sold_out' => '产品已售罄',
+            'Transaction_not_found' => '交易记录不存在',
+        ],
+        'support_request_controller' => [
+            'Invalid_status' => '无效状态',
+            'You_are_not_allowed_to_reply_to_this_support_request' => '您无权回复此支持请求',
+            'New_support_request_message_created' => '新支持请求',
+            'Invalid_type' => '无效类型',
+        ],
+        'transaction_controller' => [
+            'Unauthorized' => '未经授权',
+            'Transaction_not_found' => '未找到交易记录',
+        ],
+        'user_contacts_controller' => [
+            'No_friends_found' => '未找到好友',
+        ],
+        'user_controller' => [
+            'User_not_found' => '用户不存在',
+            'You_have_already_reported_this_comment' => '您已经举报此评论',
+            'You_have_already_blocked_this_user' => '您已经屏蔽此用户',
+            'You_have_not_blocked_this_user' => '您没有封锁这个用户',
+            'No_blocked_users' => '没有被封锁的用户',
+            'Invalid_update_type' => '无效更新类型',
+            'Error_updating_user_details' => '更新用户详情时出错',
+            'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => '如果您已使用 Google 或 Facebook 登录，则无法更改密码',
+            'Old_password_is_incorrect' => '旧密码不正确',
+            'Email_already_verified_for_your_account' => '您的电邮已完成验证',
+            'One_or_more_article_category_ids_not_found' => '一个或多个探文类别ID不存在',
+            'User_profile_private' => '私密用户资料',
+        ],
+        'user_following_controller' => [
+            'You_cannot_follow_yourself' => '您无法关注自己',
+            'You_are_already_following_this_user' => '您已经关注该玩家',
+            'You_are_not_following_this_user' => '您没有关注该玩家',
+            'User_profile_is_private' => '该玩家为私密账号',
+            'Follow_request_not_found' => '关注请求不存在',
+            'Accepted_following_request' => '已接受关注请求',
+        ],
+        'user_settings_controller' => [
+            'No_settings_found_yet' => '尚未发现任何设置更动',
+            'Email_already_verified_for_your_account' => '您的电邮已完成验证',
+            'Invalid_Token' => '无效数据格式',
+            'One_or_more_article_category_ids_not_found' => '一个或多个探文类别ID不存在',
+            'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => '如果您使用 Google 或 Facebook 账号登录，则无法更改密码',
+            'Old_password_is_incorrect' => '旧密码不正确',
+        ],
+    ]
+];

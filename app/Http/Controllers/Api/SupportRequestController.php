@@ -48,7 +48,7 @@ class SupportRequestController extends Controller
             // check whether status number is valid
             if (!in_array($request->status, array_keys(SupportRequest::STATUS))) {
                 return response()->json([
-                    'message' => 'Invalid status'
+                    'message' => __('messages.error.support_request_controller.Invalid_status')
                 ], 422);
             }
             $query->where('status', $request->status);
@@ -163,7 +163,7 @@ class SupportRequestController extends Controller
         // check if supportRequest requestor is same as current user
         if ($supportRequest->requestor_id != $request->user()->id) {
             return response()->json([
-                'message' => 'You are not allowed to reply to this support request'
+                'message' => __('messages.error.support_request_controller.You_are_not_allowed_to_reply_to_this_support_request')
             ], 403);
         }
 
@@ -184,7 +184,7 @@ class SupportRequestController extends Controller
 
         $supportRequest->load('messages');
         return response()->json([
-            'message' => new SupportRequestMessageResource($message),
+            'message' => __('messages.error.support_request_controller.New_support_request_message_created'),
             'request' => new SupportRequestResource($supportRequest)
         ]);
     }
@@ -207,7 +207,7 @@ class SupportRequestController extends Controller
         // check if supportRequest requestor is same as current user
         if ($supportRequest->requestor_id != auth()->user()->id) {
             return response()->json([
-                'message' => 'You are not allowed to reply to this support request'
+                'message' => __('messages.error.support_request_controller.You_are_not_allowed_to_reply_to_this_support_request')
             ], 403);
         }
 
@@ -237,7 +237,7 @@ class SupportRequestController extends Controller
         // check if supportRequest requestor is same as current user
         if ($supportRequest->requestor_id != auth()->user()->id) {
             return response()->json([
-                'message' => 'You are not allowed to reply to this support request'
+                'message' => __('messages.error.support_request_controller.You_are_not_allowed_to_reply_to_this_support_request')
             ], 403);
         }
 
@@ -246,7 +246,7 @@ class SupportRequestController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Support request resolved and closed'
+            'message' => __('messages.success.support_request_controller.Support_request_resolved_and_closed')
         ]);
     }
 
@@ -270,7 +270,7 @@ class SupportRequestController extends Controller
             foreach ($types as $type) {
                 if (!in_array($type, SupportRequestCategory::TYPES)) {
                     return response()->json([
-                        'message' => 'Invalid type'
+                        'message' => __('messages.error.support_request_controller.Invalid_type')
                     ], 422);
                 }
             }

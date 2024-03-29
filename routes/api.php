@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\Api\MerchantOfferCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ use App\Http\Controllers\MaintenanceController;
 */
 
 
-Route::group(['prefix' => 'v1'], function () {
+Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
@@ -27,6 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
     Route::post('verifyOtp', [\App\Http\Controllers\Api\AuthController::class, 'postVerifyOtp']); // verify otp
     Route::post('loginWithPassword', [\App\Http\Controllers\Api\AuthController::class, 'loginWithPassword']); // login with phone no + password
+    Route::post('loginWithOtp', [\App\Http\Controllers\Api\AuthController::class, 'loginWithOtp']); // login with phone no + otp
     Route::post('register/otp', [\App\Http\Controllers\Api\AuthController::class, 'registerWithOtp']);
 
     // social provider logins
@@ -75,6 +77,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
 
         Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
+        Route::get('/articles/keyword', [ArticleController::class, 'getArticlesByKeywordId']);
+
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
@@ -117,6 +121,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {
+            Route::get('/nearby', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMerchantOffersNearby']);
             Route::get('/my_bookmarks', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyBookmarkedMerchantOffers']);
             Route::get('/', [\App\Http\Controllers\Api\MerchantOfferController::class, 'index']);
             Route::post('/claim', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postClaimOffer']);
@@ -125,6 +130,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
+
+        // Merchant Offer Categories
+        Route::get('merchant_offer_categories', \App\Http\Controllers\Api\MerchantOfferCategoryController::class . '@index');
 
         // Merchant Categories
         Route::get('merchant_categories', \App\Http\Controllers\Api\MerchantCategoryController::class . '@index');

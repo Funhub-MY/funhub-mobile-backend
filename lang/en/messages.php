@@ -1,0 +1,227 @@
+<?php
+
+// lang/en/messages.php
+
+return [
+    'success' => [
+        'article_controller' => [
+            'Article_marked_as_not_interested' => 'Article marked as not interested',
+            'Article_created' => 'Article created',
+            'Article_updated' => 'Article updated',
+            'Article_deleted' => 'Article deleted',
+            'Comment_reported' => 'Comment reported',
+        ],
+        'auth_controller' => [
+            'Phone_Number_registered_but_incomplete_profile_setup_continue_setup' => 'Phone Number registered but incomplete profile setup, continue setup',
+            'Phone_Number_not_registered' => 'Phone Number not registered',
+            'OTP_sent' => 'OTP sent',
+            'Profile_Updated_Email_verification_sent' => 'Profile Updated, Email verification sent',
+            'Verification_Email_Sent' => 'Verification Email Sent',
+            'Email_Verified' => 'Email Verified',
+            'Logged_out' => 'Logged out',
+            'Logged_in_successfully' => 'Logged in successfully',
+            'OTP_expired_please_request_again' => 'OTP expired, please request again.',
+            'Password_updated_successfully' => 'Password updated successfully',
+        ],
+        'campaign_controller' => [
+            'Answer_saved_successfully' => 'Answer saved successfully',
+            'Respondant_details_created_successfully' => 'Respondant details created successfully',
+        ],
+        'comment_controller' => [
+            'Comment_updated' => 'Comment updated',
+            'Comment_deleted' => 'Comment deleted',
+            'Comment_reported' => 'Comment reported',
+            'Comment_liked' => 'Comment liked',
+            'Comment_Un-Liked' => 'Comment Un-Liked',
+            'User_untagged_from_comment' => 'User untagged from comment',
+        ],
+        'interaction_controller' => [
+            'Interaction_deleted' => 'Interaction deleted',
+        ],
+        'media_controller' => [
+            'Success' => 'Success',
+        ],
+        'merchant_contact_controller' => [
+            'Merchant_contact_information_submitted_successfully' => 'Merchant contact information submitted successfully',
+        ],
+        'merchant_offer_controller' => [
+            'Redirect_to_Gateway' => 'Redirect to Gateway',
+            'Claimed_successfully' => 'Claimed successfully',
+            'Transaction_cancelled' => 'Transaction cancelled',
+            'Redeemed_Successfully' => 'Redeemed Successfully',
+        ],
+        'mission_controller' => [
+            'Mission(s)_completed_successfully' => 'Mission(s) completed successfully.',
+        ],
+        'notification_controller' => [
+            'Notifications_marked_as_read' => 'Notifications marked as read.',
+        ],
+        'point_controller' => [
+            'Reward_Formed' => 'Reward Formed',
+        ],
+        'product_controller' => [
+            'Redirect_to_Gateway' => 'Redirect to Gateway',
+            'Transaction_cancelled' => 'Transaction cancelled',
+        ],
+        'support_request_controller' => [
+            'Support_request_resolved_and_closed' => 'Support request resolved and closed',
+        ],
+        'user_contacts_controller' => [
+            'Contacts_imported_successfully' => 'Contacts imported successfully',
+        ],
+        'user_controller' => [
+            'Comment_reported' => 'Comment reported',
+            'User_blocked' => 'User blocked',
+            'User_unblocked' => 'User unblocked',
+            'Account_deleted_successfully' => 'Account deleted successfully.',
+            'Password_updated' => 'Password updated',
+            'Email_updated_and_verification_email_sent' => 'Email updated and verification email sent',
+            'Name_updated' => 'Name updated',
+            'Username_updated' => 'Username updated',
+            'Bio_updated' => 'Bio updated',
+            'Job_Title_updated' => 'Job Title updated',
+            'Date_of_birth_updated' => 'Date of birth updated',
+            'Gender_updated' => 'Gender updated',
+            'Location_updated' => 'Location updated',
+            'Avatar_uploaded' => 'Avatar uploaded',
+            'Cover_uploaded' => 'Cover uploaded',
+            'Article_categories_linked_to_user' => 'Article categories linked to user',
+        ],
+        'user_following_controller' => [
+            'Follow_request_sent' => 'Follow request sent',
+            'You_are_now_following_this_user' => 'You are now following this user',
+            'Follow_request_removed' => 'Follow request removed',
+            'You_are_now_unfollowing_this_user' => 'You are now unfollowing this user',
+            'Rejected_following_request' => 'Rejected following request',
+        ],
+        'user_settings_controller' => [
+            'Email_updated_and_verification_email_sent' => 'Email updated and verification email sent',
+            'Email_Verified' => 'Email Verified',
+            'Name_updated' => 'Name updated',
+            'Username_updated' => 'Username updated',
+            'Bio_updated' => 'Bio updated',
+            'Job_Title_updated' => 'Job Title updated',
+            'Date_of_birth_updated' => 'Date of birth updated',
+            'Gender_updated' => 'Gender updated',
+            'Location_updated' => 'Location updated',
+            'Article_categories_linked_to_user' => 'Article categories linked to user',
+            'Avatar_uploaded' => 'Avatar uploaded',
+            'Cover_uploaded' => 'Cover uploaded',
+            'Password_updated' => 'Password updated',
+            'Profile_privacy_already_set_to' => 'Profile privacy already set to :setting',
+            'Profile_privacy_updated' => 'Profile privacy updated',
+        ],
+        'view_controller' => [
+            'View_recorded' => 'View recorded',
+        ]
+    ],
+    'error' => [
+        'article_controller' => [
+            'Article_not_found' => 'Article not found',
+            'You_are_not_allowed_to_view_this_user_articles' => 'You are not allowed to view this user articles',
+            'User_profile_is_private' => 'User profile is private',
+            'You_can_only_tag_your_followers' => 'You can only tag your followers.',
+            'You_have_already_reported_this_comment' => 'You have already reported this comment',
+        ],
+        'auth_controller' => [
+            'Invalid_Credentials' => 'Invalid Credentials',
+            'User_not_active' => 'User not active',
+            'Phone_Number_already_registered' => 'Phone Number already registered',
+            'Failed_to_send_OTP' => 'Failed to send OTP',
+            'OTP_Invalid_or_Expired' => 'OTP Invalid or Expired',
+            'Please_verify_your_phone_number_first' => 'Please verify your phone number first',
+            'Invalid_Token' => 'Invalid Token',
+            'User_not_found' => 'User not found',
+            'Unable_to_reset_password_for_google/facebook_account' => 'Unable to reset password for google/facebook account',
+        ],
+        'campaign_controller' => [
+            'Campaign_not_found' => 'Campaign not found',
+            'Question(s)_not_found' => 'Question(s) not found',
+        ],
+        'comment_controller' => [
+            'Comment_not_found' => 'Comment not found',
+            'You_have_already_reported_this_comment' => 'You have already reported this comment',
+        ],
+        'interaction_controller' => [
+            'Shareable_link_already_exists_provide_new_code' => 'Shareable link already exists. provide new code.',
+            'Invalid_interactable' => 'Invalid interactable',
+            'Interaction_not_found' => 'Interaction not found',
+        ],
+        'location_controller' => [
+            'Location_not_found' => 'Location not found',
+        ],
+        'media_controller' => [
+            'Invalid_filename_only_alphabets_letters_or_numbers_are_allowed' => 'Invalid filename, only alphabets letters or numbers are allowed',
+            'Only_applicable_for_S3_Storage' => 'Only applicable for S3 Storage',
+            'Error_completing_upload_file_for_upload_ID' => 'Error completing upload file for upload ID :uploadId',
+        ],
+        'merchant_offer_controller' => [
+            'Offer_is_no_longer_valid' => 'Offer is no longer valid',
+            'Offer_is_sold_out' => 'Offer is sold out',
+            'Insufficient_Point_Balance' => 'Insufficient Point Balance',
+            'Please_verify_your_email_address_first' => 'Please verify your email address first.',
+            'You_have_not_claimed_this_offer' => 'You have not claimed this offer',
+            'This_offer_has_expired' => 'This offer has expired',
+            'You_do_not_have_enough_to_redeem' => 'You do not have enough to redeem',
+            'Invalid_merchant_redeem_code' => 'Invalid merchant redeem code',
+            'Deal_not_found' => 'Deal not found',
+        ],
+        'notification_controller' => [
+            'Notification_not_found' => 'Notification not found.',
+        ],
+        'point_controller' => [
+            'Reward_has_no_components_to_form_yet' => 'Reward has no components to form yet',
+            'User_does_not_have_enough_points_to_form_this_reward' => 'User does not have enough points to form this reward',
+            'Error_while_deducting_points_from_user' => 'Error while deducting points from user',
+        ],
+        'product_controller' => [
+            'Please_verify_your_email_address_first' => 'Please verify your email address first.',
+            'Product_is_no_longer_valid' => 'Product is no longer valid',
+            'Product_is_sold_out' => 'Product is sold out',
+            'Transaction_not_found' => 'Transaction not found',
+        ],
+        'support_request_controller' => [
+            'Invalid_status' => 'Invalid status',
+            'You_are_not_allowed_to_reply_to_this_support_request' => 'You are not allowed to reply to this support request',
+            'New_support_request_message_created' => 'New support request message created',
+            'Invalid_type' => 'Invalid type',
+        ],
+        'transaction_controller' => [
+            'Unauthorized' => 'Unauthorized',
+            'Transaction_not_found' => 'Transaction not found',
+        ],
+        'user_contacts_controller' => [
+            'No_friends_found' => 'No friends found',
+        ],
+        'user_controller' => [
+            'User_not_found' => 'User not found',
+            'You_have_already_reported_this_comment' => 'You have already reported this comment',
+            'You_have_already_blocked_this_user' => 'You have already blocked this user',
+            'You_have_not_blocked_this_user.' => 'You have not blocked this user',
+            'No_blocked_users' => 'No blocked users',
+            'Invalid_update_type' => 'Invalid update type',
+            'Error_updating_user_details' => 'Error updating user details',
+            'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => 'You cannot change your password if you are logged in with Google or Facebook',
+            'Old_password_is_incorrect' => 'Old password is incorrect',
+            'Email_already_verified_for_your_account' => 'Email already verified for your account',
+            'One_or_more_article_category_ids_not_found' => 'One or more article category ids not found',
+            'User_profile_private' => 'User profile private',
+        ],
+        'user_following_controller' => [
+            'You_cannot_follow_yourself' => 'You cannot follow yourself',
+            'You_are_already_following_this_user' => 'You are already following this user',
+            'You_are_not_following_this_user' => 'You are not following this user',
+            'User_profile_is_private' => 'User profile is private',
+            'Follow_request_not_found' => 'Follow request not found',
+            'Accepted_following_request' => 'Accepted following request',
+        ],
+        'user_settings_controller' => [
+            'No_settings_found_yet' => 'No settings found yet.',
+            'Email_already_verified_for_your_account' => 'Email already verified for your account',
+            'Invalid_Token' => 'Invalid Token',
+            'One_or_more_article_category_ids_not_found' => 'One or more article category ids not found',
+            'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => 'You cannot change your password if you are logged in with Google or Facebook',
+            'Old_password_is_incorrect' => 'Old password is incorrect',
+        ],
+    ]
+];

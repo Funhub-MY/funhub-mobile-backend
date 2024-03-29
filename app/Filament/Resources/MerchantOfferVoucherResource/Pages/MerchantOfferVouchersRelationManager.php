@@ -58,7 +58,7 @@ class MerchantOfferVouchersRelationManager extends AuditsRelationManager
                 //
             ]);
     }
-    
+
     protected static function shouldAllowRestoreAudit($ownerRecord): bool
     {
         $modelClass = get_class($ownerRecord);

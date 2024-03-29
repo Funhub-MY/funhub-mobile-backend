@@ -161,7 +161,7 @@ class InteractionController extends Controller
             if ($shareableLink) {
                 // reject
                 return response()->json([
-                    'message' => 'Shareable link already exists. provide new code.',
+                    'message' => __('messages.error.interaction_controller.Shareable_link_already_exists_provide_new_code'),
                 ], 422);
             }
 
@@ -259,7 +259,7 @@ class InteractionController extends Controller
             } else if ($request->interactable == 'merchant_offer') {
                 $request->merge(['interactable' => MerchantOffer::class]);
             } else {
-                return response()->json(['message' => 'Invalid interactable'], 422);
+                return response()->json(['message' => __('messages.error.interaction_controller.Invalid_interactable')], 422);
             }
         }
 
@@ -294,9 +294,9 @@ class InteractionController extends Controller
 
         if ($interaction && $interaction->exists()) {
             $interaction->delete();
-            return response()->json(['message' => 'Interaction deleted']);
+            return response()->json(['message' => __('messages.success.interaction_controller.Interaction_deleted')]);
         } else {
-            return response()->json(['message' => 'Interaction not found'], 404);
+            return response()->json(['message' => __('messages.error.interaction_controller.Interaction_not_found')], 404);
         }
     }
 

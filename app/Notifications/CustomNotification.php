@@ -68,7 +68,7 @@ class CustomNotification extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [
+        $toArrayData = [
             'object' => get_class($this->customNotification),
             'object_id' => $this->customNotification->id,
             'link_to_url' => $this->customNotification->web_link ? true : false,
@@ -80,5 +80,13 @@ class CustomNotification extends Notification implements ShouldQueue
             'title' => $this->customNotification->title,
             'message' => $this->customNotification->content,
         ];
+
+        // Check if redirect type is dynamic and content type is set
+        if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
+            // Set the class of the 'object' based on the content type
+            $toArrayData['object'] = $this->customNotification->content_type;
+        }
+
+        return $toArrayData;
     }
 }

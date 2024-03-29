@@ -5,8 +5,10 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\ArticleFeedWhitelistUser;
 use App\Models\ArticleTag;
 use App\Models\Country;
+use App\Models\Setting;
 use App\Models\State;
 use App\Models\User;
 use App\Models\View;
@@ -1244,7 +1246,7 @@ class ArticleTest extends TestCase
                  'cities',
              ]);
          $this->assertCount(1, $response->json('cities'));
- 
+
          // assert city is Kuala Lumpur
          $this->assertEquals('Kuala Lumpur', $response->json('cities.0'));
 
@@ -1270,7 +1272,7 @@ class ArticleTest extends TestCase
                 ]);
         }
 
-        // 3. Create 1 article by logged in user with Location Tagged     
+        // 3. Create 1 article by logged in user with Location Tagged
         // upload images first
         $response = $this->json('POST', '/api/v1/articles/gallery', [
             'images' => UploadedFile::fake()->image('test.jpg')
@@ -1383,7 +1385,7 @@ class ArticleTest extends TestCase
             'interactable' => Article::class,
             'type' => 'like',
         ]);
-        
+
         $authUserComment = $this->postJson('/api/v1/comments', [
             'id' => $articles->first(),
             'type' => 'article',
@@ -1419,6 +1421,12 @@ class ArticleTest extends TestCase
         $this->assertTrue($article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray());
 
         // 9. Get articles for homepage, and my_bookmarks
+        // whitelist the user to see the article
+        ArticleFeedWhitelistUser::create([
+            'user_id' => $this->user->id,
+            'created_by_id' => $article->user_id,
+        ]);
+
         $homepageArticles = $this->getJson('/api/v1/articles?include_own_article=1');
         $this->assertEquals(6, $homepageArticles->json('meta.total'));
 
@@ -1497,22 +1505,22 @@ class ArticleTest extends TestCase
             $matchingArticle = array_values(array_filter($homepageArticlesBookmarkedByUser, function($a) use ($articleId) {
                 return $a['id'] === $articleId;
             }))[0];
-        
+
             // Assert location data
             $this->assertEquals($bookmark['location'], $matchingArticle['location']);
-        
+
             // Assert count data
             $this->assertEquals($bookmark['count'], $matchingArticle['count']);
-        
+
             // Assert user_liked and user_bookmarked
             $this->assertEquals($bookmark['user_liked'], $matchingArticle['user_liked']);
             $this->assertEquals($bookmark['user_bookmarked'], $matchingArticle['user_bookmarked']);
         }
-        
+
         // CORE TEST: GetArticlesWithintMyLatLng and assert data returned same as in homepage
         $articlesWithinLatLng = $this->getJson('/api/v1/articles?lat=3.0254065&lng=101.5814762');
         $articleIdsWithinLatLng = collect($articlesWithinLatLng['data'])->pluck('id')->toArray();
-        
+
         // Filter homepage articles with same Lat Lng query
         $homePageArticlesWithinUserLatLng = collect($homepageArticleData)->filter(function ($article) use ($articleIdsWithinLatLng) {
             return in_array($article['id'], $articleIdsWithinLatLng);
@@ -1523,18 +1531,18 @@ class ArticleTest extends TestCase
         // Assertions that data returned from /articles is same as data returned from GetArticlesWithintMyLatLng
         foreach ($articlesWithinLatLngArray['data'] as $article) {
             $articleId = $article['id'];
-        
+
             // Get the corresponding article with the same ID from $homePageArticlesWithinUserLatLng
             $matchingArticle = array_values(array_filter($homePageArticlesWithinUserLatLng, function($a) use ($articleId) {
                 return $a['id'] === $articleId;
             }))[0];
-        
+
             // Assert location data
             $this->assertEquals($article['location'], $matchingArticle['location']);
-        
+
             // Assert count data
             $this->assertEquals($article['count'], $matchingArticle['count']);
-        
+
             // Assert user_liked and user_bookmarked
             $this->assertEquals($article['user_liked'], $matchingArticle['user_liked']);
             $this->assertEquals($article['user_bookmarked'], $matchingArticle['user_bookmarked']);
@@ -1573,23 +1581,117 @@ class ArticleTest extends TestCase
         // Assertions that data returned from /articles filtered by categories is same as in homepage
         foreach ($articlesWithCategoriesArray['data'] as $article) {
             $articleId = $article['id'];
-        
+
             // Get the corresponding article with the same ID from $homepageArticlesWithCategories
             $matchingArticle = array_values(array_filter($homepageArticlesWithCategories, function($a) use ($articleId) {
                 return $a['id'] === $articleId;
             }))[0];
-        
+
             // Assert location data
             $this->assertEquals($article['location'], $matchingArticle['location']);
-        
+
             // Assert count data
             $this->assertEquals($article['count'], $matchingArticle['count']);
-        
+
             // Assert user_liked and user_bookmarked
             $this->assertEquals($article['user_liked'], $matchingArticle['user_liked']);
             $this->assertEquals($article['user_bookmarked'], $matchingArticle['user_bookmarked']);
         }
     }
+
+    public function testWhitelistUserForArticleFeed()
+    {
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()->count(2)->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        // by default entire server new posts is hidden from home as Setting is set to true
+        // create a new article by a user
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        // login as another user
+        $otherUser = User::factory()->create();
+        $this->actingAs($otherUser);
+
+        // get id
+        $article = Article::find($response->json('article.id'));
+
+        // get articles from home should not show this user's article since by default everyone is
+        $response = $this->getJson('/api/v1/articles')
+            ->assertStatus(200);
+
+        $this->assertNotContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
+
+        // update article hidden_from_home to false
+        Article::where('id', $article->id)->update([
+            'hidden_from_home' => false
+        ]);
+
+        // query again see, should appear
+        $response = $this->getJson('/api/v1/articles')
+            ->assertStatus(200);
+
+        $this->assertContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
+
+
+        // revert hidden_from_home to true
+        Article::where('id', $article->id)->update([
+            'hidden_from_home' => true
+        ]);
+
+        // whitelist this user
+        ArticleFeedWhitelistUser::create([
+            'user_id' => $this->user->id,
+            'created_by_id' => $this->user->id,
+        ]);
+
+        // get articles from home should show see the article even though hidden from home is true
+        $response = $this->getJson('/api/v1/articles')
+            ->assertStatus(200);
+
+        $this->assertContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
+
+        // if get is_following means all is shown, use this user follow article author first
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $this->user->id,
+        ]);
+        $response->assertStatus(200);
+
+        // delete from whitelist
+        ArticleFeedWhitelistUser::where('user_id', $this->user->id)->delete();
+
+        // act as other user
+        $this->actingAs($otherUser);
+
+        // get articles from home should show see the article even though hidden from home is true
+        $response = $this->getJson('/api/v1/articles?following_only=1')
+            ->assertStatus(200);
+
+        $this->assertContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
+    }
+
 
     // public function testArticleNotInterestedByUser()
     // {

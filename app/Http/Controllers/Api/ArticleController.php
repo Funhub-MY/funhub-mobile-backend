@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Models\SearchKeyword;
+use App\Models\Setting;
 use App\Models\ShareableLink;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
@@ -191,12 +193,12 @@ class ArticleController extends Controller
                 $lastBuilt = $rankIds->first()->last_built;
                 if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
                     Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id . ' Expiry Hours: ' . config('app.recommendation_db_purge_hours') . ' - Last Built: ' . $lastBuilt);
-                    BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
+                    // BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
                 }
             } else {
                 Log::info('[ArticleController] No ranks found for user ' . auth()->user()->id);
                 // user never built recommendations, also fire job to rebuild
-                BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
+                // BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
             }
 
             // shuffle ranking results
@@ -235,7 +237,15 @@ class ArticleController extends Controller
         $this->filterArticlesBlockedOrHidden($query);
 
         // only show those thats is not hidden from home
-        $query->notHiddenFromHome();
+        // only applicable if not get articles is_following
+        if (!$request->has('following_only')) {
+            // query only get articles that author is in articleFeedWhitelist or not hidden_from_home
+            $query->where(function ($query) {
+                $query
+                ->has('user.articleFeedWhitelist')
+                ->orWhere('hidden_from_home', false);
+            });
+        }
 
         if (!$request->has('lat') && !$request->has('lng')) {
             $query->latest();
@@ -675,6 +685,12 @@ class ArticleController extends Controller
             $request->merge(['visibility' => 'private']);
         }
 
+        // settings "new_article_hide_from_home" is true, then set hide_from_home to true
+        $hideFromHome = Setting::where('key', 'new_article_hide_from_home')->first();
+        if ($hideFromHome && ($hideFromHome->value == 1 || $hideFromHome->value == 'true')) {
+            $request->merge(['hidden_from_home' => true]);
+        }
+
         $article = Article::create([
             'title' => $request->title,
             'type' => $request->type,
@@ -686,6 +702,7 @@ class ArticleController extends Controller
             'published_at' => ($request->published_at) ? Carbon::parse($request->published_at)->toDateTimeString() : null,
             'user_id' => $user->id,
             'visibility' => $request->visibility ?? 'public',
+            'hidden_from_home' => $request->hidden_from_home ?? false,
         ]);
 
 
@@ -1400,5 +1417,44 @@ class ArticleController extends Controller
         return response()->json([
             'article' => new PublicArticleResource($article)
         ]);
+    }
+
+    /**
+     * Get Articles by Keyword ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam keyword_id ID required The id of the keyword. Example: 1
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getArticlesByKeywordId(Request $request)
+    {
+        $this->validate($request, [
+            'keyword_id' => 'required|integer|exists:search_keywords,id'
+        ]);
+
+        $keyword = $request->keyword_id;
+
+        // get associated articles with this keyword
+        $articles = Article::whereHas('searchKeywords', function ($query) use ($keyword) {
+            $query->where('search_keywords.id', $keyword);
+        })
+        ->published()
+        ->where('visibility', 'public') // public articles only!
+        ->whereDoesntHave('hiddenUsers', function ($query) {
+            $query->where('user_id', auth()->user()->id);
+        })
+        ->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->paginate(config('app.paginate_per_page'));
+
+        // increase keyword hits
+        SearchKeyword::find($keyword)->increment('hits');
+
+        return ArticleResource::collection($articles);
     }
 }

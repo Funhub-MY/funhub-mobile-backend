@@ -3,11 +3,14 @@
 namespace App\Filament\Resources;
 
 use Closure;
+use Carbon\Carbon;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Article;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
+use App\Models\MerchantOffer;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use App\Models\SystemNotification;
@@ -19,12 +22,16 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Components\DateTimePicker;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SystemNotificationResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\SystemNotificationResource\RelationManagers;
-use Carbon\Carbon;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Radio;
+use Filament\Tables\Columns\BadgeColumn;
 
 class SystemNotificationResource extends Resource
 {
@@ -89,18 +96,63 @@ class SystemNotificationResource extends Resource
 
                 Forms\Components\Card::make()
                     ->schema([
-                        Select::make('type')
-                            ->label('Type')
-                            ->options([
-                                'web' => 'Web',
-                                'text' => 'Text',
-                            ])
+                        Radio::make('redirect_type')
+                            ->label('Redirect Type')
+                            ->options(SystemNotification::REDIRECT_TYPE)
+                            ->default(SystemNotification::REDIRECT_STATIC)
                             ->reactive()
-                            ->required(),
+                            ->required()
+                            ->columnSpanFull(),
 
-                        TextInput::make('web_link')
-                            ->label('Web Link')
-                            ->hidden(fn (Closure $get) => $get('type') !== 'web'),
+                        MorphToSelect::make('content')
+                            ->label('Dynamic Redirect')
+                            ->types([
+                                MorphToSelect\Type::make(Article::class)
+                                    ->label('Article')
+                                    ->titleColumnName('title'),
+                                MorphToSelect\Type::make(MerchantOffer::class)
+                                    ->label('Deal')
+                                    ->titleColumnName('name'),
+                                MorphToSelect\Type::make(User::class)
+                                    ->label('User')
+                                    ->titleColumnName('username'),
+                            ])
+                            ->hidden(function ($get) {
+                                if ($get('redirect_type') == SystemNotification::REDIRECT_DYNAMIC) {
+                                    return false;
+                                }
+
+                                return true;
+                            })
+                            ->reactive()
+                            ->required()
+                            ->columnSpanFull()
+                            ->searchable(),
+
+                        Fieldset::make()
+                            ->schema([
+                                Select::make('static_content_type')
+                                    ->label('Content Type')
+                                    ->options([
+                                        'web' => 'Web',
+                                        'text' => 'Text',
+                                    ])
+                                    ->reactive()
+                                    ->required(),
+
+                                TextInput::make('web_link')
+                                    ->label('Web Link')
+                                    ->hidden(fn (Closure $get) => $get('type') !== 'web'),
+                            ])
+                            ->hidden(function ($get) {
+                                if ($get('redirect_type') == SystemNotification::REDIRECT_STATIC) {
+                                    return false;
+                                }
+
+                                return true;
+                            })
+                            ->label('Static Redirect')
+                            ->columns(1)
                     ])
                     ->columns(2),
 
@@ -139,21 +191,59 @@ class SystemNotificationResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('type')
-                    ->sortable()
-                    ->searchable(),
-
                 TextColumn::make('title')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('content')
+                TextColumn::make('content'),
+
+                TextColumn::make('redirect_type')
+                    ->enum(SystemNotification::REDIRECT_TYPE)
+                    ->sortable(),
+
+                TextColumn::make('content_type')
+                    ->label('Dynamic Content Type')
+                    ->sortable(),
+
+                TextColumn::make('content_id')
+                    ->label('Dynamic Content ID')
                     ->sortable()
                     ->searchable(),
 
+                TextColumn::make('static_content_type')
+                    ->label('Static Content type')
+                    ->sortable(),
+
+                TextColumn::make('web_link')
+                    ->label('Web Link'),
+
                 TextColumn::make('scheduled_at')
+                    ->label('Scheduled At')
+                    ->sortable(),
+
+                TextColumn::make('sent_at')
+                    ->label('Sent At')
+                    ->sortable(),
+
+                TextColumn::make('user')
+                    ->label('Notified User')
+                    ->sortable(),
+
+                BadgeColumn::make('all_active_users')
+                    ->label('All Active Users')
+                    ->enum([
+                        0 => "False",
+                        1 => "True",
+                    ])
+                    ->colors([
+                        'warning' => 0,
+                        'success' => 1,
+                    ]),
+
+                TextColumn::make('created_at')
                     ->sortable(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])

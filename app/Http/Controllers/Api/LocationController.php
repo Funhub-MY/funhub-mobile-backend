@@ -96,7 +96,7 @@ class LocationController extends Controller
     {
         if ($location->status == Location::STATUS_DRAFT) {
             return response()->json([
-                'message' => 'Location not found'
+                'message' => __('messages.error.location_controller.Location_not_found')
             ], 404);
         }
         

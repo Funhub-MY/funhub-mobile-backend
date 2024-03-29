@@ -97,6 +97,10 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
+            '_geoloc' => ($this->location()->count() > 0) ? [
+                'lat' => floatval($this->location->first()->lat),
+                'lng' => floatval($this->location->first()->lng)
+            ] : null,
         ];
     }
 
@@ -110,6 +114,27 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     //     // merchant inverted hasOneThrough user
     //     return $this->hasOneThrough(Merchant::class, User::class, 'id', 'id', 'user_id', 'merchant_id');
     // }
+
+    public function offerCategories()
+    {
+        return $this->belongsToMany(MerchantOfferCategory::class, 'merchant_offer_merchant_offer_categories')
+            ->where('parent_id', null)
+            ->withTimestamps();
+    }
+
+    // NOTE since this is a self-referencing relationship, sync will override offerCategories!
+    public function offerSubCategories()
+    {
+        return $this->belongsToMany(MerchantOfferCategory::class, 'merchant_offer_merchant_offer_categories')
+            ->where('parent_id', '!=', null)
+            ->withTimestamps();
+    }
+
+    public function allOfferCategories()
+    {
+        return $this->belongsToMany(MerchantOfferCategory::class, 'merchant_offer_merchant_offer_categories')
+            ->withTimestamps();
+    }
 
     public function store()
     {

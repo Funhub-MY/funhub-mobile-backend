@@ -71,7 +71,7 @@ class TransactionController extends Controller
         // check if user is transaction owner first
         if ($transaction->user_id != auth()->user()->id) {
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => __('messages.error.transaction_controller.Unauthorized')
             ], 401);
         }
 
@@ -100,7 +100,7 @@ class TransactionController extends Controller
         }
 
         return response()->json([
-            'message' => 'Transaction not found'
+            'message' => __('messages.error.transaction_controller.Transaction_not_found')
         ], 404);
     }
     

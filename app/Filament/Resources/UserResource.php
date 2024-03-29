@@ -23,17 +23,19 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\SelectColumn;
 use Illuminate\Database\Eloquent\Builder;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
 {
+    protected $user;
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -213,6 +215,11 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('View')
+                    ->action(function ($record) {
+                        return redirect(UserResource::getUrl('view', ['record' => $record->id]));
+                    })
+                    ->icon('heroicon-s-eye'),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -313,6 +320,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            'view' => Pages\ViewUsers::route('/{record}/view'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

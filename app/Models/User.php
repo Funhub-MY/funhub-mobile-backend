@@ -353,6 +353,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             ->withTimestamps();
     }
 
+    public function articleFeedWhitelist()
+    {
+        return $this->hasOne(ArticleFeedWhitelistUser::class, 'user_id');
+    }
+
     /**
      * Get the user's point balance
      */
@@ -485,7 +490,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         // ensure name and email are set for social auth user
         // else ensure name, email, password are set for phone no sms otp login user
         if ($this->auth_provider == 'phone_no') {
-            return $this->name && $this->password;
+            return !is_null($this->name);
         } else if ($this->auth_provider == 'facebook') {
             return !is_null($this->name) && !empty($this->name);
         } else {

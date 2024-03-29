@@ -75,13 +75,13 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Invalid Credentials'
+                'message' => __('messages.error.auth_controller.Invalid_Credentials')
             ], 401);
         }
 
         // check if user is active
         if ($user->status != User::STATUS_ACTIVE) {
-            return response()->json(['message' => 'User not active'], 401);
+            return response()->json(['message' => __('messages.error.auth_controller.User_not_active')], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -90,6 +90,74 @@ class AuthController extends Controller
             'user' => new UserResource($user, true),
             'token' => $token,
         ], 200);
+    }
+
+    /**
+     * Login with OTP
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Authentication
+     * @unauthenticated
+     * @bodyParam country_code string required The country code of user's phone number. Example: 60
+     * @bodyParam phone_no string required The Phone No of the user. Example: 1234567890
+     * @bodyParam otp string required The OTP sent to user's phone number. Example: 123456
+     * @response scenario=success {
+     * "user": {
+     *    id: 1,
+     *   name: "John Smith"
+     * },
+     * "token": "AuthenticationTokenHere"
+     * }
+     *
+     * @response status=401 scenario="Invalid Login details" {"message": "Invalid login details"}
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}
+     */
+    public function loginwithOtp(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+            'otp' => 'required|string',
+        ]);
+
+        // check phone no has prefix 0 remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // check phone no has prefix + remove it first
+        if (substr($request->phone_no, 0, 1) == '+') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        }
+
+        $user = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->where('otp', $request->otp)
+            ->first();
+
+        if ($user) {
+            // user exists in system
+            // update otp to null
+            $user->update([
+                'otp' => null,
+                'otp_expiry' => null,
+                'otp_verified_at' => now(),
+            ]);
+            // log user in
+            $token = $user->createToken('authToken');
+            Auth::login($user);
+
+            return response()->json([
+                'user' => new UserResource($user, true),
+                'token' => $token->plainTextToken,
+            ], 200);
+        }
+
+        return response()->json(['message' => __('messages.error.auth_controller.OTP_Invalid_or_Expired')], 422);
     }
 
     /**
@@ -125,12 +193,24 @@ class AuthController extends Controller
 
         if ($user) {
             if ($user->password) { // in scenario user havent fully complete profile setupo and decide to close the app, so password field is the checker here to verify user can resume their journey
-                return response()->json(['message' => 'Phone Number already registered'], 422);
+                return response()->json([
+                    'registered' => true,
+                    'has_password' => true,
+                    'message' => __('messages.error.auth_controller.Phone_Number_already_registered')
+                ], 200);
             } else {
-                return response()->json(['message' => 'Phone Number registered but incomplete profile setup, continue setup'], 200);
+                return response()->json([
+                    'registered' => true,
+                    'has_password' => false,
+                    'message' => __('messages.success.auth_controller.Phone_Number_registered_but_incomplete_profile_setup_continue_setup')
+                ], 200);
             }
         } else {
-            return response()->json(['message' => 'Phone Number not registered'], 200);
+            return response()->json([
+                'registered' => false,
+                'has_password' => false,
+                'message' => __('messages.success.auth_controller.Phone_Number_not_registered')
+            ], 200);
         }
     }
 
@@ -185,7 +265,7 @@ class AuthController extends Controller
                     'otp_verified_at' => null,
                 ]);
             } catch (\Exception $e) {
-                return response()->json(['message' => 'Phone Number already registered'], 422);
+                return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
             }
         } else {
              $user->update([
@@ -204,11 +284,11 @@ class AuthController extends Controller
                     'phone_no' => $user->full_phone_no,
                     'otp' => $user->otp,
                 ]);
-                return response()->json(['message' => 'Failed to send OTP'], 422);
+                return response()->json(['message' => __('messages.error.auth_controller.Failed_to_send_OTP')], 422);
             }
         }
 
-        return response()->json(['message' => 'OTP sent'], 200);
+        return response()->json(['message' => __('messages.success.auth_controller.OTP_sent')], 200);
     }
 
     /**
@@ -278,7 +358,7 @@ class AuthController extends Controller
             ], 200);
         }
 
-        return response()->json(['message' => 'OTP Invalid or Expired'], 422);
+        return response()->json(['message' => __('messages.error.auth_controller.OTP_Invalid_or_Expired')], 422);
     }
 
     /**
@@ -344,7 +424,7 @@ class AuthController extends Controller
                  'token' => $token->plainTextToken,
              ], 200);
         } else {
-            return response()->json(['message' => 'OTP Invalid or Expired'], 422);
+            return response()->json(['message' => __('messages.error.auth_controller.OTP_Invalid_or_Expired')], 422);
         }
     }
 
@@ -379,7 +459,7 @@ class AuthController extends Controller
 
             // ensure user is otp verified
             if (!auth()->user()->otp_verified_at) {
-                return response()->json(['message' => 'Please verify your phone number first'], 422);
+                return response()->json(['message' => __('messages.error.auth_controller.Please_verify_your_phone_number_first')], 422);
             }
         }
 
@@ -390,7 +470,7 @@ class AuthController extends Controller
             'password' => ($request->password) ? Hash::make($request->password) : null,
         ]);
 
-        return response()->json(['message' => 'Profile Updated, Email verification sent'], 200);
+        return response()->json(['message' => __('messages.success.auth_controller.Profile_Updated_Email_verification_sent')], 200);
     }
 
     /**
@@ -421,7 +501,7 @@ class AuthController extends Controller
         // resend verification email
         $user->sendEmailVerificationNotification();
 
-        return response()->json(['message' => 'Verification Email Sent'], 200);
+        return response()->json(['message' => __('messages.success.auth_controller.Verification_Email_Sent')], 200);
     }
 
     /**
@@ -446,7 +526,7 @@ class AuthController extends Controller
 
         // check token provided
         if ($user->email_verification_token != $request->token) {
-            return response()->json(['message' => 'Invalid Token'], 422);
+            return response()->json(['message' => __('messages.error.auth_controller.Invalid_Token')], 422);
         }
 
         // update user token to null
@@ -455,7 +535,7 @@ class AuthController extends Controller
         // mark as verified email
         $user->markEmailAsVerified();
 
-        return response()->json(['message' => 'Email Verified'], 200);
+        return response()->json(['message' => __('messages.success.auth_controller.Email_Verified')], 200);
     }
 
     /**
@@ -477,7 +557,7 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
 
         return response()->json([
-            'message' => 'Logged out'
+            'message' => __('messages.success.auth_controller.Logged_out')
         ]);
     }
 
@@ -518,7 +598,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Logged in successfully',
+            'message' => __('messages.success.auth_controller.Logged_in_successfully'),
             'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
@@ -560,7 +640,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Logged in successfully',
+            'message' => __('messages.success.auth_controller.Logged_in_successfully'),
             'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
@@ -594,7 +674,7 @@ class AuthController extends Controller
             $verified_id = $firebase_auth->verifyIdToken($token);
         } catch (FailedToVerifyToken $e) {
             Log::error($e->getMessage());
-            return response()->json(['message' => 'Invalid Token'], 422);
+            return response()->json(['message' => __('messages.error.auth_controller.Invalid_Token')], 422);
         }
 
         // as this point, the auth should be verified at firebase.
@@ -602,7 +682,7 @@ class AuthController extends Controller
         if ($uid) {
             $firebase_user = $firebase_auth->getUser($uid);
         } else {
-            return response()->json(['message' => 'Invalid Token'], 422);
+            return response()->json(['message' => __('messages.error.auth_controller.Invalid_Token')], 422);
         }
 
         $socialid = null;
@@ -717,7 +797,7 @@ class AuthController extends Controller
 
         // check if user is active
         if ($user->status != User::STATUS_ACTIVE) {
-            return response()->json(['message' => 'User not active'], 401);
+            return response()->json(['message' => __('messages.error.auth_controller.User_not_active')], 401);
         }
 
         //log the new user in
@@ -726,7 +806,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Logged in successfully',
+            'message' => __('messages.success.auth_controller.Logged_in_successfully'),
             'user' => new UserResource($user, true),
             'token' => $sanctumToken
         ], 200);
@@ -771,14 +851,14 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User not found'
+                'message' => __('messages.error.auth_controller.User_not_found')
             ], 404);
         } else {
              // reject if user is logged in using google/facebook
              if ($user->google_id || $user->facebook_id) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Unable to reset password for google/facebook account'
+                    'message' => __('messages.error.auth_controller.Unable_to_reset_password_for_google')
                 ], 400);
             }
 
@@ -793,7 +873,7 @@ class AuthController extends Controller
             $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
             return response()->json([
                 'status' => 'success',
-                'message' => 'OTP sent successfully'
+                'message' => __('messages.success.auth_controller.OTP_sent')
             ], 200);
         }
     }
@@ -831,21 +911,21 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'User not found'
+                'message' => __('messages.error.auth_controller.User_not_found')
             ], 404);
         } else {
             // reject if user is logged in using google/facebook
             if ($user->google_id || $user->facebook_id) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Unable to reset password for google/facebook account'
+                    'message' => __('messages.error.auth_controller.Unable_to_reset_password_for_google')
                 ], 400);
             }
             // user is found, check if otp is expired
             if ($user->otp_expiry < now()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'OTP expired, please request again.'
+                    'message' => __('messages.success.auth_controller.OTP_expired_please_request_again')
                 ], 400);
             } else {
                 // otp is not expired, update user password
@@ -857,7 +937,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Password updated successfully'
+                    'message' => __('messages.success.auth_controller.Password_updated_successfully')
                 ], 200);
             }
         }

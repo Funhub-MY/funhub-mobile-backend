@@ -287,9 +287,9 @@ class CommentController extends Controller
                     }
                 });
             }
-            return response()->json(['message' => 'Comment updated']);
+            return response()->json(['message' => __('messages.success.comment_controller.Comment_updated')]);
         } else {
-            return response()->json(['message' => 'Comment not found'], 404);
+            return response()->json(['message' => __('messages.error.comment_controller.Comment_not_found')], 404);
         }
     }
 
@@ -316,9 +316,9 @@ class CommentController extends Controller
             $comment->first()->replies()->delete();
 
             $comment->delete();
-            return response()->json(['message' => 'Comment deleted']);
+            return response()->json(['message' => __('messages.success.comment_controller.Comment_deleted')]);
         } else {
-            return response()->json(['message' => 'Comment not found'], 404);
+            return response()->json(['message' => __('messages.error.comment_controller.Comment_not_found')], 404);
         }
     }
 
@@ -363,10 +363,10 @@ class CommentController extends Controller
             event(new \App\Events\CommentReported($comment)); // fires event
 
         } else {
-            return response()->json(['message' => 'You have already reported this comment'], 422);
+            return response()->json(['message' => __('messages.error.comment_controller.You_have_already_reported_this_comment')], 422);
         }
 
-        return response()->json(['message' => 'Comment reported']);
+        return response()->json(['message' => __('messages.success.comment_controller.Comment_reported')]);
     }
 
     /**
@@ -439,12 +439,12 @@ class CommentController extends Controller
                 $comment->user->notify(new \App\Notifications\CommentLiked($comment, auth()->user()));
             }
 
-            return response()->json(['message' => 'Comment liked']);
+            return response()->json(['message' => __('messages.success.comment_controller.Comment_liked')]);
         } else {
             // unlike
             $comment->likes()->where('user_id', auth()->id())->delete();
             event(new \App\Events\CommentLiked($comment, false)); // fires event
-            return response()->json(['message' => 'Comment Un-Liked']);
+            return response()->json(['message' => __('messages.success.comment_controller.Comment_Un-Liked')]);
         }
     }
 
@@ -505,7 +505,7 @@ class CommentController extends Controller
         $comment->refresh();
 
         return response()->json([
-            'message' => 'User untagged from comment',
+            'message' => __('messages.success.comment_controller.User_untagged_from_comment'),
             'comment' => CommentResource::make($comment),
         ]);
     }

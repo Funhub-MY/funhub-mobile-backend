@@ -112,6 +112,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available Locales
+    |--------------------------------------------------------------------------
+    |
+    | This ist the available locales for your application. This array should
+    | contain all the locales supported by your application.
+    |
+    */
+
+    'available_locales' => [
+        'en' => 'English',
+        'zh' => 'Chinese',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

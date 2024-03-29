@@ -71,6 +71,6 @@ class MerchantContactController extends Controller
         // Create a new merchant contact record
         $merchantContact = MerchantContact::create($data);
 
-        return response()->json(['message' => 'Merchant contact information submitted successfully'], 200);
+        return response()->json(['message' => __('messages.success.merchant_contact_controller.Merchant_contact_information_submitted_successfully')], 200);
     }
 }

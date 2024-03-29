@@ -11,10 +11,23 @@ class SystemNotification extends Model implements Auditable
 {
     use HasFactory, \OwenIt\Auditing\Auditable;
 
+    const REDIRECT_STATIC = 0;
+    const REDIRECT_DYNAMIC = 1;
+
+    const REDIRECT_TYPE = [
+        self::REDIRECT_STATIC => 'Static',
+        self::REDIRECT_DYNAMIC => 'Dynamic'
+    ];
+
     protected $guarded = ['id'];
 
     public function user()
     {
         return $this->belongsToMany(User::class, 'system_notification_user', 'user', 'id');
+    }
+
+    public function content()
+    {
+        return $this->morphTo();
     }
 }

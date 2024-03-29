@@ -185,6 +185,7 @@ class ArticleResource extends Resource
 
                             Toggle::make('hidden_from_home')
                                 ->label('Hide from Home?')
+                                ->helperText('Article will not showed in Recommendations. Whitelist user to bypass.')
                                 ->default(false),
                             Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
@@ -337,6 +338,19 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+
+                Tables\Columns\BadgeColumn::make('hidden_from_home')
+                    ->label('Hidden (Home)')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\BadgeColumn::make('visibility')
                     ->label('Visibility')
                     ->enum([
@@ -437,6 +451,7 @@ class ArticleResource extends Resource
                         );
                 })
             ])
+            ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

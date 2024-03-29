@@ -79,7 +79,7 @@ class NotificationController extends Controller
         }
 
         return response()->json([
-            'message' => 'Notifications marked as read.'
+            'message' => __('messages.success.notification_controller.Notifications_marked_as_read')
         ]);
     }
 
@@ -107,14 +107,14 @@ class NotificationController extends Controller
         $notification = $user->notifications()->where('id', $request->notification_id)->first();
         if (!$notification) {
             return response()->json([
-                'message' => 'Notification not found.'
+                'message' => __('messages.error.notification_controller.Notification_not_found')
             ], 404);
         } else {
             $notification->markAsRead();
         }
 
         return response()->json([
-            'message' => 'Notification marked as read.'
+            'message' => __('messages.success.notification_controller.Notifications_marked_as_read')
         ]);
     }
 }
