@@ -24,6 +24,7 @@ class ArticleCategoryResource extends JsonResource
         }
 
         // Get the language from the request header
+        $locale = config('app.locale');
         if ($request->header('X-Locale')) {
             $locale = $request->header('X-Locale');
         }

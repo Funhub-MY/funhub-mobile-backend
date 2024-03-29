@@ -126,7 +126,8 @@ class SystemNotificationResource extends Resource
                             })
                             ->reactive()
                             ->required()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->searchable(),
 
                         Fieldset::make()
                             ->schema([
@@ -242,6 +243,7 @@ class SystemNotificationResource extends Resource
                 TextColumn::make('created_at')
                     ->sortable(),
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])
