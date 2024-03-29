@@ -33,8 +33,7 @@ class SendCustomNotification extends Command
     {
         try {
             $currentTime = now();
-
-            $systemNotifications = SystemNotification::whereBetween('scheduled_at', [$currentTime->copy()->subMinutes(10), $currentTime->copy()->addMinutes(10)])
+            $systemNotifications = SystemNotification::whereBetween('scheduled_at', [$currentTime->copy()->subMinutes(5), $currentTime])
                 ->whereNull('sent_at')
                 ->get();
 
