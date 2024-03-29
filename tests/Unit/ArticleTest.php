@@ -1421,6 +1421,12 @@ class ArticleTest extends TestCase
         $this->assertTrue($article->categories->pluck('id')->toArray() == $categories_new->pluck('id')->toArray());
 
         // 9. Get articles for homepage, and my_bookmarks
+        // whitelist the user to see the article
+        ArticleFeedWhitelistUser::create([
+            'user_id' => $this->user->id,
+            'created_by_id' => $article->user_id,
+        ]);
+
         $homepageArticles = $this->getJson('/api/v1/articles?include_own_article=1');
         $this->assertEquals(6, $homepageArticles->json('meta.total'));
 
