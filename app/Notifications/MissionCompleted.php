@@ -42,7 +42,11 @@ class MissionCompleted extends Notification
 
     protected function getMessage()
     {
-        return '已完成任务“'.$this->mission->name.'”，随机获得'.$this->reward.'x'.$this->rewardQuantity.'';
+        return __('messages.notification.fcm.MissionCompleted', [
+            'missionName' => $this->mission->name,
+            'reward' => $this->reward,
+            'rewardQuantity' => $this->rewardQuantity
+        ]);
     }
 
     public function toFcm($notifiable)

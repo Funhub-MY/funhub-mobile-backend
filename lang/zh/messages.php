@@ -1,6 +1,6 @@
 <?php
 
-// lang/en/messages.php
+// lang/zh/messages.php
 
 return [
     'success' => [
@@ -226,5 +226,53 @@ return [
             'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => '如果您使用 Google 或 Facebook 账号登录，则无法更改密码',
             'Old_password_is_incorrect' => '旧密码不正确',
         ],
+    ],
+    'notification' => [
+        'fcm' => [
+            'ArticleInteracted' => ':username :action 你的 ":articleTitle"',
+            'Commented' => ':username 评论了你的探文 ":commentTitle"',
+            'CommentLiked' => ':username 赞了你的评论 ":comment"',
+            'CommentReplied' => ':username 回复了你的评论 ":comment"',
+            'MissionCompleted' => '已完成任务“:missionName”，随机获得 :reward x :rewardQuantity',
+            'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
+            'NewFollowRequest' => ':followerName 请求关注您',
+            'NewFunboxRewardApproved' => ':username 您有新的饭盒',
+            'NewSupportRequestMessage' => ':requestor 您的申诉有一条新消息',
+            'NewSupportRequestRaised' => '',
+            'OfferClaimed' => [
+                'points' => '已使用饭盒x :price兑换“:offerName”优惠券',
+                'fiat' => '已使用现金RM:price兑换“:offerName”优惠券'
+            ],
+            'OfferRedeemed' => '恭喜你成功兑换“:offerName”优惠券',
+            'PurchasedGiftCardNotification' => '',
+            'PurchasedOfferNotification' => '',
+            'RedemptionExpirationNotification' => '优惠券“:offerName”即将于:daysLeft天后逾期',
+            'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
+            'TaggedUserInComment' => '在留言里提到了你',
+            'VoucherRedeemedNotification' => '',
+        ],
+        'database' => [
+            'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
+            'Commented' => '评论了你的探文，快去看看吧',
+            'CommentLiked' => '赞了你的评论，觉得超有趣!',
+            'CommentReplied' => '回复了你的评论，快去看看吧',
+            'MissionCompleted' => '已完成任务“:missionName”，随机获得 :reward x :rewardQuantity',
+            'Newfollower' => '狠狠关注了你，来认识新朋友吧',
+            'NewFollowRequest' => '请求关注您',
+            'NewFunboxRewardApproved' => '您有新的饭盒',
+            'NewSupportRequestMessage' => '您的申诉有一条新消息，快去看看吧',
+            'NewSupportRequestRaised' => '',
+            'OfferClaimed' => [
+                'points' => '已使用饭盒x :price兑换“:offerName”优惠券',
+                'fiat' => '已使用现金RM:price兑换“:offerName”优惠券'
+            ],
+            'OfferRedeemed' => '恭喜你成功兑换“:offerName”优惠券',
+            'PurchasedGiftCardNotification' => '',
+            'PurchasedOfferNotification' => '',
+            'RedemptionExpirationNotification' => '优惠券“:offerName”即将于:daysLeft天后逾期',
+            'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
+            'TaggedUserInComment' => '在留言里提到了你',
+            'VoucherRedeemedNotification' => '',
+        ]
     ]
 ];

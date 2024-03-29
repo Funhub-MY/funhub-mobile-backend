@@ -45,7 +45,7 @@ class NewFollowRequest extends Notification
         ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('有用户请求关注您')
-            ->setBody($this->follower->name . '请求关注您')
+            ->setBody(__('messages.notification.fcm.NewFollowRequest', ['followerName' => $this->follower->name]))
         );
     }
 
@@ -67,7 +67,7 @@ class NewFollowRequest extends Notification
             'from' => $this->follower->name,
             'from_id' => $this->follower->id,
             'title' => $this->follower->name,
-            'message' => '请求关注您'
+            'message' => __('messages.notification.database.NewFollowRequest')
         ];
     }
 }

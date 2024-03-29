@@ -42,15 +42,18 @@ class OfferClaimed extends Notification
     }
 
     protected function getMessage()
-    {
-        $purchaseText = '';
+    {        
         if ($this->purchaseMethod == 'points') {
-            $purchaseText.='已使用饭盒x'.$this->price;
+            return __('messages.notification.fcm.OfferClaimed.points', [
+                'price' => $this->price,
+                'offerName' => $this->offer->name
+            ]);
         } else if ($this->purchaseMethod == 'fiat') {
-            $purchaseText.='已使用现金RM'.$this->price.'';
+            return __('messages.notification.fcm.OfferClaimed.fiat', [
+                'price' => $this->price,
+                'offerName' => $this->offer->name
+            ]);
         } else {}
-
-        return $purchaseText.'兑换”'.$this->offer->name.'“优惠券 ';
     }
 
     public function toFcm($notifiable)

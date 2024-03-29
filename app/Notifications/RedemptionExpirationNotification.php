@@ -42,8 +42,10 @@ class RedemptionExpirationNotification extends Notification
 
     protected function getMessage()
     {
-        $expirationText = '';
-        return $expirationText.'优惠券"'.$this->offer->name.'"即将于'.$this->daysLeft.'天后逾期';
+        return __('messages.notification.fcm.RedemptionExpirationNotification', [
+            'offerName' => $this->user->name,
+            'daysLeft' => $this->daysLeft
+        ]);
     }
 
     public function toFcm($notifiable)

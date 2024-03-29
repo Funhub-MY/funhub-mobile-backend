@@ -223,5 +223,53 @@ return [
             'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => 'You cannot change your password if you are logged in with Google or Facebook',
             'Old_password_is_incorrect' => 'Old password is incorrect',
         ],
+    ],
+    'notification' => [
+        'fcm' => [
+            'ArticleInteracted' => ':username :action your ":articleTitle"',
+            'Commented' => ':username commented on your post ":commentTitle"',
+            'CommentLiked' => ':username liked your comment ":comment"',
+            'CommentReplied' => ':username replied to your comment ":comment"',
+            'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
+            'Newfollower' => ':followerName followed you, let\'s meet new friends!',
+            'NewFollowRequest' => ':followerName requested to follow you',
+            'NewFunboxRewardApproved' => ':username you have received Funbox',
+            'NewSupportRequestMessage' => ':requestor you have an update in your appeal',
+            'NewSupportRequestRaised' => '',
+            'OfferClaimed' => [
+                'points' => 'Used Funbox x :price to redeem ":offerName" voucher.',
+                'fiat' => 'Used Cash RM :price to redeem ":offerName" voucher.'
+            ],
+            'OfferRedeemed' => 'Congratulations on successfully redeeming the ":offerName" coupon.',
+            'PurchasedGiftCardNotification' => '',
+            'PurchasedOfferNotification' => '',
+            'RedemptionExpirationNotification' => 'The voucher ":offerName" will expire in :daysLeft days.',
+            'TaggedUserInArticle' => 'Didn\'t forget to @ you even while playing, come have a look',
+            'TaggedUserInComment' => 'Mentioned you in the comments',
+            'VoucherRedeemedNotification' => '',
+        ],
+        'database' => [
+            'ArticleInteracted' => 'Liked your post, it is really interesting!',
+            'Commented' => 'Commented on your post, go and have a look',
+            'CommentLiked' => 'Liked your comment, it is really interesting!',
+            'CommentReplied' => 'Replied to your comment, go and have a look',
+            'MissionCompleted' => 'Completed mission":missionName",  Randomly Acquire :reward x :rewardQuantity',
+            'Newfollower' => 'Followed you, let\'s meet new friends',
+            'NewFollowRequest' => 'Requested to follow you',
+            'NewFunboxRewardApproved' => 'You have received Funbox',
+            'NewSupportRequestMessage' => 'You have an update in your appeal, go and have a look.',
+            'NewSupportRequestRaised' => '',
+            'OfferClaimed' => [
+                'points' => 'Used Funbox x :price to redeem ":offerName" voucher.',
+                'fiat' => 'Used Cash RM :price to redeem ":offerName" voucher.'
+            ],
+            'OfferRedeemed' => 'Congratulations on successfully redeeming the ":offerName" coupon.',
+            'PurchasedGiftCardNotification' => '',
+            'PurchasedOfferNotification' => '',
+            'RedemptionExpirationNotification' => 'The voucher ":offerName" will expire in :daysLeft days."',
+            'TaggedUserInArticle' => 'Didn\'t forget to @ you even while playing, come have a look',
+            'TaggedUserInComment' => 'Mentioned you in the comments',
+            'VoucherRedeemedNotification' => '',
+        ]
     ]
 ];

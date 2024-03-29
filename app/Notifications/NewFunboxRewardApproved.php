@@ -32,7 +32,7 @@ class NewFunboxRewardApproved extends Notification implements ShouldQueue
      * Get the notification's delivery channels.
      *
      * @param  mixed  $notifiable
-     * @return array
+     * @return arrayO
      */
     public function via($notifiable)
     {
@@ -41,7 +41,7 @@ class NewFunboxRewardApproved extends Notification implements ShouldQueue
 
     protected function getMessage()
     {
-        return '您有新的饭盒';
+        return __('messages.notification.fcm.NewFunboxRewardApproved', ['username' => $this->user->name]);
     }
 
     public function toFcm($notifiable)

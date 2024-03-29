@@ -52,7 +52,10 @@ class CommentLiked extends Notification implements ShouldQueue
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
-                ->setBody( $this->user->name . '赞了你的评论 "' . Str::limit($this->comment->body, 10, '...') . '"')
+                ->setBody(__('messages.notification.fcm.CommentLiked', [
+                    'username' => $this->user->name,
+                    'comment' => Str::limit($this->comment->body, 10, '...')
+                ]))
             );
     }
 
@@ -74,7 +77,7 @@ class CommentLiked extends Notification implements ShouldQueue
             'from' => $this->user->name,
             'from_id' => $this->user->id,
             'title' => $this->user->name,
-            'message' => '赞了你的评论，觉得超有趣!',
+            'message' => __('messages.notification.database.CommentLiked'),
         ];
     }
 }

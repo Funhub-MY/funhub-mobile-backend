@@ -42,8 +42,7 @@ class OfferRedeemed extends Notification
 
     protected function getMessage()
     {
-        $purchaseText = '';
-        return $purchaseText.'恭喜你成功兑换“'.$this->offer->name.'“优惠券';
+        return __('messages.notification.fcm.OfferRedeemed', ['offerName' => $this->user->name]);
     }
 
     public function toFcm($notifiable)

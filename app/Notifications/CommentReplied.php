@@ -51,7 +51,10 @@ class CommentReplied extends Notification
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
-                ->setBody( $this->comment->user->name . '回复了你的评论 "' . Str::limit($this->comment->parent->body, 10, '...') . '"')
+                ->setBody(__('messages.notification.fcm.CommentReplied', [
+                    'username' => $this->comment->user->name,
+                    'comment' => Str::limit($this->comment->parent->body, 10, '...')
+                ]))
             );
     }
 
@@ -73,7 +76,7 @@ class CommentReplied extends Notification
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
-            'message' => '回复了你的评论，快去看看吧',
+            'message' => __('messages.notification.database.CommentReplied'),
         ];
     }
 }

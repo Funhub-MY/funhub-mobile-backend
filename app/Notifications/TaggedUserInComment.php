@@ -42,7 +42,7 @@ class TaggedUserInComment extends Notification
 
     protected function getMessage()
     {
-        return '在留言里提到了你';
+        return __('messages.notification.fcm.TaggedUserInComment');
     }
 
     public function toFcm($notifiable)

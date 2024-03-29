@@ -42,7 +42,7 @@ class TaggedUserInArticle extends Notification
 
     protected function getMessage()
     {
-        return '去探玩还不忘@你，快来看看吧';
+        return __('messages.notification.fcm.TaggedUserInArticle');
     }
 
     public function toFcm($notifiable)

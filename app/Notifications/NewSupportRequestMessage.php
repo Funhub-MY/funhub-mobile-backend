@@ -47,7 +47,7 @@ class NewSupportRequestMessage extends Notification implements ShouldQueue
         ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('申诉新消息')
-            ->setBody($this->message->request->requestor->name . '您的申诉有一条新消息')
+            ->setBody(__('messages.notification.fcm.NewSupportRequestMessage', ['requestor' => $this->message->request->requestor->name]))
         );
     }
 
@@ -69,7 +69,7 @@ class NewSupportRequestMessage extends Notification implements ShouldQueue
             'from' => '小饭',
             'from_id' => $this->message->user->id,
             'title' => $this->message->user->name,
-            'message' => '您的申诉有一条新消息，快去看看吧',
+            'message' => __('messages.notification.database.NewSupportRequestMessage'),
         ];
     }
 }
