@@ -2,20 +2,22 @@
 
 namespace App\Providers;
 
+use App\Models\Approval;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
-use App\Events\InteractionCreated;
 use App\Listeners\MediaListener;
-use App\Listeners\MissionEventListener;
-use App\Listeners\CreateViewsForArticleListener;
-use App\Listeners\SyncHashtagsToSearchKeywords;
+use App\Events\InteractionCreated;
+use App\Observers\ApprovalObserver;
 use App\Models\SupportRequestMessage;
-use App\Observers\SupportRequestMessageObserver;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Registered;
+use App\Listeners\MissionEventListener;
+use App\Listeners\SyncHashtagsToSearchKeywords;
+use App\Listeners\CreateViewsForArticleListener;
+use App\Observers\SupportRequestMessageObserver;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -56,6 +58,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         SupportRequestMessage::observe(SupportRequestMessageObserver::class);
+        Approval::observe(ApprovalObserver::class);
     }
 
     /**
