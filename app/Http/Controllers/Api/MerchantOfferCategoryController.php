@@ -45,10 +45,11 @@ class MerchantOfferCategoryController extends Controller
         // Filter by is_featured if provided
         if ($request->has('is_featured') && $request->is_featured == 1) {
             $query->where('is_featured', $request->is_featured);
-        }        
+        }
 
         // Paginate with default or specified limit
         $limit = $request->input('limit', config('app.paginate_per_page'));
+        $query->withCount('merchantOffers'); // Count the number of offers in each category (relationship`offers` in MerchantOfferCategory model)
         $offerCategories = $query->paginate($limit);
 
         return MerchantOfferCategoryResource::collection($offerCategories);
