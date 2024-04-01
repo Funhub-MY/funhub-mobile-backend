@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\MerchantOffer;
 use App\Models\User;
+use App\Models\MerchantOffer;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class RedemptionExpirationNotification extends Notification
 {
@@ -27,6 +27,12 @@ class RedemptionExpirationNotification extends Notification
         $this->offer = $offer;
         $this->user = $user;
         $this->daysLeft = $daysLeft;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $user->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

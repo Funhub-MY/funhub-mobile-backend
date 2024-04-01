@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\Mission;
 use App\Models\User;
+use App\Models\Mission;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class MissionCompleted extends Notification
 {
@@ -27,6 +27,12 @@ class MissionCompleted extends Notification
         $this->user = $user;
         $this->reward = $reward;
         $this->rewardQuantity = $rewardQuantity;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $user->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

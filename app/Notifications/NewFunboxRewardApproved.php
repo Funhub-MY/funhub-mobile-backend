@@ -26,6 +26,12 @@ class NewFunboxRewardApproved extends Notification implements ShouldQueue
     {
         $this->approval = $approval;
         $this->user = $user;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $user->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

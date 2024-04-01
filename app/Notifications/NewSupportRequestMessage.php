@@ -24,6 +24,12 @@ class NewSupportRequestMessage extends Notification implements ShouldQueue
     public function __construct(SupportRequestMessage $message)
     {
         $this->message = $message;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $message->request->requestor->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

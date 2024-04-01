@@ -229,11 +229,11 @@ return [
     ],
     'notification' => [
         'fcm' => [
-            'ArticleInteracted' => ':username :action 你的 ":articleTitle"',
+            'ArticleInteracted' => ':username :action你的 ":articleTitle"',
             'Commented' => ':username 评论了你的探文 ":commentTitle"',
             'CommentLiked' => ':username 赞了你的评论 ":comment"',
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
-            'MissionCompleted' => '已完成任务“:missionName”，随机获得 :reward x :rewardQuantity',
+            'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
             'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => ':followerName 请求关注您',
             'NewFunboxRewardApproved' => ':username 您有新的饭盒',

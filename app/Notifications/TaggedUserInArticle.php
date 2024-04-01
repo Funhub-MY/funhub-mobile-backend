@@ -2,31 +2,38 @@
 
 namespace App\Notifications;
 
-use App\Models\Article;
 use App\Models\User;
+use App\Models\Article;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class TaggedUserInArticle extends Notification
 {
     use Queueable;
 
-    protected $article, $user;
+    protected $article, $user, $taggedUser;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Article $article, User $user)
+    public function __construct(Article $article, User $user, User $taggedUser)
     {
         $this->article = $article;
         $this->user = $user;
+        $this->taggedUser = $taggedUser;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $taggedUser->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

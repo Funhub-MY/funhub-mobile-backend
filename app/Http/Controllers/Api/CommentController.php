@@ -171,7 +171,7 @@ class CommentController extends Controller
             // notifiy tagged user
             $comment->taggedUsers->each(function ($taggedUser) use ($comment) {
                 try {
-                    $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
+                    $taggedUser->notify(new TaggedUserInComment($comment, $comment->user, $taggedUser));
                 } catch (\Exception $e) {
                     Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                 }
@@ -281,7 +281,7 @@ class CommentController extends Controller
 
                 $comment->taggedUsers->whereIn('id', $newTaggedUsers)->each(function ($taggedUser) use ($comment) {
                     try {
-                        $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
+                        $taggedUser->notify(new TaggedUserInComment($comment, $comment->user, $taggedUser));
                     } catch (\Exception $e) {
                         Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                     }

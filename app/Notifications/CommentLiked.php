@@ -2,15 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Models\Comment;
 use App\Models\User;
+use App\Models\Comment;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
-use Illuminate\Support\Str;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class CommentLiked extends Notification implements ShouldQueue
 {
@@ -27,6 +27,12 @@ class CommentLiked extends Notification implements ShouldQueue
     {
         $this->comment = $comment;
         $this->user = $user;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $comment->user->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

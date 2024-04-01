@@ -4,8 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Jobs\UpdateUserLastLang;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Session;
 
 class SetLocaleFromHeader
@@ -29,6 +31,9 @@ class SetLocaleFromHeader
             // If the user is authenticated, save the preferred language in the session
             if (Auth::check()) {
                 Session::put('locale', $locale);
+
+                // Dispatch a job to update the last_lang column
+                UpdateUserLastLang::dispatch(Auth::user(), $locale);
             }
         }
 

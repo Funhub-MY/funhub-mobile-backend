@@ -54,7 +54,7 @@ class UserFollowingController extends Controller
                 ]);
 
                 if ($user && $user->id !== auth()->user()->id) {
-                    $user->notify(new \App\Notifications\NewFollowRequest(auth()->user()));
+                    $user->notify(new \App\Notifications\NewFollowRequest(auth()->user(), $user));
                 }
                 return response()->json([
                     'message' => __('messages.success.user_following_controller.Follow_request_sent'),
@@ -74,7 +74,7 @@ class UserFollowingController extends Controller
 
         // ensure not sending to self
         if ($followedUser && $followedUser->id !== auth()->user()->id) {
-            $followedUser->notify(new \App\Notifications\Newfollower(auth()->user()));
+            $followedUser->notify(new \App\Notifications\Newfollower(auth()->user(), $followedUser));
         }
 
         return response()->json([

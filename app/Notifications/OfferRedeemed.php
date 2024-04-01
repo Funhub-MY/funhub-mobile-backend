@@ -2,15 +2,15 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-use App\Models\MerchantOffer;
-use App\Models\MerchantOfferClaimRedemptions;
 use App\Models\User;
+use App\Models\MerchantOffer;
+use Illuminate\Bus\Queueable;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\MerchantOfferClaimRedemptions;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class OfferRedeemed extends Notification
 {
@@ -27,6 +27,12 @@ class OfferRedeemed extends Notification
     {
         $this->offer = $offer;
         $this->user = $user;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $user->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**

@@ -4,16 +4,16 @@ namespace App\Notifications;
 
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
 use NotificationChannels\Fcm\Resources\AndroidNotification;
-use NotificationChannels\Fcm\Resources\ApnsConfig;
-use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
 class Commented extends Notification implements ShouldQueue
 {
@@ -29,6 +29,12 @@ class Commented extends Notification implements ShouldQueue
     public function __construct(Comment $comment)
     {
         $this->comment = $comment;
+
+        // Determine the locale based on the user's last_lang or use the system default
+        $locale = $comment->commentable->user->last_lang ?? config('app.locale');
+
+        // Set the locale for this notification
+        app()->setLocale($locale);
     }
 
     /**
