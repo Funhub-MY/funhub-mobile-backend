@@ -353,6 +353,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             ->withTimestamps();
     }
 
+    public function articleFeedWhitelist()
+    {
+        return $this->hasOne(ArticleFeedWhitelistUser::class, 'user_id');
+    }
+
     /**
      * Get the user's point balance
      */
