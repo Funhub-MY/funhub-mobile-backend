@@ -20,6 +20,11 @@ class Mission extends BaseModel implements HasMedia, Auditable
         'id'
     ];
 
+    protected $casts = [
+        'events' => 'json',
+        'values' => 'json',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

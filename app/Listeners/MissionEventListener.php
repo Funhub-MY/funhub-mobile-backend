@@ -7,22 +7,19 @@ use App\Models\Comment;
 use App\Models\Mission;
 use App\Models\Interaction;
 use App\Events\FollowedUser;
-use Intervention\Image\Point;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
-use App\Events\UnfollowedUser;
 use App\Services\PointService;
 use App\Events\InteractionCreated;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use Illuminate\Support\Facades\Log;
 use App\Services\PointComponentService;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MissionEventListener
 {
-    private $eventMatrix, $pointService, $pointComponentService;
+    private $pointService, $pointComponentService;
+
     /**
      * Create the event listener.
      *
@@ -30,7 +27,6 @@ class MissionEventListener
      */
     public function __construct(PointService $pointService, PointComponentService $pointComponentService)
     {
-        $this->eventMatrix = config('app.event_matrix');
         $this->pointService = $pointService;
         $this->pointComponentService = $pointComponentService;
     }
@@ -50,9 +46,7 @@ class MissionEventListener
         } else if ($event instanceof ArticleCreated) {
             $this->handleArticleCreated($event);
         } else if ($event instanceof FollowedUser) {
-            $this->handleFollowings($event, 'follow');
-        } else if ($event instanceof UnfollowedUser) {
-            $this->handleFollowings($event, 'unfollow');
+            $this->handleFollowings($event);
         }
     }
 
@@ -61,21 +55,16 @@ class MissionEventListener
      */
     private function handleInteractionCreated($event)
     {
-        // check event type   
         $eventType = null;
         $user = $event->interaction->user;
         $interaction = $event->interaction;
         if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_LIKE) {
-            // likes an article
             $eventType = 'like_article';
         } else if ($interaction->interactable_type == Comment::class && $interaction->type == Interaction::TYPE_LIKE) {
-            // like a comment
             $eventType = 'like_comment';
         } else if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_SHARE) {
-            // share an article
             $eventType = 'share_article';
         } else if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_BOOKMARK) {
-            // bookmark an article
             $eventType = 'bookmark_article';
         }
 
@@ -105,13 +94,9 @@ class MissionEventListener
     /**
      * Handle Followings
      */
-    private function handleFollowings($event, $type)
+    private function handleFollowings($event)
     {
-        if ($type == 'follow') {
-            $this->updateMissionProgress('follow_user', $event->user, 1);
-        } else if ($type == 'unfollow') {
-            $this->revertMissionProgress('follow_user', $event->user, 1);
-        }
+        $this->updateMissionProgress('follow_user', $event->user, 1);
     }
 
     /**
@@ -119,47 +104,75 @@ class MissionEventListener
      */
     private function updateMissionProgress($eventType, $user, $increments)
     {
-        $mission = Mission::where('event', $eventType)->where('enabled', true)->first();
-        if (!$mission) return;
+        $missions = Mission::where('enabled', true)
+            ->whereJsonContains('events', $eventType)
+            ->get();
 
-        $userMission = $user->missionsParticipating()->where('is_completed', false)
-            ->where('mission_id', $mission->id)
-            ->first();
-        
-        if (!$userMission) {
-            $user->missionsParticipating()->attach($mission->id, [
-                'started_at' => now(),
-                'current_value' => $increments
-            ]);
-            if ($increments == $mission->value) $this->disburseRewards($mission, $user);
-        } else if (!$userMission->pivot->is_completed) {
+        foreach ($missions as $mission) {
+            $userMission = $user->missionsParticipating()->where('is_completed', false)
+                ->where('mission_id', $mission->id)
+                ->first();
 
-            // increment pivot->current_value
-            $userMission->pivot->increment('current_value', $increments);
+            if (!$userMission) {
+                $currentValues = [];
+                foreach ($mission->events as $event) {
+                    $currentValues[$event] = ($event == $eventType) ? $increments : 0;
+                }
+                $user->missionsParticipating()->attach($mission->id, [
+                    'started_at' => now(),
+                    'current_values' => json_encode($currentValues)
+                ]);
+            } else if (!$userMission->pivot->is_completed) {
+                $currentValues = json_decode($userMission->pivot->current_values, true);
+                $currentValues[$eventType] = isset($currentValues[$eventType]) ? $currentValues[$eventType] + $increments : $increments;
+                $userMission->pivot->current_values = json_encode($currentValues);
+                $userMission->pivot->save();
+            }
 
-            if ($userMission->pivot->current_value >= $mission->value) {
-                // $userMission->pivot->is_completed = true;
-                $this->disburseRewards($mission, $user);
+            if ($this->isMissionCompleted($mission->values, $currentValues)) {
+                $this->disburseRewardsBasedOnFrequency($mission, $user);
             }
         }
     }
+    /**
+     * Check if Mission is Completed
+     */
+    private function isMissionCompleted($missionValues, $currentValues)
+    {
+        foreach ($missionValues as $event => $value) {
+            if (!isset($currentValues[$event]) || $currentValues[$event] < $value) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
-     * Revert Mission Progress
+     * Disburse Rewards Based on Frequency
      */
-    private function revertMissionProgress($eventType, $user, $decrements) 
+    private function disburseRewardsBasedOnFrequency($mission, $user)
     {
-        $mission = Mission::where('event', $eventType)
-            ->where('enabled', true)->first();
-        if (!$mission) return;
+        $userMission = $user->missionsParticipating()->where('mission_id', $mission->id)->first();
+        $lastRewardedAt = $userMission->pivot->last_rewarded_at;
 
-        // ensure user has participated in the mission and has not yet complete it
-        $userMission = $user->missionsParticipating()->where('is_completed', false)->where('mission_id', $mission->id)->first();
-        if (!$userMission) return;
-
-        // decrements only if the current value > 0
-        if ($userMission->pivot->current_value > 0) {
-            $userMission->pivot->decrement('current_value', $decrements);
+        if ($mission->frequency == 'one-off' && !$lastRewardedAt) {
+            $this->disburseRewards($mission, $user);
+            $userMission->pivot->last_rewarded_at = now();
+            $userMission->pivot->save();
+        } elseif ($mission->frequency == 'daily') {
+            $currentDate = now()->startOfDay();
+            if (!$lastRewardedAt || $lastRewardedAt->lt($currentDate)) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = $currentDate;
+                $userMission->pivot->save();
+            }
+        } elseif ($mission->frequency == 'monthly') {
+            $currentMonth = now()->startOfMonth();
+            if (!$lastRewardedAt || $lastRewardedAt->lt($currentMonth)) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = $currentMonth;
+                $userMission->pivot->save();
+            }
         }
     }
 
@@ -168,14 +181,11 @@ class MissionEventListener
      */
     private function disburseRewards($mission, $user)
     {
-        // only auto disburse if system set to auto disburse true
         if (config('app.auto_disburse_reward')) {
-             // depending on mission->missionable_type to reward
             $missionableType = $mission->missionable_type;
             $missionableId = $mission->missionable_id;
 
             if ($missionableType == Reward::class) {
-                // reward point via pointService
                 $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
                 Log::info('Mission Completed and Disbursed Reward', [
                     'mission' => $mission->id,
@@ -184,7 +194,6 @@ class MissionEventListener
                     'reward' => $mission->reward_quantity
                 ]);
             } else if ($missionableType == RewardComponent::class) {
-                // reward point via pointComponentService
                 $this->pointComponentService->credit($mission, $missionableType, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
                 Log::info('Mission Completed and Disbursed Reward', [
                     'mission' => $mission->id,
