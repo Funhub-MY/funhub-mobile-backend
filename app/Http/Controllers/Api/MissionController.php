@@ -40,9 +40,9 @@ class MissionController extends Controller
      *   "name": "Complete 10 missions",
      *   "is_participating": true,
      *   "description": "Complete 10 missions to earn a reward",
-     *   "event": "mission_completed",
-     *   "current_value": 5,
-     *   "value": 10,
+     *   "events": ["mission_completed"],
+     *   "current_values": {"mission_completed": 5},
+     *   "values": {"mission_completed": 10},
      *   "reward": {
      *       "id": 1,
      *       "name": "Egg",
@@ -129,7 +129,7 @@ class MissionController extends Controller
         } else {
             // complete all missions
             $missions = $user->missionsParticipating()->where('is_completed', false)
-                ->wherePivot('current_value', '>=', 'value')
+                ->whereRaw('JSON_CONTAINS(current_values, \'true\', "$")')
                 ->get();
 
             // disburse rewards
@@ -192,7 +192,7 @@ class MissionController extends Controller
             'mission' => $mission->toArray(),
             'user' => $user->id
         ]);
-          if ($mission->missionable_type == Reward::class) {
+        if ($mission->missionable_type == Reward::class) {
             // reward point via pointService
             $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
             Log::info('Mission Completed and Disbursed Reward', [
@@ -201,8 +201,8 @@ class MissionController extends Controller
                 'reward_type' => 'point',
                 'reward' => $mission->reward_quantity
             ]);
-          } else if ($mission->missionable_type == RewardComponent::class) {
-              // reward point via pointComponentService
+        } else if ($mission->missionable_type == RewardComponent::class) {
+            // reward point via pointComponentService
             $this->pointComponentService->credit(
                 $mission,
                 $mission->missionable, // PointComponent as reward
@@ -216,13 +216,13 @@ class MissionController extends Controller
                 'reward_type' => 'point component',
                 'reward' => $mission->reward_quantity
             ]);
-          } else {
-             Log::error('Mission Completed but no reward disbursed', [
-                 'mission' => $mission->id,
-                 'user' => $user->id,
-                 'reward_type' => 'none'
-             ]);
-          }
+        } else {
+            Log::error('Mission Completed but no reward disbursed', [
+                'mission' => $mission->id,
+                'user' => $user->id,
+                'reward_type' => 'none'
+            ]);
+        }
     }
 
     /**
@@ -244,12 +244,14 @@ class MissionController extends Controller
     public function getClaimableMissions()
     {
         $user = auth()->user();
-        $missions = $user->missionsParticipating()
-            ->wherePivot('current_value' , '>=', DB::raw('missions.value'))
-            ->wherePivot('completed_at', null)
+
+        // Updated query to use JSON_CONTAINS for checking current_values
+        $claimableMissions = $user->missionsParticipating()
+            ->whereRaw('JSON_CONTAINS(current_values, \'true\', "$")')
+            ->whereNull('missions_users.completed_at')
             ->orderByPivot('updated_at', 'desc')
             ->paginate(config('app.paginate_per_page'));
 
-        return MissionResource::collection($missions);
+        return MissionResource::collection($claimableMissions);
     }
 }

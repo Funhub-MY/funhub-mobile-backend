@@ -3,20 +3,18 @@
 namespace Tests\Unit;
 
 use App\Models\Article;
-use App\Models\Comment;
 use App\Models\Mission;
 use App\Models\Reward;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\RewardComponent;
-use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();
-    Sanctum::actingAs($this->user,['*']);
+    Sanctum::actingAs($this->user, ['*']);
 
     // ensure rewards and reward components are created
     $reward = Reward::create([
@@ -54,12 +52,11 @@ it('can create a mission', function () {
     $mission = Mission::factory()->create([
         'name' => 'Comment on 10 articles',
         'description' => 'Comment on 10 articles',
-        'event' => 'comment_created',
-        'value' => 10,
+        'events' => json_encode(['comment_created']),
+        'values' => json_encode(['comment_created' => 10]),
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
-        'enabled' => 1,
         'status' => 1,
         'user_id' => $this->user->id
     ]);
@@ -76,12 +73,12 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
     $mission = Mission::factory()->create([
         'name' => 'Comment on 10 articles',
         'description' => 'Comment on 10 articles',
-        'event' => 'comment_created',
-        'value' => 10,
+        'events' => json_encode(['comment_created']),
+        'values' => json_encode(['comment_created' => 10]),
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
-        'enabled' => 1,
+        'frequency' => 'one-off',
         'status' => 1,
         'user_id' => $this->user->id
     ]);
@@ -92,15 +89,14 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
             'type' => 'article',
             'body' => 'test comment',
             'parent_id' => null
-        ]); 
+        ]);
     }
 
-    // check user mission process current_value
+    // check user mission process current_values
     $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
         ->first();
 
-
-    expect((int) $userMission->pivot->current_value)->toBe(10);
+    expect(json_decode($userMission->pivot->current_values, true)['comment_created'])->toBe(10);
 
     // expect pivot is_completed is false
     expect($userMission->pivot->is_completed)->toBe(0);
@@ -121,7 +117,7 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
 
     // check if user have reward component credited
     $response = $this->getJson('/api/v1/points/my_balance/all');
-        expect($response->status())->toBe(200);
+    expect($response->status())->toBe(200);
 
     // expect response json have point_components with id $component->id
     expect($response->json('point_components.*.id'))
@@ -140,18 +136,18 @@ it('User can get missions, completed missions, participating missions and missio
     $mission = Mission::factory()->create([
         'name' => 'Comment on 10 articles',
         'description' => 'Comment on 10 articles',
-        'event' => 'comment_created',
-        'value' => 10,
+        'events' => json_encode(['comment_created']),
+        'values' => json_encode(['comment_created' => 10]),
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
-        'enabled' => 1,
+        'frequency' => 'one-off',
         'status' => 1,
         'user_id' => $this->user->id
     ]);
 
     $response = $this->getJson('/api/v1/missions');
-        expect($response->status())->toBe(200);
+    expect($response->status())->toBe(200);
 
     // expect response json have missions with id $mission->id
     expect($response->json('data.*.id'))
@@ -164,10 +160,10 @@ it('User can get missions, completed missions, participating missions and missio
         'type' => 'article',
         'body' => 'test comment',
         'parent_id' => null
-    ]); 
+    ]);
 
     $response = $this->getJson('/api/v1/missions');
-        expect($response->status())->toBe(200);
+    expect($response->status())->toBe(200);
 
     // expect response json have missions with id $mission->id and participating = true
     expect($response->json('data.*.id'))
@@ -180,18 +176,18 @@ it('User can get missions, completed missions, participating missions and missio
             'type' => 'article',
             'body' => 'test comment',
             'parent_id' => null
-        ]); 
+        ]);
     }
 
     $response = $this->getJson('/api/v1/missions');
-        expect($response->status())->toBe(200);
-        
-    // expect response json to have is_participating true, andd current_value = 10
+    expect($response->status())->toBe(200);
+
+    // expect response json to have is_participating true, and current_values contains comment_created = 10
     expect($response->json('data.*.is_participating'))
         ->toContain(true);
 
-    expect($response->json('data.*.current_value'))
-        ->toContain(10);
+    expect(json_decode($response->json('data.*.current_values')[0], true)['comment_created'])
+        ->toBe(10);
 
     // claim and query claimed_only
     $response = $this->postJson('/api/v1/missions/complete', ['mission_id' => $mission->id]);
@@ -204,7 +200,7 @@ it('User can get missions, completed missions, participating missions and missio
 
     // claimed_only=0, mission should not exists
     $response = $this->getJson('/api/v1/missions');
-        expect($response->status())->toBe(200);
+    expect($response->status())->toBe(200);
 
     expect($response->json('data.*.id'))
         ->not->toContain($mission->id);
@@ -217,12 +213,12 @@ it('User can get latest claimable missions', function () {
     $mission = Mission::factory()->create([
         'name' => 'Comment on 1 article',
         'description' => 'Comment on 1 article',
-        'event' => 'comment_created',
-        'value' => 1,
+        'events' => json_encode(['comment_created']),
+        'values' => json_encode(['comment_created' => 1]),
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
-        'enabled' => 1,
+        'frequency' => 'one-off',
         'status' => 1,
         'user_id' => $this->user->id
     ]);
@@ -234,14 +230,13 @@ it('User can get latest claimable missions', function () {
         'type' => 'article',
         'body' => 'test comment',
         'parent_id' => null
-    ]); 
+    ]);
     expect($response->status())->toBe(200);
 
     $response = $this->getJson('/api/v1/missions/claimables');
-        expect($response->status())->toBe(200);
+    expect($response->status())->toBe(200);
 
     // expect response json have missions with id $mission->id
     expect($response->json('data.*.id'))
         ->toContain($mission->id);
 });
-

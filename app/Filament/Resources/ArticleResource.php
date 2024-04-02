@@ -478,7 +478,8 @@ class ArticleResource extends Resource
                     $records->each(function (Article $record) {
                         $record->update(['status' => 2]);
                     });
-                })->requiresConfirmation()
+                })->requiresConfirmation(),
+
             ]);
     }
 
