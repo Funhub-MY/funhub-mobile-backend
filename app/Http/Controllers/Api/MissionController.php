@@ -245,9 +245,8 @@ class MissionController extends Controller
     {
         $user = auth()->user();
 
-        // Updated query to use JSON_CONTAINS for checking current_values
         $claimableMissions = $user->missionsParticipating()
-            ->whereRaw('JSON_CONTAINS(current_values, \'true\', "$")')
+            ->whereRaw('JSON_EXTRACT(missions_users.current_values, "$.*") >= JSON_EXTRACT(missions.values, "$.*")')
             ->whereNull('missions_users.completed_at')
             ->orderByPivot('updated_at', 'desc')
             ->paginate(config('app.paginate_per_page'));

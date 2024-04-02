@@ -18,8 +18,11 @@ class MissionResource extends JsonResource
     {
         $isParticipating = $this->participants->contains(auth()->user()->id);
         $myParticipation = $this->participants->first();
+
+        $currentValues = [];
         if ($myParticipation) {
             $myParticipation = $myParticipation->pivot;
+            $currentValues = json_decode($myParticipation->current_values, true);
         }
 
         return [
@@ -28,9 +31,8 @@ class MissionResource extends JsonResource
             'is_participating' => $isParticipating, // is user participating in this mission
             'description' => $this->description, // mission description
             'events' => json_decode($this->events), // events that caused this mission
-            'current_values' => ($myParticipation) ? json_decode($myParticipation->current_values, true) : [], // current values for each event
+            'current_values' => $currentValues, // current values for each event
             'values' => json_decode($this->values, true), // target values for each event
-            'frequency' => $this->frequency, // frequency of the mission
             'reward' => $this->missionable, // reward or reward component
             'reward_quantity' => $this->reward_quantity, // quantity of reward
             'claimed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,

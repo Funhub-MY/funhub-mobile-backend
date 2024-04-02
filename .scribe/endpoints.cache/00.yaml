@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: dolorum
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: dolorum
+      share_code: qui
     fileParameters: []
     responses:
       -
@@ -56,7 +56,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1389,
+                      "line": 1406,
                       "function": "abort"
                   },
                   {
@@ -103,7 +103,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 35,
+                      "line": 40,
                       "function": "Illuminate\\Pipeline\\{closure}",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
@@ -535,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EPZ6acaV48bgevh5kfd36D1'
+      - 'Bearer 5deVg3P68vfkEZacb61hDa4'
     controller: null
     method: null
     route: null
@@ -566,13 +566,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: vero
+        example: animi
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: vero
+      username: animi
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z543cgfa8Da6kd61PEvehVb'
+      - 'Bearer 15E6Zk6eg4cfv8P3DdabaVh'
     controller: null
     method: null
     route: null
@@ -621,13 +621,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: omnis
+        example: nulla
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: omnis
+      share_code: nulla
     fileParameters: []
     responses:
       -
@@ -648,7 +648,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 693,
+                      "line": 699,
                       "function": "abort"
                   },
                   {
@@ -695,7 +695,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 35,
+                      "line": 40,
                       "function": "Illuminate\\Pipeline\\{closure}",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
@@ -1127,7 +1127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dvef841gEb3P6ac5kVhaZ6d'
+      - 'Bearer aadeV5Pck1E8646bfvg3hDZ'
     controller: null
     method: null
     route: null

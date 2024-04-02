@@ -57,6 +57,7 @@ class MerchantOfferController extends Controller
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam available_only boolean optional Filter by Available Only. Example: true
+     * @bodyParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true
      * @bodyParam flash_only boolean optional Filter by Flash Deals Only. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -99,6 +100,10 @@ class MerchantOfferController extends Controller
 
         if ($request->has('available_only')) {
             $query->available();
+        }
+
+        if ($request->has('coming_soon_only')) {
+            $query->where('available_at', '>', now());
         }
 
         if ($request->has('flash_only') && $request->flash_only == 1) {

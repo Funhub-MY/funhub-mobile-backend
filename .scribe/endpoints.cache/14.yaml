@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - voluptatem
+          - optio
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -100,7 +100,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - voluptatem
+        - optio
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bZ56c4aa6k1Vdvh3PEDfg8e'
+      - 'Bearer 5h4Vg6Zav6dec1ab3EfD8Pk'
     controller: null
     method: null
     route: null
@@ -191,7 +191,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k5eP3VDd4cgv68a6bf1hZEa'
+      - 'Bearer bk65d6VDv8f1ZEa43cPhega'
     controller: null
     method: null
     route: null

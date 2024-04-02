@@ -47,9 +47,9 @@ endpoints:
             "name": "Complete 10 missions",
             "is_participating": true,
             "description": "Complete 10 missions to earn a reward",
-            "event": "mission_completed",
-            "current_value": 5,
-            "value": 10,
+            "events": ["mission_completed"],
+            "current_values": {"mission_completed": 5},
+            "values": {"mission_completed": 10},
             "reward": {
                 "id": 1,
                 "name": "Egg",
@@ -78,7 +78,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g8fP56dhe4aEab3vk6ZDV1c'
+      - 'Bearer hf4v356daaeDEc1kVPg6b8Z'
     controller: null
     method: null
     route: null
@@ -138,7 +138,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5h86cVabf1gkae4E3ZDvP6d'
+      - 'Bearer gVaDdP3beh18k5f46c6ZvEa'
     controller: null
     method: null
     route: null
@@ -187,7 +187,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cvD3kfaV8hbZE4g1P6e65da'
+      - 'Bearer 8e1DbkVaZchgEd3P65va46f'
     controller: null
     method: null
     route: null
