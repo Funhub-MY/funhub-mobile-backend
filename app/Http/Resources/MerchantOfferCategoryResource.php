@@ -54,6 +54,7 @@ class MerchantOfferCategoryResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'no_of_offers' => ($this->merchant_offers_count) ? $this->merchant_offers_count : 0,
+            'no_of_available_offers' => ($this->available_offers_count) ? $this->available_offers_count : 0,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
             'is_active' => $this->is_active,

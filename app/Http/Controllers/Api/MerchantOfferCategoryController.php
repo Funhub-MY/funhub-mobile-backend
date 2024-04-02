@@ -49,7 +49,7 @@ class MerchantOfferCategoryController extends Controller
 
         // Paginate with default or specified limit
         $limit = $request->input('limit', config('app.paginate_per_page'));
-        $query->withCount('merchantOffers'); // Count the number of offers in each category (relationship`offers` in MerchantOfferCategory model)
+        $query->withCount(['merchantOffers', 'availableOffers']);
         $offerCategories = $query->paginate($limit);
 
         return MerchantOfferCategoryResource::collection($offerCategories);
