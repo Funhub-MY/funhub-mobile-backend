@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: qui
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: qui
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -535,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5deVg3P68vfkEZacb61hDa4'
+      - 'Bearer ch53Z6a68EDfbkdveV4ga1P'
     controller: null
     method: null
     route: null
@@ -566,13 +566,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: animi
+        example: id
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: animi
+      username: id
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 15E6Zk6eg4cfv8P3DdabaVh'
+      - 'Bearer Ega31PhZvae6V45f86bcDdk'
     controller: null
     method: null
     route: null
@@ -621,13 +621,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: nulla
+        example: accusantium
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: nulla
+      share_code: accusantium
     fileParameters: []
     responses:
       -
@@ -1127,7 +1127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aadeV5Pck1E8646bfvg3hDZ'
+      - 'Bearer chkE6be8vZagV5364PfDad1'
     controller: null
     method: null
     route: null

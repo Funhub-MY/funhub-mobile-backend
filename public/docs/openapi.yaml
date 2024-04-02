@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 9
+                  example: 19
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: incidunt
+                  example: cum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: eum
+                  example: ducimus
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ab
+                    - quae
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 11
               required:
                 - keyword_id
     parameters:
@@ -582,7 +582,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ut
+                    - distinctio
                   items:
                     type: string
                 category_ids:
@@ -991,6 +991,54 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+  /api/v1/article_tags/all:
+    get:
+      summary: 'Get all tags available'
+      operationId: getAllTagsAvailable
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tags: []
+                properties:
+                  tags:
+                    type: array
+                    example: []
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
   '/api/v1/article_tags/{article_id}':
     get:
       summary: 'Get Tags by article id'
@@ -1220,7 +1268,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: consequuntur
+        example: consectetur
         required: true
         schema:
           type: string
@@ -1301,11 +1349,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: distinctio
+                  example: sint
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: id
+                  example: dolorum
               required:
                 - comment_id
                 - reason
@@ -1587,7 +1635,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: et
+        example: soluta
         required: true
         schema:
           type: string
@@ -4508,7 +4556,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: gturner@example.org
+                  example: rluettgen@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5443,7 +5491,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: qui
+                  example: est
               required:
                 - share_code
   /api/v1/public_user:
@@ -5477,7 +5525,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: animi
+                  example: id
               required:
                 - username
   /api/v1/public_offer:
@@ -6357,7 +6405,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: nulla
+                  example: accusantium
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7036,7 +7084,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - optio
+                    - animi
                   items:
                     type: string
                 name:
@@ -7217,13 +7265,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - voluptatem
+            - asperiores
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - voluptatem
+              - asperiores
             items:
               type: string
         -
@@ -7389,7 +7437,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - quidem
+                    - magni
                   items:
                     type: string
                 city:
@@ -7655,7 +7703,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: dolore
+        example: consectetur
         required: true
         schema:
           type: string
@@ -8757,7 +8805,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 16
+                  example: 8
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8803,7 +8851,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 10
+                  example: 9
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -8849,7 +8897,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 2
+                  example: 12
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -8883,7 +8931,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 12
+                  example: 18
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -8944,15 +8992,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: totam
+                  example: eum
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: perspiciatis
+                  example: consequuntur
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: rerum
+                  example: quam
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9069,7 +9117,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: laborum
+                  example: aut
               required:
                 - reason
   /api/v1/users_by_id:
@@ -9103,7 +9151,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: ut
+                  example: accusamus
               required:
                 - user_ids
     parameters:
@@ -9979,7 +10027,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female
