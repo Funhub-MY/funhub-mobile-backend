@@ -29,12 +29,6 @@ class Commented extends Notification implements ShouldQueue
     public function __construct(Comment $comment)
     {
         $this->comment = $comment;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $comment->commentable->user->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**

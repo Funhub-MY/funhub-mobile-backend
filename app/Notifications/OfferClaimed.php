@@ -28,12 +28,6 @@ class OfferClaimed extends Notification
         $this->user = $user;
         $this->purchaseMethod = $purchaseMethod;
         $this->price = $price;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $user->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**

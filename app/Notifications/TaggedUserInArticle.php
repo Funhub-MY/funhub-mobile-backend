@@ -16,24 +16,17 @@ class TaggedUserInArticle extends Notification
 {
     use Queueable;
 
-    protected $article, $user, $taggedUser;
+    protected $article, $user;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Article $article, User $user, User $taggedUser)
+    public function __construct(Article $article, User $user)
     {
         $this->article = $article;
         $this->user = $user;
-        $this->taggedUser = $taggedUser;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $taggedUser->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**

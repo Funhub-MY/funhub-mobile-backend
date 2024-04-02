@@ -171,7 +171,8 @@ class CommentController extends Controller
             // notifiy tagged user
             $comment->taggedUsers->each(function ($taggedUser) use ($comment) {
                 try {
-                    $taggedUser->notify(new TaggedUserInComment($comment, $comment->user, $taggedUser));
+                    $locale = $taggedUser->last_lang ?? config('app.locale');
+                    $taggedUser->notify((new TaggedUserInComment($comment, $comment->user))->locale($locale));
                 } catch (\Exception $e) {
                     Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                 }
@@ -181,13 +182,15 @@ class CommentController extends Controller
         event(new \App\Events\CommentCreated($comment)); // fires event
 
         if ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+            $locale = $comment->parent->user->last_lang ?? config('app.locale');
             // if comment has parent and is not self, send notification to parent comment's user
-            $comment->parent->user->notify(new \App\Notifications\CommentReplied($comment)); // send notification
+            $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment))->locale($locale)); // send notification
         }
 
         // if commentable has user and is not self, send notification
         if ($comment->commentable->user && $comment->commentable->user->id != auth()->id()) {
-            $comment->commentable->user->notify(new \App\Notifications\Commented($comment)); // send notification
+            $locale = $comment->commentable->user->last_lang ?? config('app.locale');
+            $comment->commentable->user->notify((new \App\Notifications\Commented($comment))->locale($locale)); // send notification
         }
 
         return response()->json([
@@ -281,7 +284,7 @@ class CommentController extends Controller
 
                 $comment->taggedUsers->whereIn('id', $newTaggedUsers)->each(function ($taggedUser) use ($comment) {
                     try {
-                        $taggedUser->notify(new TaggedUserInComment($comment, $comment->user, $taggedUser));
+                        $taggedUser->notify(new TaggedUserInComment($comment, $comment->user));
                     } catch (\Exception $e) {
                         Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                     }
@@ -435,8 +438,9 @@ class CommentController extends Controller
             event(new \App\Events\CommentLiked($comment, true)); // fires event
 
             if ($comment && $comment->user && $comment->user->id != auth()->id()) {
+                $locale = $comment->user->last_lang ?? config('app.locale');
                 // send notification to user
-                $comment->user->notify(new \App\Notifications\CommentLiked($comment, auth()->user()));
+                $comment->user->notify((new \App\Notifications\CommentLiked($comment, auth()->user()))->locale($locale));
             }
 
             return response()->json(['message' => __('messages.success.comment_controller.Comment_liked')]);

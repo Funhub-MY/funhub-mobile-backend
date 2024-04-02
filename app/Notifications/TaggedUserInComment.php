@@ -15,23 +15,17 @@ class TaggedUserInComment extends Notification
 {
     use Queueable;
 
-    protected $comment, $user, $taggedUser;
+    protected $comment, $user;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment, User $user, User $taggedUser)
+    public function __construct(Comment $comment, User $user)
     {
         $this->comment = $comment;
         $this->user = $user;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $taggedUser->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
 

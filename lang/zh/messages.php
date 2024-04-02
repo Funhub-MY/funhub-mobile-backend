@@ -240,7 +240,7 @@ return [
             'NewSupportRequestMessage' => ':requestor 您的申诉有一条新消息',
             'NewSupportRequestRaised' => '',
             'OfferClaimed' => [
-                'points' => '已使用饭盒x :price兑换“:offerName”优惠券',
+                'points' => '已使用饭盒x:price兑换“:offerName”优惠券',
                 'fiat' => '已使用现金RM:price兑换“:offerName”优惠券'
             ],
             'OfferRedeemed' => '恭喜你成功兑换“:offerName”优惠券',
@@ -263,7 +263,7 @@ return [
             'NewSupportRequestMessage' => '您的申诉有一条新消息，快去看看吧',
             'NewSupportRequestRaised' => '',
             'OfferClaimed' => [
-                'points' => '已使用饭盒x :price兑换“:offerName”优惠券',
+                'points' => '已使用饭盒x:price兑换“:offerName”优惠券',
                 'fiat' => '已使用现金RM:price兑换“:offerName”优惠券'
             ],
             'OfferRedeemed' => '恭喜你成功兑换“:offerName”优惠券',

@@ -188,7 +188,8 @@ class InteractionController extends Controller
 
         // notify user of interactable is article and is like
         if ($request->interactable == Article::class && $request->type == Interaction::TYPE_LIKE && $interaction->interactable->user->id != auth()->id()) {
-            $interaction->interactable->user->notify(new ArticleInteracted($interaction));
+            $locale = $interaction->interactable->user->last_lang ?? config('app.locale');
+            $interaction->interactable->user->notify((new ArticleInteracted($interaction))->locale($locale));
         }
 
         // if like, fire view as well

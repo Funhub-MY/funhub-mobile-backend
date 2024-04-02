@@ -22,7 +22,8 @@ class SupportRequestMessageObserver
         // if admin created message, notify requestor via FCM 
         if ($supportRequestMessage->user->hasRole('super_admin')) { 
             try {
-                $supportRequestMessage->request->requestor->notify(new NewSupportRequestMessage($supportRequestMessage));
+                $locale = $supportRequestMessage->request->requestor->last_lang ?? config('app.locale');
+                $supportRequestMessage->request->requestor->notify((new NewSupportRequestMessage($supportRequestMessage))->locale($locale));
             } catch (\Exception $e) {
                 Log::error('Error sending notification: ' . $e->getMessage());
             }

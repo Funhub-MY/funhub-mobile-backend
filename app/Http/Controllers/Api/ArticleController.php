@@ -764,7 +764,8 @@ class ArticleController extends Controller
             // notifiy tagged user
             $taggedUsers->each(function ($taggedUser) use ($article) {
                 try {
-                    $taggedUser->notify(new TaggedUserInArticle($article, $article->user, $taggedUser));
+                    $locale = $taggedUser->last_lang ?? config('app.locale');
+                    $taggedUser->notify((new TaggedUserInArticle($article, $article->user))->locale($locale));
                 } catch (\Exception $e) {
                     Log::error('Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
                 }

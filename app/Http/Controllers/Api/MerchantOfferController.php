@@ -644,7 +644,8 @@ class MerchantOfferController extends Controller
 
         // notify
         try {
-            auth()->user()->notify(new OfferRedeemed($offer, auth()->user()));
+            $locale = auth()->user()->last_lang ?? config('app.locale');
+            auth()->user()->notify((new OfferRedeemed($offer, auth()->user()))->locale($locale));
         } catch (\Exception $e) {
             Log::error('Error sending offer redeemed notification', [$e->getMessage()]);
         }

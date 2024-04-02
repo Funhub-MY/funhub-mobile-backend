@@ -27,12 +27,6 @@ class RedemptionExpirationNotification extends Notification
         $this->offer = $offer;
         $this->user = $user;
         $this->daysLeft = $daysLeft;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $user->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**
@@ -62,9 +56,10 @@ class RedemptionExpirationNotification extends Notification
                 'claim_user_id' => (string) $this->user->id,
                 'action' => 'offer_redeem_expiration'
             ])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('优惠券即将逾期')
-                ->setBody($this->getMessage())
+            ->setNotification(
+                \NotificationChannels\Fcm\Resources\Notification::create()
+                    ->setTitle('优惠券即将逾期')
+                    ->setBody($this->getMessage())
             );
     }
 

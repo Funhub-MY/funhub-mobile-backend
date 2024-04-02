@@ -27,12 +27,6 @@ class OfferRedeemed extends Notification
     {
         $this->offer = $offer;
         $this->user = $user;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $user->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**
@@ -59,9 +53,10 @@ class OfferRedeemed extends Notification
                 'claim_user_id' => (string) $this->user->id,
                 'action' => 'offer_redeemed'
             ])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('兑换成功')
-                ->setBody($this->getMessage())
+            ->setNotification(
+                \NotificationChannels\Fcm\Resources\Notification::create()
+                    ->setTitle('兑换成功')
+                    ->setBody($this->getMessage())
             );
     }
 

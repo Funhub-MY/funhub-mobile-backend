@@ -237,8 +237,8 @@ return [
             'NewSupportRequestMessage' => ':requestor you have an update in your appeal',
             'NewSupportRequestRaised' => '',
             'OfferClaimed' => [
-                'points' => 'Used Funbox x :price to redeem ":offerName" voucher.',
-                'fiat' => 'Used Cash RM :price to redeem ":offerName" voucher.'
+                'points' => 'Used Funbox x:price to redeem ":offerName" voucher.',
+                'fiat' => 'Used Cash RM:price to redeem ":offerName" voucher.'
             ],
             'OfferRedeemed' => 'Congratulations on successfully redeeming the ":offerName" coupon.',
             'PurchasedGiftCardNotification' => '',
@@ -260,8 +260,8 @@ return [
             'NewSupportRequestMessage' => 'You have an update in your appeal, go and have a look.',
             'NewSupportRequestRaised' => '',
             'OfferClaimed' => [
-                'points' => 'Used Funbox x :price to redeem ":offerName" voucher.',
-                'fiat' => 'Used Cash RM :price to redeem ":offerName" voucher.'
+                'points' => 'Used Funbox x:price to redeem ":offerName" voucher.',
+                'fiat' => 'Used Cash RM:price to redeem ":offerName" voucher.'
             ],
             'OfferRedeemed' => 'Congratulations on successfully redeeming the ":offerName" coupon.',
             'PurchasedGiftCardNotification' => '',

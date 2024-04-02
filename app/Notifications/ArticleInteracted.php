@@ -24,12 +24,6 @@ class ArticleInteracted extends Notification implements ShouldQueue
     public function __construct(Interaction $interaction)
     {
         $this->interaction = $interaction;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $interaction->interactable->user->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**

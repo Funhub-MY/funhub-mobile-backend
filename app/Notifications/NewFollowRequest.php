@@ -14,23 +14,15 @@ class NewFollowRequest extends Notification
 {
     use Queueable;
     protected $follower;
-    protected $followedUser;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(User $follower, $followedUser)
+    public function __construct(User $follower)
     {
         $this->follower = $follower;
-        $this->followedUser = $followedUser;
-
-        // Determine the locale based on the user's last_lang or use the system default
-        $locale = $followedUser->last_lang ?? config('app.locale');
-
-        // Set the locale for this notification
-        app()->setLocale($locale);
     }
 
     /**

@@ -165,7 +165,8 @@ class MissionController extends Controller
         ]);
 
         try {
-            auth()->user()->notify(new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity));
+            $locale = auth()->user()->last_lang ?? config('app.locale');
+            auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
         } catch (\Exception $e) {
             Log::error('Mission Completed Notification Error', [
                 'mission_id' => $mission->id,
