@@ -129,6 +129,10 @@ class MissionResource extends Resource
                                 ->required()
                                 ->rules('required', 'numeric', 'min:1'),
 
+                            // reward limit
+                            TextInput::make('reward_limit')
+                                ->label('Max Reward Limit')
+                                ->helperText('How many reward to be given to user, once hit limit, mission will no longer reward user. Leave empty if no limit set.'),
 
                             // frequency select input
                             Select::make('frequency')
@@ -169,12 +173,15 @@ class MissionResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('reward_quantity')
-                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('reward_limit')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->searchable()
                     ->sortable(),
