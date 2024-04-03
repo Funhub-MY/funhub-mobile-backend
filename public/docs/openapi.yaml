@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 8
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: ex
+                  example: quibusdam
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: voluptatem
+                  example: deserunt
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - quasi
+                    - officiis
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 5
+                  example: 19
               required:
                 - keyword_id
     parameters:
@@ -582,7 +582,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - fugiat
+                    - necessitatibus
                   items:
                     type: string
                 category_ids:
@@ -1268,7 +1268,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: voluptatem
+        example: ipsa
         required: true
         schema:
           type: string
@@ -1349,11 +1349,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: nisi
+                  example: corporis
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: voluptas
               required:
                 - comment_id
                 - reason
@@ -1635,7 +1635,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: quidem
+        example: itaque
         required: true
         schema:
           type: string
@@ -4556,7 +4556,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: moriah.waelchi@example.org
+                  example: anissa.schaefer@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5491,7 +5491,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: quia
+                  example: nemo
               required:
                 - share_code
   /api/v1/public_user:
@@ -5525,7 +5525,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: optio
+                  example: quia
               required:
                 - username
   /api/v1/public_offer:
@@ -5555,7 +5555,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 699
+                      line: 704
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5977,7 +5977,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 699
+                        line: 704
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6405,7 +6405,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: illo
+                  example: sit
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7084,7 +7084,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatem
+                    - vel
                   items:
                     type: string
                 name:
@@ -7265,13 +7265,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - minus
+            - maiores
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - minus
+              - maiores
             items:
               type: string
         -
@@ -7447,7 +7447,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - facilis
+                    - recusandae
                   items:
                     type: string
                 city:
@@ -7477,6 +7477,10 @@ paths:
                 coming_soon_only:
                   type: boolean
                   description: 'optional Filter by Coming Soon Only.'
+                  example: true
+                except_expired:
+                  type: boolean
+                  description: 'optional Get all coming soon or available only but hide expired offers.'
                   example: true
                 flash_only:
                   type: boolean
@@ -7713,7 +7717,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: minus
+        example: nihil
         required: true
         schema:
           type: string
@@ -8835,7 +8839,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 12
+                  example: 8
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8881,7 +8885,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 6
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -8927,7 +8931,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 13
+                  example: 8
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -8961,7 +8965,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 12
+                  example: 11
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -9022,15 +9026,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: fuga
+                  example: vero
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: temporibus
+                  example: recusandae
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptates
+                  example: id
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9147,7 +9151,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: molestias
+                  example: praesentium
               required:
                 - reason
   /api/v1/users_by_id:
@@ -9181,7 +9185,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quidem
+                  example: reiciendis
               required:
                 - user_ids
     parameters:
@@ -10057,7 +10061,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   enum:
                     - male
                     - female
