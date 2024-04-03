@@ -38,7 +38,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - asperiores
+          - ut
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -112,7 +112,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - asperiores
+        - ut
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -120,8 +120,18 @@ endpoints:
       available_only: true
       flash_only: true
       limit: 10
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      coming_soon_only:
+        name: coming_soon_only
+        description: 'optional Filter by Coming Soon Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      coming_soon_only: true
     fileParameters: []
     responses:
       -
@@ -137,7 +147,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 48cd6ZhakEf6VPv5gbaeD13'
+      - 'Bearer 6Pa85bve416DfdEkVgZah3c'
     controller: null
     method: null
     route: null
@@ -244,7 +254,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kg3PaZv15bVe4c68daDE6hf'
+      - 'Bearer ZVhv13Pk58Dbd6agea6fEc4'
     controller: null
     method: null
     route: null
@@ -288,7 +298,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - magni
+          - inventore
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -425,7 +435,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - magni
+        - inventore
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -459,7 +469,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68EvfDVkcag14a3hZe65bdP'
+      - 'Bearer cEV83Zbaf6edgP4h1vDk6a5'
     controller: null
     method: null
     route: null
@@ -582,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pe8Z5VfEkhba36D6a1cgvd4'
+      - 'Bearer dv6bDa3e6cg841ZaEh5fkVP'
     controller: null
     method: null
     route: null
@@ -669,7 +679,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6V1aZED43vd6ckPehfgb58a'
+      - 'Bearer cgk38Pv54ZfVbh16e6adEaD'
     controller: null
     method: null
     route: null
@@ -731,7 +741,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ef8gVcahD4366daZ1b5vPEk'
+      - 'Bearer gfPhZv45dD1a68EeakcVb63'
     controller: null
     method: null
     route: null
@@ -784,7 +794,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c63ZPae51db468vVkDhEafg'
+      - 'Bearer abEgc3fVvk65P8a4hZD61de'
     controller: null
     method: null
     route: null
@@ -811,13 +821,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: consectetur
+        example: cumque
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: consectetur
+      offer_id: cumque
     queryParameters:
       offer_id:
         name: offer_id
@@ -847,7 +857,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Za16Vad486Dbkg3EePvc5fh'
+      - 'Bearer 456aebvEPc1ZVf68daDkh3g'
     controller: null
     method: null
     route: null
@@ -890,6 +900,24 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      lat:
+        name: lat
+        description: Latitude.
+        required: false
+        example: 3.139
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      lng:
+        name: lng
+        description: Longitude.
+        required: false
+        example: 101.6869
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       id:
         name: id
         description: 'Get subcategories of a specific parent category by its ID.'
@@ -902,6 +930,8 @@ endpoints:
     cleanQueryParameters:
       is_featured: 1
       is_active: 0
+      lat: 3.139
+      lng: 101.6869
       id: 1
     bodyParameters:
       limit:
@@ -930,7 +960,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ba6fe1caE64Phk38ZV5vdDg'
+      - 'Bearer h35aebVcaD8EP664gk1vfdZ'
     controller: null
     method: null
     route: null
@@ -1049,7 +1079,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aDg66cPa1hd48bZkvEVf35e'
+      - 'Bearer Z6ka4gvbfha6e5PcV81ED3d'
     controller: null
     method: null
     route: null
@@ -1108,7 +1138,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ZaVh63Df1ad4gEev8kbc6P'
+      - 'Bearer DvP5bahE66kf8cV1eagdZ34'
     controller: null
     method: null
     route: null
@@ -1248,7 +1278,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8kDacPE64Z3vaef51V6gbhd'
+      - 'Bearer aE5bVkcd6ZPg3f86hve4aD1'
     controller: null
     method: null
     route: null

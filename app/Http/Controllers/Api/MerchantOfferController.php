@@ -730,6 +730,7 @@ class MerchantOfferController extends Controller
      * @queryParam  lng float required Filter by Lng of User (must provide lat). Example: 101.123456
      * @queryParam  radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @queryParam  available_only boolean optional Filter by Available Only. Example: true
+     * @bodyParam   coming_soon_only boolean optional Filter by Coming Soon Only. Example: true
      * @queryParam  flash_only boolean optional Filter by Flash Deals Only. Example: true
      * @queryParam  limit integer optional Per Page Limit Override. Example: 10
      *
@@ -786,6 +787,10 @@ class MerchantOfferController extends Controller
 
         if ($request->has('available_only')) {
             $query->available();
+        }
+
+        if ($request->has('coming_soon_only')) {
+            $query->where('available_at', '>', now());
         }
 
         if ($request->has('flash_only') && $request->flash_only == 1) {
