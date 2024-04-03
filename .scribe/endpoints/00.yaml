@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: nemo
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: nemo
+      share_code: ut
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fea3a6g8vE65D4Ph1kVbZdc'
+      - 'Bearer 5cZhfgDdPV638b6Eav4aek1'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: quia
+        example: nihil
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: quia
+      username: nihil
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5a8kv4abdehcfDVPg6E316'
+      - 'Bearer g8DPv5ake6Vhad413ZEf6cb'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: sit
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: sit
+      share_code: et
     fileParameters: []
     responses:
       -
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4baDkPdE53aVv66fZ1g8ech'
+      - 'Bearer 4VgZa6dc5E8kehPbf613Dva'
     controller: null
     method: null
     route: null
