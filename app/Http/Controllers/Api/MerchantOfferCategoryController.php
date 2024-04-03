@@ -62,7 +62,7 @@ class MerchantOfferCategoryController extends Controller
 
             $query->withCount(['merchantOffers as available_nearby_offers_count' => function ($query) use ($offers) {
                 $query->available()
-                    ->whereIn('id', $offers->pluck('id'));
+                    ->whereIn('merchant_offers.id', $offers->pluck('id'));
             }]);
         }
 
