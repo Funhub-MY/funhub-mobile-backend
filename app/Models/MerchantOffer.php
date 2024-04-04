@@ -109,6 +109,11 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
         return $this->status === self::STATUS_PUBLISHED;
     }
 
+    public function campaign()
+    {
+        return $this->belongsTo(MerchantOfferCampaign::class, 'merchant_offer_campaign_id');
+    }
+
     // public function merchant()
     // {
     //     // merchant inverted hasOneThrough user

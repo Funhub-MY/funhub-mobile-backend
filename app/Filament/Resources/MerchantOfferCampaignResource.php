@@ -3,47 +3,39 @@
 namespace App\Filament\Resources;
 
 use Closure;
-use Filament\Forms;
-use App\Models\User;
-use Filament\Tables;
+use App\Filament\Resources\MerchantOfferCampaignResource\Pages;
+use App\Filament\Resources\MerchantOfferCampaignResource\RelationManagers;
+use App\Models\MerchantOfferCampaign;
+use App\Models\MerchantOfferCategory;
 use App\Models\Store;
-use App\Models\Merchant;
-use Filament\Resources\Form;
-use App\Models\MerchantOffer;
-use Filament\Resources\Table;
-use App\Models\MerchantCategory;
-use Filament\Resources\Resource;
-use Illuminate\Support\Collection;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Filters\Filter;
-use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Fieldset;
-use Filament\Notifications\Notification;
+use Filament\Resources\Form;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Forms\Components\DatePicker;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\RestoreAction;
-use Filament\Tables\Actions\ReplicateAction;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use App\Filament\Resources\MerchantOfferResource\Pages;
-use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
-use App\Filament\Resources\MerchantOfferResource\RelationManagers;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 
-class MerchantOfferResource extends Resource
+class MerchantOfferCampaignResource extends Resource
 {
-    protected static ?string $model = MerchantOffer::class;
+    protected static ?string $model = MerchantOfferCampaign::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cash';
 
-    protected static ?string $modelLabel = 'Merchant Offer';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+
+    protected static ?string $modelLabel = 'Merchant Offer Campaigns';
 
     protected static ?string $navigationGroup = 'Merchant';
-
-    protected static ?int $navigationSort = 1;
 
     public static function getEloquentQuery(): Builder
     {
@@ -67,7 +59,7 @@ class MerchantOfferResource extends Resource
                                     ->label('Offer Images')
                                     ->multiple()
                                     ->required()
-                                    ->collection(MerchantOffer::MEDIA_COLLECTION_NAME)
+                                    ->collection(MerchantOfferCampaign::MEDIA_COLLECTION_NAME)
                                     ->columnSpan('full')
                                     ->customProperties(['is_cover' => false])
                                     // disk is s3_public
@@ -84,7 +76,7 @@ class MerchantOfferResource extends Resource
                                     ->label('Horizontal Banner (In Articles)')
                                     ->maxFiles(1)
                                     ->required()
-                                    ->collection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER)
+                                    ->collection(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER)
                                     ->columnSpan('full')
                                     ->customProperties(['is_cover' => false])
                                     // disk is s3_public
@@ -100,25 +92,21 @@ class MerchantOfferResource extends Resource
                                     ->required(),
 
                                 Forms\Components\TextInput::make('sku')
-                                    ->label('SKU')
+                                    ->label('Campaign Code (SKU)')
+                                    ->helperText('Offers created will suffix number. eg. ABC122 will be ABC122-1, ABC122-2, etc.')
                                     ->required(),
-
-
-                                Forms\Components\DateTimePicker::make('available_at')
-                                    ->required()
-                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
-                                Forms\Components\DateTimePicker::make('available_until')
-                                    ->required()
-                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
-                                Forms\Components\TextInput::make('expiry_days')
-                                    ->label('Expire in (Days) After Purchase')
-                                    ->helperText('Leave blank if no expiry. Available until user redeemed it.')
-                                    ->numeric(),
 
                                 Forms\Components\Toggle::make('flash_deal')
                                     ->label('Flash Deal')
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
+
+                                Forms\Components\TextInput::make('expiry_days')
+                                    ->label('Expire in (Days) After Purchase')
+                                    ->columnSpan(1)
+                                    ->helperText('Leave blank if no expiry. Available until user redeemed it. Will affect all vouchers generated under this campaign.')
+                                    ->numeric(),
+
                                 Forms\Components\Textarea::make('description')
                                     ->rows(5)
                                     ->cols(10)
@@ -127,14 +115,17 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\Textarea::make('fine_print')
                                     ->rows(5)
                                     ->cols(10)
+                                    ->required()
                                     ->columnSpan('full'),
                                 Forms\Components\Textarea::make('redemption_policy')
                                     ->rows(5)
                                     ->cols(10)
+                                    ->required()
                                     ->columnSpan('full'),
                                 Forms\Components\Textarea::make('cancellation_policy')
                                     ->rows(5)
                                     ->cols(10)
+                                    ->required()
                                     ->columnSpan('full'),
                             ])->columns(2),
 
@@ -211,28 +202,59 @@ class MerchantOfferResource extends Resource
                                                 ->thousandsSeparator(','),
                                             ),
                                 ]),
-                            ])->columns(2)
+                            ])->columns(2),
+
+
+                            Forms\Components\Group::make()
+                            ->schema([
+                                Forms\Components\Repeater::make('Schedules')
+                                    ->relationship('schedules')
+                                    ->schema([
+                                        Group::make()
+                                            ->schema([
+                                                Forms\Components\DateTimePicker::make('available_at')
+                                                    ->required()
+                                                    ->columnSpan(1)
+                                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
+                                                Forms\Components\DateTimePicker::make('available_until')
+                                                    ->required()
+                                                    ->columnSpan(1)
+                                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
+                                            ])
+                                            ->columns(2),
+                                        Group::make()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('expiry_days')
+                                                    ->label('Expire in (Days) After Purchase')
+                                                    ->columnSpan(1)
+                                                    ->helperText('If filled, vouchers specific to this schedule will expired in days set above.')
+                                                    ->numeric(),
+                                                Forms\Components\TextInput::make('quantity')
+                                                    ->label('Available Quantity')
+                                                    ->required()
+                                                    ->columnSpan(1)
+                                                    ->numeric()
+                                                    ->disabledOn('edit')
+                                                    // ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
+                                                    // ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
+                                                    ->minValue(1),
+
+                                                Hidden::make('user_id')
+                                                    ->default(fn () => auth()->id()),
+                                            ])->columns(2)
+                                    ])
+                            ]),
                     ])->columnSpan(['lg' => 2]),
+
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Stock')
-                            ->schema([
-                                Forms\Components\TextInput::make('quantity')
-                                    ->label('Available Quantity')
-                                    ->required()
-                                    ->numeric()
-                                    ->disabledOn('edit')
-                                    // ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
-                                    // ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
-                                    ->minValue(1),
-                            ])->columns(1),
                         Forms\Components\Section::make('Other')
                             ->schema([
                                 Forms\Components\Select::make('status')
-                                    ->options(MerchantOffer::STATUS)->default(0),
+                                    ->options(MerchantOfferCampaign::STATUS)->default(0),
                                 DatePicker::make('publish_at')
                                     ->label('Publish Date')
-                                    ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
+                                    ->visible(fn(Closure $get) => $get('status') == MerchantOfferCampaign::STATUS_DRAFT)
                                     ->minDate(now()->addDay()->startOfDay())
                                     ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
                                 Forms\Components\Select::make('user_id')
@@ -267,6 +289,7 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\Select::make('categories')
                                     ->label('')
                                     ->preload()
+                                    ->required()
                                     ->relationship('allOfferCategories', 'name')->createOptionForm([
                                         Forms\Components\TextInput::make('name')
                                             ->required()
@@ -282,7 +305,7 @@ class MerchantOfferResource extends Resource
                                             ->required()
                                             ->placeholder('Category slug')
                                             ->helperText('Must not have space, replace space with dash. eg. food-and-beverage')
-                                            ->unique(MerchantCategory::class, 'slug', ignoreRecord: true),
+                                            ->unique(MerchantOfferCategory::class, 'slug', ignoreRecord: true),
                                         Forms\Components\RichEditor::make('description')
                                             ->placeholder('Category description'),
                                         // hidden user id is logged in user
@@ -319,25 +342,22 @@ class MerchantOfferResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
-                    ->enum(MerchantOffer::STATUS)
+                    ->enum(MerchantOfferCampaign::STATUS)
                     ->colors([
                         'secondary' => 0,
                         'success' => 1,
                     ])
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('available_at')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('available_until')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('store.name')
                     ->default('-')
                     ->label('By Store'),
-                Tables\Columns\TextColumn::make('expiry_days')
+                Tables\Columns\TextColumn::make('unit_price')
+                    ->label('Funhub')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('quantity')
+                Tables\Columns\TextColumn::make('schedules_count')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sku')
                     ->searchable()
@@ -363,116 +383,10 @@ class MerchantOfferResource extends Resource
                     }),
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Status')
-                    ->options(MerchantOffer::STATUS),
-
-                // Filter::make('user')
-                //     ->label('Merchant User')
-                //     ->form([
-                //         Select::make('user_id')
-                //             ->relationship('user', 'name')
-                //             ->searchable()
-                //             // ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
-                //             ->helperText('Users who has merchant profile created.')
-                //     ])
+                    ->options(MerchantOfferCampaign::STATUS),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                ReplicateAction::make('duplicate')
-                    ->excludeAttributes(['quantity', 'available_at', 'available_until', 'publish_at', 'status'])
-                    ->mountUsing(fn (Forms\ComponentContainer $form, MerchantOffer $record) => $form->fill([
-                    'sku' => $record->sku,
-                    'idOfModelToBeReplicate' => $record->id,
-                    ]))
-                    ->form([
-                        Hidden::make('idOfModelToBeReplicate'),
-                        Forms\Components\Select::make('status')
-                        ->options(MerchantOffer::STATUS)->default(0),
-                        Forms\Components\TextInput::make('sku')
-                            ->label('SKU')
-                            ->required(),
-                        Forms\Components\DateTimePicker::make('available_at')
-                            ->required(),
-                        Forms\Components\DateTimePicker::make('available_until')
-                            ->required(),
-                        DatePicker::make('publish_at')
-                            ->label('Publish Date')
-                            ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
-                            ->minDate(now()->addDay()->startOfDay())
-                            ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
-                        Forms\Components\TextInput::make('quantity')
-                            ->label('Available Quantity')
-                            ->required()
-                            ->numeric()
-                            ->minValue(1),
-                    ])
-                    ->beforeReplicaSaved(function (MerchantOffer $replica, array $data): void {
-                        $replica->fill($data);
-                    })
-                    ->afterReplicaSaved(function (MerchantOffer $replica, array $data): void {
-                        $idOfModelToBeReplicated = $data['idOfModelToBeReplicate'];
-
-                        // Retrieve the images associated with the original model.
-                        $originalMediaCollectionNameImgs = Media::where('model_id', $idOfModelToBeReplicated)
-                            ->where('collection_name', MerchantOffer::MEDIA_COLLECTION_NAME)
-                            ->get();
-
-                        foreach ($originalMediaCollectionNameImgs as $originalMediaCollectionNameImg) {
-                            // Copy the image to the new model.
-                            $replica
-                            ->addMediaFromDisk($originalMediaCollectionNameImg->getPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                            ->preservingOriginal()
-                            ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME,
-                            (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),
-                        );
-                        }
-
-                        $originalHorizontalBannerImgs = Media::where('model_id', $idOfModelToBeReplicated)
-                            ->where('collection_name', MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER)
-                            ->get();
-
-                        foreach ($originalHorizontalBannerImgs as $originalHorizontalBannerImg) {
-                            // Copy the image to the new model.
-                            $replica
-                            ->addMediaFromDisk($originalHorizontalBannerImg->getPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                            ->preservingOriginal()
-                            ->toMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER,
-                            (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')),);
-                        }
-
-                        redirect()->route('filament.resources.merchant-offers.edit', $replica);
-
-                    })
-                    ->icon('heroicon-s-document-duplicate'),
-                // Action::make('duplicate')
-                //     ->mountUsing(fn (Forms\ComponentContainer $form, MerchantOffer $record) => $form->fill([
-                //         'sku' => $record->flight_date,
-                //     ]))
-                //     ->action(function (MerchantOfferResource $record, array $data): void {
-                //         $record->fill($data);
-                //         $record->duplicate();
-                //     })
-                //     ->form([
-                //         Forms\Components\Select::make('status')
-                //             ->options(MerchantOffer::STATUS)->default(0),
-                //         Forms\Components\TextInput::make('sku')
-                //             ->label('SKU')
-                //             ->required(),
-                //         Forms\Components\DateTimePicker::make('available_at')
-                //             ->required(),
-                //         Forms\Components\DateTimePicker::make('available_until')
-                //             ->required(),
-                //         DatePicker::make('publish_at')
-                //             ->label('Publish Date')
-                //             ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)
-                //             ->minDate(now()->addDay()->startOfDay())
-                //             ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
-                //         Forms\Components\TextInput::make('quantity')
-                //             ->label('Available Quantity')
-                //             ->required()
-                //             ->numeric()
-                //             ->minValue(1),
-                //     ])
-                //     ->icon('heroicon-s-document-duplicate'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -482,11 +396,11 @@ class MerchantOfferResource extends Resource
                     ->icon('heroicon-o-refresh')
                     ->form([
                         Forms\Components\Select::make('status')
-                            ->options(MerchantOffer::STATUS)->default(0),
+                            ->options(MerchantOfferCampaign::STATUS)->default(0),
                     ])
                     ->action(function (Collection $records, array $data) {
                         $success = 0;
-                        $records->each(function (MerchantOffer $record) use ($data, $success) {
+                        $records->each(function (MerchantOfferCampaign $record) use ($data, $success) {
                             try {
                                 $record->update([
                                     'status' => $data['status'],
@@ -514,20 +428,16 @@ class MerchantOfferResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // RelationManagers\ClaimedByUsersRelationManager::class,
-            // RelationManagers\UsersRelationManager::class,
-            RelationManagers\VouchersRelationManager::class,
-            RelationManagers\LocationRelationManager::class,
-            AuditsRelationManager::class,
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMerchantOffers::route('/'),
-            'create' => Pages\CreateMerchantOffer::route('/create'),
-            'edit' => Pages\EditMerchantOffer::route('/{record}/edit'),
+            'index' => Pages\ListMerchantOfferCampaigns::route('/'),
+            'create' => Pages\CreateMerchantOfferCampaign::route('/create'),
+            'edit' => Pages\EditMerchantOfferCampaign::route('/{record}/edit'),
         ];
     }
 }
