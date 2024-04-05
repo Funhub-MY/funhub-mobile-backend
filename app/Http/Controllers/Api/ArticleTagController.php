@@ -54,6 +54,7 @@ class ArticleTagController extends Controller
      *
      * @group Article
      * @subgroup Article Tags
+     * @bodyParam search string optional Hashtag to Filter. Example: ta
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, created_at, updated_at
@@ -70,6 +71,11 @@ class ArticleTagController extends Controller
         $query = ArticleTag::query();
 
         $this->buildQuery($query, $request);
+
+        if ($request->has('search')) {
+            $hashtag = trim($request->search);
+            $query->where('name', 'like', '%' . $hashtag . '%');
+        }
 
         $tags = $query->paginate(config('app.paginate_per_page'));
 

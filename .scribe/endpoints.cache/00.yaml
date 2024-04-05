@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: ut
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: ut
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -535,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5cZhfgDdPV638b6Eav4aek1'
+      - 'Bearer Vcea5dfkb4vEhg316a68ZDP'
     controller: null
     method: null
     route: null
@@ -566,13 +566,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: nihil
+        example: molestiae
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: nihil
+      username: molestiae
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g8DPv5ake6Vhad413ZEf6cb'
+      - 'Bearer v6k1eDfVcg5EahZbad3P846'
     controller: null
     method: null
     route: null
@@ -1127,7 +1127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4VgZa6dc5E8kehPbf613Dva'
+      - 'Bearer ea16cZkgV5aD3bdhvfE846P'
     controller: null
     method: null
     route: null
