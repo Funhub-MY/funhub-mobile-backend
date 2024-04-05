@@ -25,6 +25,7 @@ class CreateMerchantOfferCampaign extends CreateRecord
                 'user_id' => $record->user_id,
                 'store_id' => $record->store_id ?? null,
                 'merchant_offer_campaign_id' => $record->id,
+                'schedule_id' => $schedule->id, // record schedule id so when update can update correct offer available_at and until
                 'name' => $record->name,
                 'description' => $record->description,
                 'sku' => $record->sku . '-' . $index+1,
@@ -48,13 +49,11 @@ class CreateMerchantOfferCampaign extends CreateRecord
             // Copy media from MerchantOfferCampaign to MerchantOffer
             $model = MerchantOfferCampaign::find($record->id);
             $mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
-            Log::info('Media Items: ' . count($mediaItems));
             foreach ($mediaItems as $mediaItem) {
                 $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
             }
 
             $mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
-            Log::info('Media Items: ' . count($mediaItems));
             foreach ($mediaItems as $mediaItem) {
                 $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
             }

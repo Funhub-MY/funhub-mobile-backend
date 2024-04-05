@@ -14,6 +14,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Pages\EditRecord;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Carbon;
 
 class MerchantOfferCampaignResource extends Resource
 {
@@ -106,6 +108,12 @@ class MerchantOfferCampaignResource extends Resource
                                     ->columnSpan(1)
                                     ->helperText('Leave blank if no expiry. Available until user redeemed it. Will affect all vouchers generated under this campaign.')
                                     ->numeric(),
+
+                                Forms\Components\Toggle::make('auto_move_vouchers')
+                                    ->label('Auto Move Vouchers to Next Schedule If Unsold')
+                                    ->columnSpan('full')
+                                    ->default(true)
+                                    ->helperText('Automatically move a schedule\'s unsold vouchers to the next schedule if enabled. If disabled, unsold vouchers will be expired after the schedule ends.'),
 
                                 Forms\Components\Textarea::make('description')
                                     ->rows(5)
@@ -208,6 +216,7 @@ class MerchantOfferCampaignResource extends Resource
                             Forms\Components\Group::make()
                             ->schema([
                                 Forms\Components\Repeater::make('Schedules')
+                                    ->orderable(false)
                                     ->relationship('schedules')
                                     ->schema([
                                         Group::make()
@@ -215,29 +224,38 @@ class MerchantOfferCampaignResource extends Resource
                                                 Forms\Components\DateTimePicker::make('available_at')
                                                     ->required()
                                                     ->columnSpan(1)
-                                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
+                                                    // disabled if available_at is past
+                                                    ->disabled(fn($livewire, Closure $get) => $livewire instanceof EditRecord && $get('available_at') && Carbon::parse($get('available_at'))->isPast())
+                                                    ->minDate(fn($get) =>  $get('available_at') ? Carbon::parse($get('available_at')) : now()->startOfDay()),
                                                 Forms\Components\DateTimePicker::make('available_until')
                                                     ->required()
                                                     ->columnSpan(1)
-                                                    ->minDate(fn($livewire) => $livewire instanceof EditRecord ? $livewire->record->available_at : now()->startOfDay()),
-                                            ])
+                                                    ->disabled(fn($livewire, Closure $get) => $livewire instanceof EditRecord && $get('available_until') && Carbon::parse($get('available_at'))->isPast())
+                                                    ->minDate(fn($get) => $get('available_at') ? Carbon::parse($get('available_at')) : now()->startOfDay()),
+                                                ])
                                             ->columns(2),
                                         Group::make()
                                             ->schema([
                                                 Forms\Components\TextInput::make('expiry_days')
                                                     ->label('Expire in (Days) After Purchase')
                                                     ->columnSpan(1)
-                                                    ->helperText('If filled, vouchers specific to this schedule will expired in days set above.')
+                                                    ->disabled(fn($livewire, Closure $get) => $livewire instanceof EditRecord && $get('available_until') && Carbon::parse($get('available_at'))->isPast())
+                                                    ->helperText('If filled, vouchers specific to this schedule will expire in the number of days set above.')
                                                     ->numeric(),
+
                                                 Forms\Components\TextInput::make('quantity')
                                                     ->label('Available Quantity')
                                                     ->required()
                                                     ->columnSpan(1)
                                                     ->numeric()
                                                     ->disabledOn('edit')
-                                                    // ->helperText('Quantity field will be locked after created offer. Please add more vouchers using "Vouchers" below.')
-                                                    // ->disabled(fn ($livewire) => $livewire instanceof EditRecord)
                                                     ->minValue(1),
+
+                                                Placeholder::make('cannot_update_past')
+                                                        ->visible(fn($livewire, Closure $get) => $livewire instanceof EditRecord && $get('available_until') && Carbon::parse($get('available_at'))->isPast())
+                                                        ->columnSpan(2)
+                                                        ->disableLabel()
+                                                        ->content(new HtmlString('<span style="font-weight:bold; color: #ff0000">Cannot update schedule if schedule is already running (past available at date time)</span>')),
 
                                                 Hidden::make('user_id')
                                                     ->default(fn () => auth()->id()),
