@@ -110,6 +110,7 @@ return [
             'Password_updated' => 'Password updated',
             'Profile_privacy_already_set_to' => 'Profile privacy already set to :setting',
             'Profile_privacy_updated' => 'Profile privacy updated',
+            'Phone_updated' => 'Phone No. updated',
         ],
         'view_controller' => [
             'View_recorded' => 'View recorded',

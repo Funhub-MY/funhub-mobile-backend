@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 8
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: mollitia
+                  example: incidunt
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aliquam
+                  example: et
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - facere
+                    - aperiam
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 11
               required:
                 - keyword_id
     parameters:
@@ -582,7 +582,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - tempora
+                    - eum
                   items:
                     type: string
                 category_ids:
@@ -1272,7 +1272,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: sint
+        example: impedit
         required: true
         schema:
           type: string
@@ -1353,11 +1353,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: provident
+                  example: eum
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: rerum
               required:
                 - comment_id
                 - reason
@@ -1639,7 +1639,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sed
+        example: temporibus
         required: true
         schema:
           type: string
@@ -4560,7 +4560,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: marcellus.morissette@example.net
+                  example: murazik.amber@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5495,7 +5495,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: nemo
+                  example: sed
               required:
                 - share_code
   /api/v1/public_user:
@@ -5529,7 +5529,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: iste
+                  example: ea
               required:
                 - username
   /api/v1/public_offer:
@@ -6409,7 +6409,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: ea
+                  example: vel
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7088,7 +7088,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - omnis
+                    - doloremque
                   items:
                     type: string
                 name:
@@ -7269,13 +7269,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - quia
+            - ipsam
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - quia
+              - ipsam
             items:
               type: string
         -
@@ -7461,7 +7461,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - aperiam
+                    - sit
                   items:
                     type: string
                 city:
@@ -7731,7 +7731,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: blanditiis
+        example: consequuntur
         required: true
         schema:
           type: string
@@ -8853,7 +8853,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 19
+                  example: 16
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8899,7 +8899,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 3
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -8945,7 +8945,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 18
+                  example: 16
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -8979,7 +8979,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 9
+                  example: 20
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -9040,15 +9040,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: velit
+                  example: vitae
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ad
+                  example: consequuntur
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: debitis
+                  example: autem
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9165,7 +9165,7 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: maiores
+                  example: doloremque
               required:
                 - reason
   /api/v1/users_by_id:
@@ -9199,7 +9199,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: sapiente
+                  example: aut
               required:
                 - user_ids
     parameters:
@@ -9563,6 +9563,97 @@ paths:
                     example: 'No settings found yet.'
       tags:
         - 'User Settings'
+  /api/v1/user/settings/phone_no/otp:
+    post:
+      summary: 'Update Phone No (send otp)'
+      operationId: updatePhoneNosendOtp
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'OTP sent'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'OTP sent'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: 'Country code of the user.'
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'Phone number of the user.'
+                  example: '123456789'
+              required:
+                - country_code
+                - phone_no
+  /api/v1/user/settings/phone_no/verify_otp:
+    post:
+      summary: 'Update Phone No (Verify OTP)'
+      operationId: updatePhoneNoVerifyOTP
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Phone No updated'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Phone No updated'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: 'Country code of the user.'
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'Phone number of the user.'
+                  example: '123456789'
+                otp:
+                  type: string
+                  description: 'OTP of the user.'
+                  example: '123456'
+              required:
+                - country_code
+                - phone_no
+                - otp
   /api/v1/user/settings/email:
     post:
       summary: 'Update User Email'
@@ -10075,7 +10166,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: female
+                  example: male
                   enum:
                     - male
                     - female

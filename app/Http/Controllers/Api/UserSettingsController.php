@@ -5,12 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class UserSettingsController extends Controller
 {
+    protected $smsService;
+    public function __construct()
+    {
+        $this->smsService = new \App\Services\Sms(
+            config('services.movider.api_url'),
+            config('services.movider.key'),
+            config('services.movider.secret')
+        );
+    }
+
     /**
      * Get settings of logged in user
      *
@@ -616,6 +627,132 @@ class UserSettingsController extends Controller
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Profile_privacy_updated'),
             'profile_privacy' => $user->profilePrivacySettings()->orderBy('id', 'desc')->first()->profile,
+        ]);
+    }
+
+    /**
+     * Update Phone No (send otp)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam country_code string required Country code of the user. Example: 60
+     * @bodyParam phone_no string required Phone number of the user. Example: 123456789
+     * @response scenario=success {
+     * "status": "success",
+     * "message": "OTP sent"
+     * }
+     */
+    public function postUpdatePhoneNo(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+        ]);
+
+        // check phone no has prefix 0 remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // check phone no has prefix + remove it first
+        if (substr($request->phone_no, 0, 1) == '+') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        }
+
+        $user = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->first();
+
+        if (!$user) { // does not exists
+            $otp = rand(100000, 999999);
+            auth()->user()->update([
+                'otp' => $otp,
+                'otp_expiry' => now()->addMinutes(1),
+                'otp_verified_at' => null,
+            ]);
+
+            // full no
+            $fullPhoneNo = $request->country_code . $request->phone_no;
+
+            // send otp
+            $this->smsService->sendSms($fullPhoneNo, config('app.name')." - Your OTP is ".auth()->user()->otp);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('messages.success.auth_controller.OTP_sent')
+            ], 200);
+        }
+
+        return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
+    }
+
+    /**
+     * Update Phone No (Verify OTP)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam country_code string required Country code of the user. Example: 60
+     * @bodyParam phone_no string required Phone number of the user. Example: 123456789
+     * @bodyParam otp string required OTP of the user. Example: 123456
+     *
+     * @response scenario=success {
+     * "success": true,
+     * "message": "Phone No updated"
+     * }
+     */
+    public function postUpdatePhoneNoVerifyOtp(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+            'otp' => 'required|string',
+        ]);
+
+        // check phone no has prefix 0 remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // check phone no has prefix + remove it first
+        if (substr($request->phone_no, 0, 1) == '+') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        }
+
+        $user = auth()->user();
+
+        if ($user->otp != $request->otp) {
+            return response()->json(['message' => __('messages.error.auth_controller.OTP_is_incorrect')], 422);
+        }
+
+        if ($user->otp_expiry < now()) {
+            return response()->json(['message' => __('messages.error.auth_controller.OTP_has_expired')], 422);
+        }
+
+        $user->otp_verified_at = now();
+        $user->otp = null; // empty it
+        $user->save();
+
+        // ensure user phone no is still not registered yet (one more time)
+        $existingUser = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->first();
+        if ($existingUser) return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
+
+        $user->phone_country_code = $request->country_code;
+        $user->phone_no = $request->phone_no;
+        $user->save();
+
+        return json()->response([
+            'success' => true,
+            'message' => __('messages.success.user_settings_controller.Phone_updated')
         ]);
     }
 }

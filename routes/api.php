@@ -146,6 +146,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::prefix('/user/settings')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
             Route::post('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+
+            Route::post('/phone_no/otp', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdatePhoneNo']);
+            Route::post('/phone_no/verify_otp', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdatePhoneNoVerifyOtp']);
+
             Route::post('/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
             Route::post('/verify/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'verifyEmail']);
             Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
