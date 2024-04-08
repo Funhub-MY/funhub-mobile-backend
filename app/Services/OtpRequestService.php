@@ -57,7 +57,7 @@ class OtpRequestService
             ]);
         } else {
             // no new otp yet, create one
-            $otp = rand(1000, 9999);
+            $otp = rand(100000, 999999);
 
             OtpRequest::create([
                 'user_id' => $user_id,
