@@ -1,16 +1,18 @@
-name: Location
+name: Transaction
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/locations
+    uri: api/v1/transactions
     metadata:
-      groupName: Location
+      groupName: Transaction
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Locations'
+      title: |-
+        Get all my transactions
+        Get all transactions of current logged in users paginated
       description: ''
       authenticated: true
       custom: []
@@ -23,100 +25,35 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      location_ids:
-        name: location_ids
-        description: 'optional Location Ids to Filter. Example [1,2,3]'
+      date_from:
+        name: date_from
+        description: 'Date from'
         required: false
-        example:
-          - sit
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      name:
-        name: name
-        description: 'optional Search query.'
-        required: false
-        example: '"KFC SS15"'
+        example: '2021-01-01'
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
-      state_id:
-        name: state_id
-        description: 'optional Filter by state id.'
+      date_to:
+        name: date_to
+        description: 'Date to'
         required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      country_id:
-        name: country_id
-        description: 'optional Filter by country id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      city:
-        name: city
-        description: 'optional Filter by city.'
-        required: false
-        example: '"Subang Jaya"'
+        example: '2021-01-31'
         type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      lat:
-        name: lat
-        description: 'optional Latitude of User GeoLoc.'
-        required: false
-        example: 3.073065
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Longitude of User GeoLoc.'
-        required: false
-        example: 101.607787
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      radius:
-        name: radius
-        description: 'optional Radius (KM) of search if lat,lng provided.'
-        required: false
-        example: 10
-        type: integer
         enumValues: []
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      location_ids:
-        - sit
-      name: '"KFC SS15"'
-      state_id: 1
-      country_id: 1
-      city: '"Subang Jaya"'
-      lat: 3.073065
-      lng: 101.607787
-      radius: 10
+      date_from: '2021-01-01'
+      date_to: '2021-01-31'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
+          "current_page": 1,
+          "data": []
           }
         headers: []
         description: success
@@ -125,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZhkvDg3db4E66VPefc85a1a'
+      - 'Bearer b86gka3hav1e6ZD4fcP5dVE'
     controller: null
     method: null
     route: null
@@ -133,42 +70,22 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/locations/{location_id}'
+    uri: api/v1/transactions/transaction_no
     metadata:
-      groupName: Location
+      groupName: Transaction
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get One Location'
-      description: 'Locaiton will auto load state, coutry, articles, merchant offers, ratings'
+      title: 'Get Transaction by Transaction Number'
+      description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      location_id:
-        name: location_id
-        description: 'The ID of the location.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      location:
-        name: location
-        description: 'Location ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      location_id: 1
-      location: '1'
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -179,8 +96,7 @@ endpoints:
         status: 200
         content: |-
           {
-          "data": {
-          }
+           data: {}
           }
         headers: []
         description: success
@@ -189,7 +105,70 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kDe3havPEbgf586Z1Vd4c6a'
+      - 'Bearer 1a4gke3fDd6V6avP5ZE8hbc'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/transactions/{transaction_id}'
+    metadata:
+      groupName: Transaction
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get a Transaction By ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      transaction_id:
+        name: transaction_id
+        description: 'The ID of the transaction.'
+        required: true
+        example: 7
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      transaction:
+        name: transaction
+        description: 'Transaction ID'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      transaction_id: 7
+      transaction: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer PZ6Veg5Dh18abaE4kvd3fc6'
     controller: null
     method: null
     route: null

@@ -1,79 +1,16 @@
-name: 'Help Center'
+name: Campaigns
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/help/faqs
+    uri: api/v1/campaigns/active
     metadata:
-      groupName: 'Help Center'
+      groupName: Campaigns
       groupDescription: ''
-      subgroup: FAQs
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get All FAQs'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      category_ids:
-        name: category_ids
-        description: 'array optional Array of category ids.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      query:
-        name: query
-        description: 'optional Search query.'
-        required: false
-        example: 'How to ...'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      category_ids: '1,2,3'
-      query: 'How to ...'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer g48daba1Ze5hP3c6DVEvfk6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/faq_categories
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: FAQs
-      subgroupDescription: ''
-      title: 'Get All FAQs Categories'
+      title: 'Get Active Campaigns'
       description: ''
       authenticated: true
       custom: []
@@ -93,7 +30,8 @@ endpoints:
         status: 200
         content: |-
           {
-          "data": []
+          "has_active_campaign": true,
+          "campaigns": []
           }
         headers: []
         description: success
@@ -102,96 +40,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6kVgbaPacD31Ee84vZ6fhd5'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/support_requests
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get My Support Requests'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      status:
-        name: status
-        description: 'optional Status of support request.'
-        required: false
-        example: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      category_ids:
-        name: category_ids
-        description: 'optional Array of category ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      query:
-        name: query
-        description: 'optional Search query.'
-        required: false
-        example: 'my support request'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      limit:
-        name: limit
-        description: 'optional Limit of results per page.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      status: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
-      category_ids:
-        - 1
-        - 2
-        - 3
-      query: 'my support request'
-      limit: 10
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer dZD4E6e85fkPac13vabg6hV'
+      - 'Bearer g6DvbVPf4ceE3ad61hZak85'
     controller: null
     method: null
     route: null
@@ -199,13 +48,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/help/support_requests/raise
+    uri: api/v1/campaigns/save/single_aswer
     metadata:
-      groupName: 'Help Center'
+      groupName: Campaigns
       groupDescription: ''
-      subgroup: 'Support Requests'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Raise Support Request'
+      title: 'Save Single Answer to a Question'
       description: ''
       authenticated: true
       custom: []
@@ -218,60 +67,34 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      category_id:
-        name: category_id
-        description: 'Category id.'
+      question_id:
+        name: question_id
+        description: 'The ID of the question.'
         required: true
         example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
         custom: []
-      title:
-        name: title
-        description: 'Title of support request.'
+      answer:
+        name: answer
+        description: 'The answer to the question.'
         required: true
-        example: 'My support request'
+        example: Yes/A/B/C/D/Text
         type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      message:
-        name: message
-        description: 'Message to send.'
-        required: true
-        example: 'This is my message'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      media_ids:
-        name: media_ids
-        description: 'optional Array of media ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
         enumValues: []
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      category_id: 1
-      title: 'My support request'
-      message: 'This is my message'
-      media_ids:
-        - 1
-        - 2
-        - 3
+      question_id: 1
+      answer: Yes/A/B/C/D/Text
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "data": []
+          "message": "Answer saved successfully"
           }
         headers: []
         description: success
@@ -280,97 +103,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4866Pfd5Vv1hcEDga3Zbkea'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v1/help/support_requests/{support_request_id}/reply'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Reply to Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      support_request_id:
-        name: support_request_id
-        description: 'The ID of the support request.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      support_request_id: 10
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      message:
-        name: message
-        description: 'Message to send.'
-        required: true
-        example: 'This is my message'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      media_ids:
-        name: media_ids
-        description: 'optional Array of media ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      message: 'This is my message'
-      media_ids:
-        - 1
-        - 2
-        - 3
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": {},
-          "request": {}
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer kV5v1836cedhbDEa6fPag4Z'
+      - 'Bearer ceg36a5V4DfkZ1Pbhavd86E'
     controller: null
     method: null
     route: null
@@ -378,139 +111,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/help/support_requests/{support_request_id}/messages'
+    uri: api/v1/campaigns/answers_by_campaign_brand
     metadata:
-      groupName: 'Help Center'
+      groupName: Campaigns
       groupDescription: ''
-      subgroup: 'Support Requests'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get Messages of Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      support_request_id:
-        name: support_request_id
-        description: 'The ID of the support request.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      support_request_id: 10
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 3eVa6kb61hd8aPgfvZEc54D'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v1/help/support_requests/{support_request_id}/resolve'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Resolve Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      support_request_id:
-        name: support_request_id
-        description: 'The ID of the support request.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      support_request_id: 10
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Support request resolved and closed"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Da3avVEk5664fdbePZcgh18'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/support_requests/categories
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get Support Request Categories'
+      title: 'Get My Answers by Campaign and Brand'
       description: ''
       authenticated: true
       custom: []
@@ -523,33 +130,162 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      type:
-        name: type
-        description: 'optional Type of support request category.'
-        required: false
-        example: 'complain,bug,feature_request,others'
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      brand:
+        name: brand
+        description: 'The brand of the campaign.'
+        required: true
+        example: 'Brand A'
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      type: 'complain,bug,feature_request,others'
+      campaign_id: 1
+      brand: 'Brand A'
     fileParameters: []
     responses:
       -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
+        status: 200
+        content: |-
+          {
+          "campaign": {},
+          "answers": []
+          }
+        headers: []
+        description: success
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3vfPhaaZ6D15EVgd6b4c8ke'
+      - 'Bearer fDd5cPh4v3861VbgkeaEa6Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/questions_by_campaign
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Questions by Campaign'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "campaign": {},
+          "questions": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3Zc8a1ef4avdbDE56gkhPV6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/questions_by_brand_campaign
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Questions by Campaign and Brand'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      brand:
+        name: brand
+        description: 'The brand of the campaign.'
+        required: true
+        example: 'Brand A'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      brand: 'Brand A'
+      campaign_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "campaign": {},
+          "questions": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ceZvV6PD1aa45bdgEfk8h63'
     controller: null
     method: null
     route: null
@@ -557,66 +293,156 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/help/support_requests/attach
+    uri: api/v1/campaigns/save/respondant_details
     metadata:
-      groupName: 'Help Center'
+      groupName: Campaigns
       groupDescription: ''
-      subgroup: 'Support Requests'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Upload Attachments(Images) for Support Messages'
+      title: 'Create Respondant Details'
       description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
+      Content-Type: application/json
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      images:
-        name: images
-        description: 'The images to upload.'
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
         required: true
-        example: null
-        type: file
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      name:
+        name: name
+        description: 'The name of the respondant.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      email:
+        name: email
+        description: 'The email of the respondant. Example:'
+        required: true
+        example: hagenes.caterina@example.com
+        type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      images: null
+      phone:
+        name: phone
+        description: 'The phone of the respondant.'
+        required: true
+        example: '0123456789'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      ic:
+        name: ic
+        description: 'The ic of the respondant.'
+        required: true
+        example: '123456789012'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      address:
+        name: address
+        description: 'The address of the respondant.'
+        required: true
+        example: '123, Jalan ABC, 12345, Kuala Lumpur'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+      name: 'John Doe'
+      email: hagenes.caterina@example.com
+      phone: '0123456789'
+      ic: '123456789012'
+      address: '123, Jalan ABC, 12345, Kuala Lumpur'
+    fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "uploaded": [
-              {
-                 "id": 1,
-                 "name": "image.jpg",
-                 "url": "http://localhost:8000/storage/user_uploads/1/image.jpg",
-                 "size": 12345,
-                 "type": "image/jpeg"
-             }
-          ]
+          "message": "Respondant details created successfully"
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["images": ["The images field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer eabf36E5Dvh814VgPk6daZc'
+      - 'Bearer b3ghZVEe156d8fk46acaDPv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/campaigns/respondant_details
+    metadata:
+      groupName: Campaigns
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Respondant Details of User'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      campaign_id:
+        name: campaign_id
+        description: 'The ID of the campaign.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      campaign_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "respondant_details": {},
+          "has_submitted_respondant_details": true
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5861Pb6DhZveVa3dkagfEc4'
     controller: null
     method: null
     route: null

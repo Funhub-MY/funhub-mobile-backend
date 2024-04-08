@@ -762,7 +762,7 @@ class UserSettingsController extends Controller
      * @param Request $request
      * @return JsonResponse
      *
-     * @group Settings
+     * @group User Settings
      * @subgroup Referral
      * @response status=200 scenario="success" {
      * "referral_code": "ABC123",
@@ -798,7 +798,7 @@ class UserSettingsController extends Controller
      * @param Request $request
      * @return JsonResponse
      *
-     * @group Settings
+     * @group User Settings
      * @subgroup Referral
      * @bodyParam referral_code string required Referral code of the user. Example: ABC123
      * @response status=200 scenario="success" {

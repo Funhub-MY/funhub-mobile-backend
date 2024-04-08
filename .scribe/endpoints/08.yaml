@@ -62,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EZd8PfVg16Da6b35a4hkvec'
+      - 'Bearer 6aZ86vEdeD3chPa41Vfk5bg'
     controller: null
     method: null
     route: null
@@ -126,7 +126,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1vD4PhkaV5d3Zc6bgfa8Ee6'
+      - 'Bearer 6DZe8aafVdP1435bEkhvg6c'
     controller: null
     method: null
     route: null
@@ -200,7 +200,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6agDk6135b4hcEfPZva8deV'
+      - 'Bearer hfk15v84ED3ae6aZc6dbPgV'
     controller: null
     method: null
     route: null
@@ -266,7 +266,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VDPcdZk1hgE4vb36e6afa85'
+      - 'Bearer gVdaP5bv68a1EZ3ckf46Dhe'
     controller: null
     method: null
     route: null
@@ -319,7 +319,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z46E8ke36D5bVhdP1vcafag'
+      - 'Bearer 1D3e6cf5ak6v4ZPdgEaVbh8'
     controller: null
     method: null
     route: null
@@ -379,7 +379,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d3c84gV6v5PhD6fZeaE1bak'
+      - 'Bearer a6vab8Dfhk4Vec3Z5g1EPd6'
     controller: null
     method: null
     route: null
@@ -445,7 +445,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kfaP4D1d6ZvahVbeg863E5c'
+      - 'Bearer f8c4VkaevdgZEh65a3DbP61'
     controller: null
     method: null
     route: null
@@ -506,7 +506,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bcfDg1Vv6ka53E6hZae48dP'
+      - 'Bearer h4a3ePvk1d6cg5aZVE86Dbf'
     controller: null
     method: null
     route: null
@@ -567,7 +567,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8D6bdvc1ZhEg5kfeaVa36P4'
+      - 'Bearer PaaEdvZ1g8D6kcb5hf634eV'
     controller: null
     method: null
     route: null
@@ -627,7 +627,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e8a6Dg1vZdE53fkbh6Pac4V'
+      - 'Bearer 1efZdEha6cDPb6g3va5kV84'
     controller: null
     method: null
     route: null
@@ -687,7 +687,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a38gV65dfE4cPaDhke16vZb'
+      - 'Bearer 3aPafEdh5Z41vD866cVebkg'
     controller: null
     method: null
     route: null
@@ -767,7 +767,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aPfcVv6kd86ZEb41gD3ah5e'
+      - 'Bearer aE6e451ZfvcD6kgVb8aP3hd'
     controller: null
     method: null
     route: null
@@ -823,7 +823,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer baEDPk53ha6ZVvc16fg48de'
+      - 'Bearer gZc5V486vkDEh36faa1dPbe'
     controller: null
     method: null
     route: null
@@ -894,7 +894,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6d86k1ZgcaPhDEb4fVae5v3'
+      - 'Bearer hb5vPDa6d6cEg34efZa8V1k'
     controller: null
     method: null
     route: null
@@ -954,7 +954,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aa8f3Zh5v1PgbcEVde4Dk66'
+      - 'Bearer e4Dbag8cZVv31fakEPh656d'
     controller: null
     method: null
     route: null
@@ -1043,7 +1043,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Da453E6d8PavVZ1cbeg6hkf'
+      - 'Bearer 1e8dbk45h6DVEgvZf3a6Pca'
     controller: null
     method: null
     route: null
@@ -1097,7 +1097,131 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gf8kab6ev4VE63Z5cDPadh1'
+      - 'Bearer aEDkPcVd3g4ab8ev1hZ6f56'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/user/settings/referrals/my-code
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: Referral
+      subgroupDescription: ''
+      title: 'Referral - Get My Referral Code'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "referral_code": "ABC123",
+          "message": "Come and join with with referral code ABC123"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6cZgfv3haDk8E5Pde1aVb46'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/user/settings/referrals/save
+    metadata:
+      groupName: 'User Settings'
+      groupDescription: ''
+      subgroup: Referral
+      subgroupDescription: ''
+      title: 'Referral - Save Referral'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      referral_code:
+        name: referral_code
+        description: 'Referral code of the user.'
+        required: true
+        example: ABC123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      referral_code: ABC123
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Referral saved"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "User already referred by someone"
+          }
+        headers: []
+        description: 'User already referred by someone'
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "Referral code not found"
+          }
+        headers: []
+        description: 'Referral code not found'
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+          "message": "You cannot refer yourself"
+          }
+        headers: []
+        description: 'You cannot refer yourself'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 46Eef3ab6v8dhDV51acPZkg'
     controller: null
     method: null
     route: null

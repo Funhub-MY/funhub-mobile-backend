@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 6
+                  example: 9
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: fugiat
+                  example: est
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: laudantium
+                  example: exercitationem
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - veniam
+                    - et
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 13
+                  example: 5
               required:
                 - keyword_id
     parameters:
@@ -582,7 +582,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - nobis
+                    - eveniet
                   items:
                     type: string
                 category_ids:
@@ -1272,7 +1272,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quia
+        example: maxime
         required: true
         schema:
           type: string
@@ -1353,11 +1353,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: maxime
+                  example: eius
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: dolores
+                  example: et
               required:
                 - comment_id
                 - reason
@@ -1639,7 +1639,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: illum
+        example: quibusdam
         required: true
         schema:
           type: string
@@ -4560,7 +4560,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: akeem.luettgen@example.net
+                  example: hagenes.caterina@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5495,7 +5495,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: perspiciatis
+                  example: rerum
               required:
                 - share_code
   /api/v1/public_user:
@@ -5529,7 +5529,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: at
+                  example: quo
               required:
                 - username
   /api/v1/public_offer:
@@ -6409,7 +6409,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: blanditiis
+                  example: vel
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7088,7 +7088,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - sit
+                    - eos
                   items:
                     type: string
                 name:
@@ -7269,13 +7269,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - quam
+            - dignissimos
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - quam
+              - dignissimos
             items:
               type: string
         -
@@ -7461,7 +7461,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - expedita
+                    - enim
                   items:
                     type: string
                 city:
@@ -7731,7 +7731,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: accusamus
+        example: ab
         required: true
         schema:
           type: string
@@ -8551,77 +8551,6 @@ paths:
                   example: '11234455'
               required:
                 - transaction_no
-  /api/v1/user/settings/referrals/my-code:
-    get:
-      summary: 'Referral - Get My Referral Code'
-      operationId: referralGetMyReferralCode
-      description: ''
-      parameters: []
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  referral_code: ABC123
-                  message: 'Come and join with with referral code ABC123'
-                properties:
-                  referral_code:
-                    type: string
-                    example: ABC123
-                  message:
-                    type: string
-                    example: 'Come and join with with referral code ABC123'
-      tags:
-        - Settings
-  /api/v1/user/settings/referrals/save:
-    post:
-      summary: 'Referral - Save Referral'
-      operationId: referralSaveReferral
-      description: ''
-      parameters: []
-      responses:
-        200:
-          description: success
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'Referral saved'
-                properties:
-                  message:
-                    type: string
-                    example: 'Referral saved'
-        422:
-          description: 'You cannot refer yourself'
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  message: 'You cannot refer yourself'
-                properties:
-                  message:
-                    type: string
-                    example: 'You cannot refer yourself'
-      tags:
-        - Settings
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                referral_code:
-                  type: string
-                  description: 'Referral code of the user.'
-                  example: ABC123
-              required:
-                - referral_code
   /api/v1/transactions:
     get:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
@@ -8924,7 +8853,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 1
+                  example: 2
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8970,7 +8899,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 14
+                  example: 5
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -9016,7 +8945,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 9
+                  example: 12
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -9050,7 +8979,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 10
+                  example: 17
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -9111,15 +9040,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: ut
+                  example: nisi
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: sed
+                  example: aut
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: maiores
+                  example: ut
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9295,7 +9224,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quis
+                  example: eveniet
               required:
                 - user_ids
     parameters:
@@ -10453,6 +10382,77 @@ paths:
                   example: public
               required:
                 - profile_privacy
+  /api/v1/user/settings/referrals/my-code:
+    get:
+      summary: 'Referral - Get My Referral Code'
+      operationId: referralGetMyReferralCode
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  referral_code: ABC123
+                  message: 'Come and join with with referral code ABC123'
+                properties:
+                  referral_code:
+                    type: string
+                    example: ABC123
+                  message:
+                    type: string
+                    example: 'Come and join with with referral code ABC123'
+      tags:
+        - 'User Settings'
+  /api/v1/user/settings/referrals/save:
+    post:
+      summary: 'Referral - Save Referral'
+      operationId: referralSaveReferral
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Referral saved'
+                properties:
+                  message:
+                    type: string
+                    example: 'Referral saved'
+        422:
+          description: 'You cannot refer yourself'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You cannot refer yourself'
+                properties:
+                  message:
+                    type: string
+                    example: 'You cannot refer yourself'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                referral_code:
+                  type: string
+                  description: 'Referral code of the user.'
+                  example: ABC123
+              required:
+                - referral_code
   /api/v1/views:
     post:
       summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, user profiles and location"
@@ -10579,9 +10579,6 @@ tags:
     description: ''
   -
     name: Product
-    description: ''
-  -
-    name: Settings
     description: ''
   -
     name: Transaction

@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: perspiciatis
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: perspiciatis
+      share_code: rerum
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e8c61dk3avahgbfZ4EP56VD'
+      - 'Bearer g6aD13eaZ6f4h8VEvcP5dkb'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: at
+        example: quo
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: at
+      username: quo
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kfV13PaegZv4dcEDh56a6b8'
+      - 'Bearer e8a4khfva6cd6E5gZ3b1VPD'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: blanditiis
+        example: vel
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: blanditiis
+      share_code: vel
     fileParameters: []
     responses:
       -
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6bh48V3EPa1DvfgkdZ56eca'
+      - 'Bearer aa3Z46fhdvbV86D15EPecgk'
     controller: null
     method: null
     route: null

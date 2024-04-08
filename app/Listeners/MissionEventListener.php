@@ -11,6 +11,7 @@ use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
 use App\Services\PointService;
 use App\Events\InteractionCreated;
+use App\Models\MissionRewardDisbursement;
 use App\Models\Reward;
 use App\Models\RewardComponent;
 use Illuminate\Support\Facades\Log;
@@ -176,12 +177,20 @@ class MissionEventListener
         }
     }
 
-    /**
-     * Disburse Rewards
-     */
     private function disburseRewards($mission, $user)
     {
         if (config('app.auto_disburse_reward')) {
+            $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
+
+            if ($disbursedRewardCount >= $mission->reward_limit) {
+                Log::info('Mission reward limit reached', [
+                    'mission' => $mission->id,
+                    'user' => $user->id,
+                    'reward_limit' => $mission->reward_limit
+                ]);
+                return;
+            }
+
             $missionableType = $mission->missionable_type;
             $missionableId = $mission->missionable_id;
 
@@ -202,6 +211,12 @@ class MissionEventListener
                     'reward' => $mission->reward_quantity
                 ]);
             }
+
+            MissionRewardDisbursement::create([
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'reward_quantity' => $mission->reward_quantity
+            ]);
         }
     }
 }
