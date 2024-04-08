@@ -73,6 +73,7 @@ return [
             'Comment_reported' => '评论已被举报',
             'User_blocked' => '该玩家已被屏蔽',
             'User_unblocked' => '该玩家已被解除屏蔽',
+            'Account_deletion_sent_otp' => '账号删除请求已发送OTP',
             'Account_deleted_successfully' => '账号已成功删除',
             'Password_updated' => '密码已更新',
             'Email_updated_and_verification_email_sent' => '电邮已更新，并已发送验证邮件',
@@ -199,6 +200,9 @@ return [
         ],
         'user_controller' => [
             'User_not_found' => '用户不存在',
+            'Error_sending_otp' => '发送OTP时出错',
+            'Invalid_otp' => 'OTP无效',
+            'You_cannot_delete_your_account_if_you_are_logged_in_with_Google_or_Facebook' => '如果您已使用 Google / Apple / Facebook 登录，则无法删除您的帐户',
             'You_have_already_reported_this_comment' => '您已经举报此评论',
             'You_have_already_blocked_this_user' => '您已经屏蔽此用户',
             'You_have_not_blocked_this_user' => '您没有封锁这个用户',

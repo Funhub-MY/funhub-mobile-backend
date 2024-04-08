@@ -73,6 +73,7 @@ return [
             'Comment_reported' => 'Comment reported',
             'User_blocked' => 'User blocked',
             'User_unblocked' => 'User unblocked',
+            'Account_deletion_sent_otp' => 'OTP sent to registered mobile phone no.',
             'Account_deleted_successfully' => 'Account deleted successfully.',
             'Password_updated' => 'Password updated',
             'Email_updated_and_verification_email_sent' => 'Email updated and verification email sent',
@@ -196,6 +197,9 @@ return [
         ],
         'user_controller' => [
             'User_not_found' => 'User not found',
+            'Error_sending_otp' => 'Error sending otp',
+            'Invalid_otp' => 'OTP is invalid',
+            'You_cannot_delete_your_account_if_you_are_logged_in_with_Google_or_Facebook' => 'You cannot request for OTP for delete your account if you are logged in with Apple / Google / Facebook',
             'You_have_already_reported_this_comment' => 'You have already reported this comment',
             'You_have_already_blocked_this_user' => 'You have already blocked this user',
             'You_have_not_blocked_this_user.' => 'You have not blocked this user',
