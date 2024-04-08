@@ -38,7 +38,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - sint
+          - quam
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -130,7 +130,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - sint
+        - quam
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -157,7 +157,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gDfkhbVv85Pa1463ce6aZdE'
+      - 'Bearer v368gfb5h4DkaZE1cP6Vdae'
     controller: null
     method: null
     route: null
@@ -264,7 +264,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Zc5d3kh8vVe6E1a4faPgDb'
+      - 'Bearer 6f8Eh3veDa1kZcPbVa64g5d'
     controller: null
     method: null
     route: null
@@ -308,7 +308,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - quis
+          - expedita
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -454,7 +454,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - quis
+        - expedita
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -489,7 +489,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3Ev686aZdV1Dahgfb4kPce5'
+      - 'Bearer vf6hZcP4bk1dVg6eE58D3aa'
     controller: null
     method: null
     route: null
@@ -612,7 +612,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6cPhE6ev45aabV83d1fDZgk'
+      - 'Bearer 468ak36cg5vPhafd1eVEbDZ'
     controller: null
     method: null
     route: null
@@ -699,7 +699,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 61Zkd68aaV5vgD3bPc4ehEf'
+      - 'Bearer V1g4dD6kP5ae8a63fZvchEb'
     controller: null
     method: null
     route: null
@@ -761,7 +761,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ba3ehPvd48Dga5E1c6VkZf6'
+      - 'Bearer Z4EDvk8gfbc536ahV6P1eda'
     controller: null
     method: null
     route: null
@@ -814,7 +814,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hcbavfV1gEkd6DPe835Za46'
+      - 'Bearer 6vec8ghbZ5Df4aka6E1dP3V'
     controller: null
     method: null
     route: null
@@ -841,13 +841,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: sint
+        example: accusamus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: sint
+      offer_id: accusamus
     queryParameters:
       offer_id:
         name: offer_id
@@ -877,7 +877,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36bZ1kPfgEah4aDdve8V5c6'
+      - 'Bearer fc5kDZba416V3vhE6aP8egd'
     controller: null
     method: null
     route: null
@@ -980,7 +980,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5gDcZE1a686f4avVe3Pkhdb'
+      - 'Bearer Efa6evhV1gba5c43kP8ZD6d'
     controller: null
     method: null
     route: null
@@ -1099,7 +1099,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer abeD58h6V4k1vEaZg63Pcfd'
+      - 'Bearer abved41aEkP5cfVh3686DgZ'
     controller: null
     method: null
     route: null
@@ -1158,7 +1158,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3v6Zg4akfbEh1V6dca8DP5e'
+      - 'Bearer Eg5kV6aD1cbP6vZdafeh834'
     controller: null
     method: null
     route: null
@@ -1298,7 +1298,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1caa8ZvVk6hEgf4bd3P65eD'
+      - 'Bearer ag6DVac63ZP5d1e4bfhvE8k'
     controller: null
     method: null
     route: null

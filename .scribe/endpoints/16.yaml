@@ -1,122 +1,18 @@
-name: 'Help Center'
+name: Transaction
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/help/faqs
+    uri: api/v1/transactions
     metadata:
-      groupName: 'Help Center'
+      groupName: Transaction
       groupDescription: ''
-      subgroup: FAQs
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Get All FAQs'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      category_ids:
-        name: category_ids
-        description: 'array optional Array of category ids.'
-        required: false
-        example: '1,2,3'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      query:
-        name: query
-        description: 'optional Search query.'
-        required: false
-        example: 'How to ...'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      category_ids: '1,2,3'
-      query: 'How to ...'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8ZfP35eDkh4dabg6vc6aV1E'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/faq_categories
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: FAQs
-      subgroupDescription: ''
-      title: 'Get All FAQs Categories'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": []
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer vbfc1hVPea665aD3Z8kE4gd'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/support_requests
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get My Support Requests'
+      title: |-
+        Get all my transactions
+        Get all transactions of current logged in users paginated
       description: ''
       authenticated: true
       custom: []
@@ -129,59 +25,34 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      status:
-        name: status
-        description: 'optional Status of support request.'
+      date_from:
+        name: date_from
+        description: 'Date from'
         required: false
-        example: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
+        example: '2021-01-01'
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
-      category_ids:
-        name: category_ids
-        description: 'optional Array of category ids.'
+      date_to:
+        name: date_to
+        description: 'Date to'
         required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      query:
-        name: query
-        description: 'optional Search query.'
-        required: false
-        example: 'my support request'
+        example: '2021-01-31'
         type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      limit:
-        name: limit
-        description: 'optional Limit of results per page.'
-        required: false
-        example: 10
-        type: integer
         enumValues: []
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      status: '0=pending,1=in progress,2=pending info,3=closed,4=reopened,5=invalid'
-      category_ids:
-        - 1
-        - 2
-        - 3
-      query: 'my support request'
-      limit: 10
+      date_from: '2021-01-01'
+      date_to: '2021-01-31'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
+          "current_page": 1,
           "data": []
           }
         headers: []
@@ -191,21 +62,21 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k6ZEfagPe5v1V8d6hcbDa43'
+      - 'Bearer vP4E81g3Z6ahkefd6VDba5c'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/help/support_requests/raise
+      - GET
+    uri: api/v1/transactions/transaction_no
     metadata:
-      groupName: 'Help Center'
+      groupName: Transaction
       groupDescription: ''
-      subgroup: 'Support Requests'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Raise Support Request'
+      title: 'Get Transaction by Transaction Number'
       description: ''
       authenticated: true
       custom: []
@@ -217,61 +88,15 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      category_id:
-        name: category_id
-        description: 'Category id.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      title:
-        name: title
-        description: 'Title of support request.'
-        required: true
-        example: 'My support request'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      message:
-        name: message
-        description: 'Message to send.'
-        required: true
-        example: 'This is my message'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      media_ids:
-        name: media_ids
-        description: 'optional Array of media ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      category_id: 1
-      title: 'My support request'
-      message: 'This is my message'
-      media_ids:
-        - 1
-        - 2
-        - 3
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "data": []
+           data: {}
           }
         headers: []
         description: success
@@ -280,21 +105,21 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PVvhZb485aDa6e1dE6gfc3k'
+      - 'Bearer 4c6dVPg8ab1vfZ56hak3DeE'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: 'api/v1/help/support_requests/{support_request_id}/reply'
+      - GET
+    uri: 'api/v1/transactions/{transaction_id}'
     metadata:
-      groupName: 'Help Center'
+      groupName: Transaction
       groupDescription: ''
-      subgroup: 'Support Requests'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Reply to Support Request'
+      title: 'Get a Transaction By ID'
       description: ''
       authenticated: true
       custom: []
@@ -303,18 +128,18 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      support_request_id:
-        name: support_request_id
-        description: 'The ID of the support request.'
+      transaction_id:
+        name: transaction_id
+        description: 'The ID of the transaction.'
         required: true
-        example: 10
+        example: 7
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
-      id:
-        name: id
-        description: 'Support Request ID.'
+      transaction:
+        name: transaction
+        description: 'Transaction ID'
         required: true
         example: '1'
         type: string
@@ -322,98 +147,8 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      support_request_id: 10
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      message:
-        name: message
-        description: 'Message to send.'
-        required: true
-        example: 'This is my message'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      media_ids:
-        name: media_ids
-        description: 'optional Array of media ids.'
-        required: false
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      message: 'This is my message'
-      media_ids:
-        - 1
-        - 2
-        - 3
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": {},
-          "request": {}
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer vdVb6Dgca46aPk3Ee58f1hZ'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/help/support_requests/{support_request_id}/messages'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get Messages of Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      support_request_id:
-        name: support_request_id
-        description: 'The ID of the support request.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      support_request_id: 10
-      id: '1'
+      transaction_id: 7
+      transaction: '1'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -424,7 +159,7 @@ endpoints:
         status: 200
         content: |-
           {
-          "data": []
+           data: {}
           }
         headers: []
         description: success
@@ -433,190 +168,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fc3g5aad8ZV4vPk6hb16EeD'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: 'api/v1/help/support_requests/{support_request_id}/resolve'
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Resolve Support Request'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      support_request_id:
-        name: support_request_id
-        description: 'The ID of the support request.'
-        required: true
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-      id:
-        name: id
-        description: 'Support Request ID.'
-        required: true
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      support_request_id: 10
-      id: '1'
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Support request resolved and closed"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 5hdD34fc6k1aeag8Z6EvPbV'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/help/support_requests/categories
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Get Support Request Categories'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      type:
-        name: type
-        description: 'optional Type of support request category.'
-        required: false
-        example: 'complain,bug,feature_request,others'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      type: 'complain,bug,feature_request,others'
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer D568cV1kf436hvadbEeZgaP'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/help/support_requests/attach
-    metadata:
-      groupName: 'Help Center'
-      groupDescription: ''
-      subgroup: 'Support Requests'
-      subgroupDescription: ''
-      title: 'Upload Attachments(Images) for Support Messages'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      images:
-        name: images
-        description: 'The images to upload.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      images: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "uploaded": [
-              {
-                 "id": 1,
-                 "name": "image.jpg",
-                 "url": "http://localhost:8000/storage/user_uploads/1/image.jpg",
-                 "size": 12345,
-                 "type": "image/jpeg"
-             }
-          ]
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["images": ["The images field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6bhZ63Eekv51aVa8cdg4PDf'
+      - 'Bearer d86e34ZvfagaE15Pb6VkDhc'
     controller: null
     method: null
     route: null

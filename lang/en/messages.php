@@ -112,6 +112,8 @@ return [
             'Profile_privacy_already_set_to' => 'Profile privacy already set to :setting',
             'Profile_privacy_updated' => 'Profile privacy updated',
             'Phone_updated' => 'Phone No. updated',
+            'Referral_code_generated' => 'Come and join me with my referral code :code',
+            'Referral_saved' => 'Successfully saved referral code',
         ],
         'view_controller' => [
             'View_recorded' => 'View recorded',
@@ -227,6 +229,9 @@ return [
             'One_or_more_article_category_ids_not_found' => 'One or more article category ids not found',
             'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => 'You cannot change your password if you are logged in with Google or Facebook',
             'Old_password_is_incorrect' => 'Old password is incorrect',
+            'User_already_referred_by_someone' => 'You already referred by someone',
+            'Referral_code_not_found' => 'Referral code :code not valid',
+            'You_cannot_refer_yourself' => 'You cannot refer yourself.',
         ],
     ],
     'notification' => [

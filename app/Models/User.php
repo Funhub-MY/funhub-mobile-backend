@@ -358,6 +358,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasOne(ArticleFeedWhitelistUser::class, 'user_id');
     }
 
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by_id');
+    }
+
     /**
      * Get the user's point balance
      */

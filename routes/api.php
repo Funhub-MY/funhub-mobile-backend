@@ -172,6 +172,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
             // Update profile privacy
             Route::post('/profile-privacy', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdateProfilePrivacy']);
+
+            // Referrals
+            Route::get('/referrals/my-code', [\App\Http\Controllers\Api\UserSettingsController::class, 'getMyReferralCode']);
+            Route::post('/referrals/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveReferral']);
         });
 
         // TODO: secure this route

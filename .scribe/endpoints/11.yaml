@@ -1,16 +1,18 @@
-name: Product
+name: View
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/products/checkout
+    uri: api/v1/views
     metadata:
-      groupName: Product
+      groupName: View
       groupDescription: ''
-      subgroup: 'Product Rewards'
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Post Checkout'
+      title: |-
+        Record view for viewable
+        This is used for recording views for articles, comments, merchant offers, user profiles and location
       description: ''
       authenticated: true
       custom: []
@@ -23,36 +25,18 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      product_id:
-        name: product_id
-        description: 'Product ID.'
+      viewable_type:
+        name: viewable_type
+        description: 'The type of the viewable.'
         required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      payment_method:
-        name: payment_method
-        description: 'Payment Method.'
-        required: true
-        example: fiat
+        example: article/comment/merchant_offer/user_profile/location
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
-      fiat_payment_method:
-        name: fiat_payment_method
-        description: 'required_if:payment_method,fiat Payment Method.'
-        required: false
-        example: fpx/card
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      quantity:
-        name: quantity
-        description: Quantity.
+      viewable_id:
+        name: viewable_id
+        description: 'The id of the viewable.'
         required: true
         example: 1
         type: integer
@@ -60,71 +44,40 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      product_id: 1
-      payment_method: fiat
-      fiat_payment_method: fpx/card
-      quantity: 1
+      viewable_type: article/comment/merchant_offer/user_profile/location
+      viewable_id: 1
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Redirect to Gateway"
+          "message": "View recorded"
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Product is sold out"
-          }
-        headers: []
-        description: insufficient_product_quantity
-        custom: []
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Redirect to gateway",
-          "gateway_data": [
-               'url' => $this->url .'/payment/eCommerce',
-                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
-                'mid' => $this->mid,
-                'invno' => $invoice_no,
-                'capture_amt' => $amount,
-                'desc' => $desc,
-                'postURL' => $redirectUrl,
-                'phone' => $phoneNo,
-                'email' => $email,
-                'param' => $param,
-                'authorize' => 'authorize'
-            ];
-          }
-        headers: []
-        description: fiat_payment_mode
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer PDdve36ah6cb8VZ5gE4fk1a'
+      - 'Bearer vch6Df15VP8EabkZea36d4g'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/products/checkout/cancel
+      - GET
+    uri: 'api/v1/views/{type}/{id}'
     metadata:
-      groupName: Product
+      groupName: View
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Cancel Product Checkout'
+      title: |-
+        Get views for viewable type
+        This is used for getting views for articles, comments, merchant offers, and user profiles
       description: ''
       authenticated: true
       custom: []
@@ -132,29 +85,40 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      transaction_no:
-        name: transaction_no
-        description: 'Transaction No.'
+    urlParameters:
+      type:
+        name: type
+        description: 'The type of the viewable.'
         required: true
-        example: '11234455'
+        example: article/comment/merchant_offer/user_profile
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
-    cleanBodyParameters:
-      transaction_no: '11234455'
+      id:
+        name: id
+        description: 'The id of the viewable.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      type: article/comment/merchant_offer/user_profile
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Transaction cancelled"
+          "views": [],
+          "total": 0
           }
         headers: []
         description: success
@@ -163,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a14fvZk3VhP8dc6E6gDe5ba'
+      - 'Bearer dEP8Vavf6g3cb64Dkah1e5Z'
     controller: null
     method: null
     route: null

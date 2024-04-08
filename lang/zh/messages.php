@@ -112,6 +112,8 @@ return [
             'Profile_privacy_already_set_to' => '个人资料隐私设置已设为 :setting',
             'Profile_privacy_updated' => '个人资料隐私已更新',
             'Phone_updated' => '电话号码已更新',
+            'Referral_code_generated' => ':code',
+            'Referral_saved' => '推荐码已保存',
         ],
         'view_controller' => [
             'View_recorded' => '已记录观看数',
@@ -230,6 +232,9 @@ return [
             'One_or_more_article_category_ids_not_found' => '一个或多个探文类别ID不存在',
             'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => '如果您使用 Google 或 Facebook 账号登录，则无法更改密码',
             'Old_password_is_incorrect' => '旧密码不正确',
+            'User_already_referred_by_someone' => '用户已被推荐',
+            'Referral_code_not_found' => '推荐码不存在',
+            'You_cannot_refer_yourself' => '您无法推荐自己',
         ],
     ],
     'notification' => [

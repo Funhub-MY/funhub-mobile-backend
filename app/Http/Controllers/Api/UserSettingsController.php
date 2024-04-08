@@ -755,4 +755,99 @@ class UserSettingsController extends Controller
             'message' => __('messages.success.user_settings_controller.Phone_updated')
         ]);
     }
+
+    /**
+     * Referral - Get My Referral Code
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Settings
+     * @subgroup Referral
+     * @response status=200 scenario="success" {
+     * "referral_code": "ABC123",
+     * "message": "Come and join with with referral code ABC123"
+     * }
+     */
+    public function getMyReferralCode(Request $request)
+    {
+        $user = auth()->user();
+
+        // check if user has referral_code generated
+        if (!$user->referral_code) {
+            $user->referral_code = strtoupper(substr(md5($user->id . $user->username . now()), 0, 7));
+            // check if referral code is unique before saving, if not regenerate max 5 times
+            $i = 0;
+            while (User::where('referral_code', $user->referral_code)->exists() && $i < 5) {
+                $user->referral_code = strtoupper(substr(md5($user->id . $user->username . now()), 0, 7));
+                $i++;
+            }
+
+            $user->save();
+            $user->refresh(); // refresh user object
+        }
+        return response()->json([
+            'referral_code' => $user->referral_code,
+            'message' => __('messages.success.user_settings_controller.Referral_code_generated',['code' => $user->referral_code])
+        ]);
+    }
+
+    /**
+     * Referral - Save Referral
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Settings
+     * @subgroup Referral
+     * @bodyParam referral_code string required Referral code of the user. Example: ABC123
+     * @response status=200 scenario="success" {
+     * "message": "Referral saved"
+     * }
+     *
+     * @response status=422 scenario="User already referred by someone" {
+     * "message": "User already referred by someone"
+     * }
+     *
+     * @response status=422 scenario="Referral code not found" {
+     * "message": "Referral code not found"
+     * }
+     *
+     * @response status=422 scenario="You cannot refer yourself" {
+     * "message": "You cannot refer yourself"
+     * }
+     */
+    public function postSaveReferral(Request $request)
+    {
+        // check if user belongs to a referral already or not
+        $user = auth()->user();
+        if ($user->referred_by_id) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.User_already_referred_by_someone')], 422);
+        }
+
+        $request->validate([
+            'referral_code' => 'required|string',
+        ]);
+
+        // check if referral code exists
+        $referredBy = User::where('referral_code', $request->referral_code)->first();
+        if (!$referredBy) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.Referral_code_not_found'. ['code' => $request->referral_code])], 422);
+        }
+
+        // check if user is not referring himself
+        if ($referredBy->id == $user->id) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.You_cannot_refer_yourself')], 422);
+        }
+
+        // save referred by
+        $user->referred_by_id = $referredBy->id;
+        $user->referred_at = now();
+        $user->save();
+
+        // fire event
+        event(new \App\Events\UserReferred($user, $referredBy));
+
+        return response()->json(['message' => __('messages.success.user_settings_controller.Referral_saved')]);
+    }
 }
