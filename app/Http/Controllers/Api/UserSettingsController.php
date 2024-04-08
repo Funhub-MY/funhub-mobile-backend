@@ -750,7 +750,7 @@ class UserSettingsController extends Controller
         $user->phone_no = $request->phone_no;
         $user->save();
 
-        return json()->response([
+        return response()->json([
             'success' => true,
             'message' => __('messages.success.user_settings_controller.Phone_updated')
         ]);
