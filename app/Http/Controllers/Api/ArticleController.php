@@ -238,7 +238,7 @@ class ArticleController extends Controller
 
         // only show those thats is not hidden from home
         // only applicable if not get articles is_following
-        if (!$request->has('following_only')) {
+        if (!$request->has('following_only') && !$request->has('tag_ids')) {
             // query only get articles that author is in articleFeedWhitelist or not hidden_from_home
             $query->where(function ($query) {
                 $query
