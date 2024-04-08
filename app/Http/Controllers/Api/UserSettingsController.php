@@ -832,7 +832,7 @@ class UserSettingsController extends Controller
         // check if referral code exists
         $referredBy = User::where('referral_code', $request->referral_code)->first();
         if (!$referredBy) {
-            return response()->json(['message' => __('messages.error.user_settings_controller.Referral_code_not_found', ['code' => $request->referral_code])], 422);
+            return response()->json(['message' => __('messages.error.user_settings_controller.Referral_code_not_found')], 422);
         }
 
         // check if user is not referring himself

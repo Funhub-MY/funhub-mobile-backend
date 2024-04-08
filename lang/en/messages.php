@@ -230,7 +230,7 @@ return [
             'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => 'You cannot change your password if you are logged in with Google or Facebook',
             'Old_password_is_incorrect' => 'Old password is incorrect',
             'User_already_referred_by_someone' => 'You already referred by someone',
-            'Referral_code_not_found' => 'Referral code :code not valid',
+            'Referral_code_not_found' => 'Referral code not valid',
             'You_cannot_refer_yourself' => 'You cannot refer yourself.',
         ],
     ],
