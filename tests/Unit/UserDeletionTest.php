@@ -66,6 +66,12 @@ class UserDeletionTest extends TestCase
             'otp' => '123456'
         ]);
 
+        // check db otp_requests has verified_at
+        $this->assertDatabaseHas('otp_requests', [
+            'user_id' => $this->user->id,
+            'verified_at' => now()
+        ]);
+
         $response->assertStatus(200);
         // assert message correct
         $response->assertJson([
