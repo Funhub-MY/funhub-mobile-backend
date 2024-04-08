@@ -47,17 +47,14 @@ class OtpRequestService
             ->where('expires_at', '>', now())
             ->first();
 
-        // check if user exists first
-        if (!$otpRequest) {
-            Log::info('[OtpRequestService] User not found', ['user_id' => $user_id]);
-            throw new \Exception('User not found, provide correct ID');
-            return false;
-        }
-
         if ($otpRequest) {
             // just resend the same otp
             $this->smsService->sendSms($phone_no_country_code . $phone_no, 'Your OTP is '.$otpRequest->otp);
-            Log::info('[OtpRequestService] Resend OTP', ['user_id' => $user_id, 'otp' => $otpRequest->otp]);
+            Log::info('[OtpRequestService] Resend OTP', [
+                'user_id' => $user_id,
+                'phone_no' => $phone_no_country_code . $phone_no,
+                'otp' => $otpRequest->otp
+            ]);
         } else {
             // no new otp yet, create one
             $otp = rand(1000, 9999);
@@ -73,7 +70,11 @@ class OtpRequestService
 
             // send
             $this->smsService->sendSms($phone_no_country_code . $phone_no, 'Your OTP is '.$otp);
-            Log::info('[OtpRequestService] Send OTP', ['user_id' => $user_id, 'otp' => $otp]);
+            Log::info('[OtpRequestService] Send OTP', [
+                'user_id' => $user_id,
+                'phone_no' => $phone_no_country_code . $phone_no,
+                'otp' => $otp
+            ]);
         }
 
         return true;
