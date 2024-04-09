@@ -186,13 +186,14 @@ class MissionResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\BadgeColumn::make('auto_disburse_rewards')
+                    ->label('Auto Disburse Rewards')
                     ->enum([
-                        0 => 'No',
-                        1 => 'Yes',
+                        false => 'No',
+                        true => 'Yes',
                     ])
                     ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
+                        'secondary' => false,
+                        'success' => true,
                     ])
                     ->sortable(),
 
