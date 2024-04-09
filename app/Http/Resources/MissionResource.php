@@ -30,9 +30,9 @@ class MissionResource extends JsonResource
             'name' => $this->name, // mission name
             'is_participating' => $isParticipating, // is user participating in this mission
             'description' => $this->description, // mission description
-            'events' => json_decode($this->events), // events that caused this mission
+            'events' => $this->events, // events that caused this mission
             'current_values' => $currentValues, // current values for each event
-            'values' => json_decode($this->values, true), // target values for each event
+            'values' => $this->values, // target values for each event
             'reward' => $this->missionable, // reward or reward component
             'reward_quantity' => $this->reward_quantity, // quantity of reward
             'claimed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
