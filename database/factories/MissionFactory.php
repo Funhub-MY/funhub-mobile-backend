@@ -33,6 +33,7 @@ class MissionFactory extends Factory
         return [
             'name' => $this->faker->name,
             'description' => 'Mission 1',
+            'enabled' => $this->faker->boolean,
             'events' => json_encode($events),
             'values' => json_encode($values),
             'frequency' => $this->faker->randomElement(['one-off', 'daily', 'monthly']),

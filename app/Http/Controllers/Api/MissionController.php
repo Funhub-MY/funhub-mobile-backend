@@ -246,10 +246,27 @@ class MissionController extends Controller
         $user = auth()->user();
 
         $claimableMissions = $user->missionsParticipating()
-            ->whereRaw('JSON_EXTRACT(missions_users.current_values, "$.*") >= JSON_EXTRACT(missions.values, "$.*")')
-            ->whereNull('missions_users.completed_at')
-            ->orderByPivot('updated_at', 'desc')
-            ->paginate(config('app.paginate_per_page'));
+        ->whereNull('missions_users.completed_at')
+        ->orderByPivot('updated_at', 'desc')
+        ->paginate(config('app.paginate_per_page'));
+
+        // filter each see if mission is claimable by comparing missions values to current_values
+        // current_values eg. {"comment_created": 1}, mission's events ['comment_created'] and values {1}
+        $claimableMissions->getCollection()->transform(function($mission) {
+            $current_values = json_decode($mission->pivot->current_values, true);
+            $values = json_decode($mission->values, true);
+
+            $claimable = true;
+            foreach (json_decode($mission->events) as $event) {
+                if (!isset($current_values[$event]) || $current_values[$event] < $values[$event]) {
+                    $claimable = false;
+                    break;
+                }
+            }
+
+            $mission->claimable = $claimable;
+            return $mission;
+        });
 
         return MissionResource::collection($claimableMissions);
     }

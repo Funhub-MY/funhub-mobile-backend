@@ -16,6 +16,7 @@ use App\Models\Reward;
 use App\Models\RewardComponent;
 use Illuminate\Support\Facades\Log;
 use App\Services\PointComponentService;
+use Illuminate\Support\Facades\DB;
 
 class MissionEventListener
 {
@@ -105,9 +106,12 @@ class MissionEventListener
      */
     private function updateMissionProgress($eventType, $user, $increments)
     {
-        $missions = Mission::where('enabled', true)
-            ->whereJsonContains('events', $eventType)
-            ->get();
+        $missions = Mission::where('status', 1)->get();
+
+        // filter by misisons->events
+        $missions = $missions->filter(function ($mission) use ($eventType) {
+            return in_array($eventType, json_decode($mission->events));
+        });
 
         foreach ($missions as $mission) {
             $userMission = $user->missionsParticipating()->where('is_completed', false)
@@ -116,6 +120,7 @@ class MissionEventListener
 
             if (!$userMission) {
                 $currentValues = [];
+                $mission->events = json_decode($mission->events);
                 foreach ($mission->events as $event) {
                     $currentValues[$event] = ($event == $eventType) ? $increments : 0;
                 }
@@ -123,6 +128,7 @@ class MissionEventListener
                     'started_at' => now(),
                     'current_values' => json_encode($currentValues)
                 ]);
+
             } else if (!$userMission->pivot->is_completed) {
                 $currentValues = json_decode($userMission->pivot->current_values, true);
                 $currentValues[$eventType] = isset($currentValues[$eventType]) ? $currentValues[$eventType] + $increments : $increments;
@@ -140,6 +146,11 @@ class MissionEventListener
      */
     private function isMissionCompleted($missionValues, $currentValues)
     {
+        // if missionvalues provided in string(json) decode first
+        if (is_string($missionValues)) {
+            $missionValues = json_decode($missionValues, true);
+        }
+
         foreach ($missionValues as $event => $value) {
             if (!isset($currentValues[$event]) || $currentValues[$event] < $value) {
                 return false;
