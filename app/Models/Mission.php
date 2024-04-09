@@ -41,7 +41,7 @@ class Mission extends BaseModel implements HasMedia, Auditable
     public function participants()
     {
         return $this->belongsToMany(User::class, 'missions_users')
-            ->withPivot('is_completed', 'started_at', 'current_values', 'completed_at')
+            ->withPivot('is_completed','last_rewarded_at', 'started_at', 'current_values', 'completed_at')
             ->withTimestamps();
     }
 
