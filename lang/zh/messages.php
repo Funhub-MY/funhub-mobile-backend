@@ -260,6 +260,8 @@ return [
             'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',
+            'RewardReceivedTitle' => '恭喜你获得了 :rewardQuantity x :rewardName',
+            'RewardReceivedBody' => '恭喜你获得了 :rewardQuantity x :rewardName 作为任务“:missionName”的奖励',
         ],
         'database' => [
             'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
@@ -283,6 +285,7 @@ return [
             'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',
+            'RewardReceivedBody' => '恭喜你获得了 :rewardQuantity x :rewardName 作为任务“:missionName”的奖励',
         ]
     ]
 ];

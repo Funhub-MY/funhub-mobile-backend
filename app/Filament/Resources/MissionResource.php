@@ -146,6 +146,13 @@ class MissionResource extends Resource
                                 ->default('one-off')
                                 ->required()
                                 ->rules('required'),
+
+                            // auto_disburse_rewards
+                            Forms\Components\Toggle::make('auto_disburse_rewards')
+                                ->label('Auto Disburse Rewards')
+                                ->default(true)
+                                ->helperText('If enabled, mission will automatically disburse rewards based on frequency and reward limit. if not, user has to self to claimable missions to claim.')
+                                ->columnSpan('full'),
                         ])
                 ]),
 
@@ -176,6 +183,29 @@ class MissionResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('reward_limit')
+                    ->sortable(),
+
+                Tables\Columns\BadgeColumn::make('auto_disburse_rewards')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable(),
+
+
+                Tables\Columns\BadgeColumn::make('status')
+                    ->enum([
+                        0 => 'Disabled',
+                        1 => 'Enabled',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')

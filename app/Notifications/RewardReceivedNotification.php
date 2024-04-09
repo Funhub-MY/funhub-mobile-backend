@@ -13,13 +13,17 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $rewardName;
+    public $reward;
     public $rewardQuantity;
+    public $user;
+    public $missionName;
 
-    public function __construct($rewardName, $rewardQuantity)
+    public function __construct($reward, $rewardQuantity, $user, $missionName)
     {
-        $this->rewardName = $rewardName;
+        $this->reward = $reward;
         $this->rewardQuantity = $rewardQuantity;
+        $this->user = $user;
+        $this->missionName = $missionName;
     }
 
     public function via($notifiable)
@@ -35,31 +39,38 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
      */
     public function toFcm($notifiable)
     {
+        $rewardName = $this->reward->name;
+        $rewardQuantity = $this->rewardQuantity;
+        $missionName = $this->missionName;
+
         return FcmMessage::create()
             ->setData([
-
                 'action' => 'mission_completed_reward_disbursement'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle(__('messages.notification.reward_received_title'))
-                ->setBody(__('messages.notification.reward_received_body', compact('rewardName', 'rewardQuantity'))
+                ->setTitle(__('messages.notification.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName')))
+                ->setBody(__('messages.notification.RewardReceivedBody', compact('rewardName', 'rewardQuantity', 'missionName')))
             );
     }
 
 
     public function toArray($notifiable)
     {
+        $rewardName = $this->reward->name;
+        $rewardQuantity = $this->rewardQuantity;
+        $missionName = $this->missionName;
+
         return [
             'object' => 'reward',
-            'object_id' => $this->comment->id,
+            'object_id' => $this->reward->id,
             'link_to_url' => false,
-            'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
-            'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
-            'action' => 'commented',
-            'from' => $this->comment->user->name,
-            'from_id' => $this->comment->user->id,
-            'title' => $this->comment->user->name,
-            'message' => __('messages.notification.database.Commented'),
+            'link_to' => $this->reward->id, // if link to url false, means get link_to_object
+            'link_to_object' => false, // if link to url false, means get link_to_object
+            'action' => 'mission_completed_reward',
+            'from' => $this->user->name,
+            'from_id' => $this->user->id,
+            'title' => $this->user->name,
+            'message' => __('messages.notification.database.RewardReceivedBody', compact('rewardName', 'rewardQuantity'. 'missionName'))
         ];
     }
 }

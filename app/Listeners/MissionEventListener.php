@@ -136,7 +136,11 @@ class MissionEventListener
                 $userMission->pivot->save();
             }
 
-            if ($this->isMissionCompleted($mission->values, $currentValues)) {
+            if ($this->isMissionCompleted($mission->values, $currentValues) && $mission->auto_disburse_rewards) {
+                Log::info('Mission Completed, auto disburse rewards', [
+                    'mission' => $mission->id,
+                    'user' => $user->id
+                ]);
                 $this->disburseRewardsBasedOnFrequency($mission, $user);
             }
         }
@@ -190,44 +194,49 @@ class MissionEventListener
 
     private function disburseRewards($mission, $user)
     {
-        if (config('app.auto_disburse_reward')) {
-            $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
+        $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
 
-            if ($disbursedRewardCount >= $mission->reward_limit) {
-                Log::info('Mission reward limit reached', [
-                    'mission' => $mission->id,
-                    'user' => $user->id,
-                    'reward_limit' => $mission->reward_limit
-                ]);
-                return;
-            }
+        if ($disbursedRewardCount >= $mission->reward_limit) {
+            Log::info('Mission reward limit reached', [
+                'mission' => $mission->id,
+                'user' => $user->id,
+                'reward_limit' => $mission->reward_limit
+            ]);
+            return;
+        }
 
-            $missionableType = $mission->missionable_type;
-            $missionableId = $mission->missionable_id;
+        $missionableType = $mission->missionable_type;
+        $missionableId = $mission->missionable_id;
 
-            if ($missionableType == Reward::class) {
-                $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
-                Log::info('Mission Completed and Disbursed Reward', [
-                    'mission' => $mission->id,
-                    'user' => $user->id,
-                    'reward_type' => 'point',
-                    'reward' => $mission->reward_quantity
-                ]);
-            } else if ($missionableType == RewardComponent::class) {
-                $this->pointComponentService->credit($mission, $missionableType, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
-                Log::info('Mission Completed and Disbursed Reward', [
-                    'mission' => $mission->id,
-                    'user' => $user->id,
-                    'reward_type' => 'point component',
-                    'reward' => $mission->reward_quantity
-                ]);
-            }
-
-            MissionRewardDisbursement::create([
-                'mission_id' => $mission->id,
-                'user_id' => $user->id,
-                'reward_quantity' => $mission->reward_quantity
+        if ($missionableType == Reward::class) {
+            $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
+            Log::info('Mission Completed and Disbursed Reward', [
+                'mission' => $mission->id,
+                'user' => $user->id,
+                'reward_type' => 'point',
+                'reward' => $mission->reward_quantity
+            ]);
+        } else if ($missionableType == RewardComponent::class) {
+            $this->pointComponentService->credit($mission, $missionableType, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
+            Log::info('Mission Completed and Disbursed Reward', [
+                'mission' => $mission->id,
+                'user' => $user->id,
+                'reward_type' => 'point component',
+                'reward' => $mission->reward_quantity
             ]);
         }
+
+        MissionRewardDisbursement::create([
+            'mission_id' => $mission->id,
+            'user_id' => $user->id,
+            'reward_quantity' => $mission->reward_quantity
+        ]);
+
+        // fire event
+        event(new \App\Events\RewardReceivedNotification(
+            $mission->missionable,
+            $mission->reward_quantity,
+            $user
+        ));
     }
 }
