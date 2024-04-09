@@ -236,7 +236,8 @@ class MissionEventListener
         event(new \App\Events\RewardReceivedNotification(
             $mission->missionable,
             $mission->reward_quantity,
-            $user
+            $user,
+            $mission->name
         ));
     }
 }
