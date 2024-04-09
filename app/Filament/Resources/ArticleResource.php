@@ -425,7 +425,7 @@ class ArticleResource extends Resource
                     ->label('Status')
                     ->options(Article::STATUS)
                     ->placeholder('All'),
-// filter by hidden_from_home
+        // filter by hidden_from_home
                 Tables\Filters\SelectFilter::make('hidden_from_home')
                     ->label('Hidden from home?')
                     ->options([

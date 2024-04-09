@@ -97,6 +97,10 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
     $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
         ->first();
 
+    // if current values is string, then decode first
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
     expect(json_decode($userMission->pivot->current_values, true)['comment_created'])->toBe(10);
 
     // expect pivot is_completed is false
