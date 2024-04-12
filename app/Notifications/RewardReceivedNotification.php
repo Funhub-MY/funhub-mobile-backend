@@ -61,7 +61,7 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
         $missionName = $this->missionName;
 
         return [
-            'object' => 'text',
+            'object' => get_class($this->reward),
             'object_id' => $this->reward->id,
             'link_to_url' => false,
             'link_to' => $this->reward->id, // if link to url false, means get link_to_object
