@@ -51,6 +51,17 @@ class MissionEventListener
             $this->handleFollowings($event);
         } else if ($event instanceof \App\Events\CompletedProfile) {
             $this->updateMissionProgress('completed_profile_setup', $event->user, 1);
+        } else if ($event instanceof \App\Events\PurchasedMerchantOffer) {
+            $this->handlePurchasedMerchantOffer($event);
+        }
+    }
+
+    private function handlePurchasedMerchantOffer($event)
+    {
+        if ($event->paymentMethod == 'points') {
+            $this->updateMissionProgress('purchased_merchant_offer_points', $event->user, 1);
+        } else if ($event->paymentMethod == 'cash') {
+            $this->updateMissionProgress('purchased_merchant_offer_cash', $event->user, 1);
         }
     }
 
