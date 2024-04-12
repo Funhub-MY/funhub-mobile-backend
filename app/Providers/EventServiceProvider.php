@@ -6,6 +6,7 @@ use App\Models\Approval;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
 use App\Events\CompletedProfile;
+use App\Events\FollowedUser;
 use App\Listeners\MediaListener;
 use App\Events\InteractionCreated;
 use App\Events\PurchasedMerchantOffer;
@@ -69,6 +70,10 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         PurchasedMerchantOffer::class => [
+            MissionEventListener::class,
+        ],
+
+        FollowedUser::class => [
             MissionEventListener::class,
         ],
 

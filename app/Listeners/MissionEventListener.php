@@ -89,7 +89,7 @@ class MissionEventListener
         } else if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_SHARE) {
             $eventType = 'share_article';
         } else if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_BOOKMARK) {
-            $eventType = 'bookmark_article';
+            $eventType = 'bookmark_an_article';
         }
 
         $this->updateMissionProgress($eventType, $user, 1);
@@ -120,7 +120,15 @@ class MissionEventListener
      */
     private function handleFollowings($event)
     {
-        $this->updateMissionProgress('follow_user', $event->user, 1);
+        if ($this->isSpamFollowing($event->user, $event->followedUser)) {
+            Log::warning('[MissionEventListener] User spam following detected', [
+                'user' => $event->user->id,
+                'followed_user' => $event->followedUser->id,
+            ]);
+            return;
+        }
+        $this->updateMissionProgress('follow_a_user', $event->user, 1);
+        $this->updateMissionProgress('accumulated_followers', $event->followedUser, 1);
     }
 
     /**
@@ -311,5 +319,17 @@ class MissionEventListener
             ->count();
 
         return $recentInteractions > 1;
+    }
+
+    private function isSpamFollowing($user, $followedUser)
+    {
+        $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));
+
+        $recentFollowings = $user->followings()
+            ->where('following_id', $followedUser->id)
+            ->where('users_followings.created_at', '>=', $spamThreshold)
+            ->count();
+
+        return $recentFollowings > 1;
     }
 }
