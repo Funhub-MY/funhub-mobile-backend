@@ -326,18 +326,15 @@ class MerchantOfferResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('available_at')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('available_until')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('store.name')
                     ->default('-')
                     ->label('By Store'),
-                Tables\Columns\TextColumn::make('unit_price')
-                    ->label('Funhub')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('available_at')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('available_until')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('expiry_days')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('quantity')

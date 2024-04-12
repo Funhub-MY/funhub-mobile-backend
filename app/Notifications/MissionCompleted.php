@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\Mission;
 use App\Models\User;
+use App\Models\Mission;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class MissionCompleted extends Notification
 {
@@ -42,7 +42,11 @@ class MissionCompleted extends Notification
 
     protected function getMessage()
     {
-        return '已完成任务“'.$this->mission->name.'”，随机获得'.$this->reward.'x'.$this->rewardQuantity.'';
+        return __('messages.notification.fcm.MissionCompleted', [
+            'missionName' => $this->mission->name,
+            'reward' => $this->reward,
+            'rewardQuantity' => $this->rewardQuantity
+        ]);
     }
 
     public function toFcm($notifiable)

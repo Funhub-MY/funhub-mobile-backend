@@ -29,6 +29,11 @@ class MerchantOfferCategory extends BaseModel implements HasMedia, Auditable
         return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_merchant_offer_categories');
     }
 
+    public function merchantOfferCampaigns()
+    {
+        return $this->belongsToMany(MerchantOfferCampaign::class, 'merchant_offer_categories_merchant_offer_campaigns')
+                ->withTimestamps();
+    }
 
     public function availableOffers()
     {

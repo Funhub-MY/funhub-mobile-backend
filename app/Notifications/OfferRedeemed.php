@@ -2,15 +2,15 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-use App\Models\MerchantOffer;
-use App\Models\MerchantOfferClaimRedemptions;
 use App\Models\User;
+use App\Models\MerchantOffer;
+use Illuminate\Bus\Queueable;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\MerchantOfferClaimRedemptions;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class OfferRedeemed extends Notification
 {
@@ -42,8 +42,7 @@ class OfferRedeemed extends Notification
 
     protected function getMessage()
     {
-        $purchaseText = '';
-        return $purchaseText.'恭喜你成功兑换“'.$this->offer->name.'“优惠券';
+        return __('messages.notification.fcm.OfferRedeemed', ['offerName' => $this->user->name]);
     }
 
     public function toFcm($notifiable)
@@ -54,9 +53,10 @@ class OfferRedeemed extends Notification
                 'claim_user_id' => (string) $this->user->id,
                 'action' => 'offer_redeemed'
             ])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('兑换成功')
-                ->setBody($this->getMessage())
+            ->setNotification(
+                \NotificationChannels\Fcm\Resources\Notification::create()
+                    ->setTitle('兑换成功')
+                    ->setBody($this->getMessage())
             );
     }
 

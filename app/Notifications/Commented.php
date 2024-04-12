@@ -4,16 +4,16 @@ namespace App\Notifications;
 
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
 use NotificationChannels\Fcm\Resources\AndroidNotification;
-use NotificationChannels\Fcm\Resources\ApnsConfig;
-use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
 class Commented extends Notification implements ShouldQueue
 {
@@ -54,7 +54,10 @@ class Commented extends Notification implements ShouldQueue
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
-                ->setBody( $this->comment->user->name . '评论了你的探文"' . $this->comment->commentable->title.'"')
+                ->setBody(__('messages.notification.fcm.Commented', [
+                    'username' => $this->comment->user->name,
+                    'commentTitle' => $this->comment->commentable->title
+                ]))
             )
             ->setApns(
                 ApnsConfig::create()
@@ -86,7 +89,7 @@ class Commented extends Notification implements ShouldQueue
             'from' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
-            'message' => '评论了你的探文，快去看看吧',
+            'message' => __('messages.notification.database.Commented'),
         ];
     }
 }

@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
 
         // run publish merchant offers every midnight
         $schedule->command('merchant-offers:publish')->dailyAt('00:00');
+        $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:10');
 
         // run send notification merchant offer redemption is expiring
         $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:00');
@@ -44,6 +45,8 @@ class Kernel extends ConsoleKernel
 
         // run scheduled maintenance every hour to manage
         $schedule->command('manage-maintenance-status')->hourly();
+
+
     }
 
     /**

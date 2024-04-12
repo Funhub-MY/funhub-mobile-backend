@@ -15,6 +15,7 @@ use App\Models\Location;
 use App\Models\LocationRating;
 use App\Models\User;
 use App\Models\UserBlock;
+use App\Services\OtpRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -298,12 +299,46 @@ class UserController extends Controller
     }
 
     /**
+     * Delete Account Request for OTP first (Phone No registered users only)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User
+     * @response scenario=success {
+     * "message": "OTP sent to your registered mobile number."
+     * }
+     */
+    public function postDeleteAccountRequestOtp(Request $request)
+    {
+        // check if logged in user is registered with social login, then this step is invalid
+        if (auth()->user()->google_id || auth()->user()->facebook_id || auth()->user()->apple_id) {
+            return response()->json(['message' => __('messages.error.user_controller.You_cannot_delete_your_account_if_you_are_logged_in_with_Google_or_Facebook')], 403);
+        }
+
+        // fire to user registered mobile no
+        $user = auth()->user();
+        $otpService = new OtpRequestService();
+
+        try {
+            $otpService->sendOtp($user->id, $user->phone_country_code, $user->phone_no, 'delete_account');
+        } catch (\Exception $e) {
+            Log::error('Error sending OTP for delete account', ['error' => $e->getMessage()]);
+            return response()->json(['message' => __('messages.error.user_controller.Error_sending_otp')], 422);
+        }
+
+        return response()->json(['message' => __('messages.success.user_controller.Account_deletion_sent_otp')]);
+    }
+
+    /**
      * Delete My Account
      *
      * @param Request $request
      * @return void
      *
      * @group User
+     * @bodyParam reason string required The reason for deleting the account. Example: I am not using this account anymore.
+     * @bodyParam otp string The OTP sent to your registered mobile number(only applies to user registered with phone no). Example: 123456
      * @response scenario=success {
      * "message": "Account deleted successfully."
      * }
@@ -313,6 +348,19 @@ class UserController extends Controller
         $this->validate($request, [
             'reason' => 'required|string'
         ]);
+
+        // if user is logged in with phone_no, not social, then requires otp
+        if (auth()->user()->phone_no && !auth()->user()->google_id && !auth()->user()->facebook_id && !auth()->user()->apple_id) {
+            $this->validate($request, [
+                'otp' => 'required'
+            ]);
+            $otpService = new OtpRequestService();
+            $otpVerified = $otpService->verifyOtp(auth()->user()->id, $request->otp);
+
+            if (!$otpVerified) {
+                return response()->json(['message' => __('messages.error.user_controller.Invalid_otp')], 422);
+            }
+        }
 
         // archive all articles by this user
         $user = auth()->user();

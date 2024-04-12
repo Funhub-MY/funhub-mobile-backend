@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Traits\QueryBuilderTrait;
 use App\Models\MerchantOfferCategory;
 use App\Http\Resources\MerchantOfferCategoryResource;
+use App\Models\MerchantOffer;
 
 class MerchantOfferCategoryController extends Controller
 {
@@ -20,6 +21,8 @@ class MerchantOfferCategoryController extends Controller
      * @subgroup Merchant Offer Categories
      * @queryParam is_featured integer Is Featured Categories. Example: 1
      * @queryParam is_active integer Is Active Categories. Example: 0
+     * @queryParam lat float Latitude. Example: 3.1390
+     * @queryParam lng float Longitude. Example: 101.6869
      * @queryParam id integer Get subcategories of a specific parent category by its ID. Example: 1
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @response scenario=success {
@@ -45,6 +48,22 @@ class MerchantOfferCategoryController extends Controller
         // Filter by is_featured if provided
         if ($request->has('is_featured') && $request->is_featured == 1) {
             $query->where('is_featured', $request->is_featured);
+        }
+
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius');
+            $offers = MerchantOffer::search('')->with([
+                'aroundLatLng' => $request->lat . ',' . $request->lng,
+                'aroundRadius' => $radius * 1000,
+                'aroundPrecision' => 50,
+            ])->query(function ($query) use ($request) {
+                $query->published();
+            })->get();
+
+            $query->withCount(['merchantOffers as available_nearby_offers_count' => function ($query) use ($offers) {
+                $query->available()
+                    ->whereIn('merchant_offers.id', $offers->pluck('id'));
+            }]);
         }
 
         // Paginate with default or specified limit

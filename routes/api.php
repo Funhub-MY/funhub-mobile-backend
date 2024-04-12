@@ -82,6 +82,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         // Article Tags
         Route::get('article_tags', \App\Http\Controllers\Api\ArticleTagController::class . '@index');
+        Route::get('article_tags/all', \App\Http\Controllers\Api\ArticleTagController::class . '@getAllTags');
         Route::get('article_tags/{article_id}', \App\Http\Controllers\Api\ArticleTagController::class . '@getTagByArticleId');
 
         // Article Categories
@@ -117,6 +118,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('user/block', [\App\Http\Controllers\Api\UserController::class, 'postBlockUser']);
         Route::post('user/unblock', [\App\Http\Controllers\Api\UserController::class, 'postUnblockUser']);
         Route::get('user/my_blocked_users', [\App\Http\Controllers\Api\UserController::class, 'getMyBlockedUsers']);
+        Route::post('user/delete/request-otp', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccountRequestOtp']);
         Route::post('user/delete', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccount']);
 
         // Merchant Offers
@@ -145,6 +147,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::prefix('/user/settings')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'getSettings']);
             Route::post('/', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSettings']);
+
+            Route::post('/phone_no/otp', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdatePhoneNo']);
+            Route::post('/phone_no/verify_otp', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdatePhoneNoVerifyOtp']);
+
             Route::post('/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveEmail']);
             Route::post('/verify/email', [\App\Http\Controllers\Api\UserSettingsController::class, 'verifyEmail']);
             Route::post('/name', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveName']);
@@ -166,6 +172,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
             // Update profile privacy
             Route::post('/profile-privacy', [\App\Http\Controllers\Api\UserSettingsController::class, 'postUpdateProfilePrivacy']);
+
+            // Referrals
+            Route::get('/referrals/my-code', [\App\Http\Controllers\Api\UserSettingsController::class, 'getMyReferralCode']);
+            Route::post('/referrals/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveReferral']);
         });
 
         // TODO: secure this route

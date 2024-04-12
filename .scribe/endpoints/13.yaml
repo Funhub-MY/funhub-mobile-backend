@@ -21,7 +21,16 @@ endpoints:
     urlParameters:
       claimed_only:
         name: claimed_only
-        description: 'boolean If set to true, only return missions rewards that has been claimed by user.'
+        description: 'boolean optional If set to true, only return missions rewards that has been claimed by user.'
+        required: false
+        example: 'false'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      completed_only:
+        name: completed_only
+        description: 'boolean optional Only show completed missions(is_completed=true).'
         required: false
         example: 'false'
         type: string
@@ -30,6 +39,7 @@ endpoints:
         custom: []
     cleanUrlParameters:
       claimed_only: 'false'
+      completed_only: 'false'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -47,9 +57,9 @@ endpoints:
             "name": "Complete 10 missions",
             "is_participating": true,
             "description": "Complete 10 missions to earn a reward",
-            "event": "mission_completed",
-            "current_value": 5,
-            "value": 10,
+            "events": ["mission_completed"],
+            "current_values": {"mission_completed": 5},
+            "values": {"mission_completed": 10},
             "reward": {
                 "id": 1,
                 "name": "Egg",
@@ -78,7 +88,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g8fP56dhe4aEab3vk6ZDV1c'
+      - 'Bearer EPk4v8eDa6c61b53dfhZVag'
     controller: null
     method: null
     route: null
@@ -138,7 +148,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5h86cVabf1gkae4E3ZDvP6d'
+      - 'Bearer hkf8PZVEav61g6ca3D45ebd'
     controller: null
     method: null
     route: null
@@ -187,7 +197,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cvD3kfaV8hbZE4g1P6e65da'
+      - 'Bearer E8aah3gd1D64VkZeP5vcbf6'
     controller: null
     method: null
     route: null

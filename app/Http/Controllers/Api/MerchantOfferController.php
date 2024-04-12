@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\MerchantOfferClaimed;
+use App\Events\PurchasedMerchantOffer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
@@ -57,6 +58,8 @@ class MerchantOfferController extends Controller
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam available_only boolean optional Filter by Available Only. Example: true
+     * @bodyParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true
+     * @bodyParam except_expired boolean optional Get all coming soon or available only but hide expired offers. Example: true
      * @bodyParam flash_only boolean optional Filter by Flash Deals Only. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -99,6 +102,14 @@ class MerchantOfferController extends Controller
 
         if ($request->has('available_only')) {
             $query->available();
+        }
+
+        if ($request->has('coming_soon_only')) {
+            $query->where('available_at', '>', now());
+        }
+
+        if ($request->has('except_expired')) {
+            $query->where('available_until', '>', now());
         }
 
         if ($request->has('flash_only') && $request->flash_only == 1) {
@@ -310,6 +321,8 @@ class MerchantOfferController extends Controller
             // fire event
             event(new MerchantOfferClaimed($offer, $user));
 
+            event(new PurchasedMerchantOffer($user, $offer, 'points'));
+
             if ($user->email) {
                 $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
                 $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
@@ -385,6 +398,9 @@ class MerchantOfferController extends Controller
                 // reduce quantity first if failed in PaymentController will release the quantity if failed
                 $offer->quantity = $offer->quantity - $request->quantity;
                 $offer->save();
+
+                // fire event
+                event(new PurchasedMerchantOffer($user, $offer, 'fiat'));
 
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([
@@ -644,7 +660,8 @@ class MerchantOfferController extends Controller
 
         // notify
         try {
-            auth()->user()->notify(new OfferRedeemed($offer, auth()->user()));
+            $locale = auth()->user()->last_lang ?? config('app.locale');
+            auth()->user()->notify((new OfferRedeemed($offer, auth()->user()))->locale($locale));
         } catch (\Exception $e) {
             Log::error('Error sending offer redeemed notification', [$e->getMessage()]);
         }
@@ -724,6 +741,8 @@ class MerchantOfferController extends Controller
      * @queryParam  lng float required Filter by Lng of User (must provide lat). Example: 101.123456
      * @queryParam  radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @queryParam  available_only boolean optional Filter by Available Only. Example: true
+     * @queryParam  coming_soon_only boolean optional Filter by Coming Soon Only. Example: true
+     * @queryParam except_expired boolean optional Get all coming soon or available only but hide expired offers. Example: true
      * @queryParam  flash_only boolean optional Filter by Flash Deals Only. Example: true
      * @queryParam  limit integer optional Per Page Limit Override. Example: 10
      *
@@ -780,6 +799,14 @@ class MerchantOfferController extends Controller
 
         if ($request->has('available_only')) {
             $query->available();
+        }
+
+        if ($request->has('coming_soon_only')) {
+            $query->where('available_at', '>', now());
+        }
+
+        if ($request->has('except_expired')) {
+            $query->where('available_until', '>', now());
         }
 
         if ($request->has('flash_only') && $request->flash_only == 1) {

@@ -54,7 +54,8 @@ class UserFollowingController extends Controller
                 ]);
 
                 if ($user && $user->id !== auth()->user()->id) {
-                    $user->notify(new \App\Notifications\NewFollowRequest(auth()->user()));
+                    $locale = $user->last_lang ?? config('app.locale');
+                    $user->notify((new \App\Notifications\NewFollowRequest(auth()->user()))->locale($locale));
                 }
                 return response()->json([
                     'message' => __('messages.success.user_following_controller.Follow_request_sent'),
@@ -74,7 +75,8 @@ class UserFollowingController extends Controller
 
         // ensure not sending to self
         if ($followedUser && $followedUser->id !== auth()->user()->id) {
-            $followedUser->notify(new \App\Notifications\Newfollower(auth()->user()));
+            $locale = $followedUser->last_lang ?? config('app.locale');
+            $followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
         }
 
         return response()->json([

@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Interaction;
+use App\Models\OtpRequest;
 use App\Models\User;
 use App\Models\UserBlock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,9 +53,23 @@ class UserDeletionTest extends TestCase
             ]);
         }
 
+        // create an otp first in Otp Requests
+        OtpRequest::create([
+            'user_id' => $this->user->id,
+            'otp' => '123456',
+            'expires_at' => now()->addMinutes(5)
+        ]);
+
         // delete account
         $response = $this->postJson('/api/v1/user/delete', [
-            'reason' => 'bye'
+            'reason' => 'bye',
+            'otp' => '123456'
+        ]);
+
+        // check db otp_requests has verified_at
+        $this->assertDatabaseHas('otp_requests', [
+            'user_id' => $this->user->id,
+            'verified_at' => now()
         ]);
 
         $response->assertStatus(200);

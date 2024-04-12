@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\MerchantOffer;
 use App\Models\User;
+use App\Models\MerchantOffer;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class RedemptionExpirationNotification extends Notification
 {
@@ -42,8 +42,10 @@ class RedemptionExpirationNotification extends Notification
 
     protected function getMessage()
     {
-        $expirationText = '';
-        return $expirationText.'优惠券"'.$this->offer->name.'"即将于'.$this->daysLeft.'天后逾期';
+        return __('messages.notification.fcm.RedemptionExpirationNotification', [
+            'offerName' => $this->user->name,
+            'daysLeft' => $this->daysLeft
+        ]);
     }
 
     public function toFcm($notifiable)
@@ -54,9 +56,10 @@ class RedemptionExpirationNotification extends Notification
                 'claim_user_id' => (string) $this->user->id,
                 'action' => 'offer_redeem_expiration'
             ])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('优惠券即将逾期')
-                ->setBody($this->getMessage())
+            ->setNotification(
+                \NotificationChannels\Fcm\Resources\Notification::create()
+                    ->setTitle('优惠券即将逾期')
+                    ->setBody($this->getMessage())
             );
     }
 

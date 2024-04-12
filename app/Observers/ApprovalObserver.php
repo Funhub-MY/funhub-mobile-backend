@@ -41,9 +41,10 @@ class ApprovalObserver
             try {
                 // Retrieve the user associated with the approval
                 $user = User::find($user_id);
+                $locale = $user->last_lang ?? config('app.locale');
 
                 // Send the notification
-                $user->notify(new NewFunboxRewardApproved($approval, $user));
+                $user->notify((new NewFunboxRewardApproved($approval, $user))->locale($locale));
             } catch (\Exception $e) {
                 Log::error('Error sending notification: ' . $e->getMessage());
             }

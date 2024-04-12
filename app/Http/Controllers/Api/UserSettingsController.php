@@ -5,12 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class UserSettingsController extends Controller
 {
+    protected $smsService;
+    public function __construct()
+    {
+        $this->smsService = new \App\Services\Sms(
+            config('services.movider.api_url'),
+            config('services.movider.key'),
+            config('services.movider.secret')
+        );
+    }
+
     /**
      * Get settings of logged in user
      *
@@ -122,6 +133,10 @@ class UserSettingsController extends Controller
             return response()->json(['message' => __('messages.error.user_settings_controller.Invalid_Token')], 422);
         }
         $user->markEmailAsVerified();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json(['message' => __('messages.success.user_settings_controller.Email_Verified')], 200);
     }
 
@@ -148,6 +163,9 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         $user->name = $request->name;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Name_updated'),
@@ -179,6 +197,9 @@ class UserSettingsController extends Controller
         $user->username = $request->username;
         $user->save();
 
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Username_updated'),
             'username' => $user->username,
@@ -209,6 +230,9 @@ class UserSettingsController extends Controller
         $user->bio = $request->bio;
         $user->save();
 
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Bio_updated'),
             'bio' => $user->bio,
@@ -238,6 +262,9 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         $user->job_title = $request->job_title;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Job_Title_updated'),
@@ -274,6 +301,9 @@ class UserSettingsController extends Controller
         $user->dob = $request->year . '-' . $request->month . '-' . $request->day;
         $user->save();
 
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Date_of_birth_updated'),
             'dob' => $user->dob,
@@ -303,6 +333,9 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         $user->gender = $request->gender;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Gender_updated'),
@@ -339,6 +372,9 @@ class UserSettingsController extends Controller
         $user->country_id = $request->country_id;
         $user->state_id = $request->state_id;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Location_updated'),
@@ -386,6 +422,10 @@ class UserSettingsController extends Controller
 
         // check if article category ids exists only sync
         $user->articleCategoriesInterests()->sync($request->category_ids);
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Article_categories_linked_to_user'),
             'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
@@ -438,6 +478,8 @@ class UserSettingsController extends Controller
 
         // bust avatar cache
         cache()->forget('user_avatar_' . $user->id);
+
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Avatar_uploaded'),
@@ -617,5 +659,226 @@ class UserSettingsController extends Controller
             'message' => __('messages.success.user_settings_controller.Profile_privacy_updated'),
             'profile_privacy' => $user->profilePrivacySettings()->orderBy('id', 'desc')->first()->profile,
         ]);
+    }
+
+    /**
+     * Update Phone No (send otp)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam country_code string required Country code of the user. Example: 60
+     * @bodyParam phone_no string required Phone number of the user. Example: 123456789
+     * @response scenario=success {
+     * "status": "success",
+     * "message": "OTP sent"
+     * }
+     */
+    public function postUpdatePhoneNo(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+        ]);
+
+        // check phone no has prefix 0 remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // check phone no has prefix + remove it first
+        if (substr($request->phone_no, 0, 1) == '+') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        }
+
+        $user = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->first();
+
+        if (!$user) { // does not exists
+            $otp = rand(100000, 999999);
+            auth()->user()->update([
+                'otp' => $otp,
+                'otp_expiry' => now()->addMinutes(1),
+                'otp_verified_at' => null,
+            ]);
+
+            // full no
+            $fullPhoneNo = $request->country_code . $request->phone_no;
+
+            // send otp
+            $this->smsService->sendSms($fullPhoneNo, config('app.name')." - Your OTP is ".auth()->user()->otp);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('messages.success.auth_controller.OTP_sent')
+            ], 200);
+        }
+
+        return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
+    }
+
+    /**
+     * Update Phone No (Verify OTP)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam country_code string required Country code of the user. Example: 60
+     * @bodyParam phone_no string required Phone number of the user. Example: 123456789
+     * @bodyParam otp string required OTP of the user. Example: 123456
+     *
+     * @response scenario=success {
+     * "success": true,
+     * "message": "Phone No updated"
+     * }
+     */
+    public function postUpdatePhoneNoVerifyOtp(Request $request)
+    {
+        $request->validate([
+            'country_code' => 'required|string',
+            'phone_no' => 'required|string',
+            'otp' => 'required|string',
+        ]);
+
+        // check phone no has prefix 0 remove it first
+        if (substr($request->phone_no, 0, 1) == '0') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        } else if (substr($request->phone_no, 0, 2) == '60') {
+            $request->merge(['phone_no' => substr($request->phone_no, 2)]);
+        }
+
+        // check phone no has prefix + remove it first
+        if (substr($request->phone_no, 0, 1) == '+') {
+            $request->merge(['phone_no' => substr($request->phone_no, 1)]);
+        }
+
+        $user = auth()->user();
+
+        if ($user->otp != $request->otp) {
+            return response()->json(['message' => __('messages.error.auth_controller.OTP_is_incorrect')], 422);
+        }
+
+        if ($user->otp_expiry < now()) {
+            return response()->json(['message' => __('messages.error.auth_controller.OTP_has_expired')], 422);
+        }
+
+        $user->otp_verified_at = now();
+        $user->otp = null; // empty it
+        $user->save();
+
+        // ensure user phone no is still not registered yet (one more time)
+        $existingUser = User::where('phone_no', $request->phone_no)
+            ->where('phone_country_code', $request->country_code)
+            ->first();
+        if ($existingUser) return response()->json(['message' => __('messages.error.auth_controller.Phone_Number_already_registered')], 422);
+
+        $user->phone_country_code = $request->country_code;
+        $user->phone_no = $request->phone_no;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.success.user_settings_controller.Phone_updated')
+        ]);
+    }
+
+    /**
+     * Referral - Get My Referral Code
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Referral
+     * @response status=200 scenario="success" {
+     * "referral_code": "ABC123",
+     * "message": "Come and join with with referral code ABC123"
+     * }
+     */
+    public function getMyReferralCode(Request $request)
+    {
+        $user = auth()->user();
+
+        // check if user has referral_code generated
+        if (!$user->referral_code) {
+            $user->referral_code = strtoupper(substr(md5($user->id . $user->username . now()), 0, 7));
+            // check if referral code is unique before saving, if not regenerate max 5 times
+            $i = 0;
+            while (User::where('referral_code', $user->referral_code)->exists() && $i < 5) {
+                $user->referral_code = strtoupper(substr(md5($user->id . $user->username . now()), 0, 7));
+                $i++;
+            }
+
+            $user->save();
+            $user->refresh(); // refresh user object
+        }
+        return response()->json([
+            'referral_code' => $user->referral_code,
+            'message' => __('messages.success.user_settings_controller.Referral_code_generated',['code' => $user->referral_code])
+        ]);
+    }
+
+    /**
+     * Referral - Save Referral
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Referral
+     * @bodyParam referral_code string required Referral code of the user. Example: ABC123
+     * @response status=200 scenario="success" {
+     * "message": "Referral saved"
+     * }
+     *
+     * @response status=422 scenario="User already referred by someone" {
+     * "message": "User already referred by someone"
+     * }
+     *
+     * @response status=422 scenario="Referral code not found" {
+     * "message": "Referral code not found"
+     * }
+     *
+     * @response status=422 scenario="You cannot refer yourself" {
+     * "message": "You cannot refer yourself"
+     * }
+     */
+    public function postSaveReferral(Request $request)
+    {
+        // check if user belongs to a referral already or not
+        $user = auth()->user();
+        if ($user->referred_by_id) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.User_already_referred_by_someone')], 422);
+        }
+
+        $request->validate([
+            'referral_code' => 'required|string',
+        ]);
+
+        // check if referral code exists
+        $referredBy = User::where('referral_code', $request->referral_code)->first();
+        if (!$referredBy) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.Referral_code_not_found')], 422);
+        }
+
+        // check if user is not referring himself
+        if ($referredBy->id == $user->id) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.You_cannot_refer_yourself')], 422);
+        }
+
+        // save referred by
+        $user->referred_by_id = $referredBy->id;
+        $user->referred_at = now();
+        $user->save();
+
+        // fire event
+        event(new \App\Events\UserReferred($user, $referredBy));
+
+        return response()->json(['message' => __('messages.success.user_settings_controller.Referral_saved')]);
     }
 }

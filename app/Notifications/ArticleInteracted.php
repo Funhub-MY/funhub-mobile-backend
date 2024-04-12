@@ -4,11 +4,11 @@ namespace App\Notifications;
 
 use App\Models\Interaction;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class ArticleInteracted extends Notification implements ShouldQueue
 {
@@ -50,7 +50,11 @@ class ArticleInteracted extends Notification implements ShouldQueue
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
-                ->setBody($this->interaction->user->name .' '. $this->getAction().'你的"' . $this->interaction->interactable->title.'"')
+                ->setBody(__('messages.notification.fcm.ArticleInteracted', [
+                    'username' => $this->interaction->user->name,
+                    'action' => $this->getAction(),
+                    'articleTitle' => $this->interaction->interactable->title
+                ]))
             );
     }
 
@@ -72,7 +76,7 @@ class ArticleInteracted extends Notification implements ShouldQueue
             'from' => $this->interaction->user->name,
             'from_id' => $this->interaction->user->id,
             'title' => $this->interaction->user->name,
-            'message' => '赞了你的探文，觉得超有趣！',
+            'message' => __('messages.notification.database.ArticleInteracted'),
         ];
     }
 

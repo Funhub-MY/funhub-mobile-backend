@@ -31,7 +31,7 @@ class MissionController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      *
      * @group Mission
-     * @urlParam claimed_only boolean If set to true, only return missions rewards that has been claimed by user. Example: false
+     * @urlParam completed_only boolean optional Only show completed missions(is_completed=true). Example: false
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
@@ -40,9 +40,9 @@ class MissionController extends Controller
      *   "name": "Complete 10 missions",
      *   "is_participating": true,
      *   "description": "Complete 10 missions to earn a reward",
-     *   "event": "mission_completed",
-     *   "current_value": 5,
-     *   "value": 10,
+     *   "events": ["mission_completed"],
+     *   "current_values": {"mission_completed": 5},
+     *   "values": {"mission_completed": 10},
      *   "reward": {
      *       "id": 1,
      *       "name": "Egg",
@@ -74,15 +74,33 @@ class MissionController extends Controller
             }])
             ->orderBy('created_at', 'desc');
 
-        if (request()->has('claimed_only') && request()->claimed_only) {
+        // if (request()->has('claimed_only') && request()->claimed_only) {
+        //     $query->whereHas('participants', function($query) {
+        //         $query->where('user_id', auth()->user()->id)
+        //             ->where('is_completed', true);
+        //     });
+        // } else {
+        //     $query->whereDoesntHave('participants', function($query) {
+        //         $query->where('user_id', auth()->user()->id)
+        //             ->where('is_completed', true);
+        //     });
+        // }
+
+        if (request()->has('completed_only') && request()->completed_only) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
-                    ->where('is_completed', true);
+                    ->where('missions_users.is_completed', true);
             });
         } else {
-            $query->whereDoesntHave('participants', function($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->where('is_completed', true);
+            // inverse: missions not yet participated by auth user OR not yet completed
+            $query->where(function($query) {
+                $query->whereDoesntHave('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                })
+                ->orWhereHas('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id)
+                        ->where('missions_users.is_completed', false);
+                });
             });
         }
 
@@ -129,7 +147,7 @@ class MissionController extends Controller
         } else {
             // complete all missions
             $missions = $user->missionsParticipating()->where('is_completed', false)
-                ->wherePivot('current_value', '>=', 'value')
+                ->whereRaw('JSON_CONTAINS(current_values, \'true\', "$")')
                 ->get();
 
             // disburse rewards
@@ -165,7 +183,8 @@ class MissionController extends Controller
         ]);
 
         try {
-            auth()->user()->notify(new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity));
+            $locale = auth()->user()->last_lang ?? config('app.locale');
+            auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
         } catch (\Exception $e) {
             Log::error('Mission Completed Notification Error', [
                 'mission_id' => $mission->id,
@@ -191,7 +210,7 @@ class MissionController extends Controller
             'mission' => $mission->toArray(),
             'user' => $user->id
         ]);
-          if ($mission->missionable_type == Reward::class) {
+        if ($mission->missionable_type == Reward::class) {
             // reward point via pointService
             $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
             Log::info('Mission Completed and Disbursed Reward', [
@@ -200,8 +219,8 @@ class MissionController extends Controller
                 'reward_type' => 'point',
                 'reward' => $mission->reward_quantity
             ]);
-          } else if ($mission->missionable_type == RewardComponent::class) {
-              // reward point via pointComponentService
+        } else if ($mission->missionable_type == RewardComponent::class) {
+            // reward point via pointComponentService
             $this->pointComponentService->credit(
                 $mission,
                 $mission->missionable, // PointComponent as reward
@@ -215,13 +234,13 @@ class MissionController extends Controller
                 'reward_type' => 'point component',
                 'reward' => $mission->reward_quantity
             ]);
-          } else {
-             Log::error('Mission Completed but no reward disbursed', [
-                 'mission' => $mission->id,
-                 'user' => $user->id,
-                 'reward_type' => 'none'
-             ]);
-          }
+        } else {
+            Log::error('Mission Completed but no reward disbursed', [
+                'mission' => $mission->id,
+                'user' => $user->id,
+                'reward_type' => 'none'
+            ]);
+        }
     }
 
     /**
@@ -243,12 +262,30 @@ class MissionController extends Controller
     public function getClaimableMissions()
     {
         $user = auth()->user();
-        $missions = $user->missionsParticipating()
-            ->wherePivot('current_value' , '>=', DB::raw('missions.value'))
-            ->wherePivot('completed_at', null)
-            ->orderByPivot('updated_at', 'desc')
-            ->paginate(config('app.paginate_per_page'));
 
-        return MissionResource::collection($missions);
+        $claimableMissions = $user->missionsParticipating()
+        ->whereNull('missions_users.completed_at')
+        ->orderByPivot('updated_at', 'desc')
+        ->paginate(config('app.paginate_per_page'));
+
+        // filter each see if mission is claimable by comparing missions values to current_values
+        // current_values eg. {"comment_created": 1}, mission's events ['comment_created'] and values {1}
+        $claimableMissions->getCollection()->transform(function($mission) {
+            $current_values = json_decode($mission->pivot->current_values, true);
+            $values = json_decode($mission->values, true);
+
+            $claimable = true;
+            foreach (json_decode($mission->events) as $event) {
+                if (!isset($current_values[$event]) || $current_values[$event] < $values[$event]) {
+                    $claimable = false;
+                    break;
+                }
+            }
+
+            $mission->claimable = $claimable;
+            return $mission;
+        });
+
+        return MissionResource::collection($claimableMissions);
     }
 }

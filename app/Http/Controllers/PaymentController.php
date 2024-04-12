@@ -316,8 +316,9 @@ class PaymentController extends Controller
             ]);
 
             try {
+                $locale = $transaction->user->last_lang ?? config('app.locale');
                 // notify
-                $transaction->user->notify(new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount));
+                $transaction->user->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
             } catch (Exception $ex) {
                 Log::error('Failed to send notification', [
                     'error' => $ex->getMessage(),

@@ -2,15 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Models\Article;
 use App\Models\User;
+use App\Models\Article;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class TaggedUserInArticle extends Notification
 {
@@ -42,7 +42,7 @@ class TaggedUserInArticle extends Notification
 
     protected function getMessage()
     {
-        return '去探玩还不忘@你，快来看看吧';
+        return __('messages.notification.fcm.TaggedUserInArticle');
     }
 
     public function toFcm($notifiable)

@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\Comment;
 use App\Models\User;
+use App\Models\Comment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class TaggedUserInComment extends Notification
 {
@@ -42,7 +42,7 @@ class TaggedUserInComment extends Notification
 
     protected function getMessage()
     {
-        return '在留言里提到了你';
+        return __('messages.notification.fcm.TaggedUserInComment');
     }
 
     public function toFcm($notifiable)

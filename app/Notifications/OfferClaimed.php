@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Models\MerchantOffer;
 use App\Models\User;
+use App\Models\MerchantOffer;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class OfferClaimed extends Notification
 {
@@ -42,15 +42,18 @@ class OfferClaimed extends Notification
     }
 
     protected function getMessage()
-    {
-        $purchaseText = '';
+    {        
         if ($this->purchaseMethod == 'points') {
-            $purchaseText.='已使用饭盒x'.$this->price;
+            return __('messages.notification.fcm.OfferClaimed.points', [
+                'price' => $this->price,
+                'offerName' => $this->offer->name
+            ]);
         } else if ($this->purchaseMethod == 'fiat') {
-            $purchaseText.='已使用现金RM'.$this->price.'';
+            return __('messages.notification.fcm.OfferClaimed.fiat', [
+                'price' => $this->price,
+                'offerName' => $this->offer->name
+            ]);
         } else {}
-
-        return $purchaseText.'兑换”'.$this->offer->name.'“优惠券 ';
     }
 
     public function toFcm($notifiable)
