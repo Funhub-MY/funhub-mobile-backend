@@ -92,6 +92,11 @@ class MissionController extends Controller
                 $query->where('user_id', auth()->user()->id)
                     ->where('is_completed', true);
             });
+        } else {
+            $query->whereDoesntHave('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('is_completed', true);
+            });
         }
 
         $missions = $query->paginate(config('app.paginate_per_page'));
