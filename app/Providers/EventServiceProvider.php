@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Models\Approval;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
+use App\Events\CompletedProfile;
 use App\Listeners\MediaListener;
 use App\Events\InteractionCreated;
 use App\Events\PurchasedMerchantOffer;
+use App\Events\UserReferred;
 use App\Events\UserSettingsUpdated;
 use App\Observers\ApprovalObserver;
 use App\Models\SupportRequestMessage;
@@ -16,6 +18,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
 use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -52,6 +55,11 @@ class EventServiceProvider extends ServiceProvider
             SyncHashtagsToSearchKeywords::class,
         ],
 
+        UserReferred::class => [
+            UserReferredListener::class, // for fixed referral reward (see config app REFERRAL_REWARD)
+            MissionEventListener::class, // for user referred event
+        ],
+
         UserSettingsUpdated::class => [
             UserSettingsSavedListener::class,
         ],
@@ -63,6 +71,7 @@ class EventServiceProvider extends ServiceProvider
         PurchasedMerchantOffer::class => [
             MissionEventListener::class,
         ],
+
     ];
 
     /**

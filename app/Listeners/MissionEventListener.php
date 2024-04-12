@@ -73,6 +73,15 @@ class MissionEventListener
         $eventType = null;
         $user = $event->interaction->user;
         $interaction = $event->interaction;
+
+        // Check if the user is spamming interactions
+        if ($this->isSpamInteraction($user, $interaction)) {
+            Log::warning('[MissionEventListener] User spam interaction detected', [
+                'user' => $user->id,
+                'interaction' => $interaction->id,
+            ]);
+            return;
+        }
         if ($interaction->interactable_type == Article::class && $interaction->type == Interaction::TYPE_LIKE) {
             $eventType = 'like_article';
         } else if ($interaction->interactable_type == Comment::class && $interaction->type == Interaction::TYPE_LIKE) {
@@ -289,5 +298,18 @@ class MissionEventListener
             $user,
             $mission->name
         ));
+    }
+
+    private function isSpamInteraction($user, $interaction)
+    {
+        $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));
+
+        $recentInteractions = Interaction::where('user_id', $user->id)
+            ->where('interactable_type', $interaction->interactable_type)
+            ->where('interactable_id', $interaction->interactable_id)
+            ->where('created_at', '>=', $spamThreshold)
+            ->count();
+
+        return $recentInteractions > 1;
     }
 }

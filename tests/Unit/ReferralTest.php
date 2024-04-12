@@ -42,8 +42,6 @@ class ReferralTest extends TestCase
 
     public function testReferredByAUser()
     {
-        Event::fake();
-
         $referredBy = User::factory()->create();
 
         // to generate code must have go to my-code once
@@ -61,16 +59,10 @@ class ReferralTest extends TestCase
 
         // log in back as the main user
         $this->actingAs($this->user);
-
         $response = $this->postJson('/api/v1/user/settings/referrals/save', [
             'referral_code' => $code
         ]);
         $response->assertStatus(200);
-
-        // assert Laravel event UserReferred has been fired
-        Event::assertDispatched(UserReferred::class, function ($e) use ($referredBy) {
-            return $e->user->id === $this->user->id && $e->referredBy->id === $referredBy->id;
-        });
 
         // check referred by id in database or not
         $this->assertDatabaseHas('users', [
@@ -82,7 +74,17 @@ class ReferralTest extends TestCase
         $response = $this->postJson('/api/v1/user/settings/referrals/save', [
             'referral_code' => $code
         ]);
-
         $response->assertStatus(422);
+
+        // check see both has funhub credited
+        $response = $this->getJson('/api/v1/points/balance');
+        expect($response->status())->toBe(200);
+        expect($response['balance'])->toBe(1);
+
+        // log back in as referredBy
+        $this->actingAs($referredBy);
+        $response = $this->getJson('/api/v1/points/balance');
+        expect($response->status())->toBe(200);
+        expect($response['balance'])->toBe(1);
     }
 }

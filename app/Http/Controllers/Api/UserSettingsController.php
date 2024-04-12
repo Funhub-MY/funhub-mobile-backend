@@ -133,6 +133,10 @@ class UserSettingsController extends Controller
             return response()->json(['message' => __('messages.error.user_settings_controller.Invalid_Token')], 422);
         }
         $user->markEmailAsVerified();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json(['message' => __('messages.success.user_settings_controller.Email_Verified')], 200);
     }
 

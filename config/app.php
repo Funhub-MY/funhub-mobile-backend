@@ -302,6 +302,10 @@ return [
 
     'search_location_use_algolia' => env('SEARCH_LOCATION_USE_ALGOLIA', true),
 
+    'missions_spam_threshold' => env('MISSION_SPAM_THRESHOLD', 1), // minutes
+
+    'referral_reward' => env('REFERRAL_REWARD', true),
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails

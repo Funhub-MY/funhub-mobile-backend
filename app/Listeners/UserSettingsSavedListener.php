@@ -7,18 +7,17 @@ use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use App\Events\UserSettingsUpdated;
 
 class UserSettingsSavedListener
 {
-    public $user;
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct()
     {
-        $this->user = $user;
     }
 
     /**
@@ -27,29 +26,30 @@ class UserSettingsSavedListener
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(UserSettingsUpdated $event)
     {
+        $user = $event->user;
         // check if name, email, interests, birthday, gender are all saved
-        if ($this->user->name
-            && $this->user->email
-            && $this->user->avatar_url
-            && $this->user->articleCategoriesInterests()->count() > 0
-            && $this->user->dob)
+        if ($user->name
+            && $user->email
+            && $user->avatar
+            && $user->articleCategoriesInterests()->count() > 0
+            && $user->dob)
         {
             Log::info('User profile completed', [
-                'user_id' => $this->user->id,
+                'user_id' => $user->id,
             ]);
 
             // fire the event
-            event(new CompletedProfile($this->user));
+            event(new CompletedProfile($user));
         } else {
             Log::info('User profile not completed', [
-                'user_id' => $this->user->id,
-                'user_name' => $this->user->name,
-                'user_email' => $this->user->email,
-                'user_avatar' => $this->user->avatar_url,
-                'user_interests' => $this->user->articleCategoriesInterests()->count(),
-                'user_dob' => $this->user->dob,
+                'user_id' => $user->id,
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'avatar_id' => $user->avatar,
+                'user_interests' => $user->articleCategoriesInterests()->count(),
+                'user_dob' => $user->dob,
             ]);
         }
     }
