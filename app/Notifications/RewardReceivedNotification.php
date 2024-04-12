@@ -70,7 +70,11 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
             'from' => 'Funhub',
             'from_id' => '',
             'title' => $this->user->name,
-            'message' => __('messages.notification.database.RewardReceivedBody', compact('rewardName', 'rewardQuantity'. 'missionName'))
+            'message' => __('messages.notification.database.RewardReceivedBody', [
+                'rewardName' => $rewardName,
+                'rewardQuantity' => $rewardQuantity,
+                'missionName' => $missionName
+            ])
         ];
     }
 }

@@ -142,30 +142,62 @@ class MissionEventListener
                 $userMission->pivot->save();
             }
 
-            if ($this->isMissionCompleted($mission->values, $currentValues) && $mission->auto_disburse_rewards) {
+            if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
                 Log::info('Mission Completed, auto disburse rewards', [
                     'mission' => $mission->id,
                     'user' => $user->id
                 ]);
-                $this->disburseRewardsBasedOnFrequency($mission, $user);
+
+                // update mission to completed first
+                $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                    'is_completed' => true,
+                    'completed_at' => now()
+                ]);
+
+                if ($mission->auto_disburse_rewards) {
+                    $this->disburseRewardsBasedOnFrequency($mission, $user);
+                }
             }
         }
     }
     /**
      * Check if Mission is Completed
      */
-    private function isMissionCompleted($missionValues, $currentValues)
+    private function isMissionCompleted($missionEvents, $missionValues, $currentValues)
     {
         // if missionvalues provided in string(json) decode first
         if (is_string($missionValues)) {
             $missionValues = json_decode($missionValues, true);
         }
 
-        foreach ($missionValues as $event => $value) {
-            if (!isset($currentValues[$event]) || $currentValues[$event] < $value) {
+        if (count($missionEvents) != count($missionValues)) {
+            return false;
+        }
+
+        // mission events decode if string
+        if (is_string($missionEvents)) {
+            $missionEvents = json_decode($missionEvents, true);
+        }
+
+        // mission events = ['like_comment', 'like_article', 'commented']
+        // mission values = [10, 20, 30]
+
+        foreach ($missionValues as $index => $value) {
+            if (!isset($currentValues[$missionEvents[$index]])) {
+                return false;
+            }
+
+            // if current values like_comment => 10 < 10
+            if ($currentValues[$missionEvents[$index]] < $value) {
                 return false;
             }
         }
+
+        Log::info('Mission Completed', [
+            'events' => $missionEvents,
+            'values' => $missionValues,
+            'current' => $currentValues
+        ]);
         return true;
     }
 
@@ -202,7 +234,7 @@ class MissionEventListener
     {
         $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
 
-        if ($disbursedRewardCount >= $mission->reward_limit) {
+        if ($mission->reward_limit > 0 && $disbursedRewardCount >= $mission->reward_limit) {
             Log::info('Mission reward limit reached', [
                 'mission' => $mission->id,
                 'user' => $user->id,
@@ -223,7 +255,8 @@ class MissionEventListener
                 'reward' => $mission->reward_quantity
             ]);
         } else if ($missionableType == RewardComponent::class) {
-            $this->pointComponentService->credit($mission, $missionableType, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
+            $missionable = RewardComponent::find($missionableId); // RewardComponent
+            $this->pointComponentService->credit($mission, $missionable, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
             Log::info('Mission Completed and Disbursed Reward', [
                 'mission' => $mission->id,
                 'user' => $user->id,
@@ -238,8 +271,8 @@ class MissionEventListener
             'reward_quantity' => $mission->reward_quantity
         ]);
 
-        // fire event
-        event(new \App\Events\RewardReceivedNotification(
+        // fire notification to user
+        $user->notify(new \App\Notifications\RewardReceivedNotification(
             $mission->missionable,
             $mission->reward_quantity,
             $user,

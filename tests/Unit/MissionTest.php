@@ -3,12 +3,14 @@
 namespace Tests\Unit;
 
 use App\Models\Article;
+use App\Models\Interaction;
 use App\Models\Mission;
 use App\Models\Reward;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use App\Models\RewardComponent;
+use Illuminate\Support\Facades\Notification;
 
 uses(RefreshDatabase::class);
 
@@ -75,7 +77,7 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
         'enabled_at' => now(),
         'description' => 'Comment on 10 articles',
         'events' => json_encode(['comment_created']),
-        'values' => json_encode(['comment_created' => 10]),
+        'values' => json_encode([10]),
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
@@ -104,8 +106,8 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
 
     expect(array_values($userMission->pivot->current_values)[0])->toBe(10);
 
-    // expect pivot is_completed is false
-    expect($userMission->pivot->is_completed)->toBe(0);
+    // since commented on 10 articles
+    expect($userMission->pivot->is_completed)->toBe(1);
 
     // user send request to complete mission
     $response = $this->postJson('/api/v1/missions/complete', ['mission_id' => $mission->id]);
@@ -144,7 +146,7 @@ it('User can get missions, completed missions, participating missions and missio
         'enabled_at' => now(),
         'description' => 'Comment on 10 articles',
         'events' => json_encode(['comment_created']),
-        'values' => json_encode(['comment_created' => 10]),
+        'values' => json_encode([10]),
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
@@ -189,11 +191,12 @@ it('User can get missions, completed missions, participating missions and missio
     $response = $this->getJson('/api/v1/missions');
     expect($response->status())->toBe(200);
 
-    // expect response json to have is_participating true, and current_values contains comment_created = 10
-    $participatingMission = collect($response->json('data'))->firstWhere('is_participating', true);
-
-    expect($participatingMission['current_values']['comment_created'])
-        ->toBe(10);
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
+        ->first();
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(10);
 
     // claim and query claimed_only
     $response = $this->postJson('/api/v1/missions/complete', ['mission_id' => $mission->id]);
@@ -245,4 +248,113 @@ it('User can get latest claimable missions', function () {
     // expect response json have missions with id $mission->id
     expect($response->json('data.*.id'))
         ->toContain($mission->id);
+});
+
+// test like_article mission
+it('User can like an article and get rewarded by mission', function () {
+    Notification::fake();
+
+    $articles = Article::factory()->count(10)->create();
+
+    // get reward component
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+
+    // create a mission for article count to 10 and reward a component
+    $mission = Mission::factory()->create([
+        'name' => 'Like 10 articles',
+        'enabled_at' => now(),
+        'description' => 'Like 10 articles',
+        'events' => json_encode(['like_article']),
+        'values' => json_encode([10]),
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'reward_limit' => 100,
+        'frequency' => 'one-off',
+        'status' => 1,
+        'auto_disburse_rewards' => 1, // make sure set auto disburse on if want to check rewards immediately
+        'user_id' => $this->user->id
+    ]);
+
+    foreach ($articles as $article) {
+        // like each articles
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $article->id,
+            'interactable' => 'article',
+            'type' => 'like',
+        ]);
+
+        // assert status is 200
+        $response->assertStatus(200);
+    }
+
+    // check user mission process current_values
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
+        ->first();
+
+    // if current values is string, then decode first
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+
+    // expect current_values to be 10
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(10);
+
+    // expect pivot is_completed is true
+    expect($this->user->missionsParticipating->first()->pivot->is_completed)
+        ->toBe(1);
+
+    // check notification fired
+    Notification::assertSentTo(
+        [$this->user],
+        \App\Notifications\RewardReceivedNotification::class
+    );
+
+    // check user has received reward component
+    $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
+    expect($response->status())->toBe(200);
+
+    // eg response
+    // [
+    //     'type' => $request->type,
+    //     'balance' => $latestLedger->balance
+    // ]
+
+    // check if response has 鸡蛋 => 1
+    expect($response->json('balance'))->toBe(1);
+
+    /// spam 10 more likes to get another reward, should not get rewarded
+    // create 10 more articles besides the 10 created above
+    $articles = Article::factory()->count(10)->create();
+
+    foreach ($articles as $article) {
+        // like each articles
+        $response = $this->postJson('/api/v1/interactions', [
+            'id' => $article->id,
+            'interactable' => 'article',
+            'type' => 'like',
+        ]);
+
+        // assert status is 200
+        $response->assertStatus(200);
+    }
+
+    // check user mission process current_values
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
+        ->first();
+
+    // if current values is string, then decode first
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+
+    // expect current_values to be 10
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(10); // maintain at 10 because is_completed is true
+
+    // check if balance egg still 1
+    $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
+    expect($response->status())->toBe(200);
+
+    // check if response has 鸡蛋 => 1
+    expect($response->json('balance'))->toBe(1);
 });
