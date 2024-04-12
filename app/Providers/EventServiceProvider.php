@@ -7,6 +7,7 @@ use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
 use App\Listeners\MediaListener;
 use App\Events\InteractionCreated;
+use App\Events\UserSettingsUpdated;
 use App\Observers\ApprovalObserver;
 use App\Models\SupportRequestMessage;
 use Illuminate\Support\Facades\Event;
@@ -14,6 +15,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Listeners\UserSettingsSavedListener;
 use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
@@ -47,6 +49,14 @@ class EventServiceProvider extends ServiceProvider
             MissionEventListener::class,
             CreateViewsForArticleListener::class,
             SyncHashtagsToSearchKeywords::class,
+        ],
+
+        UserSettingsUpdated::class => [
+            UserSettingsSavedListener::class,
+        ],
+
+        CompletedProfile::class => [
+            MissionEventListener::class,
         ],
     ];
 

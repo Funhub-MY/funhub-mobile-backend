@@ -160,6 +160,9 @@ class UserSettingsController extends Controller
         $user->name = $request->name;
         $user->save();
 
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Name_updated'),
             'name' => $user->name,
@@ -189,6 +192,9 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         $user->username = $request->username;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Username_updated'),
@@ -220,6 +226,9 @@ class UserSettingsController extends Controller
         $user->bio = $request->bio;
         $user->save();
 
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Bio_updated'),
             'bio' => $user->bio,
@@ -249,6 +258,9 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         $user->job_title = $request->job_title;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Job_Title_updated'),
@@ -285,6 +297,9 @@ class UserSettingsController extends Controller
         $user->dob = $request->year . '-' . $request->month . '-' . $request->day;
         $user->save();
 
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Date_of_birth_updated'),
             'dob' => $user->dob,
@@ -314,6 +329,9 @@ class UserSettingsController extends Controller
         $user = auth()->user();
         $user->gender = $request->gender;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Gender_updated'),
@@ -350,6 +368,9 @@ class UserSettingsController extends Controller
         $user->country_id = $request->country_id;
         $user->state_id = $request->state_id;
         $user->save();
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Location_updated'),
@@ -397,6 +418,10 @@ class UserSettingsController extends Controller
 
         // check if article category ids exists only sync
         $user->articleCategoriesInterests()->sync($request->category_ids);
+
+        // fire event
+        event(new \App\Events\UserSettingsUpdated($user));
+
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Article_categories_linked_to_user'),
             'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
@@ -449,6 +474,8 @@ class UserSettingsController extends Controller
 
         // bust avatar cache
         cache()->forget('user_avatar_' . $user->id);
+
+        event(new \App\Events\UserSettingsUpdated($user));
 
         return response()->json([
             'message' => __('messages.success.user_settings_controller.Avatar_uploaded'),

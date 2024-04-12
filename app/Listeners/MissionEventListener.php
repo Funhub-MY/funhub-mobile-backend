@@ -49,6 +49,8 @@ class MissionEventListener
             $this->handleArticleCreated($event);
         } else if ($event instanceof FollowedUser) {
             $this->handleFollowings($event);
+        } else if ($event instanceof \App\Events\CompletedProfile) {
+            $this->updateMissionProgress('completed_profile_setup', $event->user, 1);
         }
     }
 
@@ -132,7 +134,9 @@ class MissionEventListener
                 ]);
 
             } else if (!$userMission->pivot->is_completed) {
-                $currentValues = json_decode($userMission->pivot->current_values, true);
+                // if current_value is string, decode it first
+                $currentValues = is_string($userMission->pivot->current_values) ? json_decode($userMission->pivot->current_values, true) : $userMission->pivot->current_values;
+
                 $currentValues[$eventType] = isset($currentValues[$eventType]) ? $currentValues[$eventType] + $increments : $increments;
                 $userMission->pivot->current_values = json_encode($currentValues);
                 $userMission->pivot->save();

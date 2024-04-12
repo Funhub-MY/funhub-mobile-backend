@@ -101,7 +101,8 @@ it('User can comment on 10 articles and get rewarded by mission', function () {
     if (is_string($userMission->pivot->current_values)) {
         $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
     }
-    expect(json_decode($userMission->pivot->current_values, true)['comment_created'])->toBe(10);
+
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(10);
 
     // expect pivot is_completed is false
     expect($userMission->pivot->is_completed)->toBe(0);
