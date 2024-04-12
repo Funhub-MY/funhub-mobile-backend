@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Mission;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
@@ -28,6 +29,7 @@ class MissionResource extends JsonResource
         return [
             'id' => $this->id, // mission id
             'name' => $this->name, // mission name
+            'image' => $this->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME), // mission image
             'is_participating' => $isParticipating, // is user participating in this mission
             'description' => $this->description, // mission description
             'events' => $this->events, // events that caused this mission
