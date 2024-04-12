@@ -37,7 +37,6 @@ class UpdateUserLastLang implements ShouldQueue
      */
     public function handle()
     {
-        Log::alert('[UpdateUserLastLang] Updating last language for user ' . $this->user->id);
         // Update the user's last_lang column
         $this->user->update(['last_lang' => $this->lastLang]);
     }
