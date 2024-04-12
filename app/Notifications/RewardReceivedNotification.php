@@ -66,9 +66,9 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
             'link_to_url' => false,
             'link_to' => $this->reward->id, // if link to url false, means get link_to_object
             'link_to_object' => false, // if link to url false, means get link_to_object
-            'action' => 'mission_completed_reward',
-            'from' => $this->user->name,
-            'from_id' => $this->user->id,
+            'action' => 'custom_notification',
+            'from' => 'Funhub',
+            'from_id' => '',
             'title' => $this->user->name,
             'message' => __('messages.notification.database.RewardReceivedBody', compact('rewardName', 'rewardQuantity'. 'missionName'))
         ];
