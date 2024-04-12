@@ -107,10 +107,11 @@ class MissionEventListener
     private function updateMissionProgress($eventType, $user, $increments)
     {
         $missions = Mission::where('status', 1)->get();
-
         // filter by misisons->events
         $missions = $missions->filter(function ($mission) use ($eventType) {
-            return in_array($eventType, json_decode($mission->events));
+            // if mission event is string decode, if not return as is
+            $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
+            return in_array($eventType, $mission->events);
         });
 
         foreach ($missions as $mission) {
@@ -120,7 +121,8 @@ class MissionEventListener
 
             if (!$userMission) {
                 $currentValues = [];
-                $mission->events = json_decode($mission->events);
+                $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
+
                 foreach ($mission->events as $event) {
                     $currentValues[$event] = ($event == $eventType) ? $increments : 0;
                 }

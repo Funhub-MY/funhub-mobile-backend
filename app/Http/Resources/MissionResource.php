@@ -35,6 +35,8 @@ class MissionResource extends JsonResource
             'values' => $this->values, // target values for each event
             'reward' => $this->missionable, // reward or reward component
             'reward_quantity' => $this->reward_quantity, // quantity of reward
+            'auto_disburse_rewards' => $this->auto_disburse_rewards, // auto disburse rewards
+            'is_completed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
             'claimed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
             'claimed_at' => ($myParticipation) ? $myParticipation->completed_at : null,
             'claimed_at_formatted' => ($myParticipation && $myParticipation->completed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,
