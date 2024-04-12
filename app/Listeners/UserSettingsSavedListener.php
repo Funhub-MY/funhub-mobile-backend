@@ -6,6 +6,7 @@ use App\Events\CompletedProfile;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class UserSettingsSavedListener
 {
@@ -35,6 +36,10 @@ class UserSettingsSavedListener
             && $this->user->articleCategoriesInterests()->count() > 0
             && $this->user->dob)
         {
+            Log::info('User profile completed', [
+                'user_id' => $this->user->id,
+            ]);
+
             // fire the event
             event(new CompletedProfile($this->user));
         }

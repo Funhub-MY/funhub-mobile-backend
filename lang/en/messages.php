@@ -257,8 +257,8 @@ return [
             'TaggedUserInArticle' => 'Didn\'t forget to @ you even while playing, come have a look',
             'TaggedUserInComment' => 'Mentioned you in the comments',
             'VoucherRedeemedNotification' => 'Voucher redeemed',
-            'RewardReceivedTitle' => 'You have received :reward x :rewardQuantity',
-            'RewardReceivedBody' => 'You have received :reward x :rewardQuantity for completing mission ":missionName"',
+            'RewardReceivedTitle' => 'You have received :rewardName x :rewardQuantity',
+            'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -282,7 +282,7 @@ return [
             'TaggedUserInArticle' => 'Didn\'t forget to @ you even while playing, come have a look',
             'TaggedUserInComment' => 'Mentioned you in the comments',
             'VoucherRedeemedNotification' => 'Voucher redeemed',
-            'RewardReceivedBody' => 'You have received :reward x :rewardQuantity for completing mission ":missionName"',
+            'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
         ]
     ]
 ];
