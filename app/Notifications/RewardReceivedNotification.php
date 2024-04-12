@@ -45,7 +45,7 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
 
         return FcmMessage::create()
             ->setData([
-                'action' => 'mission_completed_reward_disbursement'
+                'action' => 'custom_notification'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName')))
@@ -61,7 +61,7 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
         $missionName = $this->missionName;
 
         return [
-            'object' => 'reward',
+            'object' => 'text',
             'object_id' => $this->reward->id,
             'link_to_url' => false,
             'link_to' => $this->reward->id, // if link to url false, means get link_to_object
