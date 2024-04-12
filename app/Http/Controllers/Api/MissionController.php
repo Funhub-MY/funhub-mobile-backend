@@ -92,10 +92,15 @@ class MissionController extends Controller
                     ->where('missions_users.is_completed', true);
             });
         } else {
-            // inverse
-            $query->whereHas('participants', function($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->where('missions_users.is_completed', false);
+            // inverse: missions not yet participated by auth user OR not yet completed
+            $query->where(function($query) {
+                $query->whereDoesntHave('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                })
+                ->orWhereHas('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id)
+                        ->where('missions_users.is_completed', false);
+                });
             });
         }
 
