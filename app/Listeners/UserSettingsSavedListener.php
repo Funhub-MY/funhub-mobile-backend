@@ -42,6 +42,15 @@ class UserSettingsSavedListener
 
             // fire the event
             event(new CompletedProfile($this->user));
+        } else {
+            Log::info('User profile not completed', [
+                'user_id' => $this->user->id,
+                'user_name' => $this->user->name,
+                'user_email' => $this->user->email,
+                'user_avatar' => $this->user->avatar_url,
+                'user_interests' => $this->user->articleCategoriesInterests()->count(),
+                'user_dob' => $this->user->dob,
+            ]);
         }
     }
 }

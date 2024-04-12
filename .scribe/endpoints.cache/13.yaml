@@ -23,7 +23,16 @@ endpoints:
     urlParameters:
       claimed_only:
         name: claimed_only
-        description: 'boolean If set to true, only return missions rewards that has been claimed by user.'
+        description: 'boolean optional If set to true, only return missions rewards that has been claimed by user.'
+        required: false
+        example: 'false'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      completed_only:
+        name: completed_only
+        description: 'boolean optional Only show completed missions(is_completed=true).'
         required: false
         example: 'false'
         type: string
@@ -32,6 +41,7 @@ endpoints:
         custom: []
     cleanUrlParameters:
       claimed_only: 'false'
+      completed_only: 'false'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -80,7 +90,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hvk4VafD5e3cPb6dgE6a18Z'
+      - 'Bearer 63hvVbaZ8PgEafcd4156kDe'
     controller: null
     method: null
     route: null
@@ -140,7 +150,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer va8P6haD3V45f61ZckdgbeE'
+      - 'Bearer kca63Efav1VZD8gPhd4b65e'
     controller: null
     method: null
     route: null
@@ -189,7 +199,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EbaVdZ16ac5648gPkvfDhe3'
+      - 'Bearer 6vfVZ4186EcaDa5h3gkePdb'
     controller: null
     method: null
     route: null

@@ -31,7 +31,8 @@ class MissionController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      *
      * @group Mission
-     * @urlParam claimed_only boolean If set to true, only return missions rewards that has been claimed by user. Example: false
+     * @urlParam claimed_only boolean optional If set to true, only return missions rewards that has been claimed by user. Example: false
+     * @urlParam completed_only boolean optional Only show completed missions(is_completed=true). Example: false
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
@@ -81,6 +82,13 @@ class MissionController extends Controller
             });
         } else {
             $query->whereDoesntHave('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('is_completed', true);
+            });
+        }
+
+        if (request()->has('completed_only') && request()->completed_only) {
+            $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('is_completed', true);
             });
