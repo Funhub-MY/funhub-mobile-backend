@@ -92,10 +92,10 @@ class MissionController extends Controller
                     ->wherePivot('is_completed', true);
             });
         } else {
-            // inverse
-            $query->whereDoesntHave('participants', function($query) {
+            //inverse
+            $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
-                    ->wherePivot('is_completed', true);
+                    ->wherePivot('is_completed', false);
             });
         }
 
