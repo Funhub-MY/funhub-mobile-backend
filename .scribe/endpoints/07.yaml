@@ -38,7 +38,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - voluptas
+          - cupiditate
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -88,6 +88,24 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      coming_soon_only:
+        name: coming_soon_only
+        description: 'optional Filter by Coming Soon Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      except_expired:
+        name: except_expired
+        description: 'optional Get all coming soon or available only but hide expired offers.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       flash_only:
         name: flash_only
         description: 'optional Filter by Flash Deals Only.'
@@ -112,12 +130,14 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - voluptas
+        - cupiditate
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
       radius: 10000
       available_only: true
+      coming_soon_only: true
+      except_expired: true
       flash_only: true
       limit: 10
     bodyParameters: []
@@ -137,7 +157,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eEhdDgv165f436cakbVP8aZ'
+      - 'Bearer haD65b1kZdvce8VgPaE6f43'
     controller: null
     method: null
     route: null
@@ -244,7 +264,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DPab56cvh613Z8gkVe4Efda'
+      - 'Bearer ehf664kb5PV1Za38EdDvcga'
     controller: null
     method: null
     route: null
@@ -288,7 +308,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - fugiat
+          - dolorem
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -341,6 +361,24 @@ endpoints:
       available_only:
         name: available_only
         description: 'optional Filter by Available Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      coming_soon_only:
+        name: coming_soon_only
+        description: 'optional Filter by Coming Soon Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      except_expired:
+        name: except_expired
+        description: 'optional Get all coming soon or available only but hide expired offers.'
         required: false
         example: true
         type: boolean
@@ -416,13 +454,15 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - fugiat
+        - dolorem
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
       radius: 10000
       location_id: 1
       available_only: true
+      coming_soon_only: true
+      except_expired: true
       flash_only: true
       filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
@@ -449,7 +489,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bkcegva683EdZ6DfaV41Ph5'
+      - 'Bearer DZ66Ebe5fa81ad4PvcVhg3k'
     controller: null
     method: null
     route: null
@@ -572,7 +612,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e1af3cgd8v54kVZ6aE6DhPb'
+      - 'Bearer 6beE8d5Pf1hcV64ZaaDgkv3'
     controller: null
     method: null
     route: null
@@ -659,7 +699,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3gVe6cvk4aZDE85b6adPh1f'
+      - 'Bearer PZkfacg8ebDvh1a45V3d66E'
     controller: null
     method: null
     route: null
@@ -721,7 +761,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z1ehf3kcV568vPE4Dga6bda'
+      - 'Bearer VP1f34E68gac5vaeZdk6Dbh'
     controller: null
     method: null
     route: null
@@ -774,7 +814,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pc613DvaEha48kef65VdZbg'
+      - 'Bearer DfahEZe5VP4d18c6abg63vk'
     controller: null
     method: null
     route: null
@@ -837,7 +877,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vfbV6agZd3E4516eaDkPch8'
+      - 'Bearer b4ck3dhg6V85vD1EaaeZPf6'
     controller: null
     method: null
     route: null
@@ -880,6 +920,24 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      lat:
+        name: lat
+        description: Latitude.
+        required: false
+        example: 3.139
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      lng:
+        name: lng
+        description: Longitude.
+        required: false
+        example: 101.6869
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       id:
         name: id
         description: 'Get subcategories of a specific parent category by its ID.'
@@ -892,6 +950,8 @@ endpoints:
     cleanQueryParameters:
       is_featured: 1
       is_active: 0
+      lat: 3.139
+      lng: 101.6869
       id: 1
     bodyParameters:
       limit:
@@ -920,7 +980,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aeghkvD4P13686dbE5fcaVZ'
+      - 'Bearer 664dekhv8ZVEacPDa5gf1b3'
     controller: null
     method: null
     route: null
@@ -1039,7 +1099,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Efe36bPDZhVgava1864k5dc'
+      - 'Bearer ZkVEePbD3f6a6d15v8h4cag'
     controller: null
     method: null
     route: null
@@ -1098,7 +1158,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VvD5Zg8ba634kE1cf6Padhe'
+      - 'Bearer f86EPk1eV63Zgcdaa5vDhb4'
     controller: null
     method: null
     route: null
@@ -1238,7 +1298,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6c1d8bef6ahv53a4gVEDkPZ'
+      - 'Bearer 6Dg84kahfbV1PZde5v63Eac'
     controller: null
     method: null
     route: null

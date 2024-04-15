@@ -425,6 +425,23 @@ class ArticleResource extends Resource
                     ->label('Status')
                     ->options(Article::STATUS)
                     ->placeholder('All'),
+        // filter by hidden_from_home
+                Tables\Filters\SelectFilter::make('hidden_from_home')
+                    ->label('Hidden from home?')
+                    ->options([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->placeholder('All'),
+
+                // filter by has video
+                Tables\Filters\SelectFilter::make('type')
+                    ->label('Has Video?')
+                    ->options([
+                        'video' => 'Yes',
+                        'multimedia' => 'No',
+                    ])
+                    ->placeholder('All'),
                 // filter by ArticleCategory
                 Tables\Filters\SelectFilter::make('categories')
                     ->label('Categories')
@@ -478,7 +495,21 @@ class ArticleResource extends Resource
                     $records->each(function (Article $record) {
                         $record->update(['status' => 2]);
                     });
-                })->requiresConfirmation()
+                })->requiresConfirmation(),
+// table bulkaction to mark hidden from home toggle
+                Tables\Actions\BulkAction::make('toggle_hidden_from_home')
+                ->label('Toggle Home Hidden/Visible')
+                ->form([
+                    Toggle::make('hidden_from_home')
+                        ->label('Hide from Home?')
+                        ->default(true)
+                ])
+                ->action(function(array $data, $livewire){
+                    if (count($livewire->selectedTableRecords) > 0) {
+                        Article::whereIn('id', $livewire->selectedTableRecords)
+                            ->update(['hidden_from_home' => $data['hidden_from_home']]);
+                    }
+                })->requiresConfirmation(),
             ]);
     }
 

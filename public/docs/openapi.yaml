@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 3
+                  example: 2
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: quia
+                  example: distinctio
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: repellat
+                  example: et
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - repellat
+                    - praesentium
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 8
               required:
                 - keyword_id
     parameters:
@@ -582,7 +582,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - distinctio
+                    - odio
                   items:
                     type: string
                 category_ids:
@@ -991,6 +991,58 @@ paths:
                   type: integer
                   description: 'Offset Override.'
                   example: 0
+  /api/v1/article_tags/all:
+    get:
+      summary: 'Get all tags available'
+      operationId: getAllTagsAvailable
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tags: []
+                properties:
+                  tags:
+                    type: array
+                    example: []
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search:
+                  type: string
+                  description: 'optional Hashtag to Filter.'
+                  example: ta
+                filter:
+                  type: string
+                  description: 'Column to Filter.'
+                  example: 'Filterable columns are: id, name, created_at, updated_at'
+                filter_value:
+                  type: string
+                  description: 'Value to Filter.'
+                  example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+                sort:
+                  type: string
+                  description: 'Column to Sort.'
+                  example: 'Sortable columns are: id, name, created_at, updated_at'
+                order:
+                  type: string
+                  description: 'Direction to Sort.'
+                  example: 'Sortable directions are: asc, desc'
+                limit:
+                  type: integer
+                  description: 'Per Page Limit Override.'
+                  example: 10
   '/api/v1/article_tags/{article_id}':
     get:
       summary: 'Get Tags by article id'
@@ -1220,7 +1272,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: delectus
+        example: ipsum
         required: true
         schema:
           type: string
@@ -1301,11 +1353,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: autem
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: optio
+                  example: et
               required:
                 - comment_id
                 - reason
@@ -1587,7 +1639,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: vitae
+        example: alias
         required: true
         schema:
           type: string
@@ -2027,7 +2079,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                      line: 569
+                      line: 581
                       function: userFromToken
                       class: Laravel\Socialite\Two\AbstractProvider
                       type: '->'
@@ -2069,7 +2121,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 35
+                      line: 40
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -2523,7 +2575,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                        line: 569
+                        line: 581
                         function: userFromToken
                         class: Laravel\Socialite\Two\AbstractProvider
                         type: '->'
@@ -2565,7 +2617,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 35
+                        line: 40
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -3056,7 +3108,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                      line: 611
+                      line: 623
                       function: userFromToken
                       class: Laravel\Socialite\Two\AbstractProvider
                       type: '->'
@@ -3098,7 +3150,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 35
+                      line: 40
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -3552,7 +3604,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php
-                        line: 611
+                        line: 623
                         function: userFromToken
                         class: Laravel\Socialite\Two\AbstractProvider
                         type: '->'
@@ -3594,7 +3646,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 35
+                        line: 40
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -4508,7 +4560,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: rschumm@example.org
+                  example: brady09@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4593,7 +4645,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1389
+                      line: 1406
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -4633,7 +4685,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 35
+                      line: 40
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -5015,7 +5067,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1389
+                        line: 1406
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5055,7 +5107,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 35
+                        line: 40
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -5443,7 +5495,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: dolorum
+                  example: qui
               required:
                 - share_code
   /api/v1/public_user:
@@ -5477,7 +5529,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: vero
+                  example: inventore
               required:
                 - username
   /api/v1/public_offer:
@@ -5507,7 +5559,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 693
+                      line: 704
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5547,7 +5599,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 35
+                      line: 40
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -5929,7 +5981,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 693
+                        line: 704
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5969,7 +6021,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 35
+                        line: 40
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -6357,7 +6409,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: omnis
+                  example: sequi
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7036,7 +7088,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatem
+                    - voluptatibus
                   items:
                     type: string
                 name:
@@ -7217,13 +7269,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - voluptas
+            - cupiditate
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - voluptas
+              - cupiditate
             items:
               type: string
         -
@@ -7275,6 +7327,26 @@ paths:
           schema:
             type: boolean
             description: 'optional Filter by Available Only.'
+            example: true
+        -
+          in: query
+          name: coming_soon_only
+          description: 'optional Filter by Coming Soon Only.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'optional Filter by Coming Soon Only.'
+            example: true
+        -
+          in: query
+          name: except_expired
+          description: 'optional Get all coming soon or available only but hide expired offers.'
+          example: true
+          required: false
+          schema:
+            type: boolean
+            description: 'optional Get all coming soon or available only but hide expired offers.'
             example: true
         -
           in: query
@@ -7389,7 +7461,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - fugiat
+                    - dolorem
                   items:
                     type: string
                 city:
@@ -7415,6 +7487,14 @@ paths:
                 available_only:
                   type: boolean
                   description: 'optional Filter by Available Only.'
+                  example: true
+                coming_soon_only:
+                  type: boolean
+                  description: 'optional Filter by Coming Soon Only.'
+                  example: true
+                except_expired:
+                  type: boolean
+                  description: 'optional Get all coming soon or available only but hide expired offers.'
                   example: true
                 flash_only:
                   type: boolean
@@ -7681,6 +7761,26 @@ paths:
             type: integer
             description: 'Is Active Categories.'
             example: 0
+        -
+          in: query
+          name: lat
+          description: Latitude.
+          example: 3.139
+          required: false
+          schema:
+            type: number
+            description: Latitude.
+            example: 3.139
+        -
+          in: query
+          name: lng
+          description: Longitude.
+          example: 101.6869
+          required: false
+          schema:
+            type: number
+            description: Longitude.
+            example: 101.6869
         -
           in: query
           name: id
@@ -7966,14 +8066,28 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: "{\n\"current_page\": 1,\n\"data\": [\n  {\n  \"id\": 1,\n  \"name\": \"Complete 10 missions\",\n  \"is_participating\": true,\n  \"description\": \"Complete 10 missions to earn a reward\",\n  \"event\": \"mission_completed\",\n  \"current_value\": 5,\n  \"value\": 10,\n  \"reward\": {\n      \"id\": 1,\n      \"name\": \"Egg\",\n      \"description\": \"egg\",\n      \"thumbnail_url\": \"https://example.com/egg.png\",\n  },\n  \"reward_quantity\": 1,\n  \"claimed\": false,\n  \"claimed_at\": null,\n  \"claimed_at_formatted\": null,\n  \"claimed_at_ago\": null\n }\n],\n\"first_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"from\": 1,\n\"last_page\": 1,\n\"last_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"next_page_url\": null,\n\"path\": \"http://localhost:8000/api/missions\",\n\"per_page\": 15,\n}"
+                example: "{\n\"current_page\": 1,\n\"data\": [\n  {\n  \"id\": 1,\n  \"name\": \"Complete 10 missions\",\n  \"is_participating\": true,\n  \"description\": \"Complete 10 missions to earn a reward\",\n  \"events\": [\"mission_completed\"],\n  \"current_values\": {\"mission_completed\": 5},\n  \"values\": {\"mission_completed\": 10},\n  \"reward\": {\n      \"id\": 1,\n      \"name\": \"Egg\",\n      \"description\": \"egg\",\n      \"thumbnail_url\": \"https://example.com/egg.png\",\n  },\n  \"reward_quantity\": 1,\n  \"claimed\": false,\n  \"claimed_at\": null,\n  \"claimed_at_formatted\": null,\n  \"claimed_at_ago\": null\n }\n],\n\"first_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"from\": 1,\n\"last_page\": 1,\n\"last_page_url\": \"http://localhost:8000/api/missions?page=1\",\n\"next_page_url\": null,\n\"path\": \"http://localhost:8000/api/missions\",\n\"per_page\": 15,\n}"
       tags:
         - Mission
     parameters:
       -
         in: path
         name: claimed_only
-        description: 'Optional parameter. boolean If set to true, only return missions rewards that has been claimed by user.'
+        description: 'Optional parameter. boolean optional If set to true, only return missions rewards that has been claimed by user.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'false'
+      -
+        in: path
+        name: completed_only
+        description: 'Optional parameter. boolean optional Only show completed missions(is_completed=true).'
         required: true
         schema:
           type: string
@@ -8753,7 +8867,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 5
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8845,7 +8959,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 15
+                  example: 2
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -8879,7 +8993,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 14
+                  example: 16
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -8940,15 +9054,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: quae
+                  example: similique
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: in
+                  example: ut
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: quas
+                  example: assumenda
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9034,6 +9148,27 @@ paths:
                 example: "{\n data: {}\n}"
       tags:
         - User
+  /api/v1/user/delete/request-otp:
+    post:
+      summary: 'Delete Account Request for OTP first (Phone No registered users only)'
+      operationId: deleteAccountRequestForOTPFirstPhoneNoRegisteredUsersOnly
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'OTP sent to your registered mobile number.'
+                properties:
+                  message:
+                    type: string
+                    example: 'OTP sent to your registered mobile number.'
+      tags:
+        - User
   /api/v1/user/delete:
     post:
       summary: 'Delete My Account'
@@ -9064,8 +9199,12 @@ paths:
               properties:
                 reason:
                   type: string
-                  description: ''
-                  example: fugit
+                  description: 'The reason for deleting the account.'
+                  example: 'I am not using this account anymore.'
+                otp:
+                  type: string
+                  description: 'The OTP sent to your registered mobile number(only applies to user registered with phone no).'
+                  example: '123456'
               required:
                 - reason
   /api/v1/users_by_id:
@@ -9099,7 +9238,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: error
+                  example: nemo
               required:
                 - user_ids
     parameters:
@@ -9463,6 +9602,97 @@ paths:
                     example: 'No settings found yet.'
       tags:
         - 'User Settings'
+  /api/v1/user/settings/phone_no/otp:
+    post:
+      summary: 'Update Phone No (send otp)'
+      operationId: updatePhoneNosendOtp
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  status: success
+                  message: 'OTP sent'
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 'OTP sent'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: 'Country code of the user.'
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'Phone number of the user.'
+                  example: '123456789'
+              required:
+                - country_code
+                - phone_no
+  /api/v1/user/settings/phone_no/verify_otp:
+    post:
+      summary: 'Update Phone No (Verify OTP)'
+      operationId: updatePhoneNoVerifyOTP
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  message: 'Phone No updated'
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Phone No updated'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_code:
+                  type: string
+                  description: 'Country code of the user.'
+                  example: '60'
+                phone_no:
+                  type: string
+                  description: 'Phone number of the user.'
+                  example: '123456789'
+                otp:
+                  type: string
+                  description: 'OTP of the user.'
+                  example: '123456'
+              required:
+                - country_code
+                - phone_no
+                - otp
   /api/v1/user/settings/email:
     post:
       summary: 'Update User Email'
@@ -9975,7 +10205,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female
@@ -10166,6 +10396,77 @@ paths:
                   example: public
               required:
                 - profile_privacy
+  /api/v1/user/settings/referrals/my-code:
+    get:
+      summary: 'Referral - Get My Referral Code'
+      operationId: referralGetMyReferralCode
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  referral_code: ABC123
+                  message: 'Come and join with with referral code ABC123'
+                properties:
+                  referral_code:
+                    type: string
+                    example: ABC123
+                  message:
+                    type: string
+                    example: 'Come and join with with referral code ABC123'
+      tags:
+        - 'User Settings'
+  /api/v1/user/settings/referrals/save:
+    post:
+      summary: 'Referral - Save Referral'
+      operationId: referralSaveReferral
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Referral saved'
+                properties:
+                  message:
+                    type: string
+                    example: 'Referral saved'
+        422:
+          description: 'You cannot refer yourself'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'You cannot refer yourself'
+                properties:
+                  message:
+                    type: string
+                    example: 'You cannot refer yourself'
+      tags:
+        - 'User Settings'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                referral_code:
+                  type: string
+                  description: 'Referral code of the user.'
+                  example: ABC123
+              required:
+                - referral_code
   /api/v1/views:
     post:
       summary: "Record view for viewable\nThis is used for recording views for articles, comments, merchant offers, user profiles and location"

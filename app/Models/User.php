@@ -243,7 +243,8 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
 
     public function followings()
     {
-        return $this->belongsToMany(User::class, 'users_followings', 'user_id', 'following_id');
+        return $this->belongsToMany(User::class, 'users_followings', 'user_id', 'following_id')
+            ->withTimestamps();
     }
 
     public function followers()
@@ -282,7 +283,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     public function missionsParticipating()
     {
         return $this->belongsToMany(Mission::class, 'missions_users')
-            ->withPivot('is_completed', 'started_at', 'current_value', 'completed_at')
+            ->withPivot('is_completed', 'last_rewarded_at', 'started_at', 'current_values', 'completed_at')
             ->withTimestamps();
     }
 
@@ -356,6 +357,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
     public function articleFeedWhitelist()
     {
         return $this->hasOne(ArticleFeedWhitelistUser::class, 'user_id');
+    }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by_id');
     }
 
     /**

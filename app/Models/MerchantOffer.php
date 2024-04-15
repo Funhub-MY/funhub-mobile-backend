@@ -92,7 +92,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'available_until' => $this->available_until,
             'quantity' => $this->quantity,
             'claimed_quantity' => $this->claimed_quantity,
-            'categories' => $this->categories,
+            'categories' => $this->allOfferCategories,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
@@ -107,6 +107,11 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     public function shouldBeSearchable(): bool
     {
         return $this->status === self::STATUS_PUBLISHED;
+    }
+
+    public function campaign()
+    {
+        return $this->belongsTo(MerchantOfferCampaign::class, 'merchant_offer_campaign_id');
     }
 
     // public function merchant()

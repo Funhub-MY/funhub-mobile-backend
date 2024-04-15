@@ -14,10 +14,10 @@ class ArticleTagController extends Controller
 
     /**
      * Get popular tags
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @subgroup Article Tags
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
@@ -26,11 +26,11 @@ class ArticleTagController extends Controller
      * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @bodyParam limit integer Per Page Limit Override. Example: 10
      * @bodyParam offset integer Offset Override. Example: 0
-     * 
+     *
      * @response scenario=success {
      * "tags": []
      * }
-     * 
+     *
      * @response status=404 scenario="Not Found"
      */
     public function index(Request $request)
@@ -47,19 +47,55 @@ class ArticleTagController extends Controller
     }
 
     /**
+     * Get all tags available
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @subgroup Article Tags
+     * @bodyParam search string optional Hashtag to Filter. Example: ta
+     * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
+     * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+     * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, created_at, updated_at
+     * @bodyParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @bodyParam limit integer Per Page Limit Override. Example: 10
+     *
+     * @response scenario=success {
+     * "tags": []
+     * }
+     */
+    public function getAllTags(Request $request)
+    {
+        // get all tags
+        $query = ArticleTag::query();
+
+        $this->buildQuery($query, $request);
+
+        if ($request->has('search')) {
+            $hashtag = trim($request->search);
+            $query->where('name', 'like', '%' . $hashtag . '%');
+        }
+
+        $tags = $query->paginate(config('app.paginate_per_page'));
+
+        return ArticleTagResource::collection($tags);
+    }
+
+    /**
      * Get Tags by article id
-     * 
+     *
      * @param $article_id integer
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Article
      * @subgroup Article Tags
      * @urlParam article_id integer required The id of the article. Example: 1
-     * 
+     *
      * @response scenario=success {
      * "tags": []
      *  }
-     * 
+     *
      * @response status=404 scenario="No tags found"
      */
     public function getTagByArticleId($article_id)

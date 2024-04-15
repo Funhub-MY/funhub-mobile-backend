@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Article;
 use Illuminate\Bus\Queueable;
 use App\Models\SystemNotification;
 use NotificationChannels\Fcm\FcmChannel;
@@ -49,7 +50,7 @@ class CustomNotification extends Notification implements ShouldQueue
             ->setData([
                 'notification_id' => (string) $this->customNotification->id,
                 'notification_type' => (string) $this->customNotification->type,
-                'title' => (string) $this->customNotification->title,                
+                'title' => (string) $this->customNotification->title,
                 'content' => (string) $this->customNotification->content,
                 'schedule_time' =>  (string) $this->customNotification->scheduled_at,
                 'action' => 'custom_notification'
@@ -85,6 +86,11 @@ class CustomNotification extends Notification implements ShouldQueue
         if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
             // Set the class of the 'object' based on the content type
             $toArrayData['object'] = $this->customNotification->content_type;
+            $toArrayData['object_id'] = $this->customNotification->content_id;
+
+            if ($this->customNotification->content_type == Article::class) {
+                $toArrayData['article_type'] = $this->customNotification->content->type;
+            }
         }
 
         return $toArrayData;

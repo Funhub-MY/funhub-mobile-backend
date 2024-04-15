@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Filament\Resources\MerchantOfferCampaignResource\Pages;
+
+use App\Filament\Resources\MerchantOfferCampaignResource;
+use App\Models\MerchantOffer;
+use App\Models\MerchantOfferCampaign;
+use Carbon\Carbon;
+use Filament\Pages\Actions;
+use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Log;
+
+class EditMerchantOfferCampaign extends EditRecord
+{
+    protected static string $resource = MerchantOfferCampaignResource::class;
+
+    protected function getActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return $data;
+    }
+
+
+    protected function afterSave(): void
+    {
+        $record = $this->record;
+
+        // update relevant MerchantOffer records
+        $offers = MerchantOffer::where('merchant_offer_campaign_id', $record->id)->get();
+
+        foreach ($offers as $offer)
+        {
+            $offer->update([
+                'name' => $record->name,
+                'description' => $record->description,
+                'fine_print' => $record->fine_print,
+                'redemption_policy' => $record->redemption_policy,
+                'cancellation_policy' => $record->cancellation_policy,
+                'publish_at' => $record->publish_at,
+                'purchase_method' => $record->purchase_method,
+                'unit_price' => $record->unit_price,
+                'discounted_point_fiat_price' => $record->discounted_point_fiat_price,
+                'point_fiat_price' => $record->point_fiat_price,
+                'discounted_fiat_price' => $record->discounted_fiat_price,
+                'fiat_price' => $record->fiat_price,
+                'expiry_days' => $record->expiry_days,
+                'status' => $record->status,
+            ]);
+
+            // replace images
+            $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_NAME);
+            $offer->clearMediaCollection(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+
+            // ensure new images are synced
+            $model = MerchantOfferCampaign::find($record->id);
+            $mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_NAME);
+            foreach ($mediaItems as $mediaItem) {
+                $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_NAME);
+            }
+
+            $mediaItems = $model->getMedia(MerchantOfferCampaign::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+            foreach ($mediaItems as $mediaItem) {
+                $mediaItem->copy($offer, MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
+            }
+
+            // clear all categories
+            $offer->allOfferCategories()->detach();
+
+            // sync latest merchant offer categories
+            $offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
+        }
+
+        // updating schedules and quantity
+        foreach ($record->schedules as $schedule) {
+            // if schedule available_at and available_until is past, cannot update
+            // if not past can update
+            if (Carbon::now()->gte(Carbon::parse($schedule->available_until)) || Carbon::now()->gte(Carbon::parse($schedule->available_at))) {
+                Log::info('Cannot update schedule as available_at/until is past', [
+                    'schedule_id' => $schedule->id,
+                    'offer_id' => $offer->id,
+                    'available_until' => $schedule->available_until,
+                ]);
+                continue;
+            }
+
+            // update offer available_at, available_until
+            $offer = MerchantOffer::where('schedule_id', $schedule->id)->update([
+                'available_at' => $schedule->available_at,
+                'available_until' => $schedule->available_until,
+                // 'quantity' => $schedule->quantity, // disallow update quanity as vouchers already generated
+            ]);
+        }
+    }
+}

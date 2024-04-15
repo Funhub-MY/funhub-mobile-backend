@@ -44,24 +44,52 @@ class MissionResource extends Resource
                             ->autofocus()
                             ->required()
                             ->rules('required', 'max:255'),
-            
+
                             Textarea::make('description')
                                 ->required(),
-            
-                            // event select input
-                            Select::make('event')
-                                ->label('Event')
-                                ->options(config('app.event_matrix'))
+
+                          // media gallery
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                               ->label('Images')
+                               ->multiple()
+                               ->collection(Mission::MEDIA_COLLECTION_NAME)
+                               ->columnSpan('full')
+                               // disk is s3_public
+                               ->disk(function () {
+                                   if (config('filesystems.default') === 's3') {
+                                       return 's3_public';
+                                   }
+                               })
+                               ->acceptedFileTypes(['image/*'])
+                               ->maxFiles(20)
+                               ->rules('image'),
+                            ]),
+                    Section::make('Mission Goals')
+                            ->schema([
+                                 // events and values repeater
+                                Forms\Components\Repeater::make('events_values')
+                                ->label('Events and Values')
+                                ->schema([
+                                    Select::make('event')
+                                        ->label('Event')
+                                        ->options(config('app.event_matrix'))
+                                        ->required()
+                                        ->rules('required'),
+                                    TextInput::make('value')
+                                        ->label('Value')
+                                        ->required()
+                                        ->rules('required', 'numeric', 'min:1'),
+                                ])
+                                ->columns(2)
                                 ->required()
                                 ->rules('required'),
-                            
-                            // when event selected, choose the value to meet to reward
-                            TextInput::make('value')
-                                ->label('When Event Value is Met')
-                                ->helperText('The value to meet to reward the user, eg 1 for event new comment added')
-                                ->required()
-                                ->default(1)
-                                ->rules('required', 'numeric', 'min:1'),
+                            ])
+                ]),
+
+               Group::make()
+                ->schema([
+                    Section::make('Status')
+                        ->schema([
 
                             // status 0 is disabled, 1 is enabled, default enabled
                             Select::make('status')
@@ -80,34 +108,18 @@ class MissionResource extends Resource
                                 ->nullable()
                                 ->helperText('If you choose a future date, mission only enabled at that point'),
 
-                            // media gallery
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
-                                ->label('Images')
-                                ->multiple()
-                                ->collection(Mission::MEDIA_COLLECTION_NAME)
-                                ->columnSpan('full')
-                                // disk is s3_public 
-                                ->disk(function () {
-                                    if (config('filesystems.default') === 's3') {
-                                        return 's3_public';
-                                    }
-                                })
-                                ->acceptedFileTypes(['image/*'])
-                                ->maxFiles(20)
-                                ->rules('image'),
-                        ]) 
-                ]),
-                
-               Group::make()
-                ->schema([
+                        ]),
                     Section::make('Reward Details')
                         ->schema([
                             // reward type
                             Forms\Components\MorphToSelect::make('missionable')
+                            ->required()
                             ->label('Reward Type')
                             ->types([
-                                Forms\Components\MorphToSelect\Type::make(Reward::class)->titleColumnName('name'),
-                                Forms\Components\MorphToSelect\Type::make(RewardComponent::class)->titleColumnName('name'),
+                                Forms\Components\MorphToSelect\Type::make(Reward::class)
+                                ->titleColumnName('name'),
+                                Forms\Components\MorphToSelect\Type::make(RewardComponent::class)
+                                ->titleColumnName('name'),
                             ]),
 
                             // how many to reward
@@ -115,7 +127,32 @@ class MissionResource extends Resource
                                 ->label('Reward Quantity')
                                 ->helperText('How many to reward the user')
                                 ->required()
-                                ->rules('required', 'numeric', 'min:1')
+                                ->rules('required', 'numeric', 'min:1'),
+
+                            // reward limit
+                            TextInput::make('reward_limit')
+                                ->label('Max Reward Limit')
+                                ->helperText('How many reward to be given to user, once hit limit, mission will no longer reward user. Leave empty if no limit set.'),
+
+                            // frequency select input
+                            Select::make('frequency')
+                                ->label('Frequency')
+                                ->options([
+                                    'one-off' => 'One-off (Non Repeatable)',
+                                    'daily' => 'Daily at Midnight',
+                                    'monthly' => 'Monthly at Start of Month',
+                                ])
+                                ->helperText('This determins how often mission is checked with user current scores to determine whether to disburse reward or not.')
+                                ->default('one-off')
+                                ->required()
+                                ->rules('required'),
+
+                            // auto_disburse_rewards
+                            Forms\Components\Toggle::make('auto_disburse_rewards')
+                                ->label('Auto Disburse Rewards')
+                                ->default(true)
+                                ->helperText('If enabled, mission will automatically disburse rewards based on frequency and reward limit. if not, user has to self to claimable missions to claim.')
+                                ->columnSpan('full'),
                         ])
                 ]),
 
@@ -133,13 +170,7 @@ class MissionResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('event')
-                    ->searchable()
-                    ->formatStateUsing(fn (string $state): string => config('app.event_matrix')[$state] ?? $state)
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('value')
-                    ->label('Criteria Value')
+                Tables\Columns\TextColumn::make('frequency')
                     ->searchable()
                     ->sortable(),
 
@@ -149,12 +180,39 @@ class MissionResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('reward_quantity')
-                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('reward_limit')
+                    ->sortable(),
+
+                Tables\Columns\BadgeColumn::make('auto_disburse_rewards')
+                    ->label('Auto Disburse Rewards')
+                    ->enum([
+                        false => 'No',
+                        true => 'Yes',
+                    ])
+                    ->colors([
+                        'secondary' => false,
+                        'success' => true,
+                    ])
+                    ->sortable(),
+
+
+                Tables\Columns\BadgeColumn::make('status')
+                    ->enum([
+                        0 => 'Disabled',
+                        1 => 'Enabled',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->searchable()
                     ->sortable(),
@@ -169,14 +227,14 @@ class MissionResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             AuditsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -184,5 +242,5 @@ class MissionResource extends Resource
             'create' => Pages\CreateMission::route('/create'),
             'edit' => Pages\EditMission::route('/{record}/edit'),
         ];
-    }    
+    }
 }

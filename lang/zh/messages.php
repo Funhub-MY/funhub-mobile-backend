@@ -73,6 +73,7 @@ return [
             'Comment_reported' => '评论已被举报',
             'User_blocked' => '该玩家已被屏蔽',
             'User_unblocked' => '该玩家已被解除屏蔽',
+            'Account_deletion_sent_otp' => '账号删除请求已发送OTP',
             'Account_deleted_successfully' => '账号已成功删除',
             'Password_updated' => '密码已更新',
             'Email_updated_and_verification_email_sent' => '电邮已更新，并已发送验证邮件',
@@ -110,6 +111,9 @@ return [
             'Password_updated' => '密码已更新',
             'Profile_privacy_already_set_to' => '个人资料隐私设置已设为 :setting',
             'Profile_privacy_updated' => '个人资料隐私已更新',
+            'Phone_updated' => '电话号码已更新',
+            'Referral_code_generated' => ':code',
+            'Referral_saved' => '推荐码已保存',
         ],
         'view_controller' => [
             'View_recorded' => '已记录观看数',
@@ -198,6 +202,9 @@ return [
         ],
         'user_controller' => [
             'User_not_found' => '用户不存在',
+            'Error_sending_otp' => '发送OTP时出错',
+            'Invalid_otp' => 'OTP无效',
+            'You_cannot_delete_your_account_if_you_are_logged_in_with_Google_or_Facebook' => '如果您已使用 Google / Apple / Facebook 登录，则无法删除您的帐户',
             'You_have_already_reported_this_comment' => '您已经举报此评论',
             'You_have_already_blocked_this_user' => '您已经屏蔽此用户',
             'You_have_not_blocked_this_user' => '您没有封锁这个用户',
@@ -225,6 +232,9 @@ return [
             'One_or_more_article_category_ids_not_found' => '一个或多个探文类别ID不存在',
             'You_cannot_change_your_password_if_you_are_logged_in_with_Google_or_Facebook' => '如果您使用 Google 或 Facebook 账号登录，则无法更改密码',
             'Old_password_is_incorrect' => '旧密码不正确',
+            'User_already_referred_by_someone' => '用户已被推荐',
+            'Referral_code_not_found' => '推荐码不存在',
+            'You_cannot_refer_yourself' => '您无法推荐自己',
         ],
     ],
     'notification' => [
@@ -250,6 +260,8 @@ return [
             'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',
+            'RewardReceivedTitle' => '恭喜你获得了 :rewardQuantity x :rewardName',
+            'RewardReceivedBody' => '恭喜你获得了 :rewardQuantity x :rewardName 作为任务“:missionName”的奖励',
         ],
         'database' => [
             'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
@@ -273,6 +285,7 @@ return [
             'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',
+            'RewardReceivedBody' => '恭喜你获得了 :rewardQuantity x :rewardName 作为任务“:missionName”的奖励',
         ]
     ]
 ];

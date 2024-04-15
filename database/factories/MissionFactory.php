@@ -19,14 +19,24 @@ class MissionFactory extends Factory
     {
         // get random reward component
         $components = RewardComponent::all();
-        
+
         // get keys from array
         $keys = array_keys(config('app.event_matrix'));
+
+        // generate random events and values
+        $events = $this->faker->randomElements($keys, $this->faker->numberBetween(1, count($keys)));
+        $values = [];
+        foreach ($events as $event) {
+            $values[$event] = $this->faker->numberBetween(1, 10);
+        }
+
         return [
             'name' => $this->faker->name,
             'description' => 'Mission 1',
-            'event' => $this->faker->randomElement($keys),
-            'value' => $this->faker->numberBetween(1, 10),
+            'enabled' => $this->faker->boolean,
+            'events' => json_encode($events),
+            'values' => json_encode($values),
+            'frequency' => $this->faker->randomElement(['one-off', 'daily', 'monthly']),
             'missionable_type' => get_class($this->faker->randomElement($components)),
             'missionable_id' => $this->faker->randomElement($components)->id,
             'reward_quantity' => $this->faker->numberBetween(1, 10),

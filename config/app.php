@@ -265,11 +265,20 @@ return [
     'event_matrix' => [
         'article_created' => 'Article Created',
         'comment_created' => 'Comment Created',
+        'comment_created' => 'Comment Created',
         'like_comment' => 'Liked a Comment',
         'like_article' => 'Liked an Article',
         'share_article' => 'Shared an Article',
         'bookmark_an_article' => 'Bookmarked an Article',
         'follow_a_user' => 'Followed a User',
+        'accumulated_followers' => 'Accumulated Followers',
+        'accumulated_article_likes' => 'Accumulated Likes On My Articles',
+        'accumulated_article_bookmarks' => 'Accumulated Bookmarks On My Articles',
+        'completed_profile_setup' => 'Completed profile setup & uploaded avatar',
+        'purchased_merchant_offer_cash' => 'Purchase a merchant offer with cash',
+        'purchased_merchant_offer_points' => 'Purchase a merchant offer with points',
+        'sign_in' => 'Signed in',
+        'purchase_gift_card' => 'Purchase a gift card',
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
@@ -292,6 +301,10 @@ return [
     'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
 
     'search_location_use_algolia' => env('SEARCH_LOCATION_USE_ALGOLIA', true),
+
+    'missions_spam_threshold' => env('MISSION_SPAM_THRESHOLD', 1), // minutes
+
+    'referral_reward' => env('REFERRAL_REWARD', true),
 
     /*
     |--------------------------------------------------------------------------
