@@ -299,13 +299,15 @@ class MissionEventListener
             'reward_quantity' => $mission->reward_quantity
         ]);
 
+        $locale = $user->last_lang ?? config('app.locale');
+
         // fire notification to user
         $user->notify(new \App\Notifications\RewardReceivedNotification(
             $mission->missionable,
             $mission->reward_quantity,
             $user,
             $mission->name
-        ));
+        ))->locale($locale);
     }
 
     private function isSpamInteraction($user, $interaction)
