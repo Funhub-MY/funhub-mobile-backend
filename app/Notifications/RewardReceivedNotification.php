@@ -48,8 +48,8 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
                 'action' => 'custom_notification'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle(__('messages.notification.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName')))
-                ->setBody(__('messages.notification.RewardReceivedBody', compact('rewardName', 'rewardQuantity', 'missionName')))
+                ->setTitle(__('messages.notification.fcm.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName')))
+                ->setBody(__('messages.notification.fcm.RewardReceivedBody', compact('rewardName', 'rewardQuantity', 'missionName')))
             );
     }
 
