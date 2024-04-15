@@ -159,11 +159,11 @@ class SystemNotificationResource extends Resource
                 Forms\Components\Card::make()
                     ->schema([
                         Select::make('user')
-                            // ->label('Users')
                             ->preload()
                             ->multiple()
                             ->searchable()
-                            ->getSearchResultsUsing(fn (string $search) => User::where('username', 'like', "%{$search}%")->limit(25)->pluck('username', 'id'))
+                            ->options(User::pluck('username', 'id')->toArray())
+                            // ->getSearchResultsUsing(fn (string $search) => User::where('username', 'like', "%{$search}%")->limit(25)->pluck('username', 'id'))
                             ->placeholder('Enter username or select by user status')
                             ->hidden(fn (Closure $get) => $get('all_active_users') === true)
                             ->dehydrateStateUsing(function ($state) {
@@ -173,7 +173,13 @@ class SystemNotificationResource extends Resource
                                     }
 
                                     return json_encode($stateData);
-                                }),
+                                })
+                            ->formatStateUsing(function ($context, $state) {
+                                if ($context == 'edit') {
+                                    $stateData = json_decode($state, true);
+                                    return $stateData;
+                                }
+                            }),
 
                         Toggle::make('all_active_users')
                             ->label('Toggle on to send notification to all active users')
@@ -193,9 +199,11 @@ class SystemNotificationResource extends Resource
 
                 TextColumn::make('title')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->words(5),
 
-                TextColumn::make('content'),
+                TextColumn::make('content')
+                    ->words(8),
 
                 TextColumn::make('redirect_type')
                     ->enum(SystemNotification::REDIRECT_TYPE)
@@ -227,7 +235,17 @@ class SystemNotificationResource extends Resource
 
                 TextColumn::make('user')
                     ->label('Notified User')
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        if ($state) {
+                            $usernames = [];
+                            $stateData = json_decode($state, true);
+
+                            $usernames = User::whereIn('id', $stateData)->pluck('username')->toArray();
+                            return implode(', ', $usernames);
+                        }
+                    })
+                    ->wrap(),
 
                 BadgeColumn::make('all_active_users')
                     ->label('All Active Users')
