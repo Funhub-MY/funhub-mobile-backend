@@ -48,6 +48,7 @@ class MerchantRegister extends Component implements HasForms
             'business_phone_no' => 'required',
             'address' => 'required',
             'company_logo' => 'required',
+            'company_photos' => 'required',
             'auto_complete_address' => 'nullable',
             'location' => 'nullable',
             'zip_code' => 'required|numeric',
@@ -154,6 +155,21 @@ class MerchantRegister extends Component implements HasForms
             Log::error('[MerchantOnboarding] Company logo upload failed: ' . $e->getMessage());
             session()->flash('error', 'Company logo upload failed. Please try again.');
         }
+
+        //save the company photos to the merchant's media collection
+        try {
+            foreach ($data['company_photos'] as $company_photo) {
+                $company_photo_livewire_tmp = $company_photo;
+                Log::info($company_photo_livewire_tmp);
+                Log::info('[MerchantOnboarding] Company photo upload: ' . $company_photo_livewire_tmp->getRealPath());
+                $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+            }
+        } catch (\Exception $e) {
+            Log::error('[MerchantOnboarding] Company photos upload failed: ' . $e->getMessage());
+            session()->flash('error', 'Company photos upload failed. Please try again.');
+        }
+
         $merchant->save();
 
         //create store using the data from the form and user_id
@@ -203,7 +219,7 @@ class MerchantRegister extends Component implements HasForms
             session()->flash('error', 'Store creation failed. Please try again.');
         }
 
-        if ($user && $merchant && $store) {
+        if ($user && $merchant) {
             session()->flash('message', 'Merchant created successfully.');
             return redirect()->route('merchant.register');
         }
@@ -314,6 +330,15 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Company Logo')
                         ->maxFiles(1)
                         ->collection(Merchant::MEDIA_COLLECTION_NAME)
+                        ->required()
+                        ->columnSpan('full')
+                        ->acceptedFileTypes(['image/*'])
+                        ->rules('image'),
+                        SpatieMediaLibraryFileUpload::make('company_photos')
+                        ->label('Company Photos')
+                        ->multiple()
+                        ->maxFiles(7)
+                        ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
                         ->required()
                         ->columnSpan('full')
                         ->acceptedFileTypes(['image/*'])

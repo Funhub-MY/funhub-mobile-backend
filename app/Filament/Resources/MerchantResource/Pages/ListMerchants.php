@@ -12,7 +12,7 @@ class ListMerchants extends ListRecords
 
     protected static function shouldRegisterNavigation(): bool
     {
-        dd('list here?');
+        //dd('list here?');
         return auth()->user()->hasRole('super_admin');
     }
 
