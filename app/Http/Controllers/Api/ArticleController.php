@@ -106,7 +106,12 @@ class ArticleController extends Controller
         }
 
         if ($request->has('tag_ids')) {
-            $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+            $tagIds = explode(',', $request->tag_ids);
+            // get all articles ids associated with this tag
+            $articlesTags = ArticleTag::whereIn('id', $tagIds)->with('articles')->get();
+            // get all articles ids
+            $articleIds = $articlesTags->pluck('articles')->flatten()->pluck('id')->toArray();
+            $query->whereIn('id', $articleIds);
         }
 
         // get articles from users whose this auth user is following only
@@ -370,7 +375,13 @@ class ArticleController extends Controller
         }
 
         if ($request->has('tag_ids')) {
-            $query->whereHas('tags', fn ($q) => $q->whereIn('article_tags.id', explode(',', $request->tag_ids)));
+            $tagIds = explode(',', $request->tag_ids);
+
+            // get all articles ids associated with this tag
+            $articlesTags = ArticleTag::whereIn('id', $tagIds)->with('articles')->get();
+            // get all articles ids
+            $articleIds = $articlesTags->pluck('articles')->flatten()->pluck('id')->toArray();
+            $query->whereIn('id', $articleIds);
         }
 
         $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')

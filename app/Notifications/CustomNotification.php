@@ -70,7 +70,7 @@ class CustomNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         $toArrayData = [
-            'object' => get_class($this->customNotification),
+            'object' => get_class($this->customNotification), // App/Models/SystemNotification
             'object_id' => $this->customNotification->id,
             'link_to_url' => $this->customNotification->web_link ? true : false,
             'link_to' => $this->customNotification->web_link ? $this->customNotification->web_link : null, // if link to url false, means get link_to_object
@@ -85,8 +85,8 @@ class CustomNotification extends Notification implements ShouldQueue
         // Check if redirect type is dynamic and content type is set
         if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
             // Set the class of the 'object' based on the content type
-            $toArrayData['object'] = $this->customNotification->content_type;
-            $toArrayData['object_id'] = $this->customNotification->content_id;
+            $toArrayData['object'] = $this->customNotification->content_type; // App\Models\Article / User / MerchantOffer
+            $toArrayData['object_id'] = $this->customNotification->content_id; // article_id, user_id, offer_id
 
             if ($this->customNotification->content_type == Article::class) {
                 $toArrayData['article_type'] = $this->customNotification->content->type;
