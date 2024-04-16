@@ -233,19 +233,18 @@ class SystemNotificationResource extends Resource
                     ->label('Sent At')
                     ->sortable(),
 
-                TextColumn::make('user')
-                    ->label('Notified User')
-                    ->sortable()
-                    ->formatStateUsing(function ($state) {
-                        if ($state) {
-                            $usernames = [];
-                            $stateData = json_decode($state, true);
+                // TextColumn::make('user')
+                //     ->label('Notified User')
+                //     ->formatStateUsing(function ($state) {
+                //         if ($state) {
+                //             $usernames = [];
+                //             $stateData = json_decode($state, true);
 
-                            $usernames = User::whereIn('id', $stateData)->pluck('username')->toArray();
-                            return implode(', ', $usernames);
-                        }
-                    })
-                    ->wrap(),
+                //             $usernames = User::whereIn('id', $stateData)->pluck('username')->toArray();
+                //             return implode(', ', $usernames);
+                //         }
+                //     })
+                //     ->wrap(),
 
                 BadgeColumn::make('all_active_users')
                     ->label('All Active Users')
