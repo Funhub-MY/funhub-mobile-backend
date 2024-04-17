@@ -3,10 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\ArticleCreated;
+use App\Models\Article;
 use App\Models\Interaction;
 use App\Models\Setting;
+use App\Models\View;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class RecommendationAutoByPass implements ShouldQueue
@@ -52,24 +55,30 @@ class RecommendationAutoByPass implements ShouldQueue
 
             // get user followers count
             $followersCount = $user->followers()->count();
+            $userArticleIds = $user->articles()->pluck('id');
 
             // total views on user's articles
-            $totalViews = $user->articles()->sum('views');
+            $totalViews = View::where('viewable_type', Article::class)
+                ->whereIn('viewable_id', $userArticleIds)
+                ->count();
 
             // total likes on user's articles
-            $totalLikes = $user->articles()->sum(['interactions' => function ($query) {
-                $query->where('type', Interaction::TYPE_LIKE);
-            }]);
+            $totalLikes = Interaction::where('interactable_type', Article::class)
+                ->whereIn('interactable_id', $userArticleIds)
+                ->where('type', Interaction::TYPE_LIKE)
+                ->count();
 
             // total shares on user's articles
-            $totalShares = $user->articles()->sum(['interactions' => function ($query) {
-                $query->where('type', Interaction::TYPE_SHARE);
-            }]);
+            $totalShares = Interaction::where('interactable_type', Article::class)
+                ->whereIn('interactable_id', $userArticleIds)
+                ->where('type', Interaction::TYPE_SHARE)
+                ->count();
 
             // total bookmarks on user's articles
-            $totalBookmarks = $user->articles()->sum(['interactions' => function ($query) {
-                $query->where('type', Interaction::TYPE_BOOKMARK);
-            }]);
+            $totalBookmarks = Interaction::where('interactable_type', Article::class)
+                ->whereIn('interactable_id', $userArticleIds)
+                ->where('type', Interaction::TYPE_BOOKMARK)
+                ->count();
 
             // check conditions
             $viewCondition = ($followersCount > 0) && (($totalViews / $followersCount) * 100) >= $settings['recommendation_auto_bypass_view'];
