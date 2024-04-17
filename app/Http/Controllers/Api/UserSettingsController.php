@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -869,6 +870,11 @@ class UserSettingsController extends Controller
         // check if user is not referring himself
         if ($referredBy->id == $user->id) {
             return response()->json(['message' => __('messages.error.user_settings_controller.You_cannot_refer_yourself')], 422);
+        }
+
+        // check if user is more than 48hours old cannot use referral system
+        if (Carbon::parse($user->created_at)->diffInMinutes(now()) >= (config('app.referral_max_hours') * 60)) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.Referral_code_expired')], 422);
         }
 
         // save referred by

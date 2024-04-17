@@ -232,6 +232,7 @@ return [
             'User_already_referred_by_someone' => 'You already referred by someone',
             'Referral_code_not_found' => 'Referral code not valid',
             'You_cannot_refer_yourself' => 'You cannot refer yourself.',
+            'Referral_code_expired' => 'Referral code expired',
         ],
     ],
     'notification' => [

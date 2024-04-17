@@ -235,6 +235,7 @@ return [
             'User_already_referred_by_someone' => '用户已被推荐',
             'Referral_code_not_found' => '推荐码不存在',
             'You_cannot_refer_yourself' => '您无法推荐自己',
+            'Referral_code_expired' => '推荐码已过期',
         ],
     ],
     'notification' => [

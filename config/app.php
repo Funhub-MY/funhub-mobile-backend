@@ -306,6 +306,8 @@ return [
 
     'referral_reward' => env('REFERRAL_REWARD', true),
 
+    'referral_max_hours' => env('REFERRAL_MAX_HOURS', 48),
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails
