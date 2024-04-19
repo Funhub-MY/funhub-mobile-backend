@@ -14,6 +14,7 @@ class Merchant extends BaseModel implements HasMedia, Auditable
     use HasFactory, InteractsWithMedia, \OwenIt\Auditing\Auditable;
 
     const MEDIA_COLLECTION_NAME = 'merchant_logos';
+    const MEDIA_COLLECTION_NAME_PHOTOS = 'merchant_photos';
 
     const STATUS = [
         0 => 'Pending',

@@ -22,6 +22,7 @@ use Filament\Forms\Components\MorphToSelect;
 use App\Filament\Resources\MissionResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MissionResource\RelationManagers;
+use App\Filament\Resources\MissionResource\RelationManagers\ParticipantsRelationManager;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class MissionResource extends Resource
@@ -231,6 +232,7 @@ class MissionResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ParticipantsRelationManager::class,
             AuditsRelationManager::class,
         ];
     }

@@ -30,6 +30,7 @@ use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\SystemNotificationResource\RelationManagers;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Radio;
 use Filament\Tables\Columns\BadgeColumn;
 
@@ -47,37 +48,167 @@ class SystemNotificationResource extends Resource
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        TextInput::make('title')
-                            ->label('Title')
-                            ->columnSpan('full')
-                            ->rules([
-                                function () {
-                                    return function (string $attribute, $value, Closure $fail) {
-                                        $wordCount = str_word_count($value);
+                        KeyValue::make('title')
+                        ->columnSpan('full')
+                        ->label('Title')
+                        ->keyLabel('Language')
+                        ->valueLabel('Translation')
+                        ->required()
+                        ->rules([
+                            function () {
+                                return function (string $attribute, $value, Closure $fail) {
+                                    // check if word count from $value array is more than 50
+                                    foreach ($value as $v) {
+                                        $wordCount = str_word_count($v);
 
                                         if ($wordCount >50 ) {
                                             $fail('The :attribute cannot exceed 50 words');
                                         }
-                                    };
-                                }
-                            ])
-                            ->required(),
+                                    }
+                                };
+                            }
+                        ])
+                        ->disableAddingRows()
+                        ->disableDeletingRows()
+                        ->disableEditingKeys()
+                        ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                            // Retrieve available locales
+                            $locales = config('app.available_locales', []);
 
-                        Textarea::make('content')
+                            // If in edit context, retrieve the existing translations from the database
+                            if ($context === 'edit' && $record) {
+                                $translations = json_decode($record->title ?? [], true);
+
+                                // Map available locales to keys of KeyValue component with corresponding values
+                                foreach ($locales as $locale => $language) {
+                                    // Search for the key (language code) corresponding to the current language name
+                                    $languageCode = array_search($language, $locales);
+
+                                    // Set the value for the corresponding key and value in the state
+                                    $set("title.$language", $translations[$languageCode] ?? '');
+                                }
+                            } else {
+                                // For other contexts or new records, map available locales to keys of KeyValue component with empty values
+                                foreach ($locales as $locale => $language) {
+                                    // Set the value for the corresponding key in the state
+                                    $set("title.$language", '');
+                                }
+                            }
+                        })
+                        ->dehydrateStateUsing(function ($state) {
+                            // Retrieve available locales
+                            $locales = config('app.available_locales', []);
+
+                            $transformedState = [];
+                            if ($state == null) {
+                                return json_encode($transformedState);
+                            }
+                            // Iterate over the keys in $state
+                            foreach ($state as $key => $value) {
+                                // Search for the corresponding key in $locales
+                                $localeKey = array_search($key, $locales);
+
+                                // If a corresponding key is found, use it to replace the key in $state
+                                if ($localeKey !== false) {
+                                    $transformedState[$localeKey] = $value;
+                                }
+                            }
+
+                            // Convert the transformed state to JSON
+                            $stateJson = json_encode($transformedState);
+
+                            return $stateJson;
+                        }),
+
+
+                        // Textarea::make('content')
+                        //     ->label('Content')
+                        //     ->columnSpan('full')
+                        //     ->rules([
+                        //         function () {
+                        //             return function (string $attribute, $value, Closure $fail) {
+                        //                 $wordCount = str_word_count($value);
+
+                        //                 if ($wordCount >50 ) {
+                        //                     $fail('The :attribute cannot exceed 50 words');
+                        //                 }
+                        //             };
+                        //         }
+                        //     ])
+                        //     ->required(),
+
+                        KeyValue::make('content')
+                            ->columnSpan('full')
                             ->label('Content')
-                            ->columnSpan('full')
+                            ->keyLabel('Language')
+                            ->valueLabel('Translation')
+                            ->required()
                             ->rules([
                                 function () {
                                     return function (string $attribute, $value, Closure $fail) {
-                                        $wordCount = str_word_count($value);
+                                        // check if word count from $value array is more than 50
+                                        foreach ($value as $v) {
+                                            $wordCount = str_word_count($v);
 
-                                        if ($wordCount >50 ) {
-                                            $fail('The :attribute cannot exceed 50 words');
+                                            if ($wordCount >50 ) {
+                                                $fail('The :attribute cannot exceed 50 words');
+                                            }
                                         }
                                     };
                                 }
                             ])
-                            ->required(),
+                            ->disableAddingRows()
+                            ->disableDeletingRows()
+                            ->disableEditingKeys()
+                            ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                                // Retrieve available locales
+                                $locales = config('app.available_locales', []);
+
+                                // If in edit context, retrieve the existing translations from the database
+                                if ($context === 'edit' && $record) {
+                                    // Fetch the existing translations for this record
+                                    $translations = json_decode($record->content ?? [], true);
+
+                                    // Map available locales to keys of KeyValue component with corresponding values
+                                    foreach ($locales as $locale => $language) {
+                                        // Search for the key (language code) corresponding to the current language name
+                                        $languageCode = array_search($language, $locales);
+
+                                        // Set the value for the corresponding key and value in the state
+                                        $set("content.$language", $translations[$languageCode] ?? '');
+                                    }
+                                } else {
+                                    // For other contexts or new records, map available locales to keys of KeyValue component with empty values
+                                    foreach ($locales as $locale => $language) {
+                                        // Set the value for the corresponding key in the state
+                                        $set("content.$language", '');
+                                    }
+                                }
+                            })
+                            ->dehydrateStateUsing(function ($state) {
+                                // Retrieve available locales
+                                $locales = config('app.available_locales', []);
+
+                                $transformedState = [];
+                                if ($state == null) {
+                                    return json_encode($transformedState);
+                                }
+                                // Iterate over the keys in $state
+                                foreach ($state as $key => $value) {
+                                    // Search for the corresponding key in $locales
+                                    $localeKey = array_search($key, $locales);
+
+                                    // If a corresponding key is found, use it to replace the key in $state
+                                    if ($localeKey !== false) {
+                                        $transformedState[$localeKey] = $value;
+                                    }
+                                }
+
+                                // Convert the transformed state to JSON
+                                $stateJson = json_encode($transformedState);
+
+                                return $stateJson;
+                            }),
 
                         DateTimePicker::make('scheduled_at')
                             ->label('Schedule Blast Time')
@@ -159,11 +290,11 @@ class SystemNotificationResource extends Resource
                 Forms\Components\Card::make()
                     ->schema([
                         Select::make('user')
-                            // ->label('Users')
                             ->preload()
                             ->multiple()
                             ->searchable()
-                            ->getSearchResultsUsing(fn (string $search) => User::where('username', 'like', "%{$search}%")->limit(25)->pluck('username', 'id'))
+                            ->options(User::pluck('username', 'id')->toArray())
+                            // ->getSearchResultsUsing(fn (string $search) => User::where('username', 'like', "%{$search}%")->limit(25)->pluck('username', 'id'))
                             ->placeholder('Enter username or select by user status')
                             ->hidden(fn (Closure $get) => $get('all_active_users') === true)
                             ->dehydrateStateUsing(function ($state) {
@@ -173,7 +304,13 @@ class SystemNotificationResource extends Resource
                                     }
 
                                     return json_encode($stateData);
-                                }),
+                                })
+                            ->formatStateUsing(function ($context, $state) {
+                                if ($context == 'edit') {
+                                    $stateData = json_decode($state, true);
+                                    return $stateData;
+                                }
+                            }),
 
                         Toggle::make('all_active_users')
                             ->label('Toggle on to send notification to all active users')
@@ -193,9 +330,33 @@ class SystemNotificationResource extends Resource
 
                 TextColumn::make('title')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state) {
+                        try {
+                            $titles = [];
+                            $stateData = json_decode($state, true);
+                            if($stateData == null) return $state;
 
-                TextColumn::make('content'),
+                            $titles = array_values($stateData);
+                            return implode(', ', $titles);
+                        } catch (\Exception $e) {
+                            return $state;
+                        };
+                    }),
+
+                // TextColumn::make('content')
+                // ->formatStateUsing(function ($state) {
+                //     try {
+                //         $contents = [];
+                //         $stateData = json_decode($state, true);
+                //         if($stateData == null) return $state;
+
+                //         $contents = array_values($stateData);
+                //         return implode(', ', $contents);
+                //     } catch (\Exception $e) {
+                //         return $state;
+                //     };
+                // }),
 
                 TextColumn::make('redirect_type')
                     ->enum(SystemNotification::REDIRECT_TYPE)
@@ -225,9 +386,18 @@ class SystemNotificationResource extends Resource
                     ->label('Sent At')
                     ->sortable(),
 
-                TextColumn::make('user')
-                    ->label('Notified User')
-                    ->sortable(),
+                // TextColumn::make('user')
+                //     ->label('Notified User')
+                //     ->formatStateUsing(function ($state) {
+                //         if ($state) {
+                //             $usernames = [];
+                //             $stateData = json_decode($state, true);
+
+                //             $usernames = User::whereIn('id', $stateData)->pluck('username')->toArray();
+                //             return implode(', ', $usernames);
+                //         }
+                //     })
+                //     ->wrap(),
 
                 BadgeColumn::make('all_active_users')
                     ->label('All Active Users')

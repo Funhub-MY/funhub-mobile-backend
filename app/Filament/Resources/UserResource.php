@@ -73,6 +73,7 @@ class UserResource extends Resource
                             ->required(fn (string $context): bool => $context === 'create')
                             ->rules( 'min:8', 'max:255'),
 
+
                         // status
                         Forms\Components\Select::make('status')
                             ->options([
@@ -207,6 +208,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('full_phone_no')->label('Phone No'),
                 Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
+                // referred_by_id
+                Tables\Columns\TextColumn::make('referredBy.name')
+                    ->label('Referred By'),
+
                 Tables\Columns\TextColumn::make('point_balance')
                     ->label('Funhub Balance'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()

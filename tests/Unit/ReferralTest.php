@@ -87,4 +87,52 @@ class ReferralTest extends TestCase
         expect($response->status())->toBe(200);
         expect($response['balance'])->toBe(1);
     }
+
+    // if a user is more than 48hours old config('app.referral_max_hours') cannot use referral api anymore
+    public function testReferredByAUserOlderThan48Hours()
+    {
+        $this->user->update([
+            'created_at' => now()->subHours(config('app.referral_max_hours'))->subMinutes(1)
+        ]);
+
+        $referredBy = User::factory()->create();
+
+        // to generate code must have go to my-code once
+        $this->actingAs($referredBy);
+        $response = $this->getJson('/api/v1/user/settings/referrals/my-code');
+        $response->assertStatus(200);
+
+        // assert code exists
+        $this->assertDatabaseHas('users', [
+            'id' => $referredBy->id,
+            'referral_code' => $response['referral_code']
+        ]);
+
+        $code = $response['referral_code'];
+
+        // log in back as the main user
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/settings/referrals/save', [
+            'referral_code' => $code
+        ]);
+        $response->assertStatus(422);
+
+        // check referred by id in database or not
+        $this->assertDatabaseMissing('users', [
+            'id' => $this->user->id,
+            'referred_by_id' => $referredBy->id
+        ]);
+
+        // check see both has funhub credited
+        $response = $this->getJson('/api/v1/points/balance');
+        expect($response->status())->toBe(200);
+        expect($response['balance'])->toBe(0);
+
+        // log back in as referredBy
+        $this->actingAs($referredBy);
+        $response = $this->getJson('/api/v1/points/balance');
+        expect($response->status())->toBe(200);
+        expect($response['balance'])->toBe(0);
+    }
+
 }

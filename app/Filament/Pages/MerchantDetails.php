@@ -205,6 +205,10 @@ class MerchantDetails extends Page implements HasForms
                     session()->flash('error', 'Failed to update store details. Please try again later.');
                 }
             } else {
+                if ($store_to_update['location'] === null) {
+                    session()->flash('error', 'Please pin your location for the store.');
+                    return;
+                }
                 //create new store
                 try {
                     $store = Store::create([
@@ -221,6 +225,8 @@ class MerchantDetails extends Page implements HasForms
                         'state_id' => $store_to_update['state_id'],
                         'country_id' => $store_to_update['country_id'],
                     ]);
+
+                    Log::info('[MerchantDetailsEdit] Store details created: ' . $store);
 
                     session()->flash('message', 'Company details updated successfully!');
                 } catch (\Exception $e) {
@@ -322,6 +328,11 @@ class MerchantDetails extends Page implements HasForms
         ];
         $merchant_attributes['companyLogo'] = $company_logo;
 
+        //get company photos from media table
+        $company_photos = $this->merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+        $merchant_attributes['companyPhotos'] = [];
+        $merchant_attributes['companyPhotos'][0] = $company_photos;
+
         //get and process stores data
         $stores = Store::where('user_id', $user_id)->get();
 
@@ -354,6 +365,7 @@ class MerchantDetails extends Page implements HasForms
                 'country_id' => $merchant_attributes['country_id'],
                 'email' => $merchant_attributes['email'],
                 'companyLogo' => $merchant_attributes['companyLogo'],
+                'companyPhotos' => $merchant_attributes['companyPhotos'],
                 'has_uploaded_new_logo' => false,
                 'pic_name' => $merchant_attributes['pic_name'],
                 'pic_designation' => $merchant_attributes['pic_designation'],
@@ -500,11 +512,73 @@ class MerchantDetails extends Page implements HasForms
                                                 return new HtmlString($image);
                                             }),
                                         ])
-                                    ->disableItemCreation()
+                                    ->disableItemCreation(),
                                     // ->hidden(function ($state, Closure $get){
                                     //     return $get('../../has_uploaded_new_logo') ? true : false;
                                     // })
+
+                                //add/edit merchant photos start 
+                                SpatieMediaLibraryFileUpload::make('upload_company_photos')
+                                    ->label('Company Photos')
+                                    // ->multiple()
+                                    ->maxFiles(7)
+                                    ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
+                                    ->required()
+                                    ->afterStateUpdated(function ($state, Merchant $merchant, Closure $get) {
+                                        //find the merchant
+                                        $merchant_id = $get('merchant_id');
+                                        $merchant = Merchant::find($merchant_id);
+
+                                        try {
+                                            // foreach ($state as $file) {
+                                            //     $merchant->addMediaFromDisk($file->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                                            //         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+                                            // }
+                                            
+                                            $merchant->addMediaFromDisk($state->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                                            ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+                                        } catch (\Exception $e) {
+                                            Log::error('[MerchantDetailsEdit] Company logo upload failed: ' . $e->getMessage());
+                                        }
+    
+                                    })
+                                    ->columnSpan('full')
+                                    ->acceptedFileTypes(['image/*'])
+                                    ->rules('image'),
+                                Repeater::make('companyPhotos')
+                                    ->label('')
+                                    ->columnSpan('full')
+                                    ->extraAttributes([
+                                        'class' => 'text-center',
+                                    ])
+                                    ->schema([
+                                        Placeholder::make('company_photo')
+                                            ->label('')
+                                            ->content(function ($state, Closure $get, Merchant $merchant) {
+                                                $merchant_id = $get('../../merchant_id');
+                                                $merchant = Merchant::find($merchant_id);
+                                                $merchant_photos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+                                                $images = '';
+                                                foreach($merchant_photos as $merchant_photo){
+                                                    $media_url = $merchant_photo->getFullUrl();
+                                                    $media_name = $merchant_photo->name;
+                                                    $media_ext = $merchant_photo->extension;
+                                                    //$images .= Blade::render('<a href="'.$media_url.'" target="_blank" class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action"><img src="' . $media_url . '" :label="$name" icon-size="lg" :extension="$extension" /></a>', ['name' => $media_name, 'extension' => $media_ext]);
+                                                    $images .= '<div class="mb-4 py-4 border">' . Blade::render('<a href="'.$media_url.'" target="_blank" class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action"><img src="' . $media_url . '" :label="$name" icon-size="lg" :extension="$extension" /></a>', ['name' => $media_name, 'extension' => $media_ext]) . '</div>';
+                                                }
+                                                return new HtmlString($images);
+                                            }),
+                                        ])
+                                    ->disableItemCreation()
+                                    // ->afterStateHydrated(function ($state, Merchant $merchant, Closure $get) {
+                                    //     //find the merchant
+                                    //     $merchant_id = $get('merchant_id');
+                                    //     $merchant = Merchant::find($merchant_id);
+                                    //     //delete all old photos
+                                    //     $merchant->clearMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+                                    // }),
                                     
+                                //add/edit merchant photos end 
                                     ]),
                             ViewField::make('company_details_save_button')
                             ->view('livewire.save-button')

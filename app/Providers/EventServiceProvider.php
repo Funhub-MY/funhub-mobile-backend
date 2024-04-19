@@ -19,6 +19,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Listeners\RecommendationAutoByPass;
 use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
 use App\Observers\SupportRequestMessageObserver;
@@ -54,6 +55,7 @@ class EventServiceProvider extends ServiceProvider
             MissionEventListener::class,
             CreateViewsForArticleListener::class,
             SyncHashtagsToSearchKeywords::class,
+            RecommendationAutoByPass::class,
         ],
 
         UserReferred::class => [

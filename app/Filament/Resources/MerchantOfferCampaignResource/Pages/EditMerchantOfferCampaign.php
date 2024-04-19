@@ -5,6 +5,7 @@ namespace App\Filament\Resources\MerchantOfferCampaignResource\Pages;
 use App\Filament\Resources\MerchantOfferCampaignResource;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
+use App\Models\MerchantOfferVoucher;
 use Carbon\Carbon;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -90,10 +91,60 @@ class EditMerchantOfferCampaign extends EditRecord
             }
 
             // update offer available_at, available_until
-            $offer = MerchantOffer::where('schedule_id', $schedule->id)->update([
+            $offer = MerchantOffer::where('schedule_id', $schedule->id)->first();
+
+            if (!$offer) {
+                Log::info('Offer not found for schedule', [
+                    'schedule_id' => $schedule->id,
+                ]);
+                continue;
+            }
+
+            $offer->update([
                 'available_at' => $schedule->available_at,
                 'available_until' => $schedule->available_until,
-                // 'quantity' => $schedule->quantity, // disallow update quanity as vouchers already generated
+            ]);
+
+            // match quantity difference and update
+            $existingVouchers = $offer->vouchers()->count();
+
+            // if schedule -> quantity > existing vouchers, create new vouchers
+            // if less than, destroy unclaimed vouchers
+            if ($schedule->quantity > $existingVouchers) {
+                $diff = $schedule->quantity - $existingVouchers;
+                MerchantOfferVoucher::create([
+                    'merchant_offer_id' => $offer->id,
+                    'code' => MerchantOfferVoucher::generateCode(),
+                ]);
+
+                Log::info('Created new vouchers as adjusted in merchant campaign schedule', [
+                    'offer_id' => $offer->id,
+                    'schedule_id' => $schedule->id,
+                    'quantity' => $diff,
+                ]);
+            } else if ($schedule->quantity < $existingVouchers) {
+                $diff = $existingVouchers - $schedule->quantity;
+                $offer->vouchers()->whereNull('owned_by_id')->limit($diff)->get();
+
+                // log deleted vouchers
+                Log::info('Deleted unclaimed vouchers as adjusted in merchant campaign schedule', [
+                    'offer_id' => $offer->id,
+                    'schedule_id' => $schedule->id,
+                    'quantity' => $diff,
+                ]);
+
+                // delete vouchers (unclaimed only)
+                $offer->vouchers()->whereNull('owned_by_id')->limit($diff)->delete();
+            }
+
+            // final value add it back as schdule's quantity as some claimed vouchers no longer can be removed
+            $schedule->update([
+                'quantity' => $offer->vouchers()->count(),
+            ]);
+
+            // updatye quantity in offer too (but only unclaimed vouchers quantity!)
+            $offer->update([
+                'quantity' => $offer->unclaimedVouchers()->count(),
             ]);
         }
     }

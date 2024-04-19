@@ -232,6 +232,7 @@ return [
             'User_already_referred_by_someone' => 'You already referred by someone',
             'Referral_code_not_found' => 'Referral code not valid',
             'You_cannot_refer_yourself' => 'You cannot refer yourself.',
+            'Referral_code_expired' => 'Referral code expired',
         ],
     ],
     'notification' => [
@@ -259,6 +260,8 @@ return [
             'VoucherRedeemedNotification' => 'Voucher redeemed',
             'RewardReceivedTitle' => 'You have received :rewardName x :rewardQuantity',
             'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
+            'ReferralRewardReceivedTitle' => 'Referral Reward Received',
+            'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -283,6 +286,7 @@ return [
             'TaggedUserInComment' => 'Mentioned you in the comments',
             'VoucherRedeemedNotification' => 'Voucher redeemed',
             'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
+            'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
         ]
     ]
 ];

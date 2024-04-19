@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class MerchantResource extends Resource
 {
@@ -129,6 +130,24 @@ class MerchantResource extends Resource
                             ->helperText('For record purposes only, not used for login.')
                             ->required()
                             ->rules('required', 'email')
+                    ]),
+
+                Forms\Components\Section::make('Photos')
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('company_photos')
+                        ->label('Company Photos')
+                        ->multiple()
+                        ->maxFiles(7)
+                        ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
+                        ->required()
+                        ->columnSpan('full')
+                        ->disk(function () {
+                            if (config('filesystems.default') === 's3') {
+                                return 's3_public';
+                            }
+                        })
+                        ->acceptedFileTypes(['image/*'])
+                        ->rules('image'),
                     ]),
             ]);
     }

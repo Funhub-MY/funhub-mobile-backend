@@ -248,7 +248,6 @@ class MerchantOfferCampaignResource extends Resource
                                                     ->required()
                                                     ->columnSpan(1)
                                                     ->numeric()
-                                                    ->disabledOn('edit')
                                                     ->minValue(1),
 
                                                 Placeholder::make('cannot_update_past')

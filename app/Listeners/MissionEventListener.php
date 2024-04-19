@@ -14,6 +14,7 @@ use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use App\Notifications\RewardReceivedNotification;
 use Illuminate\Support\Facades\Log;
 use App\Services\PointComponentService;
 use Illuminate\Support\Facades\DB;
@@ -299,13 +300,15 @@ class MissionEventListener
             'reward_quantity' => $mission->reward_quantity
         ]);
 
-        // fire notification to user
-        $user->notify(new \App\Notifications\RewardReceivedNotification(
+        $locale = $user->last_lang ?? config('app.locale');
+
+        $user->notify((new RewardReceivedNotification(
             $mission->missionable,
             $mission->reward_quantity,
             $user,
             $mission->name
-        ));
+        ))->locale($locale));
+
     }
 
     private function isSpamInteraction($user, $interaction)

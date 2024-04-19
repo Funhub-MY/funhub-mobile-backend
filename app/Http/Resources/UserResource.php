@@ -75,6 +75,7 @@ class UserResource extends JsonResource
             'country_id' => $this->when($this->isAuthUser, $this->country_id),
             'state_id' => $this->when($this->isAuthUser, $this->state_id),
             'category_ids' => $this->when($this->isAuthUser, $this->articleCategoriesInterests->pluck('id')->toArray()),
+            'created_at' => $this->created_at,
         ];
     }
 }
