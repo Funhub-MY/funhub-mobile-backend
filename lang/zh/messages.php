@@ -263,6 +263,8 @@ return [
             'VoucherRedeemedNotification' => '',
             'RewardReceivedTitle' => '恭喜你获得了 :rewardQuantity x :rewardName',
             'RewardReceivedBody' => '恭喜你获得了 :rewardQuantity x :rewardName 作为任务“:missionName”的奖励',
+            'ReferralRewardReceivedTitle' => '推荐奖励',
+            'ReferralRewardReceivedBody' => ':name 输入了你的推荐码，你和TA各获得了1粒饭盒！去看看如何兑换折扣至少50%的限时限量优惠吧！',
         ],
         'database' => [
             'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
@@ -287,6 +289,7 @@ return [
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',
             'RewardReceivedBody' => '恭喜你获得了 :rewardQuantity x :rewardName 作为任务“:missionName”的奖励',
+            'ReferralRewardReceivedBody' => ':name 输入了你的推荐码，你和TA各获得了1粒饭盒！去看看如何兑换折扣至少50%的限时限量优惠吧！',
         ]
     ]
 ];

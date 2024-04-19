@@ -260,6 +260,8 @@ return [
             'VoucherRedeemedNotification' => 'Voucher redeemed',
             'RewardReceivedTitle' => 'You have received :rewardName x :rewardQuantity',
             'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
+            'ReferralRewardReceivedTitle' => 'Referral Reward Received',
+            'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -284,6 +286,7 @@ return [
             'TaggedUserInComment' => 'Mentioned you in the comments',
             'VoucherRedeemedNotification' => 'Voucher redeemed',
             'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
+            'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
         ]
     ]
 ];
