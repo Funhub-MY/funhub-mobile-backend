@@ -108,7 +108,7 @@ class CustomNotification extends Notification implements ShouldQueue
             'from' => 'Funhub',
             'from_id' => '',
             'title' => (string) $this->getTitleAndContent()['title'],
-            'content' => (string) $this->getTitleAndContent()['content'],
+            'message' => (string) $this->getTitleAndContent()['content'],
         ];
 
         // Check if redirect type is dynamic and content type is set
