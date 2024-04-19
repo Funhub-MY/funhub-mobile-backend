@@ -42,7 +42,6 @@ class CampaignResource extends Resource
                             ->required(),
                         TextInput::make('url')
                             ->label('Campaign Mobile Site (URL)')
-                            ->rule('url')
                             ->helperText('Will be displayed as web view in app.')
                             ->required(),
 
