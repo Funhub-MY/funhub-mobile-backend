@@ -51,20 +51,24 @@ class SendCustomNotification extends Command
                         'notification' => json_encode($systemNotification),
                     ]);
 
+                    $selectedUsers = [];
                     // Get the selected user Ids
                     if ($systemNotification->all_active_users) {
-                        $selectedUserIds = User::where('status', 1)->pluck('id')->toArray();
+                        $selectedUsers = User::where('status', User::STATUS_ACTIVE)
+                            ->get();
                     } else {
-                        $selectedUserIds = json_decode($systemNotification->user);
+                        $selectedUsers = json_decode($systemNotification->user);
+                        // get users with the selected user ids
+                        $selectedUsers = User::whereIn('id', $selectedUsers)->get();
                     }
 
-                    foreach ($selectedUserIds as $userId) {
-                        $user = User::where('id', $userId)->first();
-                        $user->notify(new CustomNotification($systemNotification));
+                    foreach ($selectedUsers as $user) {
+                        $locale = $user->last_lang ?? config('app.locale');
+                        $user->notify((new CustomNotification($systemNotification, $locale)));
                     }
 
                     Log::info('[Custom Notification] Scheduled notification has been sent to selected users', [
-                        'user_ids' => $selectedUserIds,
+                        'user_ids' => $selectedUsers->pluck('id')->toArray(),
                     ]);
 
                     // After sending notification, add timestamp to sent_at column in table

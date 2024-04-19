@@ -16,15 +16,17 @@ class CustomNotification extends Notification implements ShouldQueue
     use Queueable;
 
     protected $customNotification;
+    protected $locale;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(SystemNotification $customNotification)
+    public function __construct(SystemNotification $customNotification, $locale = null)
     {
         $this->customNotification = $customNotification;
+        $this->locale = $locale ?? config('app.locale');
     }
 
     /**
@@ -38,6 +40,32 @@ class CustomNotification extends Notification implements ShouldQueue
         return [FcmChannel::class, 'database'];
     }
 
+    private function getTitleAndContent()
+    {
+        $title = $this->customNotification->title;
+        try {
+            $title = json_decode($this->customNotification->title);
+            // based on locale return correct title {en: 'abc', zh: 'xyz'}
+            $title = $title->{$this->locale} ?? $this->customNotification->title;
+        } catch (\Exception $e) {
+            $title = $this->customNotification->title;
+        }
+        // check if title and content is json array by attempting decoding it first
+        $content = $this->customNotification->content;
+        try {
+            $content = json_decode($this->customNotification->content);
+            // based on locale return correct title {en: 'abc', zh: 'xyz'}
+            $content = $content->{$this->locale} ?? $this->customNotification->content;
+        } catch (\Exception $e) {
+            $content = $this->customNotification->content;
+        }
+
+        return [
+            'title' => $title,
+            'content' => $content
+        ];
+    }
+
     /**
      * Get the mail representation of the notification.
      *
@@ -46,18 +74,19 @@ class CustomNotification extends Notification implements ShouldQueue
      */
     public function toFcm($notifiable)
     {
+
         return FcmMessage::create()
             ->setData([
                 'notification_id' => (string) $this->customNotification->id,
                 'notification_type' => (string) $this->customNotification->type,
-                'title' => (string) $this->customNotification->title,
-                'content' => (string) $this->customNotification->content,
+                'title' => (string) $this->getTitleAndContent()['title'],
+                'content' => (string) $this->getTitleAndContent()['content'],
                 'schedule_time' =>  (string) $this->customNotification->scheduled_at,
                 'action' => 'custom_notification'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle($this->customNotification->title)
-                ->setBody($this->customNotification->content)
+                ->setTitle($this->getTitleAndContent()['title'])
+                ->setBody($this->getTitleAndContent()['content'])
             );
     }
 
@@ -78,8 +107,8 @@ class CustomNotification extends Notification implements ShouldQueue
             'action' => 'custom_notification',
             'from' => 'Funhub',
             'from_id' => '',
-            'title' => $this->customNotification->title,
-            'message' => $this->customNotification->content,
+            'title' => (string) $this->getTitleAndContent()['title'],
+            'content' => (string) $this->getTitleAndContent()['content'],
         ];
 
         // Check if redirect type is dynamic and content type is set
