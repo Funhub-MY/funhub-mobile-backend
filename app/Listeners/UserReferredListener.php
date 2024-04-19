@@ -51,8 +51,10 @@ class UserReferredListener
             $pointService->credit($reward, $user, 1, 'Referral Reward', 'Referral Reward');
             $pointService->credit($reward, $referredBy, 1, 'Referral Reward', 'Referral Reward');
 
+            $locale = $referredBy->last_lang ?? config('app.locale');
+
             // fire notification to referral user
-            $referredBy->notify(new ReferralRewardReceivedNotification($referredBy, $user));
+            $referredBy->notify((new ReferralRewardReceivedNotification($referredBy, $user))->locale($locale));
 
             Log::info('[UserReferredListener] User referred by ' . $referredBy->id . ' to ' . $user->id . ' rewarded with 1 funhub each.');
         }
