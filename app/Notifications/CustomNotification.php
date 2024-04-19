@@ -98,7 +98,12 @@ class CustomNotification extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        $title = $this->getTitleAndContent()['title'];
+        $content = $this->getTitleAndContent()['content'];
+
         $toArrayData = [
+            'title' => $title,
+            'message' => $content,
             'object' => get_class($this->customNotification), // App/Models/SystemNotification
             'object_id' => $this->customNotification->id,
             'link_to_url' => $this->customNotification->web_link ? true : false,
@@ -107,8 +112,6 @@ class CustomNotification extends Notification implements ShouldQueue
             'action' => 'custom_notification',
             'from' => 'Funhub',
             'from_id' => '',
-            'title' => (string) $this->getTitleAndContent()['title'],
-            'message' => (string) $this->getTitleAndContent()['content'],
         ];
 
         // Check if redirect type is dynamic and content type is set
