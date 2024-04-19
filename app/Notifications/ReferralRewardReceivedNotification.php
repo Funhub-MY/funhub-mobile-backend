@@ -37,7 +37,7 @@ class ReferralRewardReceivedNotification extends Notification implements ShouldQ
     {
         return FcmMessage::create()
             ->setData([
-                'action' => 'custom_deal_notification'
+                'action' => 'custom_notification'
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.ReferralRewardReceivedTitle'))
@@ -56,7 +56,7 @@ class ReferralRewardReceivedNotification extends Notification implements ShouldQ
             'link_to_url' => false,
             'link_to' => $this->referral->id, // if link to url false, means get link_to_object
             'link_to_object' => false, // if link to url false, means get link_to_object
-            'action' => 'custom_deal_notification',
+            'action' => 'custom_notification',
             'from' => 'Funhub',
             'from_id' => '',
             'title' => $this->referral->name,
