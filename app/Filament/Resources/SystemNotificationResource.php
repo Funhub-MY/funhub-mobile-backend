@@ -331,10 +331,32 @@ class SystemNotificationResource extends Resource
                 TextColumn::make('title')
                     ->sortable()
                     ->searchable()
-                    ->words(5),
+                    ->formatStateUsing(function ($state) {
+                        try {
+                            $titles = [];
+                            $stateData = json_decode($state, true);
+                            if($stateData == null) return $state;
 
-                TextColumn::make('content')
-                    ->words(8),
+                            $titles = array_values($stateData);
+                            return implode(', ', $titles);
+                        } catch (\Exception $e) {
+                            return $state;
+                        };
+                    }),
+
+                // TextColumn::make('content')
+                // ->formatStateUsing(function ($state) {
+                //     try {
+                //         $contents = [];
+                //         $stateData = json_decode($state, true);
+                //         if($stateData == null) return $state;
+
+                //         $contents = array_values($stateData);
+                //         return implode(', ', $contents);
+                //     } catch (\Exception $e) {
+                //         return $state;
+                //     };
+                // }),
 
                 TextColumn::make('redirect_type')
                     ->enum(SystemNotification::REDIRECT_TYPE)

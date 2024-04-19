@@ -16,17 +16,17 @@ class CustomNotification extends Notification implements ShouldQueue
     use Queueable;
 
     protected $customNotification;
-    protected $locale;
+    protected $userLocale;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(SystemNotification $customNotification, $locale = null)
+    public function __construct(SystemNotification $customNotification, $userLocale = null)
     {
         $this->customNotification = $customNotification;
-        $this->locale = $locale ?? config('app.locale');
+        $this->userLocale = $userLocale ?? config('app.locale');
     }
 
     /**
@@ -45,8 +45,8 @@ class CustomNotification extends Notification implements ShouldQueue
         $title = $this->customNotification->title;
         try {
             $title = json_decode($this->customNotification->title);
-            // based on locale return correct title {en: 'abc', zh: 'xyz'}
-            $title = $title->{$this->locale} ?? $this->customNotification->title;
+            // based on userLocale return correct title {en: 'abc', zh: 'xyz'}
+            $title = $title->{$this->userLocale} ?? $this->customNotification->title;
         } catch (\Exception $e) {
             $title = $this->customNotification->title;
         }
@@ -54,8 +54,8 @@ class CustomNotification extends Notification implements ShouldQueue
         $content = $this->customNotification->content;
         try {
             $content = json_decode($this->customNotification->content);
-            // based on locale return correct title {en: 'abc', zh: 'xyz'}
-            $content = $content->{$this->locale} ?? $this->customNotification->content;
+            // based on userLocale return correct title {en: 'abc', zh: 'xyz'}
+            $content = $content->{$this->userLocale} ?? $this->customNotification->content;
         } catch (\Exception $e) {
             $content = $this->customNotification->content;
         }
