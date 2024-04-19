@@ -51,6 +51,11 @@ class RecommendationAutoByPass implements ShouldQueue
                 'recommendation_auto_bypass_bookmark'
             ])->get();
 
+            // if no settings found, then return
+            if ($settings->count() < 4) {
+                return;
+            }
+
             $user = $event->article->user;
 
             // get user followers count
@@ -81,10 +86,10 @@ class RecommendationAutoByPass implements ShouldQueue
                 ->count();
 
             // check conditions
-            $viewCondition = ($followersCount > 0) && (($totalViews / $followersCount) * 100) >= $settings['recommendation_auto_bypass_view'];
-            $likeCondition = ($followersCount > 0) && (($totalLikes / $followersCount) * 100) >= $settings['recommendation_auto_bypass_like'];
-            $shareCondition = ($followersCount > 0) && (($totalShares / $followersCount) * 100) >= $settings['recommendation_auto_bypass_share'];
-            $bookmarkCondition = ($followersCount > 0) && (($totalBookmarks / $followersCount) * 100) >= $settings['recommendation_auto_bypass_bookmark'];
+            $viewCondition = ($followersCount > 0) && (($totalViews / $followersCount) * 100) >= $settings->where('key', 'recommendation_auto_bypass_view')->first()->value;
+            $likeCondition = ($followersCount > 0) && (($totalLikes / $followersCount) * 100) >= $settings->where('key', 'recommendation_auto_bypass_like')->first()->value;
+            $shareCondition = ($followersCount > 0) && (($totalShares / $followersCount) * 100) >= $settings->where('key', 'recommendation_auto_bypass_share')->first()->value;
+            $bookmarkCondition = ($followersCount > 0) && (($totalBookmarks / $followersCount) * 100) >= $settings->where('key', 'recommendation_auto_bypass_bookmark')->first()->value;
 
             if ($viewCondition && $likeCondition && $shareCondition && $bookmarkCondition) {
                 $event->article->update(['hidden_from_home' => false]);
