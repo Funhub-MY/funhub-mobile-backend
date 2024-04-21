@@ -52,8 +52,8 @@ class ArticleResource extends JsonResource
                 'has_avatar' => $this->user->hasMedia('avatar'),
                 'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
             ],
-            'categories' => ArticleCategoryResource::collection($this->categories),
-            'sub_categories' => ArticleCategoryResource::collection($this->subCategories),
+            'categories' => ArticleCategoryResource::collection($this->categories->load('media')),
+            'sub_categories' => ArticleCategoryResource::collection($this->subCategories->load('media')),
             'media' => MediaResource::collection($this->media),
             // get cover where medialibrary media is_cover custom property is true
             'cover' => $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first(),
