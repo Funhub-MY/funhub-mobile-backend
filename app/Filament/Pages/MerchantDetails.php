@@ -14,6 +14,7 @@ use Closure;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Faker\Core\File;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Http\Request;
 use Filament\Forms;
@@ -24,6 +25,7 @@ use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Tabs;
 use Filament\Resources\Form;
@@ -45,6 +47,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\ViewField;
 use Illuminate\Support\Facades\Hash;
+// use Filament\Forms\Components\Component;
 
 // class MerchantDetails extends Page
 // {
@@ -376,7 +379,17 @@ class MerchantDetails extends Page implements HasForms
                 
             ] 
         );
-        //dd($this->form);
+    }
+
+    public function dispatchFormEvent(...$args): void
+    {
+        if ($args[0] === 'repeater::deleteItem' && $args[1] === 'companyPhotos') {
+            $user_id = auth()->user()->id;
+            $this->merchant = Merchant::where('user_id', $user_id)->first();
+            $merchant_id = $this->merchant->id;
+            //delete all old company photos
+            $this->merchant->clearMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+        }
     }
 
     protected function getFormSchema(): array
@@ -520,7 +533,7 @@ class MerchantDetails extends Page implements HasForms
                                 //add/edit merchant photos start 
                                 SpatieMediaLibraryFileUpload::make('upload_company_photos')
                                     ->label('Company Photos')
-                                    // ->multiple()
+                                    //->multiple() dun let multiple, let user upload one by one becoz the afterstateupdated will only get the fastest ONE file uploaded. Uploaded 1 then click x to remove, then upload another one.
                                     ->maxFiles(7)
                                     ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
                                     ->required()
@@ -530,6 +543,7 @@ class MerchantDetails extends Page implements HasForms
                                         $merchant = Merchant::find($merchant_id);
 
                                         try {
+                                            //dd($state);
                                             // foreach ($state as $file) {
                                             //     $merchant->addMediaFromDisk($file->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                                             //         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
@@ -569,7 +583,7 @@ class MerchantDetails extends Page implements HasForms
                                                 return new HtmlString($images);
                                             }),
                                         ])
-                                    ->disableItemCreation()
+                                    ->disableItemCreation(),
                                     // ->afterStateHydrated(function ($state, Merchant $merchant, Closure $get) {
                                     //     //find the merchant
                                     //     $merchant_id = $get('merchant_id');
