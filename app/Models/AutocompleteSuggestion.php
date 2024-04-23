@@ -13,7 +13,7 @@ class AutocompleteSuggestion extends Model
 
     public function searchableAs(): string
     {
-        return config('scout.prefix').'search_keywords_index';
+        return config('scout.prefix').'articles_suggestions_index';
     }
 
     public function toSearchableArray()
