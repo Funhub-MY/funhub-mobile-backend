@@ -78,6 +78,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
         Route::get('/articles/keyword', [ArticleController::class, 'getArticlesByKeywordId']);
+        Route::get('/articles/search', [ArticleController::class, 'articlesSearch']);
 
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         // Article Tags

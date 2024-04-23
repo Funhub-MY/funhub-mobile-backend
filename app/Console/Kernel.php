@@ -43,10 +43,11 @@ class Kernel extends ConsoleKernel
         // run every 5 mins to check for scheduled custom notifications
         $schedule->command('send-custom-notification')->everyMinute();
 
-        // run scheduled maintenance every hour to manage
-        $schedule->command('manage-maintenance-status')->hourly();
+        // // run scheduled maintenance every hour to manage (DEPRECATED AS USING REMOTE CONFIG FROMN FIREBASWE)
+        // $schedule->command('manage-maintenance-status')->hourly();
 
-
+        // this will ensure city_id are correctly populated
+        $schedule->command('city-names:populate')->everyThirtyMinutes(); // populate city names from locations
     }
 
     /**

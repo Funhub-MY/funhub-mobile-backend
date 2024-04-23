@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('city_names', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('city_id');
             $table->string('name');
             $table->timestamps();
         });

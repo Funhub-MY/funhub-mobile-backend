@@ -601,9 +601,16 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php",
-                      "line": 105,
+                      "line": 168,
                       "function": "get",
                       "class": "GuzzleHttp\\Client",
+                      "type": "->"
+                  },
+                  {
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php",
+                      "line": 102,
+                      "function": "getUserFromAccessToken",
+                      "class": "Laravel\\Socialite\\Two\\FacebookProvider",
                       "type": "->"
                   },
                   {
@@ -1937,7 +1944,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 581edcvkhE46f3PaVgZab6D'
+      - 'Bearer 4Va13h6fkad5be86cgDEZPv'
     controller: null
     method: null
     route: null
@@ -2025,7 +2032,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PEgDZa66c1Vb3vd54ek8fah'
+      - 'Bearer g586ba6VvkDPfe1c34EhZda'
     controller: null
     method: null
     route: null
@@ -2075,7 +2082,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8faVv3kcb15g4EDadZhe66P'
+      - 'Bearer vgd4EPVc66aDfa8hZk513be'
     controller: null
     method: null
     route: null
@@ -2131,7 +2138,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a6gdchPEZka8vf4D1bVe635'
+      - 'Bearer fD6Pke5a6hE4vd3Zbcag1V8'
     controller: null
     method: null
     route: null
