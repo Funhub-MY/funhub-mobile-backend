@@ -120,6 +120,7 @@ class MerchantRegister extends Component implements HasForms
         //create merchant using the data from the form and user_id
         //brand name -> name (eg. Nedex Solutions)
         //company name -> business name  (eg. NEDEX GROUP SDN BHD)
+        $merchant = null;
         try {
             $merchant = Merchant::create([
                 'user_id' => $user->id,
