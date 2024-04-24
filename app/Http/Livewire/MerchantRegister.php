@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Log;
 class MerchantRegister extends Component implements HasForms
 {
     use InteractsWithForms;
-    
+
     public function mount(): void
     {
         $this->form->fill();
@@ -84,7 +84,7 @@ class MerchantRegister extends Component implements HasForms
             'password' => 'required',
             'passwordConfirmation' => 'required|same:password',
         ]);
-        
+
         //check only 1 store is hq
         // $hq_count = 0;
         // foreach ($data['stores'] as $store) {
@@ -232,7 +232,7 @@ class MerchantRegister extends Component implements HasForms
         }
 
         if ($user && $merchant) {
-            session()->flash('message', 'Merchant created successfully.');
+            session()->flash('message', 'Your Merchant Account has been created. Please await our admins to approve your account and once approved you will received the instructions to login. Thank you!');
             return redirect()->route('merchant.register');
         }
 
@@ -294,7 +294,7 @@ class MerchantRegister extends Component implements HasForms
                                     TextInput::make('auto_complete_address')
                                         ->label('Find a Location')
                                         ->placeholder('Start typing an address ...'),
-                                        
+
                                     Map::make('location')
                                         ->autocomplete(
                                             fieldName: 'auto_complete_address',
@@ -325,7 +325,7 @@ class MerchantRegister extends Component implements HasForms
                                             'zoomControl'       => false,
                                         ])
                                         ->clickable(true),
-        
+
                                     TextInput::make('address')
                                         ->required(),
                                     TextInput::make('zip_code') //merchant's table 'address_postcode'
@@ -418,7 +418,7 @@ class MerchantRegister extends Component implements HasForms
                                             TextInput::make('auto_complete_address')
                                                 ->label('Find a Location')
                                                 ->placeholder('Start typing an address ...'),
-                                                
+
                                             Map::make('location')
                                                 ->autocomplete(
                                                     fieldName: 'auto_complete_address',
@@ -449,7 +449,7 @@ class MerchantRegister extends Component implements HasForms
                                                     'zoomControl'       => false,
                                                 ])
                                                 ->clickable(true),
-                
+
                                             TextInput::make('address')
                                                 ->required(),
                                             TextInput::make('zip_code') //stores table 'address_postcode'
