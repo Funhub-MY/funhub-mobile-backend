@@ -45,7 +45,7 @@ class MerchantRegister extends Component implements HasForms
             'company_reg_no' => 'required',
             'brand_name' => 'required',
             'phone_country_code' => 'required',
-            'business_phone_no' => 'required',
+            'business_phone_no' => 'required|unique:users,phone_no',
             'address' => 'required',
             'company_logo' => 'required',
             'company_photos' => 'required',
@@ -73,7 +73,7 @@ class MerchantRegister extends Component implements HasForms
             'name' => 'required',
             'is_hq' => 'boolean',
             'manager_name' => 'required',
-            'business_phone_no' => 'required',
+            'business_phone_no' => 'required|unique:users,phone_no',
             'address' => 'required',
             'zip_code' => 'required|numeric',
             'business_hours' => 'required',
@@ -97,6 +97,7 @@ class MerchantRegister extends Component implements HasForms
         // }
 
         //create user using the company_email and password
+        $user = null;
         try {
             $user = User::create([
                 'name' => $data['brand_name'],
@@ -108,6 +109,11 @@ class MerchantRegister extends Component implements HasForms
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] User creation failed: ' . $e->getMessage());
             session()->flash('error', 'User creation failed. Please try again.');
+        }
+
+        if (!$user) {
+            session()->flash('error', 'User creation failed. Please try again.');
+            return;
         }
 
         //assign merchant role to the user
@@ -142,6 +148,11 @@ class MerchantRegister extends Component implements HasForms
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Merchant creation failed: ' . $e->getMessage());
             session()->flash('error', 'Merchant creation failed. Please try again.');
+        }
+
+        if (!$merchant) {
+            session()->flash('error', 'Merchant creation failed. Please try again.');
+            return;
         }
 
         //save the company logo to the merchant's media collection
@@ -267,7 +278,9 @@ class MerchantRegister extends Component implements HasForms
                                     // ensure no symbols only numbers
                                     $component->state(preg_replace('/[^0-9]/', '', $state));
                                 })
-                                ->rules('required', 'max:255')->columnSpan(['lg' => 3]),
+                                //->unique(table: User::class, column: 'phone_no')
+                                ->rules(['required', 'max:255', 'unique:users,phone_no'])
+                                ->columnSpan(['lg' => 3]),
                         ])->columns(4),
                         TextInput::make('address') //merchant's table 'address'
                         ->label('Company Address')
