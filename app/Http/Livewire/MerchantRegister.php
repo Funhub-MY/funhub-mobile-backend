@@ -278,6 +278,7 @@ class MerchantRegister extends Component implements HasForms
                                     // ensure no symbols only numbers
                                     $component->state(preg_replace('/[^0-9]/', '', $state));
                                 })
+                                ->helperText('This phone number will be used to create an account on Funhub. Cannot reuse existing Funhub account registered phone numbers')
                                 //->unique(table: User::class, column: 'phone_no')
                                 ->rules(['required', 'max:255', 'unique:users,phone_no'])
                                 ->columnSpan(['lg' => 3]),
