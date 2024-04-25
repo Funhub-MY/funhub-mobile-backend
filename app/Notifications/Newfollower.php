@@ -52,11 +52,6 @@ class Newfollower extends Notification implements ShouldQueue
         //     'title' => (string) $this->follower->name,
         //     'message' => __('messages.notification.database.Newfollower')
         // ])
-        // ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-        //     ->setTitle('新粉丝')
-        //     ->setBody(__('messages.notification.fcm.Newfollower', ['followerName' => $this->follower->name]))
-        // );
-
         ->setData([
             'data' => [
                 'object' => (string) get_class($this->follower), // UserFollowing model
@@ -71,7 +66,11 @@ class Newfollower extends Notification implements ShouldQueue
                 'title' => (string) $this->follower->name,
                 'message' => __('messages.notification.database.Newfollower')
             ],
-        ]);
+        ])
+        ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+            ->setTitle('新粉丝')
+            ->setBody(__('messages.notification.fcm.Newfollower', ['followerName' => $this->follower->name]))
+        );
     }
 
     /**
