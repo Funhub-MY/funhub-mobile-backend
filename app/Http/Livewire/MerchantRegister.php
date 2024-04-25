@@ -219,7 +219,7 @@ class MerchantRegister extends Component implements HasForms
                 if ($response->getStatusCode() === 200) {
                     // Parse the response
                     $location_data = json_decode($response->getBody(), true);
-                
+
                     // Check if the response contains results
                     if (isset($location_data['results']) && !empty($location_data['results'])) {
                         $lang = $location_data['results'][0]['geometry']['location']['lat'];
@@ -303,7 +303,7 @@ class MerchantRegister extends Component implements HasForms
                         Fieldset::make('Phone Number')
                         ->schema([
                             TextInput::make('phone_country_code')
-                                ->placeholder('60')
+                                ->placeholder('Country Code eg. 60')
                                 ->label('')
                                 ->afterStateHydrated(function ($component, $state) {
                                     // ensure no symbols only numbers
@@ -311,11 +311,13 @@ class MerchantRegister extends Component implements HasForms
                                 })
                                 ->rules('required', 'max:255')->columnSpan(['lg' => 1]),
                             TextInput::make('business_phone_no')
-                                ->placeholder('eg. 123456789')
+                                ->placeholder('eg. 123456789 (without zero infront)')
                                 ->label('')
                                 ->afterStateHydrated(function ($component, $state) {
                                     // ensure no symbols only numbers
                                     $component->state(preg_replace('/[^0-9]/', '', $state));
+                                    // remove any number start with zero
+                                    $component->state(preg_replace('/^0+/', '', $state));
                                 })
                                 ->helperText('This phone number will be used to create an account on Funhub. Cannot reuse existing Funhub account registered phone numbers')
                                 //->unique(table: User::class, column: 'phone_no')
