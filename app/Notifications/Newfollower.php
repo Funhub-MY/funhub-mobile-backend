@@ -40,8 +40,17 @@ class Newfollower extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
         ->setData([
+            'object' => (string) get_class($this->follower), // UserFollowing model
+            'object_id' => (string) $this->follower->id, // record id
+            'link_to_url' => (string) 'false',
+            'link_to' => '', // if link to url false, means get link_to_object
+            'link_to_object' => (string) $this->follower->id, // if link to url false, means get link_to_object
             'follower_id' => (string) $this->follower->id,
-            'action' => 'new_follower'
+            'action' => 'new_follower',
+            'from' => (string) $this->follower->name,
+            'from_id' => (string) $this->follower->id,
+            'title' => (string) $this->follower->name,
+            'message' => __('messages.notification.database.Newfollower')
         ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('新粉丝')
@@ -63,7 +72,8 @@ class Newfollower extends Notification implements ShouldQueue
             'link_to_url' => false,
             'link_to' => '', // if link to url false, means get link_to_object
             'link_to_object' => $this->follower->id, // if link to url false, means get link_to_object
-            'action' => 'followed',
+            'follower_id' => (string) $this->follower->id,
+            'action' => 'new_follower',
             'from' => $this->follower->name,
             'from_id' => $this->follower->id,
             'title' => $this->follower->name,
