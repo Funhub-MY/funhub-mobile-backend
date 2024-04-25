@@ -273,7 +273,7 @@ class SystemNotificationResource extends Resource
 
                                 TextInput::make('web_link')
                                     ->label('Web Link')
-                                    ->hidden(fn (Closure $get) => $get('type') !== 'web'),
+                                    ->hidden(fn (Closure $get) => $get('static_content_type') !== 'web'),
                             ])
                             ->hidden(function ($get) {
                                 if ($get('redirect_type') == SystemNotification::REDIRECT_STATIC) {
@@ -283,6 +283,23 @@ class SystemNotificationResource extends Resource
                                 return true;
                             })
                             ->label('Static Redirect')
+                            ->columns(1),
+
+                        Fieldset::make()
+                            ->schema([
+                                Select::make('page_redirect')
+                                    ->label('')
+                                    ->options([
+                                        'deal_index' => 'Deal Index',
+                                        'my_referral' => 'My Referral',
+                                        'notifications' => 'Notifications',
+                                        'my_funbox' => 'My Funbox',
+                                        'buy_giftcard' => 'Buy Giftcard',
+                                    ])
+                                    ->required(),
+                            ])
+                            ->hidden(fn ($get) => $get('redirect_type') == SystemNotification::REDIRECT_PAGE ? false : true)
+                            ->label('Page Redirect')
                             ->columns(1)
                     ])
                     ->columns(2),
@@ -310,8 +327,8 @@ class SystemNotificationResource extends Resource
                                     $stateData = json_decode($state, true);
                                     return $stateData;
                                 }
-                            }),
-
+                            })
+                            ->rules([fn($get) => $get('all_active_users') === false ? 'required' : '']),
                         Toggle::make('all_active_users')
                             ->label('Toggle on to send notification to all active users')
                             ->reactive(),
