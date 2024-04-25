@@ -226,10 +226,22 @@ class MerchantDetails extends Page implements HasForms
                     ]
                 ]);
             
-                // Parse the response
-                $location_data = json_decode($response->getBody(), true);
-                $lang = $location_data['results'][0]['geometry']['location']['lat'];
-                $long = $location_data['results'][0]['geometry']['location']['lng'];
+                if ($response->getStatusCode() === 200) {
+                    // Parse the response
+                    $location_data = json_decode($response->getBody(), true);
+                
+                    // Check if the response contains results
+                    if (isset($location_data['results']) && !empty($location_data['results'])) {
+                        $lang = $location_data['results'][0]['geometry']['location']['lat'];
+                        $long = $location_data['results'][0]['geometry']['location']['lng'];
+                    } else {
+                        // No results found, keep as null first
+                        $lang = null;
+                        $long = null;
+                    }
+                } else {
+                    Log::info('Failed to get location data from Google Maps API');
+                }
                 //section for getting lang and long-end
 
                 //create new store
