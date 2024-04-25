@@ -41,7 +41,7 @@ class MerchantOfferResource extends Resource
 
     protected static ?string $modelLabel = 'Merchant Offer';
 
-    protected static ?string $navigationGroup = 'Merchant';
+    protected static ?string $navigationGroup = 'Merchant Offers';
 
     protected static ?int $navigationSort = 1;
 

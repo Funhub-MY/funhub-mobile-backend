@@ -27,6 +27,8 @@ use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
+use App\Filament\Resources\MerchantResource\RelationManagers\StoresRelationManager;
+use App\Models\Store;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
@@ -87,14 +89,14 @@ class MerchantResource extends Resource
                             ->rules(['email', 'required', function ($context, ?Model $record) {
                                 return function (string $attribute, $value, Closure $fail) use ($context, $record) {
                                     if ($context === 'create' || !$record) {
-                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table, 
+                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
                                             ->exists();
                                     } elseif ($context === 'edit' && $record instanceof Model)  {
-                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table, 
+                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
                                             ->where('id', '!=', $record->user_id) // excluding current user record in the table
                                             ->exists();
                                     }
-                                    
+
                                     // Check the result and fail if the email already exists
                                     if ($is_user_exists) {
                                         $fail('The :attribute is exists');
@@ -265,6 +267,7 @@ class MerchantResource extends Resource
     public static function getRelations(): array
     {
         return [
+            StoresRelationManager::class,
             AuditsRelationManager::class,
         ];
     }
