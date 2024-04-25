@@ -27,6 +27,7 @@ use Filament\Forms\Components\Wizard;
 use Filament\Pages\Actions\Action;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Client;
 
 class MerchantRegister extends Component implements HasForms
 {
@@ -49,11 +50,11 @@ class MerchantRegister extends Component implements HasForms
             'address' => 'required',
             'company_logo' => 'required',
             'company_photos' => 'required',
-            'auto_complete_address' => 'nullable',
-            'location' => 'nullable',
+            // 'auto_complete_address' => 'nullable',
+            // 'location' => 'nullable',
             'zip_code' => 'required|numeric',
-            'state_id' => 'nullable',
-            'country_id' => 'nullable',
+            'state_id' => 'required',
+            'country_id' => 'required',
             'pic_name' => 'required',
             'pic_designation' => 'required',
             'pic_ic_no' => 'required|numeric',
@@ -185,7 +186,7 @@ class MerchantRegister extends Component implements HasForms
         $merchant->save();
 
         //create store using the data from the form and user_id
-        try {
+        // try {
             // foreach ($data['stores'] as $store) {
                 //process business hours
                 $businessHours = [];
@@ -196,6 +197,27 @@ class MerchantRegister extends Component implements HasForms
                     ];
                 }
 
+                //section for getting lang and long-start
+                //get state name and country name
+                $state_name = State::find($data['state_id'])->name;
+                $country_name = Country::find($data['country_id'])->name;
+
+                $address= $data['address'] . ', ' . $data['zip_code'] . ', ' . $state_name . ', ' . $country_name;
+                //dd($address); //"17, jalan usj 18/4, 47630, Selangor, Malaysia"
+                $client = new Client();
+                $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+                    'query' => [
+                        'address' => $address,
+                        'key' => config('filament-google-maps.key'),
+                    ]
+                ]);
+            
+                // Parse the response
+                $location_data = json_decode($response->getBody(), true);
+                $lang = $location_data['results'][0]['geometry']['location']['lat'];
+                $long = $location_data['results'][0]['geometry']['location']['lng'];
+                //section for getting lang and long-end
+
                 $store = Store::create([
                     'user_id' => $user->id,
                     'name' => $data['name'],
@@ -204,8 +226,8 @@ class MerchantRegister extends Component implements HasForms
                     'business_hours' => json_encode($businessHours),
                     'address' => $data['address'],
                     'address_postcode' => $data['zip_code'],
-                    'lang' => $data['location']['lat'],
-                    'long' => $data['location']['lng'],
+                    'lang' => $lang,
+                    'long' => $long,
                     'is_hq' => $data['is_hq'],
                     'state_id' => $data['state_id'],
                     'country_id' => $data['country_id'],
@@ -226,10 +248,10 @@ class MerchantRegister extends Component implements HasForms
                 //     'country_id' => $data['country_id'],
                 // ]);
             // }
-        } catch (\Exception $e) {
-            Log::error('[MerchantOnboarding] Store creation failed: ' . $e->getMessage());
-            session()->flash('error', 'Store creation failed. Please try again.');
-        }
+        // } catch (\Exception $e) {
+        //     Log::error('[MerchantOnboarding] Store creation failed: ' . $e->getMessage());
+        //     session()->flash('error', 'Store creation failed. Please try again.');
+        // }
 
         if ($user && $merchant) {
             session()->flash('message', 'Your Merchant Account has been created. Please await our admins to approve your account and once approved you will received the instructions to login. Thank you!');
@@ -283,48 +305,49 @@ class MerchantRegister extends Component implements HasForms
                                 ->rules(['required', 'max:255', 'unique:users,phone_no'])
                                 ->columnSpan(['lg' => 3]),
                         ])->columns(4),
-                        TextInput::make('address') //merchant's table 'address'
-                        ->label('Company Address')
-                        ->required()
-                        ->placeholder('Enter Location'),
+                        // TextInput::make('address') //merchant's table 'address'
+                        // ->label('Company Address')
+                        // ->required()
+                        // ->placeholder('Enter Location'),
 
                         Group::make([
                             Section::make('Location Details')
                                 ->schema([
-                                    TextInput::make('auto_complete_address')
-                                        ->label('Find a Location')
-                                        ->placeholder('Start typing an address ...'),
+                                    //comment out the map coz 'Force https request to maps API issue on production'
+                                    // TextInput::make('auto_complete_address')
+                                    //     ->label('Find a Location')
+                                    //     ->placeholder('Start typing an address ...'),
 
-                                    Map::make('location')
-                                        ->autocomplete(
-                                            fieldName: 'auto_complete_address',
-                                            placeField: 'name',
-                                            countries: ['MY'],
-                                        )
-                                        ->reactive()
-                                        ->defaultZoom(15)
-                                        ->defaultLocation([
-                                            // klang valley coordinates
-                                            'lat' => 3.1390,
-                                            'lng' => 101.6869,
-                                        ])
-                                        ->reverseGeocode([
-                                            'city'   => '%L',
-                                            'zip'    => '%z',
-                                            'state'  => '%D',
-                                            'zip_code' => '%z',
-                                            'address' => '%n %S',
-                                        ])
-                                        ->mapControls([
-                                            'mapTypeControl'    => true,
-                                            'scaleControl'      => true,
-                                            'streetViewControl' => false,
-                                            'rotateControl'     => true,
-                                            'fullscreenControl' => true,
-                                            'searchBoxControl'  => false, // creates geocomplete field inside map
-                                            'zoomControl'       => false,
-                                        ])
-                                        ->clickable(true),
+                                    // Map::make('location')
+                                    //     ->autocomplete(
+                                    //         fieldName: 'auto_complete_address',
+                                    //         placeField: 'name',
+                                    //         countries: ['MY'],
+                                    //     )
+                                    //     ->reactive()
+                                    //     ->defaultZoom(15)
+                                    //     ->defaultLocation([
+                                    //         // klang valley coordinates
+                                    //         'lat' => 3.1390,
+                                    //         'lng' => 101.6869,
+                                    //     ])
+                                    //     ->reverseGeocode([
+                                    //         'city'   => '%L',
+                                    //         'zip'    => '%z',
+                                    //         'state'  => '%D',
+                                    //         'zip_code' => '%z',
+                                    //         'address' => '%n %S',
+                                    //     ])
+                                    //     ->mapControls([
+                                    //         'mapTypeControl'    => true,
+                                    //         'scaleControl'      => true,
+                                    //         'streetViewControl' => false,
+                                    //         'rotateControl'     => true,
+                                    //         'fullscreenControl' => true,
+                                    //         'searchBoxControl'  => false, // creates geocomplete field inside map
+                                    //         'zoomControl'       => false,
+                                    //     ])
+                                    //     ->clickable(true),
 
                                     TextInput::make('address')
                                         ->required(),
@@ -334,6 +357,7 @@ class MerchantRegister extends Component implements HasForms
                                         ->required(),
                                     Select::make('state_id') //merchant's table 'state_id'
                                         ->label('State')
+                                        ->required()
                                         ->options(State::all()->pluck('name', 'id')->toArray()),
                                     Select::make('country_id') //merchant's table 'country_id'
                                         ->label('Country')
@@ -415,40 +439,41 @@ class MerchantRegister extends Component implements HasForms
                                 Group::make([
                                     Section::make('Location Details')
                                         ->schema([
-                                            TextInput::make('auto_complete_address')
-                                                ->label('Find a Location')
-                                                ->placeholder('Start typing an address ...'),
+                                            //comment out the map coz 'Force https request to maps API issue on production'
+                                            // TextInput::make('auto_complete_address')
+                                            //     ->label('Find a Location')
+                                            //     ->placeholder('Start typing an address ...'),
 
-                                            Map::make('location')
-                                                ->autocomplete(
-                                                    fieldName: 'auto_complete_address',
-                                                    placeField: 'name',
-                                                    countries: ['MY'],
-                                                )
-                                                ->reactive()
-                                                ->defaultZoom(15)
-                                                ->defaultLocation([
-                                                    // klang valley coordinates
-                                                    'lat' => 3.1390,
-                                                    'lng' => 101.6869,
-                                                ])
-                                                ->reverseGeocode([
-                                                    'city'   => '%L',
-                                                    'zip'    => '%z',
-                                                    'state'  => '%D',
-                                                    'zip_code' => '%z',
-                                                    'address' => '%n %S',
-                                                ])
-                                                ->mapControls([
-                                                    'mapTypeControl'    => true,
-                                                    'scaleControl'      => true,
-                                                    'streetViewControl' => false,
-                                                    'rotateControl'     => true,
-                                                    'fullscreenControl' => true,
-                                                    'searchBoxControl'  => false, // creates geocomplete field inside map
-                                                    'zoomControl'       => false,
-                                                ])
-                                                ->clickable(true),
+                                            // Map::make('location')
+                                            //     ->autocomplete(
+                                            //         fieldName: 'auto_complete_address',
+                                            //         placeField: 'name',
+                                            //         countries: ['MY'],
+                                            //     )
+                                            //     ->reactive()
+                                            //     ->defaultZoom(15)
+                                            //     ->defaultLocation([
+                                            //         // klang valley coordinates
+                                            //         'lat' => 3.1390,
+                                            //         'lng' => 101.6869,
+                                            //     ])
+                                            //     ->reverseGeocode([
+                                            //         'city'   => '%L',
+                                            //         'zip'    => '%z',
+                                            //         'state'  => '%D',
+                                            //         'zip_code' => '%z',
+                                            //         'address' => '%n %S',
+                                            //     ])
+                                            //     ->mapControls([
+                                            //         'mapTypeControl'    => true,
+                                            //         'scaleControl'      => true,
+                                            //         'streetViewControl' => false,
+                                            //         'rotateControl'     => true,
+                                            //         'fullscreenControl' => true,
+                                            //         'searchBoxControl'  => false, // creates geocomplete field inside map
+                                            //         'zoomControl'       => false,
+                                            //     ])
+                                            //     ->clickable(true),
 
                                             TextInput::make('address')
                                                 ->required(),
@@ -458,6 +483,7 @@ class MerchantRegister extends Component implements HasForms
                                                 ->required(),
                                             Select::make('state_id') //stores table 'state_id'
                                                 ->label('State')
+                                                ->required()
                                                 ->options(State::all()->pluck('name', 'id')->toArray()),
                                             Select::make('country_id') //stores table 'country_id'
                                                 ->label('Country')
