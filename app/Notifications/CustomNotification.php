@@ -87,7 +87,7 @@ class CustomNotification extends Notification implements ShouldQueue
                 'link_to_object' => (string) $this->customNotification->id, // if link to url false, means get link_to_object
                 'action' => 'custom_notification',
                 'schedule_time' =>  (string) $this->customNotification->scheduled_at,
-                'from' => 'Funhub',
+                'from_name' => 'Funhub',
                 'from_id' => '',
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -115,7 +115,7 @@ class CustomNotification extends Notification implements ShouldQueue
             'link_to_object' => $this->customNotification->id, // if link to url false, means get link_to_object
             'action' => 'custom_notification',
             'schedule_time' => $this->customNotification->scheduled_at,
-            'from' => 'Funhub',
+            'from_name' => 'Funhub',
             'from_id' => '',
         ];
 
