@@ -59,8 +59,8 @@ class Store extends BaseModel implements Auditable
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             '_geoloc' => ($this->lang && $this->long) ? [
-                'lat' => $this->lang,
-                'lng' => $this->long
+                'lat' => (float) $this->lang,
+                'lng' => (float) $this->long
             ] : null
         ];
     }
@@ -75,7 +75,14 @@ class Store extends BaseModel implements Auditable
 
     public function merchant()
     {
-        return $this->hasOneThrough(Merchant::class, User::class);
+        return $this->hasOneThrough(
+            Merchant::class,  // Final model
+            User::class,      // Intermediate model
+            'id',             // Foreign key on the intermediate model (users.id)
+            'user_id',        // Foreign key on the final model (merchants.user_id)
+            'user_id',        // Local key on the current model (stores.user_id)
+            'id'              // Local key on the intermediate model (users.id)
+        );
     }
 
     public function merchant_offers()
