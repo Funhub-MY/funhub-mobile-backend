@@ -36,7 +36,7 @@ class Store extends BaseModel implements Auditable
      */
     public function searchableAs(): string
     {
-        return config('scout.prefix').'merchants_index';
+        return config('scout.prefix').'stores_index';
     }
 
     public function toSearchableArray()
@@ -58,8 +58,8 @@ class Store extends BaseModel implements Auditable
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            '_geoloc' => ($this->lat && $this->long) ? [
-                'lat' => $this->lat,
+            '_geoloc' => ($this->lang && $this->long) ? [
+                'lat' => $this->lang,
                 'lng' => $this->long
             ] : null
         ];
