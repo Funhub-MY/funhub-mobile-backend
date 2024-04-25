@@ -77,12 +77,18 @@ class CustomNotification extends Notification implements ShouldQueue
 
         return FcmMessage::create()
             ->setData([
-                'notification_id' => (string) $this->customNotification->id,
-                'notification_type' => (string) $this->customNotification->type,
                 'title' => (string) $this->getTitleAndContent()['title'],
-                'content' => (string) $this->getTitleAndContent()['content'],
+                'message' => (string) $this->getTitleAndContent()['content'],
+                'redirect' => $this->customNotification->page_redirect?? null,
+                'object' => get_class($this->customNotification), // App/Models/SystemNotification
+                'object_id' => $this->customNotification->id,
+                'link_to_url' => $this->customNotification->web_link ? true : false,
+                'link_to' => $this->customNotification->web_link ?? null, // if link to url false, means get link_to_object
+                'link_to_object' => $this->customNotification->id, // if link to url false, means get link_to_object
+                'action' => 'custom_notification',
                 'schedule_time' =>  (string) $this->customNotification->scheduled_at,
-                'action' => 'custom_notification'
+                'from' => 'Funhub',
+                'from_id' => '',
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle($this->getTitleAndContent()['title'])
@@ -98,12 +104,9 @@ class CustomNotification extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $title = $this->getTitleAndContent()['title'];
-        $content = $this->getTitleAndContent()['content'];
-
         $toArrayData = [
-            'title' => $title,
-            'message' => $content,
+            'title' => $this->getTitleAndContent()['title'],
+            'message' => $this->getTitleAndContent()['content'],
             'redirect' => $this->customNotification->page_redirect?? null,
             'object' => get_class($this->customNotification), // App/Models/SystemNotification
             'object_id' => $this->customNotification->id,
@@ -111,6 +114,7 @@ class CustomNotification extends Notification implements ShouldQueue
             'link_to' => $this->customNotification->web_link ?? null, // if link to url false, means get link_to_object
             'link_to_object' => $this->customNotification->id, // if link to url false, means get link_to_object
             'action' => 'custom_notification',
+            'schedule_time' => $this->customNotification->scheduled_at,
             'from' => 'Funhub',
             'from_id' => '',
         ];
