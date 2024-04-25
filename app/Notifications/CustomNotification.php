@@ -81,10 +81,10 @@ class CustomNotification extends Notification implements ShouldQueue
                 'message' => (string) $this->getTitleAndContent()['content'],
                 'redirect' => $this->customNotification->page_redirect?? null,
                 'object' => get_class($this->customNotification), // App/Models/SystemNotification
-                'object_id' => $this->customNotification->id,
-                'link_to_url' => $this->customNotification->web_link ? true : false,
-                'link_to' => $this->customNotification->web_link ?? null, // if link to url false, means get link_to_object
-                'link_to_object' => $this->customNotification->id, // if link to url false, means get link_to_object
+                'object_id' => (string) $this->customNotification->id,
+                'link_to_url' => (string) $this->customNotification->web_link ? 'true' : 'false',
+                'link_to' => (string) $this->customNotification->web_link ?? 'null', // if link to url false, means get link_to_object
+                'link_to_object' => (string) $this->customNotification->id, // if link to url false, means get link_to_object
                 'action' => 'custom_notification',
                 'schedule_time' =>  (string) $this->customNotification->scheduled_at,
                 'from' => 'Funhub',
@@ -109,7 +109,7 @@ class CustomNotification extends Notification implements ShouldQueue
             'message' => $this->getTitleAndContent()['content'],
             'redirect' => $this->customNotification->page_redirect?? null,
             'object' => get_class($this->customNotification), // App/Models/SystemNotification
-            'object_id' => $this->customNotification->id,
+            'object_id' => (string) $this->customNotification->id,
             'link_to_url' => $this->customNotification->web_link ? true : false,
             'link_to' => $this->customNotification->web_link ?? null, // if link to url false, means get link_to_object
             'link_to_object' => $this->customNotification->id, // if link to url false, means get link_to_object
