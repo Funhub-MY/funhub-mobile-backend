@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: provident
+        example: culpa
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: provident
+      share_code: culpa
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ag3Dahf68kdVebcv54EP61Z'
+      - 'Bearer De66Zhv18g4EV3cbPkafda5'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: perspiciatis
+        example: molestiae
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: perspiciatis
+      username: molestiae
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer v65kfachZb64Vd3PgEDae81'
+      - 'Bearer PegcbkdZhfVv465E1aaD386'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: aut
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: aut
+      share_code: et
     fileParameters: []
     responses:
       -
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P8Eb35Ddcg1Z4eav6Vkhaf6'
+      - 'Bearer Z3Vad86Phc1Dv65feEk4bga'
     controller: null
     method: null
     route: null

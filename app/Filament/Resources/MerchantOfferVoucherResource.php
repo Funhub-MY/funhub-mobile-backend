@@ -43,7 +43,7 @@ class MerchantOfferVoucherResource extends Resource
 
     protected static ?string $modelLabel = 'Stock Voucher';
 
-    protected static ?string $navigationGroup = 'Merchant';
+    protected static ?string $navigationGroup = 'Merchant Offers';
 
     protected static ?int $navigationSort = 3;
 

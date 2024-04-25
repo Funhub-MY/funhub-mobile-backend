@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "8772536a-3caf-4db3-b061-bc37e30eefe7",
+        "_postman_id": "c9fcbfe7-237a-4fe2-b3f4-d8949bbcfce7",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":13,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"et\",\"violation_level\":\"totam\",\"article\":1}"
+                                    "raw": "{\"article_id\":16,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"recusandae\",\"violation_level\":\"sed\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptatum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"aut\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -457,7 +457,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"keyword_id\":17}"
+                            "raw": "{\"keyword_id\":18}"
                         },
                         "description": ""
                     },
@@ -527,7 +527,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"quia\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -1091,7 +1091,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "fugiat",
+                                            "value": "ut",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1191,7 +1191,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"vitae\",\"violation_type\":\"dolores\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"quae\",\"violation_type\":\"sunt\"}"
                                 },
                                 "description": ""
                             },
@@ -1348,7 +1348,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "magnam",
+                                            "value": "voluptatibus",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2394,7 +2394,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"george.waters@example.com\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"jevon33@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2470,7 +2470,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"provident\"}"
+                            "raw": "{\"share_code\":\"culpa\"}"
                         },
                         "description": ""
                     },
@@ -2526,7 +2526,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"perspiciatis\"}"
+                            "raw": "{\"username\":\"molestiae\"}"
                         },
                         "description": ""
                     },
@@ -2582,7 +2582,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"aut\"}"
+                            "raw": "{\"share_code\":\"et\"}"
                         },
                         "description": ""
                     },
@@ -3286,7 +3286,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_ids\":[\"rem\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                            "raw": "{\"location_ids\":[\"eaque\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
                         },
                         "description": ""
                     },
@@ -3507,7 +3507,7 @@
                                         },
                                         {
                                             "key": "merchant_offer_ids[0]",
-                                            "value": "error",
+                                            "value": "expedita",
                                             "description": "optional Merchant Offer Ids to Filter. Example [1,2,3]",
                                             "disabled": false
                                         },
@@ -3566,7 +3566,7 @@
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=error&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=expedita&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3648,7 +3648,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"excepturi\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"nobis\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -3849,7 +3849,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "quia",
+                                            "value": "qui",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -3876,6 +3876,128 @@
                                     "name": "success"
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Merchants",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/merchants",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/merchants",
+                            "variable": [
+                                {
+                                    "id": "search",
+                                    "key": "search",
+                                    "value": "business+name",
+                                    "description": "optional Search by business name."
+                                },
+                                {
+                                    "id": "categories_id",
+                                    "key": "categories_id",
+                                    "value": "1%2C2%2C3",
+                                    "description": "optional Search by categories id."
+                                },
+                                {
+                                    "id": "merchant_ids",
+                                    "key": "merchant_ids",
+                                    "value": "1%2C2%2C3",
+                                    "description": "optional Search by merchant ids."
+                                },
+                                {
+                                    "id": "store_ids",
+                                    "key": "store_ids",
+                                    "value": "1%2C2%2C3",
+                                    "description": "optional Search by store ids."
+                                },
+                                {
+                                    "id": "limit",
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "optional Limit the number of results."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Nearby Merchants\nWill lookup based on user provided lat,lng and search for merchant stores near user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/merchants\/nearby",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/merchants\/nearby",
+                            "variable": [
+                                {
+                                    "id": "lat",
+                                    "key": "lat",
+                                    "value": "3.1390",
+                                    "description": "Latitude."
+                                },
+                                {
+                                    "id": "lng",
+                                    "key": "lng",
+                                    "value": "101.6869",
+                                    "description": "Longitude."
+                                },
+                                {
+                                    "id": "radius",
+                                    "key": "radius",
+                                    "value": "10",
+                                    "description": "optional Radius in km."
+                                },
+                                {
+                                    "id": "limit",
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "optional Limit the number of results."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
                         }
                     ]
                 },
@@ -5063,7 +5185,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -5110,7 +5232,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":19}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -5151,7 +5273,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":11}"
+                                    "raw": "{\"user_id\":17}"
                                 },
                                 "description": ""
                             },
@@ -5192,7 +5314,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -5324,7 +5446,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"consequatur\",\"violation_level\":\"labore\",\"violation_type\":\"non\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"explicabo\",\"violation_level\":\"magnam\",\"violation_type\":\"fugiat\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -5556,7 +5678,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"praesentium\"}"
+                            "raw": "{\"user_ids\":\"omnis\"}"
                         },
                         "description": ""
                     },
