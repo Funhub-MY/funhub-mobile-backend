@@ -46,11 +46,16 @@ class Commented extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
             ->setData([
-                'comment_id' => (string) $this->comment->id,
-                'commentor_id' => (string) $this->comment->user->id,
-                'article_id' => (string) $this->comment->commentable->id,
-                'article_type' => (string) $this->comment->commentable->type,
-                'action' => 'commented'
+                'object' => (string) get_class($this->comment),
+                'object_id' => (string) $this->comment->id,
+                'link_to_url' => (string) 'false',
+                'link_to' => (string) $this->comment->commentable->id, // if link to url false, means get link_to_object
+                'link_to_object' => (string) $this->comment->commentable_type, // if link to url false, means get link_to_object
+                'action' => (string) 'commented',
+                'from_name' => (string) $this->comment->user->name,
+                'from_id' => (string) $this->comment->user->id,
+                'title' => (string) $this->comment->user->name,
+                'message' => __('messages.notification.database.Commented'),       
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
@@ -86,7 +91,7 @@ class Commented extends Notification implements ShouldQueue
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
             'action' => 'commented',
-            'from' => $this->comment->user->name,
+            'from_name' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
             'message' => __('messages.notification.database.Commented'),

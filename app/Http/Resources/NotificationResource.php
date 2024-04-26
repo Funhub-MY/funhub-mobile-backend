@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Article;
 use App\Models\Comment;
 use App\Models\Interaction;
+use App\Models\SystemNotification;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
@@ -59,7 +60,7 @@ class NotificationResource extends JsonResource
             }
         }
 
-        return [
+        $array = [
             'id' => $this->id,
             'title' => $this->data['title'] ?? null,
             'message' => $this->data['message'] ?? null,
@@ -77,5 +78,11 @@ class NotificationResource extends JsonResource
             'created_at_raw' => $this->created_at,
             'created_at' => $this->created_at->diffForHumans(),
         ];
+
+        if ($this->data['object'] == SystemNotification::class) {
+            $array['redirect'] = $this->data['redirect'] ?? null;
+        }
+
+        return $array;
     }
 }

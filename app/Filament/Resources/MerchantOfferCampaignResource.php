@@ -37,7 +37,7 @@ class MerchantOfferCampaignResource extends Resource
 
     protected static ?string $modelLabel = 'Merchant Offer Campaigns';
 
-    protected static ?string $navigationGroup = 'Merchant';
+    protected static ?string $navigationGroup = 'Merchant Offers';
 
     public static function getEloquentQuery(): Builder
     {

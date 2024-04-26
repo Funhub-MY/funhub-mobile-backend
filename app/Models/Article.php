@@ -10,6 +10,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class Article extends BaseModel implements HasMedia, Auditable
 {
@@ -58,6 +59,19 @@ class Article extends BaseModel implements HasMedia, Auditable
 
     public function toSearchableArray()
     {
+        $location = $this->location()->first();
+        $city = null;
+        $cityNames = [];
+        if ($location) {
+            $city = $location->city_id ? $location->cityLinked->name : $location->city;
+
+            if ($location->cityLinked) {
+                $cityNames = CityName::where('city_id', $location->city_id)->get();
+                $cityNames = $cityNames->pluck('name')->toArray();
+            } else {
+                $cityNames = [$location->city];
+            }
+        }
         return [
             'id' => (int) $this->id,
             'title' => $this->title,
@@ -81,11 +95,10 @@ class Article extends BaseModel implements HasMedia, Auditable
                 'views' => $this->views->count()
             ],
             'location' => ($this->location()->count() > 0) ? [
-                'name' => floatval($this->location->first()->name),
-                'city' => ($this->location->first()->city) ?: null,
-                'state' => ($this->location->first()->state) ?: null,
-                'city_similar_name_1' => $this->location->first()->city_similar_name_1,
-                'city_similar_name_2' => $this->location->first()->city_similar_name_2,
+                'name' => floatval($this->location()->first()->name),
+                'city' => $city,
+                'state' => ($this->location()->first()->state) ?: null,
+                'city_names' => $cityNames,
             ] : null,
             '_geoloc' => ($this->location()->count() > 0) ? [
                 'lat' => floatval($this->location->first()->lat),

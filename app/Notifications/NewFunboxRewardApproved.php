@@ -48,8 +48,16 @@ class NewFunboxRewardApproved extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
             ->setData([
-                'approval_id' => (string) $this->approval->id,
-                'action' => 'new_funbox_reward_approved'
+                'object' => (string) get_class($this->approval),
+                'object_id' => (string) $this->approval->id,
+                'link_to_url' => (string) 'false',
+                'link_to' => (string) $this->approval->id, // if link to url false, means get link_to_object
+                'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
+                'action' => 'new_funbox_reward_approved',
+                'from_name' => (string) $this->user->name,
+                'from_id' => (string) $this->user->id,
+                'title' => '新饭盒',
+                'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                     ->setTitle('新饭盒')
@@ -72,7 +80,7 @@ class NewFunboxRewardApproved extends Notification implements ShouldQueue
             'link_to' => $this->approval->id, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
             'action' => 'new_funbox_reward_approved',
-            'from' => $this->user->name,
+            'from_name' => $this->user->name,
             'from_id' => $this->user->id,
             'title' => '新饭盒',
             'message' => $this->getMessage(),

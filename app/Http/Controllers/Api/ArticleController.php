@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Models\City;
 use App\Models\SearchKeyword;
 use App\Models\Setting;
 use App\Models\ShareableLink;
@@ -132,6 +133,12 @@ class ArticleController extends Controller
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        if ($request->has('city_id')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city_id', $request->city_id);
             });
         }
 
@@ -349,6 +356,41 @@ class ArticleController extends Controller
             $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
         });
 
+        return ArticleResource::collection($data);
+    }
+
+    /**
+     * Search Articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     *
+     * @bodyParam suggestion string Suggested keyword. Example: KL Food
+     * @response scenario=success {
+     *  "data": [],
+     *  "links": {},
+     *  "meta": {
+     *     "current_page": 1,
+     *   }
+     * }
+     *
+     */
+    public function articlesSearch(Request $request)
+    {
+        if (!config('app.search_location_use_algolia')) {
+            return ArticleResource::collection([]);
+        }
+
+        $this->validate($request, [
+            'suggestion' => 'required'
+        ]);
+
+        $data = Article::search($request->suggestion)
+        ->query(function ($query) use ($request) {
+            $query = $this->articleQueryBuilder($query, $request);
+        })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         return ArticleResource::collection($data);
     }
 
@@ -884,6 +926,15 @@ class ArticleController extends Controller
             }
 
             $location = $article->location()->create($loc);
+        }
+
+        // link it to location
+        if (isset($locationData['city']) && $locationData['city'] != 0) {
+            $city = City::where('name', 'like', '%' . $locationData['city'] . '%')->first();
+            if ($city) {
+                $location->city_id = $city->id;
+                $location->save();
+            }
         }
 
         if ($location && $locationData['rating'] &&  $locationData['rating'] != 0) {

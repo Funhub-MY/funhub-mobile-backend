@@ -115,6 +115,12 @@ class Location extends BaseModel implements HasMedia, Auditable
         return $this->belongsTo(State::class);
     }
 
+    // cityLinked as dont wan overide existent city attribute(string)
+    public function cityLinked()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
     public function country()
     {
         return $this->belongsTo(Country::class);

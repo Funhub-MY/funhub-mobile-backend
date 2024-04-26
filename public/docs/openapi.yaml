@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 16
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: distinctio
+                  example: recusandae
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: sed
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - praesentium
+                    - aut
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 8
+                  example: 18
               required:
                 - keyword_id
     parameters:
@@ -555,6 +555,33 @@ paths:
           present:
             summary: 'When the value is present'
             value: '1'
+  /api/v1/articles/search:
+    get:
+      summary: 'Search Articles'
+      operationId: searchArticles
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n \"data\": [],\n \"links\": {},\n \"meta\": {\n    \"current_page\": 1,\n  }\n}"
+      tags:
+        - Article
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                suggestion:
+                  type: string
+                  description: 'Suggested keyword.'
+                  example: 'KL Food'
   /api/v1/articles:
     get:
       summary: "Get Articles for Logged in user (for Home Page)\nNote: user's own posts will not show up on home page"
@@ -582,7 +609,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - odio
+                    - voluptatem
                   items:
                     type: string
                 category_ids:
@@ -1272,7 +1299,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: ipsum
+        example: ut
         required: true
         schema:
           type: string
@@ -1353,11 +1380,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: autem
+                  example: quae
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: et
+                  example: sunt
               required:
                 - comment_id
                 - reason
@@ -1639,7 +1666,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: alias
+        example: voluptatibus
         required: true
         schema:
           type: string
@@ -2067,9 +2094,15 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php
-                      line: 105
+                      line: 168
                       function: get
                       class: GuzzleHttp\Client
+                      type: '->'
+                    -
+                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php
+                      line: 102
+                      function: getUserFromAccessToken
+                      class: Laravel\Socialite\Two\FacebookProvider
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/AbstractProvider.php
@@ -2563,9 +2596,15 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php
-                        line: 105
+                        line: 168
                         function: get
                         class: GuzzleHttp\Client
+                        type: '->'
+                      -
+                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php
+                        line: 102
+                        function: getUserFromAccessToken
+                        class: Laravel\Socialite\Two\FacebookProvider
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/AbstractProvider.php
@@ -4560,7 +4599,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: brady09@example.com
+                  example: jevon33@example.net
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4645,7 +4684,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1406
+                      line: 1468
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5067,7 +5106,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1406
+                        line: 1468
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5495,7 +5534,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: qui
+                  example: culpa
               required:
                 - share_code
   /api/v1/public_user:
@@ -5529,7 +5568,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: inventore
+                  example: molestiae
               required:
                 - username
   /api/v1/public_offer:
@@ -5559,7 +5598,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 704
+                      line: 710
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5981,7 +6020,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 704
+                        line: 710
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6409,7 +6448,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: sequi
+                  example: et
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7088,7 +7127,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatibus
+                    - eaque
                   items:
                     type: string
                 name:
@@ -7269,13 +7308,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - cupiditate
+            - expedita
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - cupiditate
+              - expedita
             items:
               type: string
         -
@@ -7461,7 +7500,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - dolorem
+                    - nobis
                   items:
                     type: string
                 city:
@@ -7731,10 +7770,176 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: aut
+        example: qui
         required: true
         schema:
           type: string
+  /api/v1/merchants:
+    get:
+      summary: 'Get Merchants'
+      operationId: getMerchants
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Merchant
+    parameters:
+      -
+        in: path
+        name: search
+        description: 'Optional parameter. optional Search by business name.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'business name'
+      -
+        in: path
+        name: categories_id
+        description: 'Optional parameter. optional Search by categories id.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: merchant_ids
+        description: 'Optional parameter. optional Search by merchant ids.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: store_ids
+        description: 'Optional parameter. optional Search by store ids.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: limit
+        description: 'Optional parameter. optional Limit the number of results.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 10
+  /api/v1/merchants/nearby:
+    get:
+      summary: "Get Nearby Merchants\nWill lookup based on user provided lat,lng and search for merchant stores near user"
+      operationId: getNearbyMerchantsWillLookupBasedOnUserProvidedLatlngAndSearchForMerchantStoresNearUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Merchant
+    parameters:
+      -
+        in: path
+        name: lat
+        description: Latitude.
+        example: '3.1390'
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: lng
+        description: Longitude.
+        example: '101.6869'
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: radius
+        description: 'Optional parameter. optional Radius in km.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '10'
+      -
+        in: path
+        name: limit
+        description: 'Optional parameter. optional Limit the number of results.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 10
   /api/v1/merchant_offer_categories:
     get:
       summary: 'Get All Merchant Offer Categories'
@@ -8070,20 +8275,6 @@ paths:
       tags:
         - Mission
     parameters:
-      -
-        in: path
-        name: claimed_only
-        description: 'Optional parameter. boolean optional If set to true, only return missions rewards that has been claimed by user.'
-        required: true
-        schema:
-          type: string
-        examples:
-          omitted:
-            summary: 'When the value is omitted'
-            value: ''
-          present:
-            summary: 'When the value is present'
-            value: 'false'
       -
         in: path
         name: completed_only
@@ -8867,7 +9058,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 5
+                  example: 6
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -8959,7 +9150,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 2
+                  example: 17
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -8993,7 +9184,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 16
+                  example: 1
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -9054,15 +9245,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: similique
+                  example: explicabo
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: ut
+                  example: magnam
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: assumenda
+                  example: fugiat
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9238,7 +9429,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: nemo
+                  example: omnis
               required:
                 - user_ids
     parameters:

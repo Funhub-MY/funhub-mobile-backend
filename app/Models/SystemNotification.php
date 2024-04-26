@@ -13,10 +13,12 @@ class SystemNotification extends Model implements Auditable
 
     const REDIRECT_STATIC = 0;
     const REDIRECT_DYNAMIC = 1;
+    const REDIRECT_PAGE = 2;
 
     const REDIRECT_TYPE = [
         self::REDIRECT_STATIC => 'Static',
-        self::REDIRECT_DYNAMIC => 'Dynamic'
+        self::REDIRECT_DYNAMIC => 'Dynamic',
+        self::REDIRECT_PAGE => 'Redirect',
     ];
 
     protected $guarded = ['id'];

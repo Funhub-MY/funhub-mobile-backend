@@ -120,12 +120,21 @@ class LocationResource extends Resource
                             Forms\Components\TextInput::make('address')
                                 ->required(),
                             Forms\Components\TextInput::make('address_2'),
+
                             Forms\Components\TextInput::make('city')
+                                ->label('City (Text Address)')
                                 ->required(),
-                            Forms\Components\TextInput::make('city_similar_name_1')
-                                ->label('City Similar Name 1'),
-                            Forms\Components\TextInput::make('city_similar_name_2')
-                                ->label('City Similar Name 2'),
+
+                            // manually link CityLinked
+                            Select::make('city_id')
+                                ->label('City Linked')
+                                ->relationship('cityLinked', 'name')
+                                ->nullable()
+                                ->searchable()
+                                ->preload()
+                                ->helperText('Linked Cities allow multiple names to be search against this location. Eg. KL , Kuala Lumpur etc')
+                                ->placeholder('Select City to Link'),
+
                             Forms\Components\TextInput::make('zip_code')
                                 ->rules('numeric')
                                 ->label('Postcode')
@@ -155,16 +164,17 @@ class LocationResource extends Resource
                 TextColumn::make('address'),
 
                 TextColumn::make('city')
+                    ->label('City')
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('city_similar_name_1')
+                TextColumn::make('cityLinked.name')
+                    ->label('City Linked')
                     ->sortable()
+                    ->url(fn ($record) => route('filament.resources.cities.edit', $record->cityLinked))
+                    ->openUrlInNewTab()
                     ->searchable(),
 
-                TextColumn::make('city_similar_name_2')
-                    ->sortable()
-                    ->searchable(),
 
                 TextColumn::make('state.name'),
 

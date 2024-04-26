@@ -42,11 +42,16 @@ class ArticleInteracted extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
             ->setData([
-                'interaction_id' => (string) $this->interaction->id,
-                'interaction_user' => (string) $this->interaction->user->id,
-                'article_id' => (string) $this->interaction->interactable->id,
-                'article_type' => (string) $this->interaction->interactable->type,
-                'action' => 'article_interacted'
+                'object' => (string) get_class($this->interaction),
+                'object_id' => (string) $this->interaction->id,
+                'link_to_url' => (string) 'false',
+                'link_to' => (string) $this->interaction->interactable->id, // if link to url false, means get link_to_object
+                'link_to_object' => (string) $this->interaction->interactable_type, // if link to url false, means get link_to_object
+                'action' => (string) 'article_interacted',
+                'from_name' => (string) $this->interaction->user->name,
+                'from_id' => (string) $this->interaction->user->id,
+                'title' => (string) $this->interaction->user->name,
+                'message' => __('messages.notification.database.ArticleInteracted'),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
@@ -73,7 +78,7 @@ class ArticleInteracted extends Notification implements ShouldQueue
             'link_to' => $this->interaction->interactable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->interaction->interactable_type, // if link to url false, means get link_to_object
             'action' => 'article_interacted',
-            'from' => $this->interaction->user->name,
+            'from_name' => $this->interaction->user->name,
             'from_id' => $this->interaction->user->id,
             'title' => $this->interaction->user->name,
             'message' => __('messages.notification.database.ArticleInteracted'),

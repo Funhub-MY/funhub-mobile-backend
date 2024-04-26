@@ -46,6 +46,13 @@ class SearchKeyword extends BaseModel
         return $query->where('blacklisted', true);
     }
 
+    public function locations()
+    {
+        return $this->hasManyThrough(Location::class, Article::class, 'search_keyword_id', 'id', 'id', 'id')
+            ->join('articles_locations', 'articles_locations.location_id', '=', 'locations.id')
+            ->join('search_keywords_articles', 'search_keywords_articles.article_id', '=', 'articles_locations.article_id');
+    }
+
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'search_keywords_articles', 'search_keyword_id', 'article_id')

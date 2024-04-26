@@ -321,7 +321,10 @@ class ArticleResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Created By')
                     ->limit(30)
-                    ->sortable()->searchable(),
+                    ->url(fn ($record) => route('filament.resources.users.view', $record->user))
+                    ->openUrlInNewTab()
+                    ->sortable()
+                    ->searchable(),
                 // change status directly togglecolumn
                 Tables\Columns\ToggleColumn::make('status')
                     ->sortable()

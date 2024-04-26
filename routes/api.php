@@ -78,6 +78,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
         Route::get('/articles/keyword', [ArticleController::class, 'getArticlesByKeywordId']);
+        Route::get('/articles/search', [ArticleController::class, 'articlesSearch']);
 
         Route::resource('articles', \App\Http\Controllers\Api\ArticleController::class)->except(['create', 'edit']);
         // Article Tags
@@ -131,6 +132,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::post('/cancel', [\App\Http\Controllers\Api\MerchantOfferController::class, 'postCancelTransaction']);
             Route::get('/my_claimed_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getMyMerchantOffers']);
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
+        });
+
+        Route::prefix('/merchants')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\MerchantController::class, 'index']);
+            Route::get('/nearby', [\App\Http\Controllers\Api\MerchantController::class, 'getNearbyMerchants']);
         });
 
         // Merchant Offer Categories

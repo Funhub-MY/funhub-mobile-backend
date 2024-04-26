@@ -23,8 +23,24 @@ class StateController extends Controller
      */
     public function getStates()
     {
-        $states = State::orderBy('name', 'ASC')
-            ->get();
+        // Get the preferred language of user, use the default language if not set
+        $user = auth()->user();
+        $locale = $user->last_lang ?? config('app.locale');
+
+        // Filter out states based on hardcoded list
+        $states = [
+            'Perlis', 'Kedah', 'Pulau Pinang', 'Perak', 'Pahang', 'Kelantan',
+            'Terengganu', 'Selangor', 'W.P. Kuala Lumpur', 'W.P. Putrajaya', 'Negeri Sembilan',
+            'Malacca', 'Johor', 'Sabah', 'Sarawak', 'W.P. Labuan', 'Others'
+        ];
+
+        $states = State::whereIn('name', $states)
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->map(function ($state) use ($locale) {
+                $state->name_translation = json_decode($state->name_translation, true)[$locale] ?? $state->name;
+                return $state;
+            });
             
         return response()->json(StateResource::collection($states));
     }

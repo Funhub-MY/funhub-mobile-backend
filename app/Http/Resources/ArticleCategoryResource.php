@@ -53,7 +53,7 @@ class ArticleCategoryResource extends JsonResource
             'name' => $translatedName,
             'name_translation' => $this->name_translation,
             'slug' => $this->slug,
-            'icon' => $this->getFirstMediaUrl('article_category_icon'),
+            'icon' => $this->getFirstMedia('article_category_icon') ? $this->getFirstMedia('article_category_icon')->getUrl() : null,
             'cover_media_id' => $this->cover_media_id,
             'is_child' => ($this->parent_id) ? true : false,
             'parent' => ($this->parent_id) ? new ArticleCategoryResource($this->parent) : null,

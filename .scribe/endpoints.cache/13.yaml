@@ -21,15 +21,6 @@ endpoints:
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      claimed_only:
-        name: claimed_only
-        description: 'boolean optional If set to true, only return missions rewards that has been claimed by user.'
-        required: false
-        example: 'false'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
       completed_only:
         name: completed_only
         description: 'boolean optional Only show completed missions(is_completed=true).'
@@ -40,7 +31,6 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      claimed_only: 'false'
       completed_only: 'false'
     queryParameters: []
     cleanQueryParameters: []
@@ -90,7 +80,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EPk4v8eDa6c61b53dfhZVag'
+      - 'Bearer 6PEad61gb4VZfcDvh8k5e3a'
     controller: null
     method: null
     route: null
@@ -150,7 +140,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hkf8PZVEav61g6ca3D45ebd'
+      - 'Bearer vdgEhaeD5acbPfk366Z814V'
     controller: null
     method: null
     route: null
@@ -199,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E8aah3gd1D64VkZeP5vcbf6'
+      - 'Bearer 3VdEkZf16ca65vhba4gD8Pe'
     controller: null
     method: null
     route: null

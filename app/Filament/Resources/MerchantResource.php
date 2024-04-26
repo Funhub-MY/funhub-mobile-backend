@@ -27,6 +27,8 @@ use App\Filament\Resources\MerchantResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
+use App\Filament\Resources\MerchantResource\RelationManagers\StoresRelationManager;
+use App\Models\Store;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
@@ -64,6 +66,21 @@ class MerchantResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
+
+                        Forms\Components\Select::make('status')
+                            ->label('Account Status')
+                            ->options([
+                                Merchant::STATUS_PENDING => 'Pending',
+                                Merchant::STATUS_APPROVED => 'Approved',
+                                Merchant::STATUS_REJECTED => 'Rejected',
+                            ])
+                            ->required(),
+                        Forms\Components\Select::make('user_id')
+                            ->label('Linked User Account')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->required(),
+
                         Forms\Components\TextInput::make('name')
                             ->label('Merchant Name')
                             ->autofocus()
@@ -87,14 +104,14 @@ class MerchantResource extends Resource
                             ->rules(['email', 'required', function ($context, ?Model $record) {
                                 return function (string $attribute, $value, Closure $fail) use ($context, $record) {
                                     if ($context === 'create' || !$record) {
-                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table, 
+                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
                                             ->exists();
                                     } elseif ($context === 'edit' && $record instanceof Model)  {
-                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table, 
+                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
                                             ->where('id', '!=', $record->user_id) // excluding current user record in the table
                                             ->exists();
                                     }
-                                    
+
                                     // Check the result and fail if the email already exists
                                     if ($is_user_exists) {
                                         $fail('The :attribute is exists');
@@ -108,6 +125,10 @@ class MerchantResource extends Resource
                             ->required()
                             ->label('Name')
                             ->rules('required', 'max:255'),
+                        TextInput::make('company_reg_no') //merchant's table new column 'company_reg_no'
+                            ->label('Registration Number')
+                            ->required()
+                            ->placeholder('Enter Registration Number'),
                         Forms\Components\TextInput::make('business_phone_no')
                             ->required()
                             ->label('Phone Number')
@@ -119,35 +140,58 @@ class MerchantResource extends Resource
                     ]),
                 Forms\Components\Section::make('Person In Charge Information')
                     ->schema([
-                        Forms\Components\TextInput::make('pic_name')
-                            ->label('Name')
-                            ->required(),
-                        Forms\Components\TextInput::make('pic_phone_no')
-                            ->label('Phone Number')
-                            ->required(),
-                        Forms\Components\TextInput::make('pic_email')
-                            ->label('Email')
-                            ->helperText('For record purposes only, not used for login.')
+                        TextInput::make('pic_name') //merchant's table 'pic_name'
+                            ->label('PIC Name')
                             ->required()
-                            ->rules('required', 'email')
+                            ->placeholder('Enter PIC Name'),
+                        TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
+                            ->label('Designation')
+                            ->required()
+                            ->placeholder('Enter Designation'),
+                        TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
+                            ->label('IC Number')
+                            ->required()
+                            ->placeholder('Enter IC Number'),
+                        TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
+                            ->label('Contact Number')
+                            ->required()
+                            ->placeholder('Enter Contact Number'),
+                        TextInput::make('pic_email') //merchant's table column 'pic_email'
+                            ->label('PIC Email')
+                            ->required()
+                            ->placeholder('Enter Email'),
                     ]),
 
                 Forms\Components\Section::make('Photos')
                     ->schema([
+                        SpatieMediaLibraryFileUpload::make('company_logo')
+                            ->label('Company Logo')
+                            ->maxFiles(1)
+                            ->collection(Merchant::MEDIA_COLLECTION_NAME)
+                            ->required()
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->rules('image'),
                         SpatieMediaLibraryFileUpload::make('company_photos')
-                        ->label('Company Photos')
-                        ->multiple()
-                        ->maxFiles(7)
-                        ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
-                        ->required()
-                        ->columnSpan('full')
-                        ->disk(function () {
-                            if (config('filesystems.default') === 's3') {
-                                return 's3_public';
-                            }
-                        })
-                        ->acceptedFileTypes(['image/*'])
-                        ->rules('image'),
+                            ->label('Company Photos')
+                            ->multiple()
+                            ->maxFiles(7)
+                            ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
+                            ->required()
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->rules('image'),
+
                     ]),
             ]);
     }
@@ -265,6 +309,7 @@ class MerchantResource extends Resource
     public static function getRelations(): array
     {
         return [
+            StoresRelationManager::class,
             AuditsRelationManager::class,
         ];
     }
