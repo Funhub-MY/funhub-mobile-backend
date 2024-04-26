@@ -40,8 +40,16 @@ class NewFollowRequest extends Notification
     {
         return FcmMessage::create()
         ->setData([
-            'follower_id' => (string) $this->follower->id,
-            'action' => 'new_follower_request'
+            'object' => (string) get_class($this->follower), // UserFollowing model
+            'object_id' => (string) $this->follower->id, // record id
+            'link_to_url' => (string) 'false',
+            'link_to' => '', // if link to url false, means get link_to_object
+            'link_to_object' => (string) $this->follower->id, // if link to url false, means get link_to_object
+            'action' => 'new_follower_request',
+            'from_name' => (string) $this->follower->name,
+            'from_id' => (string) $this->follower->id,
+            'title' => (string) $this->follower->name,
+            'message' => __('messages.notification.database.NewFollowRequest'),
         ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('有用户请求关注您')
@@ -63,8 +71,8 @@ class NewFollowRequest extends Notification
             'link_to_url' => false,
             'link_to' => '', // if link to url false, means get link_to_object
             'link_to_object' => $this->follower->id, // if link to url false, means get link_to_object
-            'action' => 'followed',
-            'from' => $this->follower->name,
+            'action' => 'new_follower_request',
+            'from_name' => $this->follower->name,
             'from_id' => $this->follower->id,
             'title' => $this->follower->name,
             'message' => __('messages.notification.database.NewFollowRequest')

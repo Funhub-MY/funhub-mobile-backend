@@ -45,7 +45,20 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
 
         return FcmMessage::create()
             ->setData([
-                'action' => 'custom_notification'
+                'object' => (string) get_class($this->reward),
+                'object_id' => (string) $this->reward->id,
+                'link_to_url' => (string) 'false',
+                'link_to' => (string) $this->reward->id, // if link to url false, means get link_to_object
+                'link_to_object' => (string) 'false', // if link to url false, means get link_to_object
+                'action' => 'custom_notification',
+                'from_name' => 'Funhub',
+                'from_id' => '',
+                'title' => (string) $this->user->name,
+                'message' => __('messages.notification.database.RewardReceivedBody', [
+                    'rewardName' => $rewardName,
+                    'rewardQuantity' => $rewardQuantity,
+                    'missionName' => $missionName
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName')))
@@ -67,7 +80,7 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
             'link_to' => $this->reward->id, // if link to url false, means get link_to_object
             'link_to_object' => false, // if link to url false, means get link_to_object
             'action' => 'custom_notification',
-            'from' => 'Funhub',
+            'from_name' => 'Funhub',
             'from_id' => '',
             'title' => $this->user->name,
             'message' => __('messages.notification.database.RewardReceivedBody', [

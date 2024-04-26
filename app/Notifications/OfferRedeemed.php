@@ -49,9 +49,16 @@ class OfferRedeemed extends Notification
     {
         return FcmMessage::create()
             ->setData([
-                'offer_id' => (string) $this->offer->id,
-                'claim_user_id' => (string) $this->user->id,
-                'action' => 'offer_redeemed'
+                'object' => (string) get_class($this->offer),
+                'object_id' => (string) $this->offer->id,
+                'link_to_url' => (string) 'false',
+                'link_to' => (string) $this->offer->id, // if link to url false, means get link_to_object
+                'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
+                'action' => 'offer_redeemed',
+                'from_name' => (string) $this->user->name,
+                'from_id' => (string) $this->user->id,
+                'title' => '兑换成功',
+                'message' => (string) $this->getMessage(),
             ])
             ->setNotification(
                 \NotificationChannels\Fcm\Resources\Notification::create()
@@ -75,7 +82,7 @@ class OfferRedeemed extends Notification
             'link_to' => $this->offer->id, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
             'action' => 'offer_redeemed',
-            'from' => $this->user->name,
+            'from_name' => $this->user->name,
             'from_id' => $this->user->id,
             'title' => '兑换成功',
             'message' => $this->getMessage(),

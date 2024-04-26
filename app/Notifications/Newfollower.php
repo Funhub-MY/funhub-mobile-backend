@@ -47,7 +47,7 @@ class Newfollower extends Notification implements ShouldQueue
         //     'link_to_object' => (string) $this->follower->id, // if link to url false, means get link_to_object
         //     'follower_id' => (string) $this->follower->id,
         //     'action' => 'new_follower',
-        //     'from' => (string) $this->follower->name,
+        //     'from_name' => (string) $this->follower->name,
         //     'from_id' => (string) $this->follower->id,
         //     'title' => (string) $this->follower->name,
         //     'message' => __('messages.notification.database.Newfollower')

@@ -41,9 +41,17 @@ class NewSupportRequestMessage extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
         ->setData([
+            'object' => (string) get_class($this->message),
+            'object_id' => (string) $this->message->id,
+            'link_to_url' => (string) 'false',
+            'link_to' => '', // if link to url false, means get link_to_object
+            'link_to_object' => (string) $this->message->id, // if link to url false, means get link_to_object
+            'action' => 'new_support_request_message_received',
+            'from_name' => '小饭',
+            'from_id' => (string) $this->message->user->id,
+            'title' => (string) $this->message->user->name,
+            'message' => __('messages.notification.database.NewSupportRequestMessage'),
             'support_request_id' => (string) $this->message->request->id,
-            'support_request_message_id' => (string) $this->message->id,
-            'action' => 'new_support_request_message'
         ])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
             ->setTitle('申诉新消息')
@@ -66,10 +74,11 @@ class NewSupportRequestMessage extends Notification implements ShouldQueue
             'link_to' => '', // if link to url false, means get link_to_object
             'link_to_object' => $this->message->id, // if link to url false, means get link_to_object
             'action' => 'new_support_request_message_received',
-            'from' => '小饭',
+            'from_name' => '小饭',
             'from_id' => $this->message->user->id,
             'title' => $this->message->user->name,
             'message' => __('messages.notification.database.NewSupportRequestMessage'),
+            'support_request_id' => (string) $this->message->request->id,
         ];
     }
 }

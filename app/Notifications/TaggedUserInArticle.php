@@ -49,9 +49,16 @@ class TaggedUserInArticle extends Notification
     {
         return FcmMessage::create()
             ->setData([
-                'article_id' => (string) $this->article->id,
-                'from_user_id' => (string) $this->user->id,
-                'action' => 'tagged_user_in_article'
+                'object' => (string) get_class($this->article),
+                'object_id' => (string) $this->article->id,
+                'link_to_url' => (string) 'false',
+                'link_to' => (string) $this->article->id, // if link to url false, means get link_to_object
+                'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
+                'action' => 'tagged_user_in_article',
+                'from_name' => (string) $this->user->name,
+                'from_id' => (string) $this->user->id,
+                'title' => (string) $this->user->name,
+                'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('有人@你了')
@@ -74,7 +81,7 @@ class TaggedUserInArticle extends Notification
             'link_to' => $this->article->id, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
             'action' => 'tagged_user_in_article',
-            'from' => $this->user->name,
+            'from_name' => $this->user->name,
             'from_id' => $this->user->id,
             'title' => $this->user->name,
             'message' => $this->getMessage(),
