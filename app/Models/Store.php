@@ -36,7 +36,7 @@ class Store extends BaseModel implements Auditable
      */
     public function searchableAs(): string
     {
-        return config('scout.prefix').'merchants_index';
+        return config('scout.prefix').'stores_index';
     }
 
     public function toSearchableArray()
@@ -58,21 +58,31 @@ class Store extends BaseModel implements Auditable
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            '_geoloc' => [
-                'lat' => $this->lat,
-                'lon' => $this->long
-            ]
+            '_geoloc' => ($this->lang && $this->long) ? [
+                'lat' => (float) $this->lang,
+                'lng' => (float) $this->long
+            ] : null
         ];
     }
     public function shouldBeSearchable(): bool
     {
         // only approved merchant their stores can be searcheable
-        return $this->merchant->status === Merchant::STATUS_APPROVED;
+        if ($this->merchant) {
+            return $this->merchant->status === Merchant::STATUS_APPROVED;
+        }
+        return false;
     }
 
     public function merchant()
     {
-        return $this->belongsTo(Merchant::class, 'merchant_id');
+        return $this->hasOneThrough(
+            Merchant::class,  // Final model
+            User::class,      // Intermediate model
+            'id',             // Foreign key on the intermediate model (users.id)
+            'user_id',        // Foreign key on the final model (merchants.user_id)
+            'user_id',        // Local key on the current model (stores.user_id)
+            'id'              // Local key on the intermediate model (users.id)
+        );
     }
 
     public function merchant_offers()
@@ -88,5 +98,15 @@ class Store extends BaseModel implements Auditable
     public function categories()
     {
         return $this->morphToMany(MerchantCategory::class, 'categoryable');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
     }
 }

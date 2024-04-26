@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\StoreResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StoreResource\RelationManagers;
+use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Filament\Forms\Components\TextInput;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
@@ -50,6 +52,42 @@ class StoreResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('business_phone_no')
                             ->label('Store Phone Number'),
+
+                          TextInput::make('auto_complete_address')
+                                                ->label('Find a Location')
+                                                ->placeholder('Start typing an address ...'),
+
+                            Map::make('location')
+                                ->autocomplete(
+                                    fieldName: 'auto_complete_address',
+                                    placeField: 'name',
+                                    countries: ['MY'],
+                                )
+                                ->reactive()
+                                ->defaultZoom(15)
+                                ->defaultLocation([
+                                    // klang valley coordinates
+                                    'lat' => 3.1390,
+                                    'lng' => 101.6869,
+                                ])
+                                ->reverseGeocode([
+                                    'city'   => '%L',
+                                    'zip'    => '%z',
+                                    'state'  => '%D',
+                                    'address_postcode' => '%z',
+                                    'address' => '%n %S',
+                                ])
+                                ->mapControls([
+                                    'mapTypeControl'    => true,
+                                    'scaleControl'      => true,
+                                    'streetViewControl' => false,
+                                    'rotateControl'     => true,
+                                    'fullscreenControl' => true,
+                                    'searchBoxControl'  => false, // creates geocomplete field inside map
+                                    'zoomControl'       => false,
+                                ])
+                                ->clickable(true),
+
                         Forms\Components\Textarea::make('address')
                             ->required(),
                         Forms\Components\TextInput::make('address_postcode')
@@ -78,8 +116,8 @@ class StoreResource extends Resource
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\TextColumn::make('address_postcode'),
-                Tables\Columns\TextColumn::make('lang'),
-                Tables\Columns\TextColumn::make('long'),
+                // Tables\Columns\TextColumn::make('lang'),
+                // Tables\Columns\TextColumn::make('long'),
                 Tables\Columns\ToggleColumn::make('is_hq')
                     ->label('Headquarter')
             ])

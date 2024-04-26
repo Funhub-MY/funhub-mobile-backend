@@ -111,8 +111,14 @@ class Merchant extends BaseModel implements HasMedia, Auditable
 
     public function stores()
     {
-        // hasMany through users.id
-        return $this->hasManyThrough(Store::class, User::class, 'merchant_id', 'user_id', 'id', 'id');
+        return $this->hasManyThrough(
+            Store::class,  // Final model
+            User::class,   // Intermediate model
+            'id',          // Foreign key on the intermediate model (users.id)
+            'user_id',     // Foreign key on the final model (stores.user_id)
+            'user_id',     // Local key on the current model (merchants.user_id)
+            'id'           // Local key on the intermediate model (users.id)
+        );
     }
 
     public function scopeApproved(Builder $query): void

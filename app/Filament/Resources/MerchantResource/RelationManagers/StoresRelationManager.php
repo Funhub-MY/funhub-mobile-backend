@@ -31,19 +31,23 @@ class StoresRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('address'),
+                Tables\Columns\TextColumn::make('manager_name'),
+                Tables\Columns\TextColumn::make('address_postcode'),
+                Tables\Columns\TextColumn::make('state.name'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }    
+    }
 }
