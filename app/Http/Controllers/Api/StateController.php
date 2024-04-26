@@ -21,10 +21,11 @@ class StateController extends Controller
      * }
      * 
      */
-    public function getStates(Request $request)
+    public function getStates()
     {
-        // Get the language from the request header, use the default language if not set
-        $locale = $request->header('X-Locale') ?? config('app.locale');
+        // Get the preferred language of user, use the default language if not set
+        $user = auth()->user();
+        $locale = $user->last_lang ?? config('app.locale');
 
         // Filter out states based on hardcoded list
         $states = [
