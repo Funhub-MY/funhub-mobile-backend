@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Jobs\SyncUserWithOneSignal;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Mail\EmailVerification;
 use Illuminate\Support\Facades\Mail;
+use App\Services\OneSignalService;
 
 class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
 {
@@ -43,6 +45,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'id'
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -63,6 +66,19 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'cover_url',
         'profile_is_private'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // static::created(function ($user) {
+        //     dispatch(new SyncUserWithOneSignal($user));
+        // });
+
+        // static::updated(function ($user) {
+        //     dispatch(new SyncUserWithOneSignal($user));
+        // });
+    }
 
     public function canAccessFilament(): bool
     {

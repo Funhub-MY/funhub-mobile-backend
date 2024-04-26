@@ -53,7 +53,6 @@ class Store extends BaseModel implements Auditable
             'long' => $this->long,
             'is_hq' => $this->is_hq,
             'user_id' => $this->user_id,
-            'merchant_id' => $this->merchant_id,
             'state_id' => $this->state_id,
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,
