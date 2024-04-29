@@ -60,6 +60,8 @@ class MerchantController extends Controller
             });
         }
 
+        $query->with('categories', 'offers', 'stores');
+
         $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return MerchantResource::collection($results);

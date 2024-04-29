@@ -28,6 +28,15 @@ class MerchantResource extends JsonResource
             'state' => $this->state,
             'country' => $this->country,
             'status' => $this->status,
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'created_at' => $category->created_at,
+                    'updated_at' => $category->updated_at,
+                ];
+            }),
+            'ratings' => $this->ratings,
             'stores' => $this->stores->map(function ($store) {
                 return [
                     'id' => $store->id,

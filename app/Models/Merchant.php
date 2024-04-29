@@ -56,6 +56,12 @@ class Merchant extends BaseModel implements HasMedia, Auditable
             'address_postcode' => $this->address_postcode,
             'state' => $this->state,
             'country' => $this->country,
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'name' => $category->name,
+                ];
+            }),
+            'ratings' => $this->ratings,
             'status' => $this->status,
             'stores' => $this->stores->map(function ($store) {
                 return [
@@ -107,6 +113,19 @@ class Merchant extends BaseModel implements HasMedia, Auditable
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function offers()
+    {
+        // has many through User
+        return $this->hasManyThrough(
+            MerchantOffer::class,  // Final model
+            User::class,   // Intermediate model
+            'id',          // Foreign key on the intermediate model (users.id)
+            'user_id',     // Foreign key on the final model (merchant_offers.user_id)
+            'user_id',     // Local key on the current model (merchants.user_id)
+            'id'           // Local key on the intermediate model (users.id)
+        );
     }
 
     public function stores()
