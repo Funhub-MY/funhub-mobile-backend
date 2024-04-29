@@ -56,9 +56,11 @@ class MerchantResource extends JsonResource
                     'country' => $store->country,
                     'created_at' => $store->created_at,
                     'updated_at' => $store->updated_at,
+                    'location' => ($store->location) ? $store->location->toArray() : null,
                 ];
             }),
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

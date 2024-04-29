@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\StoreResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StoreResource\RelationManagers;
+use App\Filament\Resources\StoreResource\RelationManagers\LocationRelationManager;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\TextInput;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -136,6 +137,7 @@ class StoreResource extends Resource
     {
         return [
             RelationManagers\MerchantOffersRelationManager::class,
+            LocationRelationManager::class,
             AuditsRelationManager::class,
         ];
     }

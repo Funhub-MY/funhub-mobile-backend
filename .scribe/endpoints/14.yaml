@@ -28,7 +28,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - et
+          - doloribus
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -98,7 +98,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - et
+        - doloribus
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -125,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5Vchabad1De6f48g3Pk6EZv'
+      - 'Bearer Vh6dbk1aagPcZ6fE4538veD'
     controller: null
     method: null
     route: null
@@ -189,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PdVagvhD146e6k83baEfcZ5'
+      - 'Bearer 8vhdD36a5fE6Vabcegk14ZP'
     controller: null
     method: null
     route: null

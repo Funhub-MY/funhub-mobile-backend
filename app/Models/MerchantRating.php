@@ -11,6 +11,16 @@ class MerchantRating extends BaseModel
 
     protected $guarded = ['id'];
 
+    const FILTERABLE = [
+        'id',
+        'merchant_id',
+        'user_id',
+        'rating',
+        'comment',
+        'created_at',
+        'updated_at'
+    ];
+
     public function merchant()
     {
         return $this->belongsTo(Merchant::class);
@@ -19,5 +29,12 @@ class MerchantRating extends BaseModel
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function ratingCategories()
+    {
+        return $this->belongsToMany(RatingCategory::class, 'rating_categories_merchant_ratings')
+                ->withPivot(['user_id'])
+                ->withTimestamps();
     }
 }

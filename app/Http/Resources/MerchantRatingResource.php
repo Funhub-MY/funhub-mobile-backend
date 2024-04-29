@@ -41,6 +41,7 @@ class MerchantRatingResource extends JsonResource
             'rating' => $this->rating,
             'comment' => $this->comment,
             'is_my_ratings' => $this->user_id == auth()->id(),
+            'total_ratings_for_merchant' => $this->user->ratings_count, // Access the count directly
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

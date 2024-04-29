@@ -108,4 +108,9 @@ class Store extends BaseModel implements Auditable
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+
+    public function location()
+    {
+        return $this->morphToMany(Location::class, 'locatable');
+    }
 }

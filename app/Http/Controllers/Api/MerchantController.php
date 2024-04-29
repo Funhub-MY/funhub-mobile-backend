@@ -9,11 +9,13 @@ use App\Http\Resources\MerchantResource;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\Store;
+use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class MerchantController extends Controller
 {
+    use QueryBuilderTrait;
     /**
      * Get Merchants
      *
@@ -62,7 +64,7 @@ class MerchantController extends Controller
             });
         }
 
-        $query->with('categories', 'offers', 'stores');
+        $query->with('categories', 'offers', 'stores', 'stores.location');
 
         $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
@@ -124,7 +126,9 @@ class MerchantController extends Controller
      * @group Merchant
      * @urlParam merchant required Merchant ID. Example:1
      * @urlParam only_mine boolean optional Only show my ratings. Example:true
-     * @urlParam limit integer optional Limit the number of results. Example:10
+     * @urlParam sort string Column to Sort. Example: Sortable columns are: id, rating, created_at, updated_at
+     * @urlParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @urlParam limit integer Per Page Limit Override. Example: 10
      *
      * @response scenario=success {
      * "current_page": 1,
@@ -133,12 +137,27 @@ class MerchantController extends Controller
      */
     public function getRatings(Merchant $merchant, Request $request)
     {
-        $query = $merchant->ratings()->with('user');
+        $query = $merchant->merchantRatings()->with(['user' => function ($query) use ($merchant) {
+            $query->withCount(['merchantRatings' => function ($query) use ($merchant) {
+                $query->where('merchant_id', $merchant->id);
+            }]);
+        }]);
+
+        // if there's no sort, sort by latest
+        if (!$request->has('sort')) {
+            $request->merge(['sort' => 'created_at']);
+            $request->merge(['order' => 'desc']);
+        }
+
+        // get only one latest rating per user
+        $query->distinct('user_id')->latest('created_at');
 
         // if request has only_mine
         if ($request->has('only_mine')) {
             $query->where('user_id', auth()->id());
         }
+
+        $this->buildQuery($query, $request);
 
         $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
@@ -156,6 +175,7 @@ class MerchantController extends Controller
      * @urlParam merchant required Merchant ID. Example:1
      * @bodyParam rating integer required Rating. Example:5
      * @bodyParam comment string optional Comment. Example:Good service
+     * @bodyParam rating_category_ids string required Rating Category IDs. Example:1,2,3
      *
      * @response scenario=success {
      * data: {}
@@ -165,17 +185,23 @@ class MerchantController extends Controller
     {
         $request->validate([
             'rating' => 'required|numeric|min:1|max:5',
+            'rating_category_ids' => 'required',
             'comment' => 'nullable|string',
         ]);
 
-        $rating = $merchant->ratings()->create([
+        $rating = $merchant->merchantRatings()->create([
             'user_id' => auth()->id(),
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);
 
+        // explode rating categories ids
+        $categories = explode(',', $request->rating_category_ids);
+        // attach to rating
+        $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
+
         // consolidate merchant ratings
-        $merchant->ratings = $merchant->ratings()->avg('rating');
+        $merchant->ratings = $merchant->merchantRatings()->avg('rating');
         $merchant->save();
 
         return new MerchantRatingResource($rating);
