@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Article;
 use App\Http\Resources\MerchantRatingResource;
 use App\Http\Resources\MerchantResource;
+use App\Http\Resources\RatingCategoryResource;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
+use App\Models\RatingCategory;
 use App\Models\Store;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
@@ -230,5 +232,23 @@ class MerchantController extends Controller
         });
 
         return response()->json($menus);
+    }
+
+    /**
+     * Get Merchant Rating Categories
+     *
+     * @return JsonResponse
+     *
+     * @group Merchant
+     *
+     * @response scenario=success {
+     * data: []
+     * }
+     */
+    public function getRatingCategories()
+    {
+        $ratingCategories = RatingCategory::all();
+
+        return RatingCategoryResource::collection($ratingCategories);
     }
 }

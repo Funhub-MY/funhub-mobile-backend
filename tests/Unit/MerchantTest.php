@@ -189,4 +189,26 @@ class MerchantTest extends TestCase
         // ensure there's three urls returned
         $this->assertCount(3, $response->json());
     }
+
+    public function testGetRatingCategories()
+    {
+        $ratingCategories = RatingCategory::factory()->count(5)->create();
+
+        $response = $this->getJson('/api/v1/merchants/rating_categories');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'created_at',
+                        'updated_at',
+                    ],
+                ],
+            ]);
+
+        // ensure there's five rating categories returned
+        $this->assertCount(5, $response['data']);
+    }
 }

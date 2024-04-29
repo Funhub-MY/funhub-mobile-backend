@@ -38,7 +38,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - officiis
+          - qui
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -130,7 +130,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - officiis
+        - qui
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -157,7 +157,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bDEgh6c3ve8V4Pkfa165aZd'
+      - 'Bearer 6V65E84vab31dchZDekaPfg'
     controller: null
     method: null
     route: null
@@ -264,7 +264,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Va1Pbf6e38hkd4cZD6vEga5'
+      - 'Bearer afc66k5gEheV3bPa1d4ZDv8'
     controller: null
     method: null
     route: null
@@ -308,7 +308,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - autem
+          - odit
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -463,7 +463,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - autem
+        - odit
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -499,7 +499,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P4e5k8aVb61aZgfDcd3v6Eh'
+      - 'Bearer fZkb6d34chaVae1E65vP8Dg'
     controller: null
     method: null
     route: null
@@ -622,7 +622,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer beh1gP8aad63D64VvkEf5Zc'
+      - 'Bearer 83ev6hPZcak5faVbdg16ED4'
     controller: null
     method: null
     route: null
@@ -709,7 +709,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6gc1eb4dZf5vkEDVPaah368'
+      - 'Bearer 3cg68aDPh4V5ekvb6EZadf1'
     controller: null
     method: null
     route: null
@@ -771,7 +771,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cvDb1kd63gVZP564ae8hfaE'
+      - 'Bearer ga4D56kE8vePca3fVhb61dZ'
     controller: null
     method: null
     route: null
@@ -824,7 +824,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c63fDahVeg18bk46EdP5Zav'
+      - 'Bearer 54vd16kacPZ8hgDeVf63Eab'
     controller: null
     method: null
     route: null
@@ -851,13 +851,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: ut
+        example: expedita
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: ut
+      offer_id: expedita
     queryParameters:
       offer_id:
         name: offer_id
@@ -887,7 +887,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PaEDfbkZa3gh54vVce8d661'
+      - 'Bearer P66Eh34dDk8a1fbve5ZcVga'
     controller: null
     method: null
     route: null
@@ -981,7 +981,50 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P5a3Z6EVh46fbdck8aeDg1v'
+      - 'Bearer g3Ee8aDk614aVhPcbfZvd56'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchants/rating_categories
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchant Rating Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3V51hva66cdfaPb8DEkeZ4g'
     controller: null
     method: null
     route: null
@@ -1067,7 +1110,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dhvaZabPEVgef3Dc168k465'
+      - 'Bearer 4h16fDg5aEk6badPZe8v3cV'
     controller: null
     method: null
     route: null
@@ -1171,7 +1214,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5ab66dZEDg3cefVkvPha418'
+      - 'Bearer kD56Ed1gaPZ3b4ceh6Vf8va'
     controller: null
     method: null
     route: null
@@ -1264,7 +1307,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vfag1aZ3kV6ec5648DhdbEP'
+      - 'Bearer 3Zf4h1d8ve6DPbcaVk6aE5g'
     controller: null
     method: null
     route: null
@@ -1330,7 +1373,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dE3a5vca1khf6V4ZbDP68eg'
+      - 'Bearer 3v58aecfD6641bagVkPEhdZ'
     controller: null
     method: null
     route: null
@@ -1433,7 +1476,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hkegbaD3PV5a86d4Ecf6vZ1'
+      - 'Bearer hkfD48gePa3dZVac6bEv165'
     controller: null
     method: null
     route: null
@@ -1552,7 +1595,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a3hfvVacgEbP616Zk84e5dD'
+      - 'Bearer 3ev6Edk586VaDhcZgabPf41'
     controller: null
     method: null
     route: null
@@ -1611,7 +1654,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cDg665b384kdaaEPe1fvhVZ'
+      - 'Bearer Pab3e5DEcgf68k6aVvd41hZ'
     controller: null
     method: null
     route: null
@@ -1751,7 +1794,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68E164eD5caZgVkf3bvhdPa'
+      - 'Bearer c8PfaZe6aE6b1gD5hv4dV3k'
     controller: null
     method: null
     route: null
