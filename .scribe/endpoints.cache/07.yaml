@@ -40,7 +40,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - expedita
+          - qui
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -132,7 +132,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - expedita
+        - qui
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -159,7 +159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ef66dV8ahc5Pae1vDZbg43k'
+      - 'Bearer hkc8Eg6vZf3154bedVaDa6P'
     controller: null
     method: null
     route: null
@@ -266,7 +266,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dfb5kc3vg1Z64P8eh6VaEDa'
+      - 'Bearer 5Eaakv36Db6VZf8h41Pgdec'
     controller: null
     method: null
     route: null
@@ -310,7 +310,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - nobis
+          - aut
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -396,6 +396,15 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      merchant_id:
+        name: merchant_id
+        description: 'optional Filter by Merchant ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       filter:
         name: filter
         description: 'Column to Filter.'
@@ -456,7 +465,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - nobis
+        - aut
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -466,6 +475,7 @@ endpoints:
       coming_soon_only: true
       except_expired: true
       flash_only: true
+      merchant_id: 1
       filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
@@ -491,7 +501,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dvDcVEZ6b653k84hPefga1a'
+      - 'Bearer v6Z6kecaabg1D3Pfh48VEd5'
     controller: null
     method: null
     route: null
@@ -614,7 +624,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8eZaakhvVfcP3Eb466D1d5g'
+      - 'Bearer 48D6acZh631V5gfkvdbaPEe'
     controller: null
     method: null
     route: null
@@ -701,7 +711,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a436g86fbev1hPdEVD5Zkac'
+      - 'Bearer h15Pv8aZka6efbc3VE6gd4D'
     controller: null
     method: null
     route: null
@@ -763,7 +773,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 516aaZbVghDdePv48ckfE63'
+      - 'Bearer va46g6Edbhk8ac1Ze5fVPD3'
     controller: null
     method: null
     route: null
@@ -816,7 +826,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer veP4acV6hgZd5k138EabfD6'
+      - 'Bearer P13ae6V8kb5cfE4vDghd6aZ'
     controller: null
     method: null
     route: null
@@ -879,7 +889,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Za6g5vVD34hEaf1Pkcd8be'
+      - 'Bearer k6Vh85aec4bPZg16v3aEDdf'
     controller: null
     method: null
     route: null
@@ -973,7 +983,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dZbe4cE81fPD6kg56hva3aV'
+      - 'Bearer efkZvab1Pd3gE6D45ch68aV'
     controller: null
     method: null
     route: null
@@ -1059,7 +1069,240 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E3cP4Vk8Zg6haf16bDdaev5'
+      - 'Bearer aPaZ1k6vh6dbe38f4V5gcED'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchants/{merchant_id}/ratings'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchant Ratings'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'The ID of the merchant.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      merchant:
+        name: merchant
+        description: 'Merchant ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      only_mine:
+        name: only_mine
+        description: 'boolean optional Only show my ratings.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Limit the number of results.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+      merchant: '1'
+      only_mine: 'true'
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fgkhaeavd483D6VbZc1PE56'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/v1/merchants/{merchant_id}/ratings'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Rate a Merchant'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'The ID of the merchant.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      merchant:
+        name: merchant
+        description: 'Merchant ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+      merchant: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      rating:
+        name: rating
+        description: Rating.
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      comment:
+        name: comment
+        description: 'optional Comment.'
+        required: false
+        example: 'Good service'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      rating: 5
+      comment: 'Good service'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ZvPV36aakdec1E8Df5gh64b'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchants/{merchant_id}/menus'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchant Menus'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'The ID of the merchant.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      merchant:
+        name: merchant
+        description: 'Merchant ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+      merchant: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          [
+          'https://example.com/menu1.pdf',
+          'https://example.com/menu2.pdf',
+          'https://example.com/menu3.pdf',
+          ]
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fZaVabgc8361Dh6ekdEv54P'
     controller: null
     method: null
     route: null
@@ -1162,7 +1405,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vgv5D8akdPf631chEaeZ6b4'
+      - 'Bearer Pgk1653Vh8d6bevfZDaca4E'
     controller: null
     method: null
     route: null
@@ -1281,7 +1524,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aD5kda6bV3cPE4gheZ6f81v'
+      - 'Bearer 4Eev6bfk5dPV3a81ZDhgac6'
     controller: null
     method: null
     route: null
@@ -1340,7 +1583,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gZfvceb6a8dk5P1D6E3hV4a'
+      - 'Bearer VgdaZ63c1DahEfPb45ve68k'
     controller: null
     method: null
     route: null
@@ -1480,7 +1723,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eVPEd8a1a6bvkD5c63hgfZ4'
+      - 'Bearer 8Pk6Ea46hecd3ZDagV15fbv'
     controller: null
     method: null
     route: null

@@ -23,6 +23,9 @@ class MerchantResource extends JsonResource
             'photos' => $this->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)->map(function ($item) {
                 return $item->getFullUrl();
             }),
+            'menus' => $this->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
+                return $item->getFullUrl();
+            }),
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'state' => $this->state,

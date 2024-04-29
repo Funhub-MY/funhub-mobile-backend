@@ -134,9 +134,13 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
 
+        // Merchants
         Route::prefix('/merchants')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MerchantController::class, 'index']);
             Route::get('/nearby', [\App\Http\Controllers\Api\MerchantController::class, 'getNearbyMerchants']);
+            Route::get('/{merchant}/ratings', [\App\Http\Controllers\Api\MerchantController::class, 'getRatings']);
+            Route::post('/{merchant}/ratings', [\App\Http\Controllers\Api\MerchantController::class, 'postRatings']);
+            Route::get('/{merchant}/menus', [\App\Http\Controllers\Api\MerchantController::class, 'getMerchantMenus']);
         });
 
         // Merchant Offer Categories

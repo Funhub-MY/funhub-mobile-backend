@@ -172,6 +172,7 @@ return [
             'You_do_not_have_enough_to_redeem' => '您的余额不足以兑换',
             'Invalid_merchant_redeem_code' => '商家兑换码无效',
             'Deal_not_found' => '优惠券不存在',
+            'Merchant_not_found' => '商家不存在',
         ],
         'notification_controller' => [
             'Notification_not_found' => '通知不存在',

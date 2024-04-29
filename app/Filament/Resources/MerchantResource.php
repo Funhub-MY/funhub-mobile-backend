@@ -128,6 +128,8 @@ class MerchantResource extends Resource
                             ->preload()
                             ->searchable(),
 
+                        //
+
                     ]),
                 Forms\Components\Section::make('Business Information')
                     ->schema([
@@ -187,6 +189,7 @@ class MerchantResource extends Resource
                             })
                             ->acceptedFileTypes(['image/*'])
                             ->rules('image'),
+
                         SpatieMediaLibraryFileUpload::make('company_photos')
                             ->label('Company Photos')
                             ->multiple()
@@ -202,6 +205,20 @@ class MerchantResource extends Resource
                             ->acceptedFileTypes(['image/*'])
                             ->rules('image'),
 
+                        SpatieMediaLibraryFileUpload::make('menus')
+                            ->label('Menus (PDF ONLY)')
+                            ->multiple()
+                            ->maxFiles(5)
+                            ->collection(Merchant::MEDIA_COLLECTION_MENUS)
+                            ->required()
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->rules('mimes:pdf'),
                     ]),
             ]);
     }

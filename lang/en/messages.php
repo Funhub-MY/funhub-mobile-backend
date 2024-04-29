@@ -169,6 +169,7 @@ return [
             'You_do_not_have_enough_to_redeem' => 'You do not have enough to redeem',
             'Invalid_merchant_redeem_code' => 'Invalid merchant redeem code',
             'Deal_not_found' => 'Deal not found',
+            'Merchant_not_found' => 'Merchant not found',
         ],
         'notification_controller' => [
             'Notification_not_found' => 'Notification not found.',

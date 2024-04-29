@@ -61,6 +61,7 @@ class MerchantOfferController extends Controller
      * @bodyParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true
      * @bodyParam except_expired boolean optional Get all coming soon or available only but hide expired offers. Example: true
      * @bodyParam flash_only boolean optional Filter by Flash Deals Only. Example: true
+     * @bodyParam merchant_id integer optional Filter by Merchant ID. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -125,6 +126,16 @@ class MerchantOfferController extends Controller
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
             });
+        }
+
+        if ($request->has('merchant_id')) {
+            $merchant = Merchant::where('id', $request->merchant_id)->first();
+            if (!$merchant) {
+                return response()->json([
+                    'message' => __('messages.error.merchant_offer_controller.Merchant_not_found')
+                ], 422);
+            }
+            $query->where('user', $merchant->user_id);
         }
 
         // get articles by lat, lng

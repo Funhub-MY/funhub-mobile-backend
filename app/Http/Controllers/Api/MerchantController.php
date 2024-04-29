@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Article;
+use App\Http\Resources\MerchantRatingResource;
 use App\Http\Resources\MerchantResource;
 use App\Models\Merchant;
+use App\Models\MerchantOffer;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
@@ -110,5 +112,97 @@ class MerchantController extends Controller
         })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return MerchantResource::collection($merchants);
+    }
+
+    /**
+     * Get Merchant Ratings
+     *
+     * @param Merchant $merchant
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant required Merchant ID. Example:1
+     * @urlParam only_mine boolean optional Only show my ratings. Example:true
+     * @urlParam limit integer optional Limit the number of results. Example:10
+     *
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function getRatings(Merchant $merchant, Request $request)
+    {
+        $query = $merchant->ratings()->with('user');
+
+        // if request has only_mine
+        if ($request->has('only_mine')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+        return MerchantRatingResource::collection($results);
+    }
+
+    /**
+     * Rate a Merchant
+     *
+     * @param Merchant $merchant
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant required Merchant ID. Example:1
+     * @bodyParam rating integer required Rating. Example:5
+     * @bodyParam comment string optional Comment. Example:Good service
+     *
+     * @response scenario=success {
+     * data: {}
+     * }
+     */
+    public function postRatings(Merchant $merchant, Request $request)
+    {
+        $request->validate([
+            'rating' => 'required|numeric|min:1|max:5',
+            'comment' => 'nullable|string',
+        ]);
+
+        $rating = $merchant->ratings()->create([
+            'user_id' => auth()->id(),
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        // consolidate merchant ratings
+        $merchant->ratings = $merchant->ratings()->avg('rating');
+        $merchant->save();
+
+        return new MerchantRatingResource($rating);
+    }
+
+    /**
+     * Get Merchant Menus
+     *
+     * @param Merchant $merchant
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant required Merchant ID. Example:1
+     *
+     * @response scenario=success {
+     * [
+     * 'https://example.com/menu1.pdf',
+     * 'https://example.com/menu2.pdf',
+     * 'https://example.com/menu3.pdf',
+     * ]
+     */
+    public function getMerchantMenus(Merchant $merchant)
+    {
+        $menus = $merchant->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
+            return $item->getFullUrl();
+        });
+
+        return response()->json($menus);
     }
 }

@@ -17,6 +17,7 @@ class Merchant extends BaseModel implements HasMedia, Auditable
 
     const MEDIA_COLLECTION_NAME = 'merchant_logos';
     const MEDIA_COLLECTION_NAME_PHOTOS = 'merchant_photos';
+    const MEDIA_COLLECTION_MENUS = 'menus';
 
     const STATUS = [
         0 => 'Pending',
@@ -115,6 +116,7 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return $this->belongsTo(Country::class, 'country_id');
     }
 
+
     public function offers()
     {
         // has many through User
@@ -138,6 +140,11 @@ class Merchant extends BaseModel implements HasMedia, Auditable
             'user_id',     // Local key on the current model (merchants.user_id)
             'id'           // Local key on the intermediate model (users.id)
         );
+    }
+
+    public function merchantRatings()
+    {
+        return $this->hasMany(MerchantRating::class, 'merchant_id');
     }
 
     public function scopeApproved(Builder $query): void
