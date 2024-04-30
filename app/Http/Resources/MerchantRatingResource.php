@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Interaction;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -40,6 +41,9 @@ class MerchantRatingResource extends JsonResource
             ],
             'rating' => $this->rating,
             'comment' => $this->comment,
+            'likes_count' => $this->likes_count ?? 0,
+            'dislikes_count' => $this->dislikes_count ?? 0,
+            'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'is_my_ratings' => $this->user_id == auth()->id(),
             'total_ratings_for_merchant' => $this->user->ratings_count, // Access the count directly
             'created_at' => $this->created_at,

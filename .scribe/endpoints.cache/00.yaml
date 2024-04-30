@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: eligendi
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: eligendi
+      share_code: aut
     fileParameters: []
     responses:
       -
@@ -535,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer faEaD6kZ8461Pd3bhvVe5cg'
+      - 'Bearer Vha6e5gfa3ckP8vdEZ6D41b'
     controller: null
     method: null
     route: null
@@ -566,13 +566,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: rem
+        example: veniam
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: rem
+      username: veniam
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aZh63a8v5cEkdfgb4VPeD16'
+      - 'Bearer 8ZPa5bg3v6eDf6kE4a1dVch'
     controller: null
     method: null
     route: null
@@ -1127,7 +1127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d65hVfevE468a3gkPZca1Db'
+      - 'Bearer aa86hd6cDb3v1VkZ5EP4fge'
     controller: null
     method: null
     route: null

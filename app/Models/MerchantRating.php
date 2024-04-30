@@ -31,6 +31,23 @@ class MerchantRating extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function interactions()
+    {
+        return $this->morphMany(Interaction::class, 'interactable');
+    }
+
+    public function likes()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+        ->where('type', Interaction::TYPE_LIKE);
+    }
+
+    public function dislikes()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+        ->where('type', Interaction::TYPE_DISLIKE);
+    }
+
     public function ratingCategories()
     {
         return $this->belongsToMany(RatingCategory::class, 'rating_categories_merchant_ratings')

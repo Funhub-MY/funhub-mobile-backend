@@ -143,7 +143,7 @@ class MerchantController extends Controller
             $query->withCount(['merchantRatings' => function ($query) use ($merchant) {
                 $query->where('merchant_id', $merchant->id);
             }]);
-        }]);
+        }, 'interactions']);
 
         // if there's no sort, sort by latest
         if (!$request->has('sort')) {
@@ -160,6 +160,9 @@ class MerchantController extends Controller
         }
 
         $this->buildQuery($query, $request);
+
+        // with count likes and dislikes
+        $query->withCount(['likes', 'dislikes']);
 
         $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
@@ -207,6 +210,12 @@ class MerchantController extends Controller
         // consolidate merchant ratings
         $merchant->ratings = $merchant->merchantRatings()->avg('rating');
         $merchant->save();
+
+        // with count likes and dislikes
+        $rating->loadCount(['likes', 'dislikes']);
+
+        // load user
+        $rating->load('user');
 
         return new MerchantRatingResource($rating);
     }
