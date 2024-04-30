@@ -21,10 +21,10 @@ class MerchantRatingResource extends JsonResource
             $avatar_url = null;
             $avatar_thumb_url = null;
         } else {
-            $name = $this->name;
-            $username = $this->username;
-            $avatar_url = $this->avatar_url;
-            $avatar_thumb_url = $this->avatar_thumb_url;
+            $name = $this->user->name;
+            $username = $this->user->username;
+            $avatar_url = $this->user->avatar_url;
+            $avatar_thumb_url = $this->user->avatar_thumb_url;
         }
 
         return [
