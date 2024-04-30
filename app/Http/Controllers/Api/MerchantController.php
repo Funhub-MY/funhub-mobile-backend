@@ -177,7 +177,7 @@ class MerchantController extends Controller
      * @urlParam merchant required Merchant ID. Example:1
      * @bodyParam rating integer required Rating. Example:5
      * @bodyParam comment string optional Comment. Example:Good service
-     * @bodyParam rating_category_ids string required Rating Category IDs. Example:1,2,3
+     * @bodyParam rating_category_ids string optional Rating Category IDs. Example:1,2,3
      *
      * @response scenario=success {
      * data: {}
@@ -187,7 +187,7 @@ class MerchantController extends Controller
     {
         $request->validate([
             'rating' => 'required|numeric|min:1|max:5',
-            'rating_category_ids' => 'required',
+            // 'rating_category_ids' => 'required',
             'comment' => 'nullable|string',
         ]);
 
@@ -197,10 +197,12 @@ class MerchantController extends Controller
             'comment' => $request->comment,
         ]);
 
-        // explode rating categories ids
-        $categories = explode(',', $request->rating_category_ids);
-        // attach to rating
-        $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
+        if ($request->has('rating_category_ids')) {
+            // explode rating categories ids
+            $categories = explode(',', $request->rating_category_ids);
+            // attach to rating
+            $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
+        }
 
         // consolidate merchant ratings
         $merchant->ratings = $merchant->merchantRatings()->avg('rating');
