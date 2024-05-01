@@ -129,13 +129,9 @@ class MerchantOfferController extends Controller
         }
 
         if ($request->has('merchant_id')) {
-            $merchant = Merchant::where('id', $request->merchant_id)->first();
-            if (!$merchant) {
-                return response()->json([
-                    'message' => __('messages.error.merchant_offer_controller.Merchant_not_found')
-                ], 422);
-            }
-            $query->where('user', $merchant->user_id);
+            $query->whereHas('merchant', function ($query) use ($request) {
+                $query->where('id', $request->merchant_id);
+            });
         }
 
         // get articles by lat, lng

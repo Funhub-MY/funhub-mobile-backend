@@ -139,6 +139,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/', [\App\Http\Controllers\Api\MerchantController::class, 'index']);
             Route::get('/rating_categories', [\App\Http\Controllers\Api\MerchantController::class, 'getRatingCategories']);
             Route::get('/nearby', [\App\Http\Controllers\Api\MerchantController::class, 'getNearbyMerchants']);
+            Route::get('/{merchant}/locations', [\App\Http\Controllers\Api\MerchantController::class, 'getAllStoresLocationByMerchantId']);
             Route::get('/{merchant}/ratings', [\App\Http\Controllers\Api\MerchantController::class, 'getRatings']);
             Route::post('/{merchant}/ratings', [\App\Http\Controllers\Api\MerchantController::class, 'postRatings']);
             Route::get('/{merchant}/menus', [\App\Http\Controllers\Api\MerchantController::class, 'getMerchantMenus']);

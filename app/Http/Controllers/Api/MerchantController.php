@@ -7,6 +7,7 @@ use App\Http\Resources\Article;
 use App\Http\Resources\MerchantRatingResource;
 use App\Http\Resources\MerchantResource;
 use App\Http\Resources\RatingCategoryResource;
+use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
@@ -72,6 +73,33 @@ class MerchantController extends Controller
 
         return MerchantResource::collection($results);
     }
+
+    /**
+     * Get Location by Merchant ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant_id integer required Merchant ID. Example:1
+     *
+     *
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function getAllStoresLocationByMerchantId(Merchant $merchant)
+    {
+        $locations = Location::whereHas('stores', function ($q) use ($merchant) {
+            $q->whereHas('merchant', function ($q) use ($merchant) {
+                $q->where('id', $merchant->id);
+            });
+        })->get();
+
+        return response()->json($locations);
+    }
+
 
     /**
      * Get Nearby Merchants
