@@ -40,6 +40,7 @@ class MerchantResource extends JsonResource
                 ];
             }),
             'ratings' => $this->ratings,
+            'total_ratings' => $this->merchant_ratings_count,
             'stores' => $this->stores->map(function ($store) {
                 return [
                     'id' => $store->id,
