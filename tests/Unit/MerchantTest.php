@@ -300,14 +300,16 @@ class MerchantTest extends TestCase
             'long' => 1.234,
         ]);
 
-        // attach merchant to store hasOneThrough
-        $store->merchant()->attach($merchant->id);
-
         // create a Location to attach to this store
         $location = Location::where('name', 'Test Location')->first();
 
         $store->location()->attach($location->id);
 
+        // get ids of merchant using /merchants/{id}/locations
+        $response = $this->getJson("/api/v1/merchants/{$merchant->id}/locations");
+        $response->assertStatus(200);
+
+        $location_ids = $response->json();
         // get articles with /api/v1/articles?location_id=1
         $response = $this->getJson('/api/v1/articles', ['location_id' => $location->id]);
 

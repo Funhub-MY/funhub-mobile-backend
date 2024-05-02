@@ -93,7 +93,7 @@ class MerchantController extends Controller
     {
         $locations = Location::whereHas('stores', function ($q) use ($merchant) {
             $q->whereHas('merchant', function ($q) use ($merchant) {
-                $q->where('id', $merchant->id);
+                $q->where('merchants.id', $merchant->id);
             });
         })->get();
 
@@ -156,9 +156,12 @@ class MerchantController extends Controller
      * @group Merchant
      * @urlParam merchant required Merchant ID. Example:1
      * @urlParam only_mine boolean optional Only show my ratings. Example:true
+     * @urlParam user_id integer optional Only load specific user ratings. Example: 1
+     * @urlParam merchant_id integer optional Only load specific merchant ratings. Example: 1
      * @urlParam sort string Column to Sort. Example: Sortable columns are: id, rating, created_at, updated_at
      * @urlParam order string Direction to Sort. Example: Sortable directions are: asc, desc
      * @urlParam limit integer Per Page Limit Override. Example: 10
+     *
      *
      * @response scenario=success {
      * "current_page": 1,
@@ -179,12 +182,23 @@ class MerchantController extends Controller
             $request->merge(['order' => 'desc']);
         }
 
-        // get only one latest rating per user
-        $query->distinct('user_id')->latest('created_at');
-
         // if request has only_mine
         if ($request->has('only_mine')) {
             $query->where('user_id', auth()->id());
+        }
+
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->has('merchant_id')) {
+            $query->where('merchant_id', $request->merchant_id);
+        }
+
+        // if dont have user_id and merchant_id, distinct user_id
+        if (!$request->has('user_id') && !$request->has('merchant_id')) {
+            // get only one latest rating per user
+            $query->distinct('user_id')->latest('created_at');
         }
 
         $this->buildQuery($query, $request);

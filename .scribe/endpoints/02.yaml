@@ -40,7 +40,7 @@ endpoints:
         name: 'contacts[].country_code'
         description: ''
         required: true
-        example: consequuntur
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -49,7 +49,7 @@ endpoints:
         name: 'contacts[].phone_no'
         description: ''
         required: true
-        example: dolor
+        example: eligendi
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -74,7 +74,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3Z5e148a6aPdVh6gfbkcvDE'
+      - 'Bearer v5D1beE4k66cV3PfagZd8ah'
     controller: null
     method: null
     route: null
@@ -126,7 +126,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5f4d6VZbae18hPvgEka36D'
+      - 'Bearer dV164bgakcP5Evf6ah3e8ZD'
     controller: null
     method: null
     route: null
@@ -195,7 +195,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e466cdaZ1h83avEbfkg5PDV'
+      - 'Bearer Pg864Zd31ek5cahfbvEV6Da'
     controller: null
     method: null
     route: null
@@ -264,7 +264,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DkvPa65834cg1V6ZdfeEabh'
+      - 'Bearer V8Pe5hfaav3bg614E6kdcDZ'
     controller: null
     method: null
     route: null
@@ -295,13 +295,13 @@ endpoints:
         name: user_id
         description: 'The id of the user to follow'
         required: true
-        example: 14
+        example: 3
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_id: 14
+      user_id: 3
     fileParameters: []
     responses:
       -
@@ -332,7 +332,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vha63Ebf64kc1aV5gZPde8D'
+      - 'Bearer 3D1V68EhZab5eacgd4k6fvP'
     controller: null
     method: null
     route: null
@@ -363,13 +363,13 @@ endpoints:
         name: user_id
         description: 'The id of the user to unfollow'
         required: true
-        example: 18
+        example: 14
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_id: 18
+      user_id: 14
     fileParameters: []
     responses:
       -
@@ -391,7 +391,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pk46VbZ8ha3c6dfegEDa51v'
+      - 'Bearer e6cahdDPkb31vVZ4af6Eg58'
     controller: null
     method: null
     route: null
@@ -422,13 +422,13 @@ endpoints:
         name: user_id
         description: 'The id of the user to accept follow request'
         required: true
-        example: 4
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_id: 4
+      user_id: 1
     fileParameters: []
     responses:
       -
@@ -450,7 +450,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b6D5Vfag6cdEk318vhPaZ4e'
+      - 'Bearer EV6b4a1d5ghavcD86Z3fPke'
     controller: null
     method: null
     route: null
@@ -481,13 +481,13 @@ endpoints:
         name: user_id
         description: 'The id of the user to reject follow request'
         required: true
-        example: 8
+        example: 3
         type: integer
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_id: 8
+      user_id: 3
     fileParameters: []
     responses:
       -
@@ -503,7 +503,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E3avd86Zc54b1V6hagDePkf'
+      - 'Bearer 56VaDdbPZ1k4Eg6a83hefcv'
     controller: null
     method: null
     route: null
@@ -546,7 +546,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hgVP8a6evE15b3akDc4Zf6d'
+      - 'Bearer 85k1baa6hfg4Ev36eVcPdZD'
     controller: null
     method: null
     route: null
@@ -586,7 +586,7 @@ endpoints:
         name: reason
         description: ''
         required: true
-        example: consequatur
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -595,7 +595,7 @@ endpoints:
         name: violation_level
         description: 'The violation level of this report'
         required: false
-        example: illum
+        example: quos
         type: required
         enumValues: []
         exampleWasSpecified: false
@@ -604,7 +604,7 @@ endpoints:
         name: violation_type
         description: 'The violation type of this report'
         required: false
-        example: dignissimos
+        example: voluptas
         type: required
         enumValues: []
         exampleWasSpecified: false
@@ -620,9 +620,9 @@ endpoints:
         custom: []
     cleanBodyParameters:
       user_id: 1
-      reason: consequatur
-      violation_level: illum
-      violation_type: dignissimos
+      reason: aut
+      violation_level: quos
+      violation_type: voluptas
       also_block_user: true
     fileParameters: []
     responses:
@@ -651,7 +651,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6vhcg815kaEDdeV643bfaPZ'
+      - 'Bearer 63Zv5acPhe1ad8gkf6D4VEb'
     controller: null
     method: null
     route: null
@@ -714,7 +714,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Dfh4b6PvEa38keZd51gVca'
+      - 'Bearer 3ea5dD1cEhf86gZ4bVP6kva'
     controller: null
     method: null
     route: null
@@ -767,7 +767,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bZc4fv5h3eD6gV1dP6k8aaE'
+      - 'Bearer DZfcPevd6514VE83hka6gba'
     controller: null
     method: null
     route: null
@@ -810,7 +810,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PcVEZ51e6df8ga6D4ab3khv'
+      - 'Bearer 4Zek8Pa56f31gahdDb6VcEv'
     controller: null
     method: null
     route: null
@@ -853,7 +853,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 31Z6f5PVg4hbEeDc68avakd'
+      - 'Bearer 6kh1ZE6aDvbdgf4V85e3acP'
     controller: null
     method: null
     route: null
@@ -916,7 +916,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vhgae84k6fc5E36PdDZVb1a'
+      - 'Bearer V546gc1Za68afDbeP3khvEd'
     controller: null
     method: null
     route: null
@@ -957,13 +957,13 @@ endpoints:
         name: user_ids
         description: ''
         required: true
-        example: sit
+        example: ex
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      user_ids: sit
+      user_ids: ex
     fileParameters: []
     responses:
       -
@@ -980,7 +980,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed8gaaf6vDPe6Z153bVc4hk'
+      - 'Bearer 4ag6Vdv6Dc835PaeEZfhk1b'
     controller: null
     method: null
     route: null
@@ -1043,7 +1043,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6f16Z4b5g3cDPe8dahvkEaV'
+      - 'Bearer b48ekEgdD6vhf61Vcaa53PZ'
     controller: null
     method: null
     route: null
@@ -1087,7 +1087,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cv61VPhDg3eEa64bZ58fkad'
+      - 'Bearer a6VPaDh814cZg3vbkfEe65d'
     controller: null
     method: null
     route: null
@@ -1150,7 +1150,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aV1gb3f6Z4vEdPeD68akh5c'
+      - 'Bearer daeah66Dvg5Z8P1bE3fkcV4'
     controller: null
     method: null
     route: null
@@ -1369,7 +1369,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eD6VP4adZb3kfvh86aE5g1c'
+      - 'Bearer EVa6D6PcgZf3vea4b8d1k5h'
     controller: null
     method: null
     route: null
@@ -1485,7 +1485,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4V86Pfv3Z6DdeEg1ka5ahcb'
+      - 'Bearer hPdegbv36ac4516a8DZkEfV'
     controller: null
     method: null
     route: null
@@ -1571,7 +1571,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kaPVE3abhZDdev8c46f651g'
+      - 'Bearer vPbaDcke66835dEhgZfV14a'
     controller: null
     method: null
     route: null
