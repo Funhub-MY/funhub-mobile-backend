@@ -39,7 +39,7 @@ class MerchantRatingResource extends JsonResource
                 'avatar' => $avatar_url,
                 'avatar_thumb' => $avatar_thumb_url,
             ],
-            'rating' => $this->rating,
+            'rating' => floatval($this->rating),
             'comment' => $this->comment,
             'likes_count' => $this->likes_count ?? 0,
             'dislikes_count' => $this->dislikes_count ?? 0,
