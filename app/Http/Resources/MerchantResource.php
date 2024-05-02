@@ -47,7 +47,7 @@ class MerchantResource extends JsonResource
                     'name' => $store->name,
                     'manager_name' => $store->manager_name,
                     'business_phone_no' => $store->business_phone_no,
-                    'business_hours' => $store->business_hours,
+                    'business_hours' => ($store->business_hours) ? json_decode($store->business_hours, true) : null,
                     'address' => $store->address,
                     'address_postcode' => $store->address_postcode,
                     'lat' => $store->lat,
