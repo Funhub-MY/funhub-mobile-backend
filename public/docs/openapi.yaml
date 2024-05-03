@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 19
+                  example: 5
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: aut
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: non
+                  example: ut
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatem
+                    - fugit
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 12
+                  example: 9
               required:
                 - keyword_id
     parameters:
@@ -609,7 +609,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - sed
+                    - est
                   items:
                     type: string
                 category_ids:
@@ -1299,7 +1299,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quia
+        example: ut
         required: true
         schema:
           type: string
@@ -1380,11 +1380,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: nisi
+                  example: ad
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: ea
+                  example: pariatur
               required:
                 - comment_id
                 - reason
@@ -1666,7 +1666,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: maiores
+        example: voluptatem
         required: true
         schema:
           type: string
@@ -4599,7 +4599,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: jaren.batz@example.com
+                  example: bria.walsh@example.net
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5534,7 +5534,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: exercitationem
+                  example: velit
               required:
                 - share_code
   /api/v1/public_user:
@@ -5568,7 +5568,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: reiciendis
+                  example: vitae
               required:
                 - username
   /api/v1/public_offer:
@@ -6448,7 +6448,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: sint
+                  example: doloribus
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -7127,7 +7127,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - atque
+                    - nihil
                   items:
                     type: string
                 name:
@@ -7308,13 +7308,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - quis
+            - quam
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - quis
+              - quam
             items:
               type: string
         -
@@ -7500,7 +7500,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - quisquam
+                    - adipisci
                   items:
                     type: string
                 city:
@@ -7774,7 +7774,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: dolores
+        example: non
         required: true
         schema:
           type: string
@@ -8997,6 +8997,346 @@ paths:
                   example: '11234455'
               required:
                 - transaction_no
+  /api/v1/stores:
+    get:
+      summary: 'Get Stores'
+      operationId: getStores
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Stores
+    parameters:
+      -
+        in: path
+        name: categories_id
+        description: 'Optional parameter. optional Categories ID.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: merchant_ids
+        description: 'Optional parameter. optional Merchant IDs.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: store_ids
+        description: 'Optional parameter. optional Store IDs.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: '1,2,3'
+      -
+        in: path
+        name: limit
+        description: 'Optional parameter. optional Per Page Limit.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 10
+  /api/v1/stores/rating_categories:
+    get:
+      summary: 'Get Store Rating Categories'
+      operationId: getStoreRatingCategories
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\ndata: []\n}"
+      tags:
+        - Stores
+  /api/v1/stores/locations:
+    get:
+      summary: 'Get Store Locations by Store IDS'
+      operationId: getStoreLocationsByStoreIDS
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Stores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                store_ids:
+                  type: string
+                  description: ''
+                  example: omnis
+              required:
+                - store_ids
+    parameters:
+      -
+        in: path
+        name: store_ids
+        description: 'Store IDs.'
+        example: '1,2,3'
+        required: true
+        schema:
+          type: string
+  '/api/v1/stores/{store_id}/ratings':
+    get:
+      summary: 'Get Stores Ratings'
+      operationId: getStoresRatings
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  current_page: 1
+                  data: []
+                properties:
+                  current_page:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    example: []
+      tags:
+        - Stores
+    post:
+      summary: 'Rate a Store'
+      operationId: rateAStore
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\ndata: {}\n}"
+      tags:
+        - Stores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  description: Rating.
+                  example: 5
+                comment:
+                  type: string
+                  description: 'optional Comment.'
+                  example: 'Good service'
+                rating_category_ids:
+                  type: string
+                  description: 'optional Rating Category IDs.'
+                  example: '1,2,3'
+              required:
+                - rating
+    parameters:
+      -
+        in: path
+        name: store_id
+        description: 'The ID of the store.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: store
+        description: 'Store ID.'
+        example: '1'
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: only_mine
+        description: 'Optional parameter. boolean optional Only show my ratings.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'true'
+      -
+        in: path
+        name: user_id
+        description: 'Optional parameter. optional Only load specific user ratings.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 1
+      -
+        in: path
+        name: merchant_id
+        description: 'Optional parameter. optional Only load specific merchant ratings.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 1
+      -
+        in: path
+        name: sort
+        description: 'Optional parameter. Column to Sort.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'Sortable columns are: id, rating, created_at, updated_at'
+      -
+        in: path
+        name: order
+        description: 'Optional parameter. Direction to Sort.'
+        required: true
+        schema:
+          type: string
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 'Sortable directions are: asc, desc'
+      -
+        in: path
+        name: limit
+        description: 'Optional parameter. Per Page Limit Override.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 10
+  '/api/v1/stores/{store_id}/menus':
+    get:
+      summary: 'Get Merchant Menus via Store'
+      operationId: getMerchantMenusViaStore
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{\n[\n{'name': 'Menu 1', 'url': 'http://example.com/menu1.jpg'},\n]"
+      tags:
+        - Stores
+    parameters:
+      -
+        in: path
+        name: store_id
+        description: 'The ID of the store.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: store
+        description: 'Store ID.'
+        example: '1'
+        required: true
+        schema:
+          type: string
   /api/v1/transactions:
     get:
       summary: "Get all my transactions\nGet all transactions of current logged in users paginated"
@@ -9299,7 +9639,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 3
+                  example: 1
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -9345,7 +9685,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 14
+                  example: 4
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -9391,7 +9731,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 1
+                  example: 4
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -9425,7 +9765,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 3
+                  example: 17
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -9486,15 +9826,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: aut
+                  example: ea
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: quos
+                  example: cupiditate
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: voluptas
+                  example: porro
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -9670,7 +10010,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: ex
+                  example: consectetur
               required:
                 - user_ids
     parameters:
@@ -11025,6 +11365,9 @@ tags:
     description: ''
   -
     name: Product
+    description: ''
+  -
+    name: Stores
     description: ''
   -
     name: Transaction

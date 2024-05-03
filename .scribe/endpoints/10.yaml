@@ -1,18 +1,16 @@
-name: View
+name: Notifications
 description: ''
 endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/views
+    uri: api/v1/user/settings/fcm-token
     metadata:
-      groupName: View
+      groupName: Notifications
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: |-
-        Record view for viewable
-        This is used for recording views for articles, comments, merchant offers, user profiles and location
+      title: 'Update user fcm token'
       description: ''
       authenticated: true
       custom: []
@@ -25,34 +23,24 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      viewable_type:
-        name: viewable_type
-        description: 'The type of the viewable.'
+      fcm_token:
+        name: fcm_token
+        description: 'The fcm token of the user.'
         required: true
-        example: article/comment/merchant_offer/user_profile/location
+        example: '1'
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
-      viewable_id:
-        name: viewable_id
-        description: 'The id of the viewable.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
     cleanBodyParameters:
-      viewable_type: article/comment/merchant_offer/user_profile/location
-      viewable_id: 1
+      fcm_token: '1'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "View recorded"
+          "success": true
           }
         headers: []
         description: success
@@ -61,7 +49,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PcDa61dvbh3ef64ak5ZV8Eg'
+      - 'Bearer Z63aD8PgV1fbEaevd6c45hk'
     controller: null
     method: null
     route: null
@@ -69,15 +57,15 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/v1/views/{type}/{id}'
+    uri: api/v1/notifications
     metadata:
-      groupName: View
+      groupName: Notifications
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
       title: |-
-        Get views for viewable type
-        This is used for getting views for articles, comments, merchant offers, and user profiles
+        Get latest notifications of the user
+        Ordered by latest one
       description: ''
       authenticated: true
       custom: []
@@ -85,28 +73,127 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      type:
-        name: type
-        description: 'The type of the viewable.'
-        required: true
-        example: article/comment/merchant_offer/user_profile
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      id:
-        name: id
-        description: 'The id of the viewable.'
-        required: true
-        example: 1
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      per_page:
+        name: per_page
+        description: 'The number of items per page.'
+        required: false
+        example: 10
         type: integer
         enumValues: []
         exampleWasSpecified: true
         custom: []
-    cleanUrlParameters:
-      type: article/comment/merchant_offer/user_profile
-      id: 1
+    cleanBodyParameters:
+      per_page: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [
+          {
+             "id": 1,
+             "message" : "A commented on your Article",
+             "object" : "article",
+             "object_id" : 1,
+             "link_to_url" : "http://localhost:8000/articles/1",
+             "link_to_object" : "article",
+             "action" : "comment",
+             "from" : "user",
+             "from_id" : 1,
+             "created_at_raw" : "2021-08-04T07:00:00.000000Z",
+             "created_at" : "1 day ago"
+          }
+          ]
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Eha5v6183eDdab46ZVcPkgf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/notifications/mark_as_read
+    metadata:
+      groupName: Notifications
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark a Single Notification as Read by Notification ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      notification_id:
+        name: notification_id
+        description: 'The notification id.'
+        required: true
+        example: 058d0c3d-1028-4660-b905-7e30ad7eee9c
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      notification_id: 058d0c3d-1028-4660-b905-7e30ad7eee9c
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Notification marked as read."
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bZVfc34P16Eg5v68hkdaeaD'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/notifications/mark_all_as_read
+    metadata:
+      groupName: Notifications
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mark all notifications as read'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -117,8 +204,7 @@ endpoints:
         status: 200
         content: |-
           {
-          "views": [],
-          "total": 0
+          "message": "Notifications marked as read."
           }
         headers: []
         description: success
@@ -127,7 +213,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3kvV5e64gDcEf8a1hbZ6Pda'
+      - 'Bearer k8vPEaZ5V63a1gc6bhDd4fe'
     controller: null
     method: null
     route: null

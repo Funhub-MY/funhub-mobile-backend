@@ -12,6 +12,7 @@ use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\MerchantRating;
 use App\Models\ShareableLink;
+use App\Models\StoreRating;
 use App\Models\User;
 use App\Models\View;
 use App\Notifications\ArticleInteracted;
@@ -34,7 +35,7 @@ class InteractionController extends Controller
      *
      * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating
      * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -74,6 +75,10 @@ class InteractionController extends Controller
             $request->merge(['interactable_type' => MerchantRating::class]);
         }
 
+        if ($request->interactable == 'store_rating') {
+            $request->merge(['interactable_type' => StoreRating::class]);
+        }
+
         $query = Interaction::where('interactable_type', $request->interactable_type)
             ->where('interactable_id', $id);
 
@@ -103,7 +108,7 @@ class InteractionController extends Controller
      *
      * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @bodyParam code string optional The code of the shareable link(6 characters). Example: 1
@@ -131,6 +136,10 @@ class InteractionController extends Controller
 
         if ($request->interactable == 'merchant_rating') {
             $request->merge(['interactable' => MerchantRating::class]);
+        }
+
+        if ($request->interactable == 'store_rating') {
+            $request->merge(['interactable_type' => StoreRating::class]);
         }
 
         switch($request->type) {
@@ -270,6 +279,8 @@ class InteractionController extends Controller
                 $request->merge(['interactable' => MerchantOffer::class]);
             } else if ($request->interactable == 'merchhant_rating') {
                 $request->merge(['interactable' => MerchantRating::class]);
+            } else if ($request->interactable == 'store_rating') {
+                $request->merge(['interactable' => StoreRating::class]);
             } else {
                 return response()->json(['message' => __('messages.error.interaction_controller.Invalid_interactable')], 422);
             }

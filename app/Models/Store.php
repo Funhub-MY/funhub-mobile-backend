@@ -11,6 +11,8 @@ class Store extends BaseModel implements Auditable
 {
     use HasFactory, \OwenIt\Auditing\Auditable, Searchable;
 
+    const MEDIA_COLLECTION_PHOTOS = 'store_photos';
+
     protected $fillable = [
         'name',
         'manager_name',
@@ -29,7 +31,6 @@ class Store extends BaseModel implements Auditable
         'created_at',
         'updated_at'
     ];
-
 
     /**
      * Search Setup
@@ -96,7 +97,8 @@ class Store extends BaseModel implements Auditable
 
     public function categories()
     {
-        return $this->morphToMany(MerchantCategory::class, 'categoryable');
+        return $this->belongsToMany(MerchantCategory::class, 'merchant_category_stores')
+                ->withTimestamps();
     }
 
     public function state()
@@ -112,5 +114,10 @@ class Store extends BaseModel implements Auditable
     public function location()
     {
         return $this->morphToMany(Location::class, 'locatable');
+    }
+
+    public function storeRatings()
+    {
+        return $this->hasMany(StoreRating::class);
     }
 }

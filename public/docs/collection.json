@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "e6da436d-838d-47c8-85e2-a585d79719f8",
+        "_postman_id": "a97bddb2-d054-45ec-a31e-dde3dd6996f0",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":19,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"aperiam\",\"violation_level\":\"non\",\"article\":1}"
+                                    "raw": "{\"article_id\":5,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"aut\",\"violation_level\":\"ut\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"fugit\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -457,7 +457,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"keyword_id\":12}"
+                            "raw": "{\"keyword_id\":9}"
                         },
                         "description": ""
                     },
@@ -527,7 +527,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"sed\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"est\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -1091,7 +1091,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "quia",
+                                            "value": "ut",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1191,7 +1191,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"nisi\",\"violation_type\":\"ea\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"ad\",\"violation_type\":\"pariatur\"}"
                                 },
                                 "description": ""
                             },
@@ -1348,7 +1348,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "maiores",
+                                            "value": "voluptatem",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2394,7 +2394,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"jaren.batz@example.com\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"bria.walsh@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2470,7 +2470,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"exercitationem\"}"
+                            "raw": "{\"share_code\":\"velit\"}"
                         },
                         "description": ""
                     },
@@ -2526,7 +2526,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"reiciendis\"}"
+                            "raw": "{\"username\":\"vitae\"}"
                         },
                         "description": ""
                     },
@@ -2582,7 +2582,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"sint\"}"
+                            "raw": "{\"share_code\":\"doloribus\"}"
                         },
                         "description": ""
                     },
@@ -3286,7 +3286,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_ids\":[\"atque\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                            "raw": "{\"location_ids\":[\"nihil\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
                         },
                         "description": ""
                     },
@@ -3507,7 +3507,7 @@
                                         },
                                         {
                                             "key": "merchant_offer_ids[0]",
-                                            "value": "quis",
+                                            "value": "quam",
                                             "description": "optional Merchant Offer Ids to Filter. Example [1,2,3]",
                                             "disabled": false
                                         },
@@ -3566,7 +3566,7 @@
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=quis&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=quam&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3648,7 +3648,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"quisquam\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"adipisci\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -3849,7 +3849,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "dolores",
+                                            "value": "non",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -5148,6 +5148,322 @@
             ]
         },
         {
+            "name": "Stores",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get Stores",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/stores",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/stores",
+                            "variable": [
+                                {
+                                    "id": "categories_id",
+                                    "key": "categories_id",
+                                    "value": "1%2C2%2C3",
+                                    "description": "optional Categories ID."
+                                },
+                                {
+                                    "id": "merchant_ids",
+                                    "key": "merchant_ids",
+                                    "value": "1%2C2%2C3",
+                                    "description": "optional Merchant IDs."
+                                },
+                                {
+                                    "id": "store_ids",
+                                    "key": "store_ids",
+                                    "value": "1%2C2%2C3",
+                                    "description": "optional Store IDs."
+                                },
+                                {
+                                    "id": "limit",
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "optional Per Page Limit."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Store Rating Categories",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/stores\/rating_categories",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/stores\/rating_categories"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\ndata: []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Store Locations by Store IDS",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/stores\/locations",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/stores\/locations",
+                            "variable": [
+                                {
+                                    "id": "store_ids",
+                                    "key": "store_ids",
+                                    "value": "1%2C2%2C3",
+                                    "description": "Store IDs."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"store_ids\":\"omnis\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Stores Ratings",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/stores\/:store_id\/ratings",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/stores\/:store_id\/ratings",
+                            "variable": [
+                                {
+                                    "id": "store_id",
+                                    "key": "store_id",
+                                    "value": "1",
+                                    "description": "The ID of the store."
+                                },
+                                {
+                                    "id": "store",
+                                    "key": "store",
+                                    "value": "1",
+                                    "description": "Store ID."
+                                },
+                                {
+                                    "id": "only_mine",
+                                    "key": "only_mine",
+                                    "value": "true",
+                                    "description": "boolean optional Only show my ratings."
+                                },
+                                {
+                                    "id": "user_id",
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "optional Only load specific user ratings."
+                                },
+                                {
+                                    "id": "merchant_id",
+                                    "key": "merchant_id",
+                                    "value": "1",
+                                    "description": "optional Only load specific merchant ratings."
+                                },
+                                {
+                                    "id": "sort",
+                                    "key": "sort",
+                                    "value": "Sortable+columns+are%3A+id%2C+rating%2C+created_at%2C+updated_at",
+                                    "description": "Column to Sort."
+                                },
+                                {
+                                    "id": "order",
+                                    "key": "order",
+                                    "value": "Sortable+directions+are%3A+asc%2C+desc",
+                                    "description": "Direction to Sort."
+                                },
+                                {
+                                    "id": "limit",
+                                    "key": "limit",
+                                    "value": "10",
+                                    "description": "Per Page Limit Override."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Rate a Store",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/stores\/:store_id\/ratings",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/stores\/:store_id\/ratings",
+                            "variable": [
+                                {
+                                    "id": "store_id",
+                                    "key": "store_id",
+                                    "value": "1",
+                                    "description": "The ID of the store."
+                                },
+                                {
+                                    "id": "store",
+                                    "key": "store",
+                                    "value": "1",
+                                    "description": "Store ID."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"rating\":5,\"comment\":\"Good service\",\"rating_category_ids\":\"1,2,3\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\ndata: {}\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Merchant Menus via Store",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/stores\/:store_id\/menus",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/stores\/:store_id\/menus",
+                            "variable": [
+                                {
+                                    "id": "store_id",
+                                    "key": "store_id",
+                                    "value": "1",
+                                    "description": "The ID of the store."
+                                },
+                                {
+                                    "id": "store",
+                                    "key": "store",
+                                    "value": "1",
+                                    "description": "Store ID."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n[\n{'name': 'Menu 1', 'url': 'http:\/\/example.com\/menu1.jpg'},\n]",
+                            "name": "success"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Transaction",
             "description": "",
             "item": [
@@ -5428,7 +5744,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -5475,7 +5791,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":14}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -5516,7 +5832,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1}"
+                                    "raw": "{\"user_id\":4}"
                                 },
                                 "description": ""
                             },
@@ -5557,7 +5873,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":17}"
                                 },
                                 "description": ""
                             },
@@ -5689,7 +6005,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"aut\",\"violation_level\":\"quos\",\"violation_type\":\"voluptas\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"ea\",\"violation_level\":\"cupiditate\",\"violation_type\":\"porro\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -5921,7 +6237,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"ex\"}"
+                            "raw": "{\"user_ids\":\"consectetur\"}"
                         },
                         "description": ""
                     },

@@ -145,6 +145,16 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/{merchant}/menus', [\App\Http\Controllers\Api\MerchantController::class, 'getMerchantMenus']);
         });
 
+        // Stores
+        Route::prefix('/stores')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+            Route::get('/rating_categories', [\App\Http\Controllers\Api\StoreController::class, 'getRatingCategories']);
+            Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
+            Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
+            Route::post('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'postRatings']);
+            Route::get('/{store}/menus', [\App\Http\Controllers\Api\StoreController::class, 'getMerchantMenus']);
+        });
+
         // Merchant Offer Categories
         Route::get('merchant_offer_categories', \App\Http\Controllers\Api\MerchantOfferCategoryController::class . '@index');
 
