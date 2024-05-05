@@ -178,6 +178,10 @@ class MerchantRegister extends Component implements HasForms
                 Log::info('[MerchantOnboarding] Company photo upload: ' . $company_photo_livewire_tmp->getRealPath());
                 $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                     ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+
+                // also add to store photos
+                $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                    ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
             }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Company photos upload failed: ' . $e->getMessage());
@@ -245,6 +249,13 @@ class MerchantRegister extends Component implements HasForms
             'state_id' => $data['state_id'],
             'country_id' => $data['country_id'],
         ]);
+
+        foreach ($data['company_photos'] as $company_photo) {
+            $company_photo_livewire_tmp = $company_photo;
+            // also add to store photos from company_photos
+            $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
+        }
 
 
         $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;

@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Models\Location;
 use App\Models\Merchant;
+use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
 use App\Models\State;
 use App\Models\Store;
@@ -249,6 +250,50 @@ class StoreTest extends TestCase
 
         // ensure there's five rating categories returned
         $this->assertCount(5, $response['data']);
+    }
+
+    public function testGetStoreMerchantOffers()
+    {
+
+        // create a store attached to $this->user
+        $store = Store::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        $merchantOffer = MerchantOffer::factory()->published()->count(5)->for(
+            $this->user
+        )->create([
+            'store_id' => $store->id,
+        ]);
+
+        // create a new user and merchant attached
+        $user2 = User::factory()->create();
+        $merchant2 = Merchant::factory()->create([
+            'user_id' => $user2->id,
+            'status' => Merchant::STATUS_APPROVED,
+        ]);
+
+        // create another store attached to user2
+        $store2 = Store::factory()->create([
+            'user_id' => $user2->id,
+        ]);
+
+        // create another offer attached with this user2
+        $merchantOffer2 = MerchantOffer::factory()->published()->for(
+            $user2
+        )->create([
+            'store_id' => $store2->id,
+        ]);
+
+        $response = $this->getJson('/api/v1/merchant/offers?store_id='.$store->id);
+        $response->assertStatus(200);
+        // check if theres only 5 offer returned
+        $this->assertEquals(5, $response->json()['meta']['total']);
+
+        $response = $this->getJson('/api/v1/merchant/offers?store_id='.$store->id.', '.$store2->id);
+        $response->assertStatus(200);
+        // check if 6 offers returned
+        $this->assertEquals(6, $response->json()['meta']['total']);
     }
 
     public function testGetArticlesOfStores()

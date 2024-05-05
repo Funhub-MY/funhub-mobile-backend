@@ -238,14 +238,14 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant User')
                                     ->searchable()
-                                    ->getSearchResultsUsing(fn (string $search) => User::whereHas('merchant')
-                                        ->where('name', 'like', "%{$search}%")->limit(25)
+                                    ->getSearchResultsUsing(fn (string $search) => User::whereHas(['merchant' => fn ($q) => $q->where('merchants.status', Merchant::STATUS_APPROVED)])
+                                        ->where('name', 'like', "%{$search}%")
+                                        ->limit(25)
                                     )
-                                    ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
+                                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->name.' ('.$record->email.')')
                                     ->required()
                                     ->reactive()
                                     ->helperText('Users who has merchant profile created.')
-                                    ->afterStateUpdated(fn (callable $set) => $set('store_id', null))
                                     ->relationship('user', 'name'),
                                 Forms\Components\Select::make('store_id')
                                     ->options(function (callable $get) {
@@ -253,14 +253,13 @@ class MerchantOfferResource extends Resource
                                         if ($user) {
                                             return $user->stores->pluck('name', 'id');
                                         }
-                                        // TODO:: pluck all first until permissions and roles is up and running.
-                                        return Store::all()->pluck('id', 'name');
+                                        return [];
                                     })
                                     ->hidden(fn (Closure $get) => $get('user_id') === null)
                                     ->searchable()
+                                    ->required()
                                     ->label('Store')
-                                    ->helperText('Optional, by selecting this will make the offers only applicable to the selected store.')
-                                    ->nullable()
+                                    ->helperText('Must select store else it wont appear in Nearby Merchant Stores tab')
                             ])->columns(1),
 
                             Forms\Components\Section::make('Categories')->schema([
