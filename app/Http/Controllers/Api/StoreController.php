@@ -7,6 +7,7 @@ use App\Http\Resources\LocationResource;
 use App\Http\Resources\RatingCategoryResource;
 use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
+use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\RatingCategory;
 use App\Models\Store;
@@ -35,7 +36,7 @@ class StoreController extends Controller
     {
         // only approve merchant, the store can be queried
         $query = Store::whereHas('merchant', function ($q) {
-            $q->where('status', Merchant::STATUS_APPROVED);
+            $q->where('merchants.status', Merchant::STATUS_APPROVED);
         })->when($request->has('categories_id'), function ($q) use ($request) {
             $categories = explode(',', $request->input('categories_id'));
             $q->whereHas('categories', function ($q) use ($categories) {
@@ -54,8 +55,10 @@ class StoreController extends Controller
         // with merchant, ratings, location
         $query->with(['merchant', 'storeRatings', 'location', 'categories']);
 
-        $stores = $query->paginate($request->input('limit', 10));
+        // with count total ratings
+        $query->withCount('storeRatings');
 
+        $stores = $query->paginate($request->input('limit', 10));
         return StoreResource::collection($stores);
     }
 
@@ -81,7 +84,9 @@ class StoreController extends Controller
 
         $storeIds = explode(',', $request->store_ids);
 
-        $locations = Store::whereIn('id', $storeIds)->location()->get();
+        $locations = Location::whereHas('stores', function ($q) use ($storeIds) {
+            $q->whereIn('stores.id', $storeIds);
+        })->get();
 
         return LocationResource::collection($locations);
     }
@@ -141,8 +146,6 @@ class StoreController extends Controller
             // get only one latest rating per user
             $query->distinct('user_id')->latest('created_at');
         }
-
-        $this->buildQuery($query, $request);
 
         // with count likes and dislikes
         $query->withCount(['likes', 'dislikes']);
@@ -225,7 +228,7 @@ class StoreController extends Controller
         if ($merchant) {
             $menus = $merchant->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
                 return [
-                    'name' => $item->custom_properties['name'],
+                    'name' => (isset($item->custom_properties['name'])) ? $item->custom_properties['name'] : $item->file_name,
                     'url' => $item->getFullUrl()
                 ];
             });

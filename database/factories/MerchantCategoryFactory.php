@@ -17,7 +17,7 @@ class MerchantCategoryFactory extends Factory
      */
     public function definition()
     {
-        $name = fake()->realText();
+        $name = fake()->word();
         $slug = Str::slug($name);
         return [
             'name' => $name,

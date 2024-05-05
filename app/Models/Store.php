@@ -6,10 +6,12 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Store extends BaseModel implements Auditable
+class Store extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, \OwenIt\Auditing\Auditable, Searchable;
+    use HasFactory, \OwenIt\Auditing\Auditable, Searchable, InteractsWithMedia;
 
     const MEDIA_COLLECTION_PHOTOS = 'store_photos';
 

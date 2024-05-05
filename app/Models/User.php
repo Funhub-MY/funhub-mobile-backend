@@ -385,6 +385,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(MerchantRating::class, 'user_id');
     }
 
+    public function storeRatings()
+    {
+        return $this->hasMany(StoreRating::class, 'user_id');
+    }
+
     /**
      * Get the user's point balance
      */
