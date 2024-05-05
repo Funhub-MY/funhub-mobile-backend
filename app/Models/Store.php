@@ -5,6 +5,7 @@ namespace App\Models;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -85,6 +86,19 @@ class Store extends BaseModel implements HasMedia, Auditable
             'user_id',        // Local key on the current model (stores.user_id)
             'id'              // Local key on the intermediate model (users.id)
         );
+    }
+
+    // a store is related to an article through a shared location
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')
+            ->where('locatables.locatable_type', Store::class)
+            ->wherePivotIn('location_id', function ($query) {
+                $query->select('location_id')
+                    ->from('locatables')
+                    ->where('locatable_type', Article::class);
+            })
+            ->withTimestamps();
     }
 
     public function merchant_offers()

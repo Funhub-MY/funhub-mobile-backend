@@ -11,6 +11,7 @@ use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\RatingCategory;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StoreController extends Controller
@@ -56,7 +57,16 @@ class StoreController extends Controller
         $query->with(['merchant', 'storeRatings', 'location', 'categories']);
 
         // with count total ratings
-        $query->withCount('storeRatings');
+        $query->withCount('storeRatings', 'articles');
+
+        // Load articles with authors (users) that are followed by the authenticated user
+        $query->with(['articles' => function ($query) {
+            $query->whereHas('user', function ($query) {
+                $query->whereHas('followers', function ($query) {
+                    $query->where('user_id', auth()->id());
+                });
+            })->with('user');
+        }]);
 
         $stores = $query->paginate($request->input('limit', 10));
         return StoreResource::collection($stores);

@@ -33,6 +33,22 @@ class StoreResource extends JsonResource
             'categories' => MerchantCategoryResource::collection($this->categories),
             'ratings' => $this->ratings,
             'total_ratings' => $this->store_ratings_count,
+            'total_articles_same_location' => $this->articles_count,
+            'followings_been_here' => $this->whenLoaded('articles', function () {
+                $uniqueUsers = $this->articles->pluck('user')
+                    ->unique('id')
+                    ->map(function ($user) {
+                        return [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'username' => $user->username,
+                            'avatar' => $user->avatar_url,
+                            'avatar_thumb' => $user->avatar_thumb_url,
+                            'has_avatar' => $user->hasMedia('avatar'),
+                        ];
+                    });
+                return $uniqueUsers;
+            }),
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
