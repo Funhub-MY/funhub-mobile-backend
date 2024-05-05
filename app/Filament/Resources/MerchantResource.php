@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\MerchantResource\RelationManagers;
 use App\Filament\Resources\MerchantResource\RelationManagers\StoresRelationManager;
 use App\Models\Store;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -205,20 +206,32 @@ class MerchantResource extends Resource
                             ->acceptedFileTypes(['image/*'])
                             ->rules('image'),
 
-                        SpatieMediaLibraryFileUpload::make('menus')
-                            ->label('Menus (PDF ONLY)')
-                            ->multiple()
-                            ->maxFiles(5)
-                            ->collection(Merchant::MEDIA_COLLECTION_MENUS)
-                            ->required()
-                            ->columnSpan('full')
-                            ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
-                                }
-                            })
-                            ->acceptedFileTypes(['application/pdf'])
-                            ->rules('mimes:pdf'),
+                            Repeater::make('menus')
+                            ->label('Menus')
+                            ->createItemButtonLabel('Add Menu')
+                            ->schema([
+                                TextInput::make('name')
+                                    ->label('Menu Name')
+                                    ->reactive()
+                                    ->required(),
+                                SpatieMediaLibraryFileUpload::make('file')
+                                    ->label('Menu File (PDF ONLY)')
+                                    ->maxFiles(1)
+                                    ->collection(Merchant::MEDIA_COLLECTION_MENUS)
+                                    ->required()
+                                    ->customProperties(function ($get) {
+                                        return [
+                                            'name' => $get('name'),
+                                        ];
+                                    })
+                                    ->disk(function () {
+                                        if (config('filesystems.default') === 's3') {
+                                            return 's3_public';
+                                        }
+                                    })
+                                    ->acceptedFileTypes(['application/pdf'])
+                                    ->rules('mimes:pdf'),
+                            ])
                     ]),
             ]);
     }

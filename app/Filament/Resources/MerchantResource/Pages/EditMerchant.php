@@ -18,6 +18,19 @@ class EditMerchant extends EditRecord
         ];
     }
 
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // make sure media menus is loaded as array to repeater
+        $data['menus'] = $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
+            return [
+                'name' => $item->custom_properties['name'],
+                'file' => $item->getFullUrl(),
+            ];
+        });
+        return $data;
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // Check if the email has changed
