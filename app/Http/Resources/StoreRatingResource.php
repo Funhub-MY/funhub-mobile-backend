@@ -39,7 +39,8 @@ class StoreRatingResource extends JsonResource
                 'avatar' => $avatar_url,
                 'avatar_thumb' => $avatar_thumb_url,
             ],
-            'rating' => floatval($this->rating),
+            // floatval() with minimal one decimal like 3.0
+            'rating' => number_format(floatval($this->rating), 1),
             'comment' => $this->comment,
             'likes_count' => $this->likes_count ?? 0,
             'dislikes_count' => $this->dislikes_count ?? 0,
@@ -52,3 +53,4 @@ class StoreRatingResource extends JsonResource
         ];
     }
 }
+
