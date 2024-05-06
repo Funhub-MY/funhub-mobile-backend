@@ -12,10 +12,14 @@ use App\Models\Merchant;
 use App\Models\RatingCategory;
 use App\Models\Store;
 use App\Models\User;
+use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StoreController extends Controller
 {
+    use QueryBuilderTrait;
+
     /**
      * Get Stores
      *
@@ -162,6 +166,8 @@ class StoreController extends Controller
         // with count likes and dislikes
         $query->withCount(['likes', 'dislikes']);
 
+        $this->buildQuery($query, $request);
+
         $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return StoreRatingResource::collection($results);
@@ -264,6 +270,31 @@ class StoreController extends Controller
         $ratingCategories = RatingCategory::all();
 
         return RatingCategoryResource::collection($ratingCategories);
+    }
+
+    /**
+     * Get Top X Store Rating Categories of
+     *
+     * @param Store $store
+     * @return void
+     *
+     * @group Stores
+     * @urlParam store required Store ID. Example:1
+     * @urlParam limit integer optional Limit. Example: 3
+     *
+     * @response scenario=success {
+     * data: []
+     * }
+     */
+    public function getStoreRatingCategories(Store $store, Request $request)
+    {
+        $ratingCategories = $store->ratingCategories()
+            ->withCount('storeRatings')
+            ->orderBy('store_ratings_count', 'desc')
+            ->take($request->has('limit') ? $request->limit : 3)
+            ->get();
+
+         return RatingCategoryResource::collection($ratingCategories);
     }
 
 }

@@ -11,6 +11,15 @@ class StoreRating extends BaseModel
 
     protected $guarded = ['id'];
 
+    const FILTERABLE = [
+        'id',
+        'store_id',
+        'user_id',
+        'rating',
+        'comment',
+        'created_at',
+        'updated_at'
+    ];
 
     public function store()
     {

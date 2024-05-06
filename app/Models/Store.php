@@ -136,4 +136,18 @@ class Store extends BaseModel implements HasMedia, Auditable
     {
         return $this->hasMany(StoreRating::class);
     }
+
+    // a store has many ratingCategories through storeRatings
+    public function ratingCategories()
+    {
+        return $this->hasManyThrough(
+            RatingCategory::class,  // Final model
+            StoreRating::class,     // Intermediate model
+            'store_id',             // Foreign key on the intermediate model (store_ratings.store_id)
+            'id',                   // Foreign key on the final model (rating_categories.id)
+            'id',                   // Local key on the current model (stores.id)
+            'rating_category_id'    // Local key on the intermediate model (store_ratings.rating_category_id)
+        );
+    }
+
 }

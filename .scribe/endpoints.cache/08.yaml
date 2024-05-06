@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3eDv4Vfg6aZ8c5h6kEadPb1'
+      - 'Bearer 3af61bgv5ZEk4aPe6c8hVdD'
     controller: null
     method: null
     route: null
@@ -125,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aa8c6P563hE1gZ4DVdkvfbe'
+      - 'Bearer fE6P6aa3kbZ8Vgv15hec4Dd'
     controller: null
     method: null
     route: null
@@ -166,13 +166,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: doloremque
+        example: rerum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: doloremque
+      store_ids: rerum
     fileParameters: []
     responses:
       -
@@ -189,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8hV54dEka36Pb1ZDvfgc6ae'
+      - 'Bearer kZ6feb58a63VdgPcEv4h1Da'
     controller: null
     method: null
     route: null
@@ -313,7 +313,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gaZ6ePE8aDcf4hdk6vbV513'
+      - 'Bearer ahb81dPE4c6ga6f3vekZ5DV'
     controller: null
     method: null
     route: null
@@ -406,7 +406,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k853adf6hZvePD14gcbVEa6'
+      - 'Bearer kaEgd563PVDc46bf8Z1have'
     controller: null
     method: null
     route: null
@@ -470,7 +470,80 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gfEabv8V5cP6hZaD6k3e14d'
+      - 'Bearer Vkae5cZg8bvEfh6aPD61d43'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/stores/{store_id}/ratings/ratings_categories'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Top X Store Rating Categories of'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Limit.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      store_id: 1
+      store: '1'
+      limit: 3
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fPea51hE3V46vkdaDcb6Z8g'
     controller: null
     method: null
     route: null

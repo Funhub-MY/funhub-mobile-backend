@@ -153,6 +153,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
             Route::post('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'postRatings']);
             Route::get('/{store}/menus', [\App\Http\Controllers\Api\StoreController::class, 'getMerchantMenus']);
+            Route::get('/{store}/ratings/ratings_categories', [\App\Http\Controllers\Api\StoreController::class, 'getStoreRatingCategories']);
         });
 
         // Merchant Offer Categories
