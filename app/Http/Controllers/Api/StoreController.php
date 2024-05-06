@@ -130,7 +130,7 @@ class StoreController extends Controller
             $query->withCount(['storeRatings' => function ($query) use ($store) {
                 $query->where('store_id', $store->id);
             }]);
-        }, 'interactions']);
+        }, 'interactions', 'ratingCategories']);
 
         // if there's no sort, sort by latest
         if (!$request->has('sort')) {
@@ -212,8 +212,8 @@ class StoreController extends Controller
         // with count likes and dislikes
         $rating->loadCount(['likes', 'dislikes']);
 
-        // load user
-        $rating->load('user');
+        // load user, ratingCategories
+        $rating->load('user', 'ratingCategories');
 
         return new StoreRatingResource($rating);
     }
