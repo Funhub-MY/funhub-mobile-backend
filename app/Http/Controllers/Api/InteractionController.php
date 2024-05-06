@@ -139,7 +139,7 @@ class InteractionController extends Controller
         }
 
         if ($request->interactable == 'store_rating') {
-            $request->merge(['interactable_type' => StoreRating::class]);
+            $request->merge(['interactable' => StoreRating::class]);
         }
 
         switch($request->type) {
