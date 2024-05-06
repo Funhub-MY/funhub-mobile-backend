@@ -147,12 +147,8 @@ class StoreController extends Controller
             $query->where('user_id', $request->user_id);
         }
 
-        if ($request->has('store_id')) {
-            $query->where('store_id', $request->store_id);
-        }
-
-        // if dont have user_id and store_id, distinct user_id
-        if (!$request->has('user_id') && !$request->has('store_id')) {
+        // if dont have user_id and only select by distinct
+        if (!$request->has('user_id')) {
             // get only one latest rating per user
             $query->distinct('user_id')->latest('created_at');
         }
