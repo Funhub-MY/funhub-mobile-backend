@@ -150,7 +150,13 @@ class StoreController extends Controller
         // if dont have user_id and only select by distinct
         if (!$request->has('user_id')) {
             // get only one latest rating per user
-            $query->distinct('user_id')->latest('created_at');
+            $latestRatings = $store->storeRatings()
+                ->selectRaw('MAX(id) as id')
+                ->groupBy('user_id');
+
+            $query->joinSub($latestRatings, 'latest_ratings', function ($join) {
+                $join->on('store_ratings.id', '=', 'latest_ratings.id');
+            });
         }
 
         // with count likes and dislikes
