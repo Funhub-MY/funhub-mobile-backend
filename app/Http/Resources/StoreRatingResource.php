@@ -41,6 +41,7 @@ class StoreRatingResource extends JsonResource
             ],
             // floatval() with minimal one decimal like 3.0
             'rating' => number_format(floatval($this->rating), 1),
+            'categories' => $this->ratingCategories,
             'comment' => $this->comment,
             'likes_count' => $this->likes_count ?? 0,
             'dislikes_count' => $this->dislikes_count ?? 0,
