@@ -28,7 +28,7 @@ class StoreResource extends JsonResource
             }),
             'merchant' => new MerchantResource($this->merchant),
             'business_phone_no' => $this->business_phone_no,
-            'business_hours' => ($this->business_hours) ? json_decode($this->business_hours, true) : null,
+            'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
             'location' => $this->location,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
