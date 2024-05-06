@@ -913,4 +913,29 @@ class UserSettingsController extends Controller
 
         return response()->json(['message' => 'Saved']);
     }
+
+    /**
+     * Save OneSignal User ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam onesignal_user_id string required The OneSignal user id. Example: 123456
+     * @response scenario=success {
+     * "message": "Saved"
+     * }
+     */
+    public function postSaveOneSignalUserId(Request $request)
+    {
+        $this->validate($request, [
+            'onesignal_user_id' => 'required|string'
+        ]);
+
+        $user = auth()->user();
+        $user->onesignal_user_id = $request->onesignal_user_id;
+        $user->save();
+
+        return response()->json(['message' => 'Saved']);
+    }
 }

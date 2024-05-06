@@ -33,7 +33,7 @@ class StoreResource extends JsonResource
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'categories' => MerchantCategoryResource::collection($this->categories),
-            'ratings' => $this->ratings,
+            'ratings' => number_format(floatval($this->ratings), 1),
             'total_ratings' => $this->store_ratings_count,
             'total_articles_same_location' => $this->articles_count,
             'followings_been_here' => $this->whenLoaded('articles', function () {

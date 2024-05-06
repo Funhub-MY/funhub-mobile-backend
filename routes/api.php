@@ -201,6 +201,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
             // Onesignal
             Route::post('/onesignal/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalSubscriptionId']);
+            Route::post('/onesignal/user_id/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalUserId']);
         });
 
         // TODO: secure this route
