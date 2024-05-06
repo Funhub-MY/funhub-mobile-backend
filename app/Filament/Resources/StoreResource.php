@@ -20,6 +20,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -116,7 +117,20 @@ class StoreResource extends Resource
                             ->label('Is headquarter ?')
                             ->onIcon('heroicon-s-check-circle')
                             ->offIcon('heroicon-s-x-circle'),
-
+                        SpatieMediaLibraryFileUpload::make('company_photos')
+                            ->label('Store Photos')
+                            ->multiple()
+                            ->maxFiles(7)
+                            ->collection(Store::MEDIA_COLLECTION_PHOTOS)
+                            ->required()
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->rules('image'),
                                 ]),
 
                     Section::make('Store Business Hours')
