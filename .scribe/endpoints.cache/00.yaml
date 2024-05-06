@@ -29,13 +29,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: voluptatem
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: voluptatem
+      share_code: dolorum
     fileParameters: []
     responses:
       -
@@ -535,7 +535,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vb8P45ed1aZcEak6ghDfv36'
+      - 'Bearer e6D6gVaZhfbvkEd413cP85a'
     controller: null
     method: null
     route: null
@@ -566,13 +566,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: ab
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: ab
+      username: et
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fad83ag6cEkZP1D6bv45heV'
+      - 'Bearer 8E6fgVD64caP5kh1v3bZdea'
     controller: null
     method: null
     route: null
@@ -621,13 +621,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: dolor
+        example: sed
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: dolor
+      share_code: sed
     fileParameters: []
     responses:
       -
@@ -1127,7 +1127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VP3ED5a6gZvekdh64abcf18'
+      - 'Bearer Z3E1b6evaPkcd56hgV48afD'
     controller: null
     method: null
     route: null

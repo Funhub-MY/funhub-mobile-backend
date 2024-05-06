@@ -198,6 +198,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             // Referrals
             Route::get('/referrals/my-code', [\App\Http\Controllers\Api\UserSettingsController::class, 'getMyReferralCode']);
             Route::post('/referrals/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveReferral']);
+
+            // Onesignal
+            Route::post('/onesignal/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalSubscriptionId']);
         });
 
         // TODO: secure this route
