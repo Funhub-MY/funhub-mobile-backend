@@ -43,6 +43,7 @@ class MerchantCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $translatedName,
             'slug' => $this->slug,
+            'parent_id' => $this->parent_id,
             'description' => $this->description,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
