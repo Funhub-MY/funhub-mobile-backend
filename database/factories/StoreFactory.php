@@ -39,8 +39,8 @@ class StoreFactory extends Factory
             'long' => fake()->longitude(),
             'is_hq' => fake()->boolean(),
             'user_id' => User::factory(),
-            'state_id' => State::get()->random()->id,
-            'country_id' => Country::get()->random()->id,
+            'state_id' => 1,
+            'country_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ];
