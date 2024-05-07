@@ -69,7 +69,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
 
                     // Set the super admin user ID for auditing
                     if ($superAdminUser) {
-                        Auditor::setCurrentUserId($superAdminUser->id);
+                        Auditor::setCurrentAuditor($superAdminUser);
                     }
 
                     $article->save();
