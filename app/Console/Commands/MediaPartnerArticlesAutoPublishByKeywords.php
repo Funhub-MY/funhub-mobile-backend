@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\MediaPartnerKeyword;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MediaPartnerArticlesAutoPublishByKeywords extends Command
 {
@@ -45,7 +46,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
             foreach ($blacklistKeywords as $keyword) {
                 if (stripos($combinedContent, $keyword) !== false) {
                     // Article contains a blacklisted keyword, ignore it
-                    $this->info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} ignored due to blacklisted keyword: {$keyword}");
+                    Log::info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} ignored due to blacklisted keyword: {$keyword}");
                     continue 2;
                 }
             }
@@ -59,7 +60,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
                     // hidden_from_home is set to false
                     $article->hidden_from_home = false;
                     $article->save();
-                    $this->info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} published due to whitelisted keyword: {$keyword}");
+                    Log::info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} published due to whitelisted keyword: {$keyword}");
                     continue 2;
                 }
             }
