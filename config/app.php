@@ -308,6 +308,10 @@ return [
 
     'referral_max_hours' => env('REFERRAL_MAX_HOURS', 48),
 
+    'cooldowns' => [
+        'following_a_user_notification' => env('COOLDOWN_FOLLOWING_A_USER_NOTIFICATION', 5),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails

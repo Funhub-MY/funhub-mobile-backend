@@ -75,8 +75,16 @@ class UserFollowingController extends Controller
 
         // ensure not sending to self
         if ($followedUser && $followedUser->id !== auth()->user()->id) {
-            $locale = $followedUser->last_lang ?? config('app.locale');
-            $followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
+            $lastNotificationSentAt = cache()->get('follow_notification_' . auth()->id() . '_' . $followedUser->id);
+
+            // cool down for 5 minutes
+            if (!$lastNotificationSentAt || now()->diffInMinutes($lastNotificationSentAt) >= config('app.cooldowns.following_a_user_notification')) {
+                $locale = $followedUser->last_lang ?? config('app.locale');
+                $followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
+
+                // Set the cache with a 5-minute timeout
+                cache()->put('follow_notification_' . auth()->id() . '_' . $followedUser->id, now(), now()->addMinutes(5));
+            }
         }
 
         return response()->json([
