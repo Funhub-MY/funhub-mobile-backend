@@ -5,9 +5,11 @@ namespace App\Console\Commands;
 use App\Models\Article;
 use App\Models\MediaPartnerKeyword;
 use App\Models\MediaPartnerKeywords;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use OwenIt\Auditing\Facades\Auditor;
 
 class MediaPartnerArticlesAutoPublishByKeywords extends Command
 {
@@ -38,6 +40,10 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
             ->where('created_at', '>=', now()->subDays(7))
             ->get();
 
+        // Find a user with the "super_admin" role
+        $superAdminUser = User::whereHas('roles', function ($query) {
+            $query->where('name', 'super_admin');
+        })->first();
 
         foreach ($articles as $article) {
             $combinedContent = $article->title . ' ' . strip_tags(preg_replace('/\s+/', ' ', $article->content));
@@ -60,6 +66,12 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
                     $article->status = Article::STATUS_PUBLISHED;
                     // hidden_from_home is set to false
                     $article->hidden_from_home = false;
+
+                    // Set the super admin user ID for auditing
+                    if ($superAdminUser) {
+                        Auditor::setCurrentUserId($superAdminUser->id);
+                    }
+
                     $article->save();
                     $this->info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} published due to whitelisted keyword: {$keyword}");
                     Log::info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} published due to whitelisted keyword: {$keyword}");
