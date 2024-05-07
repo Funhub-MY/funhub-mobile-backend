@@ -288,13 +288,13 @@ class StoreController extends Controller
      */
     public function getStoreRatingCategories(Store $store, Request $request)
     {
-        $ratingCategories = $store->ratingCategories()
-            ->withCount('storeRatings')
-            ->orderBy('store_ratings_count', 'desc')
-            ->take($request->has('limit') ? $request->limit : 3)
-            ->get();
+        $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
+            $query->where('store_id', $store->id);
+        }])
+        ->orderBy('store_ratings_count', 'desc')
+        ->take($request->has('limit') ? $request->limit : 3)
+        ->get();
 
-         return RatingCategoryResource::collection($ratingCategories);
+        return RatingCategoryResource::collection($ratingCategories);
     }
-
 }
