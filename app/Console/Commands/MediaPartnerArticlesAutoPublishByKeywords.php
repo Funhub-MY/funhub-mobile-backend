@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Article;
 use App\Models\MediaPartnerKeyword;
+use App\Models\MediaPartnerKeywords;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +43,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
             $combinedContent = $article->title . ' ' . strip_tags(preg_replace('/\s+/', ' ', $article->content));
 
             // Check against blacklist keywords
-            $blacklistKeywords = MediaPartnerKeyword::where('type', 'blacklist')->pluck('keyword')->toArray();
+            $blacklistKeywords = MediaPartnerKeywords::where('type', 'blacklist')->pluck('keyword')->toArray();
             foreach ($blacklistKeywords as $keyword) {
                 if (stripos($combinedContent, $keyword) !== false) {
                     // Article contains a blacklisted keyword, ignore it
@@ -52,7 +53,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
             }
 
             // Check against whitelist keywords
-            $whitelistKeywords = MediaPartnerKeyword::where('type', 'whitelist')->pluck('keyword')->toArray();
+            $whitelistKeywords = MediaPartnerKeywords::where('type', 'whitelist')->pluck('keyword')->toArray();
             foreach ($whitelistKeywords as $keyword) {
                 if (stripos($combinedContent, $keyword) !== false) {
                     // Article contains a whitelisted keyword, publish it
