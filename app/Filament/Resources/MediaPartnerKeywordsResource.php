@@ -7,6 +7,7 @@ use App\Filament\Resources\MediaPartnerKeywordsResource\RelationManagers;
 use App\Models\MediaPartnerKeywords;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -45,9 +46,8 @@ class MediaPartnerKeywordsResource extends Resource
                         ->placeholder('Select the type of the keyword'),
 
                     // hidden auth user
-                    TextInput::make('user_id')
-                        ->default(auth()->user()->id)
-                        ->hidden(),
+                    Hidden::make('user_id')
+                        ->default(auth()->user()->id),
                 ]),
             ]);
     }
@@ -56,11 +56,11 @@ class MediaPartnerKeywordsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\Text::make('keyword')
+                Tables\Columns\TextColumn::make('keyword')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\Text::make('type')
+                Tables\Columns\TextColumn::make('type')
                     ->sortable(),
             ])
             ->filters([
