@@ -16,4 +16,11 @@ class RatingCategory extends BaseModel
         return $this->belongsToMany(MerchantRating::class, 'rating_categories_merchant_ratings')
                 ->withTimestamps();
     }
+
+    public function storeRatings()
+    {
+        return $this->belongsToMany(StoreRating::class, 'rating_categories_store_ratings')
+                ->withPivot(['user_id'])
+                ->withTimestamps();
+    }
 }
