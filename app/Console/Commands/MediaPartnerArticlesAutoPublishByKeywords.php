@@ -47,7 +47,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
             foreach ($blacklistKeywords as $keyword) {
                 if (stripos($combinedContent, $keyword) !== false) {
                     // Article contains a blacklisted keyword, ignore it
-                    Log::info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} ignored due to blacklisted keyword: {$keyword}");
+                    $this->info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} ignored due to blacklisted keyword: {$keyword}");
                     continue 2;
                 }
             }
@@ -61,6 +61,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
                     // hidden_from_home is set to false
                     $article->hidden_from_home = false;
                     $article->save();
+                    $this->info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} published due to whitelisted keyword: {$keyword}");
                     Log::info("[MediaPartnerArticlesAutoPublishByKeywords] Article {$article->id} published due to whitelisted keyword: {$keyword}");
                     continue 2;
                 }
