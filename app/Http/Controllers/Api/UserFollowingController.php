@@ -83,7 +83,7 @@ class UserFollowingController extends Controller
                 $followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
 
                 // Set the cache with a 5-minute timeout
-                cache()->put('follow_notification_' . auth()->id() . '_' . $followedUser->id, now(), now()->addMinutes(5));
+                cache()->put('follow_notification_' . auth()->id() . '_' . $followedUser->id, now(), now()->addMinutes(config('app.cooldowns.following_a_user_notification')));
             }
         }
 
