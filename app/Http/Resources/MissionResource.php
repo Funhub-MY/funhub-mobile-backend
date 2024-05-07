@@ -26,12 +26,39 @@ class MissionResource extends JsonResource
             $currentValues = json_decode($myParticipation->current_values, true);
         }
 
+        // get localte from app or from http header
+        $locale = config('app.locale');
+        if ($request->header('X-Locale')) {
+            $locale = $request->header('X-Locale');
+        }
+
+        $translatedName = $this->name;
+        if (isset($this->name_translation)) {
+            $translatedNames = json_decode($this->name_translation, true);
+            if ($translatedNames && isset($translatedNames[$locale])) {
+                $translatedName = $translatedNames[$locale];
+            } else {
+                $translatedName = $translatedNames[config('app.locale')];
+            }
+        }
+
+        $translatedDescription = $this->description;
+        if (isset($this->description_translation)) {
+            $translatedDescriptions = json_decode($this->description_translation, true);
+            if ($translatedDescriptions && isset($translatedDescriptions[$locale])) {
+                $translatedDescription = $translatedDescriptions[$locale];
+            } else {
+                $translatedDescription = $translatedDescriptions[config('app.locale')];
+            }
+        }
+
+
         return [
             'id' => $this->id, // mission id
-            'name' => $this->name, // mission name
+            'name' => $translatedName, // mission name
             'image_url' => $this->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME), // mission image
             'is_participating' => $isParticipating, // is user participating in this mission
-            'description' => $this->description, // mission description
+            'description' => $translatedDescription, // mission description
             'events' => $this->events, // events that caused this mission
             'current_values' => $currentValues, // current values for each event
             'values' => $this->values, // target values for each event
