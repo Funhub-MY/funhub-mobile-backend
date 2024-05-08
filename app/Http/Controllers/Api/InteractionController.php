@@ -197,6 +197,8 @@ class InteractionController extends Controller
                 $request->merge(['model_type' => Article::class]);
             } else if ($request->model_type == 'merchant_offer') {
                 $request->merge(['model_type' => MerchantOffer::class]);
+            } else if ($request->model_type == 'store') {
+                $request->merge(['model_type' => Store::class]);
             }
 
             // create new shareable link exists for this article and user
