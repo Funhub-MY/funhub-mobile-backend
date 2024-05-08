@@ -9,6 +9,7 @@ use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
 use App\Models\Location;
 use App\Models\Merchant;
+use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
 use App\Models\Store;
 use App\Models\User;
@@ -62,6 +63,11 @@ class StoreController extends Controller
 
         // with count total ratings
         $query->withCount('storeRatings', 'articles');
+
+        // with count published merchant offers
+        $query->withCount(['merchant_offers' => function ($query) {
+            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED);
+        }]);
 
         // Load articles with authors (users) that are followed by the authenticated user
         $query->with(['articles' => function ($query) {

@@ -51,6 +51,7 @@ class StoreResource extends JsonResource
                     });
                 return $uniqueUsers;
             }),
+            'has_merchant_offers' => ($this->merchant_offers_count) ? true : false,
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
