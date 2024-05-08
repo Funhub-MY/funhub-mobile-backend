@@ -28,6 +28,22 @@ class StoreRatingResource extends JsonResource
             $avatar_thumb_url = $this->user->avatar_thumb_url;
         }
 
+        $my_like_interaction_id = null;
+        if (auth()->user()) {
+            $interaction = $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first();
+            if ($interaction) {
+                $my_like_interaction_id = $interaction->id;
+            }
+        }
+
+        $my_dislike_interaction_id = null;
+        if (auth()->user()) {
+            $interaction = $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->first();
+            if ($interaction) {
+                $my_dislike_interaction_id = $interaction->id;
+            }
+        }
+
         return [
             'id' => $this->id,
             'store_id' => $this->store_id,
@@ -48,6 +64,8 @@ class StoreRatingResource extends JsonResource
             'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'user_disliked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'is_my_ratings' => $this->user_id == auth()->id(),
+            'my_like_interaction_id' => $my_like_interaction_id,
+            'my_dislike_interaction_id' => $my_dislike_interaction_id,
             'total_ratings_for_store' => $this->user->store_ratings_count,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
