@@ -24,7 +24,7 @@ class EditMerchant extends EditRecord
         // make sure media menus is loaded as array to repeater
         $data['menus'] = $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
             return [
-                'name' => $item->custom_properties['name'],
+                'name' => (isset($item->custom_properties['name'])) ? $item->custom_properties['name'] : '',
                 'file' => $item->getFullUrl(),
             ];
         });
