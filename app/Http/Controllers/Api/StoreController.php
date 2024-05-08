@@ -56,6 +56,9 @@ class StoreController extends Controller
         })->when($request->has('store_ids'), function ($q) use ($request) {
             $storeIds = explode(',', $request->input('store_ids'));
             $q->whereIn('id', $storeIds);
+
+            // must order by storeids
+            $q->orderBy(DB::raw('FIELD(id, ' . implode(',', $storeIds) . ')'));
         });
 
         // with merchant, ratings, location
