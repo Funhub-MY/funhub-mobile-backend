@@ -66,7 +66,8 @@ class StoreController extends Controller
 
         // with count published merchant offers
         $query->withCount(['merchant_offers' => function ($query) {
-            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED);
+            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
+                ->where('merchant_offers.available_at', '<=', now());
         }]);
 
         // Load articles with authors (users) that are followed by the authenticated user
