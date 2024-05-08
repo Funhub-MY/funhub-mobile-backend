@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - maxime
+          - enim
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -100,7 +100,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - maxime
+        - enim
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dVahD8eEcfZv4b6P365ka1g'
+      - 'Bearer V516gadPac3EeD4hvb8kfZ6'
     controller: null
     method: null
     route: null
@@ -191,7 +191,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DZVghb6fa4dvk6815a3cEPe'
+      - 'Bearer k6ZPV4D8abh5cEeag31dv6f'
     controller: null
     method: null
     route: null

@@ -29,7 +29,7 @@ endpoints:
         name: interactable
         description: 'The type of interactable.'
         required: true
-        example: 'article,merchant_offer,merchant_rating'
+        example: 'article,merchant_offer,merchant_rating,store_rating,store'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -53,7 +53,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      interactable: 'article,merchant_offer,merchant_rating'
+      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
       id: 1
       type: 'like,dislike,share,bookmark'
     fileParameters: []
@@ -74,7 +74,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hadeEc6VkZ561bDavP438fg'
+      - 'Bearer 5hDPbeda1ga46v8E3fkZcV6'
     controller: null
     method: null
     route: null
@@ -105,7 +105,7 @@ endpoints:
         name: interactable
         description: 'The type of interactable.'
         required: true
-        example: 'article,merchant_offer,merchant_rating,store_rating'
+        example: 'article,merchant_offer,merchant_rating,store_rating,store'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -174,7 +174,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      interactable: 'article,merchant_offer,merchant_rating,store_rating'
+      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
       id: 1
       filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
@@ -207,7 +207,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vZ5faEeabVghDd466kP8c31'
+      - 'Bearer 1Pg8kvcb364ZdDh65aVfaEe'
     controller: null
     method: null
     route: null
@@ -238,7 +238,7 @@ endpoints:
         name: interactable
         description: 'The type of interactable.'
         required: true
-        example: 'article,merchant_offer,merchant_rating,store_rating'
+        example: 'article,merchant_offer,merchant_rating,store_rating,store'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -280,7 +280,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      interactable: 'article,merchant_offer,merchant_rating,store_rating'
+      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
       type: 'like,dislike,share,bookmark'
       id: 1
       code: '1'
@@ -306,7 +306,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kh3486bfcd6PvDa1EVa5Zeg'
+      - 'Bearer 3bE8ahDa61Zgd5fPceVv4k6'
     controller: null
     method: null
     route: null
@@ -359,7 +359,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Ef436aegk8avd5PZVD1hcb'
+      - 'Bearer E861a53kb46vfZaeDVcdgPh'
     controller: null
     method: null
     route: null
@@ -406,7 +406,7 @@ endpoints:
         name: interactable
         description: 'The type of interactable (Required if delete_by is interactable).'
         required: false
-        example: 'article,merchant_offer'
+        example: 'article,merchant_offer,store_rating,store'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -423,7 +423,7 @@ endpoints:
     cleanUrlParameters:
       id: 1
       delete_by: 'interactable,interaction'
-      interactable: 'article,merchant_offer'
+      interactable: 'article,merchant_offer,store_rating,store'
       type: 'like,dislike,share,bookmark'
     queryParameters: []
     cleanQueryParameters: []
@@ -450,7 +450,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cDf6b8hkZveaEd36g4Pa51V'
+      - 'Bearer Z1Pd8cD3f46eg6bhvVEaak5'
     controller: null
     method: null
     route: null

@@ -12,6 +12,7 @@ use App\Models\Interaction;
 use App\Models\MerchantOffer;
 use App\Models\MerchantRating;
 use App\Models\ShareableLink;
+use App\Models\Store;
 use App\Models\StoreRating;
 use App\Models\User;
 use App\Models\View;
@@ -35,7 +36,7 @@ class InteractionController extends Controller
      *
      * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating,store
      * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -79,6 +80,10 @@ class InteractionController extends Controller
             $request->merge(['interactable_type' => StoreRating::class]);
         }
 
+        if ($request->interactable == 'store') {
+            $request->merge(['interactable' => Store::class]);
+        }
+
         $query = Interaction::where('interactable_type', $request->interactable_type)
             ->where('interactable_id', $id);
 
@@ -108,7 +113,7 @@ class InteractionController extends Controller
      *
      * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating,store
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @bodyParam code string optional The code of the shareable link(6 characters). Example: 1
@@ -140,6 +145,10 @@ class InteractionController extends Controller
 
         if ($request->interactable == 'store_rating') {
             $request->merge(['interactable' => StoreRating::class]);
+        }
+
+        if ($request->interactable == 'store') {
+            $request->merge(['interactable' => Store::class]);
         }
 
         switch($request->type) {
@@ -256,7 +265,7 @@ class InteractionController extends Controller
      * @authenticated
      * @urlParam id integer required The id of the interaction or interactable(article id). Example: 1
      * @urlParam delete_by string The type of delete, defaults to interaction. Example: interactable,interaction
-     * @urlParam interactable string The type of interactable (Required if delete_by is interactable). Example: article,merchant_offer
+     * @urlParam interactable string The type of interactable (Required if delete_by is interactable). Example: article,merchant_offer,store_rating,store
      * @urlParam type string The type of interaction (Required if delete_by is interactable). Example: like,dislike,share,bookmark
      * @response scenario=success {
      * "message": "Interaction deleted"
@@ -281,6 +290,8 @@ class InteractionController extends Controller
                 $request->merge(['interactable' => MerchantRating::class]);
             } else if ($request->interactable == 'store_rating') {
                 $request->merge(['interactable' => StoreRating::class]);
+            } else if ($request->interactable == 'store') {
+                $request->merge(['interactable' => Store::class]);
             } else {
                 return response()->json(['message' => __('messages.error.interaction_controller.Invalid_interactable')], 422);
             }
@@ -331,7 +342,7 @@ class InteractionController extends Controller
      *
      * @group Interactions
      * @authenticated
-     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating
+     * @bodyParam interactable string required The type of interactable. Example: article,merchant_offer,merchant_rating,store_rating,store
      * @bodyParam id integer required The id of the interactable. Example: 1
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      *
@@ -361,6 +372,12 @@ class InteractionController extends Controller
         }
         if ($request->interactable == 'comment') {
             $request->merge(['interactable' => Comment::class]);
+        }
+        if ($request->interactable == 'store_rating') {
+            $request->merge(['interactable' => StoreRating::class]);
+        }
+        if ($request->interactable == 'store') {
+            $request->merge(['interactable' => Store::class]);
         }
 
         switch($request->type) {
