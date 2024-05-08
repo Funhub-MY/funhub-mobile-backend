@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Filament\Resources\MerchantResource;
+use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\Store;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -17,6 +18,13 @@ class StoreResource extends JsonResource
      */
     public function toArray($request)
     {
+        $bookmark_interaction_id = null;
+        if (auth()->user()) {
+            $interaction = $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first();
+            if ($interaction) {
+                $bookmark_interaction_id = $interaction->id;
+            }
+        }
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -52,6 +60,8 @@ class StoreResource extends JsonResource
                 return $uniqueUsers;
             }),
             'has_merchant_offers' => ($this->merchant_offers_count) ? true : false,
+            'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
+            'bookmark_interaction_id' => $bookmark_interaction_id,
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,

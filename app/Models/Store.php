@@ -137,6 +137,11 @@ class Store extends BaseModel implements HasMedia, Auditable
         return $this->hasMany(StoreRating::class);
     }
 
+    public function interactions()
+    {
+        return $this->morphMany(Interaction::class, 'interactable');
+    }
+
     // a store has many ratingCategories through storeRatings
     public function ratingCategories()
     {
