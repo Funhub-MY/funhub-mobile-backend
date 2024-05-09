@@ -17,6 +17,7 @@ class Merchant extends BaseModel implements HasMedia, Auditable
 
     const MEDIA_COLLECTION_NAME = 'merchant_logos';
     const MEDIA_COLLECTION_NAME_PHOTOS = 'merchant_photos';
+    const MEDIA_COLLECTION_MENUS = 'menus';
 
     const STATUS = [
         0 => 'Pending',
@@ -56,6 +57,12 @@ class Merchant extends BaseModel implements HasMedia, Auditable
             'address_postcode' => $this->address_postcode,
             'state' => $this->state,
             'country' => $this->country,
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'name' => $category->name,
+                ];
+            }),
+            'ratings' => $this->ratings,
             'status' => $this->status,
             'stores' => $this->stores->map(function ($store) {
                 return [
@@ -109,6 +116,20 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return $this->belongsTo(Country::class, 'country_id');
     }
 
+
+    public function offers()
+    {
+        // has many through User
+        return $this->hasManyThrough(
+            MerchantOffer::class,  // Final model
+            User::class,   // Intermediate model
+            'id',          // Foreign key on the intermediate model (users.id)
+            'user_id',     // Foreign key on the final model (merchant_offers.user_id)
+            'user_id',     // Local key on the current model (merchants.user_id)
+            'id'           // Local key on the intermediate model (users.id)
+        );
+    }
+
     public function stores()
     {
         return $this->hasManyThrough(
@@ -119,6 +140,11 @@ class Merchant extends BaseModel implements HasMedia, Auditable
             'user_id',     // Local key on the current model (merchants.user_id)
             'id'           // Local key on the intermediate model (users.id)
         );
+    }
+
+    public function merchantRatings()
+    {
+        return $this->hasMany(MerchantRating::class, 'merchant_id');
     }
 
     public function scopeApproved(Builder $query): void

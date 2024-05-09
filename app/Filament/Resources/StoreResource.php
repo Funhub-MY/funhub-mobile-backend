@@ -14,8 +14,15 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\StoreResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StoreResource\RelationManagers;
+use App\Filament\Resources\StoreResource\RelationManagers\LocationRelationManager;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
@@ -46,7 +53,15 @@ class StoreResource extends Resource
                             ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
                             ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
                             ->default(fn () => User::where('id', auth()->user()->id)?->first()->id)
-                            ->relationship('user','name')
+                            ->relationship('user','name'),
+
+                        // categories
+                        Select::make('categories')
+                            ->relationship('categories', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->multiple(),
+
                     ]),
                 Forms\Components\Section::make('Store Information')
                     ->schema([
@@ -101,8 +116,57 @@ class StoreResource extends Resource
                         Forms\Components\Toggle::make('is_hq')
                             ->label('Is headquarter ?')
                             ->onIcon('heroicon-s-check-circle')
-                            ->offIcon('heroicon-s-x-circle')
-                    ])
+                            ->offIcon('heroicon-s-x-circle'),
+                        SpatieMediaLibraryFileUpload::make('company_photos')
+                            ->label('Store Photos')
+                            ->multiple()
+                            ->maxFiles(7)
+                            ->collection(Store::MEDIA_COLLECTION_PHOTOS)
+                            ->required()
+                            ->columnSpan('full')
+                            ->disk(function () {
+                                if (config('filesystems.default') === 's3') {
+                                    return 's3_public';
+                                }
+                            })
+                            ->acceptedFileTypes(['image/*'])
+                            ->rules('image'),
+                                ]),
+
+                    Section::make('Store Business Hours')
+                        ->schema([
+                            Repeater::make('business_hours')
+                                ->schema([
+                                    Select::make('day')
+                                        ->options([
+                                            '1' => 'Monday',
+                                            '2' => 'Tuesday',
+                                            '3' => 'Wednesday',
+                                            '4' => 'Thursday',
+                                            '5' => 'Friday',
+                                            '6' => 'Saturday',
+                                            '7' => 'Sunday',
+                                        ])
+                                        ->required()
+                                        ->label('Day')
+                                        ->columnSpan('full'),
+                                        Grid::make(2)
+                                        ->schema([
+                                            TimePicker::make('open_time')
+                                                ->withoutSeconds()
+                                                ->withoutDate()
+                                                ->required()
+                                                ->default('09:00')
+                                                ->label('Open Time'),
+                                            TimePicker::make('close_time')
+                                                ->withoutSeconds()
+                                                ->withoutDate()
+                                                ->required()
+                                                ->default('17:00')
+                                                ->label('Close Time'),
+                                        ]),
+                            ])
+                        ])
             ]);
     }
 
@@ -136,6 +200,7 @@ class StoreResource extends Resource
     {
         return [
             RelationManagers\MerchantOffersRelationManager::class,
+            LocationRelationManager::class,
             AuditsRelationManager::class,
         ];
     }

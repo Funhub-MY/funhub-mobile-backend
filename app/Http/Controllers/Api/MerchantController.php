@@ -4,14 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Article;
+use App\Http\Resources\MerchantRatingResource;
 use App\Http\Resources\MerchantResource;
+use App\Http\Resources\RatingCategoryResource;
+use App\Models\Location;
 use App\Models\Merchant;
+use App\Models\MerchantOffer;
+use App\Models\RatingCategory;
 use App\Models\Store;
+use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class MerchantController extends Controller
 {
+    use QueryBuilderTrait;
     /**
      * Get Merchants
      *
@@ -60,10 +67,42 @@ class MerchantController extends Controller
             });
         }
 
+        $query->with('categories', 'offers', 'stores', 'stores.location');
+
+        // with count ratings
+        $query->withCount(['merchantRatings']);
+
         $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return MerchantResource::collection($results);
     }
+
+    /**
+     * Get Location by Merchant ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant_id integer required Merchant ID. Example:1
+     *
+     *
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function getAllStoresLocationByMerchantId(Merchant $merchant)
+    {
+        $locations = Location::whereHas('stores', function ($q) use ($merchant) {
+            $q->whereHas('merchant', function ($q) use ($merchant) {
+                $q->where('merchants.id', $merchant->id);
+            });
+        })->get();
+
+        return response()->json($locations);
+    }
+
 
     /**
      * Get Nearby Merchants
@@ -108,5 +147,164 @@ class MerchantController extends Controller
         })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return MerchantResource::collection($merchants);
+    }
+
+    /**
+     * Get Merchant Ratings
+     *
+     * @param Merchant $merchant
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant required Merchant ID. Example:1
+     * @urlParam only_mine boolean optional Only show my ratings. Example:true
+     * @urlParam user_id integer optional Only load specific user ratings. Example: 1
+     * @urlParam merchant_id integer optional Only load specific merchant ratings. Example: 1
+     * @urlParam sort string Column to Sort. Example: Sortable columns are: id, rating, created_at, updated_at
+     * @urlParam order string Direction to Sort. Example: Sortable directions are: asc, desc
+     * @urlParam limit integer Per Page Limit Override. Example: 10
+     *
+     *
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function getRatings(Merchant $merchant, Request $request)
+    {
+        $query = $merchant->merchantRatings()->with(['user' => function ($query) use ($merchant) {
+            $query->withCount(['merchantRatings' => function ($query) use ($merchant) {
+                $query->where('merchant_id', $merchant->id);
+            }]);
+        }, 'interactions']);
+
+        // if there's no sort, sort by latest
+        if (!$request->has('sort')) {
+            $request->merge(['sort' => 'created_at']);
+            $request->merge(['order' => 'desc']);
+        }
+
+        // if request has only_mine
+        if ($request->has('only_mine')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->has('merchant_id')) {
+            $query->where('merchant_id', $request->merchant_id);
+        }
+
+        // if dont have user_id and merchant_id, distinct user_id
+        if (!$request->has('user_id') && !$request->has('merchant_id')) {
+            // get only one latest rating per user
+            $query->distinct('user_id')->latest('created_at');
+        }
+
+        $this->buildQuery($query, $request);
+
+        // with count likes and dislikes
+        $query->withCount(['likes', 'dislikes']);
+
+        $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+        return MerchantRatingResource::collection($results);
+    }
+
+    /**
+     * Rate a Merchant
+     *
+     * @param Merchant $merchant
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant required Merchant ID. Example:1
+     * @bodyParam rating integer required Rating. Example:5
+     * @bodyParam comment string optional Comment. Example:Good service
+     * @bodyParam rating_category_ids string optional Rating Category IDs. Example:1,2,3
+     *
+     * @response scenario=success {
+     * data: {}
+     * }
+     */
+    public function postRatings(Merchant $merchant, Request $request)
+    {
+        $request->validate([
+            'rating' => 'required|numeric|min:1|max:5',
+            // 'rating_category_ids' => 'required',
+            'comment' => 'nullable|string',
+        ]);
+
+        $rating = $merchant->merchantRatings()->create([
+            'user_id' => auth()->id(),
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        if ($request->has('rating_category_ids')) {
+            // explode rating categories ids
+            $categories = explode(',', $request->rating_category_ids);
+            // attach to rating
+            $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
+        }
+
+        // consolidate merchant ratings
+        $merchant->ratings = $merchant->merchantRatings()->avg('rating');
+        $merchant->save();
+
+        // with count likes and dislikes
+        $rating->loadCount(['likes', 'dislikes']);
+
+        // load user
+        $rating->load('user');
+
+        return new MerchantRatingResource($rating);
+    }
+
+    /**
+     * Get Merchant Menus
+     *
+     * @param Merchant $merchant
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam merchant required Merchant ID. Example:1
+     *
+     * @response scenario=success {
+     * [
+     * 'https://example.com/menu1.pdf',
+     * 'https://example.com/menu2.pdf',
+     * 'https://example.com/menu3.pdf',
+     * ]
+     */
+    public function getMerchantMenus(Merchant $merchant)
+    {
+        $menus = $merchant->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
+            return $item->getFullUrl();
+        });
+
+        return response()->json($menus);
+    }
+
+    /**
+     * Get Merchant Rating Categories
+     *
+     * @return JsonResponse
+     *
+     * @group Merchant
+     *
+     * @response scenario=success {
+     * data: []
+     * }
+     */
+    public function getRatingCategories()
+    {
+        $ratingCategories = RatingCategory::all();
+
+        return RatingCategoryResource::collection($ratingCategories);
     }
 }

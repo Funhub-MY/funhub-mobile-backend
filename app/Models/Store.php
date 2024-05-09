@@ -5,11 +5,16 @@ namespace App\Models;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Store extends BaseModel implements Auditable
+class Store extends BaseModel implements HasMedia, Auditable
 {
-    use HasFactory, \OwenIt\Auditing\Auditable, Searchable;
+    use HasFactory, \OwenIt\Auditing\Auditable, Searchable, InteractsWithMedia;
+
+    const MEDIA_COLLECTION_PHOTOS = 'store_photos';
 
     protected $fillable = [
         'name',
@@ -29,7 +34,6 @@ class Store extends BaseModel implements Auditable
         'created_at',
         'updated_at'
     ];
-
 
     /**
      * Search Setup
@@ -84,6 +88,19 @@ class Store extends BaseModel implements Auditable
         );
     }
 
+    // a store is related to an article through a shared location
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')
+            ->where('locatables.locatable_type', Store::class)
+            ->wherePivotIn('location_id', function ($query) {
+                $query->select('location_id')
+                    ->from('locatables')
+                    ->where('locatable_type', Article::class);
+            })
+            ->withTimestamps();
+    }
+
     public function merchant_offers()
     {
         return $this->hasMany(MerchantOffer::class);
@@ -96,7 +113,8 @@ class Store extends BaseModel implements Auditable
 
     public function categories()
     {
-        return $this->morphToMany(MerchantCategory::class, 'categoryable');
+        return $this->belongsToMany(MerchantCategory::class, 'merchant_category_stores')
+                ->withTimestamps();
     }
 
     public function state()
@@ -108,4 +126,33 @@ class Store extends BaseModel implements Auditable
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+
+    public function location()
+    {
+        return $this->morphToMany(Location::class, 'locatable');
+    }
+
+    public function storeRatings()
+    {
+        return $this->hasMany(StoreRating::class);
+    }
+
+    public function interactions()
+    {
+        return $this->morphMany(Interaction::class, 'interactable');
+    }
+
+    // a store has many ratingCategories through storeRatings
+    public function ratingCategories()
+    {
+        return $this->hasManyThrough(
+            RatingCategory::class,  // Final model
+            StoreRating::class,     // Intermediate model
+            'store_id',             // Foreign key on the intermediate model (store_ratings.store_id)
+            'id',                   // Foreign key on the final model (rating_categories.id)
+            'id',                   // Local key on the current model (stores.id)
+            'rating_category_id'    // Local key on the intermediate model (store_ratings.rating_category_id)
+        );
+    }
+
 }

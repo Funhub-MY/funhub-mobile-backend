@@ -50,6 +50,9 @@ class CreateMerchant extends CreateRecord
         $this->record->user_id = $user->id;
         $this->record->save();
 
-        $user->notify(new MerchantOnboardEmail($name, $email, $password, $this->record->redeem_code));
+        // if user is approved only fire email\
+        if ($this->record->status == Merchant::STATUS_APPROVED) {
+            $user->notify(new MerchantOnboardEmail($name, $email, $password, $this->record->redeem_code));
+        }
     }
 }

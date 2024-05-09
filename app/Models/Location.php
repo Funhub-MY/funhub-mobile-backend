@@ -100,6 +100,11 @@ class Location extends BaseModel implements HasMedia, Auditable
         return $this->morphedByMany(Article::class, 'locatable');
     }
 
+    public function stores()
+    {
+        return $this->morphedByMany(Store::class, 'locatable');
+    }
+
     public function merchantOffers()
     {
         return $this->morphedByMany(MerchantOffer::class, 'locatable');

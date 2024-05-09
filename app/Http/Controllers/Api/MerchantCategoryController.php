@@ -14,10 +14,10 @@ class MerchantCategoryController extends Controller
 
     /**
      * Get popular Merchant Categories
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Categories
      * @bodyParam is_featured integer Is Featured Categories. Example: 1
@@ -35,12 +35,16 @@ class MerchantCategoryController extends Controller
     public function index(Request $request)
     {
         // get popular tags by offer count
-        $query = MerchantCategory::withCount('offer')
-            ->orderBy('offer_count', 'desc');
+        $query = MerchantCategory::withCount('offer');
 
         // get is_featured only
         if ($request->has('is_featured') && $request->is_featured == 1) {
             $query->where('is_featured', $request->is_featured);
+        }
+
+        // if there's no sort order then default sort by offer count
+        if (!$request->has('sort')) {
+            $query->orderBy('offer_count', 'desc');
         }
 
         $this->buildQuery($query, $request);
@@ -52,10 +56,10 @@ class MerchantCategoryController extends Controller
 
     /**
      * Get Merchant Categories by offer id
-     * 
+     *
      * @param $offer_id integer
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Merchant
      * @subgroup Merchant Categories
      * @urlParam offer_id integer required The id of the merchant offer id. Example: 1
@@ -69,7 +73,7 @@ class MerchantCategoryController extends Controller
         $merchantOfferCategories = MerchantCategory::whereHas('offer', function ($query) use ($offer_id) {
             $query->where('offer_id', $offer_id);
         })->paginate(config('app.paginate_per_page'));
-        
+
         return MerchantCategoryResource::collection($merchantOfferCategories);
     }
 }

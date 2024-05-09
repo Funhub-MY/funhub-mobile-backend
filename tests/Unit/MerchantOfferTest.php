@@ -17,6 +17,8 @@ use App\Models\MerchantOfferCategory;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use Database\Factories\MerchantFactory;
+use Database\Seeders\CountriesTableSeeder;
+use Database\Seeders\StatesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class MerchantOfferTest extends TestCase
@@ -27,6 +29,11 @@ class MerchantOfferTest extends TestCase
     {
         parent::setUp();
         $this->refreshDatabase();
+
+        // Seed states and countries
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
         // create user first to attach the foreign keys for each model below.
         // $this->user is used to test on merchant offer. Act as a merchant.
         $this->user = User::factory()->create();
@@ -34,7 +41,10 @@ class MerchantOfferTest extends TestCase
         $this->loggedInUser = User::factory()->create();
         // as 1-to-1 relationship, we can use 'for' here to tell the factory which user is belongsTo when creating the model below.
         $this->merchant = Merchant::factory()->for($this->user)->create();
-        $this->store = Store::factory()->for($this->user)->create();
+
+        $this->store = Store::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
 
         // we can chain double for as well.
         $this->merchant_offer = MerchantOffer::factory()->count(5)->for($this->merchant->user)->create();
@@ -47,7 +57,9 @@ class MerchantOfferTest extends TestCase
                 ]);
             }
         });
+
         $this->merchant_category = MerchantCategory::factory()->for($this->merchant->user)->create();
+
         $this->merchant_offer_categories = MerchantOfferCategory::factory()->count(5)->create();
         // attach offer with category
         foreach($this->merchant_offer as $offer) {

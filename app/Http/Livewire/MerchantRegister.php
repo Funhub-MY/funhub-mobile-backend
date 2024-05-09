@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Country;
+use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\User;
 use App\Models\State;
@@ -177,6 +178,10 @@ class MerchantRegister extends Component implements HasForms
                 Log::info('[MerchantOnboarding] Company photo upload: ' . $company_photo_livewire_tmp->getRealPath());
                 $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
                     ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+
+                // also add to store photos
+                $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                    ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
             }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Company photos upload failed: ' . $e->getMessage());
@@ -185,90 +190,116 @@ class MerchantRegister extends Component implements HasForms
 
         $merchant->save();
 
-        //create store using the data from the form and user_id
-        // try {
-            // foreach ($data['stores'] as $store) {
-                //process business hours
-                $businessHours = [];
-                foreach ($data['business_hours'] as $businessHour) {
-                    $businessHours[$businessHour['day']] = [
-                        'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
-                        'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
-                    ];
-                }
+        $businessHours = [];
+        foreach ($data['business_hours'] as $businessHour) {
+            $businessHours[$businessHour['day']] = [
+                'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
+                'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
+            ];
+        }
 
-                //section for getting lang and long-start
+        //section for getting lang and long-start
+        $lang = null;
+        $long = null;
+
+        //get state name and country name
+        $state_name = State::find($data['state_id'])->name;
+        $country_name = Country::find($data['country_id'])->name;
+
+        $address= $data['address'] . ', ' . $data['zip_code'] . ', ' . $state_name . ', ' . $country_name;
+        //dd($address); //"17, jalan usj 18/4, 47630, Selangor, Malaysia"
+        $client = new Client();
+        $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+            'query' => [
+                'address' => $address,
+                'key' => config('filament-google-maps.key'),
+            ]
+        ]);
+
+        $locationFromGoogle = null;
+        if ($response->getStatusCode() === 200) {
+            // Parse the response
+            $locationFromGoogle = json_decode($response->getBody(), true);
+
+            // Check if the response contains results
+            if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
+                $lang = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
+                $long = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
+            } else {
+                // No results found, keep as null first
                 $lang = null;
                 $long = null;
+            }
+        } else {
+            Log::info('Failed to get location data from Google Maps API');
+        }
 
-                //get state name and country name
-                $state_name = State::find($data['state_id'])->name;
-                $country_name = Country::find($data['country_id'])->name;
+        // Creeate Store
+        $store = Store::create([
+            'user_id' => $user->id,
+            'name' => $data['name'],
+            'manager_name' => $data['manager_name'],
+            'business_phone_no' => $data['business_phone_no'],
+            'business_hours' => json_encode($businessHours),
+            'address' => $data['address'],
+            'address_postcode' => $data['zip_code'],
+            'lang' => $lang,
+            'long' => $long,
+            'is_hq' => $data['is_hq'],
+            'state_id' => $data['state_id'],
+            'country_id' => $data['country_id'],
+        ]);
 
-                $address= $data['address'] . ', ' . $data['zip_code'] . ', ' . $state_name . ', ' . $country_name;
-                //dd($address); //"17, jalan usj 18/4, 47630, Selangor, Malaysia"
-                $client = new Client();
-                $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
-                    'query' => [
-                        'address' => $address,
-                        'key' => config('filament-google-maps.key'),
-                    ]
-                ]);
+        foreach ($data['company_photos'] as $company_photo) {
+            $company_photo_livewire_tmp = $company_photo;
+            // also add to store photos from company_photos
+            $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
+        }
 
-                //dd($response);
-                if ($response->getStatusCode() === 200) {
-                    // Parse the response
-                    $location_data = json_decode($response->getBody(), true);
 
-                    // Check if the response contains results
-                    if (isset($location_data['results']) && !empty($location_data['results'])) {
-                        $lang = $location_data['results'][0]['geometry']['location']['lat'];
-                        $long = $location_data['results'][0]['geometry']['location']['lng'];
-                    } else {
-                        // No results found, keep as null first
-                        $lang = null;
-                        $long = null;
-                    }
-                } else {
-                    Log::info('Failed to get location data from Google Maps API');
-                }
+        $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
+        Log::info('[MerchantRegister] Location data from Google Maps API: ' . json_encode($locationFromGoogle));
+        if ($locationFromGoogle) {
+            $location = null;
+            // must create a location data if not exists
+            if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
+                $location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
+            } else {
+                // if location cant be found by google_id, then find by lat,lng
+                $location = Location::where('lat', $locationFromGoogle['lat'])
+                    ->where('lng', $locationFromGoogle['lng'])
+                    ->first();
+            }
 
-                //section for getting lang and long-end
+            if (!$location) {
+                $addressComponents = collect($locationFromGoogle['address_components']);
+                $city = $addressComponents->filter(function ($component) {
+                    return in_array('locality', $component['types']);
+                })->first();
 
-                $store = Store::create([
-                    'user_id' => $user->id,
+                // create a new location
+                $location = Location::create([
                     'name' => $data['name'],
-                    'manager_name' => $data['manager_name'],
-                    'business_phone_no' => $data['business_phone_no'],
-                    'business_hours' => json_encode($businessHours),
-                    'address' => $data['address'],
-                    'address_postcode' => $data['zip_code'],
-                    'lang' => $lang,
-                    'long' => $long,
-                    'is_hq' => $data['is_hq'],
-                    'state_id' => $data['state_id'],
-                    'country_id' => $data['country_id'],
+                    'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
+                    'lat' => $lang, // google provided
+                    'lng' => $long, // google provided
+                    'address' => $data['address'] ?? '', // user provided
+                    'address_2' => $data['address_2'] ?? '', // user provided
+                    'zip_code' => $data['zip_code'] ?? '', // user provided
+                    'city' => $city ?? '', // google provided
+                    'state_id' => $data['state_id'], // user provided
+                    'country_id' => $data['country_id'], // user provided
                 ]);
 
-                // $store = Store::create([
-                //     'user_id' => $user->id,
-                //     'name' => $store['name'],
-                //     'manager_name' => $store['manager_name'],
-                //     'business_phone_no' => $store['business_phone_no'],
-                //     'business_hours' => json_encode($businessHours),
-                //     'address' => $store['address'],
-                //     'address_postcode' => $store['zip_code'],
-                //     'lang' => $data['location']['lat'],
-                //     'long' => $data['location']['lng'],
-                //     'is_hq' => $store['is_hq'],
-                //     'state_id' => $data['state_id'],
-                //     'country_id' => $data['country_id'],
-                // ]);
-            // }
-        // } catch (\Exception $e) {
-        //     Log::error('[MerchantOnboarding] Store creation failed: ' . $e->getMessage());
-        //     session()->flash('error', 'Store creation failed. Please try again.');
-        // }
+                Log::info('[MerchantRegister] Location created: ' . $location->id);
+            }
+                // attach store to location
+            $store->location()->attach($location);
+            Log::info('[MerchantRegister] Store '. $store->id . 'attached to location: ' . $location->id);
+        } else {
+            Log::info('[MerchantRegister] Failed to get location data from Google Maps API');
+        }
 
         if ($user && $merchant) {
             session()->flash('message', 'Your Merchant Account has been created. Please await our admins to approve your account and once approved you will received the instructions to login. Thank you!');
@@ -565,8 +596,18 @@ class MerchantRegister extends Component implements HasForms
                     ]),
             ])
             ->skippable()
-            ->submitAction(new HtmlString('<button type="submit" class="filament-button filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2rem] px-3 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700">Complete Signup</button>')),
-                ];
+            ->submitAction(new HtmlString('<button type="submit" class="filament-button filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2rem] px-3 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700" wire:loading.attr="disabled">
+            <span wire:loading.remove>Complete Signup</span>
+            <span wire:loading>
+                <span class="flex flex-row gap-2">
+                <svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg> Signing Up, Please Wait ...
+                </span>
+            </span>
+        </button>')),
+         ];
     }
 
     public function render()

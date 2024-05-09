@@ -61,6 +61,8 @@ class MerchantOfferController extends Controller
      * @bodyParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true
      * @bodyParam except_expired boolean optional Get all coming soon or available only but hide expired offers. Example: true
      * @bodyParam flash_only boolean optional Filter by Flash Deals Only. Example: true
+     * @bodyParam merchant_id integer optional Filter by Merchant ID. Example: 1
+     * @bodyParam store_id integer optional Filter by Store ID. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -127,6 +129,12 @@ class MerchantOfferController extends Controller
             });
         }
 
+        if ($request->has('merchant_id')) {
+            $query->whereHas('merchant', function ($query) use ($request) {
+                $query->where('id', $request->merchant_id);
+            });
+        }
+
         // get articles by lat, lng
         if ($request->has('lat') && $request->has('lng')) {
             $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
@@ -146,6 +154,14 @@ class MerchantOfferController extends Controller
         if ($request->has('location_id')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('locations.id', $request->location_id);
+            });
+        }
+
+        if ($request->has('store_id')) {
+            // explode store_id if has comma
+            $storeIds = explode(',', $request->store_id);
+            $query->whereHas('store', function ($query) use ($storeIds) {
+                $query->whereIn('stores.id', $storeIds);
             });
         }
 

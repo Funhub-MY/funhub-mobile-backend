@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Merchant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,6 +29,7 @@ class MerchantFactory extends Factory
             'pic_name' => fake()->name(),
             'pic_phone_no' => fake()->randomNumber(9),
             'pic_email' => fake()->unique()->safeEmail(),
+            'status' => Merchant::STATUS_APPROVED,
             'state_id' => 1, // mock id only
             'country_id' => 1,  // mock id only
             'created_at' => now(),

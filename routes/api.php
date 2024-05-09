@@ -134,9 +134,26 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('/{offer_id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'show']);
         });
 
+        // Merchants
         Route::prefix('/merchants')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MerchantController::class, 'index']);
+            Route::get('/rating_categories', [\App\Http\Controllers\Api\MerchantController::class, 'getRatingCategories']);
             Route::get('/nearby', [\App\Http\Controllers\Api\MerchantController::class, 'getNearbyMerchants']);
+            Route::get('/{merchant}/locations', [\App\Http\Controllers\Api\MerchantController::class, 'getAllStoresLocationByMerchantId']);
+            Route::get('/{merchant}/ratings', [\App\Http\Controllers\Api\MerchantController::class, 'getRatings']);
+            Route::post('/{merchant}/ratings', [\App\Http\Controllers\Api\MerchantController::class, 'postRatings']);
+            Route::get('/{merchant}/menus', [\App\Http\Controllers\Api\MerchantController::class, 'getMerchantMenus']);
+        });
+
+        // Stores
+        Route::prefix('/stores')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+            Route::get('/rating_categories', [\App\Http\Controllers\Api\StoreController::class, 'getRatingCategories']);
+            Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
+            Route::get('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'getRatings']);
+            Route::post('/{store}/ratings', [\App\Http\Controllers\Api\StoreController::class, 'postRatings']);
+            Route::get('/{store}/menus', [\App\Http\Controllers\Api\StoreController::class, 'getMerchantMenus']);
+            Route::get('/{store}/ratings/ratings_categories', [\App\Http\Controllers\Api\StoreController::class, 'getStoreRatingCategories']);
         });
 
         // Merchant Offer Categories
@@ -182,6 +199,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             // Referrals
             Route::get('/referrals/my-code', [\App\Http\Controllers\Api\UserSettingsController::class, 'getMyReferralCode']);
             Route::post('/referrals/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveReferral']);
+
+            // Onesignal
+            Route::post('/onesignal/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalSubscriptionId']);
+            Route::post('/onesignal/user_id/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalUserId']);
         });
 
         // TODO: secure this route

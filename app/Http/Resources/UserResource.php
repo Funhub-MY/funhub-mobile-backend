@@ -75,6 +75,8 @@ class UserResource extends JsonResource
             'country_id' => $this->when($this->isAuthUser, $this->country_id),
             'state_id' => $this->when($this->isAuthUser, $this->state_id),
             'category_ids' => $this->when($this->isAuthUser, $this->articleCategoriesInterests->pluck('id')->toArray()),
+            'onesignal_subscription_id' => $this->when($this->isAuthUser, $this->onesignal_subscription_id),
+            'onesignal_user_id' => $this->when($this->isAuthUser, $this->onesignal_user_id),
             'created_at' => $this->created_at,
         ];
     }
