@@ -147,6 +147,20 @@ class MerchantRegister extends Component implements HasForms
                 'pic_phone_no' => $data['pic_phone_no'],
                 'pic_email' => $data['pic_email'],
             ]);
+
+            if ($merchant) {
+                // ensure redeem code is unique loop
+                $maxTries = 0;
+                $data['redeem_code'] = rand(100000, 999999);
+                while (Merchant::where('redeem_code', $data['redeem_code'])->exists() && $maxTries < 10) {
+                    $data['redeem_code'] = rand(100000, 999999);
+                    $maxTries++;
+                }
+
+                $merchant->update([
+                    'redeem_code' => $data['redeem_code'],
+                ]);
+            }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Merchant creation failed: ' . $e->getMessage());
             session()->flash('error', 'Merchant creation failed. Please try again.');

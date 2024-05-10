@@ -257,7 +257,6 @@ class MerchantOfferResource extends Resource
                                     })
                                     ->hidden(fn (Closure $get) => $get('user_id') === null)
                                     ->searchable()
-                                    ->required()
                                     ->label('Store')
                                     ->helperText('Must select store else it wont appear in Nearby Merchant Stores tab')
                             ])->columns(1),
