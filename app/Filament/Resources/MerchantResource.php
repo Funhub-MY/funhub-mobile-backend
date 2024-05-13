@@ -255,7 +255,7 @@ class MerchantResource extends Resource
                     ]),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('By User'),
+                    ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_name'),
                 Tables\Columns\TextColumn::make('redeem_code'),
                 Tables\Columns\TextColumn::make('business_phone_no'),

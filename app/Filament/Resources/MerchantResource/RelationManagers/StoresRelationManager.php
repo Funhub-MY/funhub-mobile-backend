@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MerchantResource\RelationManagers;
 
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -40,13 +41,29 @@ class StoresRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make()
+                //     ->mutateFormDataUsing(function (array $data): array {
+                //         $data['user_id'] = $this->ownerRecord->user_id;
+                //         return $data;
+                //     }),
+                // Tables\Actions\AttachAction::make()
+                //     ->preloadRecordSelect()
+                //     ->form(fn (Tables\Actions\AttachAction $action): array => [
+                //         $action->getRecordSelect()
+                //             ->label('Store')
+                //             ->options(function ($livewire) {
+                //                 return Store::where('user_id', $livewire->ownerRecord->user_id)
+                //                     ->pluck('name', 'id');
+                //             })
+                //             ->required(),
+                //     ])->confirm(fn ($record) => "Are you sure you want to attach this store to {$record->name}?"),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
+                Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }

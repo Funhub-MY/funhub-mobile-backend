@@ -15,8 +15,13 @@ use App\Filament\Resources\StoreResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StoreResource\RelationManagers;
 use App\Filament\Resources\StoreResource\RelationManagers\LocationRelationManager;
+use App\Models\Location;
+use Cheesegrits\FilamentGoogleMaps\Fields\Geocomplete;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -44,14 +49,16 @@ class StoreResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Store Name')
                             ->autofocus()
+                            ->helperText('Will be also used as Location name, if new location is added. eg. KFC Midvalley')
                             ->required()
                             ->rules('required', 'max:255'),
                         Forms\Components\Select::make('user_id')
-                            ->label('Belongs To User')
+                            ->label('Linked User Account')
                             ->preload()
                             ->searchable()
+                            ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
                             ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
-                            ->getOptionLabelUsing(fn ($value): ?string => User::find($value)?->name)
+                            ->getOptionLabelUsing(fn ($value): ?string => 'ID:' . User::find($value)?->id. ' ' .User::find($value)?->name)
                             ->default(fn () => User::where('id', auth()->user()->id)?->first()->id)
                             ->relationship('user','name'),
 
@@ -63,78 +70,113 @@ class StoreResource extends Resource
                             ->multiple(),
 
                     ]),
-                Forms\Components\Section::make('Store Information')
-                    ->schema([
-                        Forms\Components\TextInput::make('business_phone_no')
-                            ->label('Store Phone Number'),
+                    Forms\Components\Section::make('Location Information')
+                                ->schema([
+                                    Forms\Components\TextInput::make('business_phone_no')
+                                        ->label('Store Phone Number'),
 
-                          TextInput::make('auto_complete_address')
-                                                ->label('Find a Location')
-                                                ->placeholder('Start typing an address ...'),
+                                    // select from existing location or manual enter
+                                    Radio::make('location_type')
+                                        ->options([
+                                            'existing' => 'Choose from existing location (articles tagged before)',
+                                            'manual' => 'Enter new location',
+                                        ])
+                                        ->default('existing')
+                                        ->reactive()
+                                        ->required(),
 
-                            Map::make('location')
-                                ->autocomplete(
-                                    fieldName: 'auto_complete_address',
-                                    placeField: 'name',
-                                    countries: ['MY'],
-                                )
-                                ->reactive()
-                                ->defaultZoom(15)
-                                ->defaultLocation([
-                                    // klang valley coordinates
-                                    'lat' => 3.1390,
-                                    'lng' => 101.6869,
-                                ])
-                                ->reverseGeocode([
-                                    'city'   => '%L',
-                                    'zip'    => '%z',
-                                    'state'  => '%D',
-                                    'address_postcode' => '%z',
-                                    'address' => '%n %S',
-                                ])
-                                ->mapControls([
-                                    'mapTypeControl'    => true,
-                                    'scaleControl'      => true,
-                                    'streetViewControl' => false,
-                                    'rotateControl'     => true,
-                                    'fullscreenControl' => true,
-                                    'searchBoxControl'  => false, // creates geocomplete field inside map
-                                    'zoomControl'       => false,
-                                ])
-                                ->clickable(true),
+                                    // location choose from a location to attach
+                                    Select::make('location_id')
+                                        ->label('Location')
+                                        ->helperText('Choose from existing location (Locations tagged before)')
+                                        ->getSearchResultsUsing(fn (string $search) => Location::where('name', 'like', "%{$search}%")
+                                            ->orWhere('address', 'like', "%{$search}%")
+                                            ->limit(25)
+                                            ->get()
+                                            ->mapWithKeys(function ($location) {
+                                                return [$location->id => $location->name . ' - ' . $location->full_address];
+                                            })
+                                        )
+                                        ->hidden(fn ($get) => $get('location_type') === 'manual')
+                                        ->getOptionLabelUsing(fn ($value): ?string => Location::find($value)?->name . ' - ' . Location::find($value)?->full_address)
+                                        ->reactive()
+                                        ->afterStateUpdated(function ($state, $set) {
+                                            if ($state) {
+                                                $location = Location::find($state);
+                                                if ($location) {
+                                                    $set('address', $location->address);
+                                                    $set('address_postcode', $location->zip_code);
+                                                    $set('lang', $location->lat);
+                                                    $set('long', $location->lng);
+                                                    $set('state_id', $location->state_id);
+                                                    $set('country_id', $location->country_id);
+                                                }
+                                            } else {
+                                                $set('address', '');
+                                                $set('address_postcode', '');
+                                                $set('lang', '');
+                                                $set('long', '');
+                                                $set('state_id', '');
+                                                $set('country_id', '');
+                                            }
+                                        })
+                                        ->searchable(),
 
-                        Forms\Components\Textarea::make('address')
-                            ->required(),
-                        Forms\Components\TextInput::make('address_postcode')
-                            ->required(),
-                        Forms\Components\TextInput::make('lang')
-                            ->helperText('This is to locate your store in the map.')
-                            ->required(),
-                        Forms\Components\TextInput::make('long')
-                            ->helperText('This is to locate your store in the map.')
-                            ->required(),
-                        Forms\Components\Toggle::make('is_hq')
-                            ->label('Is headquarter ?')
-                            ->onIcon('heroicon-s-check-circle')
-                            ->offIcon('heroicon-s-x-circle'),
-                        SpatieMediaLibraryFileUpload::make('company_photos')
-                            ->label('Store Photos')
-                            ->multiple()
-                            ->maxFiles(7)
-                            ->collection(Store::MEDIA_COLLECTION_PHOTOS)
-                            ->required()
-                            ->columnSpan('full')
-                            ->disk(function () {
-                                if (config('filesystems.default') === 's3') {
-                                    return 's3_public';
-                                }
-                            })
-                            ->acceptedFileTypes(['image/*'])
-                            ->rules('image'),
-                                ]),
+                                    Forms\Components\Textarea::make('address')
+                                        ->disabled(fn ($get) => $get('location_type') === 'existing')
+                                        ->required(),
+                                    Forms\Components\TextInput::make('address_postcode')
+                                    ->disabled(fn ($get) => $get('location_type') === 'existing')
+                                        ->required(),
+
+
+                                    Select::make('state_id')
+                                        ->label('State')
+                                        ->preload()
+                                        ->searchable()
+                                        ->relationship('state', 'name')
+                                        ->required(),
+
+                                    Select::make('country_id')
+                                        ->label('Country')
+                                        ->preload()
+                                        ->searchable()
+                                        ->relationship('country', 'name')
+                                        ->required(),
+
+                                    Forms\Components\TextInput::make('lang')
+                                        ->label('Latitude')
+                                        ->helperText('This is to locate your store in the map. Leave 0 if not sure')
+                                        ->disabled(fn ($get) => $get('location_type') === 'existing'),
+                                    Forms\Components\TextInput::make('long')
+                                        ->label('Logitude')
+                                        ->helperText('This is to locate your store in the map. Leave 0 if not sure')
+                                        ->disabled(fn ($get) => $get('location_type') === 'existing'),
+
+                                    Forms\Components\Toggle::make('is_hq')
+                                        ->label('Is headquarter ?')
+                                        ->onIcon('heroicon-s-check-circle')
+                                        ->offIcon('heroicon-s-x-circle'),
+
+                                    SpatieMediaLibraryFileUpload::make('company_photos')
+                                        ->label('Store Photos')
+                                        ->multiple()
+                                        ->maxFiles(7)
+                                        ->collection(Store::MEDIA_COLLECTION_PHOTOS)
+                                        ->required()
+                                        ->columnSpan('full')
+                                        ->disk(function () {
+                                            if (config('filesystems.default') === 's3') {
+                                                return 's3_public';
+                                            }
+                                        })
+                                        ->acceptedFileTypes(['image/*'])
+                                        ->rules('image'),
+                            ]),
 
                     Section::make('Store Business Hours')
                         ->schema([
+
                             Repeater::make('business_hours')
                                 ->schema([
                                     Select::make('day')
@@ -176,7 +218,7 @@ class StoreResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('By User'),
+                    ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\TextColumn::make('address_postcode'),
