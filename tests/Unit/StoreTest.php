@@ -406,4 +406,58 @@ class StoreTest extends TestCase
         // assert meta.total is 1
         $this->assertEquals(1, $response->json()['meta']['total']);
     }
+
+    public function testFollowingCountOfaStore()
+    {
+        // following count is whoever im following has an article about this store
+
+        // create a new user
+        $user = User::factory()->create();
+
+        // user this user follow the other $user
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+        $response->assertStatus(200);
+
+        // acting as $user create an article about default store and merchant
+        $this->actingAs($user); // act as newUser
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+
+
+    }
 }

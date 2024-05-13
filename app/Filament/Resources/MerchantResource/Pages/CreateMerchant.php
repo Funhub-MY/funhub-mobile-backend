@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Filament\Resources\Pages\CreateRecord;
 use App\Notifications\MerchantOnboardEmail;
 use App\Filament\Resources\MerchantResource;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class CreateMerchant extends CreateRecord
 {
@@ -28,6 +30,26 @@ class CreateMerchant extends CreateRecord
         $data['default_password'] = Str::random(8);
 
         return $data;
+    }
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        $merchant = $this->getModel()::create($data);
+
+        // create menus
+        if (isset($data['menus'])) {
+            foreach ($data['menus'] as $menu) {
+                // add from url to media collection with custom properties $menu['name'] then remove from file
+                $merchant->addMediaFromDisk($menu['file'])
+                    ->withCustomProperties(['name' => $menu['name']])
+                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+
+                // remove $menu['file'] from storage as moved to spatiemedialibrary
+                Storage::delete($menu['file']);
+            }
+        }
+
+        return $merchant;
     }
 
     protected function afterCreate(): void

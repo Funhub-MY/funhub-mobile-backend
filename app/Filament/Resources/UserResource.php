@@ -84,6 +84,12 @@ class UserResource extends Resource
                             ->default(1)
                             ->required(),
 
+                        // for_engagement
+                        Forms\Components\Toggle::make('for_engagement')
+                            ->helperText('If user is used for engagement, they cannot login App.')
+                            ->default(0)
+                            ->required(),
+
                         // suspended until
                         Forms\Components\DateTimePicker::make('suspended_until')
                             ->afterStateHydrated(function ($component, $state) {

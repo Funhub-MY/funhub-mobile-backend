@@ -390,6 +390,12 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(StoreRating::class, 'user_id');
     }
 
+    public function articleEngagements()
+    {
+        return $this->belongsToMany(ArticleEngagement::class, 'article_engagements_users', 'user_id', 'article_id')
+            ->withTimestamps();
+    }
+
     /**
      * Get the user's point balance
      */

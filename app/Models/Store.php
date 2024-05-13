@@ -35,6 +35,15 @@ class Store extends BaseModel implements HasMedia, Auditable
         'updated_at'
     ];
 
+
+    public static function getLatLngAttributes(): array
+    {
+        return [
+            'lat' => 'lang',
+            'lng' => 'long',
+        ];
+    }
+
     /**
      * Search Setup
      */
@@ -131,6 +140,7 @@ class Store extends BaseModel implements HasMedia, Auditable
     {
         return $this->morphToMany(Location::class, 'locatable');
     }
+
 
     public function storeRatings()
     {
