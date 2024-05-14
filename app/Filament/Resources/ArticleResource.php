@@ -53,12 +53,6 @@ class ArticleResource extends Resource
                 Forms\Components\Group::make()
                     ->schema([
                         Forms\Components\Card::make()->schema([
-                            Forms\Components\Hidden::make('user_id')
-                                ->default(fn () => auth()->id()),
-
-                            // default set source to backend because we need to flag it for flutter side to determine to use html or not
-                            Forms\Components\Hidden::make('source')
-                                ->default('backend'),
 
                             Forms\Components\TextInput::make('title')
                                 ->required()
@@ -158,6 +152,27 @@ class ArticleResource extends Resource
 
                 Forms\Components\Group::make()
                     ->schema([
+                        Section::make('Author')->schema([
+                            Forms\Components\Select::make('source')
+                            ->options([
+                                'backend' => 'Backend',
+                                'mobile' => 'Mobile App'
+                            ])
+                            ->helperText('Source will determine display format in app. If backend, will display as media partner style, if mobile, will display similar to mobile post design.')
+                            ->default('backend'),
+
+                            Forms\Components\Select::make('user_id')
+                                ->label('Author')
+                                ->searchable()
+                                ->helperText('System will default to Admin user if not selected')
+                                ->required()
+                                ->default(fn () => auth()->id())
+                                ->relationship('user', 'name')
+                                ->getOptionLabelFromRecordUsing(function ($record) {
+                                    return $record->name ?? 'Unknown Author';
+                                }),
+
+                        ]),
                         Section::make('Language')->schema([
                             Forms\Components\Select::make('lang')
                                 ->options([

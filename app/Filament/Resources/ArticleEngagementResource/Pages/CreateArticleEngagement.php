@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ArticleEngagementResource\Pages;
 
 use App\Filament\Resources\ArticleEngagementResource;
 use App\Jobs\ProcessEngagementInteractions;
+use Carbon\Carbon;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateArticleEngagement extends CreateRecord
@@ -14,8 +15,9 @@ class CreateArticleEngagement extends CreateRecord
     {
         $engagement = $this->record;
 
-        if ($engagement->scheduled_at !== null && $engagement->scheduled_at->isFuture()) {
-            ProcessEngagementInteractions::dispatch($engagement)->delay($engagement->scheduled_at);
+        if ($engagement->scheduled_at !== null && Carbon::parse($engagement->scheduled_at)->isFuture()) {
+            $delay = Carbon::now()->diffInMinutes(Carbon::parse($engagement->scheduled_at));
+            ProcessEngagementInteractions::dispatch($engagement)->delay($delay);
         } else {
             ProcessEngagementInteractions::dispatch($engagement);
         }

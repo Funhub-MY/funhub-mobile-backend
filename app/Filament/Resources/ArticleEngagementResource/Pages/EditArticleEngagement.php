@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ArticleEngagementResource\Pages;
 
 use App\Filament\Resources\ArticleEngagementResource;
 use App\Jobs\ProcessEngagementInteractions;
+use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -47,8 +48,9 @@ class EditArticleEngagement extends EditRecord
         });
 
         // dispatch a new job again
-        if ($engagement->scheduled_at !== null && $engagement->scheduled_at->isFuture()) {
-            ProcessEngagementInteractions::dispatch($engagement)->delay($engagement->scheduled_at);
+        if ($engagement->scheduled_at !== null && Carbon::parse($engagement->scheduled_at)->isFuture()) {
+            $delay = Carbon::now()->diffInMinutes(Carbon::parse($engagement->scheduled_at));
+            ProcessEngagementInteractions::dispatch($engagement)->delay($delay);
         } else {
             ProcessEngagementInteractions::dispatch($engagement);
         }
