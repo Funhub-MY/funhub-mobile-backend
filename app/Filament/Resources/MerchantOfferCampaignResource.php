@@ -107,7 +107,8 @@ class MerchantOfferCampaignResource extends Resource
                                 Forms\Components\TextInput::make('expiry_days')
                                     ->label('Expire in (Days) After Purchase')
                                     ->columnSpan(1)
-                                    ->helperText('Leave blank if no expiry. Available until user redeemed it. Will affect all vouchers generated under this campaign.')
+                                    ->required()
+                                    ->helperText('No of days aailable until user redeemed it. Will affect all vouchers generated under this campaign.')
                                     ->numeric(),
 
                                 Forms\Components\Toggle::make('auto_move_vouchers')
@@ -287,19 +288,16 @@ class MerchantOfferCampaignResource extends Resource
                                     ->reactive()
                                     ->helperText('Users who has merchant profile created.')
                                     ->relationship('user', 'name'),
-                                Forms\Components\Select::make('store_id')
-                                    ->options(function (callable $get) {
-                                        $user = User::where('id', $get('user_id'))->first();
-                                        if ($user) {
-                                            return $user->stores->pluck('name', 'id');
-                                        }
-                                        return [];
+                                Forms\Components\Select::make('stores')
+                                    ->label('Stores')
+                                    ->multiple()
+                                    ->helperText('Must select store(s) else it won\'t appear in the Nearby Merchant Stores tab.')
+                                    ->preload()
+                                    ->reactive()
+                                    ->relationship('stores', 'name', function (Builder $query, Closure $get) {
+                                        $query->where('user_id', $get('user_id'));
                                     })
-                                    ->hidden(fn (Closure $get) => $get('user_id') === null)
-                                    ->searchable()
-                                    ->required()
-                                    ->label('Store')
-                                    ->helperText('Must select store else it wont appear in Nearby Merchant Stores tab')
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null),
                             ])->columns(1),
 
                             Forms\Components\Section::make('Categories')->schema([
@@ -379,6 +377,13 @@ class MerchantOfferCampaignResource extends Resource
                 Tables\Columns\TextColumn::make('sku')
                     ->searchable()
                     ->sortable(),
+
+                // created at sortable
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime()
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 // filter by available_at and available_until date range
