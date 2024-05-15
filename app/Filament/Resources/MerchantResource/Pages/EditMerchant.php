@@ -56,23 +56,58 @@ class EditMerchant extends EditRecord
             }
 
             Log::info('Menus: ', ['menus' => $data['menus']]);
-            foreach ($data['menus'] as $menu) {
+            // Save existing menu files to a temporary directory
+            $tempDir = Storage::disk($disk)->path('temp/' . Str::random(10));
+            Storage::disk($disk)->makeDirectory($tempDir);
+
+            $existingMenus = [];
+            foreach ($this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS) as $media) {
+                $tempFilePath = $tempDir . '/' . $media->file_name;
+                $fileContents = Storage::disk($disk)->get($media->getPath());
+                Storage::disk($disk)->put($tempFilePath, $fileContents);
+                $existingMenus[$media->file_name] = [
+                    'path' => $tempFilePath,
+                    'custom_properties' => $media->custom_properties,
+                ];
+            }
+
+            // Clear the existing menu collection
+            $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+
+            foreach ($data['menus'] as $index => $menu) {
                 $file = $menu['file'];
                 $filePath = Storage::disk($disk)->path($file);
 
-                // if already have existing media, instead of adding, just update it
-                if ($this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->where('file_name', $file)->count() > 0) {
-                    $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->where('file_name', $file)->update(['custom_properties' => ['name' => $menu['name']]]);
+                // Check if the file exists in the temporary directory or on the storage disk
+                if (isset($existingMenus[$file])) {
+                    $filePath = $existingMenus[$file]['path'];
+                    $customProperties = array_merge($existingMenus[$file]['custom_properties'], ['name' => $menu['name']]);
+                } elseif (Storage::disk($disk)->exists($file)) {
+                    $customProperties = ['name' => $menu['name']];
                 } else {
-                    $media = $this->record->addMediaFromDisk($filePath, $disk)
-                        ->withCustomProperties(['name' => $menu['name']])
-                        ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
-
-                        Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
-
-                        Storage::disk($disk)->delete($file);
+                    // Skip the file if it doesn't exist
+                    Log::warning('File not found: ', ['file' => $file]);
+                    continue;
                 }
+
+                $media = $this->record->addMediaFromDisk($filePath, $disk)
+                    ->withCustomProperties($customProperties)
+                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+
+                Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
+
+                // Delete the file from the temporary directory if it exists
+                if (isset($existingMenus[$file])) {
+                    Storage::disk($disk)->delete($existingMenus[$file]['path']);
+                }
+
+                // Set the order of the media item
+                $media->order_column = $index + 1;
+                $media->save();
             }
+
+            // Delete the temporary directory
+            Storage::deleteDirectory($tempDir);
         } else {
             $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
         }

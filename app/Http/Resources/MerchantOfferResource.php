@@ -50,6 +50,7 @@ class MerchantOfferResource extends JsonResource
             ],
             'merchant' => [
                 'id' => ($this->user) ? $this->user->merchant->id : null,
+                'brand_name' => ($this->user) ? $this->user->merchant->brand_name : null,
                 'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
                 'business_phone_no' => ($this->user) ? $this->user->merchant->business_phone_no : null,
                 'user' => new UserResource($this->user),
