@@ -30,7 +30,7 @@ class EditMerchantOfferCampaign extends EditRecord
 
     protected function afterSave(): void
     {
-        $record = $this->record;
+        $record = $this->record; // campaign
 
         // update relevant MerchantOffer records
         $offers = MerchantOffer::where('merchant_offer_campaign_id', $record->id)->get();
@@ -52,6 +52,7 @@ class EditMerchantOfferCampaign extends EditRecord
                 'fiat_price' => $record->fiat_price,
                 'expiry_days' => $record->expiry_days,
                 'status' => $record->status,
+                'user_id' => $record->user_id, // requires for store selection as well
             ]);
 
             // replace images
@@ -75,6 +76,12 @@ class EditMerchantOfferCampaign extends EditRecord
 
             // sync latest merchant offer categories
             $offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
+
+            // clear all stores
+            $offer->stores()->detach();
+
+            // sync latest campaign stores to offer stores
+            $offer->stores()->sync($record->stores->pluck('id'));
         }
 
         // updating schedules and quantity

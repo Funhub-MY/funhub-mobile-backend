@@ -247,18 +247,16 @@ class MerchantOfferResource extends Resource
                                     ->reactive()
                                     ->helperText('Users who has merchant profile created.')
                                     ->relationship('user', 'name'),
-                                Forms\Components\Select::make('store_id')
-                                    ->options(function (callable $get) {
-                                        $user = User::where('id', $get('user_id'))->first();
-                                        if ($user) {
-                                            return $user->stores->pluck('name', 'id');
-                                        }
-                                        return [];
+                                Forms\Components\Select::make('stores')
+                                    ->label('Stores')
+                                    ->multiple()
+                                    ->helperText('Must select store(s) else it won\'t appear in the Nearby Merchant Stores tab.')
+                                    ->preload()
+                                    ->reactive()
+                                    ->relationship('stores', 'name', function (Builder $query, Closure $get) {
+                                        $query->where('user_id', $get('user_id'));
                                     })
-                                    ->hidden(fn (Closure $get) => $get('user_id') === null)
-                                    ->searchable()
-                                    ->label('Store')
-                                    ->helperText('Must select store else it wont appear in Nearby Merchant Stores tab')
+                                    ->hidden(fn (Closure $get) => $get('user_id') === null),
                             ])->columns(1),
 
                             Forms\Components\Section::make('Categories')->schema([
@@ -339,6 +337,10 @@ class MerchantOfferResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sku')
                     ->searchable()
+                    ->sortable(),
+                // created_at sortable
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
                     ->sortable(),
             ])
             ->filters([

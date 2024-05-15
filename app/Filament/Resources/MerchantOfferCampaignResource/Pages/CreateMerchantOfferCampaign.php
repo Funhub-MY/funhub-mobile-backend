@@ -61,6 +61,9 @@ class CreateMerchantOfferCampaign extends CreateRecord
             // sync merchant offer campaign categories to similar merchant offer
             $offer->allOfferCategories()->sync($record->allOfferCategories->pluck('id'));
 
+            // sync merchant offer campaign stores to similar merchant offer
+            $offer->stores()->sync($record->stores->pluck('id'));
+
             // create vouchers per offer
             $quantity = $schedule->quantity;
             for($i = 0; $i < $quantity; $i++) {
