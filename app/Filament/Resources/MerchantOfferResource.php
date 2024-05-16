@@ -31,6 +31,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Filament\Resources\MerchantOfferResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferResource\RelationManagers;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 
 class MerchantOfferResource extends Resource
@@ -45,6 +46,10 @@ class MerchantOfferResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public $language;
+    protected $listeners = ['language-changed' => 'updateFormFields'];
+
+
     public static function getEloquentQuery(): Builder
     {
         $query = static::getModel()::query();
@@ -53,6 +58,40 @@ class MerchantOfferResource extends Resource
         }
 
         return $query;
+    }
+
+    public static function getTranslatableAttributes(): array
+    {
+        return [
+            'name',
+            'description',
+            'fine_print',
+            'cancellation_policy',
+            'redemption_policy',
+        ];
+    }
+
+
+    // protected function getListeners(): array
+    // {
+    //     return [
+    //         'language-changed' => 'updateFormFields',
+    //     ];
+    // }
+
+    public function updateFormFields($language)
+    {
+        dd($language);
+        $this->language = $language['language'];
+        $data = $this->form->getState();
+        $record = $this->record;
+
+        foreach (static::getTranslatableAttributes() as $attribute) {
+            $translations = json_decode($record->getAttribute($attribute . '_translations') ?? '{}', true);
+            $data[$attribute] = $translations[$this->language] ?? '';
+        }
+
+        $this->form->fill($data);
     }
 
     public static function form(Form $form): Form
@@ -97,6 +136,13 @@ class MerchantOfferResource extends Resource
                                     ->rules('image'),
 
                                 Forms\Components\TextInput::make('name')
+                                    ->afterStateHydrated(function ($state, $component, $record, $get) {
+                                        $translations = json_decode($record->name_translations ?? '{}', true);
+                                        $language = $get('language') ?? app()->getLocale();
+                                        $translatedValue = Arr::get($translations, $language, $record->name);
+                                        $component->state($translatedValue);
+                                    })
+                                    ->reactive()
                                     ->required(),
 
                                 Forms\Components\TextInput::make('sku')
