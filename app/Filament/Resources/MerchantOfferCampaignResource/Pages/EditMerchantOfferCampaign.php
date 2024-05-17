@@ -43,7 +43,7 @@ class EditMerchantOfferCampaign extends EditRecord
                 'fine_print' => $record->fine_print,
                 'redemption_policy' => $record->redemption_policy,
                 'cancellation_policy' => $record->cancellation_policy,
-                'publish_at' => $record->publish_at,
+                // 'publish_at' => $record->publish_at,
                 'purchase_method' => $record->purchase_method,
                 'unit_price' => $record->unit_price,
                 'discounted_point_fiat_price' => $record->discounted_point_fiat_price,
@@ -51,7 +51,7 @@ class EditMerchantOfferCampaign extends EditRecord
                 'discounted_fiat_price' => $record->discounted_fiat_price,
                 'fiat_price' => $record->fiat_price,
                 'expiry_days' => $record->expiry_days,
-                'status' => $record->status,
+                // 'status' => $record->status,
                 'user_id' => $record->user_id, // requires for store selection as well
             ]);
 
@@ -86,6 +86,7 @@ class EditMerchantOfferCampaign extends EditRecord
 
         // updating schedules and quantity
         foreach ($record->schedules as $schedule) {
+
             // if schedule available_at and available_until is past, cannot update
             // if not past can update
             if (Carbon::now()->gte(Carbon::parse($schedule->available_until)) || Carbon::now()->gte(Carbon::parse($schedule->available_at))) {
@@ -110,6 +111,8 @@ class EditMerchantOfferCampaign extends EditRecord
             $offer->update([
                 'available_at' => $schedule->available_at,
                 'available_until' => $schedule->available_until,
+                'status' => $schedule->status,
+                'publish_at' => $schedule->publish_at,
             ]);
 
             // match quantity difference and update

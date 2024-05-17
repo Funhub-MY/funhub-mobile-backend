@@ -32,7 +32,7 @@ class CreateMerchantOfferCampaign extends CreateRecord
                 'fine_print' => $record->fine_print,
                 'redemption_policy' => $record->redemption_policy,
                 'cancellation_policy' => $record->cancellation_policy,
-                'publish_at' => $record->publish_at,
+                'publish_at' => $schedule->publish_at,
                 'purchase_method' => $record->purchase_method,
                 'unit_price' => $record->unit_price,
                 'discounted_point_fiat_price' => $record->discounted_point_fiat_price,
@@ -43,7 +43,7 @@ class CreateMerchantOfferCampaign extends CreateRecord
                 'available_at' => $schedule->available_at,
                 'available_until' => $schedule->available_until,
                 'quantity' => $schedule->quantity,
-                'status' => $record->status,
+                'status' => $schedule->status,
             ]);
 
             // Copy media from MerchantOfferCampaign to MerchantOffer

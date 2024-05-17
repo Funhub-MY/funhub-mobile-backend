@@ -7,6 +7,7 @@ use App\Filament\Resources\MerchantOfferCampaignResource\Pages;
 use App\Filament\Resources\MerchantOfferCampaignResource\RelationManagers;
 use App\Models\Merchant;
 use App\Models\MerchantOfferCampaign;
+use App\Models\MerchantOfferCampaignSchedule;
 use App\Models\MerchantOfferCategory;
 use App\Models\Store;
 use App\Models\User;
@@ -219,8 +220,18 @@ class MerchantOfferCampaignResource extends Resource
                             ->schema([
                                 Forms\Components\Repeater::make('Schedules')
                                     ->orderable(false)
+                                    ->hint('Each schedules represents one merchant offer')
                                     ->relationship('schedules')
                                     ->schema([
+                                        Group::make()
+                                            ->schema([
+                                                Forms\Components\Select::make('status')
+                                                    ->options(MerchantOfferCampaignSchedule::STATUS)->default(0),
+                                                DatePicker::make('publish_at')
+                                                    ->label('Publish Date')
+                                                    ->minDate(now()->addDay()->startOfDay())
+                                                    ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
+                                            ])->columns(2),
                                         Group::make()
                                             ->schema([
                                                 Forms\Components\DateTimePicker::make('available_at')
@@ -269,13 +280,7 @@ class MerchantOfferCampaignResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Other')
                             ->schema([
-                                Forms\Components\Select::make('status')
-                                    ->options(MerchantOfferCampaign::STATUS)->default(0),
-                                DatePicker::make('publish_at')
-                                    ->label('Publish Date')
-                                    ->visible(fn(Closure $get) => $get('status') == MerchantOfferCampaign::STATUS_DRAFT)
-                                    ->minDate(now()->addDay()->startOfDay())
-                                    ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
+
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant User')
                                     ->searchable()
@@ -356,14 +361,14 @@ class MerchantOfferCampaignResource extends Resource
                     ->html()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\BadgeColumn::make('status')
-                    ->enum(MerchantOfferCampaign::STATUS)
-                    ->colors([
-                        'secondary' => 0,
-                        'success' => 1,
-                    ])
-                    ->sortable()
-                    ->searchable(),
+                // Tables\Columns\BadgeColumn::make('status')
+                //     ->enum(MerchantOfferCampaign::STATUS)
+                //     ->colors([
+                //         'secondary' => 0,
+                //         'success' => 1,
+                //     ])
+                //     ->sortable()
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('store.name')
@@ -403,9 +408,9 @@ class MerchantOfferCampaignResource extends Resource
                                 fn(Builder $query, $date): Builder => $query->whereDate('available_until', '<=', $date),
                             );
                     }),
-                Tables\Filters\SelectFilter::make('status')
-                    ->label('Status')
-                    ->options(MerchantOfferCampaign::STATUS),
+                // Tables\Filters\SelectFilter::make('status')
+                //     ->label('Status')
+                //     ->options(MerchantOfferCampaign::STATUS),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
