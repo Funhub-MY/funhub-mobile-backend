@@ -41,6 +41,17 @@ class PublishMerchantOffers extends Command
             if ($offer->publish_at <= now()) {
                 // update status to published
                 $offer->update(['status' => MerchantOffer::STATUS_PUBLISHED]);
+
+                // if there is attached to campaign, also update its associated schedule
+                try {
+                    if ($offer->schedule_id) {
+                        $offer->campaign->schedules()->where('id', $offer->schedule_id)
+                            ->update(['status' => MerchantOffer::STATUS_PUBLISHED]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('[PublishMerchantOffers] Error updating schedule status', ['error' => $e->getMessage()]);
+                }
+
                 Log::info('[PublishMerchantOffers] Merchant offer published', ['offer_id' => $offer->id]);
                 $this->info('Merchant offer published: '.$offer->id);
             } else {
