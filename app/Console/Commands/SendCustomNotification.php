@@ -65,14 +65,22 @@ class SendCustomNotification extends Command
                     foreach ($selectedUsers as $user) {
                         $locale = $user->last_lang ?? config('app.locale');
                         $user->notify((new CustomNotification($systemNotification, $locale)));
+
+                        // if system_notification sent_at is null
+                        if ($systemNotification->sent_at == null) {
+                            // Update sent_at immediately after sending the notification to each user instead wait till all users sent
+                            $systemNotification->update(['sent_at' => now()]);
+                            $systemNotification->refresh(); // reload the data
+                        }
+
+                        Log::info('[Custom Notification] Scheduled notification has been sent to user', [
+                            'system_notification_id' => $systemNotification->id,
+                            'user_id' => $user->id,
+                        ]);
                     }
 
-                    Log::info('[Custom Notification] Scheduled notification has been sent to selected users', [
-                        'user_ids' => $selectedUsers->pluck('id')->toArray(),
-                    ]);
-
-                    // After sending notification, add timestamp to sent_at column in table
-                    $systemNotification->update(['sent_at' => now()]);
+                    // // After sending notification, add timestamp to sent_at column in table
+                    // $systemNotification->update(['sent_at' => now()]);
                 }
                 return Command::SUCCESS;
             }
