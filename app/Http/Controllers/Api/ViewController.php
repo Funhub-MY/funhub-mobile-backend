@@ -33,7 +33,7 @@ class ViewController extends Controller
     public function postView(Request $request)
     {
         $this->validate($request, [
-            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile,location',
+            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile,location,store',
             'viewable_id' => 'required|integer',
         ]);
 
