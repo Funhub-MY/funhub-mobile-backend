@@ -160,7 +160,7 @@ class MerchantOfferController extends Controller
         if ($request->has('store_id')) {
             // explode store_id if has comma
             $storeIds = explode(',', $request->store_id);
-            $query->whereHas('store', function ($query) use ($storeIds) {
+            $query->whereHas('stores', function ($query) use ($storeIds) {
                 $query->whereIn('stores.id', $storeIds);
             });
         }
