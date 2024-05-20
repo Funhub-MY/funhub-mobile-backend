@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "35b87e9f-653b-4447-87b4-d6138f8f7409",
+        "_postman_id": "095b0598-5b02-4178-95b1-3663e05a0ccb",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":18,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"quis\",\"violation_level\":\"enim\",\"article\":1}"
+                                    "raw": "{\"article_id\":14,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"ut\",\"violation_level\":\"odio\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"qui\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"ipsam\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -457,7 +457,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"keyword_id\":20}"
+                            "raw": "{\"keyword_id\":6}"
                         },
                         "description": ""
                     },
@@ -527,7 +527,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"voluptatem\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"optio\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -1091,7 +1091,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "iusto",
+                                            "value": "consequatur",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1191,7 +1191,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"maxime\",\"violation_type\":\"itaque\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"eveniet\",\"violation_type\":\"sit\"}"
                                 },
                                 "description": ""
                             },
@@ -1348,7 +1348,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "omnis",
+                                            "value": "deleniti",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2394,7 +2394,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"eloy81@example.org\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"bblick@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2470,7 +2470,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"consectetur\"}"
+                            "raw": "{\"share_code\":\"repudiandae\"}"
                         },
                         "description": ""
                     },
@@ -2526,7 +2526,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"vero\"}"
+                            "raw": "{\"username\":\"laboriosam\"}"
                         },
                         "description": ""
                     },
@@ -2582,7 +2582,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"molestiae\"}"
+                            "raw": "{\"share_code\":\"assumenda\"}"
                         },
                         "description": ""
                     },
@@ -3286,7 +3286,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_ids\":[\"enim\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                            "raw": "{\"location_ids\":[\"ea\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
                         },
                         "description": ""
                     },
@@ -3507,7 +3507,7 @@
                                         },
                                         {
                                             "key": "merchant_offer_ids[0]",
-                                            "value": "asperiores",
+                                            "value": "et",
                                             "description": "optional Merchant Offer Ids to Filter. Example [1,2,3]",
                                             "disabled": false
                                         },
@@ -3566,7 +3566,7 @@
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=asperiores&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=et&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3648,7 +3648,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"sed\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"store_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"laborum\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"store_id\":1,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -3849,7 +3849,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "consectetur",
+                                            "value": "aspernatur",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -5271,7 +5271,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"store_ids\":\"nihil\"}"
+                            "raw": "{\"store_ids\":\"maxime\"}"
                         },
                         "description": ""
                     },
@@ -5796,7 +5796,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":14}"
+                                    "raw": "{\"user_id\":6}"
                                 },
                                 "description": ""
                             },
@@ -5843,7 +5843,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":2}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -5884,7 +5884,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":5}"
+                                    "raw": "{\"user_id\":20}"
                                 },
                                 "description": ""
                             },
@@ -5925,7 +5925,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":14}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -6057,7 +6057,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"in\",\"violation_level\":\"totam\",\"violation_type\":\"magni\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"tempore\",\"violation_level\":\"beatae\",\"violation_type\":\"quia\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -6289,7 +6289,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"facilis\"}"
+                            "raw": "{\"user_ids\":\"in\"}"
                         },
                         "description": ""
                     },
@@ -7533,7 +7533,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"viewable_type\":\"article\\\/comment\\\/merchant_offer\\\/user_profile\\\/location\",\"viewable_id\":1}"
+                            "raw": "{\"viewable_type\":\"article\\\/comment\\\/merchant_offer\\\/user_profile\\\/location\\\/stores\",\"viewable_id\":1}"
                         },
                         "description": ""
                     },
@@ -7558,7 +7558,7 @@
                                 {
                                     "id": "type",
                                     "key": "type",
-                                    "value": "article%2Fcomment%2Fmerchant_offer%2Fuser_profile",
+                                    "value": "article%2Fcomment%2Fmerchant_offer%2Fuser_profile%2Fstpres",
                                     "description": "The type of the viewable."
                                 },
                                 {
