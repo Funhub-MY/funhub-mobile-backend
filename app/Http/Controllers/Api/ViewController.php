@@ -24,7 +24,7 @@ class ViewController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @group View
-     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location/stores
+     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location/store
      * @bodyParam viewable_id int required The id of the viewable. Example: 1
      * @response scenario="success" {
      * "message": "View recorded"

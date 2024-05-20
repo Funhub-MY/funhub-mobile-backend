@@ -29,7 +29,7 @@ endpoints:
         name: viewable_type
         description: 'The type of the viewable.'
         required: true
-        example: article/comment/merchant_offer/user_profile/location/stores
+        example: article/comment/merchant_offer/user_profile/location/store
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -44,7 +44,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      viewable_type: article/comment/merchant_offer/user_profile/location/stores
+      viewable_type: article/comment/merchant_offer/user_profile/location/store
       viewable_id: 1
     fileParameters: []
     responses:
@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ebac6vaDEP6d5kVh1Zg38f4'
+      - 'Bearer D56h6PaE3kZav1ef8dbVg4c'
     controller: null
     method: null
     route: null
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68Pkfb4dZDa1Vvh3a65cEeg'
+      - 'Bearer bc6D3PgV5f16aZkd4ha8veE'
     controller: null
     method: null
     route: null
