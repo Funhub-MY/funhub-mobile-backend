@@ -70,6 +70,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'has_merchant_offers' => ($this->merchant_offers->count() > 0) ? true : false,
             '_geoloc' => ($this->lang && $this->long) ? [
                 'lat' => (float) $this->lang,
                 'lng' => (float) $this->long
