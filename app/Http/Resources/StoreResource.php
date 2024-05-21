@@ -59,7 +59,7 @@ class StoreResource extends JsonResource
                     });
                 return $uniqueUsers;
             }),
-            'has_merchant_offers' => ($this->merchant_offers_count) ? true : false,
+            'has_merchant_offers' => ($this->merchant_offers_count > 0) ? true : false,
             'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'bookmark_interaction_id' => $bookmark_interaction_id,
             'lang' => $this->lang,
