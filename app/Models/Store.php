@@ -70,7 +70,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'has_merchant_offers' => ($this->merchant_offers->count() > 0) ? true : false,
+            'has_merchant_offers' => ($this->availableMerchantOffers->count() > 0) ? true : false,
             '_geoloc' => ($this->lang && $this->long) ? [
                 'lat' => (float) $this->lang,
                 'lng' => (float) $this->long
@@ -114,6 +114,15 @@ class Store extends BaseModel implements HasMedia, Auditable
     public function merchant_offers()
     {
         return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_stores')
+            ->withTimestamps();
+    }
+
+    public function availableMerchantOffers()
+    {
+        return $this->belongsToMany(MerchantOffer::class, 'merchant_offer_stores')
+            ->where('status', MerchantOffer::STATUS_PUBLISHED)
+            ->where('available_at', '<=', now())
+            ->where('available_until', '>=', now())
             ->withTimestamps();
     }
 
