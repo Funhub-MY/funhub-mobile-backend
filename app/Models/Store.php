@@ -16,6 +16,13 @@ class Store extends BaseModel implements HasMedia, Auditable
 
     const MEDIA_COLLECTION_PHOTOS = 'store_photos';
 
+    /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['merchant_offers'];
+
     protected $fillable = [
         'name',
         'manager_name',
