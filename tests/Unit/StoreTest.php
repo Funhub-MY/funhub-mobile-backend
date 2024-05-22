@@ -262,9 +262,12 @@ class StoreTest extends TestCase
 
         $merchantOffer = MerchantOffer::factory()->published()->count(5)->for(
             $this->user
-        )->create([
-            'store_id' => $store->id,
-        ]);
+        );
+
+        // attach stores to this merchant offer
+        $merchantOffer->each(function ($offer) use ($store) {
+            $offer->stores()->attach($store->id);
+        });
 
         // create a new user and merchant attached
         $user2 = User::factory()->create();
