@@ -262,9 +262,8 @@ class StoreTest extends TestCase
 
         $merchantOffer = MerchantOffer::factory()->published()->count(5)->for(
             $this->user
-        );
+        )->create();
 
-        // attach stores to this merchant offer
         $merchantOffer->each(function ($offer) use ($store) {
             $offer->stores()->attach($store->id);
         });
@@ -284,9 +283,9 @@ class StoreTest extends TestCase
         // create another offer attached with this user2
         $merchantOffer2 = MerchantOffer::factory()->published()->for(
             $user2
-        )->create([
-            'store_id' => $store2->id,
-        ]);
+        )->create();
+        // attach store2 to this offer2
+        $merchantOffer2->stores()->attach($store2->id);
 
         $response = $this->getJson('/api/v1/merchant/offers?store_id='.$store->id);
         $response->assertStatus(200);
