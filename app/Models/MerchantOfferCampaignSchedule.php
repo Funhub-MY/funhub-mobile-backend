@@ -9,6 +9,16 @@ class MerchantOfferCampaignSchedule extends Model
 {
     use HasFactory;
 
+    const STATUS = [
+        0 => 'Draft',
+        1 => 'Published',
+        2 => 'Archived'
+    ];
+
+    const STATUS_DRAFT = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_ARCHIVED = 2;
+
     protected $guarded = ['id'];
 
     protected $table = 'merchant_offer_campaigns_schedules';
