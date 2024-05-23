@@ -21,7 +21,7 @@ class Store extends BaseModel implements HasMedia, Auditable
      *
      * @var array
      */
-    protected $touches = ['merchant_offers'];
+    // protected $touches = ['merchant_offers'];
 
     protected $fillable = [
         'name',

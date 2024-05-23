@@ -60,7 +60,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
      *
      * @var array
      */
-    protected $touches = ['stores'];
+    // protected $touches = ['stores'];
 
 
     /**
