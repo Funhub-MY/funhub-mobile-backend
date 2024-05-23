@@ -219,8 +219,11 @@ class StoreController extends Controller
         }
 
         // Update store ratings using raw SQL query
-        // $store->ratings = $store->storeRatings()->avg('rating');
-        // $store->save();
+        $averageRating = DB::table('store_ratings')
+            ->where('store_id', $store->id)
+            ->avg('rating');
+        $store->ratings = $averageRating;
+        $store->save();
 
         return response()->json([
             'data' => new StoreRatingResource($rating),
