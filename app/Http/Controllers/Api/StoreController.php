@@ -222,8 +222,10 @@ class StoreController extends Controller
         $averageRating = DB::table('store_ratings')
             ->where('store_id', $store->id)
             ->avg('rating');
-        $store->ratings = $averageRating;
-        $store->save();
+
+        DB::table('stores')
+            ->where('id', $store->id)
+            ->update(['ratings' => $averageRating]);
 
         return response()->json([
             'data' => new StoreRatingResource($rating),
