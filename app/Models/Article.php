@@ -235,6 +235,19 @@ class Article extends BaseModel implements HasMedia, Auditable
             ->withTimestamps();
     }
 
+    public function stores()
+    {
+        // stores is related to articles via locatables
+        return $this->belongsToMany(Store::class, 'locatables', 'locatable_id', 'locatable_id')
+            ->where('locatables.locatable_type', Store::class)
+            ->wherePivotIn('location_id', function ($query) {
+                $query->select('location_id')
+                    ->from('locatables')
+                    ->where('locatable_type', Article::class);
+            })
+            ->withTimestamps();
+    }
+
     public function shareableLinks()
     {
         return $this->morphMany(ShareableLink::class, 'model');

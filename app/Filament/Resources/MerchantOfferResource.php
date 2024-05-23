@@ -14,7 +14,6 @@ use Filament\Resources\Table;
 use App\Models\MerchantCategory;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\Hidden;
@@ -31,7 +30,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Filament\Resources\MerchantOfferResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferResource\RelationManagers;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Placeholder;
+use Google\Service\StreetViewPublish\Place;
 
 class MerchantOfferResource extends Resource
 {
@@ -44,7 +49,6 @@ class MerchantOfferResource extends Resource
     protected static ?string $navigationGroup = 'Merchant Offers';
 
     protected static ?int $navigationSort = 1;
-
     public static function getEloquentQuery(): Builder
     {
         $query = static::getModel()::query();
@@ -55,8 +59,11 @@ class MerchantOfferResource extends Resource
         return $query;
     }
 
+
     public static function form(Form $form): Form
     {
+        $locales = config('app.available_locales');
+
         return $form
             ->schema([
                 Forms\Components\Group::make()
@@ -96,7 +103,16 @@ class MerchantOfferResource extends Resource
                                     ->acceptedFileTypes(['image/*'])
                                     ->rules('image'),
 
-                                Forms\Components\TextInput::make('name')
+                                // Forms\Components\TextInput::make('name')
+                                //     ->afterStateHydrated(function ($state, $component, $record, $get) {
+                                //         $translations = json_decode($record->name_translations ?? '{}', true);
+                                //         $language = $get('language') ?? app()->getLocale();
+                                //         $translatedValue = Arr::get($translations, $language, $record->name);
+                                //         $component->state($translatedValue);
+                                //     })
+                                //     ->reactive()
+                                //     ->required(),
+                                TextInput::make('name')
                                     ->required(),
 
                                 Forms\Components\TextInput::make('sku')

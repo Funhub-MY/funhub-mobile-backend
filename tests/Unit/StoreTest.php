@@ -172,7 +172,7 @@ class StoreTest extends TestCase
 
         $response = $this->postJson("/api/v1/stores/{$store->id}/ratings", $ratingData);
 
-        $response->assertStatus(201)
+        $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
                     'id',
@@ -262,9 +262,11 @@ class StoreTest extends TestCase
 
         $merchantOffer = MerchantOffer::factory()->published()->count(5)->for(
             $this->user
-        )->create([
-            'store_id' => $store->id,
-        ]);
+        )->create();
+
+        $merchantOffer->each(function ($offer) use ($store) {
+            $offer->stores()->attach($store->id);
+        });
 
         // create a new user and merchant attached
         $user2 = User::factory()->create();
@@ -281,9 +283,9 @@ class StoreTest extends TestCase
         // create another offer attached with this user2
         $merchantOffer2 = MerchantOffer::factory()->published()->for(
             $user2
-        )->create([
-            'store_id' => $store2->id,
-        ]);
+        )->create();
+        // attach store2 to this offer2
+        $merchantOffer2->stores()->attach($store2->id);
 
         $response = $this->getJson('/api/v1/merchant/offers?store_id='.$store->id);
         $response->assertStatus(200);

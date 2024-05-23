@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\View;
 use Illuminate\Http\Request;
 use Algolia\AlgoliaSearch\InsightsClient;
+use App\Models\Store;
 use Illuminate\Support\Facades\Log;
 
 class ViewController extends Controller
@@ -23,7 +24,7 @@ class ViewController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @group View
-     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location
+     * @bodyParam viewable_type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/location/store
      * @bodyParam viewable_id int required The id of the viewable. Example: 1
      * @response scenario="success" {
      * "message": "View recorded"
@@ -32,7 +33,7 @@ class ViewController extends Controller
     public function postView(Request $request)
     {
         $this->validate($request, [
-            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile,location',
+            'viewable_type' => 'required|in:article,comment,merchant_offer,user_profile,location,store',
             'viewable_id' => 'required|integer',
         ]);
 
@@ -51,6 +52,9 @@ class ViewController extends Controller
                 break;
             case 'location':
                 $request->merge(['viewable_type' => Location::class]);
+                break;
+            case 'store':
+                $request->merge(['viewable_type' => Store::class]);
                 break;
         }
 
@@ -82,7 +86,7 @@ class ViewController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @group View
-     * @urlParam type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile
+     * @urlParam type string required The type of the viewable. Example: article/comment/merchant_offer/user_profile/stpres
      * @urlParam id int required The id of the viewable. Example: 1
      * @response scenario="success" {
      * "views": [],

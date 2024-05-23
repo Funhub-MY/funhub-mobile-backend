@@ -56,6 +56,14 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     ];
 
     /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['stores'];
+
+
+    /**
      * Search Setup
      */
     public function searchableAs(): string

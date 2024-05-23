@@ -29,7 +29,7 @@ endpoints:
         name: viewable_type
         description: 'The type of the viewable.'
         required: true
-        example: article/comment/merchant_offer/user_profile/location
+        example: article/comment/merchant_offer/user_profile/location/store
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -44,7 +44,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
-      viewable_type: article/comment/merchant_offer/user_profile/location
+      viewable_type: article/comment/merchant_offer/user_profile/location/store
       viewable_id: 1
     fileParameters: []
     responses:
@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g1Dh8kadv54aZcEe6fPVb36'
+      - 'Bearer D56h6PaE3kZav1ef8dbVg4c'
     controller: null
     method: null
     route: null
@@ -90,7 +90,7 @@ endpoints:
         name: type
         description: 'The type of the viewable.'
         required: true
-        example: article/comment/merchant_offer/user_profile
+        example: article/comment/merchant_offer/user_profile/stpres
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -105,7 +105,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      type: article/comment/merchant_offer/user_profile
+      type: article/comment/merchant_offer/user_profile/stpres
       id: 1
     queryParameters: []
     cleanQueryParameters: []
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 85eaVbP6av1Dc3kZgEfd64h'
+      - 'Bearer bc6D3PgV5f16aZkd4ha8veE'
     controller: null
     method: null
     route: null

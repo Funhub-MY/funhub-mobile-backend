@@ -36,6 +36,7 @@ use App\Models\City;
 use App\Models\SearchKeyword;
 use App\Models\Setting;
 use App\Models\ShareableLink;
+use App\Models\Store;
 use App\Models\UserBlock;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -274,21 +275,28 @@ class ArticleController extends Controller
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate($paginatePerPage);
 
-        // get all article location ids
-        $locationIds = $data->pluck('location.0.id')->filter()->toArray();
-        $locatables = DB::table('locatables')->whereIn('location_id', $locationIds)
-        // make sure only published merchant offers are counted
-        ->rightJoin('merchant_offers', function ($join) {
-            $join->on('locatables.locatable_id', '=', 'merchant_offers.id')
-                ->where('locatables.locatable_type', '=', MerchantOffer::class)
-                ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED);
-        })->get();
+        // get all article location ids, this part of code used for getting merchant offer banenr in article
+        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
-        $data->each(function ($article) use ($locatables) {
-            // only apply to article with location
-            if ($article->location->count() > 0) {
-                $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
-                $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+        $storesWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('store_locatables.location_id')
+            ->unique();
+
+        $data->each(function ($article) use ($storesWithOffers) {
+            if ($article->location->isNotEmpty()) {
+                $articleLocationId = $article->location->first()->id;
+                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+            } else {
+                $article->has_merchant_offer = false;
             }
         });
 
@@ -347,18 +355,28 @@ class ArticleController extends Controller
         }
 
         // get all article location ids
-        $locationIds = $data->pluck('location.0.id')->filter()->toArray();
-        $locatables = DB::table('locatables')->whereIn('location_id', $locationIds)
-        // make sure only published merchant offers are counted
-        ->rightJoin('merchant_offers', function ($join) {
-            $join->on('locatables.locatable_id', '=', 'merchant_offers.id')
-                ->where('locatables.locatable_type', '=', MerchantOffer::class)
-                ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED);
-        })->get();
+        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
-        $data->each(function ($article) use ($locatables) {
-            $locatablesFiltered = $locatables->where('location_id', $article->location->first()->id)->all();
-            $article->has_merchant_offer = count(array_filter($locatablesFiltered, fn ($locatable) => $locatable->locatable_type == MerchantOffer::class));
+        $storesWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('store_locatables.location_id')
+            ->unique();
+
+        $data->each(function ($article) use ($storesWithOffers) {
+            if ($article->location->isNotEmpty()) {
+                $articleLocationId = $article->location->first()->id;
+                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+            } else {
+                $article->has_merchant_offer = false;
+            }
         });
 
         return ArticleResource::collection($data);

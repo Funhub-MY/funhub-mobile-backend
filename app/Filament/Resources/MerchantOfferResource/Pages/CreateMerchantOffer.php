@@ -11,6 +11,7 @@ class CreateMerchantOffer extends CreateRecord
 {
     protected static string $resource = MerchantOfferResource::class;
 
+    public $current_locale;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

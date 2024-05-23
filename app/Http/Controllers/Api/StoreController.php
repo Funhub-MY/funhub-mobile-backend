@@ -65,13 +65,13 @@ class StoreController extends Controller
         $query->with(['merchant', 'storeRatings', 'location', 'categories']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'articles');
+        $query->withCount('storeRatings', 'articles', 'availableMerchantOffers');
 
         // with count published merchant offers
-        $query->withCount(['merchant_offers' => function ($query) {
-            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
-                ->where('merchant_offers.available_at', '<=', now());
-        }]);
+        // $query->withCount(['availableMerchantOffers' => function ($query) {
+        //     $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
+        //         ->where('merchant_offers.available_at', '<=', now());
+        // }]);
 
         // Load articles with authors (users) that are followed by the authenticated user
         $query->with(['articles' => function ($query) {
@@ -204,7 +204,6 @@ class StoreController extends Controller
     {
         $request->validate([
             'rating' => 'required|numeric|min:1|max:5',
-            // 'rating_category_ids' => 'required',
             'comment' => 'nullable|string',
         ]);
 
@@ -215,23 +214,22 @@ class StoreController extends Controller
         ]);
 
         if ($request->has('rating_category_ids')) {
-            // explode rating categories ids
             $categories = explode(',', $request->rating_category_ids);
-            // attach to rating
             $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
         }
 
-        // consolidate store ratings
-        $store->ratings = $store->storeRatings()->avg('rating');
-        $store->save();
+        // Update store ratings using raw SQL query
+        $averageRating = DB::table('store_ratings')
+            ->where('store_id', $store->id)
+            ->avg('rating');
 
-        // with count likes and dislikes
-        $rating->loadCount(['likes', 'dislikes']);
+        DB::table('stores')
+            ->where('id', $store->id)
+            ->update(['ratings' => $averageRating]);
 
-        // load user, ratingCategories
-        $rating->load('user', 'ratingCategories');
-
-        return new StoreRatingResource($rating);
+        return response()->json([
+            'data' => new StoreRatingResource($rating),
+        ]);
     }
 
     /**
