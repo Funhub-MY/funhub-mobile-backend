@@ -24,13 +24,13 @@ class EditMerchantOffer extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $language = $this->current_locale ?? app()->getLocale();
+        // $language = $this->current_locale ?? app()->getLocale();
 
-        foreach ($this->getResource()::getTranslatableAttributes() as $attribute) {
-            $existingTranslations = json_decode($data[$attribute . '_translations'] ?? '{}', true);
-            $existingTranslations[$language] = $data[$attribute];
-            $data[$attribute . '_translations'] = json_encode($existingTranslations);
-        }
+        // foreach ($this->getResource()::getTranslatableAttributes() as $attribute) {
+        //     $existingTranslations = json_decode($data[$attribute . '_translations'] ?? '{}', true);
+        //     $existingTranslations[$language] = $data[$attribute];
+        //     $data[$attribute . '_translations'] = json_encode($existingTranslations);
+        // }
 
         $data['currency'] = 'MYR';
         return $data;
