@@ -140,19 +140,22 @@ class StoreController extends Controller
      */
     public function getRatings(Store $store, Request $request)
     {
-        $query = $store->storeRatings()->with(['user' => function ($query) use ($store) {
+        $query = $store->storeRatings();
+
+        // Eager load necessary relationships
+        $query->with(['user' => function ($query) use ($store) {
             $query->withCount(['storeRatings' => function ($query) use ($store) {
                 $query->where('store_id', $store->id);
             }]);
-        }, 'interactions', 'ratingCategories']);
+        }, 'ratingCategories']);
 
-        // if there's no sort, sort by latest
+        // If there's no sort, sort by latest
         if (!$request->has('sort')) {
             $request->merge(['sort' => 'created_at']);
             $request->merge(['order' => 'desc']);
         }
 
-        // if request has only_mine
+        // If request has only_mine
         if ($request->has('only_mine')) {
             $query->where('user_id', auth()->id());
         }
@@ -161,9 +164,8 @@ class StoreController extends Controller
             $query->where('user_id', $request->user_id);
         }
 
-        // if dont have user_id and only select by distinct
+        // If don't have user_id, select only the latest rating per user
         if (!$request->has('user_id')) {
-            // get only one latest rating per user
             $latestRatings = $store->storeRatings()
                 ->selectRaw('MAX(id) as id')
                 ->groupBy('user_id');
@@ -173,12 +175,20 @@ class StoreController extends Controller
             });
         }
 
-        // with count likes and dislikes
-        $query->withCount(['likes', 'dislikes']);
+        // Count likes and dislikes using raw SQL queries
+        $query->withCount([
+            'likes' => function ($query) {
+                $query->select(\DB::raw('COUNT(*)'));
+            },
+            'dislikes' => function ($query) {
+                $query->select(\DB::raw('COUNT(*)'));
+            },
+        ]);
 
         $this->buildQuery($query, $request);
 
-        $results = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+        $perPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
+        $results = $query->paginate($perPage);
 
         return StoreRatingResource::collection($results);
     }
@@ -204,7 +214,6 @@ class StoreController extends Controller
     {
         $request->validate([
             'rating' => 'required|numeric|min:1|max:5',
-            // 'rating_category_ids' => 'required',
             'comment' => 'nullable|string',
         ]);
 
@@ -215,20 +224,17 @@ class StoreController extends Controller
         ]);
 
         if ($request->has('rating_category_ids')) {
-            // explode rating categories ids
             $categories = explode(',', $request->rating_category_ids);
-            // attach to rating
             $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
         }
 
-        // consolidate store ratings
+        // Update store ratings using raw SQL query
         $store->ratings = $store->storeRatings()->avg('rating');
         $store->save();
 
-        // with count likes and dislikes
-        $rating->loadCount(['likes', 'dislikes']);
-
-        // load user, ratingCategories
+        // Lazy load necessary relationships and counts
+        $rating->setRelation('likes_count', $rating->likes()->count());
+        $rating->setRelation('dislikes_count', $rating->dislikes()->count());
         $rating->load('user', 'ratingCategories');
 
         return new StoreRatingResource($rating);
