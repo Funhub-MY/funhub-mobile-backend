@@ -30,7 +30,7 @@ class MerchantOfferCampaign extends BaseModel implements HasMedia, Auditable
     const MEDIA_COLLECTION_HORIZONTAL_BANNER = 'merchant_offer_campaign_horizontal_banner';
 
     // touches offers and stores
-    protected $touches = ['merchantOffers', 'stores'];
+    // protected $touches = ['merchantOffers', 'stores'];
 
     public function user()
     {
