@@ -219,11 +219,11 @@ class StoreController extends Controller
         }
 
         // Update store ratings using raw SQL query
-        $store->ratings = $store->storeRatings()->avg('rating');
-        $store->save();
+        // $store->ratings = $store->storeRatings()->avg('rating');
+        // $store->save();
 
         return response()->json([
-            'message' => 'Rating has been submitted successfully',
+            'data' => new StoreRatingResource($rating),
         ]);
     }
 
