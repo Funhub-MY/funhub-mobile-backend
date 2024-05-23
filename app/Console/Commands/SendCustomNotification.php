@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Models\SystemNotification;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\CustomNotification;
+use Illuminate\Support\Facades\DB;
 
 class SendCustomNotification extends Command
 {
@@ -31,62 +32,53 @@ class SendCustomNotification extends Command
      */
     public function handle()
     {
-        try {
-            $currentTime = now();
-            $systemNotifications = SystemNotification::whereBetween('scheduled_at', [$currentTime->copy()->subMinutes(5), $currentTime])
-                ->whereNull('sent_at')
-                ->get();
+        $currentTime = now();
+        $systemNotifications = SystemNotification::whereBetween('scheduled_at', [$currentTime->copy()->subMinutes(5), $currentTime])
+            ->whereNull('sent_at')
+            ->get();
 
-            if ($systemNotifications->count() == 0) {
-                // no scheduled notification
-                $this->info('No scheduled notification found');
-
-                return Command::SUCCESS;
-            } else {
-                $this->info('Found ' . $systemNotifications->count() . ' scheduled notification(s)');
-
-                foreach ($systemNotifications as $systemNotification) {
-                    $this->info('Sending notification ID: ' . $systemNotification->id);
-                    Log::info('[Custom Notification] Running Notification', [
-                        'notification' => json_encode($systemNotification),
-                    ]);
-
-                    $selectedUsers = [];
-                    // Get the selected user Ids
-                    if ($systemNotification->all_active_users) {
-                        $selectedUsers = User::where('status', User::STATUS_ACTIVE)
-                            ->get();
-                    } else {
-                        $selectedUsers = json_decode($systemNotification->user);
-                        // get users with the selected user ids
-                        $selectedUsers = User::whereIn('id', $selectedUsers)->get();
-                    }
-
-                    foreach ($selectedUsers as $user) {
-                        $locale = $user->last_lang ?? config('app.locale');
-                        $user->notify((new CustomNotification($systemNotification, $locale)));
-
-                        // if system_notification sent_at is null
-                        if ($systemNotification->sent_at == null) {
-                            // Update sent_at immediately after sending the notification to each user instead wait till all users sent
-                            $systemNotification->update(['sent_at' => now()]);
-                            $systemNotification->refresh(); // reload the data
-                        }
-
-                        Log::info('[Custom Notification] Scheduled notification has been sent to user', [
-                            'system_notification_id' => $systemNotification->id,
-                            'user_id' => $user->id,
-                        ]);
-                    }
-
-                    // // After sending notification, add timestamp to sent_at column in table
-                    // $systemNotification->update(['sent_at' => now()]);
-                }
-                return Command::SUCCESS;
-            }
-        } catch (\Exception $e) {
-            Log::error('Error sending custom notification to selected users: ' . $e->getMessage());
-            return Command::FAILURE;
+        if ($systemNotifications->count() == 0) {
+            $this->info('No scheduled notifications found');
+            return Command::SUCCESS;
         }
+
+        $this->info('Found ' . $systemNotifications->count() . ' scheduled notification(s)');
+
+        foreach ($systemNotifications as $systemNotification) {
+            $this->info('Sending notification ID: ' . $systemNotification->id);
+            Log::info('[Custom Notification] Running Notification', [
+                'notification' => json_encode($systemNotification),
+            ]);
+
+            $selectedUsers = [];
+
+            if ($systemNotification->all_active_users) {
+                $selectedUsers = User::where('status', User::STATUS_ACTIVE)->get();
+            } else {
+                $selectedUserIds = json_decode($systemNotification->user);
+                $selectedUsers = User::whereIn('id', $selectedUserIds)->get();
+            }
+
+            // once ready to fire the notification, update the sent_at timestamp
+            $systemNotification->update(['sent_at' => now()]); // we dont care whether some users fail to receive we just dont want this to be repeated notificaitons.
+            Log::info('[Custom Notification] Notification sent, marked sent at with timestamp', [
+                'notification' => json_encode($systemNotification),
+            ]);
+
+            foreach ($selectedUsers as $user) {
+                $locale = $user->last_lang ?? config('app.locale');
+
+                try {
+                    $user->notify((new CustomNotification($systemNotification, $locale)));
+                } catch (\Exception $e) {
+                    Log::error('Error sending custom notification to user: ' . $e->getMessage(), [
+                        'system_notification_id' => $systemNotification->id,
+                        'user_id' => $user->id,
+                    ]);
+                }
+            }
+        }
+
+        return Command::SUCCESS;
     }
 }
