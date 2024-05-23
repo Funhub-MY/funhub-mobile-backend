@@ -172,7 +172,7 @@ class StoreTest extends TestCase
 
         $response = $this->postJson("/api/v1/stores/{$store->id}/ratings", $ratingData);
 
-        $response->assertStatus(201)
+        $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
                     'id',

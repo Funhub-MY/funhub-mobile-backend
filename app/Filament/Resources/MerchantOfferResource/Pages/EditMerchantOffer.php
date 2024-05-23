@@ -13,40 +13,18 @@ class EditMerchantOffer extends EditRecord
 {
     protected static string $resource = MerchantOfferResource::class;
     public $language;
+    public $current_locale;
 
     protected function getActions(): array
     {
         return [
-           // custom action show language dropdown config('app.available_locales)
-           SelectAction::make('language')
-                ->options(config('app.available_locales'))
-                ->label('Select Language'),
             Actions\DeleteAction::make(),
         ];
     }
 
-    public function updatedLanguage($value)
-    {
-        $this->dispatchBrowserEvent('language-changed', ['language' => $value]);
-    }
-
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        $this->language = $this->language ?? app()->getLocale();
-        // if have language and gettranslatableatteributes, pre fill them in form based on selected language
-        if ($this->language && $this->getResource()::getTranslatableAttributes()) {
-            $language = $this->language;
-            foreach ($this->getResource()::getTranslatableAttributes() as $attribute) {
-                $data[$attribute] = json_decode($data[$attribute . '_translations'], true)[$language] ?? '';
-            }
-        }
-
-        return $data;
-    }
-
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $language = $this->language ?? app()->getLocale();
+        $language = $this->current_locale ?? app()->getLocale();
 
         foreach ($this->getResource()::getTranslatableAttributes() as $attribute) {
             $existingTranslations = json_decode($data[$attribute . '_translations'] ?? '{}', true);

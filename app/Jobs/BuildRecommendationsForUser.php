@@ -37,7 +37,7 @@ class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->recommender = new ArticleRecommenderService($user);
+        // $this->recommender = new ArticleRecommenderService($user);
     }
 
     public function uniqueId(): string
@@ -62,8 +62,9 @@ class BuildRecommendationsForUser implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-        Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
-        $this->recommender->build();
+        return true;
+        // Log::alert('[BuildRecommendationsForUser] Building recommendations for user ' . $this->user->id);
+        // $this->recommender->build();
     }
 
     public function failed(Exception $exception)
