@@ -460,6 +460,52 @@ class StoreTest extends TestCase
             ]
         ]);
 
+          // create a merchant
+        // act as $this->user
+        $this->actingAs($this->user);
 
+        $merchant = Merchant::factory()->create([
+            'user_id' => $user->id,
+            'status' => Merchant::STATUS_APPROVED,
+        ]);
+
+        // create store that has location attached with same location above
+        $store = Store::factory()->create([
+            'user_id' => $this->user,
+            'state_id' => State::first()->id,
+            'country_id' => 1,
+            'lang' => 1.234,
+            'long' => 1.234,
+        ]);
+
+        // create a Location to attach to this store
+        $location = Location::where('name', 'Test Location')->first(); // must tag the same location
+
+        $store->location()->attach($location->id);
+
+        // use this->user follow the $user
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        // get all stores list to see followings_been_here is loaded
+        $response = $this->getJson('/api/v1/stores');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                    'followings_been_here',
+                ],
+            ],
+        ]);
+
+        // assert followings_been_here is not empty
+        $this->assertNotEmpty($response->json()['data'][0]['followings_been_here']);
     }
 }
