@@ -76,6 +76,19 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
      */
     public function toSearchableArray()
     {
+        $geolocs = null;
+        if ($this->stores()->count() > 0) {
+            $geolocs = [];
+            foreach ($this->stores as $store) {
+                if ($store->location) {
+                    $geolocs[] = [
+                        'lat' => floatval($store->location->lat),
+                        'lng' => floatval($store->location->lng)
+                    ];
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -105,10 +118,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
-            '_geoloc' => ($this->location()->count() > 0) ? [
-                'lat' => floatval($this->location->first()->lat),
-                'lng' => floatval($this->location->first()->lng)
-            ] : null,
+            '_geoloc' => $geolocs,
         ];
     }
 
