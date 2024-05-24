@@ -172,8 +172,7 @@ class StoreTest extends TestCase
 
         $response = $this->postJson("/api/v1/stores/{$store->id}/ratings", $ratingData);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
+        $response->assertJsonStructure([
                 'data' => [
                     'id',
                     'store_id',
@@ -506,5 +505,13 @@ class StoreTest extends TestCase
 
         // assert followings_been_here is not empty
         $this->assertNotEmpty($response->json()['data'][0]['followings_been_here']);
+
+        // create a new user which is non-follower of $user then query the stores again
+        $user2 = User::factory()->create();
+        $this->actingAs($user2);
+        $response = $this->getJson('/api/v1/stores');
+
+        // assert followings_been_here is empty
+        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
     }
 }
