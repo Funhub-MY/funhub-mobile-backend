@@ -92,10 +92,11 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
                         'locations' => $store->location,
                     ];
                 }
-                if ($store->location) {
+                $firstStoreLocation = $store->location->first();
+                if ($store->location && isset($firstStoreLocation->lat) && isset($firstStoreLocation->lng)) {
                     $geolocs[] = [
-                        'lat' => floatval($store->location->first()->lat),
-                        'lng' => floatval($store->location->first()->lng)
+                        'lat' => floatval($firstStoreLocation->lat),
+                        'lng' => floatval($firstStoreLocation->lng)
                     ];
                 }
             }
