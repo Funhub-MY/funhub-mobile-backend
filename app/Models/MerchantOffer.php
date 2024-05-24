@@ -80,7 +80,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
         if ($this->stores()->count() > 0) {
             $geolocs = [];
             foreach ($this->stores as $store) {
-                if ($store->location) {
+                if ($store->location && isset($store->location->lat) && isset($store->location->lng)) {
                     $geolocs[] = [
                         'lat' => floatval($store->location->lat),
                         'lng' => floatval($store->location->lng)
