@@ -84,15 +84,18 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             // load store location
             $this->stores->load('location');
             foreach ($this->stores as $store) {
-                $stores[] = [
-                    'id' => $store->id,
-                    'name' => $store->name,
-                    'location' => $store->location
-                ];
-                if ($store->location && isset($store->location->lat) && isset($store->location->lng)) {
+                // dont repeat if $stores already have same id
+                if (!in_array($store->id, array_column($stores, 'id'))) {
+                    $stores[] = [
+                        'id' => $store->id,
+                        'name' => $store->name,
+                        'location' => $store->location,
+                    ];
+                }
+                if ($store->location && isset($store->location->location->lat) && isset($store->location->location->lng)) {
                     $geolocs[] = [
-                        'lat' => floatval($store->location->lat),
-                        'lng' => floatval($store->location->lng)
+                        'lat' => floatval($store->location->location->lat),
+                        'lng' => floatval($store->location->location->lng)
                     ];
                 }
             }
