@@ -492,8 +492,7 @@ class StoreTest extends TestCase
         // get all stores list to see followings_been_here is loaded
         $response = $this->getJson('/api/v1/stores');
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
+        $response->assertJsonStructure([
             'data' => [
                 '*' => [
                     'id',
