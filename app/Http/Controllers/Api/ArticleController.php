@@ -347,21 +347,21 @@ class ArticleController extends Controller
             ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
             // cache this
-            // $searchResults = Cache::remember('article'. $request->lat.'-'.$request->lng, 10, function () use ($request) {
-            //     return Article::search('')->with([
-            //         'aroundLatLng' => $request->lat . ',' . $request->lng,
-            //         'aroundRadius' => 'all',
-            //         'aroundPrecision' => 50,
-            //         'hitsPerPage' => 50,
-            //     ])->keys();
-            // });
+            $searchResults = Cache::remember('article'. $request->lat.'-'.$request->lng, 10, function () use ($request, $radius) {
+                return Article::search('')->with([
+                    'aroundLatLng' => $request->lat . ',' . $request->lng,
+                    'aroundRadius' => $radius * 1000,
+                    'aroundPrecision' => 50,
+                    'hitsPerPage' => 150,
+                ])->keys();
+            });
 
-            $searchResults = Article::search('')->with([
-                'aroundLatLng' => $request->lat . ',' . $request->lng,
-                'aroundRadius' => $radius * 1000,
-                'aroundPrecision' => 50,
-                'hitsPerPage' => 150,
-            ])->keys();
+            // $searchResults = Article::search('')->with([
+            //     'aroundLatLng' => $request->lat . ',' . $request->lng,
+            //     'aroundRadius' => $radius * 1000,
+            //     'aroundPrecision' => 50,
+            //     'hitsPerPage' => 150,
+            // ])->keys();
 
             // does actual article query
             $query = Article::whereIn('id', $searchResults->toArray())
@@ -385,7 +385,7 @@ class ArticleController extends Controller
                 'radius' => $radius,
                 'hitPerPage' => $limit,
                 'algoliaPage' => $page - 1,
-                'ids' => $data
+                'ids' => $searchResults->toArray()
             ]);
         }
 
