@@ -347,18 +347,37 @@ class ArticleController extends Controller
             ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
             // cache this
-            $searchResults = Cache::remember('article'. $request->lat.'-'.$request->lng, 10, function () use ($request) {
-                return Article::search('')->with([
-                    'aroundLatLng' => $request->lat . ',' . $request->lng,
-                    'aroundRadius' => 'all',
-                    'hitsPerPage' => 100,
-                ])->keys();
-            });
+            // $searchResults = Cache::remember('article'. $request->lat.'-'.$request->lng, 10, function () use ($request) {
+            //     return Article::search('')->with([
+            //         'aroundLatLng' => $request->lat . ',' . $request->lng,
+            //         'aroundRadius' => 'all',
+            //         'aroundPrecision' => 50,
+            //         'hitsPerPage' => 50,
+            //     ])->keys();
+            // });
+
+            $searchResults = Article::search('')->with([
+                'aroundLatLng' => $request->lat . ',' . $request->lng,
+                'aroundRadius' => $radius * 1000,
+                'aroundPrecision' => 50,
+                'hitsPerPage' => 150,
+            ])->keys();
 
             // does actual article query
-            $query = Article::whereIn('id', $searchResults);
+            $query = Article::whereIn('id', $searchResults->toArray())
+                ->orderByRaw('FIELD(id, ' . implode(',', $searchResults->toArray()) . ')');
+
             $query = $this->articleQueryBuilder($query, $request);
             $data = $query->paginate($limit);
+            // $data = Article::search('')->with([
+            //     'aroundLatLng' => $request->lat . ',' . $request->lng,
+            //     'aroundRadius' => 'all',
+            //     'hitsPerPage' => $limit,
+            //     'page' => $page - 1,
+            // ])
+            // ->query(function ($query) use ($request) {
+            //     $query = $this->articleQueryBuilder($query, $request);
+            // })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
             Log::info('[ArticleController] Algolia Search Nearby Articles', [
                 'lat' => $request->lat,
@@ -366,7 +385,7 @@ class ArticleController extends Controller
                 'radius' => $radius,
                 'hitPerPage' => $limit,
                 'algoliaPage' => $page - 1,
-                'ids' => $searchResults
+                'ids' => $data
             ]);
         }
 
@@ -466,9 +485,26 @@ class ArticleController extends Controller
             $query->whereIn('id', $articleIds);
         }
 
-        $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
-
+        $query->with([
+            'user' => function ($query) {
+                $query->without('pointLedgers');
+            },
+            'user.media' => function ($query) {
+                $query->lazy();
+            },
+            'categories',
+            'subCategories',
+            'media',
+            'tags',
+            'location',
+            'interactions' => function ($query) {
+                $query->where('user_id', auth()->id());
+            },
+            'interactions.user' => function ($query) {
+                $query->without('pointLedgers');
+            },
+        ])
+        ->withCount('comments', 'interactions', 'views', 'imports');
         return $query;
     }
 
