@@ -74,7 +74,7 @@ class Mpay {
                 'amt' => $amount,
                 'desc' => $desc,
                 'postURL' => $redirectUrl,
-                'callback_url' => url('/payment/callback'),
+                'callback_url' => secure_url('/payment/callback'),
                 'phone' => $phoneNo ? $phoneNo : $defaultPhone,
                 'email' => $email ? $email : $defaultEmail,
                 'param' => $param,

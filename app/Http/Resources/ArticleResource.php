@@ -23,7 +23,7 @@ class ArticleResource extends JsonResource
 
             // if artilce locaiton has ratings, get current article owner's ratings
             if ($loc && $loc->has('ratings')) {
-                $articleOwnerRating = $loc->ratings->where('user_id', $this->user->id)->first();
+                $articleOwnerRating = $loc->ratings->where('user_id', $this->user_id)->first();
                 $location = [
                     'id' => $loc->id,
                     'name' => $loc->name,
@@ -64,17 +64,31 @@ class ArticleResource extends JsonResource
             // 'tagged_users' => UserResource::collection($this->taggedUsers),
             'count' => [
                 'comments' => $this->comments_count ?? 0,
-                'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
-                'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
-                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
-                'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+                'likes' => $this->interactions_count ?? 0,
+                'dislikes' => $this->when(isset($this->interactions_count), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count();
+                }, 0),
+                'share' => $this->when(isset($this->interactions_count), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_SHARE)->count();
+                }, 0),
+                'bookmarks' => $this->when(isset($this->interactions_count), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count();
+                }, 0),
                 'views' => $this->views_count ?? 0,
             ],
             'my_interactions' => [
-                'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),
-                'dislike' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->first(),
-                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first(),
-                'bookmark' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first(),
+                'like' => $this->when(auth()->check(), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first();
+                }),
+                'dislike' => $this->when(auth()->check(), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->first();
+                }),
+                'share' => $this->when(auth()->check(), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first();
+                }),
+                'bookmark' => $this->when(auth()->check(), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first();
+                }),
             ],
             'has_merchant_offer' => (isset($this->has_merchant_offer) && $this->has_merchant_offer) ? true : false,
             'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,

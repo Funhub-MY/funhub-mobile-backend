@@ -332,6 +332,8 @@ class ArticleController extends Controller
         }
 
         $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
+        $page = $request->has('page') ? intval($request->page) : 1;
+        $limit = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         if ($request->has('city')) {
             // direct use city
@@ -344,41 +346,75 @@ class ArticleController extends Controller
             $data = $this->articleQueryBuilder($query, $request)
             ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
-            $data = Article::search('')->with([
+            // cache this
+            // $searchResults = Cache::remember('article'. $request->lat.'-'.$request->lng, 10, function () use ($request) {
+            //     return Article::search('')->with([
+            //         'aroundLatLng' => $request->lat . ',' . $request->lng,
+            //         'aroundRadius' => 'all',
+            //         'aroundPrecision' => 50,
+            //         'hitsPerPage' => 50,
+            //     ])->keys();
+            // });
+
+            $searchResults = Article::search('')->with([
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
-            ])
-            ->query(function ($query) use ($request) {
-                $query = $this->articleQueryBuilder($query, $request);
-            })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+                'hitsPerPage' => 150,
+            ])->keys();
+
+            // does actual article query
+            $query = Article::whereIn('id', $searchResults->toArray())
+                ->orderByRaw('FIELD(id, ' . implode(',', $searchResults->toArray()) . ')');
+
+            $query = $this->articleQueryBuilder($query, $request);
+            $data = $query->paginate($limit);
+            // $data = Article::search('')->with([
+            //     'aroundLatLng' => $request->lat . ',' . $request->lng,
+            //     'aroundRadius' => 'all',
+            //     'hitsPerPage' => $limit,
+            //     'page' => $page - 1,
+            // ])
+            // ->query(function ($query) use ($request) {
+            //     $query = $this->articleQueryBuilder($query, $request);
+            // })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+            Log::info('[ArticleController] Algolia Search Nearby Articles', [
+                'lat' => $request->lat,
+                'lng' => $request->lng,
+                'radius' => $radius,
+                'hitPerPage' => $limit,
+                'algoliaPage' => $page - 1,
+                'ids' => $data
+            ]);
         }
 
-        // get all article location ids
-        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
+        if ($data) {
+            // get all article location ids
+            $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
-        $storesWithOffers = DB::table('locatables as store_locatables')
-            ->whereIn('store_locatables.location_id', $locationIds)
-            ->where('store_locatables.locatable_type', Store::class)
-            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
-            ->join('merchant_offers', function ($join) {
-                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
-                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
-                    ->where('merchant_offers.available_at', '<=', now())
-                    ->where('merchant_offers.available_until', '>=', now());
-            })
-            ->pluck('store_locatables.location_id')
-            ->unique();
+            $storesWithOffers = DB::table('locatables as store_locatables')
+                ->whereIn('store_locatables.location_id', $locationIds)
+                ->where('store_locatables.locatable_type', Store::class)
+                ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                ->join('merchant_offers', function ($join) {
+                    $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                        ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                        ->where('merchant_offers.available_at', '<=', now())
+                        ->where('merchant_offers.available_until', '>=', now());
+                })
+                ->pluck('store_locatables.location_id')
+                ->unique();
 
-        $data->each(function ($article) use ($storesWithOffers) {
-            if ($article->location->isNotEmpty()) {
-                $articleLocationId = $article->location->first()->id;
-                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
-            } else {
-                $article->has_merchant_offer = false;
-            }
-        });
-
+            $data->each(function ($article) use ($storesWithOffers) {
+                if ($article->location->isNotEmpty()) {
+                    $articleLocationId = $article->location->first()->id;
+                    $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+                } else {
+                    $article->has_merchant_offer = false;
+                }
+            });
+        }
         return ArticleResource::collection($data);
     }
 
@@ -449,9 +485,26 @@ class ArticleController extends Controller
             $query->whereIn('id', $articleIds);
         }
 
-        $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings');
-
+        $query->with([
+            'user' => function ($query) {
+                $query->without('pointLedgers');
+            },
+            'user.media' => function ($query) {
+                $query->lazy();
+            },
+            'categories',
+            'subCategories',
+            'media',
+            'tags',
+            'location',
+            'interactions' => function ($query) {
+                $query->where('user_id', auth()->id());
+            },
+            'interactions.user' => function ($query) {
+                $query->without('pointLedgers');
+            },
+        ])
+        ->withCount('comments', 'interactions', 'views', 'imports');
         return $query;
     }
 
