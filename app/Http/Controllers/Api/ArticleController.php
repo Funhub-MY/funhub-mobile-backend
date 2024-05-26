@@ -352,32 +352,40 @@ class ArticleController extends Controller
             ->query(function ($query) use ($request) {
                 $query = $this->articleQueryBuilder($query, $request);
             })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+            Log::info('[ArticleController] Algolia Search Nearby Articles', [
+                'lat' => $request->lat,
+                'lng' => $request->lng,
+                'radius' => $radius,
+                'count' => $data->count(),
+                'ids' => $data->pluck('id')->toArray()
+            ]);
         }
 
-        // get all article location ids
-        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
+        // // get all article location ids
+        // $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
-        $storesWithOffers = DB::table('locatables as store_locatables')
-            ->whereIn('store_locatables.location_id', $locationIds)
-            ->where('store_locatables.locatable_type', Store::class)
-            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
-            ->join('merchant_offers', function ($join) {
-                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
-                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
-                    ->where('merchant_offers.available_at', '<=', now())
-                    ->where('merchant_offers.available_until', '>=', now());
-            })
-            ->pluck('store_locatables.location_id')
-            ->unique();
+        // $storesWithOffers = DB::table('locatables as store_locatables')
+        //     ->whereIn('store_locatables.location_id', $locationIds)
+        //     ->where('store_locatables.locatable_type', Store::class)
+        //     ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+        //     ->join('merchant_offers', function ($join) {
+        //         $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+        //             ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+        //             ->where('merchant_offers.available_at', '<=', now())
+        //             ->where('merchant_offers.available_until', '>=', now());
+        //     })
+        //     ->pluck('store_locatables.location_id')
+        //     ->unique();
 
-        $data->each(function ($article) use ($storesWithOffers) {
-            if ($article->location->isNotEmpty()) {
-                $articleLocationId = $article->location->first()->id;
-                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
-            } else {
-                $article->has_merchant_offer = false;
-            }
-        });
+        // $data->each(function ($article) use ($storesWithOffers) {
+        //     if ($article->location->isNotEmpty()) {
+        //         $articleLocationId = $article->location->first()->id;
+        //         $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+        //     } else {
+        //         $article->has_merchant_offer = false;
+        //     }
+        // });
 
         return ArticleResource::collection($data);
     }
