@@ -60,7 +60,7 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         'full_phone_no',
         'avatar_url',
         'avatar_thumb_url',
-        'point_balance',
+        // 'point_balance',
         'auth_provider',
         'has_completed_profile',
         'cover_url',
@@ -396,13 +396,16 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             ->withTimestamps();
     }
 
-    /**
-     * Get the user's point balance
-     */
-    public function getPointBalanceAttribute()
-    {
-        return $this->pointLedgers()->orderBy('id', 'desc')->first()->balance ?? 0;
-    }
+    // /**
+    //  * Get the user's point balance
+    //  */
+    // public function getPointBalanceAttribute()
+    // {
+    //     if ($this->point_balance) { // if this column has value then return it
+    //         return $this->point_balance;
+    //     }
+    //     return 0; // do not use any query ehre as will increase load of server resources
+    // }
 
     /**
      * Get the user's full phone number

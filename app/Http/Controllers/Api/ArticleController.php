@@ -385,7 +385,7 @@ class ArticleController extends Controller
                 'radius' => $radius,
                 'hitPerPage' => $limit,
                 'algoliaPage' => $page - 1,
-                'ids' => $data
+                'ids' => $searchResults->toArray()
             ]);
         }
 

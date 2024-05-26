@@ -10,9 +10,15 @@ class PointService
         return PointLedger::where('user_id', $user->id)->get();
     }
 
+    public function getBalanceOfUser($user)
+    {
+        $latestLedger = $user->pointLedgers()->orderBy('id', 'desc')->first();
+        return $latestLedger ? $latestLedger->balance : 0;
+    }
+
     /**
      * Debit point
-     * 
+     *
      * @param $pointable
      * @param $user
      * @param $amount
@@ -22,6 +28,12 @@ class PointService
      */
     public function debit($pointable, $user, $amount, $title, $remarks = null) : PointLedger
     {
+        $userBalance = $this->getBalanceOfUser($user);
+
+        if ($userBalance < $amount) {
+            throw new \Exception('Insufficient balance');
+        }
+
         $pointLedger = new PointLedger;
         $pointLedger->user_id = $user->id;
         $pointLedger->pointable_id = $pointable->id;
@@ -29,7 +41,7 @@ class PointService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->debit = true;
-        $pointLedger->balance = $user->point_balance - $amount;
+        $pointLedger->balance = $userBalance - $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
@@ -38,7 +50,7 @@ class PointService
 
     /**
      * Credit point
-     * 
+     *
      * @param $pointable
      * @param $user
      * @param $amount
@@ -48,6 +60,8 @@ class PointService
      */
     public function credit($pointable, $user, $amount, $title, $remarks = null) : PointLedger
     {
+        $userBalance = $this->getBalanceOfUser($user);
+
         $pointLedger = new PointLedger;
         $pointLedger->user_id = $user->id;
         $pointLedger->pointable_id = $pointable->id;
@@ -55,7 +69,7 @@ class PointService
         $pointLedger->title = $title;
         $pointLedger->amount = $amount;
         $pointLedger->credit = true;
-        $pointLedger->balance = $user->point_balance + $amount;
+        $pointLedger->balance = $userBalance + $amount;
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
