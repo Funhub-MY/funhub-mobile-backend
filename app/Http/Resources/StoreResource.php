@@ -7,6 +7,7 @@ use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\Store;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class StoreResource extends JsonResource
 {
@@ -49,6 +50,12 @@ class StoreResource extends JsonResource
                 $uniqueUsers = $this->articles->map(function ($article) {
                     $user = $article->user;
                     $isFollowing = $user->followers->contains('id', auth()->id());
+
+                    Log::info('isFollowing: ' . $isFollowing, [
+                        'article_owner' => $user->id,
+                        'auth_id' => auth()->id(),
+                        'followers' => $user->followers->pluck('id'),
+                    ]);
 
                     if ($isFollowing) {
                         return [
