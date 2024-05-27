@@ -299,7 +299,7 @@ class StoreController extends Controller
     public function getStoreRatingCategories(Store $store, Request $request)
     {
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
-            $query->where('store_id', $store->id);
+            $query->where('store_ratings.store_id', $store->id);
         }])
         ->orderBy('store_ratings_count', 'desc')
         ->take($request->has('limit') ? $request->limit : 3)
