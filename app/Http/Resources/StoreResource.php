@@ -27,6 +27,11 @@ class StoreResource extends JsonResource
             }
         }
 
+        Log::info('has article for stoere id' . $this->id, [
+            'store_id' => $this->id,
+            'articles' => $this->articles,
+        ]);
+
         return [
             'id' => $this->id,
             'name' => $this->name,
