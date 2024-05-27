@@ -26,21 +26,6 @@ class StoreResource extends JsonResource
             }
         }
 
-        if ($this->has('location')) {
-            // sum each location ratings
-            $locationsRatingCount = 0;
-            $locationsRatingsSum = 0;
-            $this->location->each(function ($location) use (&$locationsRatingCount, &$locationsRatingsSum) {
-                $locationsRatingCount += $location->ratings_count;
-                $locationsRatingsSum += $location->ratings->sum('rating');
-            });
-            $totalRatings = $this->store_ratings_count + $locationsRatingCount;
-            $averageRating = ($totalRatings > 0) ? ($this->storeRatings->sum('rating') + $locationsRatingsSum) / $totalRatings : 0;
-        } else {
-            $totalRatings = $this->store_ratings_count;
-            $averageRating = ($totalRatings > 0) ? $this->storeRatings->sum('rating') / $totalRatings : 0;
-        }
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -57,8 +42,8 @@ class StoreResource extends JsonResource
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'categories' => MerchantCategoryResource::collection($this->categories),
-            'ratings' => number_format(floatval($averageRating), 1),
-            'total_ratings' => $totalRatings,
+            'ratings' => number_format(floatval($this->ratings), 1),
+            'total_ratings' => $this->store_ratings_count + $this->location_ratings_count,
             'total_articles_same_location' => $this->articles_count,
             'followings_been_here' => $this->whenLoaded('articles', function () {
                 $uniqueUsers = $this->articles->pluck('user')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\ArticleCreated;
+use App\Events\RatedLocation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleImagesUploadRequest;
@@ -924,6 +925,9 @@ class ArticleController extends Controller
                     'user_id' => auth()->id(),
                     'rating' => $locationData['rating'],
                 ]);
+
+                // fire event
+                event(new RatedLocation($location, auth()->user(), $locationData['rating'], $article->id));
             }
 
             // only add to average ratings if article is public

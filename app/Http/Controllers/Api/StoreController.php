@@ -62,7 +62,7 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant', 'storeRatings', 'location.ratings', 'categories']);
+        $query->with(['merchant', 'storeRatings', 'location', 'categories']);
 
         // with count total ratings
         $query->withCount('storeRatings', 'articles');
@@ -81,6 +81,7 @@ class StoreController extends Controller
                 });
             })->with('user');
         }]);
+
         $stores = $query->paginate($request->input('limit', 10));
         return StoreResource::collection($stores);
     }
