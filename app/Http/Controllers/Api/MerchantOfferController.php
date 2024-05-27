@@ -152,8 +152,15 @@ class MerchantOfferController extends Controller
 
         // location id
         if ($request->has('location_id')) {
-            $query->whereHas('location', function ($query) use ($request) {
-                $query->where('locations.id', $request->location_id);
+            // where two condition merchant offer locaiton tagged same location id or merchant offer's stores tagged same location id
+            $query->where(function () {
+                $this->whereHas('location', function ($query) {
+                    $query->where('locations.id', request()->location_id);
+                })->orWhereHas('stores', function ($query) {
+                    $query->whereHas('location', function ($query) {
+                        $query->where('locations.id', request()->location_id);
+                    });
+                });
             });
         }
 
