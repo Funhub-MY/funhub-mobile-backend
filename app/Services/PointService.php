@@ -45,6 +45,8 @@ class PointService
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
+        $this->updatePointBalanceOfUser($user);
+
         return $pointLedger;
     }
 
@@ -73,6 +75,15 @@ class PointService
         $pointLedger->remarks = $remarks;
         $pointLedger->save();
 
+        $this->updatePointBalanceOfUser($user);
+
         return $pointLedger;
+    }
+
+    public function updatePointBalanceOfUser($user)
+    {
+        $pointBalance = $this->getBalanceOfUser($user);
+        $user->point_balance = $pointBalance;
+        $user->save();
     }
 }
