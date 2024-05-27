@@ -21,7 +21,7 @@ class Store extends BaseModel implements HasMedia, Auditable
      *
      * @var array
      */
-    // protected $touches = ['merchant_offers'];
+    protected $touches = ['merchant_offers'];
 
     protected $fillable = [
         'name',
@@ -110,10 +110,10 @@ class Store extends BaseModel implements HasMedia, Auditable
     {
         return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')
             ->where('locatables.locatable_type', Store::class)
-            ->wherePivotIn('location_id', function ($query) {
+            ->wherePivot('location_id', function ($query) {
                 $query->select('location_id')
-                    ->from('locatables')
-                    ->where('locatable_type', Article::class);
+                    ->from('locatables as article_locatables')
+                    ->where('article_locatables.locatable_type', Article::class);
             })
             ->withTimestamps();
     }
