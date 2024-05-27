@@ -966,7 +966,7 @@ class ArticleController extends Controller
          if ($article->location->isNotEmpty()) {
             Log::info('Article Location', ['location' => $article->location]);
             // get all article location ids, this part of code used for getting merchant offer banenr in article
-            $locationIds = $article->pluck('location.0.id')->filter()->unique()->toArray();
+            $locationIds = $article->location->pluck('id')->toArray();
 
             Log::info('Article Location IDs', ['location_ids' => $locationIds]);
             $storesWithOffers = DB::table('locatables as store_locatables')
