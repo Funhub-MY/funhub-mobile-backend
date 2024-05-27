@@ -27,8 +27,15 @@ class StoreResource extends JsonResource
         }
 
         if ($this->has('location')) {
-            $totalRatings = $this->store_ratings_count + $this->location()->ratings()->count();
-            $averageRating = ($totalRatings > 0) ? ($this->storeRatings->sum('rating') + $this->location()->ratings()->sum('rating')) / $totalRatings : 0;
+            // sum each location ratings
+            $locationsRatingCount = 0;
+            $locationsRatingsSum = 0;
+            $this->location->each(function ($location) use (&$locationsRatingCount, &$locationsRatingsSum) {
+                $locationsRatingCount += $location->ratings_count;
+                $locationsRatingsSum += $location->ratings->sum('rating');
+            });
+            $totalRatings = $this->store_ratings_count + $locationsRatingCount;
+            $averageRating = ($totalRatings > 0) ? ($this->storeRatings->sum('rating') + $locationsRatingsSum) / $totalRatings : 0;
         } else {
             $totalRatings = $this->store_ratings_count;
             $averageRating = ($totalRatings > 0) ? $this->storeRatings->sum('rating') / $totalRatings : 0;
