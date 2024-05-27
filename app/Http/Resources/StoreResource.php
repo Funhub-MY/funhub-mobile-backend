@@ -26,7 +26,7 @@ class StoreResource extends JsonResource
             }
         }
 
-        if ($this->location) {
+        if ($this->has('location')) {
             $totalRatings = $this->store_ratings_count + $this->location()->ratings()->count();
             $averageRating = ($totalRatings > 0) ? ($this->storeRatings->sum('rating') + $this->location()->ratings()->sum('rating')) / $totalRatings : 0;
         } else {
