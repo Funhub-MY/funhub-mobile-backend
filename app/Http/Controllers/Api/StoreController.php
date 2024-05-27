@@ -62,10 +62,10 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant', 'storeRatings', 'location', 'categories']);
+        $query->with(['merchant', 'storeRatings', 'location.ratings', 'categories']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'articles');
+        $query->withCount('storeRatings', 'articles', 'location.ratings');
 
         // with count published merchant offers
         $query->withCount(['merchant_offers' => function ($query) {
@@ -81,7 +81,6 @@ class StoreController extends Controller
                 });
             })->with('user');
         }]);
-
         $stores = $query->paginate($request->input('limit', 10));
         return StoreResource::collection($stores);
     }

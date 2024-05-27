@@ -25,6 +25,11 @@ class StoreResource extends JsonResource
                 $bookmark_interaction_id = $interaction->id;
             }
         }
+
+        $totalRatings = $this->store_ratings_count + $this->location_ratings_count;
+        $averageRating = ($totalRatings > 0) ? ($this->storeRatings->sum('rating') + $this->location->ratings->sum('rating')) / $totalRatings : 0;
+
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -41,8 +46,10 @@ class StoreResource extends JsonResource
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'categories' => MerchantCategoryResource::collection($this->categories),
-            'ratings' => number_format(floatval($this->ratings), 1),
-            'total_ratings' => $this->store_ratings_count,
+            'ratings' => number_format(floatval($averageRating), 1),
+            'store_ratings_count' => $this->store_ratings_count,
+            'location_ratings_count' => $this->location_ratings_count,
+            'total_ratings' => $totalRatings,
             'total_articles_same_location' => $this->articles_count,
             'followings_been_here' => $this->whenLoaded('articles', function () {
                 $uniqueUsers = $this->articles->pluck('user')
