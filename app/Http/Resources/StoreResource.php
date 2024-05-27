@@ -26,9 +26,8 @@ class StoreResource extends JsonResource
             }
         }
 
-        $totalRatings = $this->store_ratings_count + $this->location_ratings_count;
+        $totalRatings = $this->store_ratings_count + $this->location->ratings->count();
         $averageRating = ($totalRatings > 0) ? ($this->storeRatings->sum('rating') + $this->location->ratings->sum('rating')) / $totalRatings : 0;
-
 
         return [
             'id' => $this->id,
@@ -47,8 +46,6 @@ class StoreResource extends JsonResource
             'address_postcode' => $this->address_postcode,
             'categories' => MerchantCategoryResource::collection($this->categories),
             'ratings' => number_format(floatval($averageRating), 1),
-            'store_ratings_count' => $this->store_ratings_count,
-            'location_ratings_count' => $this->location_ratings_count,
             'total_ratings' => $totalRatings,
             'total_articles_same_location' => $this->articles_count,
             'followings_been_here' => $this->whenLoaded('articles', function () {
