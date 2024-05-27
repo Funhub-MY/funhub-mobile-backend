@@ -109,11 +109,12 @@ class Store extends BaseModel implements HasMedia, Auditable
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')
-            ->where('locatables.locatable_type', Store::class)
-            ->wherePivotIn('location_id', function ($query) {
+            ->where('locatables.locatable_type', Article::class)
+            ->wherePivot('location_id', function ($query) {
                 $query->select('location_id')
                     ->from('locatables')
-                    ->where('locatable_type', Article::class);
+                    ->where('locatable_type', Store::class)
+                    ->where('locatable_id', $this->id);
             })
             ->withTimestamps();
     }
