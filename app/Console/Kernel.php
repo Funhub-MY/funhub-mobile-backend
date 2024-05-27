@@ -51,6 +51,9 @@ class Kernel extends ConsoleKernel
 
         // auto publish media partner article based on whitelist/blacklist keywords
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly();
+
+        // sync article ratings to store ratings
+        $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes();
     }
 
     /**

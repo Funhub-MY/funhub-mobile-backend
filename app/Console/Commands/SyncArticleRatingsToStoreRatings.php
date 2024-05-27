@@ -73,7 +73,9 @@ class SyncArticleRatingsToStoreRatings extends Command
                     'user_id' => $article->user_id,
                     'rating' => $rating->rating,
                     'comment' => null,
-                    'article_id' => $article->id
+                    'article_id' => $article->id,
+                    'created_at' => $article->created_at,
+                    'updated_at' => $article->updated_at
                 ]);
 
                 // update store->ratings avg
