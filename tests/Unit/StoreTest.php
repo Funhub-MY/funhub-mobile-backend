@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Article;
 use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -10,6 +11,7 @@ use App\Models\State;
 use App\Models\Store;
 use App\Models\StoreRating;
 use App\Models\User;
+use App\Models\UserFollowing;
 use Database\Seeders\CountriesTableSeeder;
 use Database\Seeders\StatesTableSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -408,7 +410,7 @@ class StoreTest extends TestCase
         $this->assertEquals(1, $response->json()['meta']['total']);
     }
 
-    public function testFollowingCountOfaStore()
+    public function testFollowingCountOfAStore()
     {
         // following count is whoever im following has an article about this store
 
@@ -512,6 +514,18 @@ class StoreTest extends TestCase
         $response = $this->getJson('/api/v1/stores');
 
         // assert followings_been_here is empty
+        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
+
+        // if $this->user unfollows $user then followings_been_here should be empty
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/unfollow', [
+            'user_id' => $user->id,
+        ]);
+
+        // clear cache to refresh the data
+        $this->artisan('cache:clear');
+
+        $response = $this->getJson('/api/v1/stores');
         $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
     }
 }

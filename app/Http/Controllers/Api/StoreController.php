@@ -74,12 +74,8 @@ class StoreController extends Controller
         }]);
 
         // Load articles with authors (users) that are followed by the authenticated user
-        $query->with(['articles' => function ($query) {
-            $query->whereHas('user', function ($query) {
-                $query->whereHas('followers', function ($query) {
-                    $query->where('user_id', auth()->id());
-                });
-            })->with('user');
+        $query->with(['articles.user.followers' => function ($query) {
+            $query->where('user_id', auth()->id());
         }]);
 
         $stores = $query->paginate($request->input('limit', 10));

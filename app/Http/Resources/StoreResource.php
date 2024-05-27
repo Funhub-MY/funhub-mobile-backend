@@ -46,9 +46,11 @@ class StoreResource extends JsonResource
             'total_ratings' => $this->store_ratings_count + $this->location_ratings_count,
             'total_articles_same_location' => $this->articles_count,
             'followings_been_here' => $this->whenLoaded('articles', function () {
-                $uniqueUsers = $this->articles->pluck('user')
-                    ->unique('id')
-                    ->map(function ($user) {
+                $uniqueUsers = $this->articles->map(function ($article) {
+                    $user = $article->user;
+                    $isFollowing = $user->followers->contains('id', auth()->id());
+
+                    if ($isFollowing) {
                         return [
                             'id' => $user->id,
                             'name' => $user->name,
@@ -57,8 +59,10 @@ class StoreResource extends JsonResource
                             'avatar_thumb' => $user->avatar_thumb_url,
                             'has_avatar' => $user->hasMedia('avatar'),
                         ];
-                    });
-                return $uniqueUsers;
+                    }
+                })->filter();
+
+                return $uniqueUsers->unique('id')->values();
             }),
             'has_merchant_offers' => ($this->available_merchant_offers_count > 0) ? true : false, // from relation availableMerchantOffers
             'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
