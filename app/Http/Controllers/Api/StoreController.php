@@ -65,7 +65,7 @@ class StoreController extends Controller
         $query->with(['merchant', 'storeRatings', 'location.ratings', 'categories']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'articles', 'location.ratings');
+        $query->withCount('storeRatings', 'articles');
 
         // with count published merchant offers
         $query->withCount(['merchant_offers' => function ($query) {
