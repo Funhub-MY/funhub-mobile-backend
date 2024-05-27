@@ -106,6 +106,7 @@ class Store extends BaseModel implements HasMedia, Auditable
     }
 
     // a store is related to an article through a shared location
+    // NOTE: deprecated May 27 as using query in controller instead
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')

@@ -7,6 +7,7 @@ use App\Http\Resources\LocationResource;
 use App\Http\Resources\RatingCategoryResource;
 use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
+use App\Models\Article;
 use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -65,7 +66,7 @@ class StoreController extends Controller
         $query->with(['merchant', 'storeRatings', 'location', 'categories']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'articles');
+        $query->withCount('storeRatings');
 
         // with count published merchant offers
         $query->withCount(['merchant_offers' => function ($query) {
@@ -73,12 +74,26 @@ class StoreController extends Controller
                 ->where('merchant_offers.available_at', '<=', now());
         }]);
 
-        // Load articles with authors (users) that are followed by the authenticated user
-        $query->with(['articles.user.followers' => function ($query) {
-            $query->where('user_id', auth()->id());
-        }]);
-
         $stores = $query->paginate($request->input('limit', 10));
+
+         // modify the paginated results
+        $stores->getCollection()->transform(function ($store) {
+            // query the articles associated with the store via the shared location
+            $articles = Article::whereHas('location', function ($query) use ($store) {
+                $query->whereIn('locatables.location_id', function ($query) use ($store) {
+                    $query->select('location_id')
+                        ->from('locatables')
+                        ->where('locatable_type', Store::class)
+                        ->where('locatable_id', $store->id);
+                });
+            })->with(['user.followers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }])->get();
+
+            $store->setRelation('articles', $articles);
+            return $store;
+        });
+
         return StoreResource::collection($stores);
     }
 
