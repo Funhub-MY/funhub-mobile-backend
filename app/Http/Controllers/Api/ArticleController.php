@@ -1418,13 +1418,31 @@ class ArticleController extends Controller
      */
     public function getArticleMerchantOffers(Article $article)
     {
-        $merchantOffers = $article->merchantOffers()
+        // Get all article location IDs
+        $locationIds = $article->location->pluck('id')->filter()->unique()->toArray();
+
+        // Get store IDs with available merchant offers matching the article locations
+        $storeIdsWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('merchant_offer_stores.merchant_offer_id')
+            ->unique();
+
+        // Retrieve the merchant offers associated with the store IDs
+        $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
             ->with('merchant')
             ->published()
             ->available()
             ->paginate(config('app.paginate_per_page'));
 
-        return MerchantOfferResource::collection($merchantOffers);
+            return MerchantOfferResource::collection($merchantOffers);
     }
 
     /**
