@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('city-names:populate')->everyThirtyMinutes(); // populate city names from locations
 
         // auto publish media partner article based on whitelist/blacklist keywords
-        $schedule->command('articles:process-media-partner')->hourly();
+        $schedule->command('media-partner:auto-publish-by-keywords')->hourly();
     }
 
     /**
