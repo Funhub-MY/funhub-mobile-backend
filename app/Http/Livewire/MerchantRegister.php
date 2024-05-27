@@ -29,6 +29,7 @@ use Filament\Pages\Actions\Action;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Validator;
 
 class MerchantRegister extends Component implements HasForms
 {
@@ -75,7 +76,7 @@ class MerchantRegister extends Component implements HasForms
             'name' => 'required',
             'is_hq' => 'boolean',
             'manager_name' => 'required',
-            'business_phone_no' => 'required|unique:users,phone_no',
+            'store_business_phone_no' => 'required',
             'address' => 'required',
             'zip_code' => 'required|numeric',
             'business_hours' => 'required',
@@ -86,17 +87,6 @@ class MerchantRegister extends Component implements HasForms
             'password' => 'required',
             'passwordConfirmation' => 'required|same:password',
         ]);
-
-        //check only 1 store is hq
-        // $hq_count = 0;
-        // foreach ($data['stores'] as $store) {
-        //     if ($store['is_hq']) {
-        //         $hq_count++;
-        //     }
-        // }
-        // if ($hq_count != 1) {
-        //     session()->flash('error', 'Please select only 1 store as HQ.');
-        // }
 
         //create user using the company_email and password
         $user = null;
@@ -253,7 +243,7 @@ class MerchantRegister extends Component implements HasForms
             'user_id' => $user->id,
             'name' => $data['name'],
             'manager_name' => $data['manager_name'],
-            'business_phone_no' => $data['business_phone_no'],
+            'business_phone_no' => $data['store_business_phone_no'],
             'business_hours' => json_encode($businessHours),
             'address' => $data['address'],
             'address_postcode' => $data['zip_code'],
@@ -326,6 +316,63 @@ class MerchantRegister extends Component implements HasForms
     {
         return [
             Wizard::make([
+                Wizard\Step::make('Create Account')
+                ->schema([
+                    Fieldset::make('Phone Number')
+                        ->schema([
+                            TextInput::make('phone_country_code')
+                                ->placeholder('Country Code eg. 60')
+                                ->default('60')
+                                ->label('')
+                                ->afterStateHydrated(function ($component, $state, $livewire) {
+                                    // ensure no symbols only numbers
+                                    $component->state(preg_replace('/[^0-9]/', '', $state));
+                                })
+                                ->columnSpan(['lg' => 1]),
+                            TextInput::make('business_phone_no')
+                                ->placeholder('eg. 123456789 (without zero infront)')
+                                ->label('')
+                                ->afterStateHydrated(function ($component, $state, $livewire) {
+                                    // ensure no symbols only numbers
+                                    $component->state(preg_replace('/[^0-9]/', '', $state));
+                                    // remove any number start with zero
+                                    $component->state(preg_replace('/^0+/', '', $state));
+                                })
+                                ->reactive()
+                                ->helperText('This phone number will be used to create an account on Funhub. Cannot reuse existing Funhub account registered phone numbers')
+                                ->columnSpan(['lg' => 3]),
+                        ])->columns(4),
+                    TextInput::make('company_email')
+                        ->label('Company Email')
+                        ->placeholder('Enter Email')
+                        ->reactive(),
+                    TextInput::make('password')
+                        ->password()
+                        ->label('Password')
+                        ->placeholder('Enter Password')
+                        ->reactive(),
+                    TextInput::make('passwordConfirmation')
+                        ->password()
+                        ->label('Confirm Password')
+                        ->placeholder('Confirm Password')
+                        ->reactive(),
+                    ])->beforeValidation(function ($livewire, $state) {
+                        // get data from $livewire->fieldname
+                        $data = [
+                            'phone_country_code' => $livewire->phone_country_code,
+                            'business_phone_no' => $livewire->business_phone_no,
+                            'company_email' => $livewire->company_email,
+                            'password' => $livewire->password,
+                            'passwordConfirmation' => $livewire->passwordConfirmation,
+                        ];
+                        Validator::make($data, [
+                            'phone_country_code' => 'required|max:255',
+                            'business_phone_no' => 'required|max:255|unique:users,phone_no',
+                            'company_email' => 'required|email|unique:users,email|unique:merchants,email',
+                            'password' => 'required|min:8',
+                            'passwordConfirmation' => 'required|same:password',
+                        ])->validate();
+                    }),
                 Wizard\Step::make('Company')
                     ->schema([
                         TextInput::make('business_name') //merchant's table 'business_name'
@@ -340,40 +387,6 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Brand Name of Branches')
                         ->required()
                         ->placeholder('Enter Brand Name'),
-                        // TextInput::make('business_phone_no') //merchant's table column 'business_phone_no'
-                        // ->label('Contact Number')
-                        // ->required()
-                        // ->placeholder('Enter Contact Number'),
-                        // inline phone_country_code and phone_no without labels but placeholders textinputs
-                        Fieldset::make('Phone Number')
-                        ->schema([
-                            TextInput::make('phone_country_code')
-                                ->placeholder('Country Code eg. 60')
-                                ->label('')
-                                ->afterStateHydrated(function ($component, $state) {
-                                    // ensure no symbols only numbers
-                                    $component->state(preg_replace('/[^0-9]/', '', $state));
-                                })
-                                ->rules('required', 'max:255')->columnSpan(['lg' => 1]),
-                            TextInput::make('business_phone_no')
-                                ->placeholder('eg. 123456789 (without zero infront)')
-                                ->label('')
-                                ->afterStateHydrated(function ($component, $state) {
-                                    // ensure no symbols only numbers
-                                    $component->state(preg_replace('/[^0-9]/', '', $state));
-                                    // remove any number start with zero
-                                    $component->state(preg_replace('/^0+/', '', $state));
-                                })
-                                ->helperText('This phone number will be used to create an account on Funhub. Cannot reuse existing Funhub account registered phone numbers')
-                                //->unique(table: User::class, column: 'phone_no')
-                                ->rules(['required', 'max:255', 'unique:users,phone_no'])
-                                ->columnSpan(['lg' => 3]),
-                        ])->columns(4),
-                        // TextInput::make('address') //merchant's table 'address'
-                        // ->label('Company Address')
-                        // ->required()
-                        // ->placeholder('Enter Location'),
-
                         Group::make([
                             Section::make('Location Details')
                                 ->schema([
@@ -430,66 +443,104 @@ class MerchantRegister extends Component implements HasForms
                                 ])
                         ])->columnSpan(['lg' => 1]),
                         SpatieMediaLibraryFileUpload::make('company_logo')
-                        ->label('Company Logo')
-                        ->maxFiles(1)
-                        ->collection(Merchant::MEDIA_COLLECTION_NAME)
-                        ->required()
-                        ->columnSpan('full')
-                        ->acceptedFileTypes(['image/*'])
-                        ->rules('image'),
+                            ->label('Company Logo')
+                            ->maxFiles(1)
+                            ->collection(Merchant::MEDIA_COLLECTION_NAME)
+                            ->required()
+                            ->columnSpan('full')
+                            ->acceptedFileTypes(['image/*'])
+                            ->rules('image'),
                         SpatieMediaLibraryFileUpload::make('company_photos')
-                        ->label('Company Photos')
-                        ->multiple()
-                        ->maxFiles(7)
-                        ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
-                        ->required()
-                        ->columnSpan('full')
-                        ->acceptedFileTypes(['image/*'])
-                        ->rules('image'),
-                    ]),
+                            ->label('Company Photos')
+                            ->multiple()
+                            ->maxFiles(7)
+                            ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
+                            ->required()
+                            ->columnSpan('full')
+                            ->acceptedFileTypes(['image/*'])
+                            ->rules('image'),
+                    ])->beforeValidation(function ($livewire, $state) {
+                        $data = [
+                            'business_name' => $livewire->business_name,
+                            'company_reg_no' => $livewire->company_reg_no,
+                            'brand_name' => $livewire->brand_name,
+                            'address' => $livewire->address,
+                            'zip_code' => $livewire->zip_code,
+                            'state_id' => $livewire->state_id,
+                            'country_id' => $livewire->country_id,
+                            'company_logo' => $livewire->company_logo,
+                            'company_photos' => $livewire->company_photos,
+                        ];
+                        Validator::make($data, [
+                            'business_name' => 'required',
+                            'company_reg_no' => 'required',
+                            'brand_name' => 'required',
+                            'address' => 'required',
+                            'zip_code' => 'required|numeric',
+                            'state_id' => 'required',
+                            'country_id' => 'required',
+                            'company_logo' => 'required',
+                            'company_photos' => 'required',
+                        ])->validate();
+                    }),
                 Wizard\Step::make('PIC')
                     ->schema([
                         TextInput::make('pic_name') //merchant's table 'pic_name'
-                        ->label('PIC Name')
-                        ->required()
-                        ->placeholder('Enter PIC Name'),
+                            ->label('PIC Name')
+                            ->required()
+                            ->placeholder('Enter PIC Name'),
                         TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
-                        ->label('Designation')
-                        ->required()
-                        ->placeholder('Enter Designation'),
+                            ->label('Designation')
+                            ->required()
+                            ->placeholder('Enter Designation'),
                         TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
-                        ->label('IC Number')
-                        ->required()
-                        ->placeholder('Enter IC Number'),
+                            ->label('IC Number')
+                            ->required()
+                            ->placeholder('Enter IC Number'),
                         TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
-                        ->label('Contact Number')
-                        ->required()
-                        ->placeholder('Enter Contact Number'),
+                            ->label('Contact Number')
+                            ->required()
+                            ->placeholder('Enter Contact Number'),
                         TextInput::make('pic_email') //merchant's table column 'pic_email'
-                        ->label('PIC Email')
-                        ->required()
-                        ->placeholder('Enter Email'),
-                    ]),
+                            ->label('PIC Email')
+                            ->required()
+                            ->placeholder('Enter Email'),
+                    ])->beforeValidation(function ($livewire, $state) {
+                        $data = [
+                            'pic_name' => $livewire->pic_name,
+                            'pic_designation' => $livewire->pic_designation,
+                            'pic_ic_no' => $livewire->pic_ic_no,
+                            'pic_phone_no' => $livewire->pic_phone_no,
+                            'pic_email' => $livewire->pic_email,
+                        ];
+                        Validator::make($data, [
+                            'pic_name' => 'required',
+                            'pic_designation' => 'required',
+                            'pic_ic_no' => 'required|numeric',
+                            'pic_phone_no' => 'required',
+                            'pic_email' => 'required|email',
+                        ])->validate();
+                    }),
                 Wizard\Step::make('Store')
                     ->schema([
                         // Repeater::make('stores')
                         //     ->schema([
                                 TextInput::make('name') //stores table 'name'
-                                ->required()
-                                ->label('Store Name')
-                                ->columnSpan('full')
-                                ->placeholder('Enter Store Name'),
+                                    ->required()
+                                    ->label('Store Name')
+                                    ->columnSpan('full')
+                                    ->placeholder('Enter Store Name'),
                                 Toggle::make('is_hq')
-                                ->label('Is Headquarters?')
-                                ->columnSpan('full'),
+                                    ->label('Is Headquarters?')
+                                    ->columnSpan('full'),
                                 TextInput::make('manager_name') //stores table new column 'manager_name'
-                                ->label('Manager Name')
-                                ->required()
-                                ->placeholder('Enter Manager Name'),
-                                TextInput::make('business_phone_no') //stores table column 'business_phone_no'
-                                ->label('Contact Number')
-                                ->required()
-                                ->placeholder('Enter Contact Number'),
+                                    ->label('Manager Name')
+                                    ->required()
+                                    ->placeholder('Enter Manager Name'),
+                                TextInput::make('store_business_phone_no') //stores table column 'business_phone_no'
+                                    ->label('Store Contact Number')
+                                    ->required()
+                                    ->placeholder('Enter Contact Number for Store'),
                                 // TextInput::make('address') //stores table 'address'
                                 // ->label('Store Address')
                                 // ->required()
@@ -590,37 +641,45 @@ class MerchantRegister extends Component implements HasForms
                                     ->columnSpan('full'),
                             // ])
                             // ->columns(2)
-                    ]),
-                Wizard\Step::make('Login')
-                    ->schema([
-                        TextInput::make('company_email') //users table and merchant's table column 'email'
-                        ->label('Company Email')
-                        ->required()
-                        ->placeholder('Enter Email'),
-                        TextInput::make('password') //users table column 'password'
-                        ->password()
-                        ->required()
-                        ->label('Password')
-                        ->placeholder('Enter Password'),
-                        TextInput::make('passwordConfirmation')
-                        ->password()
-                        ->required()
-                        ->label('Confirm Password')
-                        ->placeholder('Confirm Password'),
-                    ]),
+                    ])->beforeValidation(function ($livewire, $state) {
+                        $data = [
+                            'name' => $livewire->name,
+                            'is_hq' => $livewire->is_hq,
+                            'manager_name' => $livewire->manager_name,
+                            'store_business_phone_no' => $livewire->store_business_phone_no,
+                            'address' => $livewire->address,
+                            'zip_code' => $livewire->zip_code,
+                            'state_id' => $livewire->state_id,
+                            'country_id' => $livewire->country_id,
+                            'business_hours' => $livewire->business_hours,
+                        ];
+
+                        Validator::make($data, [
+                            'name' => 'required',
+                            'is_hq' => 'boolean',
+                            'manager_name' => 'required',
+                            'store_business_phone_no' => 'required',
+                            'address' => 'required',
+                            'zip_code' => 'required|numeric',
+                            'business_hours' => 'required',
+                            'business_hours.*.day' => 'required',
+                            'business_hours.*.open_time' => 'required',
+                            'business_hours.*.close_time' => 'required',
+                        ])->validate();
+                    }),
+
             ])
-            ->skippable()
             ->submitAction(new HtmlString('<button type="submit" class="filament-button filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2rem] px-3 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700" wire:loading.attr="disabled">
-            <span wire:loading.remove>Complete Signup</span>
-            <span wire:loading>
-                <span class="flex flex-row gap-2">
-                <svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg> Signing Up, Please Wait ...
+                <span wire:loading.remove>Complete Signup</span>
+                <span wire:loading>
+                    <span class="flex flex-row gap-2">
+                    <svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg> Signing Up, Please Wait ...
+                    </span>
                 </span>
-            </span>
-        </button>')),
+            </button>')),
          ];
     }
 

@@ -86,6 +86,7 @@ class StoreResource extends JsonResource
             'name' => $this->name,
             'onboarded' => ($this->merchant) ? true : false,
             'manager_name' => $this->manager_name,
+            'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
             'logo' => $logo,
             'photos' => $photos,
