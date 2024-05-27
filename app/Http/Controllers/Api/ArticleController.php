@@ -557,6 +557,31 @@ class ArticleController extends Controller
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate(config('app.paginate_per_page'));
 
+          // get all article location ids, this part of code used for getting merchant offer banenr in article
+        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
+
+        $storesWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('store_locatables.location_id')
+            ->unique();
+
+        $data->each(function ($article) use ($storesWithOffers) {
+            if ($article->location->isNotEmpty()) {
+                $articleLocationId = $article->location->first()->id;
+                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+            } else {
+                $article->has_merchant_offer = false;
+            }
+        });
+
         return ArticleResource::collection($data);
     }
 
@@ -964,11 +989,9 @@ class ArticleController extends Controller
             ->findOrFail($id);
 
          if ($article->location->isNotEmpty()) {
-            Log::info('Article Location', ['location' => $article->location]);
             // get all article location ids, this part of code used for getting merchant offer banenr in article
             $locationIds = $article->location->pluck('id')->toArray();
 
-            Log::info('Article Location IDs', ['location_ids' => $locationIds]);
             $storesWithOffers = DB::table('locatables as store_locatables')
                 ->whereIn('store_locatables.location_id', $locationIds)
                 ->where('store_locatables.locatable_type', Store::class)
@@ -1446,7 +1469,7 @@ class ArticleController extends Controller
     public function getArticleMerchantOffers(Article $article)
     {
         // Get all article location IDs
-        $locationIds = $article->location->pluck('id')->filter()->unique()->toArray();
+        $locationIds = $article->location->pluck('id')->toArray();
 
         // Get store IDs with available merchant offers matching the article locations
         $storeIdsWithOffers = DB::table('locatables as store_locatables')
