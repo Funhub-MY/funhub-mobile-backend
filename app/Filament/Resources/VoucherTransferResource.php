@@ -62,7 +62,6 @@ class VoucherTransferResource extends Resource
                     ->relationship('merchantOffer', 'name')
                     ->reactive()
                     ->searchable()
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->name . ' (' . $record->sku . ')')
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state) {
@@ -79,23 +78,19 @@ class VoucherTransferResource extends Resource
                 Forms\Components\TextInput::make('quantity')
                     ->label('Quantity of Available Vouchers To Transfer')
                     ->reactive()
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->hidden(fn (Closure $get) => !$get('merchant_offer_id'))
                     ->default(0),
 
                 Forms\Components\Hidden::make('from_user_id')
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->default(auth()->user()->id),
 
                 Forms\Components\Select::make('to_user_id')
                     ->relationship('toUser', 'name')
                     ->searchable()
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->username . ' (ID: ' . $record->id . ')')
                     ->required(),
 
                 Forms\Components\Textarea::make('remarks')
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->maxLength(255),
                 ])
             ]);
