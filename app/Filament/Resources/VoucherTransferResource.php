@@ -87,12 +87,10 @@ class VoucherTransferResource extends Resource
                 Forms\Components\Select::make('to_user_id')
                     ->relationship('toUser', 'name')
                     ->searchable()
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->username . ' (ID: ' . $record->id . ')')
                     ->required(),
 
                 Forms\Components\Textarea::make('remarks')
-                    ->disabled(fn (Closure $get) => $get('status') !== 0)
                     ->maxLength(255),
                 ])
             ]);
