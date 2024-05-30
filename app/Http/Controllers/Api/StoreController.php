@@ -42,9 +42,7 @@ class StoreController extends Controller
     public function index(Request $request)
     {
         // only approve merchant, the store can be queried
-        $query = Store::whereHas('merchant', function ($q) {
-            $q->where('merchants.status', Merchant::STATUS_APPROVED);
-        })->when($request->has('categories_id'), function ($q) use ($request) {
+        $query = Store::when($request->has('categories_id'), function ($q) use ($request) {
             $categories = explode(',', $request->input('categories_id'));
             $q->whereHas('categories', function ($q) use ($categories) {
                 $q->whereIn('merchant_categories.id', $categories);

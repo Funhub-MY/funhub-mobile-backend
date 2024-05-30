@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources;
 
-use App\Filament\Resources\MerchantResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\Store;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
+use App\Http\Resources\MerchantResource;
+use App\Models\Article;
 
 class StoreResource extends JsonResource
 {
@@ -32,16 +33,38 @@ class StoreResource extends JsonResource
             'articles' => $this->articles,
         ]);
 
+        $merchant = null;
+        $logo = null;
+        $photos = [];
+        if (!$this->merchant) {
+            // not onboarded merchant do not have user_id so this will be null, manual populatew with just plain name
+            $merchant = [
+                'name' => $this->name,
+            ];
+
+            // get from first latest article media
+            $firstArticles = $this->articles->first();
+            if ($firstArticles) {
+                $articlePhotos = $firstArticles->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
+                $photos = ($articlePhotos) ? $articlePhotos->getFullUrl() : null;
+            }
+        } else {
+            $merchant = new MerchantResource($this->merchant);
+            $logo = ($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null;
+            $photos = $this->getMedia(Store::MEDIA_COLLECTION_PHOTOS)->map(function ($item) {
+                return $item->getFullUrl();
+            });
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'onboarded' => ($this->merchant) ? true : false,
             'manager_name' => $this->manager_name,
             // get merchant company logo
-            'logo' => ($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
-            'photos' => $this->getMedia(Store::MEDIA_COLLECTION_PHOTOS)->map(function ($item) {
-                return $item->getFullUrl();
-            }),
-            'merchant' => new MerchantResource($this->merchant),
+            'logo' => $logo,
+            'photos' => $photos,
+            'merchant' => $merchant,
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
             'location' => $this->location,
