@@ -69,6 +69,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'business_hours' => $this->business_hours,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
+            'categories' => $this->categories,
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
