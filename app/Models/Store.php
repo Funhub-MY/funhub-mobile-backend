@@ -86,11 +86,16 @@ class Store extends BaseModel implements HasMedia, Auditable
     }
     public function shouldBeSearchable(): bool
     {
-        // only approved merchant their stores can be searcheable
-        if ($this->merchant) {
-            return $this->merchant->status === Merchant::STATUS_APPROVED;
+        if ($this->user_id) {
+            // if has user_id, then make sure only approved merchant is searchable
+            if ($this->merchant) {
+                return $this->merchant->status === Merchant::STATUS_APPROVED;
+            }
         }
-        return false;
+
+        // unonboarded merchants do not have user_id, make them searcheable
+        // note: unonboarded merchants are auto synced from Article location -> stores
+        return true;
     }
 
     public function merchant()
