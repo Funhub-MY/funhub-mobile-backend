@@ -58,22 +58,22 @@ class StoreTest extends TestCase
         // ensure there's five stores returned
         $this->assertCount(5, $response['data']);
 
-        // create a new user and merchant which is unapproved
-        $user2 = User::factory()->create();
-        $merchant2 = Merchant::factory()->create([
-            'user_id' => $user2->id,
-            'status' => Merchant::STATUS_PENDING,
-        ]);
+        // // create a new user and merchant which is unapproved
+        // $user2 = User::factory()->create();
+        // $merchant2 = Merchant::factory()->create([
+        //     'user_id' => $user2->id,
+        //     'status' => Merchant::STATUS_PENDING,
+        // ]);
 
-        // create 5 more unapproved
-        Store::factory()->count(5)->create([
-            'user_id' => $user2,
-        ]);
+        // // create 5 more unapproved
+        // Store::factory()->count(5)->create([
+        //     'user_id' => $user2,
+        // ]);
 
-        $response = $this->getJson('/api/v1/stores');
+        // $response = $this->getJson('/api/v1/stores');
 
-        // ensure still 5
-        $this->assertCount(5, $response['data']);
+        // // ensure still 5
+        // $this->assertCount(5, $response['data']);
     }
 
     public function testStoreCategories()

@@ -46,7 +46,7 @@ class StoreResource extends JsonResource
             $firstArticles = $this->articles->first();
             if ($firstArticles) {
                 $articlePhotos = $firstArticles->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
-                $photos = ($articlePhotos) ? $articlePhotos->getFullUrl() : null;
+                $photos = ($articlePhotos) ? [$articlePhotos->getFullUrl()] : null;
             }
         } else {
             $merchant = new MerchantResource($this->merchant);
