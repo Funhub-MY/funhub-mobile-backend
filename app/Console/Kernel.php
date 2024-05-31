@@ -54,6 +54,9 @@ class Kernel extends ConsoleKernel
 
         // sync article ratings to store ratings
         $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes();
+
+        // run article engagements
+        $schedule->command('articles:run-engagements')->everyMinute();
     }
 
     /**

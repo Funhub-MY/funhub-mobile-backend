@@ -15,10 +15,7 @@ class CreateArticleEngagement extends CreateRecord
     {
         $engagement = $this->record;
 
-        if ($engagement->scheduled_at !== null && Carbon::parse($engagement->scheduled_at)->isFuture()) {
-            $delay = Carbon::now()->diffInMinutes(Carbon::parse($engagement->scheduled_at));
-            ProcessEngagementInteractions::dispatch($engagement)->delay($delay);
-        } else {
+        if ($engagement->scheduled_at == null) {
             ProcessEngagementInteractions::dispatch($engagement);
         }
     }

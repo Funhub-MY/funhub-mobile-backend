@@ -34,15 +34,16 @@ class ProcessEngagementInteractions implements ShouldQueue
             $action = $engagement->action;
             $comment = $engagement->comment;
 
+            // immediately mark as executed no matter the below succes or failed
+            $engagement->executed_at = now();
+            $engagement->save();
+
             foreach ($users as $user) {
                 Log::info("Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
                 $this->createInteraction($user->id, $articleId, $action, $comment);
                 sleep(rand(1, 5) * 60); // Sleep for random minutes (1-10)
             }
         }
-
-        $engagement->executed_at = now();
-        $engagement->save();
     }
 
     /**
