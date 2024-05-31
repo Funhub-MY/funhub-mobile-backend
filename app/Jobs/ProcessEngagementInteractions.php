@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class ProcessEngagementInteractions implements ShouldQueue
+class ProcessEngagementInteractions
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
