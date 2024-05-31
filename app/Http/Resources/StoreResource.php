@@ -79,6 +79,15 @@ class StoreResource extends JsonResource
             'logo' => $logo,
             'photos' => $photos,
             'merchant' => $merchant,
+            'other_stores' => ($this->otherStores) ? $this->otherStores->map(function ($store) {
+                return [
+                    'id' => $store->id,
+                    'name' => $store->name,
+                    'address' => $store->address,
+                    'address_postcode' => $store->address_postcode,
+                    'business_hours' => ($store->business_hours) ? json_decode($store->business_hours) : null,
+                ];
+            }) : null,
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
             'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,

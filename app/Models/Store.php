@@ -111,6 +111,13 @@ class Store extends BaseModel implements HasMedia, Auditable
         );
     }
 
+    public function otherStores()
+    {
+        // self join same other stores but based on user id
+        return $this->hasMany(Store::class, 'user_id', 'user_id')
+            ->where('id', '!=', $this->id);
+    }
+
     // a store is related to an article through a shared location
     // NOTE: deprecated May 27 as using query in controller instead
     public function articles()
