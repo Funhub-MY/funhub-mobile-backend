@@ -99,14 +99,6 @@ class ArticleEngagementResource extends Resource
                 ->sortable()
                 ->dateTime(),
 
-            Tables\Columns\TextColumn::make('scheduled_at')
-                ->sortable()
-                ->dateTime(),
-
-            Tables\Columns\TextColumn::make('executed_at')
-                ->sortable()
-                ->dateTime(),
-
             Tables\Columns\TextColumn::make('users.name')
                 ->label('User')
                 ->searchable(),
