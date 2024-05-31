@@ -58,12 +58,6 @@ class StoreController extends Controller
 
             // must order by storeids
             $q->orderBy(DB::raw('FIELD(id, ' . implode(',', $storeIds) . ')'));
-        })->where(function ($q) {
-            // ensure stores that has user_id, its associated merchant is approved
-            $q->whereNotNull('user_id')
-              ->whereHas('merchant', function ($q) {
-                  $q->where('merchants.status', Merchant::STATUS_APPROVED);
-              });
         });
 
         // with merchant, ratings, location
