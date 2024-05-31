@@ -70,6 +70,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'categories' => $this->categories,
+            'parent_category_ids' => $this->parentCategories->pluck('id'),
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
@@ -162,6 +163,13 @@ class Store extends BaseModel implements HasMedia, Auditable
     {
         return $this->belongsToMany(MerchantCategory::class, 'merchant_category_stores')
                 ->withTimestamps();
+    }
+
+    public function parentCategories()
+    {
+        return $this->belongsToMany(MerchantCategory::class, 'merchant_category_stores')
+            ->whereNull('parent_id')
+            ->withTimestamps();
     }
 
     public function state()
