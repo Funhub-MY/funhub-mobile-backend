@@ -56,6 +56,20 @@ class StoreResource extends JsonResource
             });
         }
 
+        $currentDayBusinessHour = null;
+        if ($this->business_hours) {
+            // today day in number, eg, Monday = 1, Sunday = 7
+            $today = date('N');
+            $buisnessHours = json_decode($this->business_hours);
+
+            foreach ($buisnessHours as $day => $businessHour) {
+                if ($day == $today) {
+                    $currentDayBusinessHour = $businessHour;
+                    break;
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -67,6 +81,7 @@ class StoreResource extends JsonResource
             'merchant' => $merchant,
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
+            'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,
             'location' => $this->location,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
