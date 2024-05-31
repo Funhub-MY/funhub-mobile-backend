@@ -118,8 +118,6 @@ class ArticleEngagementResource extends Resource
                 ->label('Article')
                 ->searchable(),
 
-
-
         ])
         ->filters([
             Tables\Filters\Filter::make('scheduled_at')
