@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\ProcessEngagementInteractions;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -38,7 +39,31 @@ class RunArticleEngagements extends Command
         foreach ($engagements as $engagement) {
             $this->info('[RunArticleEngagements] Processing engagement: ' . $engagement->id);
             Log::info('[RunArticleEngagements] Processing engagement: ' . $engagement->id);
-            ProcessEngagementInteractions::dispatch($engagement);
+
+            $users = $engagement->users;
+            $articleId = $engagement->article_id;
+            $action = $engagement->action;
+            $comment = $engagement->comment;
+
+            // immediately mark as executed no matter the below succes or failed
+            $engagement->executed_at = now();
+            $engagement->save();
+
+            // if only one user then direct execute
+            if ($users->count() === 1) {
+                $this->info("[RunArticleEngagements] Processing engagement for user ID {$users->first()->id} on article ID {$articleId} with action {$action}");
+                Log::info("[RunArticleEngagements] Processing engagement for user ID {$users->first()->id} on article ID {$articleId} with action {$action}");
+                ProcessEngagementInteractions::dispatch($engagement->users->first()->id, $articleId, $action, $comment);
+                return;
+            } else {
+                foreach ($users as $user) {
+                    $this->info("[RunArticleEngagements] Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
+                    Log::info("[RunArticleEngagements] Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
+                    // random delay between 1-10mins
+                    ProcessEngagementInteractions::dispatch($user->id, $articleId, $action, $comment)
+                        ->delay(Carbon::now()->addMinutes(rand(1, 10)));
+                }
+            }
         }
 
         return Command::SUCCESS;
