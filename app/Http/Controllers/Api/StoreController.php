@@ -61,7 +61,7 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant', 'storeRatings', 'location', 'categories']);
+        $query->with(['merchant', 'storeRatings', 'location', 'categories', 'media']);
 
         // with count total ratings
         $query->withCount('storeRatings', 'availableMerchantOffers');

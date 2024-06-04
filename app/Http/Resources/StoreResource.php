@@ -48,11 +48,22 @@ class StoreResource extends JsonResource
                 $articlePhotos = $firstArticles->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
                 $photos = ($articlePhotos) ? [$articlePhotos->getFullUrl()] : null;
             }
+
+            // if not articles then get from store photos
+            if (empty($photos) || count($photos) == 0) {
+                $photos = $this->media->map(function ($item) {
+                    if ($item->collection_name == Store::MEDIA_COLLECTION_PHOTOS) {
+                        return $item->getFullUrl();
+                    }
+                });
+            }
         } else {
             $merchant = new MerchantResource($this->merchant);
             $logo = ($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null;
-            $photos = $this->getMedia(Store::MEDIA_COLLECTION_PHOTOS)->map(function ($item) {
-                return $item->getFullUrl();
+            $photos = $this->media->map(function ($item) {
+                if ($item->collection_name == Store::MEDIA_COLLECTION_PHOTOS) {
+                    return $item->getFullUrl();
+                }
             });
         }
 
