@@ -41,6 +41,7 @@ class StoreResource extends JsonResource
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'categories' => MerchantCategoryResource::collection($this->categories),
+            'parent_category_ids' => $this->parentCategories->pluck('id'),
             'ratings' => number_format(floatval($this->ratings), 1),
             'total_ratings' => $this->store_ratings_count,
             'total_articles_same_location' => $this->articles_count,
