@@ -29,6 +29,7 @@ class StoreResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'manager_name' => $this->manager_name,
+            'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
             'logo' => ($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'photos' => $this->getMedia(Store::MEDIA_COLLECTION_PHOTOS)->map(function ($item) {
