@@ -184,8 +184,8 @@ class MerchantRegister extends Component implements HasForms
                     ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
 
                 // also add to store photos
-                $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                    ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
+                // $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+                //     ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
             }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] Company photos upload failed: ' . $e->getMessage());
@@ -254,11 +254,11 @@ class MerchantRegister extends Component implements HasForms
             'country_id' => $data['country_id'],
         ]);
 
-        foreach ($data['company_photos'] as $company_photo) {
-            $company_photo_livewire_tmp = $company_photo;
-            // also add to store photos from company_photos
-            $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
+
+        // copy from merchant's MEDIA_COLLECTION_NAME_PHOTOS to store's MEDIA_COLLECTION_PHOTOS
+        $merchantPhotos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+        foreach ($merchantPhotos as $photo) {
+            $photo->copy($store, Store::MEDIA_COLLECTION_PHOTOS);
         }
 
 
@@ -282,8 +282,19 @@ class MerchantRegister extends Component implements HasForms
                     return in_array('locality', $component['types']);
                 })->first();
 
-                // create a new location
-                $location = Location::create([
+                $locationData = [
+                    'name' => $data['name'],
+                    'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
+                    'lat' => $lang, // google provided
+                    'lng' => $long, // google provided
+                    'address' => $data['address'] ?? '', // user provided
+                    'address_2' => $data['address_2'] ?? '', // user provided
+                    'zip_code' => $data['zip_code'] ?? '', // user provided
+                    'city' => $city['short_name'] ?? '', // google provided
+                    'state_id' => $data['state_id'], // user provided
+                    'country_id' => $data['country_id'], // user provided
+                ];
+                Log::info('register', [
                     'name' => $data['name'],
                     'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
                     'lat' => $lang, // google provided
@@ -295,6 +306,9 @@ class MerchantRegister extends Component implements HasForms
                     'state_id' => $data['state_id'], // user provided
                     'country_id' => $data['country_id'], // user provided
                 ]);
+
+                // create a new location
+                $location = Location::create($locationData);
 
                 Log::info('[MerchantRegister] Location created: ' . $location->id);
             }
