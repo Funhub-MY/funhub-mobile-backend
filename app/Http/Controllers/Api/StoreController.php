@@ -7,6 +7,7 @@ use App\Http\Resources\LocationResource;
 use App\Http\Resources\RatingCategoryResource;
 use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
+use App\Models\Article;
 use App\Models\Location;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -41,9 +42,7 @@ class StoreController extends Controller
     public function index(Request $request)
     {
         // only approve merchant, the store can be queried
-        $query = Store::whereHas('merchant', function ($q) {
-            $q->where('merchants.status', Merchant::STATUS_APPROVED);
-        })->when($request->has('categories_id'), function ($q) use ($request) {
+        $query = Store::when($request->has('categories_id'), function ($q) use ($request) {
             $categories = explode(',', $request->input('categories_id'));
             $q->whereHas('categories', function ($q) use ($categories) {
                 $q->whereIn('merchant_categories.id', $categories);
@@ -62,27 +61,37 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant', 'storeRatings', 'location', 'categories']);
+        $query->with(['merchant', 'storeRatings', 'location', 'categories', 'media']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'articles', 'availableMerchantOffers');
+        $query->withCount('storeRatings', 'availableMerchantOffers');
 
         // with count published merchant offers
-        // $query->withCount(['availableMerchantOffers' => function ($query) {
-        //     $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
-        //         ->where('merchant_offers.available_at', '<=', now());
-        // }]);
-
-        // Load articles with authors (users) that are followed by the authenticated user
-        $query->with(['articles' => function ($query) {
-            $query->whereHas('user', function ($query) {
-                $query->whereHas('followers', function ($query) {
-                    $query->where('user_id', auth()->id());
-                });
-            })->with('user');
+        $query->withCount(['merchant_offers' => function ($query) {
+            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
+                ->where('merchant_offers.available_at', '<=', now());
         }]);
 
         $stores = $query->paginate($request->input('limit', 10));
+
+         // modify the paginated results
+        $stores->getCollection()->transform(function ($store) {
+            // query the articles associated with the store via the shared location
+            $articles = Article::whereHas('location', function ($query) use ($store) {
+                $query->whereIn('locatables.location_id', function ($query) use ($store) {
+                    $query->select('location_id')
+                        ->from('locatables')
+                        ->where('locatable_type', Store::class)
+                        ->where('locatable_id', $store->id);
+                });
+            })->with(['user.followers' => function ($query) {
+                $query->where('user_id', auth()->id());
+            }])->get();
+
+            $store->setRelation('articles', $articles);
+            return $store;
+        });
+
         return StoreResource::collection($stores);
     }
 
@@ -204,6 +213,7 @@ class StoreController extends Controller
     {
         $request->validate([
             'rating' => 'required|numeric|min:1|max:5',
+            // 'rating_category_ids' => 'required',
             'comment' => 'nullable|string',
         ]);
 
@@ -214,22 +224,23 @@ class StoreController extends Controller
         ]);
 
         if ($request->has('rating_category_ids')) {
+            // explode rating categories ids
             $categories = explode(',', $request->rating_category_ids);
+            // attach to rating
             $rating->ratingCategories()->attach($categories, ['user_id' => auth()->id()]);
         }
 
-        // Update store ratings using raw SQL query
-        $averageRating = DB::table('store_ratings')
-            ->where('store_id', $store->id)
-            ->avg('rating');
+        // consolidate store ratings
+        $store->ratings = $store->storeRatings()->avg('rating');
+        $store->save();
 
-        DB::table('stores')
-            ->where('id', $store->id)
-            ->update(['ratings' => $averageRating]);
+        // with count likes and dislikes
+        $rating->loadCount(['likes', 'dislikes']);
 
-        return response()->json([
-            'data' => new StoreRatingResource($rating),
-        ]);
+        // load user, ratingCategories
+        $rating->load('user', 'ratingCategories');
+
+        return new StoreRatingResource($rating);
     }
 
     /**
@@ -297,7 +308,7 @@ class StoreController extends Controller
     public function getStoreRatingCategories(Store $store, Request $request)
     {
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
-            $query->where('store_id', $store->id);
+            $query->where('store_ratings.store_id', $store->id);
         }])
         ->orderBy('store_ratings_count', 'desc')
         ->take($request->has('limit') ? $request->limit : 3)

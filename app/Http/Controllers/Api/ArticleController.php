@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\ArticleCreated;
+use App\Events\RatedLocation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleCreateRequest;
 use App\Http\Requests\ArticleImagesUploadRequest;
@@ -149,106 +150,6 @@ class ArticleController extends Controller
                 $query->where('locations.id', $request->location_id);
             });
         }
-
-
-        // get articles by lat, lng
-        // if ($request->has('lat') && $request->has('lng')) {
-        //     // DEPRECATED; see getArticlesNearby() instead
-        //     $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius'); // 10km default
-
-        //     if (config('app.search_location_use_algolia')) {
-        //         // algolia search,search all location ids first
-        //         $cacheKey = 'location_search_' . $request->lat . '_' . $request->lng . '_' . $radius;
-        //         $locationIds = cache()->remember($cacheKey, 60, function () use ($request, $radius) {
-        //             return Location::search('')->with([
-        //                 'aroundLatLng' => $request->lat.','.$request->lng,
-        //                 'aroundRadius' => $radius * 1000,
-        //                 'aroundPrecision' => 50,
-        //                 'hitsPerPage' => 100,
-        //             ])->raw()['hits'];
-        //         });
-
-        //         // query articles whereHas these location ids and sort by join
-        //         $query->whereHas('location', function ($query) use ($locationIds) {
-        //             $query->whereIn('locations.id', Arr::pluck($locationIds, 'id'));
-        //         })
-        //         ->leftJoin(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
-        //         ->leftJoin(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
-        //         ->orderByRaw('FIELD(loc.id, ' . implode(',', Arr::pluck($locationIds, 'id')) . ')');
-        //     } else {
-        //         // use DB to search instead
-        //         $query->join(DB::raw('(SELECT locatable_id, location_id FROM locatables) AS locs'), 'locs.locatable_id', '=', 'articles.id')
-        //             ->join(DB::raw('(SELECT id, lat, lng from locations) AS loc'), 'loc.id', '=', 'locs.location_id')
-        //             // add select to get distance from loc lat lng with request lat lng
-        //             ->selectRaw('articles.*, ROUND(ST_Distance_Sphere(
-        //                 point(lng, lat),
-        //                 point(?, ?)
-        //             )) / 1000 as distance', [$request->lng, $request->lat])
-        //             ->whereHas('location', function ($query) use ($request, $radius) {
-        //                 $query->withinKmOf($request->lat, $request->lng, $radius * 1000);
-        //             })
-        //             ->orderBy('distance', 'asc');
-        //     }
-        // }
-
-
-        // by default off, unless provided build recommendations
-        // DEPRECATED as new build recommendations not done here
-        // if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
-        //     $rankIds = auth()->user()->articleRanks()
-        //         // join articles order by article creeated at latest first
-        //         ->join('articles', 'articles.id', '=', 'user_article_ranks.article_id')
-        //         ->orderBy('articles.created_at', 'desc')
-        //         ->orderBy('score', 'desc')
-        //         ->take(500)
-        //         ->get();
-        //     if ($rankIds->count() > 0) {
-        //         // user has recommendation build before
-        //         // if ranks last_built > config recommendation_db_purge_hours
-        //         // then dispatch job to rebuild for user
-        //         $lastBuilt = $rankIds->first()->last_built;
-        //         if (Carbon::parse($lastBuilt)->diffInHours(now()) > config('app.recommendation_db_purge_hours')) {
-        //             Log::info('[ArticleController] Rebuilding Recommendation (Last Built) - User ' . auth()->user()->id . ' Expiry Hours: ' . config('app.recommendation_db_purge_hours') . ' - Last Built: ' . $lastBuilt);
-        //             // BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
-        //         }
-        //     } else {
-        //         Log::info('[ArticleController] No ranks found for user ' . auth()->user()->id);
-        //         // user never built recommendations, also fire job to rebuild
-        //         // BuildRecommendationsForUser::dispatch(auth()->user())->onQueue('low');
-        //     }
-
-        //     // shuffle ranking results
-        //     if ($rankIds->count() > 0) {  // if user has articles ranked
-        //         // if refresh articles or user scrolled until final page of recommendations
-        //         if ($request->refresh_recommendations == 1) {
-        //             // remove recommendations cache
-        //             cache()->forget('article_recommendations_' . auth()->user()->id);
-        //         }
-        //         $shuffledIds = cache()->remember('article_recommendations_' . auth()->user()->id, now()->addMinutes(60), function () use ($rankIds) {
-        //             return $rankIds->shuffle()->pluck('article_id')->toArray();
-        //         });
-        //     }
-
-        //     // count number of articles past x days
-        //     $latestArticlesCount = cache()->remember('article_latest_count_' . auth()->user()->id, now()->addHours(23), function () {
-        //         return Article::published()
-        //             ->where('created_at', '>=', now()->subDays(config('app.recommendation_after_days')))
-        //             ->count();
-        //     });
-
-        //     // if user has not scroll past X days of articles, show latest articles
-        //     // else load recommendations OR user force refresh recommendations, immediately load recommendations
-        //     $currentPage = $request->has('page') ? $request->page : 1;
-        //     $perPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
-        //     $currentLoadedTill = $currentPage * $perPage;
-        //     if ($currentLoadedTill > $latestArticlesCount || $request->has('refresh_recommendations')) {
-        //         // already load past X days articles, start loading recommendations
-        //         if ($rankIds->count() > 0) {  // if user has articles ranked
-        //             $query->whereIn('id', $shuffledIds)
-        //                 ->orderByRaw('FIELD(id, ' . implode(',', $shuffledIds) . ')');
-        //         }
-        //     }
-        // }
 
         $this->filterArticlesBlockedOrHidden($query);
 
@@ -656,6 +557,31 @@ class ArticleController extends Controller
             ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             ->paginate(config('app.paginate_per_page'));
 
+          // get all article location ids, this part of code used for getting merchant offer banenr in article
+        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
+
+        $storesWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('store_locatables.location_id')
+            ->unique();
+
+        $data->each(function ($article) use ($storesWithOffers) {
+            if ($article->location->isNotEmpty()) {
+                $articleLocationId = $article->location->first()->id;
+                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+            } else {
+                $article->has_merchant_offer = false;
+            }
+        });
+
         return ArticleResource::collection($data);
     }
 
@@ -1024,6 +950,9 @@ class ArticleController extends Controller
                     'user_id' => auth()->id(),
                     'rating' => $locationData['rating'],
                 ]);
+
+                // fire event
+                event(new RatedLocation($location, auth()->user(), $locationData['rating'], $article->id));
             }
 
             // only add to average ratings if article is public
@@ -1058,6 +987,31 @@ class ArticleController extends Controller
                 $query->where('user_id', auth()->user()->id);
             })
             ->findOrFail($id);
+
+         if ($article->location->isNotEmpty()) {
+            // get all article location ids, this part of code used for getting merchant offer banenr in article
+            $locationIds = $article->location->pluck('id')->toArray();
+
+            $storesWithOffers = DB::table('locatables as store_locatables')
+                ->whereIn('store_locatables.location_id', $locationIds)
+                ->where('store_locatables.locatable_type', Store::class)
+                ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                ->join('merchant_offers', function ($join) {
+                    $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                        ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                        ->where('merchant_offers.available_at', '<=', now())
+                        ->where('merchant_offers.available_until', '>=', now());
+                })
+                ->pluck('store_locatables.location_id')
+                ->unique();
+
+            if ($article->location->isNotEmpty()) {
+                $articleLocationId = $article->location->first()->id;
+                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+            } else {
+                $article->has_merchant_offer = false;
+            }
+        }
 
         return response()->json([
             'article' => new ArticleResource($article)
@@ -1514,13 +1468,31 @@ class ArticleController extends Controller
      */
     public function getArticleMerchantOffers(Article $article)
     {
-        $merchantOffers = $article->merchantOffers()
+        // Get all article location IDs
+        $locationIds = $article->location->pluck('id')->toArray();
+
+        // Get store IDs with available merchant offers matching the article locations
+        $storeIdsWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('merchant_offer_stores.merchant_offer_id')
+            ->unique();
+
+        // Retrieve the merchant offers associated with the store IDs
+        $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
             ->with('merchant')
             ->published()
             ->available()
             ->paginate(config('app.paginate_per_page'));
 
-        return MerchantOfferResource::collection($merchantOffers);
+            return MerchantOfferResource::collection($merchantOffers);
     }
 
     /**

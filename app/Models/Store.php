@@ -21,7 +21,7 @@ class Store extends BaseModel implements HasMedia, Auditable
      *
      * @var array
      */
-    // protected $touches = ['merchant_offers'];
+    protected $touches = ['merchant_offers'];
 
     protected $fillable = [
         'name',
@@ -88,11 +88,16 @@ class Store extends BaseModel implements HasMedia, Auditable
     }
     public function shouldBeSearchable(): bool
     {
-        // only approved merchant their stores can be searcheable
-        if ($this->merchant) {
-            return $this->merchant->status === Merchant::STATUS_APPROVED;
+        if ($this->user_id) {
+            // if has user_id, then make sure only approved merchant is searchable
+            if ($this->merchant) {
+                return $this->merchant->status === Merchant::STATUS_APPROVED;
+            }
         }
-        return false;
+
+        // unonboarded merchants do not have user_id, make them searcheable
+        // note: unonboarded merchants are auto synced from Article location -> stores
+        return true;
     }
 
     public function merchant()
@@ -107,15 +112,23 @@ class Store extends BaseModel implements HasMedia, Auditable
         );
     }
 
+    public function otherStores()
+    {
+        // self join same other stores but based on user id
+        return $this->hasMany(Store::class, 'user_id', 'user_id')
+            ->where('id', '!=', $this->id);
+    }
+
     // a store is related to an article through a shared location
+    // NOTE: deprecated May 27 as using query in controller instead
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')
             ->where('locatables.locatable_type', Store::class)
-            ->wherePivotIn('location_id', function ($query) {
+            ->whereIn('locatables.location_id', function ($query) {
                 $query->select('location_id')
-                    ->from('locatables')
-                    ->where('locatable_type', Article::class);
+                    ->from('locatables as article_locatables')
+                    ->where('article_locatables.locatable_type', Article::class);
             })
             ->withTimestamps();
     }

@@ -310,7 +310,8 @@ class MerchantOfferController extends Controller
             $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
 
             // check if enough points
-            if ($user->point_balance < $net_amount) {
+            $userPointBalance = $this->pointService->getBalanceOfUser($user);
+            if ($userPointBalance < $net_amount) {
                 return response()->json([
                     'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance')
                 ], 422);

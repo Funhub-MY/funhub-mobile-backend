@@ -201,6 +201,7 @@ class MerchantOfferTest extends TestCase
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
         // get one merchant offer, set available_at as today, until as tomorrow to ensure the offer is valid.
         $merchant_offer = $this->merchant_offer->random(1)->first();
         $merchant_offer->available_at = now();
@@ -212,6 +213,7 @@ class MerchantOfferTest extends TestCase
             'quantity' => 1,
             'payment_method' => 'points'
         ]);
+
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'message',

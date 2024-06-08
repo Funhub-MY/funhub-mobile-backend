@@ -51,6 +51,7 @@ class StoreRatingResource extends JsonResource
             'my_like_interaction_id' => $myLikeInteraction->id ?? null,
             'my_dislike_interaction_id' => $myDislikeInteraction->id ?? null,
             'total_ratings_for_store' => $this->user->store_ratings_count,
+            'article_id' => $this->article_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

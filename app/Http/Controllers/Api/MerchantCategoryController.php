@@ -49,7 +49,7 @@ class MerchantCategoryController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $categories = $query->paginate(config('app.paginate_per_page'));
+        $categories = $query->paginate(($request->has('limit')) ? $request->limit : config('app.paginate_per_page'));
 
         return MerchantCategoryResource::collection($categories);
     }

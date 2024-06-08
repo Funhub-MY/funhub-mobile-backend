@@ -28,6 +28,13 @@ class ArticleEngagementResource extends Resource
 
     protected static ?string $navigationGroup = 'Engagements';
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $query->orderBy('created_at', 'desc');
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -84,6 +91,14 @@ class ArticleEngagementResource extends Resource
     {
         return $table
         ->columns([
+            Tables\Columns\TextColumn::make('id')
+                ->sortable()
+                ->searchable(),
+
+            Tables\Columns\TextColumn::make('created_at')
+                ->sortable()
+                ->dateTime(),
+
             Tables\Columns\TextColumn::make('users.name')
                 ->label('User')
                 ->searchable(),
@@ -95,17 +110,6 @@ class ArticleEngagementResource extends Resource
                 ->label('Article')
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('scheduled_at')
-                ->sortable()
-                ->dateTime(),
-
-            Tables\Columns\TextColumn::make('executed_at')
-                ->sortable()
-                ->dateTime(),
-
-            Tables\Columns\TextColumn::make('created_at')
-                ->sortable()
-                ->dateTime(),
         ])
         ->filters([
             Tables\Filters\Filter::make('scheduled_at')

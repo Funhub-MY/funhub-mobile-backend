@@ -10,6 +10,7 @@ use App\Events\FollowedUser;
 use App\Listeners\MediaListener;
 use App\Events\InteractionCreated;
 use App\Events\PurchasedMerchantOffer;
+use App\Events\RatedLocation;
 use App\Events\UserReferred;
 use App\Events\UserSettingsUpdated;
 use App\Observers\ApprovalObserver;
@@ -19,6 +20,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Listeners\RatedLocationListener;
 use App\Listeners\RecommendationAutoByPass;
 use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
@@ -79,6 +81,9 @@ class EventServiceProvider extends ServiceProvider
             MissionEventListener::class,
         ],
 
+        RatedLocation::class => [
+            RatedLocationListener::class,
+        ],
     ];
 
     /**

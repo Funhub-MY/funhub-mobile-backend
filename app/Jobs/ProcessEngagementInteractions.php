@@ -17,32 +17,29 @@ class ProcessEngagementInteractions implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $engagement;
+    protected $userId;
+    protected $articleId;
+    protected $action;
+    protected $comment;
 
-    public function __construct(ArticleEngagement $engagement)
+    public function __construct($userId, $articleId, $action, $comment = null)
     {
-        $this->engagement = $engagement;
+        $this->userId = $userId;
+        $this->articleId = $articleId;
+        $this->action = $action;
+        $this->comment = $comment;
     }
 
     public function handle()
     {
-        $engagement = $this->engagement;
+        $this->createInteraction(
+            $this->userId,
+            $this->articleId,
+            $this->action,
+            $this->comment
+        );
 
-        if ($engagement->scheduled_at === null) {
-            $users = $engagement->users;
-            $articleId = $engagement->article_id;
-            $action = $engagement->action;
-            $comment = $engagement->comment;
-
-            foreach ($users as $user) {
-                Log::info("Processing engagement for user ID {$user->id} on article ID {$articleId} with action {$action}");
-                $this->createInteraction($user->id, $articleId, $action, $comment);
-                sleep(rand(1, 5) * 60); // Sleep for random minutes (1-10)
-            }
-        }
-
-        $engagement->executed_at = now();
-        $engagement->save();
+        Log::info("Processed engagement for user ID {$this->userId} on article ID {$this->articleId} with action {$this->action}");
     }
 
     /**

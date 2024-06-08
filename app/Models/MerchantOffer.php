@@ -76,14 +76,37 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
      */
     public function toSearchableArray()
     {
+        $geolocs = null;
+        $stores = null;
+        if ($this->stores()->count() > 0) {
+            $geolocs = [];
+            $stores = [];
+            // load store location
+            $this->stores->load('location');
+            foreach ($this->stores as $store) {
+                // dont repeat if $stores already have same id
+                if (!in_array($store->id, array_column($stores, 'id'))) {
+                    $stores[] = [
+                        'id' => $store->id,
+                        'name' => $store->name,
+                        'locations' => $store->location,
+                    ];
+                }
+                $firstStoreLocation = $store->location->first();
+                if ($store->location && isset($firstStoreLocation->lat) && isset($firstStoreLocation->lng)) {
+                    $geolocs[] = [
+                        'lat' => floatval($firstStoreLocation->lat),
+                        'lng' => floatval($firstStoreLocation->lng)
+                    ];
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'sku' => $this->sku,
             'merchant_id' => ($this->user) ? $this->user->merchant->id : null,
-            'store' => [
-                'id' => ($this->store) ? $this->store->id : null,
-                'name' => ($this->store) ? $this->store->name : null,
-            ],
+            'stores' => $stores,
             'merchant' => [
                 'id' => ($this->user) ? $this->user->merchant->id : null,
                 'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
@@ -105,10 +128,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
-            '_geoloc' => ($this->location()->count() > 0) ? [
-                'lat' => floatval($this->location->first()->lat),
-                'lng' => floatval($this->location->first()->lng)
-            ] : null,
+            '_geoloc' => $geolocs,
         ];
     }
 
