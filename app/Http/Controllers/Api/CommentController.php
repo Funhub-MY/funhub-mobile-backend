@@ -165,36 +165,49 @@ class CommentController extends Controller
             'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 
-        if ($request->has('tagged_users')) {
-            $comment->taggedUsers()->sync($request->tagged_users);
+        try {
+            if ($request->has('tagged_users')) {
+                $comment->taggedUsers()->sync($request->tagged_users);
 
-            // notifiy tagged user
-            $comment->taggedUsers->each(function ($taggedUser) use ($comment) {
-                try {
-                    $locale = $taggedUser->last_lang ?? config('app.locale');
-                    $taggedUser->notify((new TaggedUserInComment($comment, $comment->user))->locale($locale));
-                } catch (\Exception $e) {
-                    Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
-                }
-            });
+                // notifiy tagged user
+                $comment->taggedUsers->each(function ($taggedUser) use ($comment) {
+                    try {
+                        $locale = $taggedUser->last_lang ?? config('app.locale');
+                        $taggedUser->notify((new TaggedUserInComment($comment, $comment->user))->locale($locale));
+                    } catch (\Exception $e) {
+                        Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                    }
+                });
+            }
+        } catch (\Exception $e) {
+            Log::error('[CommentController] Tagged user error', ['message' => $e->getMessage()]);
         }
 
         event(new \App\Events\CommentCreated($comment)); // fires event
 
-        if ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
-            $locale = $comment->parent->user->last_lang ?? config('app.locale');
-            // if comment has parent and is not self, send notification to parent comment's user
-            $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment))->locale($locale)); // send notification
+        try {
+            if ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+                $locale = $comment->parent->user->last_lang ?? config('app.locale');
+                // if comment has parent and is not self, send notification to parent comment's user
+                $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment))->locale($locale)); // send notification
+            }
+        } catch (\Exception $e) {
+            Log::error('[CommentController] Notification error when parent comment', ['message' => $e->getMessage()]);
         }
 
         // if commentable has user and is not self, send notification
-        if ($comment->commentable->user && $comment->commentable->user->id != auth()->id()) {
-            $locale = $comment->commentable->user->last_lang ?? config('app.locale');
-            $comment->commentable->user->notify((new \App\Notifications\Commented($comment))->locale($locale)); // send notification
+        try {
+            if ($comment->commentable->user && $comment->commentable->user->id != auth()->id()) {
+                $locale = $comment->commentable->user->last_lang ?? config('app.locale');
+                $comment->commentable->user->notify((new \App\Notifications\Commented($comment))->locale($locale)); // send notification
+            }
+        } catch (\Exception $e) {
+            Log::error('[CommentController] Notification error when commentable user', ['message' => $e->getMessage()]);
         }
 
         return response()->json([
             'comment' => CommentResource::make($comment),
+            'article_id' => $comment->commentable_id,
         ]);
     }
 
