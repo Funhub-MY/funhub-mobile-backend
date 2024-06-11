@@ -52,6 +52,9 @@ class EditStore extends EditRecord
     {
         // if has location_id, attach location to store
         if (isset($data['location_id']) && $data['location_id'] !== null) {
+            // detach first
+            $this->record->location()->detach();
+            // attach again
             $this->record->location()->attach($data['location_id']);
         }
 
