@@ -63,6 +63,7 @@ class MerchantOfferController extends Controller
      * @bodyParam flash_only boolean optional Filter by Flash Deals Only. Example: true
      * @bodyParam merchant_id integer optional Filter by Merchant ID. Example: 1
      * @bodyParam store_id integer optional Filter by Store ID. Example: 1
+     * @bodyParam hide_purchased boolean optional Hide Purchased Offers for current logged in user. Example: true
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, description, available_at, available_until, sku
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at
@@ -171,6 +172,13 @@ class MerchantOfferController extends Controller
             $storeIds = explode(',', $request->store_id);
             $query->whereHas('stores', function ($query) use ($storeIds) {
                 $query->whereIn('stores.id', $storeIds);
+            });
+        }
+
+        if ($request->has('hide_purchased')) {
+            $query->whereDoesntHave('claims', function ($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
             });
         }
 
