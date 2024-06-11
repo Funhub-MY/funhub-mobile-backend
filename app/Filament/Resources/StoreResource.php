@@ -28,6 +28,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\Pages\CreateRecord;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
@@ -61,6 +63,24 @@ class StoreResource extends Resource
                             ->getOptionLabelUsing(fn ($value): ?string => 'ID:' . User::find($value)?->id. ' ' .User::find($value)?->name)
                             ->default(fn () => User::where('id', auth()->user()->id)?->first()->id)
                             ->relationship('user','name'),
+
+                        Toggle::make('use_store_redeem')
+                            ->label('Use Store Redeem Code Instead')
+                            ->onIcon('heroicon-s-check-circle')
+                            ->offIcon('heroicon-s-x-circle')
+                            ->reactive()
+                            ->default(false),
+
+                        TextInput::make('redeem_code')
+                            ->label('Cashier Redeem Code (6 Digit)')
+                            ->visible(fn ($get) => $get('use_store_redeem') === true)
+                            ->disabled(fn ($livewire) => $livewire instanceof CreateRecord)
+                            ->rules('digits:6')
+                            ->disabled()
+                            ->numeric()
+                            ->nullable()
+                            ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
+                            ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store'),
 
                         // categories
                         Select::make('categories')
