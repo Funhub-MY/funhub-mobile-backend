@@ -238,6 +238,7 @@ return [
             'You_cannot_refer_yourself' => '您无法推荐自己',
             'Referral_code_expired' => '推荐码已过期',
             'You_can_only_change_your_username_once_every_x_days' => '您只能每 :days 天更改一次用户名',
+            'Username_already_changed_before' => '您已经在过去更改过用户名',
         ],
     ],
     'notification' => [

@@ -194,15 +194,19 @@ class UserSettingsController extends Controller
             'username' => 'required|string|max:9|unique:users,username,' . auth()->user()->id,
         ]);
 
-        // disable username change for 30 days based on user->usernameChanges()
-        $lastUsernameChange = auth()->user()->usernameChanges()->orderBy('id', 'desc')->first();
-        if ($lastUsernameChange && $lastUsernameChange->created_at->addDays(config('app.username_changes_days')) > now()) {
-            return response()->json([
-                'message' => __('messages.error.user_settings_controller.You_can_only_change_your_username_once_every_x_days', ['days' => config('app.username_changes_days')]),
-            ], 422);
+        $user = auth()->user();
+
+        // disable username changes if user changed before
+        if ($user->usernameChanges()->count() > 0) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.Username_already_changed_before')], 422);
         }
 
-        $user = auth()->user();
+        // save usernameChange record
+        $user->usernameChanges()->create([
+            'old_username' => $user->username,
+            'new_username' => $request->username,
+        ]);
+
         $user->username = $request->username;
         $user->save();
 

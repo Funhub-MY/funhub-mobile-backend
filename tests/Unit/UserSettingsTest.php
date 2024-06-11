@@ -51,7 +51,7 @@ test('assign categories to a user', function () {
         ]);
 });
 
-// assign child categories to a user thats with parent 
+// assign child categories to a user thats with parent
 test('assign child categories to a user', function () {
     $articleCategory = ArticleCategory::factory()->count(10)->create();
 
@@ -221,5 +221,52 @@ test('save location', function () {
         'id' => $this->user->id,
         'country_id' => $country->id,
         'state_id' => $state->id,
+    ]);
+});
+
+
+test('save username and should not be able change again', function () {
+    $oldUsername = $this->user->username;
+    // first attempt
+    $response = $this->postJson('/api/v1/user/settings/username', [
+        'username' => 'newname',
+    ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message'
+        ]);
+
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'username' => 'newname',
+    ]);
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'username' => 'newname',
+    ]);
+
+    // asset user_username_changes as old_username and new_username
+    $this->assertDatabaseHas('user_username_changes', [
+        'user_id' => $this->user->id,
+        'old_username' => $oldUsername,
+        'new_username' => 'newname',
+    ]);
+
+    // second attempt
+    $response = $this->postJson('/api/v1/user/settings/username', [
+        'username' => 'newname2',
+    ]);
+
+    // fails
+    $response->assertStatus(422)
+        ->assertJsonStructure([
+            'message'
+        ]);
+
+    // still the same name
+    $this->assertDatabaseHas('users', [
+        'id' => $this->user->id,
+        'username' => 'newname',
     ]);
 });
