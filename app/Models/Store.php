@@ -30,6 +30,8 @@ class Store extends BaseModel implements HasMedia, Auditable
         'business_hours',
         'address',
         'address_postcode',
+        'use_store_redeem',
+        'redeem_code',
         'lang',
         'long',
         'is_hq',

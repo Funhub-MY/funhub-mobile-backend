@@ -5,7 +5,9 @@ namespace App\Filament\Resources\StoreResource\Pages;
 use App\Filament\Resources\StoreResource;
 use App\Models\Country;
 use App\Models\Location;
+use App\Models\Merchant;
 use App\Models\State;
+use App\Models\Store;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use GuzzleHttp\Client;
@@ -56,6 +58,33 @@ class EditStore extends EditRecord
             $this->record->location()->detach();
             // attach again
             $this->record->location()->attach($data['location_id']);
+        }
+
+        if ($data['use_store_redeem'] && $data['use_store_redeem'] === true) {
+            // check if redeem_code has value
+            if (empty($data['redeem_code'])) {
+                $data['redeem_code'] = rand(100000, 999999); // check with Merchants redeem_code see if crash
+                $tries = 0;
+                while (Merchant::where('redeem_code', $data['redeem_code'])->exists()) {
+                    $data['redeem_code'] = rand(100000, 999999);
+                    $tries++;
+                    if ($tries > 10) {
+                        Log::error('[Store Filament] Redeem code generation failed after 10 tries');
+                        break;
+                    }
+                }
+
+                // reset loop for Store redeem code
+                $tries = 0;
+                while (Store::where('redeem_code', $data['redeem_code'])->exists()) {
+                    $data['redeem_code'] = rand(100000, 999999);
+                    $tries++;
+                    if ($tries > 10) {
+                        Log::error('[Store Filament] Redeem code generation failed after 10 tries');
+                        break;
+                    }
+                }
+            }
         }
 
         if (isset($data['location_type']) && $data['location_type'] === 'manual') {

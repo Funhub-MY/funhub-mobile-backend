@@ -151,7 +151,6 @@ class MerchantOfferController extends Controller
             });
         }
 
-
         // location id
         if ($request->has('location_id')) {
             // where two condition merchant offer locaiton tagged same location id or merchant offer's stores tagged same location id
@@ -165,7 +164,6 @@ class MerchantOfferController extends Controller
                 });
             });
         }
-
 
         if ($request->has('store_id')) {
             // explode store_id if has comma
@@ -313,7 +311,7 @@ class MerchantOfferController extends Controller
         }
 
         $user = request()->user();
-        if ($request->payment_method == 'points')  {
+        if ($request->payment_method == 'points') {
             $net_amount = $offer->unit_price * $request->quantity;
             $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
 
