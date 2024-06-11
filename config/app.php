@@ -312,6 +312,8 @@ return [
         'following_a_user_notification' => env('COOLDOWN_FOLLOWING_A_USER_NOTIFICATION', 5),
     ],
 
+    'username_changes_days' => env('USERNAME_CHANGES_DAYS', 30),
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails
