@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D6aZk5dbv3VfPea1Ecg846h'
+      - 'Bearer dPh41fZ3baVvE6D8cga5ke6'
     controller: null
     method: null
     route: null
@@ -125,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gah15cvf8Eb6ZekDda36PV4'
+      - 'Bearer dh6aZ3cP1vgb8kf4EVa6De5'
     controller: null
     method: null
     route: null
@@ -166,13 +166,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: sit
+        example: autem
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: sit
+      store_ids: autem
     fileParameters: []
     responses:
       -
@@ -189,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer f4v6c8PZ31EabVDeg6k5adh'
+      - 'Bearer aDEegh41kZ6db3afV85vcP6'
     controller: null
     method: null
     route: null
@@ -230,13 +230,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: eum
+        example: corporis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: eum
+      location_id: corporis
     fileParameters: []
     responses:
       -
@@ -253,7 +253,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bEg63ZD14hcd8ek5a6PVfav'
+      - 'Bearer 6gPf83kVabeZvED65a14chd'
     controller: null
     method: null
     route: null
@@ -377,7 +377,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fZaaDcbEkV168g3h6P45evd'
+      - 'Bearer d4EbVc5eag81kvPfa6ZD3h6'
     controller: null
     method: null
     route: null
@@ -470,7 +470,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3d5V8eh1Zb6v4DagEPac6fk'
+      - 'Bearer Z316VekhabvaPcEfD6gd584'
     controller: null
     method: null
     route: null
@@ -534,7 +534,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PbE5g183a6dDhec6fZVak4v'
+      - 'Bearer f5gE66Dch4aPZk1bVe8dva3'
     controller: null
     method: null
     route: null
@@ -584,10 +584,20 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      only_with_ratings:
+        name: only_with_ratings
+        description: 'boolean optional Only with ratings.'
+        required: false
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
     cleanUrlParameters:
       store_id: 1
       store: '1'
       limit: 3
+      only_with_ratings: '1'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -607,7 +617,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V4fg516d638DvkEePcZbaah'
+      - 'Bearer 6Db5ah13Zvf6aEkPgeVc8d4'
     controller: null
     method: null
     route: null

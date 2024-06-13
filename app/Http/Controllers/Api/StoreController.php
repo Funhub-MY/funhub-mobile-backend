@@ -300,6 +300,7 @@ class StoreController extends Controller
      * @group Stores
      * @urlParam store required Store ID. Example:1
      * @urlParam limit integer optional Limit. Example: 3
+     * @urlParam only_with_ratings boolean optional Only with ratings. Example: 1
      *
      * @response scenario=success {
      * data: []
@@ -310,6 +311,9 @@ class StoreController extends Controller
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
             $query->where('store_ratings.store_id', $store->id);
         }])
+        ->when($request->has('only_with_ratings'), function ($query) {
+            $query->whereHas('storeRatings');
+        })
         ->orderBy('store_ratings_count', 'desc')
         ->take($request->has('limit') ? $request->limit : 3)
         ->get();
