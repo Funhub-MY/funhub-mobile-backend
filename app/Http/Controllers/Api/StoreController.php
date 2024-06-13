@@ -300,7 +300,7 @@ class StoreController extends Controller
      * @group Stores
      * @urlParam store required Store ID. Example:1
      * @urlParam limit integer optional Limit. Example: 3
-     * @urlParam only_with_ratings boolean optional Only with ratings. Example: 1
+     * @urlParam only_with_ratings boolean optional Only with ratings. Example: true
      *
      * @response scenario=success {
      * data: []
