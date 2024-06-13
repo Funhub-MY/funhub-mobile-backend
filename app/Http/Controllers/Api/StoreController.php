@@ -316,4 +316,34 @@ class StoreController extends Controller
 
         return RatingCategoryResource::collection($ratingCategories);
     }
+
+    /**
+     * Get Stores by Location ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Stores
+     * @urlParam location_id required Location ID. Example:1
+     *
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function getStoreByLocationId(Request $request)
+    {
+        $this->validate($request, [
+            'location_id' => 'required',
+        ]);
+
+        $location = Location::where('id', $request->location_id)->first();
+        if (!$location) {
+            return response()->json(['message' => 'Location not found'], 404);
+        }
+
+        $stores = $location->stores()->paginate(config('app.paginate_per_page'));
+
+        return StoreResource::collection($stores);
+    }
 }

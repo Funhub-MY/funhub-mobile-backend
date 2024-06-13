@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V5fZe1hEPga86Dbvkc36da4'
+      - 'Bearer D6aZk5dbv3VfPea1Ecg846h'
     controller: null
     method: null
     route: null
@@ -125,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pfbg815hkZaV3ce6Dv6Ed4a'
+      - 'Bearer gah15cvf8Eb6ZekDda36PV4'
     controller: null
     method: null
     route: null
@@ -166,13 +166,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: autem
+        example: sit
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: autem
+      store_ids: sit
     fileParameters: []
     responses:
       -
@@ -189,7 +189,71 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hVgafvea6cE546bk8dZ1DP3'
+      - 'Bearer f4v6c8PZ31EabVDeg6k5adh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/stores_by_location
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores by Location ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      location_id:
+        name: location_id
+        description: 'Location ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      location_id: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      location_id:
+        name: location_id
+        description: ''
+        required: true
+        example: eum
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      location_id: eum
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bEg63ZD14hcd8ek5a6PVfav'
     controller: null
     method: null
     route: null
@@ -313,7 +377,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1vaDhc66gfZ35Ved8kP4abE'
+      - 'Bearer fZaaDcbEkV168g3h6P45evd'
     controller: null
     method: null
     route: null
@@ -406,7 +470,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DZ6e6Vacdav1Pgf4E8bk5h3'
+      - 'Bearer 3d5V8eh1Zb6v4DagEPac6fk'
     controller: null
     method: null
     route: null
@@ -470,7 +534,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EDgZ1PadfVav536c8be6h4k'
+      - 'Bearer PbE5g183a6dDhec6fZVak4v'
     controller: null
     method: null
     route: null
@@ -543,7 +607,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 34fPZh6VDcvda1Eb8g5k6ae'
+      - 'Bearer V4fg516d638DvkEePcZbaah'
     controller: null
     method: null
     route: null
