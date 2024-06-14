@@ -316,11 +316,11 @@ class StoreController extends Controller
             ->get();
 
         // if has only_with_ratings remove results with store_ratings_count = 0
-        if ($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1') {
-            $ratingCategories = $ratingCategories->filter(function ($category) {
-                return $category->ratings_count > 0;
-            });
-        }
+        // if ($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1') {
+        //     $ratingCategories = $ratingCategories->filter(function ($category) {
+        //         return $category->store_ratings_count > 0;
+        //     });
+        // }
 
         return RatingCategoryResource::collection($ratingCategories);
     }
