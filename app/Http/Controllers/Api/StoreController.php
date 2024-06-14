@@ -308,13 +308,17 @@ class StoreController extends Controller
      */
     public function getStoreRatingCategories(Store $store, Request $request)
     {
-        $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
-            $query->where('store_ratings.store_id', $store->id);
-        }])
-            ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
-                $query->whereHas('storeRatings');
+        $ratingCategories = RatingCategory::select('rating_categories.*')
+            ->leftJoin('store_ratings', function ($join) use ($store) {
+                $join->on('rating_categories.id', '=', 'store_ratings.rating_category_id')
+                    ->where('store_ratings.store_id', $store->id);
             })
-            ->orderBy('store_ratings_count', 'desc')
+            ->groupBy('rating_categories.id')
+            ->havingRaw('COUNT(store_ratings.id) > 0')
+            ->when($request->input('only_with_ratings') === '1', function ($query) {
+                $query->where('store_ratings.id', '>', 0);
+            })
+            ->orderByRaw('COUNT(store_ratings.id) DESC')
             ->take($request->has('limit') ? $request->limit : 3)
             ->get();
 
