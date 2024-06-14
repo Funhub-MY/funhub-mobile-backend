@@ -311,16 +311,12 @@ class StoreController extends Controller
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
             $query->where('store_ratings.store_id', $store->id);
         }])
+            ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
+                $query->whereHas('storeRatings');
+            })
             ->orderBy('store_ratings_count', 'desc')
             ->take($request->has('limit') ? $request->limit : 3)
             ->get();
-
-        // if has only_with_ratings remove results with store_ratings_count = 0
-        // if ($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1') {
-        //     $ratingCategories = $ratingCategories->filter(function ($category) {
-        //         return $category->store_ratings_count > 0;
-        //     });
-        // }
 
         return RatingCategoryResource::collection($ratingCategories);
     }
