@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - non
+          - sapiente
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -100,7 +100,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - non
+        - sapiente
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bf65D3eg6vc4VZh81EPdaak'
+      - 'Bearer vEckbga4ae85PZ1d6D6h3fV'
     controller: null
     method: null
     route: null
@@ -191,7 +191,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ev8VgPeZh135kacaDb4f66d'
+      - 'Bearer g6d1fh5eacP4VkD3b6ZvEa8'
     controller: null
     method: null
     route: null
