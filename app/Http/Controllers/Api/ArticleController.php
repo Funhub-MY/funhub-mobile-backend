@@ -173,7 +173,11 @@ class ArticleController extends Controller
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            // withCount comment where dont have parent_id
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id');
+            }])
             ->paginate($paginatePerPage);
 
         // get all article location ids, this part of code used for getting merchant offer banenr in article
@@ -981,7 +985,11 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::with('user', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        // withCount comment where dont have parent_id
+        ->withCount(['comments' => function ($query) {
+            $query->whereNull('parent_id');
+        }])
         ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -1523,7 +1531,11 @@ class ArticleController extends Controller
         }
 
         $article->load('user', 'media', 'location', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            // withCount comment where dont have parent_id
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id');
+            }]);
 
         return response()->json([
             'article' => new PublicArticleResource($article)
