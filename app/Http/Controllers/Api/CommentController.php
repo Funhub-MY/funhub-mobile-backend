@@ -97,6 +97,11 @@ class CommentController extends Controller
         // filter out my blocked users ids comments and its replies
         $query->whereNotIn('comments.user_id', array_unique(array_merge($myBlockedUserIds, $peopleWhoBlockedMeIds)));
 
+        // hide users that is not deleted or not active
+        $query->whereHas('user', function ($query) {
+            $query->where('status', User::STATUS_ACTIVE);
+        });
+
         // filter out if replies parent user_id is someone i blocked
         // $query->whereDoesntHave('replies.user.usersBlocked', function ($query) {
         //     $query->where('user_id', auth()->id())
