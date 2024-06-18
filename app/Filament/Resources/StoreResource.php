@@ -236,11 +236,14 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_phone_no'),
-                Tables\Columns\TextColumn::make('address'),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('address_postcode'),
                 // Tables\Columns\TextColumn::make('lang'),
                 // Tables\Columns\TextColumn::make('long'),
