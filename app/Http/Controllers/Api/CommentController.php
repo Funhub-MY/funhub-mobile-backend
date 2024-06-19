@@ -119,6 +119,10 @@ class CommentController extends Controller
             // go to each comment and limit the replies to replies_per_comment (default: 3)
             $replies_per_comment = $request->replies_per_comment ? $request->replies_per_comment : 3;
             $data->map(function ($item, $key) use ($replies_per_comment) {
+                // remove replies if user is archived
+                $item->replies = $item->replies->filter(function ($reply) {
+                    return $reply->user->status == User::STATUS_ARCHIVED;
+                });
                 $item->replies = $item->replies->take($replies_per_comment);
             });
         }
