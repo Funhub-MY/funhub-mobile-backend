@@ -57,6 +57,9 @@ class Kernel extends ConsoleKernel
 
         // run article engagements
         $schedule->command('articles:run-engagements')->everyMinute();
+
+        // sync article tagged location as stores(un-onboarded stores)
+        $schedule->command('articles:sync-location-as-stores')->hourly();
     }
 
     /**
