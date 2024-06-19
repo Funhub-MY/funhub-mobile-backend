@@ -85,11 +85,11 @@ class CommentController extends Controller
         $query->with('user')
             ->with(['replies' => function ($query) {
                 $query->latest()
-                    ->whereHas('user', function ($query) {
+                    ->with(['user' => function ($query) {
                         $query->where('status', User::STATUS_ACTIVE);
-                    });
+                    }]);
             }])
-            ->with('replies.user', 'likes')
+            ->with('likes')
             ->withCount('replies', 'likes')
             ->published();
 
