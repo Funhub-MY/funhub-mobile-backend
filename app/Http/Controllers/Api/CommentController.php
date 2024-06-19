@@ -84,7 +84,10 @@ class CommentController extends Controller
         // with replies count
         $query->with('user')
             ->with(['replies' => function ($query) {
-                $query->latest();
+                $query->latest()
+                    ->whereHas('user', function ($query) {
+                        $query->where('status', User::STATUS_ACTIVE);
+                    });
             }])
             ->with('replies.user', 'likes')
             ->withCount('replies', 'likes')
@@ -415,7 +418,11 @@ class CommentController extends Controller
         $comment = Comment::where('id', $id)->firstOrFail();
 
         $query = $comment->replies()->latest()
-            ->withCount('replies');
+            ->withCount(['replies' => function ($query) {
+                $query->whereHas('user', function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }]);
 
         $this->buildQuery($query, $request);
 
