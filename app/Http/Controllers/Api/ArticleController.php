@@ -173,7 +173,14 @@ class ArticleController extends Controller
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            // withCount comment where dont have parent_id
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                    ->whereHas('user' , function ($query) {
+                        $query->where('status', User::STATUS_ACTIVE);
+                    });
+            }])
             ->paginate($paginatePerPage);
 
         // get all article location ids, this part of code used for getting merchant offer banenr in article
@@ -354,6 +361,13 @@ class ArticleController extends Controller
         return ArticleResource::collection($data);
     }
 
+    /**
+     * Query builder reusable for other methods
+     *
+     * @param QueryBuilder $query
+     * @param Request $request
+     * @return QueryBuilder
+     */
     public function articleQueryBuilder($query, $request) {
         $query->published();
 
@@ -405,7 +419,13 @@ class ArticleController extends Controller
                 $query->without('pointLedgers');
             },
         ])
-        ->withCount('comments', 'interactions', 'views', 'imports');
+        ->withCount('interactions', 'views', 'imports')
+        ->withCount(['comments' => function ($query) {
+            $query->whereNull('parent_id')
+            ->whereHas('user' , function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            });
+        }]);
         return $query;
     }
 
@@ -554,7 +574,13 @@ class ArticleController extends Controller
         $this->filterArticlesBlockedOrHidden($query);
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
             ->paginate(config('app.paginate_per_page'));
 
           // get all article location ids, this part of code used for getting merchant offer banenr in article
@@ -642,7 +668,13 @@ class ArticleController extends Controller
         }
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
             ->paginate(config('app.paginate_per_page'));
 
         return ArticleResource::collection($data);
@@ -981,7 +1013,14 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::with('user', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        // withCount comment where dont have parent_id
+        ->withCount(['comments' => function ($query) {
+            $query->whereNull('parent_id')
+            ->whereHas('user' , function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            });
+        }])
         ->published()
             ->whereDoesntHave('hiddenUsers', function ($query) {
                 $query->where('user_id', auth()->user()->id);
@@ -1523,7 +1562,14 @@ class ArticleController extends Controller
         }
 
         $article->load('user', 'media', 'location', 'location.ratings')
-            ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports');
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            // withCount comment where dont have parent_id
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }]);
 
         return response()->json([
             'article' => new PublicArticleResource($article)
@@ -1560,7 +1606,13 @@ class ArticleController extends Controller
             $query->where('user_id', auth()->user()->id);
         })
         ->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-        ->withCount('comments', 'interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount(['comments' => function ($query) {
+            $query->whereNull('parent_id')
+            ->whereHas('user' , function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            });
+        }])
         ->paginate(config('app.paginate_per_page'));
 
         // increase keyword hits

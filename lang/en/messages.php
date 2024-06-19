@@ -234,6 +234,8 @@ return [
             'Referral_code_not_found' => 'Referral code not valid',
             'You_cannot_refer_yourself' => 'You cannot refer yourself.',
             'Referral_code_expired' => 'Referral code expired',
+            'You_can_only_change_your_username_once_every_x_days' => 'You can only change your username once every :days days',
+            'Username_already_changed_before' => 'Username already changed before',
         ],
     ],
     'notification' => [

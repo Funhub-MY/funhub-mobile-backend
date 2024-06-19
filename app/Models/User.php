@@ -396,6 +396,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
             ->withTimestamps();
     }
 
+    public function usernameChanges()
+    {
+        return $this->hasMany(UserUsernameChange::class, 'user_id');
+    }
+
     // /**
     //  * Get the user's point balance
     //  */

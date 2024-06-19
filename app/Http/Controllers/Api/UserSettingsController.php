@@ -195,6 +195,18 @@ class UserSettingsController extends Controller
         ]);
 
         $user = auth()->user();
+
+        // disable username changes if user changed before
+        if ($user->usernameChanges()->count() > 0) {
+            return response()->json(['message' => __('messages.error.user_settings_controller.Username_already_changed_before')], 422);
+        }
+
+        // save usernameChange record
+        $user->usernameChanges()->create([
+            'old_username' => $user->username,
+            'new_username' => $request->username,
+        ]);
+
         $user->username = $request->username;
         $user->save();
 

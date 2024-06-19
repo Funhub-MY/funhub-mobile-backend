@@ -300,6 +300,7 @@ class StoreController extends Controller
      * @group Stores
      * @urlParam store required Store ID. Example:1
      * @urlParam limit integer optional Limit. Example: 3
+     * @urlParam only_with_ratings boolean optional Only with ratings. Example: 1
      *
      * @response scenario=success {
      * data: []
@@ -310,10 +311,43 @@ class StoreController extends Controller
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
             $query->where('store_ratings.store_id', $store->id);
         }])
-        ->orderBy('store_ratings_count', 'desc')
-        ->take($request->has('limit') ? $request->limit : 3)
-        ->get();
+            ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
+                $query->whereHas('storeRatings');
+            })
+            ->orderBy('store_ratings_count', 'desc')
+            ->take($request->has('limit') ? $request->limit : 3)
+            ->get();
 
         return RatingCategoryResource::collection($ratingCategories);
+    }
+
+    /**
+     * Get Stores by Location ID
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Stores
+     * @urlParam location_id required Location ID. Example:1
+     *
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function getStoreByLocationId(Request $request)
+    {
+        $this->validate($request, [
+            'location_id' => 'required',
+        ]);
+
+        $location = Location::where('id', $request->location_id)->first();
+        if (!$location) {
+            return response()->json(['message' => 'Location not found'], 404);
+        }
+
+        $stores = $location->stores()->paginate(config('app.paginate_per_page'));
+
+        return StoreResource::collection($stores);
     }
 }

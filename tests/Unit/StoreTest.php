@@ -528,4 +528,70 @@ class StoreTest extends TestCase
         $response = $this->getJson('/api/v1/stores');
         $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
     }
+
+    // get stores by location id /api/v1/stores/stores_by_location
+    public function testGetStoresByLocation()
+    {
+        // create a new user
+        $user = User::factory()->create();
+        // acting as user
+        $this->actingAs($user); // act as newUser
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+
+        // attach store to same location as well
+        $store = Store::factory()->create([
+            'user_id' => $user->id,
+            'state_id' => State::first()->id,
+            'country_id' => 1,
+            'lang' => 1.234,
+            'long' => 1.234,
+        ]);
+
+        // create a Location to attach to this store
+        $location = Location::where('name', 'Test Location')->first(); // must tag the same location
+        $location->stores()->attach($store->id);
+
+        $response = $this->getJson('/api/v1/stores');
+
+        $response->assertStatus(200);
+
+        // ensure there's one store returned
+        $this->assertCount(1, $response->json()['data']);
+
+        // asset data first store id is $store->id
+        $this->assertEquals($store->id, $response->json()['data'][0]['id']);
+    }
 }

@@ -64,7 +64,9 @@ class ArticleResource extends JsonResource
             // 'tagged_users' => UserResource::collection($this->taggedUsers),
             'count' => [
                 'comments' => $this->comments_count ?? 0,
-                'likes' => $this->interactions_count ?? 0,
+                'likes' => $this->when(isset($this->interactions_count), function () {
+                    return $this->interactions->where('type', Interaction::TYPE_LIKE)->count();
+                }, 0),
                 'dislikes' => $this->when(isset($this->interactions_count), function () {
                     return $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count();
                 }, 0),

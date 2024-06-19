@@ -14,7 +14,7 @@ class LocationController extends Controller
      *
      * @return LocationResource
      * @throws \Illuminate\Validation\ValidationException
-     * 
+     *
      * @group Location
      * @bodyParam location_ids array optional Location Ids to Filter. Example [1,2,3]
      * @bodyParam name string optional Search query. Example: "KFC SS15"
@@ -24,7 +24,7 @@ class LocationController extends Controller
      * @bodyParam lat float optional Latitude of User GeoLoc. Example: 3.073065
      * @bodyParam lng float optional Longitude of User GeoLoc. Example: 101.607787
      * @bodyParam radius integer optional Radius (KM) of search if lat,lng provided. Example: 10
-     * 
+     *
      * @response scenario=success {
      *  "data": [],
      *  "links": {},
@@ -79,12 +79,12 @@ class LocationController extends Controller
 
     /**
      * Get One Location
-     * 
+     *
      * Locaiton will auto load state, coutry, articles, merchant offers, ratings
      *
      * @param Location $location
      * @return LocationResource
-     * 
+     *
      * @group Location
      * @urlParam location required Location ID. Example: 1
      * @response scenario=success {
@@ -99,7 +99,7 @@ class LocationController extends Controller
                 'message' => __('messages.error.location_controller.Location_not_found')
             ], 404);
         }
-        
+
         // load state, country, articles, ratings, merchantOffers
         $location->load('state', 'country', 'articles', 'ratings', 'merchantOffers');
         return new LocationResource($location);
