@@ -83,9 +83,19 @@ class CommentController extends Controller
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
-            ->with('replies')
+            ->with(['replies' => function ($query) {
+                $query->latest()
+                    ->whereHas('user', function ($query) {
+                        $query->where('users.status', User::STATUS_ACTIVE);
+                    });
+            }])
             ->with('likes')
-            ->withCount('replies', 'likes')
+            ->withCount('likes')
+            ->withCount(['replies' => function ($query) {
+                $query->whereHas('user', function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
             ->published();
 
         // get my blocked users
