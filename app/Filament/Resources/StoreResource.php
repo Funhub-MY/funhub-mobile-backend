@@ -30,6 +30,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
@@ -56,12 +58,9 @@ class StoreResource extends Resource
                             ->rules('required', 'max:255'),
                         Forms\Components\Select::make('user_id')
                             ->label('Linked User Account')
-                            ->preload()
                             ->searchable()
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name. ($record->username ? ' (username: ' . $record->username  .')': ''))
                             ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
-                            ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")->limit(25))
-                            ->getOptionLabelUsing(fn ($value): ?string => 'ID:' . User::find($value)?->id. ' ' .User::find($value)?->name)
-                            ->default(fn () => User::where('id', auth()->user()->id)?->first()->id)
                             ->relationship('user','name'),
 
                         Toggle::make('use_store_redeem')
@@ -85,6 +84,7 @@ class StoreResource extends Resource
                         // categories
                         Select::make('categories')
                             ->relationship('categories', 'name')
+                            ->getOptionLabelFromRecordUsing(fn ($record) => $record->name . ($record->parent ? ' - ' . $record->parent->name : ''))
                             ->searchable()
                             ->preload()
                             ->multiple(),
@@ -183,7 +183,6 @@ class StoreResource extends Resource
                                         ->multiple()
                                         ->maxFiles(7)
                                         ->collection(Store::MEDIA_COLLECTION_PHOTOS)
-                                        ->required()
                                         ->columnSpan('full')
                                         ->disk(function () {
                                             if (config('filesystems.default') === 's3') {
@@ -240,6 +239,8 @@ class StoreResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
+                    ->formatStateUsing(fn ($state) => $state ?? 'Un-onboarded')
+                    ->sortable()
                     ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address')
@@ -251,13 +252,32 @@ class StoreResource extends Resource
                     ->label('Headquarter')
             ])
             ->filters([
-                //
+                Filter::make('created_at')
+                    ->form([
+                        Forms\Components\Select::make('user_id')
+                            ->options([
+                                'all' => 'All',
+                                'unboarded' => 'Un-onboarded',
+                                'onboarded' => 'Onboarded',
+                            ])
+                            ->label('Onboard Status')
+                            ->default('all')
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                            if ($data['user_id'] === 'unboarded') {
+                                return $query->whereNull('user_id');
+                            } elseif ($data['user_id'] === 'onboarded') {
+                                return $query->whereNotNull('user_id');
+                            } else {
+                                return $query;
+                            }
+                        })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
