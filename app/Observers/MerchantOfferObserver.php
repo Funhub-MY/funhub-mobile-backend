@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\MerchantOffer;
+use Illuminate\Support\Facades\Log;
 
 class MerchantOfferObserver
 {
@@ -19,8 +20,13 @@ class MerchantOfferObserver
 
     private function updateStoreSearchIndex(MerchantOffer $merchantOffer)
     {
-        foreach ($merchantOffer->stores as $store) {
-            $store->touch();
+        try {
+            foreach ($merchantOffer->stores as $store) {
+                $store->touch();
+            }
+        } catch (\Exception $e) {
+            // log error
+            Log::error('[MerchantOfferObserver] Error updating store search index for merchant offer: ' . $merchantOffer->id);
         }
     }
 }
