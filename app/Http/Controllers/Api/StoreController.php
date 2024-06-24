@@ -10,7 +10,6 @@ use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
 use App\Models\Article;
 use App\Models\Location;
-use App\Models\LocationRating;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
@@ -83,7 +82,7 @@ class StoreController extends Controller
         $stores = $query->paginate($request->input('limit', 10));
 
 
-        // modify the paginated results
+         // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
             // query the articles associated with the store via the shared location
             $articles = Article::whereHas('location', function ($query) use ($store) {
@@ -97,16 +96,7 @@ class StoreController extends Controller
                 $query->where('user_id', auth()->id());
             }])->get();
 
-            // Count location ratings for these articles
-            $locationRatingsCount = LocationRating::whereIn('location_id', function ($query) use ($store) {
-                $query->select('location_id')
-                    ->from('locatables')
-                    ->where('locatable_type', Store::class)
-                    ->where('locatable_id', $store->id);
-            })->count();
-
             $store->setRelation('articles', $articles);
-            $store->location_ratings_count = $locationRatingsCount;
 
             return $store;
         });
