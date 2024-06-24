@@ -217,7 +217,7 @@ class Store extends BaseModel implements HasMedia, Auditable
         )->join('locatables', function ($join) {
             $join->on('locations.id', '=', 'locatables.location_id')
                 ->where('locatables.locatable_type', Store::class)
-                ->where('locatables.locatable_id', $this->getTable() . '.id');
+                ->whereColumn('locatables.locatable_id', 'stores.id');
         });
     }
 
