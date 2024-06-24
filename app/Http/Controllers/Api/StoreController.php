@@ -10,6 +10,7 @@ use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
 use App\Models\Article;
 use App\Models\Location;
+use App\Models\LocationRating;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
@@ -71,13 +72,6 @@ class StoreController extends Controller
         $query->withCount([
             'storeRatings',
             'availableMerchantOffers',
-            'locationRatings' => function ($query) {
-                $query->join('locatables', function ($join) {
-                    $join->on('locations.id', '=', 'locatables.location_id')
-                        ->where('locatables.locatable_type', Store::class)
-                        ->whereColumn('locatables.locatable_id', 'stores.id');
-                });
-            }
         ]);
 
         // with count published merchant offers
@@ -104,6 +98,18 @@ class StoreController extends Controller
             }])->get();
 
             $store->setRelation('articles', $articles);
+
+             // Count location ratings for these articles
+            $locationRatingsCount = LocationRating::whereIn('location_id', function ($query) use ($store) {
+                $query->select('location_id')
+                    ->from('locatables')
+                    ->where('locatable_type', Store::class)
+                    ->where('locatable_id', $store->id);
+            })->count();
+
+            $store->setRelation('articles', $articles);
+            $store->location_ratings_count = $locationRatingsCount;
+
             return $store;
         });
 
