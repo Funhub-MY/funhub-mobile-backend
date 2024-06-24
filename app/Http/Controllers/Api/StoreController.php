@@ -68,7 +68,17 @@ class StoreController extends Controller
         $query->with(['merchant', 'storeRatings', 'location', 'categories', 'media']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'availableMerchantOffers', 'locationRatings');
+        $query->withCount([
+            'storeRatings',
+            'availableMerchantOffers',
+            'locationRatings' => function ($query) {
+                $query->join('locatables', function ($join) {
+                    $join->on('locations.id', '=', 'locatables.location_id')
+                        ->where('locatables.locatable_type', Store::class)
+                        ->whereColumn('locatables.locatable_id', 'stores.id');
+                });
+            }
+        ]);
 
         // with count published merchant offers
         $query->withCount(['merchant_offers' => function ($query) {
