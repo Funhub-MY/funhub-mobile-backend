@@ -94,12 +94,14 @@ class StoreController extends Controller
                 });
             })->with(['user.followers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            }])->get();
+            }, 'location.ratings'])->get();
 
             $store->setRelation('articles', $articles);
 
             // articles which has provided location ratings
-            $store->location_ratings_count = $articles->whereHas('location.ratings')->count();
+            $store->location_ratings_count = $articles->filter(function ($article) {
+                return $article->location && $article->location->ratings->isNotEmpty();
+            })->count();
 
             return $store;
         });
