@@ -83,7 +83,7 @@ class StoreController extends Controller
         $stores = $query->paginate($request->input('limit', 10));
 
 
-         // modify the paginated results
+        // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
             // query the articles associated with the store via the shared location
             $articles = Article::whereHas('location', function ($query) use ($store) {
@@ -97,9 +97,7 @@ class StoreController extends Controller
                 $query->where('user_id', auth()->id());
             }])->get();
 
-            $store->setRelation('articles', $articles);
-
-             // Count location ratings for these articles
+            // Count location ratings for these articles
             $locationRatingsCount = LocationRating::whereIn('location_id', function ($query) use ($store) {
                 $query->select('location_id')
                     ->from('locatables')
