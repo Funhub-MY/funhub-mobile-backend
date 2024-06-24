@@ -98,6 +98,9 @@ class StoreController extends Controller
 
             $store->setRelation('articles', $articles);
 
+            // articles which has provided location ratings
+            $store->location_ratings_count = $articles->whereHas('location.ratings')->count();
+
             return $store;
         });
 

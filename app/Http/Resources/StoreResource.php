@@ -104,7 +104,7 @@ class StoreResource extends JsonResource
             'parent_category_ids' => $this->parentCategories->pluck('id'),
             'ratings' => number_format(floatval($this->ratings), 1),
             'total_ratings' => $this->store_ratings_count + $this->location_ratings_count,
-            'total_article_ratings' => $this->location_ratings_count,
+            'total_article_ratings' => $this->location_ratings_count ?? 0,
             'total_articles_same_location' => $this->articles->count(),
             'followings_been_here' => $this->whenLoaded('articles', function () {
                 $uniqueUsers = $this->articles->map(function ($article) {
