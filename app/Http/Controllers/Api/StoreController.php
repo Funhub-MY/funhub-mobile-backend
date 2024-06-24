@@ -82,7 +82,7 @@ class StoreController extends Controller
         $stores = $query->paginate($request->input('limit', 10));
 
 
-         // modify the paginated results
+        // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
             // query the articles associated with the store via the shared location
             $articles = Article::whereHas('location', function ($query) use ($store) {
@@ -98,7 +98,7 @@ class StoreController extends Controller
 
             $store->setRelation('articles', $articles);
 
-            // articles which has provided location ratings
+            // Count articles which have location ratings
             $store->location_ratings_count = $articles->filter(function ($article) {
                 return $article->location && $article->location->ratings->isNotEmpty();
             })->count();
