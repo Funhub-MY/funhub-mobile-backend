@@ -213,9 +213,10 @@ class Store extends BaseModel implements HasMedia, Auditable
             'location_id', // Foreign key on location_ratings table
             'id', // Local key on stores table
             'id' // Local key on locations table
-        )->whereHas('location', function ($query) {
-            $query->where('locatable_type', Store::class)
-                ->where('locatable_id', $this->id);
+        )->join('locatables', function ($join) {
+            $join->on('locations.id', '=', 'locatables.location_id')
+                ->where('locatables.locatable_type', Store::class)
+                ->where('locatables.locatable_id', $this->getTable() . '.id');
         });
     }
 
