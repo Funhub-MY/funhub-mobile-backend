@@ -75,6 +75,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'category_ids' => $this->categories->pluck('id'),
             'parent_category_ids' => $this->parentCategories->pluck('id'),
             'child_category_ids' => $this->childCategories->pluck('id'),
+            'ratings' => $this->storeRatings->avg('rating'),
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
