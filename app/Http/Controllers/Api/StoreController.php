@@ -99,9 +99,9 @@ class StoreController extends Controller
 
             $store->setRelation('articles', $articles);
 
-            // Count location ratings
-            $locationIds = $articles->pluck('location.id')->filter()->unique();
-            $store->location_ratings_count = LocationRating::whereIn('location_id', $locationIds)->count();
+            // store's location ratings same as the number of articles which tagged same location as store
+            // due to when creating article need to rate the location if user tagged a location for an article
+            $store->location_ratings_count = $articles->count();
 
             return $store;
         });
