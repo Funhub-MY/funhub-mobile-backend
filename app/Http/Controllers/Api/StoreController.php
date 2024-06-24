@@ -10,6 +10,7 @@ use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
 use App\Models\Article;
 use App\Models\Location;
+use App\Models\LocationRating;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
@@ -94,14 +95,13 @@ class StoreController extends Controller
                 });
             })->with(['user.followers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            }, 'location.ratings'])->get();
+            }, 'location'])->get();
 
             $store->setRelation('articles', $articles);
 
-            // Count articles which have location ratings
-            $store->location_ratings_count = $articles->filter(function ($article) {
-                return $article->location && $article->location->ratings->isNotEmpty();
-            })->count();
+            // Count location ratings
+            $locationIds = $articles->pluck('location.id')->filter()->unique();
+            $store->location_ratings_count = LocationRating::whereIn('location_id', $locationIds)->count();
 
             return $store;
         });
