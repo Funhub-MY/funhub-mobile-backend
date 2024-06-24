@@ -204,6 +204,21 @@ class Store extends BaseModel implements HasMedia, Auditable
         return $this->hasMany(StoreRating::class);
     }
 
+    public function locationRatings()
+    {
+        return $this->hasManyThrough(
+            LocationRating::class,
+            Location::class,
+            'id', // Foreign key on locations table
+            'location_id', // Foreign key on location_ratings table
+            'id', // Local key on stores table
+            'id' // Local key on locations table
+        )->whereHas('location', function ($query) {
+            $query->where('locatable_type', Store::class)
+                ->where('locatable_id', $this->id);
+        });
+    }
+
     public function interactions()
     {
         return $this->morphMany(Interaction::class, 'interactable');
