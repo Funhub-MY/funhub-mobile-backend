@@ -44,10 +44,19 @@ class MerchantOfferResource extends JsonResource
             'id' => $this->id,
             'sku' => $this->sku,
             'merchant_id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
-            'store' => [
-                'id' => ($this->store) ? $this->store->id : null,
-                'name' => ($this->store) ? $this->store->name : null,
-            ],
+            'stores' => ($this->stores) ? $this->stores->map(function ($store) {
+                return [
+                    'id' => $store->id,
+                    'name' => $store->name,
+                    'address' => $store->address,
+                    'address_postcode' => $store->address_postcode,
+                    'lat' => $store->lat,
+                    'lng' => $store->lng,
+                    'is_hq' => $store->is_hq,
+                    'state' => $store->state,
+                    'country' => $store->country
+                ];
+            }) : null,
             'merchant' => [
                 'id' => ($this->user) ? $this->user->merchant->id : null,
                 'brand_name' => ($this->user) ? $this->user->merchant->brand_name : null,

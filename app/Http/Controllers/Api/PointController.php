@@ -26,9 +26,9 @@ class PointController extends Controller
 
     /**
      * Get the point & point components balance of the logged in user.
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Point
      * @response scenario=success {
      * "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
@@ -41,9 +41,10 @@ class PointController extends Controller
      * ]}
      * }
      */
-    public function getPointsBalanceByUser()
+    public function getPointsBalanceByUser(Request $request)
     {
         $user = auth()->user();
+        $locale = $request->header('X-Locale') ?? config('app.locale');
 
         // reward
         $reward = Reward::first();
@@ -51,6 +52,7 @@ class PointController extends Controller
         $point = PointLedger::where('user_id', $user->id)
             ->orderBy('id', 'desc')
             ->first();
+
 
         // get current available reward components
         $rewardComponents = RewardComponent::all();
@@ -63,17 +65,20 @@ class PointController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
+            $translatedNames = json_decode($component->name_translation, true);
+            $translatedName = $translatedNames[$locale] ?? $component->name;
+
             if ($balance) {
                 $pointComponents[] = [
                     'id' => $component->id,
-                    'name' => $component->name,
+                    'name' => $translatedName,
                     'thumbnail_url' => $component->thumbnail_url,
                     'balance' => $balance->balance
                 ];
             } else {
                 $pointComponents[] = [
                     'id' => $component->id,
-                    'name' => $component->name,
+                    'name' => $translatedName,
                     'thumbnail_url' => $component->thumbnail_url,
                     'balance' => 0
                 ];
@@ -93,12 +98,12 @@ class PointController extends Controller
 
     /**
      * Get the point balance of the user.
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * 
+     *
      * @group Point
      * @response scenario=success {
      * "balance": 100
@@ -125,20 +130,20 @@ class PointController extends Controller
 
     /**
      * Get the point component balance of the user.
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * 
+     *
      * @group Point
      * @bodyParam type string required The type of point component. Example: egg
-     * 
+     *
      * @response scenario=success {
      * "type": "egg",
      * "balance": 100
      * }
-     * 
+     *
      */
     public function getPointComponentBalance(Request $request)
     {
@@ -173,10 +178,10 @@ class PointController extends Controller
 
     /**
      * Combine Points Component to Form a Reward
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Point
      * @bodyParam quantity integer required The quantity of the reward to form. Example: 1
      */
@@ -228,12 +233,12 @@ class PointController extends Controller
 
     /**
      * Get Rewards Available.
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * 
+     *
      * @group Point
      * @response scenario=success {
      * "rewards": [
@@ -262,7 +267,7 @@ class PointController extends Controller
      *
      * @param Request $request
      * @return PointLedgerResource
-     * 
+     *
      * @group Point
      * @response scenario=success {
      * "data": [
@@ -289,7 +294,7 @@ class PointController extends Controller
      *
      * @param Request $request
      * @return PointComponentLedgerResource
-     * 
+     *
      * @group Point
      * @urlParam filter_type string Type of Component (name). Example: egg
      * @response scenario=success {
