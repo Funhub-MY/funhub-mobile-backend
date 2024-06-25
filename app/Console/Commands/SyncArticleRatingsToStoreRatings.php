@@ -68,6 +68,12 @@ class SyncArticleRatingsToStoreRatings extends Command
                     continue;
                 }
 
+                \App\Models\Store::whereHas('storeRatings')->where('ratings', 0)->get()->each(function($store) {
+                    $store->update([
+                        'ratings' => \App\Models\StoreRating::where('store_id', $store->id)->avg('rating')
+                    ]);
+                });
+
                 $storeRating = StoreRating::create([
                     'store_id' => $storeId,
                     'user_id' => $article->user_id,
@@ -79,12 +85,9 @@ class SyncArticleRatingsToStoreRatings extends Command
                 ]);
 
                 // update store->ratings avg
-                $store = Store::where('id', $storeId)->first();
-                if ($store) {
-                    $store->update([
-                        'ratings' => StoreRating::where('store_id', $store->id)->avg('rating')
-                    ]);
-                }
+                Store::where('id', $storeId)->update([
+                    'ratings' => StoreRating::where('store_id', $storeId)->avg('rating')
+                ]);
 
                 $this->info("[SyncArticleRatingsToStoreRatings] StoreRating created for store_id {$storeId} with article_id {$article->id}");
 

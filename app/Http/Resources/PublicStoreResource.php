@@ -2,15 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\Store;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
-use App\Http\Resources\MerchantResource;
 use App\Models\Article;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class StoreResource extends JsonResource
+class PublicStoreResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,13 +18,6 @@ class StoreResource extends JsonResource
     public function toArray($request)
     {
         $bookmark_interaction_id = null;
-        if (auth()->user()) {
-            $interaction = $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first();
-            if ($interaction) {
-                $bookmark_interaction_id = $interaction->id;
-            }
-        }
-
         $merchant = null;
         $logo = null;
         $photos = [];
@@ -104,33 +94,18 @@ class StoreResource extends JsonResource
             'parent_category_ids' => $this->parentCategories->pluck('id'),
             'ratings' => number_format(floatval($this->ratings), 1),
             'total_ratings' => $this->store_ratings_count + $this->location_ratings_count,
-            'total_article_ratings' => $this->location_ratings_count ?? 0,
-            'total_articles_same_location' => $this->articles->count(),
-            'followings_been_here' => $this->whenLoaded('articles', function () {
-                $uniqueUsers = $this->articles->map(function ($article) {
-                    $user = $article->user;
-                    $isFollowing = $user->followers->contains('id', auth()->id());
-                    if ($isFollowing) {
-                        return [
-                            'id' => $user->id,
-                            'name' => $user->name,
-                            'username' => $user->username,
-                            'avatar' => $user->avatar_url,
-                            'avatar_thumb' => $user->avatar_thumb_url,
-                            'has_avatar' => $user->hasMedia('avatar'),
-                        ];
-                    }
-                })->filter();
-
-                return $uniqueUsers->unique('id')->values();
-            }),
+            'total_article_ratings' => $this->location_ratings_count,
+            'total_articles_same_location' => $this->articles_count,
             'has_merchant_offers' => ($this->available_merchant_offers_count > 0) ? true : false, // from relation availableMerchantOffers
-            'user_bookmarked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'bookmark_interaction_id' => $bookmark_interaction_id,
+            // other related data
+            'articles' => PublicArticleResource::collection($this->articles),
+            'store_ratings' => StoreRatingResource::collection($this->storeRatings),
+            'merchant_offers' => PublicMerchantOfferResource::collection($this->merchant_offers),
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
-            'user_id' => $this->user_id,
+            // 'user_id' => $this->user_id,
             'state_id' => $this->state_id,
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,

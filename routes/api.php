@@ -22,6 +22,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
+    Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
 
     // primary otp login
     Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp

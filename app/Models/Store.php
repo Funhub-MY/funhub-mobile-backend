@@ -75,6 +75,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'category_ids' => $this->categories->pluck('id'),
             'parent_category_ids' => $this->parentCategories->pluck('id'),
             'child_category_ids' => $this->childCategories->pluck('id'),
+            'ratings' => $this->storeRatings->avg('rating'),
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
@@ -202,6 +203,22 @@ class Store extends BaseModel implements HasMedia, Auditable
     public function storeRatings()
     {
         return $this->hasMany(StoreRating::class);
+    }
+
+    public function locationRatings()
+    {
+        return $this->hasManyThrough(
+            LocationRating::class,
+            Location::class,
+            'id', // Foreign key on locations table
+            'location_id', // Foreign key on location_ratings table
+            'id', // Local key on stores table
+            'id' // Local key on locations table
+        )->join('locatables', function ($join) {
+            $join->on('locations.id', '=', 'locatables.location_id')
+                ->where('locatables.locatable_type', Store::class)
+                ->whereColumn('locatables.locatable_id', 'stores.id');
+        });
     }
 
     public function interactions()

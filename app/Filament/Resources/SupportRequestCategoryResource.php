@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SupportRequestCategoryResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\SupportRequestCategoryResource\RelationManagers;
+use Filament\Forms\Components\KeyValue;
 
 class SupportRequestCategoryResource extends Resource
 {
@@ -40,6 +41,39 @@ class SupportRequestCategoryResource extends Resource
                         ->autofocus()
                         ->label('Name'),
 
+                    KeyValue::make('name_translation')
+                        ->label('Name Translation')
+                        ->keyLabel('Language')
+                        ->valueLabel('Name Translation')
+                        ->disableAddingRows()
+                        ->disableDeletingRows()
+                        ->disableEditingKeys()
+                        ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                            $locales = config('app.available_locales', []);
+                            if ($context === 'edit' && $record) {
+                                $translations = json_decode($record->name_translation, true);
+                                foreach ($locales as $language) {
+                                    $languageCode = array_search($language, $locales);
+                                    $set("name_translation.$language", $translations[$languageCode] ?? '');
+                                }
+                            } else {
+                                foreach ($locales as $language) {
+                                    $set("name_translation.$language", '');
+                                }
+                            }
+                        })
+                        ->dehydrateStateUsing(function ($state) {
+                            $locales = config('app.available_locales', []);
+                            $transformedState = [];
+                            foreach ($state as $key => $value) {
+                                $localeKey = array_search($key, $locales);
+                                if ($localeKey !== false) {
+                                    $transformedState[$localeKey] = $value;
+                                }
+                            }
+                            return json_encode($transformedState);
+                        }),
+
                     Select::make('type')
                         ->required()
                         ->options([
@@ -49,7 +83,40 @@ class SupportRequestCategoryResource extends Resource
                             'others' => 'Others',
                         ]),
 
-                    Forms\Components\TextInput::make('description'),
+                    // Forms\Components\TextInput::make('description'),
+
+                    KeyValue::make('description_translation')
+                        ->label('Description Translation')
+                        ->keyLabel('Language')
+                        ->valueLabel('Description Translation')
+                        ->disableAddingRows()
+                        ->disableDeletingRows()
+                        ->disableEditingKeys()
+                        ->afterStateHydrated(function ($context, $state, callable $set, $record) {
+                            $locales = config('app.available_locales', []);
+                            if ($context === 'edit' && $record) {
+                                $translations = json_decode($record->description_translation, true);
+                                foreach ($locales as $language) {
+                                    $languageCode = array_search($language, $locales);
+                                    $set("description_translation.$language", $translations[$languageCode] ?? '');
+                                }
+                            } else {
+                                foreach ($locales as $language) {
+                                    $set("description_translation.$language", '');
+                                }
+                            }
+                        })
+                        ->dehydrateStateUsing(function ($state) {
+                            $locales = config('app.available_locales', []);
+                            $transformedState = [];
+                            foreach ($state as $key => $value) {
+                                $localeKey = array_search($key, $locales);
+                                if ($localeKey !== false) {
+                                    $transformedState[$localeKey] = $value;
+                                }
+                            }
+                            return json_encode($transformedState);
+                        }),
 
                     Select::make('status')
                         ->required()

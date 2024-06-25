@@ -4,19 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LocationResource;
+use App\Http\Resources\PublicStoreResource;
 use App\Http\Resources\RatingCategoryResource;
 use App\Http\Resources\StoreRatingResource;
 use App\Http\Resources\StoreResource;
 use App\Models\Article;
 use App\Models\Location;
+use App\Models\LocationRating;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
 use App\Models\RatingCategory;
+use App\Models\ShareableLink;
 use App\Models\Store;
 use App\Models\User;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StoreController extends Controller
 {
@@ -58,13 +62,17 @@ class StoreController extends Controller
 
             // must order by storeids
             $q->orderBy(DB::raw('FIELD(id, ' . implode(',', $storeIds) . ')'));
+            Log::info('Stores Query Load IDs: ' . implode(',', $storeIds));
         });
 
         // with merchant, ratings, location
         $query->with(['merchant', 'storeRatings', 'location', 'categories', 'media']);
 
         // with count total ratings
-        $query->withCount('storeRatings', 'availableMerchantOffers');
+        $query->withCount([
+            'storeRatings',
+            'availableMerchantOffers',
+        ]);
 
         // with count published merchant offers
         $query->withCount(['merchant_offers' => function ($query) {
@@ -74,7 +82,8 @@ class StoreController extends Controller
 
         $stores = $query->paginate($request->input('limit', 10));
 
-         // modify the paginated results
+
+        // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
             // query the articles associated with the store via the shared location
             $articles = Article::whereHas('location', function ($query) use ($store) {
@@ -86,9 +95,14 @@ class StoreController extends Controller
                 });
             })->with(['user.followers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            }])->get();
+            }, 'location'])->get();
 
             $store->setRelation('articles', $articles);
+
+            // store's location ratings same as the number of articles which tagged same location as store
+            // due to when creating article need to rate the location if user tagged a location for an article
+            $store->location_ratings_count = $articles->count();
+
             return $store;
         });
 
@@ -349,5 +363,41 @@ class StoreController extends Controller
         $stores = $location->stores()->paginate(config('app.paginate_per_page'));
 
         return StoreResource::collection($stores);
+    }
+
+    public function getPublicStorePublicView(Request $request)
+    {
+        $this->validate($request, [
+            'share_code' => 'required',
+        ]);
+
+         // get article by ShareableLink
+         $share = ShareableLink::where('link', $request->share_code)
+            ->where('model_type', Store::class)
+            ->first();
+
+        if (!$share) {
+            return abort(404);
+        }
+        $store = $share->model;
+
+        $store->load('merchant', 'storeRatings', 'location', 'categories', 'media')
+            // with limit articles to 6
+            ->load(['articles' => function ($query) {
+                $query->limit(6);
+            }])
+            // with limit store ratings to 6
+            ->load(['storeRatings' => function ($query) {
+                $query->limit(6);
+            }])
+            // with limit merchant_offers to 6
+            ->load(['merchant_offers' => function ($query) {
+                $query->limit(6);
+            }])
+            ->withCount('storeRatings', 'availableMerchantOffers');
+
+        return response()->json([
+            'store' => new PublicStoreResource($store)
+        ]);
     }
 }

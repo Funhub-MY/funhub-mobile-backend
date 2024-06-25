@@ -14,10 +14,17 @@ class SupportRequestCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
+        $locale = $request->header('X-Locale') ?? config('app.locale');
+        $translatedNames = json_decode($this->name_translation, true);
+        $translatedDescriptions = json_decode($this->description_translation, true);
+
+        $translatedName = $translatedNames[$locale] ?? $this->name;
+        $translatedDescription = $translatedDescriptions[$locale] ?? $this->description;
+
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
+            'name' => $translatedName,
+            'description' => $translatedDescription,
             'type' => $this->type,
             'icon' => $this->icon,
             'created_at' => $this->created_at,
