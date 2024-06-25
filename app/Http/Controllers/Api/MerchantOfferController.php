@@ -849,7 +849,7 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-        $query->with('user', 'user.merchant', 'categories', 'store', 'claims', 'user', 'location', 'location.ratings');
+        $query->with('user', 'user.merchant', 'categories', 'stores', 'stores.location', 'claims', 'user', 'location', 'location.ratings');
 
         return $query;
     }
