@@ -215,7 +215,7 @@ class MerchantOfferController extends Controller
             }
         }
 
-        $claims = $query->with('merchantOffer', 'stores', 'redeem', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.categories')
+        $claims = $query->with('merchantOffer', 'redeem', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.stores', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferClaimResource::collection($claims);
