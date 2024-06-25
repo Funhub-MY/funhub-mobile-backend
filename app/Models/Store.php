@@ -67,6 +67,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'id' => $this->id,
             'name' => $this->name,
             'manager_name' => $this->manager_name,
+            'onboarded' => ($this->merchant) ? true : false,
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => $this->business_hours,
             'address' => $this->address,
