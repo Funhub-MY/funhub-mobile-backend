@@ -86,7 +86,7 @@ class MerchantOfferController extends Controller
         $query = MerchantOffer::query()
             ->published()
             // ->available()
-            ->with('user', 'user.merchant', 'categories', 'stores', 'claims', 'user', 'location', 'location.ratings');
+            ->with('user', 'user.merchant', 'categories', 'stores', 'stores.location', 'claims', 'user', 'location', 'location.ratings');
 
         // category_ids filter
         if ($request->has('category_ids')) {
@@ -215,7 +215,7 @@ class MerchantOfferController extends Controller
             }
         }
 
-        $claims = $query->with('merchantOffer', 'redeem', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.stores', 'merchantOffer.categories')
+        $claims = $query->with('merchantOffer', 'redeem', 'voucher', 'merchantOffer.user', 'merchantOffer.user.merchant', 'merchantOffer.stores', 'merchantOffer.stores.location', 'merchantOffer.categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferClaimResource::collection($claims);
@@ -490,7 +490,7 @@ class MerchantOfferController extends Controller
 
         $this->buildQuery($query, $request);
 
-        $data = $query->with('user', 'interactions', 'stores', 'media', 'categories')
+        $data = $query->with('user', 'interactions', 'stores', 'stores.location', 'media', 'categories')
             ->paginate(config('app.paginate_per_page'));
 
         return MerchantOfferResource::collection($data);

@@ -50,8 +50,8 @@ class MerchantOfferResource extends JsonResource
                     'name' => $store->name,
                     'address' => $store->address,
                     'address_postcode' => $store->address_postcode,
-                    'lat' => $store->lat,
-                    'lng' => $store->lng,
+                    'lat' => $store->location->lat,
+                    'lng' => $store->location->lng,
                     'is_hq' => $store->is_hq,
                     'state' => $store->state,
                     'country' => $store->country
