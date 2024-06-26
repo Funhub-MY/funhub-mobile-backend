@@ -45,6 +45,11 @@ class MerchantOfferResource extends JsonResource
             'id' => $this->id,
             'sku' => $this->sku,
             'merchant_id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
+            // to deprecate. use stores instead
+            'store' => [
+                'id' => ($this->store) ? $this->store->id : null,
+                'name' => ($this->store) ? $this->store->name : null,
+            ],
             'stores' => ($this->stores) ? $this->stores->map(function ($store) {
                 return [
                     'id' => $store->id,
