@@ -49,6 +49,7 @@ class Merchant extends BaseModel implements HasMedia, Auditable
             'id' => $this->id,
             'name' => $this->name,
             'business_name' => $this->business_name,
+            'brand_name' => $this->brand_name,
             'logo' => ($this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME)) ? $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME) : null,
             'photos' => $this->getMedia(self::MEDIA_COLLECTION_NAME_PHOTOS)->map(function ($item) {
                 return $item->getFullUrl();

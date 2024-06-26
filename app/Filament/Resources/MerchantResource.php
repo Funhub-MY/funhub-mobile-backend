@@ -91,6 +91,10 @@ class MerchantResource extends Resource
                             ->required()
                             ->rules('required', 'max:255'),
 
+                        Forms\Components\TextInput::make('brand_name')
+                            ->label('Brand Name')
+                            ->rules('max:255'),
+
                         TextInput::make('redeem_code')
                             ->label('Cashier Redeem Code (6 Digit)')
                             ->disabled(fn ($livewire) => $livewire instanceof CreateRecord)
@@ -253,7 +257,14 @@ class MerchantResource extends Resource
                         'success' => 1,
                         'danger' => 2,
                     ]),
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Merchant Name')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('brand_name')
+                    ->label('Brand Name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_name'),

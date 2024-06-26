@@ -19,6 +19,7 @@ class MerchantResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'business_name' => $this->business_name,
+            'brand_name' => $this->brand_name ?? null,
             'logo' => ($this->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'photos' => $this->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)->map(function ($item) {
                 return $item->getFullUrl();

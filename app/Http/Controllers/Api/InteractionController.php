@@ -117,7 +117,7 @@ class InteractionController extends Controller
      * @bodyParam type string required The type of interaction. Example: like,dislike,share,bookmark
      * @bodyParam id integer required The id of the interactable (eg. Article ID). Example: 1
      * @bodyParam code string optional The code of the shareable link(6 characters). Example: 1
-     * @bodyParam model_type string optional The model type of the shareable link. Example: article,merchant_offer
+     * @bodyParam model_type string optional The model type of the shareable link. Example: article,merchant_offer,store
      * @response scenario=success {
      *  "interaction": {}
      * }
