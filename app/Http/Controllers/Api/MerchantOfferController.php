@@ -735,8 +735,12 @@ class MerchantOfferController extends Controller
 
         // get article by ShareableLink
         $share = ShareableLink::where('link', $request->share_code)
-            ->where('model_type', MerchantOffer::class)
+            ->where('model_type', 'App\Models\MerchantOffer')
             ->first();
+
+        Log::info('share merchant offer', [
+            'link' => $request->share_code,
+        ]);
 
         if (!$share) {
             return abort(404);
