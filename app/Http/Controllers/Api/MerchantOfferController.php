@@ -732,15 +732,10 @@ class MerchantOfferController extends Controller
         $this->validate($request, [
             'share_code' => 'required|string'
         ]);
-
-        // get article by ShareableLink
+        // get merchant offer by ShareableLink
         $share = ShareableLink::where('link', $request->share_code)
-            ->where('model_type', 'App\Models\MerchantOffer')
+            ->where('model_type', MerchantOffer::class)
             ->first();
-
-        Log::info('share merchant offer', [
-            'link' => $request->share_code,
-        ]);
 
         if (!$share) {
             return abort(404);
