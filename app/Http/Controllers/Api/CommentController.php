@@ -218,6 +218,13 @@ class CommentController extends Controller
             Log::error('[CommentController] Notification error when commentable user', ['message' => $e->getMessage()]);
         }
 
+        $comment->load(['replies' => function ($query) {
+            $query->latest()
+                ->whereHas('user', function ($query) {
+                    $query->where('users.status', User::STATUS_ACTIVE);
+                });
+        }]);
+
         return response()->json([
             'comment' => CommentResource::make($comment),
             'article_id' => $comment->commentable_id,
