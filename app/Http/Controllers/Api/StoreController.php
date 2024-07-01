@@ -66,7 +66,16 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant', 'storeRatings', 'location', 'categories', 'media']);
+        $query->with(['merchant',
+            'storeRatings' => function ($query) {
+                $query->whereHas('user', function ($q) {
+                    $q->where('status', '!=', User::STATUS_ARCHIVED);
+                });
+            },
+            'location',
+            'categories',
+            'media'
+        ]);
 
         // with count total ratings
         $query->withCount([
@@ -84,8 +93,9 @@ class StoreController extends Controller
                 ->where('merchant_offers.available_at', '<=', now());
         }]);
 
-        $stores = $query->paginate($request->input('limit', 10));
-
+        $stores = $query
+            ->listed() // NOTICE! Listed stores are selected only!
+            ->paginate($request->input('limit', 10));
 
         // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
@@ -374,6 +384,12 @@ class StoreController extends Controller
         return StoreResource::collection($stores);
     }
 
+    /**
+     * Get Public Store Public View
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function getPublicStorePublicView(Request $request)
     {
         $this->validate($request, [

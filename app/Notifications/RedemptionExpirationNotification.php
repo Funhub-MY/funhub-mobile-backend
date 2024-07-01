@@ -60,12 +60,12 @@ class RedemptionExpirationNotification extends Notification
                 'action' => 'offer_redeem_expiration',
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
-                'title' => '优惠券即将逾期',
+                'title' => __('messages.notification.fcm.RedemptionNearExpiry'),
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(
                 \NotificationChannels\Fcm\Resources\Notification::create()
-                    ->setTitle('优惠券即将逾期')
+                    ->setTitle( __('messages.notification.fcm.RedemptionNearExpiry'))
                     ->setBody($this->getMessage())
             );
     }

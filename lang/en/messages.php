@@ -265,6 +265,7 @@ return [
             'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
             'ReferralRewardReceivedTitle' => 'Referral Reward Received',
             'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
+            'RedemptionNearExpiry' => 'Voucher Expiring Soon',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -290,6 +291,7 @@ return [
             'VoucherRedeemedNotification' => 'Voucher redeemed',
             'RewardReceivedBody' => 'You have received :rewardName x :rewardQuantity for completing mission ":missionName"',
             'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
+            'RedemptionNearExpiry' => 'Voucher Expiring Soon',
         ]
     ]
 ];

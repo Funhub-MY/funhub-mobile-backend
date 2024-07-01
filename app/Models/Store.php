@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,14 @@ class Store extends BaseModel implements HasMedia, Auditable
 {
     use HasFactory, \OwenIt\Auditing\Auditable, Searchable, InteractsWithMedia;
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
+    const STATUS = [
+        self::STATUS_ACTIVE => 'Listed',
+        self::STATUS_INACTIVE => 'Unlisted'
+    ];
+
     const MEDIA_COLLECTION_PHOTOS = 'store_photos';
 
     /**
@@ -25,6 +34,7 @@ class Store extends BaseModel implements HasMedia, Auditable
 
     protected $fillable = [
         'name',
+        'status',
         'manager_name',
         'business_phone_no',
         'business_hours',
@@ -97,13 +107,13 @@ class Store extends BaseModel implements HasMedia, Auditable
         if ($this->user_id) {
             // if has user_id, then make sure only approved merchant is searchable
             if ($this->merchant) {
-                return $this->merchant->status === Merchant::STATUS_APPROVED;
+                return $this->merchant->status === Merchant::STATUS_APPROVED && $this->status === self::STATUS_ACTIVE;
             }
         }
 
         // unonboarded merchants do not have user_id, make them searcheable
         // note: unonboarded merchants are auto synced from Article location -> stores
-        return true;
+        return $this->status === self::STATUS_ACTIVE;;
     }
 
     public function merchant()
@@ -240,4 +250,8 @@ class Store extends BaseModel implements HasMedia, Auditable
         );
     }
 
+    public function scopeListed(Builder $query): void
+    {
+        $query->where($this->getTable() . '.status', self::STATUS_ACTIVE);
+    }
 }
