@@ -168,7 +168,9 @@ class StoreController extends Controller
                 $query->where('store_id', $store->id);
             }])
             ->where('users.status', User::STATUS_ACTIVE);
-        }, 'interactions', 'ratingCategories']);
+        }, 'interactions', 'ratingCategories'])
+        ->join('users', 'store_ratings.user_id', '=', 'users.id')
+        ->where('users.status', User::STATUS_ACTIVE);
 
         // if there's no sort, sort by latest
         if (!$request->has('sort')) {
@@ -189,8 +191,10 @@ class StoreController extends Controller
         if (!$request->has('user_id')) {
             // get only one latest rating per user
             $latestRatings = $store->storeRatings()
-                ->selectRaw('MAX(id) as id')
-                ->groupBy('user_id');
+                ->join('users', 'store_ratings.user_id', '=', 'users.id')
+                ->where('users.status', User::STATUS_ACTIVE)
+                ->selectRaw('MAX(store_ratings.id) as id')
+                ->groupBy('store_ratings.user_id');
 
             $query->joinSub($latestRatings, 'latest_ratings', function ($join) {
                 $join->on('store_ratings.id', '=', 'latest_ratings.id');
