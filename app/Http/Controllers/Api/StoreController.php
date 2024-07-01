@@ -166,7 +166,8 @@ class StoreController extends Controller
         $query = $store->storeRatings()->with(['user' => function ($query) use ($store) {
             $query->withCount(['storeRatings' => function ($query) use ($store) {
                 $query->where('store_id', $store->id);
-            }]);
+            }])
+            ->where('status', User::STATUS_ACTIVE);
         }, 'interactions', 'ratingCategories']);
 
         // if there's no sort, sort by latest
