@@ -432,12 +432,9 @@ class CommentController extends Controller
     {
         $comment = Comment::where('id', $id)->firstOrFail();
 
-        $query = $comment->replies()->latest()
-            ->withCount(['replies' => function ($query) {
-                $query->whereHas('user', function ($query) {
-                    $query->where('status', User::STATUS_ACTIVE);
-                });
-            }]);
+        $query = $comment->replies()->latest()->whereHas('user', function ($query) {
+            $query->where('status', User::STATUS_ACTIVE);
+        });
 
         $this->buildQuery($query, $request);
 
