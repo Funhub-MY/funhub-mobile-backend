@@ -189,6 +189,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::post('/gender', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveGender']);
             Route::post('/location', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveLocation']);
             Route::post('/job-title', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveJobTitle']);
+            Route::post('/language', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveLanguage']);
 
             Route::post('/fcm-token', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveFcmToken']);
 
