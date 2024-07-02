@@ -42,7 +42,7 @@ class OfferRedeemed extends Notification
 
     protected function getMessage()
     {
-        return __('messages.notification.fcm.OfferRedeemed', ['offerName' => $this->user->name]);
+        return __('messages.notification.fcm.OfferRedeemed', ['offerName' => $this->offer->name]);
     }
 
     public function toFcm($notifiable)
@@ -57,12 +57,12 @@ class OfferRedeemed extends Notification
                 'action' => 'offer_redeemed',
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
-                'title' => '兑换成功',
+                'title' => __('messages.notification.fcm.RedemptionSuccessful'),
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(
                 \NotificationChannels\Fcm\Resources\Notification::create()
-                    ->setTitle('兑换成功')
+                    ->setTitle(__('messages.notification.fcm.RedemptionSuccessful'))
                     ->setBody($this->getMessage())
             );
     }
@@ -84,7 +84,7 @@ class OfferRedeemed extends Notification
             'action' => 'offer_redeemed',
             'from_name' => $this->user->name,
             'from_id' => $this->user->id,
-            'title' => '兑换成功',
+            'title' =>  __('messages.notification.fcm.RedemptionSuccessful'),
             'message' => $this->getMessage(),
         ];
     }
