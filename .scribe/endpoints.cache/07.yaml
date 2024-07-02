@@ -40,7 +40,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - voluptas
+          - beatae
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -132,7 +132,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - voluptas
+        - beatae
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -159,7 +159,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4d6kag3abP6Vv18cDZh5ef'
+      - 'Bearer g63P1ka65b4hVZcDv8fEdae'
     controller: null
     method: null
     route: null
@@ -266,7 +266,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afbcaPdkED5V661gZ4eh3v8'
+      - 'Bearer aVZd6h1va3568fegcEP4bkD'
     controller: null
     method: null
     route: null
@@ -310,7 +310,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - laboriosam
+          - molestias
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -483,7 +483,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - laboriosam
+        - molestias
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -521,7 +521,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8deb436kVcZPDag6E15afhv'
+      - 'Bearer 16Z3VE5cdaPebh4vDagf86k'
     controller: null
     method: null
     route: null
@@ -644,7 +644,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e3va6ZDE8dfgVk15cP6bh4a'
+      - 'Bearer d6f15Zegv3bDa4ha8ck6PVE'
     controller: null
     method: null
     route: null
@@ -731,7 +731,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5d4e1PZc86kEb6a3fVgDhav'
+      - 'Bearer 5E4Pc6fZ36kaeavDb8dhV1g'
     controller: null
     method: null
     route: null
@@ -793,7 +793,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 51f8DgdPa6ea6Eb3Vvk4cZh'
+      - 'Bearer df86c15vVDah4aP6eEZ3kbg'
     controller: null
     method: null
     route: null
@@ -846,7 +846,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E8fdcV4vD6ehZ5g16aa3kbP'
+      - 'Bearer Dcg561fE4aa86ehvbVkdZP3'
     controller: null
     method: null
     route: null
@@ -873,13 +873,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: nihil
+        example: voluptas
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: nihil
+      offer_id: voluptas
     queryParameters:
       offer_id:
         name: offer_id
@@ -909,7 +909,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5ga3vaEbZ66Dhe1P8dV4fk'
+      - 'Bearer 5PaE6fVdba8DZce46kv1h3g'
     controller: null
     method: null
     route: null
@@ -1003,7 +1003,110 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6aEaZe3hvV6541cbkPfD8g'
+      - 'Bearer adfaEeD4chkv6gb68315PVZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchants/crm
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Merchant CRM Record'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: Email.
+        required: true
+        example: abc@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      brand_name:
+        name: brand_name
+        description: 'Brand Name.'
+        required: true
+        example: ABC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      pic_name:
+        name: pic_name
+        description: 'PIC Name.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      postcode:
+        name: postcode
+        description: Postcode.
+        required: true
+        example: '123456'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      phone_no:
+        name: phone_no
+        description: 'Phone Number.'
+        required: true
+        example: '0123456789'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      address:
+        name: address
+        description: 'optional Address.'
+        required: false
+        example: '123, Jalan ABC'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanBodyParameters:
+      email: abc@example.com
+      brand_name: ABC
+      pic_name: 'John Doe'
+      postcode: '123456'
+      phone_no: '0123456789'
+      address: '123, Jalan ABC'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Created Merchant Contact"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Vg6ef1hkZD85P36avabdEc4'
     controller: null
     method: null
     route: null
@@ -1046,7 +1149,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kbEgVPcaD3a4h16e8Zd56vf'
+      - 'Bearer Vdf4P16ba3Z6kavgc8DEh5e'
     controller: null
     method: null
     route: null
@@ -1132,7 +1235,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DadE64PVa568Zkb3fhcv1ge'
+      - 'Bearer 6hZVP3b5e6DfkEvagd18c4a'
     controller: null
     method: null
     route: null
@@ -1186,7 +1289,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZa5g6E64h8PDb13kdavfcV'
+      - 'Bearer 8a4VD13abgdk5Z6PeEvfch6'
     controller: null
     method: null
     route: null
@@ -1300,7 +1403,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZkE5gdfvP3baV6he861ac4D'
+      - 'Bearer cEh4Pa1abVd56v8fgZDe63k'
     controller: null
     method: null
     route: null
@@ -1393,7 +1496,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4f8eaV6vD63hZgE5dcaP1kb'
+      - 'Bearer h4a8Zgf6kVeb5PE3d6Dacv1'
     controller: null
     method: null
     route: null
@@ -1459,7 +1562,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DE6V4fakdavbh83c6Ze1Pg5'
+      - 'Bearer bh466ePafEk31Zgdcva8D5V'
     controller: null
     method: null
     route: null
@@ -1562,7 +1665,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kf6vZ6eD1aEg5VbchPd438a'
+      - 'Bearer v34Za5dc6ebaEVD1P6h8kfg'
     controller: null
     method: null
     route: null
@@ -1681,7 +1784,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g6veV13E4hZb5c8dPa6kDaf'
+      - 'Bearer aveV58DPc6kE4f6g3Zbh1da'
     controller: null
     method: null
     route: null
@@ -1740,7 +1843,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1DaPceEfvd3k68ag5bhZV46'
+      - 'Bearer a63ZV5PDfh416cbekv8daEg'
     controller: null
     method: null
     route: null
@@ -1880,7 +1983,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vEPaZ4ahkdg6f6e5VDc31b8'
+      - 'Bearer Df63Vabcg1e4a6kv8E5dZhP'
     controller: null
     method: null
     route: null

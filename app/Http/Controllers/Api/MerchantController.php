@@ -14,6 +14,7 @@ use App\Models\RatingCategory;
 use App\Models\Store;
 use App\Traits\QueryBuilderTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class MerchantController extends Controller
@@ -306,5 +307,55 @@ class MerchantController extends Controller
         $ratingCategories = RatingCategory::all();
 
         return RatingCategoryResource::collection($ratingCategories);
+    }
+
+
+    /**
+     * Create Merchant CRM Record
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @bodyParam email string required Email. Example: abc@example.com
+     * @bodyParam brand_name string required Brand Name. Example: ABC
+     * @bodyParam pic_name string required PIC Name. Example: John Doe
+     * @bodyParam postcode string required Postcode. Example: 123456
+     * @bodyParam phone_no string required Phone Number. Example: 0123456789
+     * @bodyParam address string optional Address. Example: 123, Jalan ABC
+     *
+     * @response scenario=success {
+     * "message": "Created Merchant Contact"
+     * }
+     */
+    public function postMerchantCrm(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'brand_name' => 'required',
+            'pic_name' => 'required',
+            'postcode' => 'required|digits:6',
+            'phone_no' => 'required',
+        ]);
+
+        $hubspot = \HubSpot\Factory::createWithAccessToken(config('services.hubspot.token'));
+
+        $contactInput = new \HubSpot\Client\Crm\Contacts\Model\SimplePublicObjectInput();
+        $contactInput->setProperties([
+            'brand_name' => $request->brand_name,
+            'firstname' => $request->pic_name,
+            'email' => $request->email,
+            'mobilephone' => $request->phone_no,
+            'postcode' => $request->postcode,
+            'address' => $request->address ?? null,
+        ]);
+
+        $contact = $hubspot->crm()->contacts()->basicApi()->create($contactInput);
+
+        Log::info('Hubspot Contact Created', ['contact' => $contact]);
+
+        return response()->json([
+            'message' => 'Created Merchant Contact'
+        ]);
     }
 }
