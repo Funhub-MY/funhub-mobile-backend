@@ -50,6 +50,12 @@ class StoreResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Basic Information')
                     ->schema([
+                        Forms\Components\Select::make('status')
+                            ->options(Store::STATUS)
+                            ->default(Store::STATUS_ACTIVE)
+                            ->helperText('Unlisted store will not show up in App')
+                            ->label('Status')
+                            ->required(),
                         Forms\Components\TextInput::make('name')
                             ->label('Store Name')
                             ->autofocus()
@@ -238,6 +244,14 @@ class StoreResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->enum(Store::STATUS)
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->formatStateUsing(fn ($state) => $state ?? 'Un-onboarded')
                     ->sortable()
@@ -271,7 +285,10 @@ class StoreResource extends Resource
                             } else {
                                 return $query;
                             }
-                        })
+                        }),
+                SelectFilter::make('status')
+                    ->options(Store::STATUS)
+                    ->label('Status'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

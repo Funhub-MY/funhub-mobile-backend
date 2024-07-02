@@ -66,11 +66,26 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant', 'storeRatings', 'location', 'categories', 'media']);
+        $query->with(['merchant',
+            'storeRatings' => function ($query) {
+                $query->whereHas('user', function ($q) {
+                    $q->where('status', '!=', User::STATUS_ARCHIVED);
+                });
+            },
+            'location',
+            'interactions',
+            'categories',
+            'parentCategories',
+            'media'
+        ]);
 
         // with count total ratings
         $query->withCount([
-            'storeRatings',
+            'storeRatings' => function ($query) {
+                $query->whereHas('user', function ($q) {
+                    $q->where('status', '!=', User::STATUS_ARCHIVED);
+                });
+            },
             'availableMerchantOffers',
         ]);
 
@@ -80,8 +95,9 @@ class StoreController extends Controller
                 ->where('merchant_offers.available_at', '<=', now());
         }]);
 
-        $stores = $query->paginate($request->input('limit', 10));
-
+        $stores = $query
+            ->listed() // NOTICE! Listed stores are selected only!
+            ->paginate($request->input('limit', 10));
 
         // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
@@ -95,7 +111,11 @@ class StoreController extends Controller
                 });
             })->with(['user.followers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            }, 'location'])->get();
+            }, 'location', 'media' => function ($query) {
+                $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
+                    ->orderBy('order_column', 'asc')
+                    ->take(1);
+            }])->get();
 
             $store->setRelation('articles', $articles);
 
@@ -166,8 +186,11 @@ class StoreController extends Controller
         $query = $store->storeRatings()->with(['user' => function ($query) use ($store) {
             $query->withCount(['storeRatings' => function ($query) use ($store) {
                 $query->where('store_id', $store->id);
-            }]);
-        }, 'interactions', 'ratingCategories']);
+            }])
+            ->where('users.status', User::STATUS_ACTIVE);
+        }, 'interactions', 'ratingCategories'])
+        ->join('users', 'store_ratings.user_id', '=', 'users.id')
+        ->where('users.status', User::STATUS_ACTIVE);
 
         // if there's no sort, sort by latest
         if (!$request->has('sort')) {
@@ -188,8 +211,10 @@ class StoreController extends Controller
         if (!$request->has('user_id')) {
             // get only one latest rating per user
             $latestRatings = $store->storeRatings()
-                ->selectRaw('MAX(id) as id')
-                ->groupBy('user_id');
+                ->join('users', 'store_ratings.user_id', '=', 'users.id')
+                ->where('users.status', User::STATUS_ACTIVE)
+                ->selectRaw('MAX(store_ratings.id) as id')
+                ->groupBy('store_ratings.user_id');
 
             $query->joinSub($latestRatings, 'latest_ratings', function ($join) {
                 $join->on('store_ratings.id', '=', 'latest_ratings.id');
@@ -365,6 +390,12 @@ class StoreController extends Controller
         return StoreResource::collection($stores);
     }
 
+    /**
+     * Get Public Store Public View
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function getPublicStorePublicView(Request $request)
     {
         $this->validate($request, [

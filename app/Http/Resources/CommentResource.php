@@ -60,7 +60,7 @@ class CommentResource extends JsonResource
             'user' => new UserResource($this->user),
             'counts' => [
                 'likes' => $this->likes()->count(),
-                'replies' => $this->replies()->count(),
+                'replies' => $this->replies_count ?? 0,
             ],
             'tagged_users' => $taggedUsers,
             'body' => $commentBody,

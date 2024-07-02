@@ -950,4 +950,29 @@ class UserSettingsController extends Controller
 
         return response()->json(['message' => 'Saved']);
     }
+
+    /**
+     * Save Language of User
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @bodyParam lang string required The language of the user. Example: en/zh
+     * @response scenario=success {
+     * "message": "Saved"
+     * }
+     */
+    public function postSaveLanguage(Request $request)
+    {
+        $this->validate($request, [
+            'last_lang' => 'required|string|in:en,zh'
+        ]);
+
+        $user = auth()->user();
+        $user->last_lang = $request->last_lang;
+        $user->save();
+
+        return response()->json(['message' => 'Saved']);
+    }
 }

@@ -37,6 +37,7 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
         // only applicable for past 7 days articles
         $articles = Article::where('status', Article::STATUS_DRAFT)
             ->whereHas('imports')
+            ->where('status', Article::STATUS_DRAFT)
             ->where('created_at', '>=', now()->subDays(7))
             ->get();
 

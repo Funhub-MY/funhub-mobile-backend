@@ -6,6 +6,7 @@ use App\Events\FollowedUser;
 use App\Events\UnfollowedUser;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\FollowRequest;
 use App\Models\User;
 use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
@@ -111,15 +112,13 @@ class UserFollowingController extends Controller
          // check if user profile is private and user already requesting follow, if yes delete the follow request
          $user = User::find($request->user_id);
          if ($user->profile_is_private) {
-             $followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
+             $followRequest = FollowRequest::where('user_id', auth()->id())
+                 ->where('following_id', $request->user_id)
+                 ->first();
              if ($followRequest) {
+                // delete any follow requests first
                  $followRequest->delete();
              }
-
-             return response()->json([
-                 'message' => __('messages.success.user_following_controller.Follow_request_removed'),
-                 'status' => 'request_removed'
-             ], 200);
          }
 
         // check if user already following user or not

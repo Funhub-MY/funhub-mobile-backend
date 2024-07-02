@@ -299,6 +299,128 @@ class StoreTest extends TestCase
         $this->assertEquals(6, $response->json()['meta']['total']);
     }
 
+    public function testFollowingCountOfAStore()
+    {
+        // following count is whoever im following has an article about this store
+
+        // create a new user
+        $user = User::factory()->create();
+
+        // user this user follow the other $user
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+        $response->assertStatus(200);
+
+        // acting as $user create an article about default store and merchant
+        $this->actingAs($user); // act as newUser
+        // upload images first
+        $response = $this->json('POST', '/api/v1/articles/gallery', [
+            'images' => UploadedFile::fake()->image('test.jpg')
+        ]);
+        // create article category factory
+        $categories = \App\Models\ArticleCategory::factory()
+            ->count(2)
+            ->create();
+
+        // get ids array out of response json uploaded
+        $image_ids = array_column($response->json('uploaded'), 'id');
+
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+            'categories' => $categories->pluck('id')->toArray(),
+            'images' => $image_ids,
+            'location' => [
+                'name' => 'Test Location',
+                'address' => 'Test Address',
+                'lat' => 1.234,
+                'lng' => 1.234,
+                'address_2' => 'Test Address 2',
+                'city' => 'Test City',
+                'state' => 'Selangor',
+                'postcode' => '123456',
+                'rating' => 4
+            ]
+        ]);
+
+          // create a merchant
+        // act as $this->user
+        $this->actingAs($this->user);
+
+        $merchant = Merchant::factory()->create([
+            'user_id' => $user->id,
+            'status' => Merchant::STATUS_APPROVED,
+        ]);
+
+        // create store that has location attached with same location above
+        $store = Store::factory()->create([
+            'user_id' => $this->user,
+            'state_id' => State::first()->id,
+            'country_id' => 1,
+            'lang' => 1.234,
+            'long' => 1.234,
+        ]);
+
+        // create a Location to attach to this store
+        $location = Location::where('name', 'Test Location')->first(); // must tag the same location
+
+        $store->location()->attach($location->id);
+
+        // use this->user follow the $user
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $user->id,
+        ]);
+
+        // clear cache to refresh the data
+        $this->artisan('cache:clear');
+
+        // get all stores list to see followings_been_here is loaded
+        $response = $this->getJson('/api/v1/stores');
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'created_at',
+                    'updated_at',
+                    'followings_been_here',
+                ],
+            ],
+        ]);
+
+        // assert followings_been_here is not empty
+        $this->assertNotEmpty($response->json()['data'][0]['followings_been_here']);
+
+        // create a new user which is non-follower of $user then query the stores again
+        $user2 = User::factory()->create();
+        $this->actingAs($user2);
+        $response = $this->getJson('/api/v1/stores');
+
+        // assert followings_been_here is empty
+        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
+
+        // if $this->user unfollows $user then followings_been_here should be empty
+        $this->actingAs($this->user);
+        $response = $this->postJson('/api/v1/user/unfollow', [
+            'user_id' => $user->id,
+        ]);
+
+        // clear cache to refresh the data
+        $this->artisan('cache:clear');
+
+        $response = $this->getJson('/api/v1/stores');
+        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
+    }
+
     public function testGetArticlesOfStores()
     {
         // create a new user
@@ -408,125 +530,6 @@ class StoreTest extends TestCase
         $this->assertArrayHasKey('data', $response->json());
         // assert meta.total is 1
         $this->assertEquals(1, $response->json()['meta']['total']);
-    }
-
-    public function testFollowingCountOfAStore()
-    {
-        // following count is whoever im following has an article about this store
-
-        // create a new user
-        $user = User::factory()->create();
-
-        // user this user follow the other $user
-        $this->actingAs($this->user);
-        $response = $this->postJson('/api/v1/user/follow', [
-            'user_id' => $user->id,
-        ]);
-        $response->assertStatus(200);
-
-        // acting as $user create an article about default store and merchant
-        $this->actingAs($user); // act as newUser
-        // upload images first
-        $response = $this->json('POST', '/api/v1/articles/gallery', [
-            'images' => UploadedFile::fake()->image('test.jpg')
-        ]);
-        // create article category factory
-        $categories = \App\Models\ArticleCategory::factory()
-            ->count(2)
-            ->create();
-
-        // get ids array out of response json uploaded
-        $image_ids = array_column($response->json('uploaded'), 'id');
-
-        $response = $this->postJson('/api/v1/articles', [
-            'title' => 'Test Article with Images',
-            'body' => 'Test Article Body',
-            'type' => 'multimedia',
-            'published_at' => now(),
-            'status' => 1,
-            'published_at' => now()->toDateTimeString(),
-            'tags' => ['#test', '#test2'],
-            'categories' => $categories->pluck('id')->toArray(),
-            'images' => $image_ids,
-            'location' => [
-                'name' => 'Test Location',
-                'address' => 'Test Address',
-                'lat' => 1.234,
-                'lng' => 1.234,
-                'address_2' => 'Test Address 2',
-                'city' => 'Test City',
-                'state' => 'Selangor',
-                'postcode' => '123456',
-                'rating' => 4
-            ]
-        ]);
-
-          // create a merchant
-        // act as $this->user
-        $this->actingAs($this->user);
-
-        $merchant = Merchant::factory()->create([
-            'user_id' => $user->id,
-            'status' => Merchant::STATUS_APPROVED,
-        ]);
-
-        // create store that has location attached with same location above
-        $store = Store::factory()->create([
-            'user_id' => $this->user,
-            'state_id' => State::first()->id,
-            'country_id' => 1,
-            'lang' => 1.234,
-            'long' => 1.234,
-        ]);
-
-        // create a Location to attach to this store
-        $location = Location::where('name', 'Test Location')->first(); // must tag the same location
-
-        $store->location()->attach($location->id);
-
-        // use this->user follow the $user
-        $this->actingAs($this->user);
-        $response = $this->postJson('/api/v1/user/follow', [
-            'user_id' => $user->id,
-        ]);
-
-        // get all stores list to see followings_been_here is loaded
-        $response = $this->getJson('/api/v1/stores');
-
-        $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'id',
-                    'name',
-                    'created_at',
-                    'updated_at',
-                    'followings_been_here',
-                ],
-            ],
-        ]);
-
-        // assert followings_been_here is not empty
-        $this->assertNotEmpty($response->json()['data'][0]['followings_been_here']);
-
-        // create a new user which is non-follower of $user then query the stores again
-        $user2 = User::factory()->create();
-        $this->actingAs($user2);
-        $response = $this->getJson('/api/v1/stores');
-
-        // assert followings_been_here is empty
-        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
-
-        // if $this->user unfollows $user then followings_been_here should be empty
-        $this->actingAs($this->user);
-        $response = $this->postJson('/api/v1/user/unfollow', [
-            'user_id' => $user->id,
-        ]);
-
-        // clear cache to refresh the data
-        $this->artisan('cache:clear');
-
-        $response = $this->getJson('/api/v1/stores');
-        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
     }
 
     // get stores by location id /api/v1/stores/stores_by_location
