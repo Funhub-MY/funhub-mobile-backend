@@ -38,10 +38,10 @@ class StoreResource extends JsonResource
             ];
 
             // get from first latest article media
-            $firstArticles = $this->articles->first();
-            if ($firstArticles) {
-                $articlePhotos = $firstArticles->getMedia(Article::MEDIA_COLLECTION_NAME)->first();
-                $photos = ($articlePhotos) ? [$articlePhotos->getFullUrl()] : null;
+            $firstArticle = $this->articles->first();
+            if ($firstArticle) {
+                $articlePhoto = $firstArticle->media->first();
+                $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
             }
 
             // if not articles then get from store photos

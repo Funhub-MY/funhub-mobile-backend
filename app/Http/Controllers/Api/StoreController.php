@@ -109,7 +109,11 @@ class StoreController extends Controller
                 });
             })->with(['user.followers' => function ($query) {
                 $query->where('user_id', auth()->id());
-            }, 'location'])->get();
+            }, 'location', 'media' => function ($query) {
+                $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
+                    ->orderBy('order_column', 'asc')
+                    ->take(1);
+            }])->get();
 
             $store->setRelation('articles', $articles);
 
