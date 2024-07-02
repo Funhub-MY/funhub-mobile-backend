@@ -24,7 +24,7 @@ class StoreResource extends JsonResource
         if (auth()->user()) {
             $interaction = $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first();
             if ($interaction) {
-                $bookmark_interaction_id = $interaction->id;
+            $bookmark_interaction_id = $interaction->id;
             }
         }
 
@@ -34,31 +34,31 @@ class StoreResource extends JsonResource
         if (!$this->merchant) {
             // not onboarded merchant do not have user_id so this will be null, manual populatew with just plain name
             $merchant = [
-                'name' => $this->name,
+            'name' => $this->name,
             ];
 
             // get from first latest article media
             $firstArticle = $this->articles->first();
             if ($firstArticle) {
-                $articlePhoto = $firstArticle->media->first();
-                $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
+            $articlePhoto = $firstArticle->media->first();
+            $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
             }
 
             // if not articles then get from store photos
             if (empty($photos) || count($photos) == 0) {
-                $photos = $this->media->map(function ($item) {
-                    if ($item->collection_name == Store::MEDIA_COLLECTION_PHOTOS) {
-                        return $item->getFullUrl();
-                    }
-                });
+            $photos = $this->media->filter(function ($item) {
+                return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
+            })->map(function ($item) {
+                return $item->getFullUrl();
+            });
             }
         } else {
             $merchant = new MerchantResource($this->merchant);
             $logo = ($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null;
-            $photos = $this->media->map(function ($item) {
-                if ($item->collection_name == Store::MEDIA_COLLECTION_PHOTOS) {
-                    return $item->getFullUrl();
-                }
+            $photos = $this->media->filter(function ($item) {
+                return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
+            })->map(function ($item) {
+                return $item->getFullUrl();
             });
         }
 
@@ -66,13 +66,10 @@ class StoreResource extends JsonResource
         if ($this->business_hours) {
             // today day in number, eg, Monday = 1, Sunday = 7
             $today = date('N');
-            $buisnessHours = json_decode($this->business_hours);
+            $buisnessHours = json_decode($this->business_hours, true);
 
-            foreach ($buisnessHours as $day => $businessHour) {
-                if ($day == $today) {
-                    $currentDayBusinessHour = $businessHour;
-                    break;
-                }
+            if (isset($buisnessHours[$today])) {
+            $currentDayBusinessHour = $buisnessHours[$today];
             }
         }
 
