@@ -65,8 +65,9 @@ class StoreController extends Controller
             Log::info('Stores Query Load IDs: ' . implode(',', $storeIds));
         });
 
-        // with merchant, ratings, location
-        $query->with(['merchant',
+        // with merchant, ratings, location, and articles
+        $query->with([
+            'merchant',
             'storeRatings' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
@@ -74,7 +75,22 @@ class StoreController extends Controller
             },
             'location',
             'categories',
-            'media'
+            'media',
+            'articles' => function ($query) {
+                $query->with([
+                    'user' => function ($query) {
+                        $query->with(['followers' => function ($query) {
+                            $query->where('user_id', auth()->id());
+                        }]);
+                    },
+                    'location',
+                    'media' => function ($query) {
+                        $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
+                            ->orderBy('order_column', 'asc')
+                            ->take(1);
+                    }
+                ]);
+            }
         ]);
 
         // with count total ratings
@@ -99,27 +115,9 @@ class StoreController extends Controller
 
         // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
-            // query the articles associated with the store via the shared location
-            $articles = Article::whereHas('location', function ($query) use ($store) {
-                $query->whereIn('locatables.location_id', function ($query) use ($store) {
-                    $query->select('location_id')
-                        ->from('locatables')
-                        ->where('locatable_type', Store::class)
-                        ->where('locatable_id', $store->id);
-                });
-            })->with(['user.followers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }, 'location', 'media' => function ($query) {
-                $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
-                    ->orderBy('order_column', 'asc')
-                    ->take(1);
-            }])->get();
-
-            $store->setRelation('articles', $articles);
-
             // store's location ratings same as the number of articles which tagged same location as store
             // due to when creating article need to rate the location if user tagged a location for an article
-            $store->location_ratings_count = $articles->count();
+            $store->location_ratings_count = $store->articles->count();
 
             return $store;
         });
