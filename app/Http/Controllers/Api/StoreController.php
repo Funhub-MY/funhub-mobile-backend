@@ -74,6 +74,7 @@ class StoreController extends Controller
             },
             'location',
             'categories',
+            'parentCategories',
             'media'
         ]);
 
