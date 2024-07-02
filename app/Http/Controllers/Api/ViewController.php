@@ -68,7 +68,7 @@ class ViewController extends Controller
 
         // record insights
         if ($view->viewable_type === Article::class) {
-            $this->recordInsights($view);
+            //$this->recordInsights($view);
         }
 
         return response()->json([
