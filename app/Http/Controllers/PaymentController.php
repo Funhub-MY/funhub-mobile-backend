@@ -59,7 +59,12 @@ class PaymentController extends Controller
                 ],
                 'request' => request()->all()
             ]);
-            return 'Transaction Failed';
+
+            return view('payment-return', [
+                'message' => 'Transaction Failed',
+                'transaction_id' => null,
+                'success' => false
+            ]);
         }
 
         // get transaction record via $request->invno
