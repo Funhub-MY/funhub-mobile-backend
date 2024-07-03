@@ -16,6 +16,7 @@ use App\Models\MerchantCategory;
 use App\Models\MerchantOfferCategory;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
+use App\Models\OfferLimitWhitelist;
 use Database\Factories\MerchantFactory;
 use Database\Seeders\CountriesTableSeeder;
 use Database\Seeders\StatesTableSeeder;
@@ -648,5 +649,106 @@ class MerchantOfferTest extends TestCase
 
         // check count is 0
         $this->assertEquals(0, $response->json('meta.total'));
+    }
+
+    /**
+     * Test if an offer is still available to a user after claiming it
+     * A customer which buys from a merchant , should no longer see that specific merchant for 30 days after purchase
+     */
+    public function testOfferAvailabilityAfterClaimAndWhitelist()
+    {
+        // Create an offer with 5 available quantity vouchers from a user
+        $offer = MerchantOffer::factory()->for($this->merchant->user)->create([
+            'quantity' => 5,
+        ]);
+        for ($i = 0; $i < $offer->quantity; $i++) {
+            MerchantOfferVoucher::create([
+                'merchant_offer_id' => $offer->id,
+                'code' => MerchantOfferVoucher::generateCode(),
+            ]);
+        }
+
+        // Create another user to claim the offer
+        $anotherUser = User::factory()->create();
+        Sanctum::actingAs($anotherUser, ['*']);
+
+        // Topup points for the user
+        PointLedger::create([
+            'user_id' => $anotherUser->id,
+            'pointable_type' => get_class($anotherUser),
+            'pointable_id' => $anotherUser->id,
+            'title' => 'First topup simulation',
+            'amount' => 1000,
+            'credit' => 1,
+            'debit' => 0,
+            'balance' => 1000,
+            'remarks' => 'Simulation topup points for user.',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        // Claim the offer
+        $response = $this->postJson('/api/v1/merchant/offers/claim', [
+            'offer_id' => $offer->id,
+            'quantity' => 1,
+            'payment_method' => 'points'
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'offer'
+            ]);
+
+        // Load the index of merchant/offers
+        $response = $this->getJson('/api/v1/merchant/offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta'
+            ]);
+
+        // assert data is empty
+        $this->assertEmpty($response->json('data'));
+
+        // Check if the claimed offer is still available in the response
+        $claimedOfferFound = false;
+        foreach ($response->json('data') as $data) {
+            if ($data['id'] == $offer->id) {
+                $claimedOfferFound = true;
+                break;
+            }
+        }
+
+        // Assert that the claimed offer is not available in the response
+        $this->assertFalse($claimedOfferFound);
+
+        // Add the customer to the whitelist
+        OfferLimitWhitelist::create([
+            'user_id' => $anotherUser->id,
+            'campaign_id' => $offer->campaign_id,
+        ]);
+
+        // Load the index of merchant/offers again
+        $response = $this->getJson('/api/v1/merchant/offers');
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta'
+            ]);
+
+        // asset data is not empty
+        $this->assertNotEmpty($response->json('data'));
+
+        // Check if the claimed offer is now available in the response
+        $claimedOfferFound = false;
+        foreach ($response->json('data') as $data) {
+            if ($data['id'] == $offer->id) {
+                $claimedOfferFound = true;
+                break;
+            }
+        }
+
+        // Assert that the claimed offer is now available in the response
+        $this->assertTrue($claimedOfferFound);
     }
 }
