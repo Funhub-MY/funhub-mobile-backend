@@ -4,6 +4,8 @@ namespace App\Filament\Resources\MerchantOfferResource\RelationManagers;
 
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
+use App\Models\MerchantOfferCampaign;
+use App\Models\MerchantOfferCampaignSchedule;
 use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use App\Models\MerchantOfferVoucherMovement;
@@ -169,6 +171,27 @@ class VouchersRelationManager extends RelationManager
                             'user_id' => auth()->user()->id,
                             'remarks' => $data['remarks'],
                         ]);
+
+                        // also update associated campaign if any schedule quantity:
+                        $schedule_id = MerchantOffer::find($from);
+                        $to_schedule_id = MerchantOffer::find($data['merchant_offer_id']);
+                        $schedule_id = $schedule_id ? $schedule_id->schedule_id : null;
+                        $to_schedule_id = $to_schedule_id ? $to_schedule_id->schedule_id : null;
+                        Log::info('Schedule ID', [
+                            'from_schedule' => $schedule_id,
+                            'to_schedule' => $to_schedule_id,
+                            'from_merchant_offer' => $from,
+                            'to_merchant_offer' => $data['merchant_offer_id'],
+                        ]);
+
+                        if ($schedule_id && $to_schedule_id) {
+                            MerchantOfferCampaignSchedule::where('id', $schedule_id)
+                                ->update(['quantity' => $from_count]);
+
+                            MerchantOfferCampaignSchedule::where('id', $to_schedule_id)
+                                ->increment('quantity', 1);
+                        }
+
                         Log::info('Voucher moved', [
                             'from' => $from,
                             'to' => $data['merchant_offer_id'],

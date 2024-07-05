@@ -229,7 +229,6 @@ class MerchantOfferCampaignResource extends Resource
                                                     ->options(MerchantOfferCampaignSchedule::STATUS)->default(0),
                                                 DatePicker::make('publish_at')
                                                     ->label('Publish Date')
-                                                    ->minDate(now()->startOfDay())
                                                     ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
                                             ])->columns(2),
                                         Group::make()
@@ -260,8 +259,7 @@ class MerchantOfferCampaignResource extends Resource
                                                     ->label('Available Quantity')
                                                     ->required()
                                                     ->columnSpan(1)
-                                                    ->numeric()
-                                                    ->minValue(1),
+                                                    ->numeric(),
 
                                                 Placeholder::make('cannot_update_past')
                                                         ->visible(fn($livewire, Closure $get) => $livewire instanceof EditRecord && $get('available_until') && Carbon::parse($get('available_at'))->isPast())

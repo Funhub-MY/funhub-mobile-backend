@@ -91,10 +91,17 @@ class EditMerchantOfferCampaign extends EditRecord
         if ($offers->count() > $record->schedules->count()) {
             $schedulesIds = $record->schedules->pluck('id');
             $offers->whereNotIn('schedule_id', $schedulesIds)->each(function($offer) {
-                $offer->update([
-                    'status' => MerchantOffer::STATUS_ARCHIVED,
-                ]);
-                Log::info('Archieved offer as schedule is removed', [
+                // double check if offer already has voucher sold or not
+                if ($offer->vouchers()->whereNotNull('owned_by_id')->count() > 0) {
+                    Log::info('[EditMerchantOfferCampaign] Cannot archieve offer as it has been sold', [
+                        'offer_id' => $offer->id,
+                        'schedule_id' => $offer->schedule_id,
+                    ]);
+                    return;
+                }
+
+                $offer->delete(); // soft delete
+                Log::info('Archieved offer as schedule is removed, offer deleted', [
                     'offer_id' => $offer->id,
                     'schedule_id' => $offer->schedule_id,
                 ]);
