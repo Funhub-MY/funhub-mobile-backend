@@ -31,30 +31,15 @@ class StoreResource extends JsonResource
         $merchant = null;
         $logo = null;
         $photos = [];
-        if (!$this->merchant) {
-            // not onboarded merchant do not have user_id so this will be null, manual populatew with just plain name
-            $merchant = [
-            'name' => $this->name,
-            ];
-
-            // get from first latest article media
-            $firstArticle = $this->articles->first();
-            if ($firstArticle) {
+        // get from first latest article media
+        $firstArticle = $this->articles->first();
+        if ($firstArticle) {
             $articlePhoto = $firstArticle->media->first();
             $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
-            }
+        }
 
-            // if not articles then get from store photos
-            if (empty($photos) || count($photos) == 0) {
-            $photos = $this->media->filter(function ($item) {
-                return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
-            })->map(function ($item) {
-                return $item->getFullUrl();
-            });
-            }
-        } else {
-            $merchant = new MerchantResource($this->merchant);
-            $logo = ($this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null;
+        // if not articles then get from store photos
+        if (empty($photos) || count($photos) == 0) {
             $photos = $this->media->filter(function ($item) {
                 return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
             })->map(function ($item) {
