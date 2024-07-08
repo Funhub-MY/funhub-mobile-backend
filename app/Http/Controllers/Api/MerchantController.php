@@ -320,7 +320,7 @@ class MerchantController extends Controller
      * @bodyParam email string required Email. Example: abc@example.com
      * @bodyParam brand_name string required Brand Name. Example: ABC
      * @bodyParam pic_name string required PIC Name. Example: John Doe
-     * @bodyParam postcode string required Postcode. Example: 123456
+     * @bodyParam postcode string required Postcode. Example: 47530
      * @bodyParam phone_no string required Phone Number. Example: 0123456789
      * @bodyParam address string optional Address. Example: 123, Jalan ABC
      *
@@ -334,7 +334,7 @@ class MerchantController extends Controller
             'email' => 'required|email',
             'brand_name' => 'required',
             'pic_name' => 'required',
-            'postcode' => 'required|digits:6',
+            'postcode' => 'required|digits:5',
             'phone_no' => 'required',
         ]);
 
