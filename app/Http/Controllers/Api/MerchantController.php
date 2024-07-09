@@ -317,7 +317,7 @@ class MerchantController extends Controller
      * @return JsonResponse
      *
      * @group Merchant
-     * @bodyParam email string required Email. Example: abc@example.com
+    //  * @bodyParam email string required Email. Example: abc@example.com
      * @bodyParam brand_name string required Brand Name. Example: ABC
      * @bodyParam pic_name string required PIC Name. Example: John Doe
      * @bodyParam postcode string required Postcode. Example: 47530
@@ -331,7 +331,7 @@ class MerchantController extends Controller
     public function postMerchantCrm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            // 'email' => 'required|email',
             'brand_name' => 'required',
             'pic_name' => 'required',
             'postcode' => 'required|digits:5',
@@ -344,7 +344,7 @@ class MerchantController extends Controller
         $contactInput->setProperties([
             'brand_name' => $request->brand_name,
             'firstname' => $request->pic_name,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'mobilephone' => $request->phone_no,
             'postcode' => $request->postcode,
             'address' => $request->address ?? null,

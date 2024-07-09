@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: quod
+        example: cumque
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: quod
+      share_code: cumque
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dbhc15Ze6gf36vEaVDa8k4P'
+      - 'Bearer ceP8gV3D56ak6E1fvabd4hZ'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: aspernatur
+        example: cum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: aspernatur
+      username: cum
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8P6dhfv1E6VaDZg4ck5e3ab'
+      - 'Bearer e8vd6baPc4kZ1gahD5V3E6f'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: possimus
+        example: minus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: possimus
+      share_code: minus
     fileParameters: []
     responses:
       -
@@ -646,7 +646,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 741,
+                      "line": 765,
                       "function": "abort"
                   },
                   {
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gake56hZcfVPa36d4b81DvE'
+      - 'Bearer aa83VEvh1k6g5cPeZ46dbDf'
     controller: null
     method: null
     route: null
@@ -1156,13 +1156,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: alias
+        example: hic
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: alias
+      share_code: hic
     fileParameters: []
     responses:
       -
@@ -1662,7 +1662,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e35dZa6bc1E6afkD8gP4vhV'
+      - 'Bearer 83bcfvaakg6VedP56DEZ14h'
     controller: null
     method: null
     route: null
