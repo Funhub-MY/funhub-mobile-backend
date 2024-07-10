@@ -100,6 +100,7 @@ class StoreController extends Controller
             ->paginate($request->input('limit', 10));
 
         // // modify the paginated results
+        // DEPRECATED AS OF 10-07-2024 as moved to use getStoresFollowingBeenHere()
         // $stores->getCollection()->transform(function ($store) {
         //     // query the articles associated with the store via the shared location
         //     $articles = Article::whereHas('location', function ($query) use ($store) {
