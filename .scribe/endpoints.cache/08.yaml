@@ -82,7 +82,79 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VcDhE4ga1d36vP6fkeZ85ab'
+      - 'Bearer 6afZPc4kD81beg5d36hvaVE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/followings_been_here
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores Following Been Here'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_ids:
+        name: store_ids
+        description: 'The store ids.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+    cleanUrlParameters:
+      store_ids: '1,2,3'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      store_ids:
+        name: store_ids
+        description: ''
+        required: true
+        example: dolor
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: dolor
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "followings_been_here": [
+          {
+          "id": 1,
+          "name": "John Doe",
+          "username": "johndoe",
+          "avatar": "https://domain.com/storage/avatars/1/avatar.jpg",
+          "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg",
+          "has_avatar": true
+          }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer VhPa6k381g5aveZ4cEdD6fb'
     controller: null
     method: null
     route: null
@@ -125,7 +197,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eZD64E3fk1abvchaPd5gV68'
+      - 'Bearer cZbgEd4ehak6D6a8V3v1Pf5'
     controller: null
     method: null
     route: null
@@ -166,13 +238,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: velit
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: velit
+      store_ids: architecto
     fileParameters: []
     responses:
       -
@@ -189,7 +261,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z5va8adgEc6DfPe136hVb4k'
+      - 'Bearer b4E56fDP3aceZvk8h1da6gV'
     controller: null
     method: null
     route: null
@@ -230,13 +302,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: qui
+        example: magni
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: qui
+      location_id: magni
     fileParameters: []
     responses:
       -
@@ -253,7 +325,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gb66aec4hvk5E1VP3DdZa8f'
+      - 'Bearer g3DdcVv6E5k6e8aPha1Z4bf'
     controller: null
     method: null
     route: null
@@ -377,7 +449,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1aDh6gZaekbEV3f6P8cv4d5'
+      - 'Bearer 1g3f6vaehD8kEa64dbZV5cP'
     controller: null
     method: null
     route: null
@@ -470,7 +542,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DdPVgaEZ631fvcae584kh6b'
+      - 'Bearer EV8evb1Zfad6ah6P5g4Dkc3'
     controller: null
     method: null
     route: null
@@ -534,7 +606,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 38kcZ6av1VeabD4Edh65fgP'
+      - 'Bearer ahk8e4Pdf6Zvcg315VbD6Ea'
     controller: null
     method: null
     route: null
@@ -617,7 +689,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gcDP6hkZvfEa5Vae6db3841'
+      - 'Bearer bD43Eak1ZfeghcaP8566dVv'
     controller: null
     method: null
     route: null
