@@ -23,6 +23,16 @@ class MerchantOfferClaimResource extends JsonResource
             $expiringAt = Carbon::parse($this->created_at)->addDays($this->merchantOffer->expiry_days)->endOfDay()->format('Y-m-d H:i:s');
         }
 
+        $hasUserRated = false;
+        if ($this->stores) {
+            foreach ($this->stores as $store) {
+                if ($store->storeRatings->where('user_id', $this->user->id)->exists()) {
+                    $hasUserRated = true;
+                    break;
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'order_no' => $this->order_no,
@@ -44,6 +54,7 @@ class MerchantOfferClaimResource extends JsonResource
             'redeemed' => ($this->redeem) ? true : false,
             'redeem' => $this->redeem,
             'has_expired' => $hasExpired,
+            'has_user_rated' => $hasUserRated,
             'expiring_at' => $expiringAt,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
