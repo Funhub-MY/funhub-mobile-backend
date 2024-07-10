@@ -382,24 +382,29 @@ class StoreTest extends TestCase
         // clear cache to refresh the data
         $this->artisan('cache:clear');
 
-        // get followings_been_here for the store
+      // get followings_been_here for the store
         $response = $this->getJson('/api/v1/stores/followings_been_here?store_ids='.$store->id);
 
         $response->assertJsonStructure([
-            $store->id => [
-                '*' => [
-                    'id',
-                    'name',
-                    'username',
-                    'avatar',
-                    'avatar_thumb',
-                    'has_avatar',
+            'data' => [
+                [
+                    'storeId',
+                    'followingsBeenHere' => [
+                        '*' => [
+                            'id',
+                            'name',
+                            'username',
+                            'avatar',
+                            'avatar_thumb',
+                            'has_avatar',
+                        ],
+                    ],
                 ],
             ],
         ]);
 
         // assert followings_been_here is not empty
-        $this->assertNotEmpty($response->json()[$store->id]);
+        $this->assertNotEmpty($response->json('data')[0]['followingsBeenHere']);
 
         // create a new user which is non-follower of $user then query the followings_been_here again
         $user2 = User::factory()->create();
@@ -407,7 +412,7 @@ class StoreTest extends TestCase
         $response = $this->getJson('/api/v1/stores/followings_been_here?store_ids='.$store->id);
 
         // assert followings_been_here is empty
-        $this->assertEmpty($response->json());
+        $this->assertEmpty($response->json('data'));
 
         // if $this->user unfollows $user then followings_been_here should be empty
         $this->actingAs($this->user);
@@ -419,7 +424,7 @@ class StoreTest extends TestCase
         $this->artisan('cache:clear');
 
         $response = $this->getJson('/api/v1/stores/followings_been_here?store_ids='.$store->id);
-        $this->assertEmpty($response->json());
+        $this->assertEmpty($response->json('data'));
     }
 
     public function testGetArticlesOfStores()

@@ -137,18 +137,7 @@ class StoreController extends Controller
      *
      * @group Stores
      * @urlParam store_ids string required The store ids. Example: 1,2,3
-     * @response scenario=success {
-     * "1": [
-     * {
-     * "id": 1,
-     * "name": "John Doe"
-     * },
-     * {
-     * "id": 2,
-     * "name": "John Doe"
-     * }
-     * ]
-     * }
+     * @response scenario=success {"data": [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "John Doe"}]}
      */
     public function getStoresFollowingBeenHere(Request $request)
     {
