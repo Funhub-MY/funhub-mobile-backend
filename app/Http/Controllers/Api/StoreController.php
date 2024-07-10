@@ -177,12 +177,12 @@ class StoreController extends Controller
         $followingsBeenHere = [];
 
         foreach ($articles as $article) {
-            Log::info('[StoreController Followings been here]', ['location' => $article->location->toArray()]);
             $user = $article->user;
             $isFollowing = $user->followers->contains('id', auth()->id());
             if ($isFollowing) {
-                $storeIds = $article->location->stores->pluck('id')->toArray();
-                foreach ($storeIds as $storeId) {
+                $stores = $article->location->stores;
+                foreach ($stores as $store) {
+                    $storeId = $store->id;
                     if (!isset($followingsBeenHere[$storeId])) {
                         $followingsBeenHere[$storeId] = [];
                     }
