@@ -170,8 +170,8 @@ class StoreController extends Controller
             $isFollowing = $user->followers->contains('id', auth()->id());
             if ($isFollowing) {
                 $stores = collect($article->location)->pluck('stores')->flatten(1);
-                $storeIds = $stores->pluck('id')->unique();
-                foreach ($storeIds as $storeId) {
+                $articleStoreIds = $stores->pluck('id')->unique();
+                foreach ($articleStoreIds as $storeId) {
                     if (!isset($followingsBeenHere[$storeId])) {
                         $followingsBeenHere[$storeId] = [
                             'storeId' => $storeId,
@@ -194,16 +194,14 @@ class StoreController extends Controller
             }
         }
 
-        // convert $storeIds collection to an array
-        $storeIdsArray = $storeIds->toArray();
-
-        // append the remaining store IDs without "followings been here" data
-        $storeIdsWithoutData = array_diff($storeIdsArray, array_keys($followingsBeenHere));
-        foreach ($storeIdsWithoutData as $storeId) {
-            $followingsBeenHere[$storeId] = [
-                'storeId' => $storeId,
-                'followingsBeenHere' => [],
-            ];
+        // add the remaining store IDs without "followings been here" data
+        foreach ($storeIds as $storeId) {
+            if (!isset($followingsBeenHere[$storeId])) {
+                $followingsBeenHere[$storeId] = [
+                    'storeId' => $storeId,
+                    'followingsBeenHere' => [],
+                ];
+            }
         }
 
         $data = array_values($followingsBeenHere);
