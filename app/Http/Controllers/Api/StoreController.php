@@ -173,8 +173,8 @@ class StoreController extends Controller
                 ->take(1);
         }])->get();
 
-
         $followingsBeenHere = [];
+        $addedUsers = [];
 
         foreach ($articles as $article) {
             $user = $article->user;
@@ -185,18 +185,23 @@ class StoreController extends Controller
                 foreach ($storeIds as $storeId) {
                     if (!isset($followingsBeenHere[$storeId])) {
                         $followingsBeenHere[$storeId] = [];
+                        $addedUsers[$storeId] = [];
                     }
-                    $followingsBeenHere[$storeId][] = [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'username' => $user->username,
-                        'avatar' => $user->avatar_url,
-                        'avatar_thumb' => $user->avatar_thumb_url,
-                        'has_avatar' => $user->hasMedia('avatar'),
-                    ];
+                    if (!in_array($user->id, $addedUsers[$storeId])) {
+                        $followingsBeenHere[$storeId][] = [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'username' => $user->username,
+                            'avatar' => $user->avatar_url,
+                            'avatar_thumb' => $user->avatar_thumb_url,
+                            'has_avatar' => $user->hasMedia('avatar'),
+                        ];
+                        $addedUsers[$storeId][] = $user->id;
+                    }
                 }
             }
         }
+
         return response()->json($followingsBeenHere);
     }
 
