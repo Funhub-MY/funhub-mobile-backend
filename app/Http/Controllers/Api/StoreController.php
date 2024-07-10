@@ -194,8 +194,11 @@ class StoreController extends Controller
             }
         }
 
+        // convert $storeIds collection to an array
+        $storeIdsArray = $storeIds->toArray();
+
         // append the remaining store IDs without "followings been here" data
-        $storeIdsWithoutData = array_diff($storeIds, array_keys($followingsBeenHere));
+        $storeIdsWithoutData = array_diff($storeIdsArray, array_keys($followingsBeenHere));
         foreach ($storeIdsWithoutData as $storeId) {
             $followingsBeenHere[$storeId] = [
                 'storeId' => $storeId,
