@@ -99,34 +99,98 @@ class StoreController extends Controller
             ->listed() // NOTICE! Listed stores are selected only!
             ->paginate($request->input('limit', 10));
 
-        // modify the paginated results
-        $stores->getCollection()->transform(function ($store) {
-            // query the articles associated with the store via the shared location
-            $articles = Article::whereHas('location', function ($query) use ($store) {
-                $query->whereIn('locatables.location_id', function ($query) use ($store) {
-                    $query->select('location_id')
-                        ->from('locatables')
-                        ->where('locatable_type', Store::class)
-                        ->where('locatable_id', $store->id);
-                });
-            })->with(['user.followers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }, 'location', 'media' => function ($query) {
-                $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
-                    ->orderBy('order_column', 'asc')
-                    ->take(1);
-            }])->get();
+        // // modify the paginated results
+        // $stores->getCollection()->transform(function ($store) {
+        //     // query the articles associated with the store via the shared location
+        //     $articles = Article::whereHas('location', function ($query) use ($store) {
+        //         $query->whereIn('locatables.location_id', function ($query) use ($store) {
+        //             $query->select('location_id')
+        //                 ->from('locatables')
+        //                 ->where('locatable_type', Store::class)
+        //                 ->where('locatable_id', $store->id);
+        //         });
+        //     })->with(['user.followers' => function ($query) {
+        //         $query->where('user_id', auth()->id());
+        //     }, 'location', 'media' => function ($query) {
+        //         $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
+        //             ->orderBy('order_column', 'asc')
+        //             ->take(1);
+        //     }])->get();
 
-            $store->setRelation('articles', $articles);
+        //     $store->setRelation('articles', $articles);
 
-            // store's location ratings same as the number of articles which tagged same location as store
-            // due to when creating article need to rate the location if user tagged a location for an article
-            $store->location_ratings_count = $articles->count();
+        //     // store's location ratings same as the number of articles which tagged same location as store
+        //     // due to when creating article need to rate the location if user tagged a location for an article
+        //     $store->location_ratings_count = $articles->count();
 
-            return $store;
-        });
+        //     return $store;
+        // });
 
         return StoreResource::collection($stores);
+    }
+
+    /**
+     * Get Stores Following Been Here
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Stores
+     * @urlParam store_ids string required The store ids. Example: 1,2,3
+     * @response scenario=success {
+     * "followings_been_here": [
+     * {
+     * "id": 1,
+     * "name": "John Doe",
+     * "username": "johndoe",
+     * "avatar": "https://domain.com/storage/avatars/1/avatar.jpg",
+     * "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg",
+     * "has_avatar": true
+     * }
+     * ]
+     * }
+     */
+    public function getStoresFollowingBeenHere(Request $request)
+    {
+        $this->validate($request, [
+            'store_ids' => 'required|string',
+        ]);
+
+        $storeIds = explode(',', $request->store_ids);
+
+        $articles = Article::whereHas('location', function ($query) use ($storeIds) {
+            $query->whereIn('locatables.location_id', function ($query) use ($storeIds) {
+                $query->select('location_id')
+                    ->from('locatables')
+                    ->where('locatable_type', Store::class)
+                    ->whereIn('locatable_id', $storeIds);
+            });
+        })->with(['user.followers' => function ($query) {
+            $query->where('user_id', auth()->id());
+        }, 'location', 'media' => function ($query) {
+            $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
+                ->orderBy('order_column', 'asc')
+                ->take(1);
+        }])->get();
+
+        $followingsBeenHere = $articles->map(function ($article) {
+                $user = $article->user;
+                $isFollowing = $user->followers->contains('id', auth()->id());
+                if ($isFollowing) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'username' => $user->username,
+                        'avatar' => $user->avatar_url,
+                        'avatar_thumb' => $user->avatar_thumb_url,
+                        'has_avatar' => $user->hasMedia('avatar'),
+                    ];
+                }
+            })->filter()->unique('id')->values();
+
+        return response()->json([
+            'followings_been_here' => $followingsBeenHere,
+        ]);
     }
 
     /**
