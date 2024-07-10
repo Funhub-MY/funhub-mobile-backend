@@ -204,7 +204,13 @@ class StoreController extends Controller
             }
         }
 
-        $data = array_values($followingsBeenHere);
+        // sort the data by same order of pass in store_ids
+        $data = [];
+        foreach ($storeIds as $storeId) {
+            if (isset($followingsBeenHere[$storeId])) {
+                $data[] = $followingsBeenHere[$storeId];
+            }
+        }
 
         return response()->json(['data' => $data]);
     }
