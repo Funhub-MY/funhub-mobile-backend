@@ -184,11 +184,14 @@ class StoreController extends Controller
                 $storeIds = $stores->pluck('id')->unique();
                 foreach ($storeIds as $storeId) {
                     if (!isset($followingsBeenHere[$storeId])) {
-                        $followingsBeenHere[$storeId] = [];
+                        $followingsBeenHere[$storeId] = [
+                            'storeId' => $storeId,
+                            'followingsBeenHere' => [],
+                        ];
                         $addedUsers[$storeId] = [];
                     }
                     if (!in_array($user->id, $addedUsers[$storeId])) {
-                        $followingsBeenHere[$storeId][] = [
+                        $followingsBeenHere[$storeId]['followingsBeenHere'][] = [
                             'id' => $user->id,
                             'name' => $user->name,
                             'username' => $user->username,
@@ -202,7 +205,9 @@ class StoreController extends Controller
             }
         }
 
-        return response()->json($followingsBeenHere);
+        $data = array_values($followingsBeenHere);
+
+        return response()->json(['data' => $data]);
     }
 
     /**
