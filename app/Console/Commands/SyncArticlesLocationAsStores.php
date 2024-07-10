@@ -43,60 +43,71 @@ class SyncArticlesLocationAsStores extends Command
         // create a Store for each Location
         foreach($locations as $location)
         {
-            // make sure same Store location never created before
-            if (Store::where('name', $location->name)->exists()) {
-                $this->info('Store same name already exists for location: ' . $location->id);
-                continue;
-            }
+            try {
+                // make sure same Store location never created before
+                if (Store::where('name', $location->name)->exists()) {
+                    $this->info('Store same name already exists for location: ' . $location->id);
+                    continue;
+                }
 
-            $this->info('Creating store for location: ' . $location->name);
+                $this->info('Creating store for location: ' . $location->name);
 
-              // create store
-            $store = Store::create([
-                'user_id' => null,
-                'name' => $location->name,
-                'manager_name' => null,
-                'business_phone_no' => null,
-                'business_hours' => null,
-                'address' => $location->full_address,
-                'address_postcode' => $location->zip_code,
-                'lang' => $location->lat,
-                'long' => $location->lng,
-                'is_hq' => false,
-                'state_id' => $location->state_id,
-                'country_id' => $location->country_id,
-            ]);
+                // create store
+                $store = Store::create([
+                    'user_id' => null,
+                    'name' => $location->name,
+                    'manager_name' => null,
+                    'business_phone_no' => null,
+                    'business_hours' => null,
+                    'address' => $location->full_address,
+                    'address_postcode' => $location->zip_code,
+                    'lang' => $location->lat,
+                    'long' => $location->lng,
+                    'is_hq' => false,
+                    'state_id' => $location->state_id,
+                    'country_id' => $location->country_id,
+                ]);
 
-            // also attach the location to the store
-            $store->location()->attach($location->id);
+                // also attach the location to the store
+                $store->location()->attach($location->id);
 
-            // get first article latest
-            $article = $location->articles()->where('status', \App\Models\Article::STATUS_PUBLISHED)->latest()->first();
-            if ($article) {
-                // get article categories match with merchant categories for Store
-                // if article->categories have "吃喝" then add Merchant category "美食" to store
-                $categories = $article->categories->pluck('name')->toArray();
-                $this->info('-- First Article categories: ' . implode(',', $categories));
-                 // if article->categories have "吃喝" then add Merchant category "美食" to store
-                if (in_array('吃喝', $categories)) {
-                    $foodCategory = MerchantCategory::where('name', '美食')->first();
-                    if ($foodCategory) {
-                        $store->categories()->attach($foodCategory->id);
-                        $this->info('-- Store category attached: ' . $foodCategory->name);
+                // get first article latest
+                $article = $location->articles()->where('status', \App\Models\Article::STATUS_PUBLISHED)->latest()->first();
+                if ($article) {
+                    // get article categories match with merchant categories for Store
+                    // if article->categories have "吃喝" then add Merchant category "美食" to store
+                    $categories = $article->categories->pluck('name')->toArray();
+                    $this->info('-- First Article categories: ' . implode(',', $categories));
+
+                    try {
+                        // if article->categories have "吃喝" then add Merchant category "美食" to store
+                        if (in_array('吃喝', $categories)) {
+                            $foodCategory = MerchantCategory::where('name', '美食')->first();
+                            if ($foodCategory) {
+                                $store->categories()->attach($foodCategory->id);
+                                $this->info('-- Store category attached: ' . $foodCategory->name);
+                            }
+                        }
+
+                        if (in_array('休闲', $categories) || in_array('旅游', $categories) || in_array('娱乐', $categories)) {
+                            $shoppingCategory = MerchantCategory::where('name', '玩乐')->first();
+                            if ($shoppingCategory) {
+                                $store->categories()->attach($shoppingCategory->id);
+                                $this->info('-- Store category attached: ' . $shoppingCategory->name);
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error attaching categories to store: ' . $store->id . ' for article: ' . $article->id . '. Error: ' . $e->getMessage());
+                        $this->error('Error attaching categories to store: ' . $store->id . ' for article: ' . $article->id . '. Error: ' . $e->getMessage());
                     }
                 }
 
-                if (in_array('休闲', $categories) || in_array('旅游', $categories) || in_array('娱乐', $categories)) {
-                    $shoppingCategory = MerchantCategory::where('name', '玩乐')->first();
-                    if ($shoppingCategory) {
-                        $store->categories()->attach($shoppingCategory->id);
-                        $this->info('-- Store category attached: ' . $shoppingCategory->name);
-                    }
-                }
+                $this->info('Store created for location: ' . $location->id . ' with store id: ' . $store->id);
+                Log::info('Store created for location: ' . $location->id . ' with store id: ' . $store->id);
+            } catch (\Exception $e) {
+                Log::error('Error creating store for location: ' . $location->id . '. Error: ' . $e->getMessage());
+                $this->error('Error creating store for location: ' . $location->id . '. Error: ' . $e->getMessage());
             }
-
-            $this->info('Store created for location: ' . $location->id . ' with store id: ' . $store->id);
-            Log::info('Store created for location: ' . $location->id . ' with store id: ' . $store->id);
         }
 
         return Command::SUCCESS;
