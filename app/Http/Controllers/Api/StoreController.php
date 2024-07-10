@@ -138,16 +138,14 @@ class StoreController extends Controller
      * @group Stores
      * @urlParam store_ids string required The store ids. Example: 1,2,3
      * @response scenario=success {
-     * "followings_been_here": [
+     * "1": [
      * {
-     * "store_id": 1,
-     * "related_article_id": 1,
      * "id": 1,
-     * "name": "John Doe",
-     * "username": "johndoe",
-     * "avatar": "https://domain.com/storage/avatars/1/avatar.jpg",
-     * "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg",
-     * "has_avatar": true
+     * "name": "John Doe"
+     * },
+     * {
+     * "id": 2,
+     * "name": "John Doe"
      * }
      * ]
      * }
@@ -175,26 +173,28 @@ class StoreController extends Controller
                 ->take(1);
         }])->get();
 
-        $followingsBeenHere = $articles->map(function ($article) {
-                $user = $article->user;
-                $isFollowing = $user->followers->contains('id', auth()->id());
-                if ($isFollowing) {
-                    return [
-                        'store_id' => $article->store->id,
-                        'related_article_id' => $article->id,
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'username' => $user->username,
-                        'avatar' => $user->avatar_url,
-                        'avatar_thumb' => $user->avatar_thumb_url,
-                        'has_avatar' => $user->hasMedia('avatar'),
-                    ];
-                }
-            })->filter()->unique('id')->values();
+        $followingsBeenHere = [];
 
-        return response()->json([
-            'followings_been_here' => $followingsBeenHere,
-        ]);
+        foreach ($articles as $article) {
+            $user = $article->user;
+            $isFollowing = $user->followers->contains('id', auth()->id());
+            if ($isFollowing) {
+                $storeId = $article->location->locatable_id;
+                if (!isset($followingsBeenHere[$storeId])) {
+                    $followingsBeenHere[$storeId] = [];
+                }
+                $followingsBeenHere[$storeId][] = [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'avatar' => $user->avatar_url,
+                    'avatar_thumb' => $user->avatar_thumb_url,
+                    'has_avatar' => $user->hasMedia('avatar'),
+                ];
+            }
+        }
+
+        return response()->json($followingsBeenHere);
     }
 
     /**

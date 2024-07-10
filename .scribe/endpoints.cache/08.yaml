@@ -82,7 +82,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fv1P8VDbkc34hZda656Eaeg'
+      - 'Bearer 4egbcDk3vf8Eaa6PZ5dVh16'
     controller: null
     method: null
     route: null
@@ -123,29 +123,27 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: asperiores
+        example: voluptatem
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: asperiores
+      store_ids: voluptatem
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "followings_been_here": [
+          "1": [
           {
-          "store_id": 1,
-          "related_article_id": 1,
           "id": 1,
-          "name": "John Doe",
-          "username": "johndoe",
-          "avatar": "https://domain.com/storage/avatars/1/avatar.jpg",
-          "avatar_thumb": "https://domain.com/storage/avatars/1/avatar_thumb.jpg",
-          "has_avatar": true
+          "name": "John Doe"
+          },
+          {
+          "id": 2,
+          "name": "John Doe"
           }
           ]
           }
@@ -156,7 +154,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d4D631Ebc5fevkZV6a8hgaP'
+      - 'Bearer f6aDvbcVd8P5ZeEkg4a6h13'
     controller: null
     method: null
     route: null
@@ -199,7 +197,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vhef63EvaD5P4b6gdk8a1cZ'
+      - 'Bearer b56cgeka1h3ZDPE48V6dafv'
     controller: null
     method: null
     route: null
@@ -240,13 +238,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: optio
+        example: ducimus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: optio
+      store_ids: ducimus
     fileParameters: []
     responses:
       -
@@ -263,7 +261,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8k614Za6VPDeghbvfEa5d3c'
+      - 'Bearer 35V6PDgdvkeh81fcZbaE6a4'
     controller: null
     method: null
     route: null
@@ -304,13 +302,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: natus
+        example: temporibus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: natus
+      location_id: temporibus
     fileParameters: []
     responses:
       -
@@ -327,7 +325,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5gZ8bEd416vheaa3fVDk6cP'
+      - 'Bearer 5gDhckdeZEvP6a8b3fa614V'
     controller: null
     method: null
     route: null
@@ -451,7 +449,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kDv6e68f5ZVa3Edag4cbhP1'
+      - 'Bearer bDvec56dk3Eaa4fPV6Zgh18'
     controller: null
     method: null
     route: null
@@ -544,7 +542,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1kDc5646ahvPZ83EebafgVd'
+      - 'Bearer 64683PfhcVEadD15abZgvke'
     controller: null
     method: null
     route: null
@@ -608,7 +606,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cgavV8hfeb6dP3a5D4E61Zk'
+      - 'Bearer ckv6agDfZaPE153heb48d6V'
     controller: null
     method: null
     route: null
@@ -691,7 +689,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P8a5b6g36ZD1dVEcfkvh4ae'
+      - 'Bearer 6EfVkb6PDc1h8vd3Zaae5g4'
     controller: null
     method: null
     route: null
