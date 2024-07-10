@@ -350,7 +350,7 @@ class StoreTest extends TestCase
             ]
         ]);
 
-          // create a merchant
+        // create a merchant
         // act as $this->user
         $this->actingAs($this->user);
 
@@ -382,31 +382,32 @@ class StoreTest extends TestCase
         // clear cache to refresh the data
         $this->artisan('cache:clear');
 
-        // get all stores list to see followings_been_here is loaded
-        $response = $this->getJson('/api/v1/stores');
+        // get followings_been_here for the store
+        $response = $this->getJson('/api/v1/stores/followings_been_here?store_ids='.$store->id);
 
         $response->assertJsonStructure([
-            'data' => [
+            $store->id => [
                 '*' => [
                     'id',
                     'name',
-                    'created_at',
-                    'updated_at',
-                    'followings_been_here',
+                    'username',
+                    'avatar',
+                    'avatar_thumb',
+                    'has_avatar',
                 ],
             ],
         ]);
 
         // assert followings_been_here is not empty
-        $this->assertNotEmpty($response->json()['data'][0]['followings_been_here']);
+        $this->assertNotEmpty($response->json()[$store->id]);
 
-        // create a new user which is non-follower of $user then query the stores again
+        // create a new user which is non-follower of $user then query the followings_been_here again
         $user2 = User::factory()->create();
         $this->actingAs($user2);
-        $response = $this->getJson('/api/v1/stores');
+        $response = $this->getJson('/api/v1/stores/followings_been_here?store_ids='.$store->id);
 
         // assert followings_been_here is empty
-        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
+        $this->assertEmpty($response->json());
 
         // if $this->user unfollows $user then followings_been_here should be empty
         $this->actingAs($this->user);
@@ -417,8 +418,8 @@ class StoreTest extends TestCase
         // clear cache to refresh the data
         $this->artisan('cache:clear');
 
-        $response = $this->getJson('/api/v1/stores');
-        $this->assertEmpty($response->json()['data'][0]['followings_been_here']);
+        $response = $this->getJson('/api/v1/stores/followings_been_here?store_ids='.$store->id);
+        $this->assertEmpty($response->json());
     }
 
     public function testGetArticlesOfStores()
