@@ -179,21 +179,24 @@ class StoreController extends Controller
             $user = $article->user;
             $isFollowing = $user->followers->contains('id', auth()->id());
             if ($isFollowing) {
-                $storeId = $article->location->locatable_id;
-                if (!isset($followingsBeenHere[$storeId])) {
-                    $followingsBeenHere[$storeId] = [];
+                $store = $article->location->stores()->wherePivot('locatable_id', $storeIds)->first();
+
+                if ($store) {
+                    $storeId = $store->id;
+                    if (!isset($followingsBeenHere[$storeId])) {
+                        $followingsBeenHere[$storeId] = [];
+                    }
+                    $followingsBeenHere[$storeId][] = [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'username' => $user->username,
+                        'avatar' => $user->avatar_url,
+                        'avatar_thumb' => $user->avatar_thumb_url,
+                        'has_avatar' => $user->hasMedia('avatar'),
+                    ];
                 }
-                $followingsBeenHere[$storeId][] = [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'avatar' => $user->avatar_url,
-                    'avatar_thumb' => $user->avatar_thumb_url,
-                    'has_avatar' => $user->hasMedia('avatar'),
-                ];
             }
         }
-
         return response()->json($followingsBeenHere);
     }
 
