@@ -140,6 +140,8 @@ class StoreController extends Controller
      * @response scenario=success {
      * "followings_been_here": [
      * {
+     * "store_id": 1,
+     * "related_article_id": 1,
      * "id": 1,
      * "name": "John Doe",
      * "username": "johndoe",
@@ -178,6 +180,8 @@ class StoreController extends Controller
                 $isFollowing = $user->followers->contains('id', auth()->id());
                 if ($isFollowing) {
                     return [
+                        'store_id' => $article->store->id,
+                        'related_article_id' => $article->id,
                         'id' => $user->id,
                         'name' => $user->name,
                         'username' => $user->username,

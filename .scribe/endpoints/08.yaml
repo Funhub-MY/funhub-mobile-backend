@@ -80,7 +80,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6afZPc4kD81beg5d36hvaVE'
+      - 'Bearer fv1P8VDbkc34hZda656Eaeg'
     controller: null
     method: null
     route: null
@@ -121,13 +121,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: dolor
+        example: asperiores
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: dolor
+      store_ids: asperiores
     fileParameters: []
     responses:
       -
@@ -136,6 +136,8 @@ endpoints:
           {
           "followings_been_here": [
           {
+          "store_id": 1,
+          "related_article_id": 1,
           "id": 1,
           "name": "John Doe",
           "username": "johndoe",
@@ -152,7 +154,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VhPa6k381g5aveZ4cEdD6fb'
+      - 'Bearer d4D631Ebc5fevkZV6a8hgaP'
     controller: null
     method: null
     route: null
@@ -195,7 +197,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cZbgEd4ehak6D6a8V3v1Pf5'
+      - 'Bearer Vhef63EvaD5P4b6gdk8a1cZ'
     controller: null
     method: null
     route: null
@@ -236,13 +238,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: architecto
+        example: optio
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: architecto
+      store_ids: optio
     fileParameters: []
     responses:
       -
@@ -259,7 +261,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b4E56fDP3aceZvk8h1da6gV'
+      - 'Bearer 8k614Za6VPDeghbvfEa5d3c'
     controller: null
     method: null
     route: null
@@ -300,13 +302,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: magni
+        example: natus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: magni
+      location_id: natus
     fileParameters: []
     responses:
       -
@@ -323,7 +325,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer g3DdcVv6E5k6e8aPha1Z4bf'
+      - 'Bearer 5gZ8bEd416vheaa3fVDk6cP'
     controller: null
     method: null
     route: null
@@ -447,7 +449,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1g3f6vaehD8kEa64dbZV5cP'
+      - 'Bearer kDv6e68f5ZVa3Edag4cbhP1'
     controller: null
     method: null
     route: null
@@ -540,7 +542,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EV8evb1Zfad6ah6P5g4Dkc3'
+      - 'Bearer 1kDc5646ahvPZ83EebafgVd'
     controller: null
     method: null
     route: null
@@ -604,7 +606,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ahk8e4Pdf6Zvcg315VbD6Ea'
+      - 'Bearer cgavV8hfeb6dP3a5D4E61Zk'
     controller: null
     method: null
     route: null
@@ -687,7 +689,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bD43Eak1ZfeghcaP8566dVv'
+      - 'Bearer P8a5b6g36ZD1dVEcfkvh4ae'
     controller: null
     method: null
     route: null
