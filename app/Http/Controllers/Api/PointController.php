@@ -65,7 +65,10 @@ class PointController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
 
-            $translatedNames = json_decode($component->name_translation, true);
+            $translatedNames = [];
+            if (!is_null($component->name_translation)) {
+                $translatedNames = json_decode($component->name_translation, true) ?: [];
+            }
             $translatedName = $translatedNames[$locale] ?? $component->name;
 
             if ($balance) {
