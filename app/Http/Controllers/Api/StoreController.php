@@ -167,25 +167,25 @@ class StoreController extends Controller
             });
         })->with(['user.followers' => function ($query) {
             $query->where('user_id', auth()->id());
-        }, 'location', 'media' => function ($query) {
+        }, 'media' => function ($query) {
             $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
                 ->orderBy('order_column', 'asc')
                 ->take(1);
         }])->get();
-
         $followingsBeenHere = [];
 
         foreach ($articles as $article) {
+            Log::info('[StoreController Followings been here]', [
+                'location' => $article->location->toArray(),
+            ]);
+
             $user = $article->user;
             $isFollowing = $user->followers->contains('id', auth()->id());
             if ($isFollowing) {
-                Log::info('[StoreController Followings been here]', [
-                    'location' => $article->location->toArray(),
-                ]);
-                $store = $article->location->wherePivot('locatable_id', $storeIds)->first();
+                $location = $article->location;
 
-                if ($store) {
-                    $storeId = $store->id;
+                if ($location && in_array($location->pivot->locatable_id, $storeIds)) {
+                    $storeId = $location->pivot->locatable_id;
                     if (!isset($followingsBeenHere[$storeId])) {
                         $followingsBeenHere[$storeId] = [];
                     }
@@ -200,6 +200,7 @@ class StoreController extends Controller
                 }
             }
         }
+
         return response()->json($followingsBeenHere);
     }
 
