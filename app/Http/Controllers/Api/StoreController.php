@@ -199,7 +199,7 @@ class StoreController extends Controller
         foreach ($storeIds as $storeId) {
             if (!isset($followingsBeenHere[$storeId])) {
                 $followingsBeenHere[$storeId] = [
-                    'storeId' => $storeId,
+                    'storeId' => (int)$storeId,
                     'followingsBeenHere' => [],
                 ];
             }
