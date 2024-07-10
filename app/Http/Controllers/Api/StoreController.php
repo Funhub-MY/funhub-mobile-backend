@@ -180,9 +180,9 @@ class StoreController extends Controller
             $user = $article->user;
             $isFollowing = $user->followers->contains('id', auth()->id());
             if ($isFollowing) {
-                $stores = $article->location->stores;
-                foreach ($stores as $store) {
-                    $storeId = $store->id;
+                $stores = collect($article->location)->pluck('stores')->flatten(1);
+                $storeIds = $stores->pluck('id')->unique();
+                foreach ($storeIds as $storeId) {
                     if (!isset($followingsBeenHere[$storeId])) {
                         $followingsBeenHere[$storeId] = [];
                     }
@@ -197,7 +197,6 @@ class StoreController extends Controller
                 }
             }
         }
-
         return response()->json($followingsBeenHere);
     }
 
