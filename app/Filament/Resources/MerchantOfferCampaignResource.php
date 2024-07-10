@@ -359,26 +359,30 @@ class MerchantOfferCampaignResource extends Resource
                     ->html()
                     ->searchable()
                     ->sortable(),
-                // Tables\Columns\BadgeColumn::make('status')
-                //     ->enum(MerchantOfferCampaign::STATUS)
-                //     ->colors([
-                //         'secondary' => 0,
-                //         'success' => 1,
-                //     ])
-                //     ->sortable()
-                //     ->searchable(),
+
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('By User'),
                 Tables\Columns\TextColumn::make('store.name')
                     ->default('-')
                     ->label('By Store'),
+
                 Tables\Columns\TextColumn::make('unit_price')
                     ->label('Funhub')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('schedules_count')
-                    ->sortable(),
+
+
                 Tables\Columns\TextColumn::make('sku')
                     ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('vouchers_count')
+                    ->label('Total Vouchers')
+                    ->sum('schedules', 'quantity')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('upcoming_vouchers_count')
+                    ->label('Upcoming Vouchers')
+                    ->sum('upcomingSchedules', 'quantity')
                     ->sortable(),
 
                 // created at sortable
