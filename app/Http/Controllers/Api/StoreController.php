@@ -179,7 +179,7 @@ class StoreController extends Controller
             $user = $article->user;
             $isFollowing = $user->followers->contains('id', auth()->id());
             if ($isFollowing) {
-                Log::info('[StoreController Followings been here] Article: '.$article->id.' has location: '.$article->location->id, [
+                Log::info('[StoreController Followings been here]', [
                     'location' => $article->location->toArray(),
                 ]);
                 $store = $article->location->wherePivot('locatable_id', $storeIds)->first();
