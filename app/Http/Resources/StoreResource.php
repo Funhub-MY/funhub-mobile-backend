@@ -24,7 +24,7 @@ class StoreResource extends JsonResource
         if (auth()->user()) {
             $interaction = $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first();
             if ($interaction) {
-            $bookmark_interaction_id = $interaction->id;
+                $bookmark_interaction_id = $interaction->id;
             }
         }
 
@@ -32,15 +32,17 @@ class StoreResource extends JsonResource
         $logo = null;
         $photos = [];
         // get from first latest article media
-        $firstArticle = $this->articles->first();
-        if ($firstArticle) {
-            $articlePhoto = $firstArticle->media->filter(function ($media) {
-                return str_contains($media->mime_type, 'image');
-            })->first();
+        if ($this->articles) {
+            $firstArticle = $this->articles->first();
+            if ($firstArticle) {
+                $articlePhoto = $firstArticle->media->filter(function ($media) {
+                    return str_contains($media->mime_type, 'image');
+                })->first();
 
-            Log::info('Article photos: ', ['store_id' => $this->id, 'articles' => $this->articles, 'articlePhoto' => $articlePhoto]);
+                Log::info('Article photos: ', ['store_id' => $this->id, 'articles' => $this->articles, 'articlePhoto' => $articlePhoto]);
 
-            $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
+                $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
+            }
         }
 
         // if not articles then get from store photos
@@ -92,7 +94,7 @@ class StoreResource extends JsonResource
             'ratings' => number_format(floatval($this->ratings), 1),
             'total_ratings' => $this->store_ratings_count, // store rating already included cloned ratings from article->location ratings
             'total_article_ratings' => $this->location_ratings_count ?? 0,
-            'total_articles_same_location' => $this->articles->count(),
+            'total_articles_same_location' => ($this->articles) ? $this->articles->count() : 0,
             'followings_been_here' => [],
             // 'followings_been_here' => $this->articles->map(function ($article) {
             //     $user = $article->user;

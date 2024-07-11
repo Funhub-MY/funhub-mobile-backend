@@ -74,13 +74,11 @@ class StoreController extends Controller
                 });
             },
             'location',
+            'location.articles',
             'interactions',
             'categories',
             'parentCategories',
             'media',
-            'articles' => function ($query) {
-                $query->select('articles.id')->with('media');
-            }
         ]);
 
         // with count total ratings
@@ -90,21 +88,26 @@ class StoreController extends Controller
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
                 });
             },
-            'availableMerchantOffers',
-            'articles as location_ratings_count' => function ($query) {
-                $query->select(DB::raw('count(distinct articles.id)'));
-            }
+            'availableMerchantOffers'
         ]);
-
-        // with count published merchant offers
-        $query->withCount(['merchant_offers' => function ($query) {
-            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
-                ->where('merchant_offers.available_at', '<=', now());
-        }]);
 
         $stores = $query
             ->listed() // NOTICE! Listed stores are selected only!
             ->paginate($request->input('limit', 10));
+
+        $stores->getCollection()->transform(function ($store) {
+            // location ratings count is articles count
+            $location = $store->location->first();
+            if ($location && $location->articles) {
+                $store->articles = $location->articles;
+                $store->location_ratings_count = $location->articles()->count();
+            } else {
+                $store->articles = null;
+                $store->location_ratings_count = 0;
+            }
+
+            return $store;
+        });
 
         // // modify the paginated results
         // DEPRECATED AS OF 10-07-2024 as moved to use getStoresFollowingBeenHere()
