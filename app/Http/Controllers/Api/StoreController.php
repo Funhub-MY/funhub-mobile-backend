@@ -72,7 +72,6 @@ class StoreController extends Controller
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
                 });
             },
-            'articles',
             'location',
             'interactions',
             'categories',
@@ -102,31 +101,28 @@ class StoreController extends Controller
 
         // // modify the paginated results
         // DEPRECATED AS OF 10-07-2024 as moved to use getStoresFollowingBeenHere()
-        // $stores->getCollection()->transform(function ($store) {
-        //     // query the articles associated with the store via the shared location
-        //     $articles = Article::whereHas('location', function ($query) use ($store) {
-        //         $query->whereIn('locatables.location_id', function ($query) use ($store) {
-        //             $query->select('location_id')
-        //                 ->from('locatables')
-        //                 ->where('locatable_type', Store::class)
-        //                 ->where('locatable_id', $store->id);
-        //         });
-        //     })->with(['user.followers' => function ($query) {
-        //         $query->where('user_id', auth()->id());
-        //     }, 'location', 'media' => function ($query) {
-        //         $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
-        //             ->orderBy('order_column', 'asc')
-        //             ->take(1);
-        //     }])->get();
+        $stores->getCollection()->transform(function ($store) {
+            // query the articles associated with the store via the shared location
+            $articles = Article::whereHas('location', function ($query) use ($store) {
+                $query->whereIn('locatables.location_id', function ($query) use ($store) {
+                    $query->select('location_id')
+                        ->from('locatables')
+                        ->where('locatable_type', Store::class)
+                        ->where('locatable_id', $store->id);
+                });
+            })
+            ->select('articles.id')
+            ->with('media')
+            ->get();
 
-        //     $store->setRelation('articles', $articles);
+            $store->setRelation('articles', $articles);
 
-        //     // store's location ratings same as the number of articles which tagged same location as store
-        //     // due to when creating article need to rate the location if user tagged a location for an article
-        //     $store->location_ratings_count = $articles->count();
+            // store's location ratings same as the number of articles which tagged same location as store
+            // due to when creating article need to rate the location if user tagged a location for an article
+            $store->location_ratings_count = $articles->count();
 
-        //     return $store;
-        // });
+            return $store;
+        });
 
         return StoreResource::collection($stores);
     }
