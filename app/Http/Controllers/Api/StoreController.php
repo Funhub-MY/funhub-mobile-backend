@@ -447,7 +447,7 @@ class StoreController extends Controller
     {
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
             $query->where('store_ratings.store_id', $store->id)
-                  ->select(DB::raw('COUNT(DISTINCT(user_id))'))
+                  ->select(DB::raw('COUNT(DISTINCT(store_ratings.user_id))'))
                   ->latest();
         }])
         ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
