@@ -657,6 +657,12 @@ class MerchantOfferTest extends TestCase
      */
     public function testOfferAvailabilityAfterClaimAndWhitelist()
     {
+        // change config to true
+        config(['app.same_merchant_spend_limit' => true]);
+
+        // clear cache
+        $this->artisan('cache:clear');
+
         // Create an offer with 5 available quantity vouchers from a user
         $offer = MerchantOffer::factory()->for($this->merchant->user)->create([
             'quantity' => 5,

@@ -102,6 +102,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             ] : null
         ];
     }
+
     public function shouldBeSearchable(): bool
     {
         if ($this->user_id) {
