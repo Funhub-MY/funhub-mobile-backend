@@ -79,9 +79,8 @@ class StoreController extends Controller
             'parentCategories',
             'media',
             'otherStores',
-            'articles' => function ($query) {
-                $query->select('articles.id')->with('media');
-            }
+            'articles',
+            'articles.media',
         ]);
 
         // with count total ratings
