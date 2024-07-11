@@ -87,8 +87,7 @@ class StoreController extends Controller
             'storeRatings' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
-                })
-                ->select(DB::raw('COUNT(DISTINCT(user_id))'));
+                });
             },
             'availableMerchantOffers'
         ]);
@@ -107,6 +106,10 @@ class StoreController extends Controller
                 $store->articles = null;
                 $store->location_ratings_count = 0;
             }
+            // modify store ratings count, only unique per user, example user A rated 5 times, count as one
+            $store->store_ratings_count = count(array_unique(array_map(function ($rating) {
+                return $rating->user_id;
+            }, $store->storeRatings->toArray())));
 
             return $store;
         });
