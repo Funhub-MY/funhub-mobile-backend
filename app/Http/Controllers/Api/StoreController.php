@@ -87,12 +87,11 @@ class StoreController extends Controller
 
         // with count total ratings
         $query->withCount([
-            'storeRatings' => function ($query) {
+            'storeRatings as store_ratings_count' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
                 })
-                ->groupBy('user_id')
-                ->latest('created_at');
+                ->select(DB::raw('COUNT(DISTINCT user_id)'));
             },
             'availableMerchantOffers'
         ]);
