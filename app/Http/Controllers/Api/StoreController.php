@@ -87,7 +87,8 @@ class StoreController extends Controller
             'storeRatings' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
-                });
+                })
+                ->select(DB::raw('COUNT(DISTINCT(user_id))'));
             },
             'availableMerchantOffers'
         ]);
