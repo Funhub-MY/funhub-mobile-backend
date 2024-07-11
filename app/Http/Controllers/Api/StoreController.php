@@ -78,8 +78,7 @@ class StoreController extends Controller
             'parentCategories',
             'media',
             'articles',
-            'articles.media',
-            'otherStores'
+            'articles.media'
         ]);
 
         // with count total ratings
