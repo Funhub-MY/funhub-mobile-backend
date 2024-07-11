@@ -446,16 +446,18 @@ class StoreController extends Controller
     public function getStoreRatingCategories(Store $store, Request $request)
     {
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
-            $query->where('store_ratings.store_id', $store->id);
+            $query->where('store_ratings.store_id', $store->id)
+                  ->select(DB::raw('COUNT(DISTINCT(user_id))'))
+                  ->latest();
         }])
-            ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
-                $query->whereHas('storeRatings');
-            })
-            ->orderBy('store_ratings_count', 'desc')
-            ->take($request->has('limit') ? $request->limit : 3)
-            ->get();
+        ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
+            $query->whereHas('storeRatings');
+        })
+        ->orderBy('store_ratings_count', 'desc')
+        ->take($request->has('limit') ? $request->limit : 3)
+        ->get();
 
-        return RatingCategoryResource::collection($ratingCategories);
+    return RatingCategoryResource::collection($ratingCategories);
     }
 
     /**
