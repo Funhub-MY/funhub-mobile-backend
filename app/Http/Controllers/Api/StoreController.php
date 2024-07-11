@@ -72,6 +72,7 @@ class StoreController extends Controller
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
                 });
             },
+            'articles',
             'location',
             'interactions',
             'categories',
