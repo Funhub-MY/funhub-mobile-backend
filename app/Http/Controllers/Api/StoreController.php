@@ -399,6 +399,7 @@ class StoreController extends Controller
         // get merchant from store
         $merchant = $store->merchant;
 
+        $menus = null;
         if ($merchant) {
             $menus = $merchant->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
                 return [
