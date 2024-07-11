@@ -76,9 +76,7 @@ class StoreController extends Controller
             'interactions',
             'categories',
             'parentCategories',
-            'media',
-            'otherStores',
-
+            'media'
         ]);
 
         // with count total ratings
@@ -112,10 +110,7 @@ class StoreController extends Controller
                         ->where('locatable_type', Store::class)
                         ->where('locatable_id', $store->id);
                 });
-            })
-            ->select('articles.id')
-            ->with('media')
-            ->get();
+            })->get();
 
             $store->setRelation('articles', $articles);
 
