@@ -101,7 +101,7 @@ class StoreController extends Controller
             $location = $store->location->first();
             if ($location && $location->articles) {
                 $store->articles = $location->articles;
-                $store->location_ratings_count = $location->articles()->count();
+                $store->location_ratings_count = count($location->articles);
             } else {
                 $store->articles = null;
                 $store->location_ratings_count = 0;
