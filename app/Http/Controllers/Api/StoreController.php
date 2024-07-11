@@ -91,7 +91,7 @@ class StoreController extends Controller
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
                 })
-                ->distinct('user_id')
+                ->groupBy('user_id')
                 ->latest('created_at');
             },
             'availableMerchantOffers'
