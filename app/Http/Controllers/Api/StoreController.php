@@ -91,9 +91,6 @@ class StoreController extends Controller
                 });
             },
             'availableMerchantOffers',
-            'articles as location_ratings_count' => function ($query) {
-                $query->select(DB::raw('count(distinct articles.id)'));
-            }
         ]);
 
         // with count published merchant offers
