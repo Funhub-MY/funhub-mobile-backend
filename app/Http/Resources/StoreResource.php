@@ -38,6 +38,8 @@ class StoreResource extends JsonResource
                 return str_contains($media->mime_type, 'image');
             })->first();
 
+            Log::info('Article photos: ', ['store_id' => $this->id, 'articles' => $this->articles, 'articlePhoto' => $articlePhoto]);
+
             $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
         }
 
