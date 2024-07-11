@@ -209,7 +209,6 @@ class Store extends BaseModel implements HasMedia, Auditable
         return $this->morphToMany(Location::class, 'locatable');
     }
 
-
     public function storeRatings()
     {
         return $this->hasMany(StoreRating::class);
