@@ -74,7 +74,9 @@ class StoreController extends Controller
                 });
             },
             'location',
-            'location.articles',
+            'location.articles' => function ($query) {
+                $query->latest();
+            },
             'location.articles.media',
             'interactions',
             'categories',
