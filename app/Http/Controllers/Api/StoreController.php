@@ -66,7 +66,8 @@ class StoreController extends Controller
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant',
+        $query->with([
+            'merchant',
             'storeRatings' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
@@ -77,8 +78,9 @@ class StoreController extends Controller
             'categories',
             'parentCategories',
             'media',
-            'articles',
-            'articles.media'
+            'articles' => function ($query) {
+                $query->select('articles.id')->with('media');
+            }
         ]);
 
         // with count total ratings
@@ -89,6 +91,9 @@ class StoreController extends Controller
                 });
             },
             'availableMerchantOffers',
+            'articles as location_ratings_count' => function ($query) {
+                $query->select(DB::raw('count(distinct articles.id)'));
+            }
         ]);
 
         // with count published merchant offers
