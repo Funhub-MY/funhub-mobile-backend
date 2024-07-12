@@ -267,6 +267,9 @@ return [
             'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
             'RedemptionNearExpiry' => 'Voucher Expiring Soon',
             'RedemptionSuccessful' => 'Redemption Successful',
+            'ClaimdOffer' => 'Successfully Claimed',
+            'NewOfferListed' => 'New Offer',
+            'NewOfferListedBody' => ':brandName has listed a new offer, check it out',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -294,6 +297,9 @@ return [
             'ReferralRewardReceivedBody' => ':name entered your referral code and you both received 1 Funbox each! Check out to explore exclusive voucher to get more than 50% discount now!',
             'RedemptionNearExpiry' => 'Voucher Expiring Soon',
             'RedemptionSuccessful' => 'Redemption Successful',
+            'ClaimdOffer' => 'Successfully Claimed',
+            'NewOfferListed' => 'New Offer',
+            'NewOfferListedBody' => ':brandName has listed a new offer, check it out',
         ]
     ]
 ];

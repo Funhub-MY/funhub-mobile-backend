@@ -42,7 +42,7 @@ class OfferClaimed extends Notification
     }
 
     protected function getMessage()
-    {        
+    {
         if ($this->purchaseMethod == 'points') {
             return __('messages.notification.fcm.OfferClaimed.points', [
                 'price' => $this->price,
@@ -68,11 +68,11 @@ class OfferClaimed extends Notification
                 'action' => 'claimed_offer',
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
-                'title' => '交易成功',
+                'title' => __('messages.notification.fcm.ClaimdOffer'),
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('交易成功')
+                ->setTitle(__('messages.notification.fcm.ClaimdOffer'))
                 ->setBody($this->getMessage())
             );
     }
@@ -94,7 +94,7 @@ class OfferClaimed extends Notification
             'action' => 'claimed_offer',
             'from_name' => $this->user->name,
             'from_id' => $this->user->id,
-            'title' => '交易成功',
+            'title' => __('messages.notification.database.ClaimdOffer'),
             'message' => $this->getMessage(),
         ];
     }

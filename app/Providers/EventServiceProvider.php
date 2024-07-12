@@ -9,6 +9,7 @@ use App\Events\CompletedProfile;
 use App\Events\FollowedUser;
 use App\Listeners\MediaListener;
 use App\Events\InteractionCreated;
+use App\Events\MerchantOfferPublished;
 use App\Events\PurchasedMerchantOffer;
 use App\Events\RatedLocation;
 use App\Events\UserReferred;
@@ -20,10 +21,12 @@ use Illuminate\Auth\Events\Registered;
 use App\Listeners\MissionEventListener;
 use App\Listeners\SyncHashtagsToSearchKeywords;
 use App\Listeners\CreateViewsForArticleListener;
+use App\Listeners\MerchantOfferPublishedListener;
 use App\Listeners\RatedLocationListener;
 use App\Listeners\RecommendationAutoByPass;
 use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
+use App\Models\MerchantOffer;
 use App\Observers\SupportRequestMessageObserver;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded;
@@ -83,6 +86,10 @@ class EventServiceProvider extends ServiceProvider
 
         RatedLocation::class => [
             RatedLocationListener::class,
+        ],
+
+        MerchantOfferPublished::class => [
+            MerchantOfferPublishedListener::class,
         ],
     ];
 

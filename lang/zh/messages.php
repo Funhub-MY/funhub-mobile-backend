@@ -270,6 +270,9 @@ return [
             'ReferralRewardReceivedBody' => ':name 输入了你的推荐码，你和TA各获得了1粒饭盒！去看看如何兑换折扣至少50%的限时限量优惠吧！',
             'RedemptionNearExpiry' => '优惠券即将逾期',
             'RedemptionSuccessful' => '兑换成功',
+            'ClaimdOffer' => '交易成功',
+            'NewOfferListed' => '新优惠券',
+            'NewOfferListedBody' => ':brandName 已发布了新优惠券，点击查看',
 
         ],
         'database' => [
@@ -298,7 +301,9 @@ return [
             'ReferralRewardReceivedBody' => ':name 输入了你的推荐码，你和TA各获得了1粒饭盒！去看看如何兑换折扣至少50%的限时限量优惠吧！',
             'RedemptionNearExpiry' => '优惠券即将逾期',
             'RedemptionSuccessful' => '兑换成功',
-
+            'ClaimdOffer' => '交易成功',
+            'NewOfferListed' => '新优惠券',
+            'NewOfferListedBody' => ':brandName 已发布了新优惠券，点击查看',
         ]
     ]
 ];
