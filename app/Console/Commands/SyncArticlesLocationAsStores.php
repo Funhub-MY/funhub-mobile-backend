@@ -66,6 +66,7 @@ class SyncArticlesLocationAsStores extends Command
                     'is_hq' => false,
                     'state_id' => $location->state_id,
                     'country_id' => $location->country_id,
+                    'status' => Store::STATUS_INACTIVE, // all new stores will be inactive first
                 ]);
 
                 // also attach the location to the store

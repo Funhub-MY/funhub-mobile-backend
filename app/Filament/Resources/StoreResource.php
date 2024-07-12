@@ -36,6 +36,9 @@ use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Google\Service\Compute\Tags;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Columns\Column;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
@@ -47,6 +50,14 @@ class StoreResource extends Resource
     protected static ?string $navigationGroup = 'Merchant';
 
     protected static ?int $navigationSort = 3;
+
+    protected static function getNavigationBadge(): ?string
+    {
+        $unlistedStores = Store::where('status', Store::STATUS_INACTIVE)->count();
+
+        return ($unlistedStores > 0) ? (string) $unlistedStores : null;
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -315,6 +326,20 @@ class StoreResource extends Resource
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()
+                ->exports([
+                    ExcelExport::make()
+                        ->label('Export Stores Categories')
+                        ->withColumns([
+                            Column::make('id')->heading('store_id'),
+                            Column::make('name')->heading('store_name'),
+                            Column::make('categories.name')
+                                ->heading('category_names')
+                                ->getStateUsing(fn ($record) => $record->categories->pluck('name')->join(','))
+                        ])
+                        ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+                        ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                ]),
             ]);
     }
 
