@@ -29,6 +29,7 @@ class NewMerchantOfferListed extends Notification implements ShouldQueue
     public function __construct(MerchantOffer $merchantOffer)
     {
         $this->merchantOffer = $merchantOffer;
+        $this->merchantOffer->load('merchant');
     }
 
     /**
