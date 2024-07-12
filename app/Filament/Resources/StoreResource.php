@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StoreResource\RelationManagers;
 use App\Filament\Resources\StoreResource\RelationManagers\LocationRelationManager;
 use App\Models\Location;
+use App\Models\MerchantCategory;
 use Cheesegrits\FilamentGoogleMaps\Fields\Geocomplete;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\Grid;
@@ -30,8 +31,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Tables\Columns\SelectColumn;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Google\Service\Compute\Tags;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class StoreResource extends Resource
@@ -241,6 +245,10 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -256,10 +264,22 @@ class StoreResource extends Resource
                     ->formatStateUsing(fn ($state) => $state ?? 'Un-onboarded')
                     ->sortable()
                     ->label('Linked User Account'),
+
+                TagsColumn::make('categories.name')
+                    ->label('Categories')
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address')
+                    // format state to truncate string ...
+                    ->formatStateUsing(fn ($state) => substr($state, 0, 20).'...')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('address_postcode'),
+
+                Tables\Columns\TextColumn::make('address_postcode')
+                    ->sortable()
+                    ->searchable(),
+
                 // Tables\Columns\TextColumn::make('lang'),
                 // Tables\Columns\TextColumn::make('long'),
                 Tables\Columns\ToggleColumn::make('is_hq')
