@@ -79,6 +79,7 @@ class StoreController extends Controller
                     ->latest();
             },
             'location.articles.media',
+            'location.ratings',
             'interactions',
             'categories',
             'parentCategories',
@@ -105,7 +106,11 @@ class StoreController extends Controller
             $location = $store->location->first();
             if ($location && $location->articles) {
                 $store->articles = $location->articles;
-                $store->location_ratings_count = count($location->articles);
+                // $store->location_ratings_count = count($location->articles);
+
+                // location ratings count should be by location which has location rating
+                $locationRatings = $location->ratings->count();
+                $store->location_ratings_count = $locationRatings;
             } else {
                 $store->articles = null;
                 $store->location_ratings_count = 0;
