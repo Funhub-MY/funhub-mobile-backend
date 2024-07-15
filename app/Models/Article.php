@@ -88,7 +88,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             }
         }
 
-        $articleLocations = $this->articles->location->first();
+        $articleLocations = $this->location->first();
         $stores = null;
         if ($articleLocations) {
             // get related store ids of the same location
