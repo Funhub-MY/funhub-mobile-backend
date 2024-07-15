@@ -101,7 +101,9 @@ class Article extends BaseModel implements HasMedia, Auditable
                 // remove any remaining non-printable characters except spaces and line breaks
                 $body = preg_replace('/[^\P{C}\n ]+/u', '', $body);
                 $body = preg_replace('/\s+/', ' ', $body);
-                return $body;
+
+                // truncate to approximately 9,500 bytes to allow room for other fields
+                return mb_substr($body, 0, 3166); // Assumes 3 bytes per character on average
             })($this->body),
             'categories' => ($this->categories) ? $this->categories->map(function ($category) {
                 return [
