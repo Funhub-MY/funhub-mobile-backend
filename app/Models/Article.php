@@ -88,7 +88,8 @@ class Article extends BaseModel implements HasMedia, Auditable
                     foreach ($store->availableMerchantOffers as $offer) {
                         $merchantOffers[] = [
                             'name' => $offer->name,
-                            'brand_name' => $offer->merchant->brand_name,
+                            'brand_name' => ($offer->merchant) ?$offer->merchant->brand_name : null,
+                            'merchant_id' => ($offer->merchant) ? $offer->merchant->id : null,
                             'available_at' => $offer->available_at,
                             'available_until' => $offer->available_until,
                         ];
