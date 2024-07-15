@@ -95,6 +95,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             'type' => $this->type,
             'body' => (function($body) {
                 $body = mb_convert_encoding($body, 'UTF-8', 'UTF-8');
+                $body = strip_tags($body);
                 // remove emojis and other non-text characters
                 $body = preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u', '', $body);
                 // remove any remaining non-printable characters except spaces and line breaks
@@ -102,7 +103,13 @@ class Article extends BaseModel implements HasMedia, Auditable
                 $body = preg_replace('/\s+/', ' ', $body);
                 return $body;
             })($this->body),
-            'categories' => $this->categories->pluck('name', 'name_translation'),
+            'categories' => ($this->categories) ? $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'name_translation' => $category->name_translation,
+                ];
+            }) : null,
             'tags' => $this->tags->pluck('name'),
             'status' => $this->status,
             'published_at' => $this->published_at,
@@ -136,7 +143,13 @@ class Article extends BaseModel implements HasMedia, Auditable
                 return [
                     'name' => $store->name,
                     'address' => $store->address,
-                    'categories' => $store->categories->pluck('name', 'name_translation'),
+                    'categories' => ($store->categories) ? $store->categories->map(function ($category) {
+                        return [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'name_translation' => $category->name_translation,
+                        ];
+                    }) : null,
                 ];
             }) : null,
             '_geoloc' => ($this->location()->count() > 0) ? [
