@@ -100,7 +100,7 @@ class Article extends BaseModel implements HasMedia, Auditable
                 // remove any remaining non-printable characters except spaces and line breaks
                 $body = preg_replace('/[^\P{C}\n ]+/u', '', $body);
                 $body = preg_replace('/\s+/', ' ', $body);
-                return substr(trim($body), 0, 8000);
+                return $body;
             })($this->body),
             'categories' => $this->categories->pluck('name', 'name_translation'),
             'tags' => $this->tags->pluck('name'),
