@@ -93,8 +93,15 @@ class Article extends BaseModel implements HasMedia, Auditable
             'title' => $this->title,
             // 'thumbnail' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
             'type' => $this->type,
-            // remove all html tags and new lines and limit to 6000 characters
-            'body' => substr(preg_replace('/\s+/', ' ', trim($this->body)), 0, 6000),
+            'body' => (function($body) {
+                $body = mb_convert_encoding($body, 'UTF-8', 'UTF-8');
+                // remove emojis and other non-text characters
+                $body = preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u', '', $body);
+                // remove any remaining non-printable characters except spaces and line breaks
+                $body = preg_replace('/[^\P{C}\n ]+/u', '', $body);
+                $body = preg_replace('/\s+/', ' ', $body);
+                return substr(trim($body), 0, 8000);
+            })($this->body),
             'categories' => $this->categories->pluck('name', 'name_translation'),
             'tags' => $this->tags->pluck('name'),
             'status' => $this->status,
