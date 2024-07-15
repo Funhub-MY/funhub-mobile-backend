@@ -72,12 +72,31 @@ class Article extends BaseModel implements HasMedia, Auditable
                 $cityNames = [$location->city];
             }
         }
+
+        $merchantOffers =  [];
+        if ($this->stores) {
+            # TODO: optimize this query as N+1
+            foreach ($this->stores as $store) {
+                foreach ($store->merchantOffers as $offer) {
+                    $merchantOffers[] = [
+                        'name' => $offer->name,
+                        'brand_name' => $offer->merchant->brand_name,
+                        'available_at' => $offer->available_at,
+                        'available_until' => $offer->available_until,
+                    ];
+                }
+            }
+        }
+
         return [
             'id' => (int) $this->id,
             'title' => $this->title,
-            'thumbnail' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
+            // 'thumbnail' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
             'type' => $this->type,
-            'categories' => $this->categories->pluck('name'),
+
+            // remove all html tags and new lines
+            'body' => strip_tags($this->body),
+            'categories' => $this->categories->pluck('name', 'name_translation'),
             'tags' => $this->tags->pluck('name'),
             'status' => $this->status,
             'published_at' => $this->published_at,
@@ -86,20 +105,34 @@ class Article extends BaseModel implements HasMedia, Auditable
             'gallery' => $this->getMedia(self::MEDIA_COLLECTION_NAME)->map(function ($media) {
                 return $media->getUrl();
             }),
-            'count' => [
-                'comments' => $this->comments->count(),
-                'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
-                'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
-                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
-                'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
-                'views' => $this->views->count()
-            ],
+            'comments_count' => $this->comments->count(),
+            'likes_count' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
+            'dislikes_count' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
+            'share_count' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
+            'bookmarks_count' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+            'views_count' => $this->views->count(),
+            // 'count' => [
+            //     'comments' => $this->comments->count(),
+            //     'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
+            //     'dislikes' => $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count(),
+            //     'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
+            //     'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
+            //     'views' => $this->views->count()
+            // ],
             'location' => ($this->location()->count() > 0) ? [
                 'name' => floatval($this->location()->first()->name),
                 'city' => $city,
                 'state' => ($this->location()->first()->state) ?: null,
                 'city_names' => $cityNames,
             ] : null,
+            'merchant_offers' => $merchantOffers,
+            'stores' => ($this->stores) ? $this->stores->map(function ($store) {
+                return [
+                    'name' => $store->name,
+                    'address' => $store->address,
+                    'categories' => $store->categories->pluck('name', 'name_translation'),
+                ];
+            }) : null,
             '_geoloc' => ($this->location()->count() > 0) ? [
                 'lat' => floatval($this->location->first()->lat),
                 'lng' => floatval($this->location->first()->lng)
