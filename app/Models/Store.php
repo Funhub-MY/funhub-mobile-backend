@@ -106,7 +106,7 @@ class Store extends BaseModel implements HasMedia, Auditable
                 return [
                     'id' => $merchantOffer->id,
                     'name' => $merchantOffer->name,
-                    'brand_name' => $merchantOffer->merchant->brand_name,
+                    'brand_name' => $merchantOffer->user->merchant->brand_name ?? null,
                     'available_at' => $merchantOffer->available_at,
                     'available_until' => $merchantOffer->available_until,
                 ];
