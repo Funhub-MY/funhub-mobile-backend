@@ -77,7 +77,7 @@ class Article extends BaseModel implements HasMedia, Auditable
         if ($this->stores) {
             # TODO: optimize this query as N+1
             foreach ($this->stores as $store) {
-                foreach ($store->merchantOffers as $offer) {
+                foreach ($store->availableMerchantOffers as $offer) {
                     $merchantOffers[] = [
                         'name' => $offer->name,
                         'brand_name' => $offer->merchant->brand_name,
