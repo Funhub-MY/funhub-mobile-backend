@@ -73,9 +73,16 @@ class Article extends BaseModel implements HasMedia, Auditable
             }
         }
 
+
+        $articleLocations = $this->location->first();
+        $stores = null;
         $merchantOffers =  [];
-        if ($this->stores) {
-            # TODO: optimize this query as N+1
+        if ($articleLocations) {
+            // get related store ids of the same location
+            $stores = Store::whereHas('location', function ($query) use ($articleLocations) {
+                $query->where('locations.id', $articleLocations->id);
+            })->get();
+
             foreach ($this->stores as $store) {
                 foreach ($store->availableMerchantOffers as $offer) {
                     $merchantOffers[] = [
@@ -86,15 +93,6 @@ class Article extends BaseModel implements HasMedia, Auditable
                     ];
                 }
             }
-        }
-
-        $articleLocations = $this->location->first();
-        $stores = null;
-        if ($articleLocations) {
-            // get related store ids of the same location
-            $stores = Store::whereHas('location', function ($query) use ($articleLocations) {
-                $query->where('locations.id', $articleLocations->id);
-            })->get();
         }
 
         return [
