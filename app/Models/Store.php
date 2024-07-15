@@ -76,26 +76,55 @@ class Store extends BaseModel implements HasMedia, Auditable
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'manager_name' => $this->manager_name,
+            // 'manager_name' => $this->manager_name,
             'onboarded' => ($this->merchant) ? true : false,
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => $this->business_hours,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
-            'categories' => $this->categories,
+            'categories' => ($this->categories) ? $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'name_translation' => $category->name_translation,
+                ];
+            }) : null,
             'category_ids' => $this->categories->pluck('id'),
             'parent_category_ids' => $this->parentCategories->pluck('id'),
             'child_category_ids' => $this->childCategories->pluck('id'),
             'ratings' => $this->storeRatings->avg('rating'),
-            'lang' => $this->lang,
-            'long' => $this->long,
-            'is_hq' => $this->is_hq,
+            // 'lang' => $this->lang,
+            // 'long' => $this->long,
+            // 'is_hq' => $this->is_hq,
             'user_id' => $this->user_id,
-            'state_id' => $this->state_id,
-            'country_id' => $this->country_id,
+            // 'state_id' => $this->state_id,
+            // 'country_id' => $this->country_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'has_merchant_offers' => ($this->availableMerchantOffers->count() > 0) ? true : false,
+            'merchant_offers' => ($this->availableMerchantOffers->count() > 0) ? $this->availableMerchantOffers->map(function ($merchantOffer) {
+                return [
+                    'id' => $merchantOffer->id,
+                    'name' => $merchantOffer->name,
+                    'brand_name' => $merchantOffer->merchant->brand_name,
+                    'available_at' => $merchantOffer->available_at,
+                    'available_until' => $merchantOffer->available_until,
+                ];
+            }) : null,
+            'articles' => ($this->articles) ? $this->articles->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'tags' => $article->tags->pluck('name'),
+                    'categories' => ($article->categories) ? $article->categories->map(function ($category) {
+                        return [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'name_translation' => $category->name_translation,
+                        ];
+                    }) : null,
+                ];
+            }): null,
             '_geoloc' => ($this->lang && $this->long) ? [
                 'lat' => (float) $this->lang,
                 'lng' => (float) $this->long
