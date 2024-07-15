@@ -49,11 +49,6 @@ class Article extends BaseModel implements HasMedia, Auditable
 
     protected $guarded = ['id'];
 
-    public function getScoutKey()
-    {
-        return 'articles::' . $this->id;
-    }
-
     /**
      * Search Setup
      */

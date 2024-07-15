@@ -38,11 +38,6 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return config('scout.prefix').'merchants_index';
     }
 
-    public function getScoutKey()
-    {
-        return 'merchants::' . $this->id;
-    }
-
     public function toSearchableArray()
     {
         // get stores related to this merchhant
