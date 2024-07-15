@@ -88,6 +88,15 @@ class Article extends BaseModel implements HasMedia, Auditable
             }
         }
 
+        $articleLocations = $this->articles->location->first();
+        $stores = null;
+        if ($articleLocations) {
+            // get related store ids of the same location
+            $stores = Store::whereHas('location', function ($query) use ($articleLocations) {
+                $query->where('locations.id', $articleLocations->id);
+            })->get();
+        }
+
         return [
             'id' => (int) $this->id,
             'title' => $this->title,
@@ -142,7 +151,7 @@ class Article extends BaseModel implements HasMedia, Auditable
                 'city_names' => $cityNames,
             ] : null,
             'merchant_offers' => $merchantOffers,
-            'stores' => ($this->stores) ? $this->stores->map(function ($store) {
+            'stores' => ($stores) ? $stores->map(function ($store) {
                 return [
                     'name' => $store->name,
                     'address' => $store->address,
