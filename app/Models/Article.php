@@ -83,14 +83,16 @@ class Article extends BaseModel implements HasMedia, Auditable
                 $query->where('locations.id', $articleLocations->id);
             })->get();
 
-            foreach ($this->stores as $store) {
-                foreach ($store->availableMerchantOffers as $offer) {
-                    $merchantOffers[] = [
-                        'name' => $offer->name,
-                        'brand_name' => $offer->merchant->brand_name,
-                        'available_at' => $offer->available_at,
-                        'available_until' => $offer->available_until,
-                    ];
+            if ($stores) {
+                foreach ($stores as $store) {
+                    foreach ($store->availableMerchantOffers as $offer) {
+                        $merchantOffers[] = [
+                            'name' => $offer->name,
+                            'brand_name' => $offer->merchant->brand_name,
+                            'available_at' => $offer->available_at,
+                            'available_until' => $offer->available_until,
+                        ];
+                    }
                 }
             }
         }
