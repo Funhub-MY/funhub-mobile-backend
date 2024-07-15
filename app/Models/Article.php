@@ -81,7 +81,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             // get related store ids of the same location
             $stores = Store::whereHas('location', function ($query) use ($articleLocations) {
                 $query->where('locations.id', $articleLocations->id);
-            })->wtth('merchant', 'availableMerchantOffers')->get();
+            })->with('merchant', 'availableMerchantOffers')->get();
 
             if ($stores) {
                 foreach ($stores as $store) {
