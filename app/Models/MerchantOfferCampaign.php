@@ -47,6 +47,16 @@ class MerchantOfferCampaign extends BaseModel implements HasMedia, Auditable
         return $this->hasMany(MerchantOfferCampaignSchedule::class);
     }
 
+    public function upcomingSchedules()
+    {
+        return $this->schedules()->where('available_at', '<=', now());
+    }
+
+    public function pastSchedules()
+    {
+        return $this->schedules()->where('available_at', '>', now());
+    }
+
     public function store()
     {
         return $this->belongsTo(Store::class, 'store_id');

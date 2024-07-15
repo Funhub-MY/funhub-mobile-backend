@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Jobs\CreateImageVariants;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -30,13 +31,16 @@ class MediaListener
             try {
                  // getimagesize then save as custom properties withoutevents
                  $size = getimagesize(($media->disk == 's3_public' ? $media->getFullUrl() : $media->getPath()));
-                
+
                 // model without events so wont infinite loop
                 Media::withoutEvents(function () use ($media, $size) {
                     $media->setCustomProperty('width', $size[0]);
                     $media->setCustomProperty('height', $size[1]);
                     $media->save();
                 });
+
+                // Dispatch the job to create image variants
+                // CreateImageVariants::dispatch($media, $media->disk);
             } catch (\Exception $e) {
                 Log::error('Failed to get image size', [
                     'error' => $e->getMessage()

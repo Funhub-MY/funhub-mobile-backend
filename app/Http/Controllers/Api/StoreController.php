@@ -62,17 +62,23 @@ class StoreController extends Controller
 
             // must order by storeids
             $q->orderBy(DB::raw('FIELD(id, ' . implode(',', $storeIds) . ')'));
-            Log::info('Stores Query Load IDs: ' . implode(',', $storeIds));
         });
 
         // with merchant, ratings, location
-        $query->with(['merchant',
+        $query->with([
+            'merchant',
             'storeRatings' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
                 });
             },
             'location',
+            'location.articles' => function ($query) {
+                $query->published()
+                    ->latest();
+            },
+            'location.articles.media',
+            'location.ratings',
             'interactions',
             'categories',
             'parentCategories',
@@ -81,52 +87,120 @@ class StoreController extends Controller
 
         // with count total ratings
         $query->withCount([
-            'storeRatings' => function ($query) {
+            'storeRatings as store_ratings_count' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);
-                });
+                })
+                ->select(DB::raw('COUNT(DISTINCT user_id)'));
             },
-            'availableMerchantOffers',
+            'availableMerchantOffers'
         ]);
-
-        // with count published merchant offers
-        $query->withCount(['merchant_offers' => function ($query) {
-            $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
-                ->where('merchant_offers.available_at', '<=', now());
-        }]);
 
         $stores = $query
             ->listed() // NOTICE! Listed stores are selected only!
             ->paginate($request->input('limit', 10));
 
-        // modify the paginated results
         $stores->getCollection()->transform(function ($store) {
-            // query the articles associated with the store via the shared location
-            $articles = Article::whereHas('location', function ($query) use ($store) {
-                $query->whereIn('locatables.location_id', function ($query) use ($store) {
-                    $query->select('location_id')
-                        ->from('locatables')
-                        ->where('locatable_type', Store::class)
-                        ->where('locatable_id', $store->id);
-                });
-            })->with(['user.followers' => function ($query) {
-                $query->where('user_id', auth()->id());
-            }, 'location', 'media' => function ($query) {
-                $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
-                    ->orderBy('order_column', 'asc')
-                    ->take(1);
-            }])->get();
-
-            $store->setRelation('articles', $articles);
-
-            // store's location ratings same as the number of articles which tagged same location as store
-            // due to when creating article need to rate the location if user tagged a location for an article
-            $store->location_ratings_count = $articles->count();
-
+            // location ratings count is articles count
+            $location = $store->location->first();
+            if ($location && $location->articles) {
+                $store->articles = $location->articles;
+                // location ratings count should be by location which has location rating
+                $locationRatings = $location->ratings->count();
+                $store->location_ratings_count = $locationRatings;
+            } else {
+                $store->articles = null;
+                $store->location_ratings_count = 0;
+            }
             return $store;
         });
-
         return StoreResource::collection($stores);
+    }
+
+    /**
+     * Get Stores Following Been Here
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Stores
+     * @urlParam store_ids string required The store ids. Example: 1,2,3
+     * @response scenario=success {"data": [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "John Doe"}]}
+     */
+    public function getStoresFollowingBeenHere(Request $request)
+    {
+        $this->validate($request, [
+            'store_ids' => 'required|string',
+        ]);
+
+        $storeIds = explode(',', $request->store_ids);
+
+        $articles = Article::whereHas('location', function ($query) use ($storeIds) {
+            $query->whereIn('locatables.location_id', function ($query) use ($storeIds) {
+                $query->select('location_id')
+                    ->from('locatables')
+                    ->where('locatable_type', Store::class)
+                    ->whereIn('locatable_id', $storeIds);
+            });
+        })->with(['user.followers' => function ($query) {
+            $query->where('user_id', auth()->id());
+        }, 'location.stores', 'media' => function ($query) {
+            $query->where('collection_name', Article::MEDIA_COLLECTION_NAME)
+                ->orderBy('order_column', 'asc')
+                ->take(1);
+        }])->get();
+
+        $followingsBeenHere = [];
+        $addedUsers = [];
+
+        foreach ($articles as $article) {
+            $user = $article->user;
+            $isFollowing = $user->followers->contains('id', auth()->id());
+            if ($isFollowing) {
+                $stores = collect($article->location)->pluck('stores')->flatten(1);
+                $articleStoreIds = $stores->pluck('id')->unique();
+                foreach ($articleStoreIds as $storeId) {
+                    if (!isset($followingsBeenHere[$storeId])) {
+                        $followingsBeenHere[$storeId] = [
+                            'storeId' => $storeId,
+                            'followingsBeenHere' => [],
+                        ];
+                        $addedUsers[$storeId] = [];
+                    }
+                    if (!in_array($user->id, $addedUsers[$storeId])) {
+                        $followingsBeenHere[$storeId]['followingsBeenHere'][] = [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'username' => $user->username,
+                            'avatar' => $user->avatar_url,
+                            'avatar_thumb' => $user->avatar_thumb_url,
+                            'has_avatar' => $user->hasMedia('avatar'),
+                        ];
+                        $addedUsers[$storeId][] = $user->id;
+                    }
+                }
+            }
+        }
+
+        // add the remaining store IDs without "followings been here" data
+        foreach ($storeIds as $storeId) {
+            if (!isset($followingsBeenHere[$storeId])) {
+                $followingsBeenHere[$storeId] = [
+                    'storeId' => (int)$storeId,
+                    'followingsBeenHere' => [],
+                ];
+            }
+        }
+
+        // sort the data by same order of pass in store_ids
+        $data = [];
+        foreach ($storeIds as $storeId) {
+            if (isset($followingsBeenHere[$storeId])) {
+                $data[] = $followingsBeenHere[$storeId];
+            }
+        }
+
+        return response()->json(['data' => $data]);
     }
 
     /**
@@ -301,6 +375,7 @@ class StoreController extends Controller
         // get merchant from store
         $merchant = $store->merchant;
 
+        $menus = null;
         if ($merchant) {
             $menus = $merchant->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
                 return [
@@ -348,16 +423,18 @@ class StoreController extends Controller
     public function getStoreRatingCategories(Store $store, Request $request)
     {
         $ratingCategories = RatingCategory::withCount(['storeRatings' => function ($query) use ($store) {
-            $query->where('store_ratings.store_id', $store->id);
+            $query->where('store_ratings.store_id', $store->id)
+                  ->select(DB::raw('COUNT(DISTINCT(store_ratings.user_id))'))
+                  ->latest();
         }])
-            ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
-                $query->whereHas('storeRatings');
-            })
-            ->orderBy('store_ratings_count', 'desc')
-            ->take($request->has('limit') ? $request->limit : 3)
-            ->get();
+        ->when($request->has('only_with_ratings') && $request->input('only_with_ratings') === '1', function ($query) {
+            $query->whereHas('storeRatings');
+        })
+        ->orderBy('store_ratings_count', 'desc')
+        ->take($request->has('limit') ? $request->limit : 3)
+        ->get();
 
-        return RatingCategoryResource::collection($ratingCategories);
+    return RatingCategoryResource::collection($ratingCategories);
     }
 
     /**

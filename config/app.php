@@ -313,6 +313,8 @@ return [
     ],
 
     'username_changes_days' => env('USERNAME_CHANGES_DAYS', 30),
+    'same_merchant_spend_limit' => env('SAME_MERCHANT_SPEND_LIMIT', false),
+    'same_merchant_spend_limit_days' => env('SAME_MERCHANT_SPEND_LIMIT_DAYS', 30),
 
     /*
     |--------------------------------------------------------------------------

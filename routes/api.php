@@ -138,6 +138,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Merchants
         Route::prefix('/merchants')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\MerchantController::class, 'index']);
+            Route::post('/crm', [\App\Http\Controllers\Api\MerchantController::class, 'postMerchantCrm']);
             Route::get('/rating_categories', [\App\Http\Controllers\Api\MerchantController::class, 'getRatingCategories']);
             Route::get('/nearby', [\App\Http\Controllers\Api\MerchantController::class, 'getNearbyMerchants']);
             Route::get('/{merchant}/locations', [\App\Http\Controllers\Api\MerchantController::class, 'getAllStoresLocationByMerchantId']);
@@ -149,6 +150,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         // Stores
         Route::prefix('/stores')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+            Route::get('/followings_been_here', [\App\Http\Controllers\Api\StoreController::class, 'getStoresFollowingBeenHere']);
             Route::get('/rating_categories', [\App\Http\Controllers\Api\StoreController::class, 'getRatingCategories']);
             Route::get('/locations', [\App\Http\Controllers\Api\StoreController::class, 'getStoresLocationsByStoreId']);
             Route::get('/stores_by_location', [\App\Http\Controllers\Api\StoreController::class, 'getStoreByLocationId']);

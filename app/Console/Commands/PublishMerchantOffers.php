@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\MerchantOfferPublished;
 use App\Models\MerchantOffer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -51,6 +52,9 @@ class PublishMerchantOffers extends Command
                 } catch (\Exception $e) {
                     Log::error('[PublishMerchantOffers] Error updating schedule status', ['error' => $e->getMessage()]);
                 }
+
+                // fire event MerchantOfferPublished
+                event(new MerchantOfferPublished($offer));
 
                 Log::info('[PublishMerchantOffers] Merchant offer published', ['offer_id' => $offer->id]);
                 $this->info('Merchant offer published: '.$offer->id);

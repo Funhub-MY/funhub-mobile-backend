@@ -102,6 +102,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             ] : null
         ];
     }
+
     public function shouldBeSearchable(): bool
     {
         if ($this->user_id) {
@@ -135,8 +136,6 @@ class Store extends BaseModel implements HasMedia, Auditable
             ->where('id', '!=', $this->id);
     }
 
-    // a store is related to an article through a shared location
-    // NOTE: deprecated May 27 as using query in controller instead
     public function articles()
     {
         return $this->belongsToMany(Article::class, 'locatables', 'locatable_id', 'locatable_id')
@@ -209,7 +208,6 @@ class Store extends BaseModel implements HasMedia, Auditable
     {
         return $this->morphToMany(Location::class, 'locatable');
     }
-
 
     public function storeRatings()
     {

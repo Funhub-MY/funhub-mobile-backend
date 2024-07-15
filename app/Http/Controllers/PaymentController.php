@@ -59,7 +59,12 @@ class PaymentController extends Controller
                 ],
                 'request' => request()->all()
             ]);
-            return 'Transaction Failed';
+
+            return view('payment-return', [
+                'message' => 'Transaction Failed [1]',
+                'transaction_id' => null,
+                'success' => false
+            ]);
         }
 
         // get transaction record via $request->invno
@@ -114,7 +119,7 @@ class PaymentController extends Controller
                         return 'Transaction Still Pending';
                     } else {
                         return view('payment-return', [
-                            'message' => 'Transaction Failed',
+                            'message' => 'Transaction Failed - Already Processed',
                             'transaction_id' => $transaction->id,
                             'success' => false
                         ]);
@@ -166,7 +171,7 @@ class PaymentController extends Controller
                 return 'Transaction Still Pending';
             } else { // failed
                 Log::error('Payment return failed', [
-                    'error' => 'Transaction Failed',
+                    'error' => 'Transaction Failed - Gateway Response Code Failed',
                     'request' => request()->all()
                 ]);
                 $gatewayId = $request->mpay_ref_no;
@@ -186,7 +191,7 @@ class PaymentController extends Controller
                 }
 
                 return view('payment-return', [
-                    'message' => 'Transaction Failed',
+                    'message' => 'Transaction Failed - Gateway Response Code Failed [2]',
                     'transaction_id' => $transaction->id,
                     'success' => false
                 ]);

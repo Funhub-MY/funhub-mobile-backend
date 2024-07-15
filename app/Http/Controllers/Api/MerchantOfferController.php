@@ -7,6 +7,7 @@ use App\Events\PurchasedMerchantOffer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
+use App\Models\OfferLimitWhitelist;
 use App\Http\Resources\PublicMerchantOfferResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
@@ -87,6 +88,29 @@ class MerchantOfferController extends Controller
             ->published()
             // ->available()
             ->with('user', 'user.merchant', 'categories', 'stores', 'stores.location', 'stores.storeRatings', 'claims', 'user', 'location', 'location.ratings');
+
+        // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
+        // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
+        if ($request->user() && config('app.same_merchant_spend_limit')) {
+            $user = $request->user();
+            // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
+            $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
+
+            if (!$isWhitelisted) {
+                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
+                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
+                    ->pluck('merchant_offer_id')
+                    ->toArray();
+
+                $excludedMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
+                    ->pluck('user_id')
+                    ->unique()
+                    ->toArray();
+
+                $query->whereNotIn('user_id', $excludedMerchantIds);
+            }
+        }
 
         // category_ids filter
         if ($request->has('category_ids')) {

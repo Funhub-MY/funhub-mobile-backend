@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 18
+                  example: 1
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: dolores
+                  example: in
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: iusto
+                  example: nesciunt
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - ratione
+                    - sed
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 9
+                  example: 1
               required:
                 - keyword_id
     parameters:
@@ -609,7 +609,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - minus
+                    - facere
                   items:
                     type: string
                 category_ids:
@@ -1299,7 +1299,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: impedit
+        example: est
         required: true
         schema:
           type: string
@@ -1380,11 +1380,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: rerum
+                  example: hic
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: illum
+                  example: voluptatem
               required:
                 - comment_id
                 - reason
@@ -1666,7 +1666,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: aspernatur
+        example: minus
         required: true
         schema:
           type: string
@@ -2154,7 +2154,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 51
+                      line: 47
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -2656,7 +2656,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 51
+                        line: 47
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -3189,7 +3189,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 51
+                      line: 47
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -3685,7 +3685,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 51
+                        line: 47
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -4599,7 +4599,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: ygreenholt@example.com
+                  example: hubert58@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4724,7 +4724,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 51
+                      line: 47
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -5146,7 +5146,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 51
+                        line: 47
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -5534,7 +5534,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: a
+                  example: earum
               required:
                 - share_code
   /api/v1/public_user:
@@ -5568,7 +5568,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: ipsam
+                  example: est
               required:
                 - username
   /api/v1/public_offer:
@@ -5598,7 +5598,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 741
+                      line: 765
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5638,7 +5638,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 51
+                      line: 47
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -6020,7 +6020,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 741
+                        line: 765
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6060,7 +6060,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 51
+                        line: 47
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -6448,7 +6448,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: voluptatem
               required:
                 - share_code
   /api/v1/public_store:
@@ -6478,7 +6478,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/StoreController.php
-                      line: 411
+                      line: 479
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6518,7 +6518,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 51
+                      line: 47
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
@@ -6900,7 +6900,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/StoreController.php
-                        line: 411
+                        line: 479
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6940,7 +6940,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 51
+                        line: 47
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
@@ -7328,7 +7328,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: porro
+                  example: nesciunt
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -8007,7 +8007,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptatem
+                    - voluptas
                   items:
                     type: string
                 name:
@@ -8188,13 +8188,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - voluptas
+            - repellendus
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - voluptas
+              - repellendus
             items:
               type: string
         -
@@ -8380,7 +8380,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - laboriosam
+                    - dolorem
                   items:
                     type: string
                 city:
@@ -8662,7 +8662,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: nihil
+        example: ut
         required: true
         schema:
           type: string
@@ -8762,6 +8762,59 @@ paths:
           present:
             summary: 'When the value is present'
             value: 10
+  /api/v1/merchants/crm:
+    post:
+      summary: 'Create Merchant CRM Record'
+      operationId: createMerchantCRMRecord
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'Created Merchant Contact'
+                properties:
+                  message:
+                    type: string
+                    example: 'Created Merchant Contact'
+      tags:
+        - Merchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                brand_name:
+                  type: string
+                  description: 'Brand Name.'
+                  example: ABC
+                pic_name:
+                  type: string
+                  description: 'PIC Name.'
+                  example: 'John Doe'
+                postcode:
+                  type: string
+                  description: Postcode.
+                  example: '47530'
+                phone_no:
+                  type: string
+                  description: 'Phone Number.'
+                  example: '0123456789'
+                address:
+                  type: string
+                  description: 'optional Address.'
+                  example: '123, Jalan ABC'
+              required:
+                - brand_name
+                - pic_name
+                - postcode
+                - phone_no
   /api/v1/merchants/rating_categories:
     get:
       summary: 'Get Merchant Rating Categories'
@@ -9967,6 +10020,70 @@ paths:
           present:
             summary: 'When the value is present'
             value: 10
+  /api/v1/stores/followings_been_here:
+    get:
+      summary: 'Get Stores Following Been Here'
+      operationId: getStoresFollowingBeenHere
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  '1':
+                    -
+                      id: 1
+                      name: 'John Doe'
+                    -
+                      id: 2
+                      name: 'John Doe'
+                properties:
+                  1:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'John Doe'
+                      -
+                        id: 2
+                        name: 'John Doe'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'John Doe'
+      tags:
+        - Stores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                store_ids:
+                  type: string
+                  description: ''
+                  example: voluptatem
+              required:
+                - store_ids
+    parameters:
+      -
+        in: path
+        name: store_ids
+        description: 'The store ids.'
+        example: '1,2,3'
+        required: true
+        schema:
+          type: string
   /api/v1/stores/rating_categories:
     get:
       summary: 'Get Store Rating Categories'
@@ -10018,7 +10135,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: earum
+                  example: ducimus
               required:
                 - store_ids
     parameters:
@@ -10065,7 +10182,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: a
+                  example: temporibus
               required:
                 - location_id
     parameters:
@@ -10635,7 +10752,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 16
+                  example: 7
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -10681,7 +10798,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 10
+                  example: 14
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -10727,7 +10844,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 15
+                  example: 6
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -10761,7 +10878,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 12
+                  example: 5
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -10822,15 +10939,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: dolores
+                  example: quisquam
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: facere
+                  example: illo
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: culpa
+                  example: nemo
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -11006,7 +11123,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: quisquam
+                  example: quia
               required:
                 - user_ids
     parameters:
@@ -12456,7 +12573,7 @@ tags:
     description: ''
   -
     name: Merchant
-    description: ''
+    description: '//  * @bodyParam email string required Email. Example: abc@example.com'
   -
     name: Mission
     description: ''
