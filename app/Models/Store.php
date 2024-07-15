@@ -71,6 +71,11 @@ class Store extends BaseModel implements HasMedia, Auditable
         return config('scout.prefix').'stores_index';
     }
 
+    public function getScoutKey()
+    {
+        return 'stores::' . $this->id;
+    }
+
     public function toSearchableArray()
     {
         return [

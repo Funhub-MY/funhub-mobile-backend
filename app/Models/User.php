@@ -141,6 +141,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return config('scout.prefix').'users_index';
     }
 
+    public function getScoutKey()
+    {
+        return 'users::' . $this->id;
+    }
+
     public function toSearchableArray()
     {
         return [

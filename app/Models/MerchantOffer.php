@@ -71,6 +71,11 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
         return config('scout.prefix').'merchant_offers_index';
     }
 
+    public function getScoutKey()
+    {
+        return 'merchant_offers::' . $this->id;
+    }
+
     /**
      * @return array<string, mixed>
      */
