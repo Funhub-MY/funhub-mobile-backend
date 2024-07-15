@@ -164,7 +164,7 @@ class Article extends BaseModel implements HasMedia, Auditable
                     }) : null,
                 ];
             }) : null,
-            '_geoloc' => ($this->location()->count() > 0) ? [
+            '_geoloc' => ($this->location()->count() > 0 && $this->location->first()) ? [
                 'lat' => floatval($this->location->first()->lat),
                 'lng' => floatval($this->location->first()->lng)
             ] : null,
