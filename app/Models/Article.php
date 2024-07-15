@@ -103,6 +103,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             'title' => $this->title,
             // 'thumbnail' => $this->getFirstMediaUrl(self::MEDIA_COLLECTION_NAME),
             'type' => $this->type,
+            'owner_whitelisted' => $this->user->articleFeedWhitelist()->exists(),
             'body' => (function($body) {
                 $body = mb_convert_encoding($body, 'UTF-8', 'UTF-8');
                 $body = strip_tags($body);
