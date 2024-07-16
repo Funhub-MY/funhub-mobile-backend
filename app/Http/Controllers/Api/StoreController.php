@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\RatedStore;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LocationResource;
 use App\Http\Resources\PublicStoreResource;
@@ -352,6 +353,9 @@ class StoreController extends Controller
 
         // load user, ratingCategories
         $rating->load('user', 'ratingCategories');
+
+        // fire event RatedStore
+        event(new RatedStore($store, $rating->user));
 
         return new StoreRatingResource($rating);
     }

@@ -34,7 +34,7 @@ class RatedLocationListener implements ShouldQueue
         // if location has a store attach, create a copy rating for the store
         if ($location->stores) {
             foreach ($location->stores as $store) { // each location has many stores
-                $storeRating = $store->ratings()->create([
+                $storeRating = $store->storeRatings()->create([
                     'user_id' => $user->id,
                     'rating' => $rating,
                     'comment' => null,

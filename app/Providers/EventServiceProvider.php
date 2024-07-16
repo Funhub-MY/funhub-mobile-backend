@@ -12,6 +12,7 @@ use App\Events\InteractionCreated;
 use App\Events\MerchantOfferPublished;
 use App\Events\PurchasedMerchantOffer;
 use App\Events\RatedLocation;
+use App\Events\RatedStore;
 use App\Events\UserReferred;
 use App\Events\UserSettingsUpdated;
 use App\Observers\ApprovalObserver;
@@ -24,6 +25,7 @@ use App\Listeners\CreateViewsForArticleListener;
 use App\Listeners\MerchantOfferPublishedListener;
 use App\Listeners\RatedLocationListener;
 use App\Listeners\RecommendationAutoByPass;
+use App\Listeners\UpdateLastRatedForMerchantOfferClaim;
 use App\Listeners\UserReferredListener;
 use App\Listeners\UserSettingsSavedListener;
 use App\Models\MerchantOffer;
@@ -91,6 +93,10 @@ class EventServiceProvider extends ServiceProvider
         MerchantOfferPublished::class => [
             MerchantOfferPublishedListener::class,
         ],
+
+        RatedStore::class => [
+            UpdateLastRatedForMerchantOfferClaim::class,
+        ]
     ];
 
     /**
