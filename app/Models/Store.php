@@ -115,7 +115,7 @@ class Store extends BaseModel implements HasMedia, Auditable
                 return [
                     'id' => $article->id,
                     'title' => $article->title,
-                    'tags' => $article->tags->pluck('name'),
+                    'hastags' => $article->tags->pluck('name'),
                     'categories' => ($article->categories) ? $article->categories->map(function ($category) {
                         return [
                             'id' => $category->id,

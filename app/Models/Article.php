@@ -123,7 +123,7 @@ class Article extends BaseModel implements HasMedia, Auditable
                     'name_translation' => $category->name_translation,
                 ];
             }) : null,
-            'tags' => $this->tags->pluck('name'),
+            'hastags' => $this->tags->pluck('name'),
             'status' => $this->status,
             'published_at' => $this->published_at,
             'created_at' => $this->created_at,
