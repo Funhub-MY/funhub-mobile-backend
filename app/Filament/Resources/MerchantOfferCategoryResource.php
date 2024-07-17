@@ -123,7 +123,8 @@ class MerchantOfferCategoryResource extends Resource
                     Group::make()
                         ->schema([
                             Toggle::make('is_featured')
-                                ->label('Is Featured On Homepage?'),
+                                ->label('Is Featured?')
+                                ->helperText('This will inserted next to "All" category in the app.'),
 
                             Toggle::make('is_active')
                                 ->label('Is Active?'),
