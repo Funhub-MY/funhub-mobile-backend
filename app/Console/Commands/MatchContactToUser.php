@@ -42,6 +42,8 @@ class MatchContactToUser extends Command
 
         $contacts = $contactsQuery->get();
 
+        $this->info('Total contacts to sync: ' . $contacts->count());
+
         // Group contacts by phone country code and phone number
         $groupedContacts = $contacts->groupBy(function ($contact) {
             return $contact->phone_country_code . $contact->phone_no;
@@ -56,6 +58,8 @@ class MatchContactToUser extends Command
             $users = User::whereIn(DB::raw('CONCAT(phone_country_code, phone_no)'), $chunk)
                 ->select('id', 'phone_country_code', 'phone_no')
                 ->get();
+
+            $this->info('Total users matched for imported contacts/per 500 chunks of numbers: ' . $users->count());
 
             // Update the related user ID for matching contacts
             foreach ($users as $user) {
