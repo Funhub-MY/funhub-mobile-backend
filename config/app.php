@@ -316,6 +316,8 @@ return [
     'same_merchant_spend_limit' => env('SAME_MERCHANT_SPEND_LIMIT', false),
     'same_merchant_spend_limit_days' => env('SAME_MERCHANT_SPEND_LIMIT_DAYS', 30),
 
+    'recommended_media_partner_article_hide_after_days' => env('RECOMMENDED_MEDIA_PARTNER_ARTICLE_HIDE_AFTER_DAYS', 30),
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails

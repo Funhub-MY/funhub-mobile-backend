@@ -60,6 +60,9 @@ class Kernel extends ConsoleKernel
 
         // sync article tagged location as stores(un-onboarded stores)
         $schedule->command('articles:sync-location-as-stores')->hourly();
+
+        // match contacts to users(related_user_id) in user_contacts table
+        $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
     }
 
     /**
