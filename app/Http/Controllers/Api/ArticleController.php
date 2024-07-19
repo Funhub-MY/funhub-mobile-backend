@@ -168,13 +168,13 @@ class ArticleController extends Controller
 
         // new logic: Hide articles from media partners if they are older than the specified number of days
         // requested by content team as of 17 jul 2024
-        $query->where(function ($query) {
-            $query->doesntHave('imports') // non media partner articles
-                ->orWhere(function ($query) { // if media partner articles
-                    $query->has('imports')
-                        ->where('created_at', '>=', now()->subDays(config('app.recommended_media_partner_article_hide_after_days'))); // must not be older than config('app.recommended_media_partner_article_hide_after_days')
-                });
-        });
+        // $query->where(function ($query) {
+        //     $query->doesntHave('imports') // non media partner articles
+        //         ->orWhere(function ($query) { // if media partner articles
+        //             $query->has('imports')
+        //                 ->where('created_at', '>=', now()->subDays(config('app.recommended_media_partner_article_hide_after_days'))); // must not be older than config('app.recommended_media_partner_article_hide_after_days')
+        //         });
+        // });
 
         if (!$request->has('lat') && !$request->has('lng')) {
             $query->latest();
