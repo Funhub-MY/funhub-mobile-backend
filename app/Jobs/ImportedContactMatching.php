@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ImportedContactMatching implements ShouldQueue
 {
@@ -37,19 +38,23 @@ class ImportedContactMatching implements ShouldQueue
 
         // Chunk the phone numbers to avoid hitting the maximum query length limit
         foreach (array_chunk($phoneNumbers, 500) as $chunk) {
-            // Find matching users for the current chunk of phone numbers
-            $users = User::whereIn(DB::raw('CONCAT(phone_country_code, phone_no)'), $chunk)
-                ->select('id', 'phone_country_code', 'phone_no')
-                ->get();
+            try {
+                // Find matching users for the current chunk of phone numbers
+                $users = User::whereIn(DB::raw('CONCAT(phone_country_code, phone_no)'), $chunk)
+                    ->select('id', 'phone_country_code', 'phone_no')
+                    ->get();
 
-            // Update the related user ID for matching contacts
-            foreach ($users as $user) {
-                $matchingContacts = $groupedContacts->get($user->phone_country_code . $user->phone_no);
+                // Update the related user ID for matching contacts
+                foreach ($users as $user) {
+                    $matchingContacts = $groupedContacts->get($user->phone_country_code . $user->phone_no);
 
-                if ($matchingContacts) {
-                    UserContact::whereIn('id', $matchingContacts->pluck('id'))
-                        ->update(['related_user_id' => $user->id]);
+                    if ($matchingContacts) {
+                        UserContact::whereIn('id', $matchingContacts->pluck('id'))
+                            ->update(['related_user_id' => $user->id]);
+                    }
                 }
+            } catch (\Exception $e) {
+                Log::error('[MatchContactToUser] Error matching contacts to users: ' . $e->getMessage());
             }
         }
     }
