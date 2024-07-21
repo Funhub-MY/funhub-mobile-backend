@@ -111,6 +111,7 @@ class Store extends BaseModel implements HasMedia, Auditable
                     'available_until' => $merchantOffer->available_until,
                 ];
             }) : null,
+            'latest_articles_created_at' => ($this->articles) ? $this->articles->latest()->created_at : null,
             'articles' => ($this->articles) ? $this->articles->map(function ($article) {
                 return [
                     'id' => $article->id,
