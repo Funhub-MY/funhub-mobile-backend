@@ -7,6 +7,7 @@ use App\Models\Store;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PullBubbleDataForUserStoreRatings extends Command
 {
@@ -66,6 +67,13 @@ class PullBubbleDataForUserStoreRatings extends Command
         }
 
         $reviewsData = $reviewsData['response']['results'];
+
+        // log how m,any data got from bubble into Log
+        Log::info('Bubble API Response Data Pull', [
+            'users' => count($usersData),
+            'reviews' => count($reviewsData),
+            'stores' => count($storesData),
+        ]);
 
 
         // Get unique users by phone number
@@ -135,6 +143,12 @@ class PullBubbleDataForUserStoreRatings extends Command
                     'phone_country_code' => '60',
                     'phone_no' => $user['Phone number'],
                 ]);
+
+                Log::info('[PullBubbleDataForUserStoreRatings] Bubble API User Created', [
+                    'user_id' => $authUser->id,
+                    'phone_no' => $user['Phone number'],
+                    'name' => $user['User name'],
+                ]);
               } catch (\Exception $e) {
                 $this->error("Failed to create user: " . $user['User name']. ' phone_no: ' . $user['Phone number']);
                 continue;
@@ -167,10 +181,22 @@ class PullBubbleDataForUserStoreRatings extends Command
                             }
                         }
 
+                        Log::info('[PullBubbleDataForUserStoreRatings] Bubble API Store Rating Created', [
+                            'user_id' => $authUser->id,
+                            'store_id' => $review['funhub_store_id'],
+                            'rating' => $review['rating'],
+                            'categories' => $categories,
+                        ]);
+
                         $this->info("  Rating: " . $review['rating']);
 
                     } else {
                         $this->error("Store ID: " . $review['funhub_store_id'] . " not found OR authed user not created. Review:" . json_encode($review));
+
+                        Log::error('[PullBubbleDataForUserStoreRatings] Bubble API Store ID not found OR authed user not created', [
+                            'user_id' => $user['_id'] ?? 'null',
+                            'store_id' => $review['funhub_store_id'] ?? 'null',
+                        ]);
                     }
                 }
             } else {
