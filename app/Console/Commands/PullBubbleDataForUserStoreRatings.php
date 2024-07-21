@@ -75,7 +75,6 @@ class PullBubbleDataForUserStoreRatings extends Command
             'stores' => count($storesData),
         ]);
 
-
         // Get unique users by phone number
         $uniqueUsers = $this->getUniqueUsersByPhoneNumber($usersData);
 
