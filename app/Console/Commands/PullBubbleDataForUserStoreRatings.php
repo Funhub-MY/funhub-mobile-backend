@@ -163,16 +163,17 @@ class PullBubbleDataForUserStoreRatings extends Command
                     // find store by funhub_store_id
                     $store = Store::where('id', $review['funhub_store_id'])->first();
 
-                    if ($store && $authUser) {
+                    if ($store && $authUser && !$store->where('external_review_id', $review['_id'])->exists()) {
                         $this->info("- Funhub Store ID: " . $review['funhub_store_id']);
                         // add store ratings of this user id
                         $rating = $store->storeRatings()->create([
                             'user_id' => $authUser->id,
                             'rating' => $review['rating'],
                             'comment' => (isset($review['comment'])) ? $review['comment'] : null,
+                            'external_review_id' => $review['_id'],
                         ]);
 
-                        $categories = $review->categories;
+                        $categories = $review['categories'];
                         // loop through each category thats available in availableRatingCategories and attach to rating
                         foreach ($categories as $category) {
                             if ($availableRatingCategories->contains('name', $category)) {
@@ -190,11 +191,12 @@ class PullBubbleDataForUserStoreRatings extends Command
                         $this->info("  Rating: " . $review['rating']);
 
                     } else {
-                        $this->error("Store ID: " . $review['funhub_store_id'] . " not found OR authed user not created. Review:" . json_encode($review));
+                        $this->error("Store ID: " . $review['funhub_store_id'] . " not found OR created before OR authed user not created. Review:" . json_encode($review));
 
                         Log::error('[PullBubbleDataForUserStoreRatings] Bubble API Store ID not found OR authed user not created', [
                             'user_id' => $user['_id'] ?? 'null',
                             'store_id' => $review['funhub_store_id'] ?? 'null',
+                            'external_review_id' => $review['_id'] ?? 'null',
                         ]);
                     }
                 }

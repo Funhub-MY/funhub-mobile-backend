@@ -17,6 +17,7 @@ class StoreRating extends BaseModel
         'user_id',
         'rating',
         'comment',
+        'external_review_id',
         'created_at',
         'updated_at'
     ];
