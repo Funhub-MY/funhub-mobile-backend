@@ -166,7 +166,7 @@ class PullBubbleDataForUserStoreRatings extends Command
                     $storeRating = StoreRating::where('external_review_id', $review['_id'])->exists();
 
                     if ($storeRating) {
-                        $this->info("-- Store Rating with external_review_id: " . $review['funhub_store_id'] . " already exists");
+                        $this->info("-- Store Rating with external_review_id: " . $review['_id'] . " already exists");
                     }
 
                     if ($store && $authUser && !$storeRating) {
