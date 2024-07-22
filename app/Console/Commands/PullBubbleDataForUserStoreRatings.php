@@ -119,15 +119,16 @@ class PullBubbleDataForUserStoreRatings extends Command
         }
 
         // Sort reviews for each user by latest first, then oldest
-        // foreach ($uniqueUsers as &$user) {
-        //     $this->info("Sorting reviews for user: " . $user['_id']);
-        //     if (isset($user['reviews'])) {
-        //         usort($user['reviews'], function($a, $b) {
-        //             return strtotime($b['created_at']) - strtotime($a['created_at']);
-        //         });
-        //     }
-        // }
+        foreach ($uniqueUsers as &$user) {
+            $this->info("Sorting reviews for user: " . $user['_id']);
+            if (isset($user['reviews'])) {
+                usort($user['reviews'], function($a, $b) {
+                    return strtotime($b['created_at']) - strtotime($a['created_at']);
+                });
+            }
+        }
 
+        $this->info(var_dump($uniqueUsers));
 
         $availableRatingCategories = RatingCategory::all();
         $reviewsData = collect($reviewsData);
