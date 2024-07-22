@@ -45,6 +45,8 @@ class ProcessArticleToCategoriesML extends Command
             ->limit(100)
             ->get();
 
+        Log::info('[ProcessArticleCategories] Total Articles to Process: ' . $articles->count());
+
         $this->info('All Sub Categories Name: '. $subCategories->pluck('name')->implode(', '));
 
         $this->info('Articles published that has no sub categories: '. $articles->count());

@@ -68,7 +68,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
 
         // categorize articles
-        $schedule->command('articles:categorize')->everyFifteenMinutes();
+        $schedule->command('articles:categorize')->everyThirtyMinutes();
     }
 
     /**
