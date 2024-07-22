@@ -57,6 +57,10 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'parent_id' => $this->parent_id,
             'reply_to_id' => $this->reply_to_id,
+            'reply_to_comment_user' => ($this->replyTo) ? [
+                'id' => $this->replyTo->user->id,
+                'name' => $this->replyTo->user->name,
+            ] : null,
             'commentable_id' => $this->commentable_id,
             'user' => new UserResource($this->user),
             'counts' => [

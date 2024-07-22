@@ -89,7 +89,7 @@ class CommentController extends Controller
                         $query->where('users.status', User::STATUS_ACTIVE);
                     });
             }])
-            ->with('likes')
+            ->with('likes', 'replyTo.user')
             ->withCount('likes')
             ->withCount(['replies' => function ($query) {
                 $query->whereHas('user', function ($query) {
@@ -419,6 +419,7 @@ class CommentController extends Controller
      *
      * @group Article
      * @subgroup Comments
+     * @bodyParam reply_to_id integer required The id of the comment. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
@@ -437,6 +438,11 @@ class CommentController extends Controller
         $query = $comment->replies()->latest()->whereHas('user', function ($query) {
             $query->where('status', User::STATUS_ACTIVE);
         });
+
+        // if provided reply to id, filter replies by that id
+        if ($request->has('reply_to_id')) {
+            $query->where('id', $request->reply_to_id);
+        }
 
         $this->buildQuery($query, $request);
 
