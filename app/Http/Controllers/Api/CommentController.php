@@ -448,11 +448,14 @@ class CommentController extends Controller
             $query->where('id', $request->reply_to_id);
         }
 
-        $this->buildQuery($query, $request);
+        // when has sort and order, order by
+        $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
+            $query->orderBy($request->sort, $request->order_by);
+        });
 
         $data = $query->with('user');
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
     }
