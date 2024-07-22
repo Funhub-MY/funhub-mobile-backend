@@ -131,7 +131,7 @@ class PullBubbleDataForUserStoreRatings extends Command
         // Output the formatted data
         foreach ($uniqueUsers as $phoneNumber => $user) {
             // create user if not exists match by phone number
-            $authUser = User::where('phone_no', trim($user['Phone number']))
+            $authUser = User::where('phone_no', ltrim($user['Phone number'], '0'))
                 ->where('phone_country_code', '60') // only MY
                 ->first();
 
