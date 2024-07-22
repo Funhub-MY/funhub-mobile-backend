@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: et
+        example: officiis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: et
+      share_code: officiis
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fdc1V43P5Eevh6aZD8agk6b'
+      - 'Bearer EPa64c3v6adkDhg8b1eV5fZ'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: voluptatum
+        example: libero
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: voluptatum
+      username: libero
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1k8hdD46gEf3c5ev6bZaVaP'
+      - 'Bearer Zfb41DVdh5e6Pgvkc638Eaa'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: animi
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: animi
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ba6ecP3aVk1vhdZ84Dfg65E'
+      - 'Bearer 8a5edhfZ66Vga1vkE3bPDc4'
     controller: null
     method: null
     route: null
@@ -1156,13 +1156,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: ut
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: ut
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -1662,7 +1662,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PV1v6dkh6D5bf8g43aEZcea'
+      - 'Bearer e6dg13Vvbf8P5akZD4hc6Ea'
     controller: null
     method: null
     route: null
