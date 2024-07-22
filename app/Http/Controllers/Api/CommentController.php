@@ -78,8 +78,6 @@ class CommentController extends Controller
             })->where('comments.parent_id', null);
         }
 
-        $this->buildQuery($query, $request);
-
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
@@ -115,6 +113,15 @@ class CommentController extends Controller
         //     $query->where('user_id', auth()->id())
         //         ->orWhere('blockable_id', auth()->id());
         // });
+
+        $query->when($request->has('limit'), function ($query) use ($request) {
+            $query->limit($request->limit);
+        });
+
+        // when has sort and order, order by
+        $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
+            $query->orderBy($request->sort, $request->order_by);
+        });
 
         $data = $query->paginate(config('app.paginate_per_page'));
 
