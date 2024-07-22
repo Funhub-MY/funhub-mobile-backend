@@ -179,7 +179,7 @@ class PullBubbleDataForUserStoreRatings extends Command
                         // loop through each category thats available in availableRatingCategories and attach to rating
                         foreach ($categories as $category) {
                             if ($availableRatingCategories->contains('name', $category)) {
-                                $rating->ratingCategories()->attach($availableRatingCategories->where('name', $category)->first()->id, ['user_id' => auth()->id()]);
+                                $rating->ratingCategories()->attach($availableRatingCategories->where('name', $category)->first()->id, ['user_id' => $authUser->id]);
                             }
                         }
 
