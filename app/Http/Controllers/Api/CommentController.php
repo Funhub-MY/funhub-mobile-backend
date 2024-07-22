@@ -140,6 +140,7 @@ class CommentController extends Controller
      * @subgroup Comments
      * @authenticated
      * @bodyParam parent_id integer The id of the parent comment (For Replies). Example: 1
+     * @bodyParam reply_to_id integer The id of the parent comment (For Replies). Example: 1
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
@@ -175,6 +176,7 @@ class CommentController extends Controller
             'commentable_id' => $request->id,
             'body' => $request->body,
             'parent_id' => $parent ? $parent->id : null,
+            'reply_to_id' => $request->reply_to_id ?? null,
             'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 

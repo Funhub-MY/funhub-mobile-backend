@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - voluptas
+          - rerum
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -100,7 +100,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - voluptas
+        - rerum
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -127,7 +127,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1fVcv8P6g6DbZa35ed4kaEh'
+      - 'Bearer 6eha3EdcZfv4P1agDb58Vk6'
     controller: null
     method: null
     route: null
@@ -154,7 +154,7 @@ endpoints:
         name: location_id
         description: 'The ID of the location.'
         required: true
-        example: 1
+        example: 6
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -169,7 +169,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      location_id: 1
+      location_id: 6
       location: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -191,7 +191,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 64Dedvh86a1ck5ZV3PfbgEa'
+      - 'Bearer h4aZ6bae6E1d3fPV8cvD5gk'
     controller: null
     method: null
     route: null

@@ -56,6 +56,11 @@ class Comment extends BaseModel implements Auditable
         return $this->belongsTo(Comment::class, 'parent_id');
     }
 
+    public function replyTo()
+    {
+        return $this->belongsTo(Comment::class, 'reply_to_id');
+    }
+
     public function replies()
     {
         return $this->hasMany(Comment::class, 'parent_id');
