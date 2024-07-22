@@ -199,19 +199,19 @@ class PullBubbleDataForUserStoreRatings extends Command
                                 'user_id' => $user['_id'] ?? 'null',
                                 'store_id' => $review['funhub_store_id'] ?? 'null',
                                 'external_review_id' => $review['_id'] ?? 'null',
-                                'store' => $store,
-                                'authUser' => $authUser,
-                                'storeRating' => $storeRating,
+                                'store' => ($store) ? true : false,
+                                'authUser' => ($authUser) ? true : false,
+                                'storeRating' => ($storeRating) ? true : false,
                             ]
                         ));
 
-                        Log::error('[PullBubbleDataForUserStoreRatings] Bubble API Store ID not found OR authed user not created', [
+                        Log::error('[PullBubbleDataForUserStoreRatings] Bubble API Store ID not found OR authed user not created',   [
                             'user_id' => $user['_id'] ?? 'null',
                             'store_id' => $review['funhub_store_id'] ?? 'null',
                             'external_review_id' => $review['_id'] ?? 'null',
-                            'store' => $store,
-                            'authUser' => $authUser,
-                            'storeRating' => $storeRating,
+                            'store' => ($store) ? true : false,
+                            'authUser' => ($authUser) ? true : false,
+                            'storeRating' => ($storeRating) ? true : false,
                         ]);
                     }
                 }
