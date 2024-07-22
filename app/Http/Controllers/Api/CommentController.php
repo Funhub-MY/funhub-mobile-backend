@@ -117,7 +117,7 @@ class CommentController extends Controller
 
         // when has sort and order, order by
         $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
-            $query->orderBy($request->sort, $request->order_by);
+            $query->orderBy($request->sort, $request->order);
         });
 
         $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
@@ -450,7 +450,7 @@ class CommentController extends Controller
 
         // when has sort and order, order by
         $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
-            $query->orderBy($request->sort, $request->order_by);
+            $query->orderBy($request->sort, $request->order);
         });
 
         $data = $query->with('user');
