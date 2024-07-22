@@ -82,7 +82,6 @@ class PullBubbleDataForUserStoreRatings extends Command
         if (is_array($reviewsData)) {
             foreach ($reviewsData as $review) {
                 if (isset($review['Created By']) && isset($review['Store'])) {
-                    $this->info("Processed review: " . $review['_id']);
 
                     $userId = $review['Created By'];
                     $storeId = $review['Store'];
@@ -107,6 +106,8 @@ class PullBubbleDataForUserStoreRatings extends Command
                                     'categories' => $categories,
                                     'created_at' => $createdAt ? date('Y-m-d H:i:s', strtotime($createdAt)) : null
                                 ];
+
+                                $this->info("-- Store Rating with external_review_id: " . $review['_id'] . " append to user: " . $user['User name']);
                                 break;
                             }
                         }
@@ -128,6 +129,7 @@ class PullBubbleDataForUserStoreRatings extends Command
         }
 
         $availableRatingCategories = RatingCategory::all();
+        $reviewsData = collect($reviewsData);
 
         // Output the formatted data
         foreach ($uniqueUsers as $phoneNumber => $user) {
@@ -165,12 +167,11 @@ class PullBubbleDataForUserStoreRatings extends Command
                     $store = Store::where('id', $review['funhub_store_id'])->first();
                     $storeRating = StoreRating::where('external_review_id', $review['_id'])->exists();
 
-                    if ($storeRating) {
-                        $this->info("-- Store Rating with external_review_id: " . $review['_id'] . " already exists");
-                    }
+                    // if ($storeRating) {
+                    //     $this->info("-- Store Rating with external_review_id: " . $review['_id'] . " already exists");
+                    // }
 
                     if ($store && $authUser && !$storeRating) {
-                        $this->info("- Funhub Store ID: " . $review['funhub_store_id']);
                         // add store ratings of this user id
                         $rating = $store->storeRatings()->create([
                             'user_id' => $authUser->id,
@@ -194,7 +195,7 @@ class PullBubbleDataForUserStoreRatings extends Command
                             'categories' => $categories,
                         ]);
 
-                        $this->info("  Rating: " . $review['rating']);
+                        $this->info("Added rating REVIEW ID: ". $review['_id']. ' Ratings: ' . $review['rating'] . " to user: " . $user['User name']);
 
                     } else {
                         $this->error("Store ID: " . $review['funhub_store_id'] . " not found OR created before OR authed user not created. Review:" . json_encode(
@@ -233,7 +234,7 @@ class PullBubbleDataForUserStoreRatings extends Command
             foreach ($usersData as $user) {
                 if (isset($user['Phone number'])) {
 
-                    $this->info("Processing user: " . $user['User name']. ' with non processed phone_no: ' . $user['Phone number']);
+                    // $this->info("Processing user: " . $user['User name']. ' with non processed phone_no: ' . $user['Phone number']);
 
                     // remove any + and prefix 0 from phone number
                     $phoneNumber = ltrim($user['Phone number'], '0');
@@ -249,7 +250,7 @@ class PullBubbleDataForUserStoreRatings extends Command
 
                     if (!isset($uniqueUsers[$phoneNumber])) {
                         $uniqueUsers[$phoneNumber] = $user;
-                        $this->info("Processed user: " . $user['User name']);
+                        // $this->info("Processed user: " . $user['User name']);
                     }
                 }
             }
