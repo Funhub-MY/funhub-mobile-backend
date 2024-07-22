@@ -114,16 +114,13 @@ class CommentController extends Controller
         //         ->orWhere('blockable_id', auth()->id());
         // });
 
-        $query->when($request->has('limit'), function ($query) use ($request) {
-            $query->limit($request->limit);
-        });
 
         // when has sort and order, order by
         $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
             $query->orderBy($request->sort, $request->order_by);
         });
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         // post process replies
         // TODO: enhance this as the primary query will still call all replies
