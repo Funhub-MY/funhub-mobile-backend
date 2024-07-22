@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\RatingCategory;
 use App\Models\Store;
+use App\Models\StoreRating;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -101,6 +102,7 @@ class PullBubbleDataForUserStoreRatings extends Command
                                     $user['reviews'] = [];
                                 }
                                 $user['reviews'][] = [
+                                    '_id' => $review['_id'],
                                     'funhub_store_id' => $funhubStoreId,
                                     'rating' => $rating,
                                     'categories' => $categories,
@@ -163,7 +165,7 @@ class PullBubbleDataForUserStoreRatings extends Command
                     // find store by funhub_store_id
                     $store = Store::where('id', $review['funhub_store_id'])->first();
 
-                    if ($store && $authUser && !$store->where('external_review_id', $review['_id'])->exists()) {
+                    if ($store && $authUser && !StoreRating::where('external_review_id', $review['_id'])->exists()) {
                         $this->info("- Funhub Store ID: " . $review['funhub_store_id']);
                         // add store ratings of this user id
                         $rating = $store->storeRatings()->create([
