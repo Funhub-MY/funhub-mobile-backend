@@ -75,7 +75,6 @@ class PullBubbleDataForUserStoreRatings extends Command
             'reviews' => count($reviewsData),
             'stores' => count($storesData),
         ]);
-
         // Get unique users by phone number
         $uniqueUsers = $this->getUniqueUsersByPhoneNumber($usersData);
 
@@ -165,6 +164,10 @@ class PullBubbleDataForUserStoreRatings extends Command
                     // find store by funhub_store_id
                     $store = Store::where('id', $review['funhub_store_id'])->first();
                     $storeRating = StoreRating::where('external_review_id', $review['_id'])->exists();
+
+                    if ($storeRating) {
+                        $this->info("- Funhub Store ID: " . $review['funhub_store_id'] . " already exists");
+                    }
 
                     if ($store && $authUser && !$storeRating) {
                         $this->info("- Funhub Store ID: " . $review['funhub_store_id']);
