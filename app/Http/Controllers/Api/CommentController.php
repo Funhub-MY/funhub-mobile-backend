@@ -439,7 +439,7 @@ class CommentController extends Controller
     {
         $comment = Comment::where('id', $id)->firstOrFail();
 
-        $query = $comment->replies()->latest()->whereHas('user', function ($query) {
+        $query = $comment->replies()->whereHas('user', function ($query) {
             $query->where('status', User::STATUS_ACTIVE);
         });
 
@@ -451,6 +451,11 @@ class CommentController extends Controller
         // when has sort and order, order by
         $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
             $query->orderBy($request->sort, $request->order);
+        });
+
+        // default msort by latest
+        $query->when(!$request->has('order') && !$request->has('sort'), function ($query) use ($request) {
+            $query->orderBy('created_at', 'desc');
         });
 
         $data = $query->with('user');
