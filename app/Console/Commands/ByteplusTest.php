@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 
 class BytePlusTest extends Command
 {
-    protected $signature = 'byteplus:test {api}{--region=}';
+    protected $signature = 'byteplus:test {api} {--region=}';
 
     protected $region = 'ap-singapore-1';
 
