@@ -45,7 +45,9 @@ class ArticleResource extends JsonResource
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'username' => $this->user->username,
-                'avatar' => $this->user->avatar_url,
+                'avatar' => ($this->user->media->count() > 0) ? $this->user->media->filter(function ($item) {
+                    return $item->collection_name == 'avatar';
+                })->first()->getFullUrl() : null,
                 'avatar_thumb' => $this->user->avatar_thumb_url,
                 'following_count' => $this->user_followings_count,
                 'followers_count' => $this->user_followers_count,
