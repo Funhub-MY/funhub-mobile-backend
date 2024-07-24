@@ -23,7 +23,8 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     ];
 
     protected $appends = [
-        'claimed_quantity', 'name_sku'
+        // 'claimed_quantity',
+         'name_sku'
     ];
 
     const STATUS = [
@@ -273,12 +274,13 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
     }
 
     /**
+     * DEPRECATED claimed_quantity, do query when needed
      * claimed_quantity
      */
-    public function getClaimedQuantityAttribute()
-    {
-        return $this->claims()->wherePivot('status', self::CLAIM_SUCCESS)->count();
-    }
+    // public function getClaimedQuantityAttribute()
+    // {
+    //     return $this->claims()->wherePivot('status', self::CLAIM_SUCCESS)->count();
+    // }
 
     public function getNameSkuAttribute()
     {

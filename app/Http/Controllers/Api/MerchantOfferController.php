@@ -90,6 +90,7 @@ class MerchantOfferController extends Controller
             ->with([
                 'user',
                 'user.merchant',
+                'claims',
                 'categories',
                 'stores',
                 'stores.location',
