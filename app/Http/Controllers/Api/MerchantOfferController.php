@@ -87,7 +87,26 @@ class MerchantOfferController extends Controller
         $query = MerchantOffer::query()
             ->published()
             // ->available()
-            ->with('user', 'user.merchant', 'categories', 'stores', 'stores.location', 'stores.storeRatings', 'claims', 'user', 'location', 'location.ratings');
+            ->with([
+                'user',
+                'user.merchant',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                'likes' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+                'interactions' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+            ]);
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days

@@ -65,13 +65,13 @@ class MerchantOfferResource extends JsonResource
                     'country' => $store->country
                 ];
             }) : null,
-            'merchant' => [
-                'id' => ($this->user) ? $this->user->merchant->id : null,
-                'logo' => ($this->user->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ?? null,
-                'brand_name' => ($this->user) ? $this->user->merchant->brand_name : null,
-                'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
-                'business_phone_no' => ($this->user) ? $this->user->merchant->business_phone_no : null,
-                'user' => new UserResource($this->user),
+           'merchant' => [
+                'id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
+                'logo' => ($this->user && $this->user->merchant && $this->user->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ?? null,
+                'brand_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->brand_name : null,
+                'business_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_name : null,
+                'business_phone_no' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_phone_no : null,
+                'user' => new UserResource($this->whenLoaded('user')),
             ],
             'name' => $this->name,
             'is_flash' => $this->flash_deal,
@@ -102,12 +102,22 @@ class MerchantOfferResource extends JsonResource
                 'views' => $this->views->count()
             ],
             'my_interactions' => [
-                'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),
-                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first(),
-                'bookmark' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first(),
+                'like' => $this->whenLoaded('likes', function () {
+                    return $this->likes->first();
+                }),
+                'share' => $this->whenLoaded('interactions', function () {
+                    return $this->interactions->where('type', Interaction::TYPE_SHARE)->first();
+                }),
+                'bookmark' => $this->whenLoaded('interactions', function () {
+                    return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->first();
+                }),
             ],
-            'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
-            'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
+            'user_liked' => $this->whenLoaded('likes', function () {
+                return $this->likes->isNotEmpty();
+            }, false),
+            'user_bookmarked' => $this->whenLoaded('interactions', function () {
+                return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->isNotEmpty();
+            }, false),
             'categories' => MerchantCategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
