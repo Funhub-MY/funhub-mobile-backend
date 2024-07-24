@@ -182,7 +182,12 @@ class ArticleController extends Controller
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $data = $query->with(
+                'media', 'imports',
+                'categories', 'subCategories', 'tags',
+                'user', 'user.media',
+                'comments', 'interactions', 'interactions.user', 'interactions.user.media',
+                'location','location.state', 'location.country', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
             // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {

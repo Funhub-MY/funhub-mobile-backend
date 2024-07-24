@@ -14,14 +14,14 @@ class ArticleCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
-        $user = auth()->user();
-        $is_interested = false;
-        if ($user) {
-            $is_interested = cache()->remember('user_interest_' . $user->id . '_category_' . $this->id, 60, function () use ($user) {
-                $user->load('articleCategoriesInterests');
-                return $user->articleCategoriesInterests->contains('id', $this->id);
-            });
-        }
+        // DEPRECATED
+        // $user = auth()->user();
+        // // $is_interested = false;
+        // if ($user && $user->articleCategoriesInterests) {
+        //     $is_interested = cache()->remember('user_interest_' . $user->id . '_category_' . $this->id, 60, function () use ($user) {
+        //         return $user->articleCategoriesInterests->contains('id', $this->id);
+        //     });
+        // }
 
         // Get the language from the request header
         $locale = config('app.locale');
@@ -53,12 +53,12 @@ class ArticleCategoryResource extends JsonResource
             'name' => $translatedName,
             'name_translation' => $this->name_translation,
             'slug' => $this->slug,
-            'icon' => $this->getFirstMedia('article_category_icon') ? $this->getFirstMedia('article_category_icon')->getUrl() : null,
+            'icon' => null, // deprecated: as article category icon is not used anymore
             'cover_media_id' => $this->cover_media_id,
             'is_child' => ($this->parent_id) ? true : false,
             'parent' => ($this->parent_id) ? new ArticleCategoryResource($this->parent) : null,
             'is_featured' => $this->is_featured,
-            'is_interested' => $is_interested,
+            'is_interested' => false, // deprecated: as article category interest is not used anymore
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
