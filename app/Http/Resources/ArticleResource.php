@@ -66,16 +66,16 @@ class ArticleResource extends JsonResource
             // 'tagged_users' => UserResource::collection($this->taggedUsers),
             'count' => [
                 'comments' => $this->comments_count ?? 0,
-                'likes' => $this->when(isset($this->interactions_count), function () {
+                'likes' => $this->when(isset($this->interactions), function () {
                     return $this->interactions->where('type', Interaction::TYPE_LIKE)->count();
                 }, 0),
-                'dislikes' => $this->when(isset($this->interactions_count), function () {
+                'dislikes' => $this->when(isset($this->interactions), function () {
                     return $this->interactions->where('type', Interaction::TYPE_DISLIKE)->count();
                 }, 0),
-                'share' => $this->when(isset($this->interactions_count), function () {
+                'share' => $this->when(isset($this->interactions), function () {
                     return $this->interactions->where('type', Interaction::TYPE_SHARE)->count();
                 }, 0),
-                'bookmarks' => $this->when(isset($this->interactions_count), function () {
+                'bookmarks' => $this->when(isset($this->interactions), function () {
                     return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count();
                 }, 0),
                 'views' => $this->views_count ?? 0,
