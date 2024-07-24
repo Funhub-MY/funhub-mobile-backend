@@ -188,7 +188,7 @@ class ArticleController extends Controller
                 'user', 'user.media',
                 'comments', 'interactions', 'interactions.user', 'interactions.user.media',
                 'location','location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('media', 'tags', 'views', 'userFollowers', 'userFollowings')
             // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
