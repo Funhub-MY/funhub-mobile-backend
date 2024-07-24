@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
@@ -214,6 +215,16 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('full_phone_no')->label('Phone No'),
                 Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
+                Tables\Columns\BadgeColumn::make('profile_is_private')
+                    ->label('Profile Privacy')
+                    ->enum([
+                        false => 'Public',
+                        true => 'Private',
+                    ])
+                    ->colors([
+                        'success' => false,
+                        'danger' => true,
+                    ]),
                 // referred_by_id
                 Tables\Columns\TextColumn::make('referredBy.name')
                     ->label('Referred By'),
@@ -223,7 +234,14 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()
             ])
             ->filters([
-                //
+                // filter by status
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        1 => 'Active',
+                        2 => 'Suspended',
+                        3 => 'Archived',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\Action::make('View')
@@ -239,6 +257,29 @@ class UserResource extends Resource
                 ExportBulkAction::make()->exports([
                     ExcelExport::make('table')->fromTable(),
                 ]),
+
+                BulkAction::make('Toggle Profile Private')
+                    ->label('Toggle Profile Private')
+                    ->action(function (Collection $records, array $data): void {
+                        foreach ($records as $record) {
+                            $latestSettings = $record->profilePrivacySettings()->orderBy('id', 'desc')->first();
+
+                            $record->profilePrivacySettings()->create([
+                                'profile' => $data['profile_privacy'],
+                                'articles' => ($latestSettings) ? $latestSettings->articles : 'public',
+                            ]);
+                        }
+                    })
+                    ->form([
+                        Select::make('profile_privacy')
+                            ->label('Profile Privacy')
+                            ->options([
+                                'public' => 'Public',
+                                'private' => 'Private',
+                            ])
+                            ->required(),
+                    ])
+                    ->requiresConfirmation(),
 
                 // Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\BulkAction::make('Unsuspend User')
