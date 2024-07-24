@@ -49,6 +49,7 @@ class PublicArticleResource extends JsonResource
                 'followers_count' => $this->user->followers()->count(),
             ],
             'media' => MediaResource::collection($this->media),
+            'is_video' => $this->type == 'video',
             'cover' => $this->getMedia(Article::MEDIA_COLLECTION_NAME)->where('is_cover', true)->first(),
             // 'tags' => $this->tags,
             // 'interactions' => InteractionResource::collection($this->interactions),

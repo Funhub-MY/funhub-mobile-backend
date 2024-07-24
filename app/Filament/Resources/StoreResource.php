@@ -31,11 +31,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Google\Service\Compute\Tags;
+use Illuminate\Database\Eloquent\Collection;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -340,6 +342,22 @@ class StoreResource extends Resource
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                 ]),
+
+                // bulk action for changing status
+                BulkAction::make('change_status')
+                    ->label('Change Status')
+                    ->icon('heroicon-o-refresh')
+                    ->form([
+                        Select::make('status')
+                            ->options(Store::STATUS)
+                            ->default(Store::STATUS_ACTIVE)
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data): void {
+                        foreach ($records as $record) {
+                            $record->update(['status' => $data['status']]);
+                        }
+                    })
             ]);
     }
 
