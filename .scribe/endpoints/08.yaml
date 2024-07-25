@@ -80,7 +80,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4aVD5PZ3hf1dgkba6vEc68e'
+      - 'Bearer va483egfDk1V66Zb5EdchaP'
     controller: null
     method: null
     route: null
@@ -121,13 +121,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: eligendi
+        example: quod
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: eligendi
+      store_ids: quod
     fileParameters: []
     responses:
       -
@@ -140,7 +140,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6eVPg8ak3b5ca1fd6E4vhD'
+      - 'Bearer Eefvgh3ZaDc5146a8bk6PdV'
     controller: null
     method: null
     route: null
@@ -183,7 +183,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4a6cDPebdf1gV683havkZ5E'
+      - 'Bearer adV81h3evbZEk6afcD64g5P'
     controller: null
     method: null
     route: null
@@ -224,13 +224,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: voluptatem
+        example: sunt
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: voluptatem
+      store_ids: sunt
     fileParameters: []
     responses:
       -
@@ -247,7 +247,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Pbg163kZ46faDE8dehacV5v'
+      - 'Bearer 4bhe5kgdZV63av6E8cPDfa1'
     controller: null
     method: null
     route: null
@@ -288,13 +288,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: qui
+        example: ex
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: qui
+      location_id: ex
     fileParameters: []
     responses:
       -
@@ -311,7 +311,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gaEk3c46Dfve1aVhZb8dP65'
+      - 'Bearer v5De1P3Eac6fZgbk6h84adV'
     controller: null
     method: null
     route: null
@@ -338,7 +338,7 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: 8
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -407,7 +407,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      store_id: 8
+      store_id: 1
       store: '1'
       only_mine: 'true'
       user_id: 1
@@ -435,7 +435,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bPeakEca3Zf865VvD4dh61g'
+      - 'Bearer 5Ev14a3bc68P6afhkdZVegD'
     controller: null
     method: null
     route: null
@@ -462,7 +462,7 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: 20
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -477,7 +477,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      store_id: 20
+      store_id: 1
       store: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -528,7 +528,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer D4fZVa61kca6b5Pgv3hEed8'
+      - 'Bearer dV8bfg4kE5P61eDZa36cvha'
     controller: null
     method: null
     route: null
@@ -555,7 +555,7 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: 2
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -570,7 +570,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      store_id: 2
+      store_id: 1
       store: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a5bD8ecd6hEa1V4vZ6g3fPk'
+      - 'Bearer d8V4e5b1kgvZPDEcf636haa'
     controller: null
     method: null
     route: null
@@ -619,7 +619,7 @@ endpoints:
         name: store_id
         description: 'The ID of the store.'
         required: true
-        example: 3
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -652,7 +652,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      store_id: 3
+      store_id: 1
       store: '1'
       limit: 3
       only_with_ratings: '1'
@@ -675,7 +675,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Dek6dacVabhZ13fEv648P5g'
+      - 'Bearer ZEe654Vd8Da61vcPhfg3abk'
     controller: null
     method: null
     route: null
