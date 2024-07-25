@@ -337,7 +337,10 @@ class StoreResource extends Resource
                             Column::make('name')->heading('store_name'),
                             Column::make('categories.name')
                                 ->heading('category_names')
-                                ->getStateUsing(fn ($record) => $record->categories->pluck('name')->join(','))
+                                ->getStateUsing(fn ($record) => $record->categories->pluck('name')->join(',')),
+                            Column::make('status')
+                                ->heading('status')
+                                ->getStateUsing(fn ($record) => Store::STATUS[$record->status]),
                         ])
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
