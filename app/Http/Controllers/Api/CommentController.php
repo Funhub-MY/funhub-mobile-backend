@@ -212,7 +212,7 @@ class CommentController extends Controller
         event(new \App\Events\CommentCreated($comment)); // fires event
 
         try {
-            if ($comment && $comment->reply_to_id && $comment->reply_to->user->id !== auth()->user()->id) {
+            if ($comment && $comment->reply_to_id) {
                 // direct reply within replies
                 $locale = $comment->reply_to->user->last_lang ?? config('app.locale');
                 $comment->reply_to->user->notify((new \App\Notifications\RepliedCommentReplies($comment, $comment->reply_to))->locale($locale)); // send notification
