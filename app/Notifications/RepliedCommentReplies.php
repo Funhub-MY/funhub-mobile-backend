@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CommentReplied extends Notification
+class RepliedCommentReplies extends Notification
 {
     use Queueable;
 
@@ -48,7 +48,7 @@ class CommentReplied extends Notification
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->comment->commentable->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) $this->comment->commentable_type, // if link to url false, means get link_to_object
-                'action' => 'comment_replied',
+                'action' => 'replied_replies',
                 'from_name' => (string) $this->comment->user->name,
                 'from_id' => (string) $this->comment->user->id,
                 'title' => (string) $this->comment->user->name,
@@ -78,7 +78,7 @@ class CommentReplied extends Notification
             'link_to_url' => false,
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
-            'action' => 'comment_replied',
+            'action' => 'replied_replies',
             'from_name' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,

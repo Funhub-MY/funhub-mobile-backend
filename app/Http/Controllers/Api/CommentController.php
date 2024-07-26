@@ -215,7 +215,7 @@ class CommentController extends Controller
             if ($comment && $comment->reply_to_id && $comment->reply_to->user->id !== auth()->user()->id) {
                 // direct reply within replies
                 $locale = $comment->reply_to->user->last_lang ?? config('app.locale');
-                $comment->reply_to->user->notify((new \App\Notifications\CommentReplied($comment, $comment->reply_to))->locale($locale)); // send notification
+                $comment->reply_to->user->notify((new \App\Notifications\RepliedCommentReplies($comment, $comment->reply_to))->locale($locale)); // send notification
             } elseif ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
                 // parent replied
                 $locale = $comment->parent->user->last_lang ?? config('app.locale');
