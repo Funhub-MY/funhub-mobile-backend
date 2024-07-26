@@ -691,6 +691,7 @@ class MerchantOfferController extends Controller
             // check offer expiry_days with claim created_at date days diff with now to see if expired
             $userClaim = $offer->claims()->where('user_id', auth()->user()->id)
                 ->wherePivot('status', MerchantOffer::CLAIM_SUCCESS)
+                ->wherePivot('id', '=', $request->claim_id)
                 ->first();
 
             Log::info('user claim', [
