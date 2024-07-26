@@ -202,6 +202,10 @@ class ArticleResource extends Resource
                                 ->label('Hide from Home?')
                                 ->helperText('Article will not showed in Recommendations. Whitelist user to bypass.')
                                 ->default(false),
+                            Toggle::make('pinned_recommended')
+                                ->label('Pin to top in Recommendations?')
+                                ->helperText('Article will be pinned to top in Recommendations.')
+                                ->default(false),
                             Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
 
@@ -369,6 +373,18 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\BadgeColumn::make('pinned_recommended')
+                    ->label('Pinned (Recommended)')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\BadgeColumn::make('visibility')
                     ->label('Visibility')
                     ->enum([
@@ -445,9 +461,16 @@ class ArticleResource extends Resource
                     ->label('Status')
                     ->options(Article::STATUS)
                     ->placeholder('All'),
-        // filter by hidden_from_home
+                // filter by hidden_from_home
                 Tables\Filters\SelectFilter::make('hidden_from_home')
                     ->label('Hidden from home?')
+                    ->options([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->placeholder('All'),
+                Tables\Filters\SelectFilter::make('pinned_recommended')
+                    ->label('Pinned (Recommended)')
                     ->options([
                         0 => 'No',
                         1 => 'Yes',

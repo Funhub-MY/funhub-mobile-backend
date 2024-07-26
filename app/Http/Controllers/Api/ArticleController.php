@@ -69,6 +69,7 @@ class ArticleController extends Controller
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
+     * @bodyParam pinned_only integer optional Filter by Pinned Articles. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam limit integer optional Per Page Limit Override. Example: 10
@@ -164,6 +165,10 @@ class ArticleController extends Controller
                 ->has('user.articleFeedWhitelist')
                 ->orWhere('hidden_from_home', false);
             });
+        }
+
+        if ($request->has('pinned_only') && $request->pinned_only == 1) {
+            $query->where('pinned_recommended', true);
         }
 
         // new logic: Hide articles from media partners if they are older than the specified number of days
