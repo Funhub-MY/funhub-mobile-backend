@@ -15,16 +15,17 @@ class CommentReplied extends Notification
 {
     use Queueable;
 
-    protected $comment;
+    protected $comment, $replyingComment;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Comment $comment, Comment $replyingComment)
     {
         $this->comment = $comment;
+        $this->replyingComment = $replyingComment;
     }
 
     /**
@@ -51,11 +52,11 @@ class CommentReplied extends Notification
                 'from_name' => (string) $this->comment->user->name,
                 'from_id' => (string) $this->comment->user->id,
                 'title' => (string) $this->comment->user->name,
-                'message' => __('messages.notification.database.CommentReplied'),
+                'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
                 'comment_id' => (string) $this->comment->id,
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('探文互动')
+                ->setTitle(__('messages.notification.fcm.CommentRepliedTitle'))
                 ->setBody(__('messages.notification.fcm.CommentReplied', [
                     'username' => $this->comment->user->name,
                     'comment' => Str::limit($this->comment->parent->body, 10, '...')
@@ -81,7 +82,7 @@ class CommentReplied extends Notification
             'from_name' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
-            'message' => __('messages.notification.database.CommentReplied'),
+            'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
             'comment_id' => (string) $this->comment->id,
         ];
     }

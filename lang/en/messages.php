@@ -241,8 +241,10 @@ return [
     'notification' => [
         'fcm' => [
             'ArticleInteracted' => ':username :action your ":articleTitle"',
+            'CommentedTitle' => 'New Comment',
             'Commented' => ':username commented on your post ":commentTitle"',
             'CommentLiked' => ':username liked your comment ":comment"',
+            'CommentRepliedTitle' => 'New Comment Reply',
             'CommentReplied' => ':username replied to your comment ":comment"',
             'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
             'Newfollower' => ':followerName followed you, let\'s meet new friends!',
@@ -273,9 +275,11 @@ return [
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
+            'CommentedTitle' => 'New Comment',
             'Commented' => 'Commented on your post, go and have a look',
             'CommentLiked' => 'Liked your comment, it is really interesting!',
-            'CommentReplied' => 'Replied to your comment, go and have a look',
+            'CommentRepliedTitle' => 'New Comment Reply',
+            'CommentReplied' => ':username replied to your comment ":comment"',
             'MissionCompleted' => 'Completed mission":missionName",  Randomly Acquire :reward x :rewardQuantity',
             'Newfollower' => 'Followed you, let\'s meet new friends',
             'NewFollowRequest' => 'Requested to follow you',

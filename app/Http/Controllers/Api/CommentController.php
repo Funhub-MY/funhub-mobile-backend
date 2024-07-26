@@ -212,14 +212,21 @@ class CommentController extends Controller
         event(new \App\Events\CommentCreated($comment)); // fires event
 
         try {
-            if ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+            if ($comment && $comment->reply_to_id && $comment->reply_to->user->id !== auth()->user()->id) {
+                // direct reply within replies
+                $locale = $comment->reply_to->user->last_lang ?? config('app.locale');
+                $comment->reply_to->user->notify((new \App\Notifications\CommentReplied($comment, $comment->reply_to))->locale($locale)); // send notification
+            } elseif ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+                // parent replied
                 $locale = $comment->parent->user->last_lang ?? config('app.locale');
                 // if comment has parent and is not self, send notification to parent comment's user
-                $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment))->locale($locale)); // send notification
+                $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment, $comment->parent))->locale($locale)); // send notification
             }
         } catch (\Exception $e) {
             Log::error('[CommentController] Notification error when parent comment', ['message' => $e->getMessage()]);
         }
+
+
 
         // if commentable has user and is not self, send notification
         try {
