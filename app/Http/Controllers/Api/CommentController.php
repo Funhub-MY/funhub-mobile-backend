@@ -33,6 +33,8 @@ class CommentController extends Controller
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
+     * @bodyParam replies_sort string Column to Sort Replies. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam replies_order string Direction to Sort Replies. Example: Sortable directions are: asc, desc
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
@@ -81,11 +83,16 @@ class CommentController extends Controller
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
-            ->with(['replies' => function ($query) {
-                $query->latest()
-                    ->whereHas('user', function ($query) {
-                        $query->where('users.status', User::STATUS_ACTIVE);
-                    });
+            ->with(['replies' => function ($query) use ($request) {
+                $query->whereHas('user', function ($query) {
+                    $query->where('users.status', User::STATUS_ACTIVE);
+                });
+                 // when has sort and order, order by
+                $query->when($request->has('replies_sort') && $request->has('replies_order'), function ($query) use ($request) {
+                    $query->orderBy($request->replies_sort, $request->replies_order);
+                }, function ($query) {
+                    $query->latest();
+                });
             }])
             ->with('likes', 'replyTo.user')
             ->withCount('likes')
