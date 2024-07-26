@@ -694,6 +694,11 @@ class MerchantOfferController extends Controller
                 ->wherePivot('id', '=', $request->claim_id)
                 ->first();
 
+            if (!$userClaim) {
+                return response()->json([
+                    'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer')
+                ], 422);
+            }
             Log::info('user claim', [
                 $userClaim->toArray(), Carbon::parse($userClaim->pivot->created_at),
                 Carbon::parse($userClaim->pivot->created_at)->endOfDay()->addDays($offer->expiry_days),
