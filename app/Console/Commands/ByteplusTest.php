@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Services\Byteplus\SignatureV4;
+use AWS\CRT\Log;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log as FacadesLog;
 
 class BytePlusTest extends Command
 {
@@ -68,10 +70,13 @@ class BytePlusTest extends Command
         $tags = $this->ask('Tags');
         $spaceName = $this->ask('Space Name');
 
+
         $url = 'https://vod.byteplusapi.com';
-        $params = [
+        $queryParams = [
             'Action' => 'UploadMediaByUrl',
             'Version' => '2023-01-01',
+        ];
+        $params = [
             'SpaceName' => $spaceName,
             'URLSets' => json_encode([
                 [
@@ -83,13 +88,18 @@ class BytePlusTest extends Command
             ]),
         ];
 
-        $signature = $this->generateSignature('POST', $url, $params);
+        $signature = $this->generateSignature('POST', $url . '?' . http_build_query($queryParams), $params);
+
+        FacadesLog::info('Signature: ' . $signature['signature'], [
+            'params' => $params,
+            'singature' => $signature,
+        ]);
 
         try {
             $response = Http::withHeaders([
                 'Authorization' => $signature['signature'],
                 'x-date' => $signature['timestamp'],
-            ])->post($url, $params);
+            ])->post($url . '?' . http_build_query($queryParams), $params);
         } catch (\Exception $e) {
             $this->error('Error: ' . $e->getMessage());
             return;
