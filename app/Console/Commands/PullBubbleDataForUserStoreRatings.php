@@ -132,9 +132,22 @@ class PullBubbleDataForUserStoreRatings extends Command
 
         $availableRatingCategories = RatingCategory::all();
         foreach ($reviewsData as $review) {
+
             //print new line
             $this->info("--------------------------------------------------------------------------------");
             $this->info("Process Review data: " . json_encode($review));
+
+
+            if (!isset($review['Store'])) {
+                $this->info('Skipping .. Review without store');
+                continue;
+            }
+
+            if (!isset($review['User Name'])) {
+                $this->info('Skipping .. Review without user');
+                continue;
+            }
+
             // get review user
             $user = $usersData->where('_id', $review['User Name'])->first();
 
