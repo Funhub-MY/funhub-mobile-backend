@@ -139,12 +139,12 @@ class PullBubbleDataForUserStoreRatings extends Command
 
 
             if (!isset($review['Store'])) {
-                $this->info('Skipping .. Review without store');
+                $this->error('Skipping .. Review without store');
                 continue;
             }
 
             if (!isset($review['User Name'])) {
-                $this->info('Skipping .. Review without user');
+                $this->error('Skipping .. Review without user');
                 continue;
             }
 
