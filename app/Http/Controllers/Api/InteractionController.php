@@ -401,7 +401,9 @@ class InteractionController extends Controller
             $query->where('interactable_type', $request->interactable)
                 ->where('interactable_id', $request->id)
                 ->where('type', $request->type);
-        })->paginate(config('app.paginate_per_page'));
+        })
+        ->where('status', User::STATUS_ACTIVE) // only active users
+        ->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($users);
     }
