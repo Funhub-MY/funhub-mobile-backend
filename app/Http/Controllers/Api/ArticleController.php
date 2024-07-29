@@ -169,6 +169,8 @@ class ArticleController extends Controller
 
         if ($request->has('pinned_only') && $request->pinned_only == 1) {
             $query->where('pinned_recommended', true);
+        } else {
+            $query->where('pinned_recommended', false); // normal dont query pinned articles
         }
 
         // new logic: Hide articles from media partners if they are older than the specified number of days
