@@ -42,7 +42,9 @@ class MediaPartnerArticlesAutoPublishByKeywords extends Command
             ->get();
 
         foreach ($articles as $article) {
-            $combinedContent = $article->title . ' ' . strip_tags(preg_replace('/\s+/', ' ', $article->content));
+            $title = $article->title ?? '';
+            $content = $article->content ? strip_tags(preg_replace('/\s+/', ' ', $article->content)) : '';
+            $combinedContent = $title . ' ' . $content;
 
             // Check against blacklist keywords
             $blacklistKeywords = MediaPartnerKeywords::where('type', 'blacklist')->pluck('keyword')->toArray();

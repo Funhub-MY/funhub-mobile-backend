@@ -244,8 +244,10 @@ return [
     'notification' => [
         'fcm' => [
             'ArticleInteracted' => ':username :action你的 ":articleTitle"',
+            'CommentedTitle' => '新评论',
             'Commented' => ':username 评论了你的探文 ":commentTitle"',
             'CommentLiked' => ':username 赞了你的评论 ":comment"',
+            'CommentRepliedTitle' => '新评论回复',
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
             'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
             'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
@@ -277,9 +279,11 @@ return [
         ],
         'database' => [
             'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
+            'CommentedTitle' => '新评论',
             'Commented' => '评论了你的探文，快去看看吧',
             'CommentLiked' => '赞了你的评论，觉得超有趣!',
-            'CommentReplied' => '回复了你的评论，快去看看吧',
+            'CommentRepliedTitle' => '新评论回复',
+            'CommentReplied' => ':username 回复了你的评论 ":comment"',
             'MissionCompleted' => '已完成任务“:missionName”，随机获得 :reward x :rewardQuantity',
             'Newfollower' => '狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => '请求关注您',

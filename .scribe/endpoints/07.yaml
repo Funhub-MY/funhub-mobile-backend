@@ -1,5 +1,5 @@
 name: Merchant
-description: '//  * @bodyParam email string required Email. Example: abc@example.com'
+description: ''
 endpoints:
   -
     httpMethods:
@@ -38,7 +38,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - repellendus
+          - excepturi
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -130,7 +130,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - repellendus
+        - excepturi
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -157,7 +157,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DecgP3VkhE1aZd68f456bva'
+      - 'Bearer 5e64DPVEaZk6df3cbh8ga1v'
     controller: null
     method: null
     route: null
@@ -264,7 +264,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ea3PZkgVhD6c84vEad5f6b1'
+      - 'Bearer feDhvc3Z66adk81PEagV54b'
     controller: null
     method: null
     route: null
@@ -308,7 +308,7 @@ endpoints:
         description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - dolorem
+          - delectus
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -481,7 +481,7 @@ endpoints:
         - 2
         - 3
       merchant_offer_ids:
-        - dolorem
+        - delectus
       city: 'Subang Jaya'
       lat: 3.123456
       lng: 101.123456
@@ -519,7 +519,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68Z3eca6Ekh1VbaDf4Pvgd5'
+      - 'Bearer a1ZVdgk6vcE468baPeD35hf'
     controller: null
     method: null
     route: null
@@ -642,7 +642,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6EPfv4V8ckDd6ag3Zb5eah1'
+      - 'Bearer 3vgd86bhakf14VPa6eZc5DE'
     controller: null
     method: null
     route: null
@@ -729,7 +729,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d8hv153aeb6aZDfVcEkPg64'
+      - 'Bearer 1eaVPgh8Zackv3bDdE5664f'
     controller: null
     method: null
     route: null
@@ -791,7 +791,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 54b86D1PvfhaaVkegc6EZ3d'
+      - 'Bearer Z1VeDbh3Ed5fkP8cag66v4a'
     controller: null
     method: null
     route: null
@@ -844,7 +844,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 68f5Z3vkheDPdacVE1g6a4b'
+      - 'Bearer v8Za6b5cekE643PVfha1gdD'
     controller: null
     method: null
     route: null
@@ -871,13 +871,13 @@ endpoints:
         name: offer_id
         description: 'The ID of the offer.'
         required: true
-        example: ut
+        example: cum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanUrlParameters:
-      offer_id: ut
+      offer_id: cum
     queryParameters:
       offer_id:
         name: offer_id
@@ -907,7 +907,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3e6V5dkPDE4chvaZbaf861g'
+      - 'Bearer gZ48bf1kaev36hP6dVDc5Ea'
     controller: null
     method: null
     route: null
@@ -1001,7 +1001,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aVkeEhbcP66aZfdv1D4385g'
+      - 'Bearer Zfk6eaEd54agvP8V6h1Dcb3'
     controller: null
     method: null
     route: null
@@ -1012,7 +1012,7 @@ endpoints:
     uri: api/v1/merchants/crm
     metadata:
       groupName: Merchant
-      groupDescription: '//  * @bodyParam email string required Email. Example: abc@example.com'
+      groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
       title: 'Create Merchant CRM Record'
@@ -1094,7 +1094,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 35Vc6vk4P6a8ZdDabg1fhEe'
+      - 'Bearer 3vaPfDbkZ56Vc4egEha8d16'
     controller: null
     method: null
     route: null
@@ -1137,7 +1137,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vkEe1ZaDP6g6Vh3cadf854b'
+      - 'Bearer g46E5Zd1Vkea86bchvf3PDa'
     controller: null
     method: null
     route: null
@@ -1223,7 +1223,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5Vv1hD3Eae66afZb8dgckP4'
+      - 'Bearer afdPh6gbv5aZ1EVk6e843cD'
     controller: null
     method: null
     route: null
@@ -1277,7 +1277,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZEaP14gDkhvfacV86eb5d63'
+      - 'Bearer ZfDP6b41V68vkaacd3h5eEg'
     controller: null
     method: null
     route: null
@@ -1391,7 +1391,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6Eavk3bPd4f6DeVa5Zchg18'
+      - 'Bearer 4gDbdf68VZceakh3vEa165P'
     controller: null
     method: null
     route: null
@@ -1484,7 +1484,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 636a8hP54fEDgcdaeVbvkZ1'
+      - 'Bearer bga6c5k4DvaVZ186fhEe3dP'
     controller: null
     method: null
     route: null
@@ -1550,7 +1550,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6f1v3Z8hkcPge6dVa5bEa4D'
+      - 'Bearer vV66c85ah3ZDEeadP1gk4bf'
     controller: null
     method: null
     route: null
@@ -1653,7 +1653,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VZ3d1Ekg5ca4a8Pf6ehD6vb'
+      - 'Bearer 5gb8afdhvV16ck6PaZ4De3E'
     controller: null
     method: null
     route: null
@@ -1683,6 +1683,24 @@ endpoints:
       is_featured:
         name: is_featured
         description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      has_offers:
+        name: has_offers
+        description: 'Check if category has published offers.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      has_stores:
+        name: has_stores
+        description: 'Check if category has linked to stores.'
         required: false
         example: 1
         type: integer
@@ -1745,6 +1763,8 @@ endpoints:
         custom: []
     cleanBodyParameters:
       is_featured: 1
+      has_offers: 1
+      has_stores: 1
       filter: 'Filterable columns are: id, name, created_at, updated_at'
       filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
       sort: 'Sortable columns are: id, name, created_at, updated_at'
@@ -1772,7 +1792,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer agd8P1h6ab563VkEDvfZe4c'
+      - 'Bearer P56g4EZkha61Dv3ed8cfVab'
     controller: null
     method: null
     route: null
@@ -1831,7 +1851,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed5hZPea31648cbafvg6DkV'
+      - 'Bearer 5ZV6hd4D6PkevE3ag8f1cab'
     controller: null
     method: null
     route: null
@@ -1971,7 +1991,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6ePvfgVdEk36D1Za845hcba'
+      - 'Bearer a51ebVcZE8vkP6gDdha46f3'
     controller: null
     method: null
     route: null

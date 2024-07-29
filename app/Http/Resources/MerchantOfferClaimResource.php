@@ -52,7 +52,7 @@ class MerchantOfferClaimResource extends JsonResource
             'status' => $this->status,
             'status_label' => $this->status_label,
             'redeemed' => ($this->redeem) ? true : false,
-            'redeem' => $this->redeem,
+            'redeem' => ($this->redeem) ? $this->redeem : null,
             'has_expired' => $hasExpired,
             'has_user_rated' => $this->last_rated_at ? true : false,
             'last_rated_at' => $this->last_rated_at,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\MerchantCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantCategoryResource;
+use App\Models\MerchantOffer;
 use Illuminate\Http\Request;
 use App\Traits\QueryBuilderTrait;
 
@@ -21,6 +22,8 @@ class MerchantCategoryController extends Controller
      * @group Merchant
      * @subgroup Merchant Categories
      * @bodyParam is_featured integer Is Featured Categories. Example: 1
+     * @bodyParam has_offers integer Check if category has published offers. Example: 1
+     * @bodyParam has_stores integer Check if category has linked to stores. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, created_at, updated_at
@@ -45,6 +48,24 @@ class MerchantCategoryController extends Controller
         // if there's no sort order then default sort by offer count
         if (!$request->has('sort')) {
             $query->orderBy('offer_count', 'desc');
+        }
+
+        // has offers
+        if ($request->has('has_offers') && $request->has_offers == 1) {
+            $query->whereHas('offer', function ($query) {
+                $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED);
+            });
+        } else if ($request->has('has_offers') && $request->has_offers == 0) {
+            $query->whereDoesntHave('offer', function ($query) {
+                $query->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED);
+            });
+        }
+
+        // has stores
+        if ($request->has('has_stores') && $request->has_stores == 1) {
+            $query->has('stores');
+        } else if ($request->has('has_stores') && $request->has_stores == 0) {
+            $query->doesntHave('stores');
         }
 
         $this->buildQuery($query, $request);

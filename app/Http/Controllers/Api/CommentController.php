@@ -33,6 +33,8 @@ class CommentController extends Controller
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
+     * @bodyParam replies_sort string Column to Sort Replies. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam replies_order string Direction to Sort Replies. Example: Sortable directions are: asc, desc
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
@@ -78,18 +80,21 @@ class CommentController extends Controller
             })->where('comments.parent_id', null);
         }
 
-        $this->buildQuery($query, $request);
-
         // with replies paginated and sorted latest first
         // with replies count
         $query->with('user')
-            ->with(['replies' => function ($query) {
-                $query->latest()
-                    ->whereHas('user', function ($query) {
-                        $query->where('users.status', User::STATUS_ACTIVE);
-                    });
+            ->with(['replies' => function ($query) use ($request) {
+                $query->whereHas('user', function ($query) {
+                    $query->where('users.status', User::STATUS_ACTIVE);
+                });
+                 // when has sort and order, order by
+                $query->when($request->has('replies_sort') && $request->has('replies_order'), function ($query) use ($request) {
+                    $query->orderBy($request->replies_sort, $request->replies_order);
+                }, function ($query) {
+                    $query->latest();
+                });
             }])
-            ->with('likes')
+            ->with('likes', 'replyTo.user')
             ->withCount('likes')
             ->withCount(['replies' => function ($query) {
                 $query->whereHas('user', function ($query) {
@@ -116,7 +121,13 @@ class CommentController extends Controller
         //         ->orWhere('blockable_id', auth()->id());
         // });
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+
+        // when has sort and order, order by
+        $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
+            $query->orderBy($request->sort, $request->order);
+        });
+
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         // post process replies
         // TODO: enhance this as the primary query will still call all replies
@@ -139,7 +150,8 @@ class CommentController extends Controller
      * @group Article
      * @subgroup Comments
      * @authenticated
-     * @bodyParam parent_id integer The id of the parent comment (For Replies). Example: 1
+     * @bodyParam parent_id integer The id of the parent comment. Example: 1
+     * @bodyParam reply_to_id integer The id of the child comment (Under Replies). Example: 1
      * @bodyParam type string required The type of commentable. Example: article
      * @bodyParam id integer required The id of the commentable. Example: 1
      * @bodyParam body string required The body of the comment. Example: This is a comment
@@ -175,6 +187,7 @@ class CommentController extends Controller
             'commentable_id' => $request->id,
             'body' => $request->body,
             'parent_id' => $parent ? $parent->id : null,
+            'reply_to_id' => $request->reply_to_id ?? null,
             'status' => Comment::STATUS_PUBLISHED, // DEFAULT ALL PUBLISHED
         ]);
 
@@ -199,14 +212,23 @@ class CommentController extends Controller
         event(new \App\Events\CommentCreated($comment)); // fires event
 
         try {
-            if ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+            if ($comment && $comment->reply_to_id) {
+                // load reply_to user
+                $comment->load('replyTo', 'replyTo.user');
+                // direct reply within replies
+                $locale = $comment->replyTo->user->last_lang ?? config('app.locale');
+                $comment->replyTo->user->notify((new \App\Notifications\RepliedCommentReplies($comment, $comment->replyTo))->locale($locale)); // send notification
+            } elseif ($comment && $comment->parent_id && $comment->parent->user->id !== auth()->user()->id) {
+                // parent replied
                 $locale = $comment->parent->user->last_lang ?? config('app.locale');
                 // if comment has parent and is not self, send notification to parent comment's user
-                $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment))->locale($locale)); // send notification
+                $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment, $comment->parent))->locale($locale)); // send notification
             }
         } catch (\Exception $e) {
-            Log::error('[CommentController] Notification error when parent comment', ['message' => $e->getMessage()]);
+            Log::error('[CommentController] Notification error when comment', ['message' => $e->getMessage()]);
         }
+
+
 
         // if commentable has user and is not self, send notification
         try {
@@ -242,6 +264,8 @@ class CommentController extends Controller
      * @authenticated
      * @bodyParam id integer required The id of the comment. Example: 1
      * @bodyParam replies_per_comment integer Number of replies to show per comment. Example: 3
+     * @bodyParam replies_sort string Column to Sort Replies. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
+     * @bodyParam replies_order string Direction to Sort Replies. Example: Sortable directions are: asc, desc
      * @response scenario=success {
      *  "comment": {},
      * }
@@ -251,10 +275,15 @@ class CommentController extends Controller
     public function show($id, Request $request)
     {
         $comment = Comment::where('id', $id)->with('user')
-            ->with(['replies' => function ($query) {
-                $query->latest()
-                ->whereHas('user', function ($query) {
+            ->with(['replies' => function ($query) use ($request) {
+                $query->whereHas('user', function ($query) {
                     $query->where('users.status', User::STATUS_ACTIVE);
+                });
+                // when has sort and order, order by
+                $query->when($request->has('replies_sort') && $request->has('replies_order'), function ($query) use ($request) {
+                    $query->orderBy($request->replies_sort, $request->replies_order);
+                }, function ($query) {
+                    $query->latest();
                 });
             }])
             ->with('replies.user')
@@ -417,6 +446,7 @@ class CommentController extends Controller
      *
      * @group Article
      * @subgroup Comments
+     * @bodyParam reply_to_id integer required The id of the comment. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, commentable_id, commentable_type, body, created_at, updated_at
@@ -432,15 +462,28 @@ class CommentController extends Controller
     {
         $comment = Comment::where('id', $id)->firstOrFail();
 
-        $query = $comment->replies()->latest()->whereHas('user', function ($query) {
+        $query = $comment->replies()->whereHas('user', function ($query) {
             $query->where('status', User::STATUS_ACTIVE);
         });
 
-        $this->buildQuery($query, $request);
+        // if provided reply to id, filter replies by that id
+        if ($request->has('reply_to_id')) {
+            $query->where('id', $request->reply_to_id);
+        }
+
+        // when has sort and order, order by
+        $query->when($request->has('order') && $request->has('sort'), function ($query) use ($request) {
+            $query->orderBy($request->sort, $request->order);
+        });
+
+        // default msort by latest
+        $query->when(!$request->has('order') && !$request->has('sort'), function ($query) use ($request) {
+            $query->orderBy('created_at', 'desc');
+        });
 
         $data = $query->with('user');
 
-        $data = $query->paginate(config('app.paginate_per_page'));
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return CommentResource::collection($data);
     }

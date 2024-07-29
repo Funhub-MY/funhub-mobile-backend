@@ -63,6 +63,14 @@ class Kernel extends ConsoleKernel
 
         // match contacts to users(related_user_id) in user_contacts table
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
+
+        // sync bubble contact for users, stores, and ratings
+        if (config('services.bubble.status') == true) {
+            $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
+        }
+
+        // categorize articles  every thiry minutes
+        $schedule->command('articles:categorize')->everyThirtyMinutes();
     }
 
     /**

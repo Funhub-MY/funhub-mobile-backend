@@ -34,6 +34,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class MerchantResource extends Resource
@@ -257,6 +258,13 @@ class MerchantResource extends Resource
                         'success' => 1,
                         'danger' => 2,
                     ]),
+                // created_at
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->date('d/m/Y h:ia')
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Merchant Name')
                     ->sortable()
@@ -281,9 +289,32 @@ class MerchantResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+
+                // reset password
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('Reset Password')
+                    ->requiresConfirmation()
+                    ->action(function (Merchant $record) {
+                        $record->update(['default_password' => Str::random(8)]);
+                        // update record->user as well
+                        $record->user->password = bcrypt($record->default_password);
+                        $record->user->save();
+
+                        Log::info('[MerchantResource] Reset Password for Merchant ID: '.$record->id. ', triggered by user: '.auth()->user()->id);
+
+                        // resent user
+                        $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
+
+                        Notification::make()
+                            ->success()
+                            ->title('Reset Password for Merchant ID: '.$record->id)
+                            ->send();
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
+
+
                 BulkAction::make('sendEmail')
                     ->label('Send Merchant Onboard Email')
                     ->action(function (Collection $records) {

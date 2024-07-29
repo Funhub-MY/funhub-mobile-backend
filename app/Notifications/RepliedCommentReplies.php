@@ -3,32 +3,29 @@
 namespace App\Notifications;
 
 use App\Models\Comment;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use NotificationChannels\Fcm\Resources\ApnsConfig;
-use NotificationChannels\Fcm\Resources\AndroidConfig;
-use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
-use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
-use NotificationChannels\Fcm\Resources\AndroidNotification;
 
-class Commented extends Notification implements ShouldQueue
+class RepliedCommentReplies extends Notification
 {
     use Queueable;
 
-    protected $comment;
+    protected $comment, $replyingComment;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment)
+    public function __construct(Comment $comment, Comment $replyingComment)
     {
         $this->comment = $comment;
+        $this->replyingComment = $replyingComment;
     }
 
     /**
@@ -46,33 +43,24 @@ class Commented extends Notification implements ShouldQueue
     {
         return FcmMessage::create()
             ->setData([
-                'object' => (string) get_class($this->comment),
-                'object_id' => (string) $this->comment->id,
+                'object' => (string) get_class($this->comment), // comment object
+                'object_id' => (string) $this->replyingComment->id, // returns parent comment
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->comment->commentable->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) $this->comment->commentable_type, // if link to url false, means get link_to_object
-                'action' => (string) 'commented',
+                'action' => 'replied_replies',
                 'from_name' => (string) $this->comment->user->name,
                 'from_id' => (string) $this->comment->user->id,
                 'title' => (string) $this->comment->user->name,
-                'message' => __('messages.notification.database.Commented'),
+                'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
+                'comment_id' => (string) $this->comment->id,
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle(__('messages.notification.fcm.CommentedTitle'))
-                ->setBody(__('messages.notification.fcm.Commented', [
+                ->setTitle(__('messages.notification.fcm.CommentRepliedTitle'))
+                ->setBody(__('messages.notification.fcm.CommentReplied', [
                     'username' => $this->comment->user->name,
-                    'commentTitle' => $this->comment->commentable->title
+                    'comment' => Str::limit($this->replyingComment->body, 10, '...')
                 ]))
-            )
-            ->setApns(
-                ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios'))
-                    ->setPayload(['aps' => ['sound' => 'default']])
-            )
-            ->setAndriod(
-                AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics_android'))
-                    ->setNotification(AndroidNotification::create()->setSound('default'))
             );
     }
 
@@ -85,16 +73,22 @@ class Commented extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'object' => get_class($this->comment),
-            'object_id' => $this->comment->id,
+            'object' => get_class($this->comment), // comment object
+            'object_id' => $this->replyingComment->id, // returns replyingComment
             'link_to_url' => false,
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object
-            'action' => 'commented',
+            'action' => 'replied_replies',
             'from_name' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
-            'message' => __('messages.notification.database.Commented'),
+            'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
+            'comment_id' => (string) $this->comment->id,
+            'extra' => [
+                'parent_id' => $this->replyingComment->parent_id,
+                'reply_to_id' => $this->comment->reply_to_id,
+                'comment_id' => $this->comment->id,
+            ]
         ];
     }
 }

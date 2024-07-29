@@ -16,7 +16,7 @@ class ProcessArticleToCategoriesML extends Command
      *
      * @var string
      */
-    protected $signature = 'articles:categorize';
+    protected $signature = 'articles:categorize {--dry-run}';
 
     /**
      * The console command description.
@@ -33,6 +33,7 @@ class ProcessArticleToCategoriesML extends Command
     public function handle()
     {
         $client = OpenAI::client(config('services.openai.secret'));
+        $dryRun = $this->option('dry-run');
 
         // get all subcategories
         $subCategories = ArticleCategory::where('parent_id', '!=', null)->get();
@@ -41,7 +42,10 @@ class ProcessArticleToCategoriesML extends Command
         $articles = Article::published()->whereDoesntHave('imports')
             ->whereDoesntHave('subCategories')
             ->orderBy('created_at', 'DESC') // latest first
+            ->limit(100)
             ->get();
+
+        Log::info('[ProcessArticleCategories] Total Articles to Process: ' . $articles->count());
 
         $this->info('All Sub Categories Name: '. $subCategories->pluck('name')->implode(', '));
 
@@ -56,12 +60,12 @@ class ProcessArticleToCategoriesML extends Command
             try {
                 // sleep for every 5 requests
                 if ($totalArticlesProcessed > 0 && $totalArticlesProcessed % 5 == 0) {
-                    $this->info('Sleeping for 20 seconds avoid tpm');
-                    sleep(20);
+                    $this->info('Sleeping for 5 seconds avoid tpm');
+                    sleep(5);
                 }
 
                 $result = $client->chat()->create([
-                    'model' => 'gpt-3.5-turbo-0613',
+                    'model' => 'gpt-4o-mini',
                     'messages' => [
                         ['role' => 'user', 'content' => 'Categorise content into provided (must use) category list: '. $subCategories->pluck('name')->implode(', '). ' must use and return categories names only separated by comma without space,content: '. $this->generateContent($article)],
                     ],
@@ -81,9 +85,11 @@ class ProcessArticleToCategoriesML extends Command
                     if ($subCat) {
                         // attach if dosent exist
                         if ($article->subCategories->where('id', $subCat->id)->count() == 0) {
-                            $article->subCategories()->attach($subCat->id);
-                            // refresh article subCategories
-                            $article->refresh();
+                            if (!$dryRun) {
+                                $article->subCategories()->attach($subCat->id);
+                                // refresh article subCategories
+                                $article->refresh();
+                            }
 
                             $this->info('--- Article ID:' . $article->id .', Attached Sub Category: '. $subCat->name);
                             Log::info('[ProcessArticleCategories] Article ID:' . $article->id .', Attached Sub Category: '. $subCat->name);
@@ -92,9 +98,11 @@ class ProcessArticleToCategoriesML extends Command
 
                         // attach parent
                         if ($article->categories->where('id', $subCat->parent_id)->count() == 0) {
-                            $article->categories()->attach($subCat->parent_id);
-                            // refresh article categories
-                            $article->refresh();
+                            if (!$dryRun) {
+                                $article->categories()->attach($subCat->parent_id);
+                                // refresh article categories
+                                $article->refresh();
+                            }
                             $this->info('--- Article ID:' . $article->id .', Attached Parent Category: '. $subCat->parent->name);
                             Log::info('[ProcessArticleCategories] Article ID:' . $article->id .', Attached Parent Category: '. $subCat->parent->name);
                             $totalParentCategoriesAttached++;

@@ -62,7 +62,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b314vadkhcfP5Ee6gZa86DV'
+      - 'Bearer Zcvk5Pb4e61Va86DafdgE3h'
     controller: null
     method: null
     route: null
@@ -105,7 +105,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vc5h1DZaV8bga6kdE4f3e6P'
+      - 'Bearer 36ZEh6aDd1ca5gePb8k4vVf'
     controller: null
     method: null
     route: null
@@ -132,7 +132,7 @@ endpoints:
         name: transaction_id
         description: 'The ID of the transaction.'
         required: true
-        example: 7
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
@@ -147,7 +147,7 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      transaction_id: 7
+      transaction_id: 1
       transaction: '1'
     queryParameters: []
     cleanQueryParameters: []
@@ -168,7 +168,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e51vP6ba3hZVDkfd86E4acg'
+      - 'Bearer vef5aV6gEPb4Zda186kc3hD'
     controller: null
     method: null
     route: null

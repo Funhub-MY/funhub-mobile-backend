@@ -68,6 +68,7 @@ class StoreController extends Controller
         // with merchant, ratings, location
         $query->with([
             'merchant',
+            'merchant.media',
             'storeRatings' => function ($query) {
                 $query->whereHas('user', function ($q) {
                     $q->where('status', '!=', User::STATUS_ARCHIVED);

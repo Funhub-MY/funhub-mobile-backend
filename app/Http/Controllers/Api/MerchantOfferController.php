@@ -87,7 +87,28 @@ class MerchantOfferController extends Controller
         $query = MerchantOffer::query()
             ->published()
             // ->available()
-            ->with('user', 'user.merchant', 'categories', 'stores', 'stores.location', 'stores.storeRatings', 'claims', 'user', 'location', 'location.ratings');
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                'likes' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+                'interactions' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+            ]);
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
@@ -678,7 +699,6 @@ class MerchantOfferController extends Controller
                     'message' => __('messages.error.merchant_offer_controller.You_have_not_claimed_this_offer')
                 ], 422);
             }
-
             Log::info('user claim', [
                 $userClaim->toArray(), Carbon::parse($userClaim->pivot->created_at),
                 Carbon::parse($userClaim->pivot->created_at)->endOfDay()->addDays($offer->expiry_days),
@@ -907,10 +927,28 @@ class MerchantOfferController extends Controller
             }
         }
 
-        $query->with('user', 'user.merchant', 'categories', 'claims', 'user', 'location', 'location.ratings');
-
-        // load stores->location
-        $query->with('stores', 'stores.location', 'stores.storeRatings');
+        $query ->with([
+            'user',
+            'user.merchant',
+            'user.merchant.media',
+            'claims',
+            'categories',
+            'stores',
+            'stores.location',
+            'stores.storeRatings',
+            'claims',
+            'location',
+            'location.ratings',
+            'media',
+            'interactions',
+            'views',
+            'likes' => function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            },
+            'interactions' => function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            },
+        ]);
 
         return $query;
     }

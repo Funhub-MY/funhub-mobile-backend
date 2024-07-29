@@ -29,7 +29,7 @@ class StoreResource extends JsonResource
         }
 
         $merchant = null;
-        $logo = null;
+        // $logo = null;
         $photos = [];
         // get from first latest article media
         if ($this->articles) {
@@ -68,7 +68,7 @@ class StoreResource extends JsonResource
             'manager_name' => $this->manager_name,
             'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
-            'logo' => $logo,
+            'logo' => ($this->merchant) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'photos' => $photos,
             'merchant' => $merchant,
             'other_stores' => ($this->otherStores) ? $this->otherStores->map(function ($store) {

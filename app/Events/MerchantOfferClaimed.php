@@ -11,6 +11,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class MerchantOfferClaimed
 {
@@ -27,5 +28,10 @@ class MerchantOfferClaimed
     {
         $this->offer = $offer;
         $this->user = $user;
+
+        Log::info('[MerchantOfferClaimed] Merchant offer claimed', [
+            'offer_id' => $offer->id,
+            'user_id' => $user->id,
+        ]);
     }
 }

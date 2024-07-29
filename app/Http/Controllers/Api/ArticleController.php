@@ -69,6 +69,7 @@ class ArticleController extends Controller
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
+     * @bodyParam pinned_only integer optional Filter by Pinned Articles. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
      * @bodyParam limit integer optional Per Page Limit Override. Example: 10
@@ -166,6 +167,12 @@ class ArticleController extends Controller
             });
         }
 
+        if ($request->has('pinned_only') && $request->pinned_only == 1) {
+            $query->where('pinned_recommended', true);
+        } else {
+            $query->where('pinned_recommended', false); // normal dont query pinned articles
+        }
+
         // new logic: Hide articles from media partners if they are older than the specified number of days
         // requested by content team as of 17 jul 2024
         // $query->where(function ($query) {
@@ -182,8 +189,13 @@ class ArticleController extends Controller
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        $data = $query->with(
+                'media', 'imports',
+                'categories', 'subCategories', 'tags',
+                'user', 'user.media',
+                'comments', 'interactions', 'interactions.user', 'interactions.user.media',
+                'location','location.state', 'location.country', 'location.ratings')
+            ->withCount('media', 'tags', 'views', 'userFollowers', 'userFollowings')
             // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')

@@ -17,10 +17,12 @@ class Store extends BaseModel implements HasMedia, Auditable
 
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;
+    const STATUS_ARCHIVED = 2;
 
     const STATUS = [
         self::STATUS_ACTIVE => 'Listed',
-        self::STATUS_INACTIVE => 'Unlisted'
+        self::STATUS_INACTIVE => 'Unlisted',
+        self::STATUS_ARCHIVED => 'Archived'
     ];
 
     const MEDIA_COLLECTION_PHOTOS = 'store_photos';
@@ -111,6 +113,7 @@ class Store extends BaseModel implements HasMedia, Auditable
                     'available_until' => $merchantOffer->available_until,
                 ];
             }) : null,
+            'latest_articles_created_at' => ($this->articles) ? $this->articles->latest()->created_at : null,
             'articles' => ($this->articles) ? $this->articles->map(function ($article) {
                 return [
                     'id' => $article->id,

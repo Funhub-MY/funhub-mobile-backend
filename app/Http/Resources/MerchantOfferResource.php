@@ -65,13 +65,18 @@ class MerchantOfferResource extends JsonResource
                     'country' => $store->country
                 ];
             }) : null,
-            'merchant' => [
-                'id' => ($this->user) ? $this->user->merchant->id : null,
-                'logo' => ($this->user->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ?? null,
-                'brand_name' => ($this->user) ? $this->user->merchant->brand_name : null,
-                'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
-                'business_phone_no' => ($this->user) ? $this->user->merchant->business_phone_no : null,
-                'user' => new UserResource($this->user),
+           'merchant' => [
+                'id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
+                'logo' => ($this->user && $this->user->merchant && $this->user->merchant->media->count() > 0) ? $this->user->merchant->media->filter(function ($media) {
+                    return $media->collection == Merchant::MEDIA_COLLECTION_NAME;
+                })->first() : null,
+                'brand_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->brand_name : null,
+                'business_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_name : null,
+                'business_phone_no' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_phone_no : null,
+                'user' => [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                ]
             ],
             'name' => $this->name,
             'is_flash' => $this->flash_deal,
@@ -89,7 +94,9 @@ class MerchantOfferResource extends JsonResource
             'available_until' => $this->available_until,
             'expiry_days' => $this->expiry_days,
             'quantity' => $this->quantity,
-            'claimed_quantity' => $this->claimed_quantity,
+            'claimed_quantity' => ($this->claims) ? $this->claims->filter(function ($q) {
+                return $q->pivot->status == MerchantOffer::CLAIM_SUCCESS;
+            })->count() : 0,
             'media' => MediaResource::collection($this->media),
             'horizontal_banner' => ($horizontalMedia) ? new MediaResource($horizontalMedia) : null,
             'vertical_banner' => ($verticalBanner) ? new MediaResource($verticalBanner) : null,
@@ -102,12 +109,22 @@ class MerchantOfferResource extends JsonResource
                 'views' => $this->views->count()
             ],
             'my_interactions' => [
-                'like' => $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->first(),
-                'share' => $this->interactions->where('type', Interaction::TYPE_SHARE)->where('user_id', auth()->user()->id)->first(),
-                'bookmark' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->where('user_id', auth()->user()->id)->first(),
+                'like' => $this->whenLoaded('likes', function () {
+                    return $this->likes->first();
+                }),
+                'share' => $this->whenLoaded('interactions', function () {
+                    return $this->interactions->where('type', Interaction::TYPE_SHARE)->first();
+                }),
+                'bookmark' => $this->whenLoaded('interactions', function () {
+                    return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->first();
+                }),
             ],
-            'user_liked' => (auth()->user()) ? $this->likes()->where('user_id', auth()->user()->id)->exists() : false,
-            'user_bookmarked' => (auth()->user()) ? $this->interactions()->where('user_id', auth()->user()->id)->where('type', Interaction::TYPE_BOOKMARK)->exists() : false,
+            'user_liked' => $this->whenLoaded('likes', function () {
+                return $this->likes->isNotEmpty();
+            }, false),
+            'user_bookmarked' => $this->whenLoaded('interactions', function () {
+                return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->isNotEmpty();
+            }, false),
             'categories' => MerchantCategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
