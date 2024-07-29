@@ -52,7 +52,20 @@ class MerchantOfferClaimResource extends JsonResource
             'status' => $this->status,
             'status_label' => $this->status_label,
             'redeemed' => ($this->redeem) ? true : false,
-            'redeem' => $this->redeem,
+            'redeem' => ($this->redeem) ? $this->redeem->map(function ($redeem) {
+                return [
+                    'id' => $redeem->id,
+                    'claim_id' => $redeem->claim_id,
+                    'merchant_offer_id' => $redeem->merchant_offer_id,
+                    'user_id' => $redeem->user_id,
+                    'transaction_id' => $redeem->transaction_id,
+                    'quantity' => $redeem->quantity,
+                    'created_at' => Carbon::parse($redeem->created_at)->format('d/m/Y h:iA'),
+                    'updated_at' => Carbon::parse($redeem->updated_at)->format('d/m/Y h:iA'),
+                    'created_at_diff' => $redeem->created_at->diffForHumans(),
+                    'updated_at_diff' => $redeem->updated_at->diffForHumans(),
+                ];
+            }) : null,
             'has_expired' => $hasExpired,
             'has_user_rated' => $this->last_rated_at ? true : false,
             'last_rated_at' => $this->last_rated_at,
