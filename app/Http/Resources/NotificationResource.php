@@ -75,6 +75,7 @@ class NotificationResource extends JsonResource
             'action' => $this->data['action'] ?? null,
             'from_user' => new UserResource($this->from_user) ?? null,
             'is_read' => $this->read_at ? true : false,
+            'extra' => $this->extra ?? null,
             'created_at_raw' => $this->created_at,
             'created_at' => $this->created_at->diffForHumans(),
         ];

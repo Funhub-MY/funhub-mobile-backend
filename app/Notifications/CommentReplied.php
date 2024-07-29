@@ -84,6 +84,10 @@ class CommentReplied extends Notification
             'title' => $this->comment->user->name,
             'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
             'comment_id' => (string) $this->comment->id,
+            'extra' => [
+                'parent_id' => $this->replyingComment->id,
+                'comment_id' => $this->comment->id,
+            ]
         ];
     }
 }

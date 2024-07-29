@@ -13,9 +13,9 @@ class NotificationController extends Controller
     /**
      * Get latest notifications of the user
      * Ordered by latest one
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Notifications
      * @bodyParam per_page int The number of items per page. Example: 10
      * @response scenario=success {
@@ -54,6 +54,11 @@ class NotificationController extends Controller
         // map UserResource of $users into the $notifications results
         $notifications->getCollection()->transform(function ($notification) use ($users) {
             $notification->from_user = $users->where('id', $notification->data['from_id'])->first();
+
+            // appends extra attribute if present
+            if (isset($notification->data['extra'])) {
+                $notification->extra = $notification->data['extra'];
+            }
             return $notification;
         });
 
@@ -62,9 +67,9 @@ class NotificationController extends Controller
 
     /**
      * Mark all notifications as read
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Notifications
      * @response scenario=success {
      * "message": "Notifications marked as read."
@@ -73,7 +78,7 @@ class NotificationController extends Controller
     public function postMarkUnreadNotificationAsRead()
     {
         $user = auth()->user();
-            
+
         foreach ($user->unreadNotifications as $notification) {
             $notification->markAsRead();
         }
@@ -88,7 +93,7 @@ class NotificationController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * 
+     *
      * @group Notifications
      * @bodyParam notification_id string required The notification id. Example: 058d0c3d-1028-4660-b905-7e30ad7eee9c
      * @response scenario=success {
@@ -102,7 +107,7 @@ class NotificationController extends Controller
         ]);
 
         $user = auth()->user();
-        
+
         // get notification by notificaiton id
         $notification = $user->notifications()->where('id', $request->notification_id)->first();
         if (!$notification) {
