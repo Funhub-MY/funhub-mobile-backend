@@ -225,7 +225,7 @@ class CommentController extends Controller
                 $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment, $comment->parent))->locale($locale)); // send notification
             }
         } catch (\Exception $e) {
-            Log::error('[CommentController] Notification error when parent comment', ['message' => $e->getMessage()]);
+            Log::error('[CommentController] Notification error when comment', ['message' => $e->getMessage()]);
         }
 
 
