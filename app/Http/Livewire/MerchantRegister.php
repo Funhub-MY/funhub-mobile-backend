@@ -17,6 +17,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -30,7 +31,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
 class MerchantRegister extends Component implements HasForms
 {
     use InteractsWithForms;
@@ -84,19 +85,23 @@ class MerchantRegister extends Component implements HasForms
             'business_hours.*.open_time' => 'required',
             'business_hours.*.close_time' => 'required',
             'company_email' => 'required|email|unique:users,email',
-            'password' => 'required',
-            'passwordConfirmation' => 'required|same:password',
+            // 'password' => 'required',
+            // 'passwordConfirmation' => 'required|same:password',
         ]);
 
         //create user using the company_email and password
         $user = null;
+
+        // create a default password
+        $password = Str::random(8);
+
         try {
             $user = User::create([
                 'name' => $data['brand_name'],
                 'email' => $data['company_email'],
                 'phone_no' => $data['business_phone_no'],
                 'phone_country_code' => $data['phone_country_code'],
-                'password' => bcrypt($data['password']),
+                'password' => bcrypt($password),
             ]);
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] User creation failed: ' . $e->getMessage());
@@ -136,6 +141,7 @@ class MerchantRegister extends Component implements HasForms
                 'pic_ic_no' => $data['pic_ic_no'],
                 'pic_phone_no' => $data['pic_phone_no'],
                 'pic_email' => $data['pic_email'],
+                'default_password' => $password,
             ]);
 
             if ($merchant) {
@@ -360,31 +366,24 @@ class MerchantRegister extends Component implements HasForms
                         ->label('Company Email')
                         ->placeholder('Enter Email')
                         ->reactive(),
-                    TextInput::make('password')
-                        ->password()
+
+                    Placeholder::make('password')
                         ->label('Password')
-                        ->placeholder('Enter Password')
-                        ->reactive(),
-                    TextInput::make('passwordConfirmation')
-                        ->password()
-                        ->label('Confirm Password')
-                        ->placeholder('Confirm Password')
-                        ->reactive(),
+                        ->content(function ($state, Closure $get) {
+                            // password will be generated and emailed to you once approved
+                            return 'Password will be generated and emailed to the above Company Email once account is approved';
+                        })
                     ])->beforeValidation(function ($livewire, $state) {
                         // get data from $livewire->fieldname
                         $data = [
                             'phone_country_code' => $livewire->phone_country_code,
                             'business_phone_no' => $livewire->business_phone_no,
                             'company_email' => $livewire->company_email,
-                            'password' => $livewire->password,
-                            'passwordConfirmation' => $livewire->passwordConfirmation,
                         ];
                         Validator::make($data, [
                             'phone_country_code' => 'required|max:255',
                             'business_phone_no' => 'required|max:255|unique:users,phone_no',
                             'company_email' => 'required|email|unique:users,email|unique:merchants,email',
-                            'password' => 'required|min:8',
-                            'passwordConfirmation' => 'required|same:password',
                         ])->validate();
                     }),
                 Wizard\Step::make('Company')
