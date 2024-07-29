@@ -318,6 +318,8 @@ return [
 
     'recommended_media_partner_article_hide_after_days' => env('RECOMMENDED_MEDIA_PARTNER_ARTICLE_HIDE_AFTER_DAYS', 30),
 
+    'auto_article_categories' => env('AUTO_ARTICLE_CATEGORIES', false),
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails

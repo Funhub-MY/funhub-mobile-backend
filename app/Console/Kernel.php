@@ -70,7 +70,9 @@ class Kernel extends ConsoleKernel
         }
 
         // categorize articles  every thiry minutes
-        $schedule->command('articles:categorize')->everyThirtyMinutes();
+        if (config('app.auto_article_categories') == true) {
+            $schedule->command('articles:categorize')->everyThirtyMinutes();
+        }
     }
 
     /**
