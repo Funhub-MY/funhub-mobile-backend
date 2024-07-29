@@ -65,7 +65,9 @@ class Kernel extends ConsoleKernel
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
 
         // sync bubble contact for users, stores, and ratings
-        $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
+        if (config('services.bubble.status') == true) {
+            $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
+        }
 
         // categorize articles  every thiry minutes
         $schedule->command('articles:categorize')->everyThirtyMinutes();

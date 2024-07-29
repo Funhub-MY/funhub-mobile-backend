@@ -74,6 +74,7 @@ return [
     ],
 
     'bubble' => [
+        'status' => env('BUBBLE_STATUS', false),
         'root_url' => env('BUBBLE_ROOT_URL', 'https://rating.funhub.my/version-test/api/1.1/obj'),
         'api_key' => env('BUBBLE_API_KEY'),
     ],
