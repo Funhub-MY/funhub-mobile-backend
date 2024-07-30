@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: autem
+        example: est
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: autem
+      share_code: est
     fileParameters: []
     responses:
       -
@@ -54,7 +54,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1575,
+                      "line": 1577,
                       "function": "abort"
                   },
                   {
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ka8Vd5cvEPDb3Z6f146geah'
+      - 'Bearer dbZEaPDc4akVvf5316h8ge6'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: non
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: non
+      username: dolorum
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 438faPh5bcZdE66egVav1Dk'
+      - 'Bearer gk6aE4V56Dhcafb1ed8PvZ3'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: quis
+        example: qui
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: quis
+      share_code: qui
     fileParameters: []
     responses:
       -
@@ -646,7 +646,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 797,
+                      "line": 814,
                       "function": "abort"
                   },
                   {
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PEZahgVvfb56D1a6c8d4e3k'
+      - 'Bearer 85g4Ek1bah6vdZVcfaeD63P'
     controller: null
     method: null
     route: null
@@ -1156,13 +1156,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: neque
+        example: voluptas
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: neque
+      share_code: voluptas
     fileParameters: []
     responses:
       -
@@ -1662,7 +1662,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1evhPE4gbZV8d6Dca6kfa53'
+      - 'Bearer 83ab6fv1ZchgEV64deDka5P'
     controller: null
     method: null
     route: null
