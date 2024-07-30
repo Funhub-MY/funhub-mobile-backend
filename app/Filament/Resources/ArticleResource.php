@@ -202,10 +202,10 @@ class ArticleResource extends Resource
                                 ->label('Hide from Home?')
                                 ->helperText('Article will not showed in Recommendations. Whitelist user to bypass.')
                                 ->default(false),
-                            Toggle::make('pinned_recommended')
-                                ->label('Pin to top in Recommendations?')
-                                ->helperText('Article will be pinned to top in Recommendations.')
-                                ->default(false),
+                            // Toggle::make('pinned_recommended')
+                            //     ->label('Pin to top in Recommendations?')
+                            //     ->helperText('Article will be pinned to top in Recommendations.')
+                            //     ->default(false),
                             Forms\Components\DateTimePicker::make('published_at')
                                 ->label('Publish At')
 
@@ -539,7 +539,7 @@ class ArticleResource extends Resource
                         $record->update(['status' => 2]);
                     });
                 })->requiresConfirmation(),
-// table bulkaction to mark hidden from home toggle
+                // table bulkaction to mark hidden from home toggle
                 Tables\Actions\BulkAction::make('toggle_hidden_from_home')
                 ->label('Toggle Home Hidden/Visible')
                 ->form([
@@ -553,6 +553,22 @@ class ArticleResource extends Resource
                             ->update(['hidden_from_home' => $data['hidden_from_home']]);
                     }
                 })->requiresConfirmation(),
+
+                // toggle pinned_recommended
+                Tables\Actions\BulkAction::make('toggle_pinned_recommended')
+                ->label('Toggle Pinned Recommended')
+                ->form([
+                    Toggle::make('pinned_recommended')
+                        ->label('Pin to Recommended')
+                        ->default(false)
+                ])
+                ->action(function(array $data, $livewire){
+                    if (count($livewire->selectedTableRecords) > 0) {
+                        Article::whereIn('id', $livewire->selectedTableRecords)
+                            ->update(['pinned_recommended' => $data['pinned_recommended']]);
+                    }
+                })->requiresConfirmation(),
+
             ]);
     }
 
