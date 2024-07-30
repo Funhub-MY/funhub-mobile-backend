@@ -98,6 +98,9 @@ class MerchantOfferResource extends JsonResource
                 return $q->pivot->status == MerchantOffer::CLAIM_SUCCESS;
             })->count() : 0,
             'media' => MediaResource::collection($this->media),
+            'gallery' => ($this->media) ? MediaResource::collection($this->media->filter(function ($item) {
+                return $item->collection_name != MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER;
+            })) : null,
             'horizontal_banner' => ($horizontalMedia) ? new MediaResource($horizontalMedia) : null,
             'vertical_banner' => ($verticalBanner) ? new MediaResource($verticalBanner) : null,
             'interactions' => InteractionResource::collection($this->interactions),
