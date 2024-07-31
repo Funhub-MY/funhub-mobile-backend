@@ -168,6 +168,11 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('job_title')
                             ->rules('nullable', 'max:255'),
 
+                        // has_article_personalization
+                        Forms\Components\Toggle::make('has_article_personalization')
+                            ->label('Has Article Personalization?')
+                            ->default(false),
+
                         // field set location
                         Forms\Components\Fieldset::make('Location')
                             ->schema([
@@ -220,6 +225,17 @@ class UserResource extends Resource
                     ->enum([
                         false => 'Public',
                         true => 'Private',
+                    ])
+                    ->colors([
+                        'success' => false,
+                        'danger' => true,
+                    ]),
+                // has_article_personalization
+                Tables\Columns\BadgeColumn::make('has_article_personalization')
+                    ->label('Has Article Personalization?')
+                    ->enum([
+                        false => 'No',
+                        true => 'Yes',
                     ])
                     ->colors([
                         'success' => false,
