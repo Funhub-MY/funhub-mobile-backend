@@ -30,6 +30,9 @@ class SyncStoreCategoriesAction extends ImportAction
                 ImportField::make('category_names')
                     ->label('Category Names')
                     ->required(),
+                ImportField::make('status')
+                    ->label('Status')
+                    ->required(),
             ]);
 
         $this->action(function (ComponentContainer $form): void {

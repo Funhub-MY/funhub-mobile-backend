@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: est
+        example: aut
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: est
+      share_code: aut
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer dbZEaPDc4akVvf5316h8ge6'
+      - 'Bearer bEcdagk86Df6hP514av3ZVe'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: dolorum
+        example: quis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: dolorum
+      username: quis
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gk6aE4V56Dhcafb1ed8PvZ3'
+      - 'Bearer 6ZdgaeV35DkahPcEvf84b61'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: qui
+        example: veritatis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: qui
+      share_code: veritatis
     fileParameters: []
     responses:
       -
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 85g4Ek1bah6vdZVcfaeD63P'
+      - 'Bearer bg4ea81cVhZ5akv66dPf3DE'
     controller: null
     method: null
     route: null
@@ -1156,13 +1156,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: voluptas
+        example: corporis
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: voluptas
+      share_code: corporis
     fileParameters: []
     responses:
       -
@@ -1662,7 +1662,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 83ab6fv1ZchgEV64deDka5P'
+      - 'Bearer ZaeDa18P4v3f6dch5gbk6VE'
     controller: null
     method: null
     route: null

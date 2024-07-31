@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "d61b62c7-950e-4ee3-bde8-9569e53fc9ef",
+        "_postman_id": "5aa82294-be2c-4bef-9a24-ab410fd1d978",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -249,7 +249,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":11,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"impedit\",\"violation_level\":\"dolores\",\"article\":1}"
+                                    "raw": "{\"article_id\":8,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"in\",\"violation_level\":\"recusandae\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -414,7 +414,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"optio\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"ipsa\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -457,7 +457,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"keyword_id\":17}"
+                            "raw": "{\"keyword_id\":11}"
                         },
                         "description": ""
                     },
@@ -527,7 +527,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"consequatur\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"pinned_only\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"illum\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"include_own_article\":1,\"pinned_only\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -1091,7 +1091,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "harum",
+                                            "value": "ea",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1191,7 +1191,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"architecto\",\"violation_type\":\"est\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"perspiciatis\",\"violation_type\":\"quod\"}"
                                 },
                                 "description": ""
                             },
@@ -1348,7 +1348,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "nostrum",
+                                            "value": "nisi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2394,7 +2394,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"kamryn91@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"kallie.watsica@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2470,7 +2470,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"est\"}"
+                            "raw": "{\"share_code\":\"aut\"}"
                         },
                         "description": ""
                     },
@@ -2526,7 +2526,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"dolorum\"}"
+                            "raw": "{\"username\":\"quis\"}"
                         },
                         "description": ""
                     },
@@ -2582,7 +2582,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"qui\"}"
+                            "raw": "{\"share_code\":\"veritatis\"}"
                         },
                         "description": ""
                     },
@@ -2638,7 +2638,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"voluptas\"}"
+                            "raw": "{\"share_code\":\"corporis\"}"
                         },
                         "description": ""
                     },
@@ -3342,7 +3342,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_ids\":[\"eum\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                            "raw": "{\"location_ids\":[\"ea\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
                         },
                         "description": ""
                     },
@@ -3563,7 +3563,7 @@
                                         },
                                         {
                                             "key": "merchant_offer_ids[0]",
-                                            "value": "dolor",
+                                            "value": "eum",
                                             "description": "optional Merchant Offer Ids to Filter. Example [1,2,3]",
                                             "disabled": false
                                         },
@@ -3622,7 +3622,7 @@
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=dolor&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=eum&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3704,7 +3704,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"nobis\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"store_id\":1,\"hide_purchased\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"sed\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"store_id\":1,\"hide_purchased\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -3911,7 +3911,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "nihil",
+                                            "value": "enim",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -4439,7 +4439,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"is_featured\":1,\"has_offers\":1,\"has_stores\":1,\"filter\":\"Filterable columns are: id, name, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"is_featured\":1,\"has_offers\":1,\"has_stores\":1,\"has_store_offers\":1,\"filter\":\"Filterable columns are: id, name, created_at, updated_at\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -5336,7 +5336,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"store_ids\":\"nesciunt\"}"
+                            "raw": "{\"store_ids\":\"eos\"}"
                         },
                         "description": ""
                     },
@@ -5411,7 +5411,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"store_ids\":\"aspernatur\"}"
+                            "raw": "{\"store_ids\":\"alias\"}"
                         },
                         "description": ""
                     },
@@ -5454,7 +5454,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_id\":\"est\"}"
+                            "raw": "{\"location_id\":\"ut\"}"
                         },
                         "description": ""
                     },
@@ -5985,7 +5985,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":17}"
+                                    "raw": "{\"user_id\":13}"
                                 },
                                 "description": ""
                             },
@@ -6032,7 +6032,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":16}"
+                                    "raw": "{\"user_id\":9}"
                                 },
                                 "description": ""
                             },
@@ -6073,7 +6073,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":4}"
+                                    "raw": "{\"user_id\":17}"
                                 },
                                 "description": ""
                             },
@@ -6114,7 +6114,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":16}"
+                                    "raw": "{\"user_id\":1}"
                                 },
                                 "description": ""
                             },
@@ -6246,7 +6246,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"beatae\",\"violation_level\":\"consequatur\",\"violation_type\":\"sunt\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"consequuntur\",\"violation_level\":\"sed\",\"violation_type\":\"non\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -6478,7 +6478,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"consequuntur\"}"
+                            "raw": "{\"user_ids\":\"itaque\"}"
                         },
                         "description": ""
                     },
@@ -7362,7 +7362,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },
