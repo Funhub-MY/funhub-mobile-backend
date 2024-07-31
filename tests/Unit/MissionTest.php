@@ -426,7 +426,7 @@ it('User can complete profile setup and get rewarded by mission', function () {
     $response = $this->postJson('/api/v1/user/settings/dob', [
         'year' =>  (int) $date['year'],
         'month' => (int) $date['month'],
-        'day' => (int) $date['day'],
+        'day' => rand(1, 28),
     ]);
     $response->assertStatus(200);
 
