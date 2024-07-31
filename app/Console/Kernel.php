@@ -73,6 +73,8 @@ class Kernel extends ConsoleKernel
         if (config('app.auto_article_categories') == true) {
             $schedule->command('articles:categorize')->everyThirtyMinutes();
         }
+
+        $schedule->command('redeem:send-review-reminder')->dailyAt('10:00');
     }
 
     /**
