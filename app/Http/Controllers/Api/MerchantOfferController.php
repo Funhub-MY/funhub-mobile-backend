@@ -303,6 +303,7 @@ class MerchantOfferController extends Controller
         ->with([
             'user',
             'user.merchant',
+            'user.merchant.media',
             'claims',
             'categories',
             'stores',
@@ -321,11 +322,6 @@ class MerchantOfferController extends Controller
                 $query->where('user_id', auth()->user()->id);
             },
         ])->first();
-
-        // ADHOC fix as user.merchant.media is not loading anything
-        $offer->user->merchant->media = DB::table('media')->whereIn('model_id', $offer->media->pluck('id'))
-            ->where('model_type', Merchant::class)
-            ->get();
 
         return new MerchantOfferResource($offer);
     }
