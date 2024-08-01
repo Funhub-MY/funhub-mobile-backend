@@ -322,8 +322,10 @@ class MerchantOfferController extends Controller
             },
         ])->first();
 
-        // load media of MerchantOffer user.merchant.media
-        $offer->user->merchant->load('media');
+        // ADHOC fix as user.merchant.media is not loading anything
+        $offer->user->merchant->media = DB::table('media')->whereIn('model_id', $offer->media->pluck('id'))
+            ->where('model_type', Merchant::class)
+            ->get();
 
         return new MerchantOfferResource($offer);
     }
