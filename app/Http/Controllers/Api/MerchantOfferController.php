@@ -299,7 +299,31 @@ class MerchantOfferController extends Controller
      */
     public function show($id)
     {
-        $offer = MerchantOffer::where('id', $id)->first();
+        $offer = MerchantOffer::where('id', $id)
+        ->with([
+            'user',
+            'user.merchant',
+            'user.merchant.media',
+            'claims',
+            'categories',
+            'stores',
+            'stores.location',
+            'stores.storeRatings',
+            'claims',
+            'location',
+            'location.ratings',
+            'media',
+            'interactions',
+            'views',
+            'likes' => function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            },
+            'interactions' => function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            },
+        ])->first();
+
+
         return new MerchantOfferResource($offer);
     }
 
