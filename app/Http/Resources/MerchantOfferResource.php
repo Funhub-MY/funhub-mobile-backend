@@ -38,7 +38,8 @@ class MerchantOfferResource extends JsonResource
         }
 
         Log::info('[MerchantOfferResource] media', [
-            'media' => $this->user->merchant->media
+            'media' => $this->user->merchant->media,
+            'media_count' => $this->user->merchant->media->count()
         ]);
 
         // horizontal banner

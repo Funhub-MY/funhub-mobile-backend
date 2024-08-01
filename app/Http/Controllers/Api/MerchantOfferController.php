@@ -299,8 +299,9 @@ class MerchantOfferController extends Controller
      */
     public function show($id)
     {
-        $offer = MerchantOffer::where('id', $id)
-        ->with([
+        $offer = MerchantOffer::where('id', $id)->first();
+
+        $offer->load([
             'user',
             'user.merchant',
             'user.merchant.media',
@@ -321,7 +322,7 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
-        ])->first();
+        ]);
 
         return new MerchantOfferResource($offer);
     }
