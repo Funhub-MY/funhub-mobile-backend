@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:sync-location-as-stores')->hourly();
 
         // match contacts to users(related_user_id) in user_contacts table
-        $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
+        $schedule->job(new ImportedContactMatching())->hourly();
 
         // sync bubble contact for users, stores, and ratings
         if (config('services.bubble.status') == true) {
@@ -75,6 +75,9 @@ class Kernel extends ConsoleKernel
         }
 
         $schedule->command('redeem:send-review-reminder')->dailyAt('10:00');
+
+        // hide unonboarded stores without articles
+        $schedule->command('stores:auto-hide-unonboarded')->dailyAt('03:00');
     }
 
     /**
