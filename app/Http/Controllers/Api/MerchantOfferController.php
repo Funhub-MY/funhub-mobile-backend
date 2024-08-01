@@ -323,7 +323,6 @@ class MerchantOfferController extends Controller
             },
         ])->first();
 
-
         return new MerchantOfferResource($offer);
     }
 

@@ -37,6 +37,10 @@ class MerchantOfferResource extends JsonResource
             }
         }
 
+        Log::info('[MerchantOfferResource] media', [
+            'media' => $this->user->merchant->media
+        ]);
+
         // horizontal banner
         $horizontalMedia = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
         $verticalBanner = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_NAME);
