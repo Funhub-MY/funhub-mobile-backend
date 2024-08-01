@@ -272,6 +272,8 @@ return [
             'ClaimdOffer' => 'Successfully Claimed',
             'NewOfferListed' => 'New Offer',
             'NewOfferListedBody' => ':brandName has listed a new offer, check it out',
+            'RedemptioReviewReminderTitle' => 'Review Reminder',
+            'RedemptioReviewReminder' => 'Remember to review the store you redeemed from',
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
@@ -304,6 +306,8 @@ return [
             'ClaimdOffer' => 'Successfully Claimed',
             'NewOfferListed' => 'New Offer',
             'NewOfferListedBody' => ':brandName has listed a new offer, check it out',
+            'RedemptioReviewReminderTitle' => 'Review Reminder',
+            'RedemptioReviewReminder' => 'Remember to review the store you redeemed from',
         ]
     ]
 ];

@@ -24,6 +24,7 @@ class MerchantCategoryController extends Controller
      * @bodyParam is_featured integer Is Featured Categories. Example: 1
      * @bodyParam has_offers integer Check if category has published offers. Example: 1
      * @bodyParam has_stores integer Check if category has linked to stores. Example: 1
+     * @bodyParam has_store_offers integer Check if category has linked to offers with listed stores. Example: 1
      * @bodyParam filter string Column to Filter. Example: Filterable columns are: id, name, created_at, updated_at
      * @bodyParam filter_value string Value to Filter. Example: Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
      * @bodyParam sort string Column to Sort. Example: Sortable columns are: id, name, created_at, updated_at
@@ -66,6 +67,15 @@ class MerchantCategoryController extends Controller
             $query->has('stores');
         } else if ($request->has('has_stores') && $request->has_stores == 0) {
             $query->doesntHave('stores');
+        }
+
+         // has store offers
+         if ($request->has('has_store_offers') && $request->has_store_offers == 1) {
+            $query->join('merchant_category_stores', 'merchant_categories.id', '=', 'merchant_category_stores.merchant_category_id')
+                ->join('merchant_offer_stores', 'merchant_category_stores.store_id', '=', 'merchant_offer_stores.store_id')
+                ->join('merchant_offers', 'merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                ->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
+                ->distinct();
         }
 
         $this->buildQuery($query, $request);

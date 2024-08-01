@@ -68,8 +68,8 @@ class MerchantOfferResource extends JsonResource
            'merchant' => [
                 'id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
                 'logo' => ($this->user && $this->user->merchant && $this->user->merchant->media->count() > 0) ? $this->user->merchant->media->filter(function ($media) {
-                    return $media->collection == Merchant::MEDIA_COLLECTION_NAME;
-                })->first() : null,
+                    return $media->collection_name == Merchant::MEDIA_COLLECTION_NAME;
+                })->first()->original_url : null,
                 'brand_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->brand_name : null,
                 'business_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_name : null,
                 'business_phone_no' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_phone_no : null,
@@ -98,6 +98,9 @@ class MerchantOfferResource extends JsonResource
                 return $q->pivot->status == MerchantOffer::CLAIM_SUCCESS;
             })->count() : 0,
             'media' => MediaResource::collection($this->media),
+            'gallery' => ($this->media) ? MediaResource::collection($this->media->filter(function ($item) {
+                return $item->collection_name != MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER;
+            })) : null,
             'horizontal_banner' => ($horizontalMedia) ? new MediaResource($horizontalMedia) : null,
             'vertical_banner' => ($verticalBanner) ? new MediaResource($verticalBanner) : null,
             'interactions' => InteractionResource::collection($this->interactions),

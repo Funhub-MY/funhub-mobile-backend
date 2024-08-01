@@ -242,6 +242,7 @@ class MerchantOfferController extends Controller
      * @group Merchant
      * @subgroup Merchant Offers
      * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
+     * @urlParam is_expired number optional Filter by Expired. Example: 0/1
      * @response scenario=success {
      * "data": []
      * }
@@ -257,6 +258,22 @@ class MerchantOfferController extends Controller
                 $query->whereHas('redeem');
             } else if ($request->get('is_redeemed') == 0) { // false
                 $query->whereDoesntHave('redeem');
+            }
+        }
+
+        if ($request->has('is_expired')) {
+            if ($request->get('is_expired') == 1) { // true
+                $query->where(function ($query) {
+                    $query->whereHas('merchantOffer', function ($query) {
+                        $query->whereRaw('DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days + 1 DAY) < CURDATE()');
+                    });
+                });
+            } else if ($request->get('is_expired') == 0) { // false
+                $query->where(function ($query) {
+                    $query->whereHas('merchantOffer', function ($query) {
+                        $query->whereRaw('DATE_ADD(DATE(merchant_offer_user.created_at), INTERVAL merchant_offers.expiry_days + 1 DAY) >= CURDATE()');
+                    });
+                });
             }
         }
 
@@ -283,6 +300,30 @@ class MerchantOfferController extends Controller
     public function show($id)
     {
         $offer = MerchantOffer::where('id', $id)->first();
+
+        $offer->load([
+            'user',
+            'user.merchant',
+            'user.merchant.media',
+            'claims',
+            'categories',
+            'stores',
+            'stores.location',
+            'stores.storeRatings',
+            'claims',
+            'location',
+            'location.ratings',
+            'media',
+            'interactions',
+            'views',
+            'likes' => function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            },
+            'interactions' => function ($query) {
+                $query->where('user_id', auth()->user()->id);
+            },
+        ]);
+
         return new MerchantOfferResource($offer);
     }
 

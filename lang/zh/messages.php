@@ -275,7 +275,8 @@ return [
             'ClaimdOffer' => '交易成功',
             'NewOfferListed' => '新优惠券',
             'NewOfferListedBody' => ':brandName 已发布了新优惠券，点击查看',
-
+            'RedemptioReviewReminderTitle' => '点评提醒',
+            'RedemptioReviewReminder' => '别忘了点评 :storeName ',
         ],
         'database' => [
             'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
@@ -308,6 +309,8 @@ return [
             'ClaimdOffer' => '交易成功',
             'NewOfferListed' => '新优惠券',
             'NewOfferListedBody' => ':brandName 已发布了新优惠券，点击查看',
+            'RedemptioReviewReminderTitle' => '点评提醒',
+            'RedemptioReviewReminder' => '别忘了点评 :storeName ',
         ]
     ]
 ];

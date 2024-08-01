@@ -187,7 +187,7 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-        $query = $user->followers();
+        $query = $user->followers()->where('status', User::STATUS_ACTIVE);
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
         }
@@ -222,7 +222,7 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-        $query = $user->followings();
+        $query = $user->followings()->where('status', User::STATUS_ACTIVE);
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
         }

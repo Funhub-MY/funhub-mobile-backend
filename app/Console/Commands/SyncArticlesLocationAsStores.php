@@ -52,6 +52,13 @@ class SyncArticlesLocationAsStores extends Command
 
                 $this->info('Creating store for location: ' . $location->name);
 
+                $status = Store::STATUS_ACTIVE;
+                // if full address starts with Lorong, Jalan or Street then set to unlisted first
+                $smallLetterAddress = trim(strtolower($location->full_address));
+                if (str_starts_with($smallLetterAddress, 'lorong') || str_starts_with($smallLetterAddress, 'jalan') || str_starts_with($smallLetterAddress, 'street')) {
+                    $status = Store::STATUS_INACTIVE;
+                }
+
                 // create store
                 $store = Store::create([
                     'user_id' => null,
@@ -66,8 +73,10 @@ class SyncArticlesLocationAsStores extends Command
                     'is_hq' => false,
                     'state_id' => $location->state_id,
                     'country_id' => $location->country_id,
-                    'status' => Store::STATUS_INACTIVE, // all new stores will be inactive first
+                    'status' => $status, // all new stores will be inactive first
                 ]);
+
+                // get google place types
 
                 // also attach the location to the store
                 $store->location()->attach($location->id);
