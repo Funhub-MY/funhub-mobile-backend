@@ -303,7 +303,6 @@ class MerchantOfferController extends Controller
         ->with([
             'user',
             'user.merchant',
-            'user.merchant.media',
             'claims',
             'categories',
             'stores',
@@ -322,6 +321,9 @@ class MerchantOfferController extends Controller
                 $query->where('user_id', auth()->user()->id);
             },
         ])->first();
+
+        // load media of MerchantOffer user.merchant.media
+        $offer->user->merchant->load('media');
 
         return new MerchantOfferResource($offer);
     }
