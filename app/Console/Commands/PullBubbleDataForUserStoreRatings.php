@@ -186,14 +186,16 @@ class PullBubbleDataForUserStoreRatings extends Command
                         ]);
                         $this->info("-- Created rating for store: " . $store->id . " and user: " . $authUser->id);
 
-                        $categories = $review['Topic']; // topics are rating categories
-                        // loop through each category thats available in availableRatingCategories and attach to rating
-                        foreach ($categories as $category) {
-                            if ($availableRatingCategories->contains('name', $category)) {
-                                $this->info("-- Attaching rating category: " . $category . " to review");
-                                $rating->ratingCategories()->attach($availableRatingCategories->where('name', $category)->first()->id,
-                                     ['user_id' => $authUser->id]
-                                );
+                        if (isset($review['Topic'])) {
+                            $categories = $review['Topic']; // topics are rating categories
+                            // loop through each category thats available in availableRatingCategories and attach to rating
+                            foreach ($categories as $category) {
+                                if ($availableRatingCategories->contains('name', $category)) {
+                                    $this->info("-- Attaching rating category: " . $category . " to review");
+                                    $rating->ratingCategories()->attach($availableRatingCategories->where('name', $category)->first()->id,
+                                        ['user_id' => $authUser->id]
+                                    );
+                                }
                             }
                         }
                     }
