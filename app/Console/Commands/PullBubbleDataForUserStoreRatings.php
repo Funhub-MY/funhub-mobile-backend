@@ -128,7 +128,7 @@ class PullBubbleDataForUserStoreRatings extends Command
         $storesData = collect($storesData);
 
         // reviewsData sort by Created Date
-        $reviewsData = $reviewsData->sortByDesc('Created Date');
+        // $reviewsData = $reviewsData->sortByDesc('Created Date');
 
         $availableRatingCategories = RatingCategory::all();
         foreach ($reviewsData as $review) {
