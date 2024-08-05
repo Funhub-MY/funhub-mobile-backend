@@ -59,7 +59,7 @@ class MissionResource extends JsonResource
         if (is_array($currentValues) && count($currentValues) > 0) {
             $progress = array_values($currentValues)[0];
             // goal is $this->values match with $currentValues
-            $goal = array_values($this->values)[0];
+            $goal = array_values(json_decode($this->values, true))[0];
         }
 
         return [

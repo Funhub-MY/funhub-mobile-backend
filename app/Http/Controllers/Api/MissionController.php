@@ -77,34 +77,28 @@ class MissionController extends Controller
             ->orderBy('created_at', 'desc');
 
         // filter by claimed_only
-        if ($request->has('claimed_only') && $request->claimed_only) {
+        $query->when($request->has('claimed_only') && $request->claimed_only, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
-                    ->where('is_completed', true);
+                    ->whereNotNull('missions_users.claimed_at');
             });
-        } else {
-            $query->whereDoesntHave('participants', function($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->where('is_completed', true);
-            });
-        }
+        });
 
         // filter by type of mission one-off, daily, monthly
-        if ($request->has('frequency') && $request->frequency) {
+        $query->when($request->has('frequency') && $request->frequency, function($query) use ($request) {
             // check frequency is one-off, daily, monthly
             $request->validate([
                 'frequency' => 'in:one-off,daily,monthly'
             ]);
             $query->where('frequency', $request->frequency);
-        }
+        });
 
-        if ($request->has('completed_only') && $request->completed_only) {
+        $query->when($request->has('completed_only') && $request->completed_only, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('missions_users.is_completed', true);
             });
-        } else {
-            // inverse: missions not yet participated by auth user OR not yet completed
+        }, function($query) {
             $query->where(function($query) {
                 $query->whereDoesntHave('participants', function($query) {
                     $query->where('user_id', auth()->user()->id);
@@ -114,7 +108,7 @@ class MissionController extends Controller
                         ->where('missions_users.is_completed', false);
                 });
             });
-        }
+        });
 
         $missions = $query->paginate(config('app.paginate_per_page'));
 
@@ -191,9 +185,8 @@ class MissionController extends Controller
         // update pivot table
         $user->missionsParticipating()->updateExistingPivot($mission->id, [
             'is_completed' => true,
-            'completed_at' => now()
+            'completed_at' => now(),
         ]);
-
         try {
             $locale = auth()->user()->last_lang ?? config('app.locale');
             auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
@@ -205,8 +198,10 @@ class MissionController extends Controller
             ]);
         }
 
-        // disburse rewards
-        $this->disburseRewards($mission, $user);
+        // disburse rewards if auto_disburse_rewards is true
+        if ($mission->auto_disburse_rewards) {
+            $this->disburseRewards($mission, $user);
+        }
     }
 
     /**
@@ -222,6 +217,8 @@ class MissionController extends Controller
             'mission' => $mission->toArray(),
             'user' => $user->id
         ]);
+
+
         if ($mission->missionable_type == Reward::class) {
             // reward point via pointService
             $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
@@ -231,6 +228,14 @@ class MissionController extends Controller
                 'reward_type' => 'point',
                 'reward' => $mission->reward_quantity
             ]);
+
+
+            // if mission is not auto disbursed, also update claimed_at
+            if (!$mission->auto_disburse_rewards) {
+                $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                    'claimed_at' => now(),
+                ]);
+            }
         } else if ($mission->missionable_type == RewardComponent::class) {
             // reward point via pointComponentService
             $this->pointComponentService->credit(
@@ -246,6 +251,13 @@ class MissionController extends Controller
                 'reward_type' => 'point component',
                 'reward' => $mission->reward_quantity
             ]);
+
+            // if mission is not auto disbursed, also update claimed_at
+            if (!$mission->auto_disburse_rewards) {
+                $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                    'claimed_at' => now(),
+                ]);
+            }
         } else {
             Log::error('Mission Completed but no reward disbursed', [
                 'mission' => $mission->id,
