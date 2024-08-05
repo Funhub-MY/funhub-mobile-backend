@@ -32,6 +32,8 @@ class MissionController extends Controller
      *
      * @group Mission
      * @urlParam completed_only boolean optional Only show completed missions(is_completed=true). Example: false
+     * @urlParam claimed_only boolean optional Only show claimed missions(is_completed=true). Example: false
+     * @urlParam frequency string optional Filter by frequency. Example: one-off,daily,monthly
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
@@ -65,7 +67,7 @@ class MissionController extends Controller
      * "per_page": 15,
      * }
      */
-    public function index()
+    public function index(Request $request)
     {
         // get all missions available with participants select only auth user
         $query = Mission::enabled()
@@ -74,19 +76,29 @@ class MissionController extends Controller
             }])
             ->orderBy('created_at', 'desc');
 
-        // if (request()->has('claimed_only') && request()->claimed_only) {
-        //     $query->whereHas('participants', function($query) {
-        //         $query->where('user_id', auth()->user()->id)
-        //             ->where('is_completed', true);
-        //     });
-        // } else {
-        //     $query->whereDoesntHave('participants', function($query) {
-        //         $query->where('user_id', auth()->user()->id)
-        //             ->where('is_completed', true);
-        //     });
-        // }
+        // filter by claimed_only
+        if ($request->has('claimed_only') && $request->claimed_only) {
+            $query->whereHas('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('is_completed', true);
+            });
+        } else {
+            $query->whereDoesntHave('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->where('is_completed', true);
+            });
+        }
 
-        if (request()->has('completed_only') && request()->completed_only) {
+        // filter by type of mission one-off, daily, monthly
+        if ($request->has('frequency') && $request->frequency) {
+            // check frequency is one-off, daily, monthly
+            $request->validate([
+                'frequency' => 'in:one-off,daily,monthly'
+            ]);
+            $query->where('frequency', $request->frequency);
+        }
+
+        if ($request->has('completed_only') && $request->completed_only) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('missions_users.is_completed', true);

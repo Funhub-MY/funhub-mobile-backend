@@ -30,8 +30,28 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      claimed_only:
+        name: claimed_only
+        description: 'boolean optional Only show claimed missions(is_completed=true).'
+        required: false
+        example: 'false'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      frequency:
+        name: frequency
+        description: 'optional Filter by frequency.'
+        required: false
+        example: 'one-off,daily,monthly'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
     cleanUrlParameters:
       completed_only: 'false'
+      claimed_only: 'false'
+      frequency: 'one-off,daily,monthly'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -80,7 +100,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fDVg5Zh164c8va6PEakde3b'
+      - 'Bearer aac8Ed5P64vbh6k3Vg1eDfZ'
     controller: null
     method: null
     route: null
@@ -140,7 +160,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8aV6fahb46DP3kZc1ged5vE'
+      - 'Bearer VEDPZa6cd4gvh563a8kfeb1'
     controller: null
     method: null
     route: null
@@ -189,7 +209,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 14gvPaVecbE66hak85f3dDZ'
+      - 'Bearer V6vfEhb416eg58kZDaa3Pdc'
     controller: null
     method: null
     route: null
