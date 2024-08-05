@@ -52,6 +52,15 @@ class MissionResource extends JsonResource
             }
         }
 
+        // current values {"like_article": 5}
+        // get the first object value only
+        $progress = 0;
+        $goal = 0;
+        if (is_array($currentValues) && count($currentValues) > 0) {
+            $progress = array_values($currentValues)[0];
+            // goal is $this->values match with $currentValues
+            $goal = array_values($this->values)[0];
+        }
 
         return [
             'id' => $this->id, // mission id
@@ -65,6 +74,8 @@ class MissionResource extends JsonResource
             'reward' => $this->missionable, // reward or reward component
             'reward_quantity' => $this->reward_quantity, // quantity of reward
             'auto_disburse_rewards' => $this->auto_disburse_rewards, // auto disburse rewards
+            'progress' => $progress, // progress of mission
+            'goal' => $goal, // goal of mission
             'is_completed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
             'claimed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
             'claimed_at' => ($myParticipation) ? $myParticipation->completed_at : null,
