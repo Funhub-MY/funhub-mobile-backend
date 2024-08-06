@@ -18,7 +18,8 @@ class MissionResource extends JsonResource
     public function toArray($request)
     {
         $isParticipating = $this->participants->contains(auth()->user()->id);
-        $myParticipation = $this->participants->first();
+        $myParticipation = $this->participants->where('user_id', auth()->user()->id)
+            ->first();
 
         $currentValues = [];
         if ($myParticipation) {
