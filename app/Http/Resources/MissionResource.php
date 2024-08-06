@@ -81,10 +81,12 @@ class MissionResource extends JsonResource
             'progress' => $progress, // progress of mission
             'goal' => $goal, // goal of mission
             'is_completed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
+            'completed_at' => ($myParticipation) ? $myParticipation->completed_at : null,
+            'completed_at_formatted' => ($myParticipation && $myParticipation->completed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,
             'claimed' => ($myParticipation) ? (bool) ($myParticipation->claimed_at) : false,
             'claimed_at' => ($myParticipation) ? $myParticipation->claimed_at : null,
-            'claimed_at_formatted' => ($myParticipation && $myParticipation->completed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,
-            'claimed_at_ago' => ($myParticipation && $myParticipation->completed_at) ? Carbon::parse($myParticipation->completed_at)->diffForHumans() : null,
+            'claimed_at_formatted' => ($myParticipation && $myParticipation->claimed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,
+            'claimed_at_ago' => ($myParticipation && $myParticipation->claimed_at) ? Carbon::parse($myParticipation->completed_at)->diffForHumans() : null,
         ];
     }
 }
