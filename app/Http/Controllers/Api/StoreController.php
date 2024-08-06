@@ -100,7 +100,7 @@ class StoreController extends Controller
         ]);
 
         // if have include_unlisted, must have store_ids
-        if ($request->has('include_unlisted') && !$request->has('store_ids')) {
+        if ($request->has('include_unlisted') && $request->has('store_ids')) {
             if ($request->include_unlisted == 1) {
                 $query->where('status', Store::STATUS_INACTIVE);
             }
