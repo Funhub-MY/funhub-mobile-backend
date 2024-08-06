@@ -38,6 +38,7 @@ class StoreController extends Controller
      * @urlParam merchant_ids string optional Merchant IDs. Example: 1,2,3
      * @urlParam store_ids string optional Store IDs. Example: 1,2,3
      * @urlParam include_unlisted integer optional Include unlisted stores, must have store_ids specified else all will be LISTED store only. Example: 1
+     * @urlParam include_listed_unlisted integer optional Include all listed and unlisted stores. Example: 1
      * @urlParam limit integer optional Per Page Limit. Example: 10
      *
      * @response scenario=success {
@@ -105,8 +106,13 @@ class StoreController extends Controller
                 $query->where('status', Store::STATUS_INACTIVE);
             }
         } else {
-            // only listed stores for main index
-            $query->where('status', Store::STATUS_ACTIVE);
+           if ($request->has('include_listed_unlisted') && $request->include_listed_unlisted == 1) {
+                $query->where('status', Store::STATUS_ACTIVE)
+                    ->orWhere('status', Store::STATUS_INACTIVE);
+            } else {
+                // only listed stores for main index
+                $query->where('status', Store::STATUS_ACTIVE);
+            }
         }
 
         $stores = $query

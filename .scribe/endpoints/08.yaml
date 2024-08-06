@@ -55,6 +55,15 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      include_listed_unlisted:
+        name: include_listed_unlisted
+        description: 'optional Include all listed and unlisted stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       limit:
         name: limit
         description: 'optional Per Page Limit.'
@@ -69,6 +78,7 @@ endpoints:
       merchant_ids: '1,2,3'
       store_ids: '1,2,3'
       include_unlisted: 1
+      include_listed_unlisted: 1
       limit: 10
     queryParameters: []
     cleanQueryParameters: []
@@ -90,7 +100,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Vk1EZfac8P663eD5gabhd4v'
+      - 'Bearer 41gb6avV3kZ6cdfeDhaE5P8'
     controller: null
     method: null
     route: null
@@ -131,13 +141,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: eum
+        example: pariatur
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: eum
+      store_ids: pariatur
     fileParameters: []
     responses:
       -
@@ -150,7 +160,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h8D5bk6efgacEZPdV4136av'
+      - 'Bearer 4fDg86Pdca6h3eZkEvV5ab1'
     controller: null
     method: null
     route: null
@@ -193,7 +203,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z1EvgadhD654aPk6b8V3cef'
+      - 'Bearer E85346cDegvfdaVhbkP16Za'
     controller: null
     method: null
     route: null
@@ -234,13 +244,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: quia
+        example: minima
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: quia
+      store_ids: minima
     fileParameters: []
     responses:
       -
@@ -257,7 +267,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1k46a58EaPfVehbDgd6Z3cv'
+      - 'Bearer 1h8k4afdvcP3Vg5EaeZbD66'
     controller: null
     method: null
     route: null
@@ -298,13 +308,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: quod
+        example: illo
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: quod
+      location_id: illo
     fileParameters: []
     responses:
       -
@@ -321,7 +331,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kPh3Ev6e5ga8ZfaD4b6V1cd'
+      - 'Bearer ga6bc36ZVPE4fvkDe815hda'
     controller: null
     method: null
     route: null
@@ -445,7 +455,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 14a56ebPVg3dfDc68vZkhEa'
+      - 'Bearer D45kEd6v3aPVhcaf81g6beZ'
     controller: null
     method: null
     route: null
@@ -538,7 +548,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5hcDkE3dZ6eaP16Va4gbvf8'
+      - 'Bearer k6D4cg6b1VedEfPaavZ538h'
     controller: null
     method: null
     route: null
@@ -602,7 +612,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eVc86Eb5fhZ4ak13P6Dadvg'
+      - 'Bearer a3ceh8g64bEVvP5ZDdak1f6'
     controller: null
     method: null
     route: null
@@ -685,7 +695,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kPZDfhdEva6bV4138e6g5ac'
+      - 'Bearer 4k3a6hEZfaVc8gPdvbe6D15'
     controller: null
     method: null
     route: null
