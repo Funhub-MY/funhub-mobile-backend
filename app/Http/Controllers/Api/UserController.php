@@ -450,6 +450,12 @@ class UserController extends Controller
         if ($user->status == User::STATUS_ARCHIVED) {
             return response()->json(['message' => __('messages.error.user_controller.User_not_found')], 404);
         }
+        // load user followings and followers count with active users only
+        $user->load(['followings' => function ($query) {
+            $query->where('status', User::STATUS_ACTIVE);
+        }, 'followers' => function ($query) {
+            $query->where('status', User::STATUS_ACTIVE);
+        }]);
 
         $userData = new UserResource($user, true);
 
