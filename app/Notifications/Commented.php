@@ -95,6 +95,10 @@ class Commented extends Notification implements ShouldQueue
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
             'message' => __('messages.notification.database.Commented'),
+            'extra' => [
+                'parent_id' => ($this->comment->parent_id) ? $this->comment->parent_id : null,
+                'comment_id' => $this->comment->id,
+            ]
         ];
     }
 }
