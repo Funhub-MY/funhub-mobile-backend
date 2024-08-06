@@ -46,6 +46,15 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      include_unlisted:
+        name: include_unlisted
+        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       limit:
         name: limit
         description: 'optional Per Page Limit.'
@@ -59,6 +68,7 @@ endpoints:
       categories_id: '1,2,3'
       merchant_ids: '1,2,3'
       store_ids: '1,2,3'
+      include_unlisted: 1
       limit: 10
     queryParameters: []
     cleanQueryParameters: []
@@ -80,7 +90,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vd5Zaf3g1k86cbV4ehEP6aD'
+      - 'Bearer Vk1EZfac8P663eD5gabhd4v'
     controller: null
     method: null
     route: null
@@ -121,13 +131,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: numquam
+        example: eum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: numquam
+      store_ids: eum
     fileParameters: []
     responses:
       -
@@ -140,7 +150,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b36e8vdPV4hgk5ZDfacE6a1'
+      - 'Bearer h8D5bk6efgacEZPdV4136av'
     controller: null
     method: null
     route: null
@@ -183,7 +193,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1k6Ea8faed6Ph4bZgD3v5cV'
+      - 'Bearer Z1EvgadhD654aPk6b8V3cef'
     controller: null
     method: null
     route: null
@@ -224,13 +234,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: natus
+        example: quia
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: natus
+      store_ids: quia
     fileParameters: []
     responses:
       -
@@ -247,7 +257,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer cVEa4Pea1dghbD3vf668k5Z'
+      - 'Bearer 1k46a58EaPfVehbDgd6Z3cv'
     controller: null
     method: null
     route: null
@@ -288,13 +298,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: aperiam
+        example: quod
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: aperiam
+      location_id: quod
     fileParameters: []
     responses:
       -
@@ -311,7 +321,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bg5h4df6EVDP6eZav8k3ca1'
+      - 'Bearer kPh3Ev6e5ga8ZfaD4b6V1cd'
     controller: null
     method: null
     route: null
@@ -435,7 +445,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bkg1a48dZheVvfEDc56aP63'
+      - 'Bearer 14a56ebPVg3dfDc68vZkhEa'
     controller: null
     method: null
     route: null
@@ -528,7 +538,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ce5fEavhk6dZ6b138Dg4VaP'
+      - 'Bearer 5hcDkE3dZ6eaP16Va4gbvf8'
     controller: null
     method: null
     route: null
@@ -592,7 +602,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6h68PV5fcadbe3aDkg41Ev'
+      - 'Bearer eVc86Eb5fhZ4ak13P6Dadvg'
     controller: null
     method: null
     route: null
@@ -675,7 +685,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hc6gZfVEa1k5dDPa46b83ev'
+      - 'Bearer kPZDfhdEva6bV4138e6g5ac'
     controller: null
     method: null
     route: null

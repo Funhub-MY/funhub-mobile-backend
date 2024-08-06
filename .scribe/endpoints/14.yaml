@@ -39,7 +39,7 @@ endpoints:
         custom: []
       frequency:
         name: frequency
-        description: 'optional Filter by frequency.'
+        description: 'optional Filter by frequency, can combine frquency with multiple comma separated.'
         required: false
         example: 'one-off,daily,monthly'
         type: string
@@ -98,7 +98,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer aac8Ed5P64vbh6k3Vg1eDfZ'
+      - 'Bearer 34VgbaZP1a686fhDeE5kcvd'
     controller: null
     method: null
     route: null
@@ -158,7 +158,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VEDPZa6cd4gvh563a8kfeb1'
+      - 'Bearer 6aZf3Dg6kcbe4Va81vPE5dh'
     controller: null
     method: null
     route: null
@@ -207,7 +207,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V6vfEhb416eg58kZDaa3Pdc'
+      - 'Bearer bk65VE86eDaP14Zgc3ahvdf'
     controller: null
     method: null
     route: null

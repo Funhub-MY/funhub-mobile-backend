@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 5
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: doloribus
+                  example: facere
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: aut
+                  example: nulla
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - corporis
+                    - soluta
                   items:
                     type: string
                 category_ids:
@@ -609,7 +609,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - animi
+                    - ducimus
                   items:
                     type: string
                 category_ids:
@@ -1309,7 +1309,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: sed
+        example: consectetur
         required: true
         schema:
           type: string
@@ -1390,11 +1390,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: repellat
+                  example: non
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: non
+                  example: praesentium
               required:
                 - comment_id
                 - reason
@@ -1696,7 +1696,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: facilis
+        example: iure
         required: true
         schema:
           type: string
@@ -4629,7 +4629,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: athena51@example.com
+                  example: erin.gislason@example.net
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -5564,7 +5564,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: consectetur
+                  example: sequi
               required:
                 - share_code
   /api/v1/public_user:
@@ -5598,7 +5598,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: sed
+                  example: est
               required:
                 - username
   /api/v1/public_offer:
@@ -6478,7 +6478,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: natus
+                  example: et
               required:
                 - share_code
   /api/v1/public_store:
@@ -6508,7 +6508,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/StoreController.php
-                      line: 493
+                      line: 503
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6930,7 +6930,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/StoreController.php
-                        line: 493
+                        line: 503
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -7358,7 +7358,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: fuga
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -8037,7 +8037,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - voluptates
+                    - omnis
                   items:
                     type: string
                 name:
@@ -8218,13 +8218,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - mollitia
+            - quia
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - mollitia
+              - quia
             items:
               type: string
         -
@@ -8410,7 +8410,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - amet
+                    - sed
                   items:
                     type: string
                 city:
@@ -8706,7 +8706,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: quo
+        example: beatae
         required: true
         schema:
           type: string
@@ -9544,7 +9544,7 @@ paths:
       -
         in: path
         name: frequency
-        description: 'Optional parameter. optional Filter by frequency.'
+        description: 'Optional parameter. optional Filter by frequency, can combine frquency with multiple comma separated.'
         required: true
         schema:
           type: string
@@ -10092,6 +10092,20 @@ paths:
             value: '1,2,3'
       -
         in: path
+        name: include_unlisted
+        description: 'Optional parameter. optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: true
+        schema:
+          type: integer
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 1
+      -
+        in: path
         name: limit
         description: 'Optional parameter. optional Per Page Limit.'
         required: true
@@ -10156,7 +10170,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: numquam
+                  example: eum
               required:
                 - store_ids
     parameters:
@@ -10219,7 +10233,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: natus
+                  example: quia
               required:
                 - store_ids
     parameters:
@@ -10266,7 +10280,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: aperiam
+                  example: quod
               required:
                 - location_id
     parameters:
@@ -10836,7 +10850,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 6
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -10882,7 +10896,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 15
+                  example: 2
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -10928,7 +10942,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 17
+                  example: 9
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -11023,15 +11037,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: molestiae
+                  example: et
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: consectetur
+                  example: cumque
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sequi
+                  example: sit
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -11207,7 +11221,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: rerum
+                  example: aut
               required:
                 - user_ids
     parameters:
@@ -12174,7 +12188,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female
