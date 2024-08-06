@@ -33,7 +33,7 @@ class MissionController extends Controller
      * @group Mission
      * @urlParam completed_only boolean optional Only show completed missions(is_completed=true). Example: false
      * @urlParam claimed_only boolean optional Only show claimed missions(is_completed=true). Example: false
-     * @urlParam frequency string optional Filter by frequency. Example: one-off,daily,monthly
+     * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
@@ -86,11 +86,14 @@ class MissionController extends Controller
 
         // filter by type of mission one-off, daily, monthly
         $query->when($request->has('frequency') && $request->frequency, function($query) use ($request) {
-            // check frequency is one-off, daily, monthly
-            $request->validate([
-                'frequency' => 'in:one-off,daily,monthly'
-            ]);
-            $query->where('frequency', $request->frequency);
+            // check if frequency contains one-off/daily/monthly or mix
+            if (!preg_match('/(one-off|daily|monthly)/', $request->frequency)) {
+                $request->validate([
+                    'frequency' => 'in:one-off,daily,monthly'
+                ]);
+            }
+            $frequencies = explode(',', $request->frequency);
+            $query->whereIn('frequency', $frequencies);
         });
 
         $query->when($request->has('completed_only') && $request->completed_only, function($query) {
