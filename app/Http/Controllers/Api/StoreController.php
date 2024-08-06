@@ -107,8 +107,11 @@ class StoreController extends Controller
             }
         } else {
            if ($request->has('include_listed_unlisted') && $request->include_listed_unlisted == 1) {
-                $query->where('status', Store::STATUS_ACTIVE)
-                    ->orWhere('status', Store::STATUS_INACTIVE);
+                // use sub where query to get both active and inactive
+                $query->where(function ($query) {
+                    $query->where('status', Store::STATUS_ACTIVE)
+                        ->orWhere('status', Store::STATUS_INACTIVE);
+                });
             } else {
                 // only listed stores for main index
                 $query->where('status', Store::STATUS_ACTIVE);
