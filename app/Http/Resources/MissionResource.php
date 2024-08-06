@@ -55,18 +55,9 @@ class MissionResource extends JsonResource
         // current values {"like_article": 5}
         // get the first object value only
         $progress = 0;
-        $goal = 0;
+        $goal = (isset($this->values) && count($this->values) > 0) ? $this->values[0] : 0;
         if (is_array($currentValues) && count($currentValues) > 0) {
             $progress = array_values($currentValues)[0];
-            // goal is $this->values match with $currentValues
-            // if string json decode else just use the value
-            if (is_string($this->values)) {
-                $goal = array_values(json_decode($this->values, true))[0];
-            } else {
-                if (is_array($this->values) && count($this->values) > 0) {
-                    $goal = $this->values[0];
-                }
-            }
         }
 
         return [
