@@ -294,11 +294,20 @@ class MissionEventListener
             ]);
         }
 
-        MissionRewardDisbursement::create([
-            'mission_id' => $mission->id,
-            'user_id' => $user->id,
-            'reward_quantity' => $mission->reward_quantity
-        ]);
+        try {
+            MissionRewardDisbursement::create([
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'reward_quantity' => $mission->reward_quantity
+            ]);
+
+            // update user mission ensure claimed_at is updated
+            $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                'claimed_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('[MissionEventListener] Error disbursing reward for mission ' . $mission->id . ' and user ' . $user->id . ' error: ' . $e->getMessage());
+        }
 
         $locale = $user->last_lang ?? config('app.locale');
 
