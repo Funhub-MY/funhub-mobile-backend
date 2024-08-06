@@ -19,6 +19,7 @@ class MissionResource extends JsonResource
     {
         $isParticipating = $this->participants->contains(auth()->user()->id);
         $myParticipation = $this->participants->where('user_id', auth()->user()->id)
+            ->latest()
             ->first();
 
         $currentValues = [];
