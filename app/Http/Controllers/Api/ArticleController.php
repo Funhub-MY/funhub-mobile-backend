@@ -852,7 +852,7 @@ class ArticleController extends Controller
 
             // create or update tags
             $tags = collect($tags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
+                return ArticleTag::firstOrCreate(['name' => $tag])->id;
             });
             $article->tags()->attach($tags);
         }
@@ -1189,7 +1189,7 @@ class ArticleController extends Controller
 
                 // create or update tags
                 $tags = collect($tags)->map(function ($tag) {
-                    return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
+                    return ArticleTag::firstOrCreate(['name' => $tag])->id;
                 });
                 $article->tags()->sync($tags);
             }
