@@ -112,7 +112,15 @@ class ArticleController extends Controller
         if ($request->has('tag_ids')) {
             $tagIds = explode(',', $request->tag_ids);
             // get all articles ids associated with this tag
-            $articlesTags = ArticleTag::whereIn('id', $tagIds)->with('articles')->get();
+            $articlesTags = ArticleTag::whereIn('id', $tagIds)->get();
+            // get the name of tags then search by tag name instead
+            // get unique name from articlesTags->name into an array
+            $articlesTagsNames = $articlesTags->pluck('name')->unique()->toArray();
+
+            $articlesTags = ArticleTag::whereIn('name', $articlesTagsNames)
+                ->with('articles')
+                ->get();
+
             // get all articles ids
             $articleIds = $articlesTags->pluck('articles')->flatten()->pluck('id')->toArray();
             $query->whereIn('id', $articleIds);
@@ -852,7 +860,7 @@ class ArticleController extends Controller
 
             // create or update tags
             $tags = collect($tags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag])->id;
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
         }
@@ -1189,7 +1197,7 @@ class ArticleController extends Controller
 
                 // create or update tags
                 $tags = collect($tags)->map(function ($tag) {
-                    return ArticleTag::firstOrCreate(['name' => $tag])->id;
+                    return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
                 });
                 $article->tags()->sync($tags);
             }
