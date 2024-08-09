@@ -14,6 +14,7 @@ use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
 use Illuminate\Support\Facades\Log;
 use App\Services\PointComponentService;
@@ -183,6 +184,17 @@ class MissionEventListener
                     'completed_at' => now()
                 ]);
 
+                try {
+                    $locale = $user->last_lang ?? config('app.locale');
+                    $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+                } catch (\Exception $e) {
+                    Log::error('Mission Completed Notification Error', [
+                        'mission_id' => $mission->id,
+                        'user' => $user->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+
                 if ($mission->auto_disburse_rewards) {
                     $this->disburseRewardsBasedOnFrequency($mission, $user);
                 }
@@ -311,13 +323,22 @@ class MissionEventListener
 
         $locale = $user->last_lang ?? config('app.locale');
 
-        $user->notify((new RewardReceivedNotification(
-            $mission->missionable,
-            $mission->reward_quantity,
-            $user,
-            $mission->name
-        ))->locale($locale));
-
+        try {
+            $locale = $user->last_lang ?? config('app.locale');
+            $user->notify((new RewardReceivedNotification(
+                $mission->missionable,
+                $mission->reward_quantity,
+                $user,
+                $mission->name,
+                $mission
+            ))->locale($locale));
+        } catch (\Exception $e) {
+            Log::error('Reward Received Notification Error', [
+                'mission_id' => $mission->id,
+                'user' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     private function isSpamInteraction($user, $interaction)

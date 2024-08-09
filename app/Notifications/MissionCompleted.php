@@ -61,11 +61,11 @@ class MissionCompleted extends Notification
                 'action' => 'mission_completed',
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
-                'title' => '恭喜完成任务',
+                'title' => __('messages.notification.fcm.MissionCompletedTitle'),
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('任务完成')
+                ->setTitle(__('messages.notification.fcm.MissionCompletedTitle'))
                 ->setBody($this->getMessage())
             );
     }

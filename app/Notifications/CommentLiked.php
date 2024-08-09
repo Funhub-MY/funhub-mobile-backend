@@ -53,7 +53,7 @@ class CommentLiked extends Notification implements ShouldQueue
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
                 'title' => (string) $this->user->name,
-                'message' => __('messages.notification.database.CommentLiked'),                
+                'message' => __('messages.notification.database.CommentLiked'),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('探文互动')
@@ -83,6 +83,11 @@ class CommentLiked extends Notification implements ShouldQueue
             'from_id' => $this->user->id,
             'title' => $this->user->name,
             'message' => __('messages.notification.database.CommentLiked'),
+            'extra' => [
+                'parent_id' => $this->comment->parent_id,
+                'reply_to_id' => $this->comment->reply_to_id,
+                'comment_id' => $this->comment->id,
+            ]
         ];
     }
 }
