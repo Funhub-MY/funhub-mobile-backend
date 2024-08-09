@@ -31,8 +31,8 @@ class MissionController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      *
      * @group Mission
-     * @urlParam completed_only boolean optional Only show completed missions(is_completed=true). Example: false
-     * @urlParam claimed_only boolean optional Only show claimed missions(is_completed=true). Example: false
+     * @urlParam completed_only boolean optional Only show completed missions(is_completed=1). Example: 0
+     * @urlParam claimed_only boolean optional Only show claimed missions(is_completed=1). Example: 0
      * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly
      * @response scenario=success {
      * "current_page": 1,
@@ -77,10 +77,18 @@ class MissionController extends Controller
             ->orderBy('created_at', 'desc');
 
         // filter by claimed_only
-        $query->when($request->has('claimed_only') && $request->claimed_only, function($query) {
+        $query->when($request->has('claimed_only') && $request->claimed_only && $request->claimed_only == 1, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->whereNotNull('missions_users.claimed_at');
+            });
+        });
+
+        // filter by claimed_only false
+        $query->when($request->has('claimed_only') && $request->claimed_only && $request->claimed_only == 0, function($query) {
+            $query->whereHas('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->whereNull('missions_users.claimed_at');
             });
         });
 

@@ -21,18 +21,18 @@ endpoints:
     urlParameters:
       completed_only:
         name: completed_only
-        description: 'boolean optional Only show completed missions(is_completed=true).'
+        description: 'boolean optional Only show completed missions(is_completed=1).'
         required: false
-        example: 'false'
+        example: '0'
         type: string
         enumValues: []
         exampleWasSpecified: true
         custom: []
       claimed_only:
         name: claimed_only
-        description: 'boolean optional Only show claimed missions(is_completed=true).'
+        description: 'boolean optional Only show claimed missions(is_completed=1).'
         required: false
-        example: 'false'
+        example: '0'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -47,8 +47,8 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanUrlParameters:
-      completed_only: 'false'
-      claimed_only: 'false'
+      completed_only: '0'
+      claimed_only: '0'
       frequency: 'one-off,daily,monthly'
     queryParameters: []
     cleanQueryParameters: []
@@ -98,7 +98,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bgZaE3V45h6v6dPDfa1ce8k'
+      - 'Bearer 1dgkecf5D483aZb66vhVaEP'
     controller: null
     method: null
     route: null
@@ -158,7 +158,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d6PE1k5bha4eD8Vcagv3Z6f'
+      - 'Bearer a8hEvdZ4g6DaP53Vk6cebf1'
     controller: null
     method: null
     route: null
@@ -207,7 +207,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Z6854dvc3Ve6D1kaahgPfEb'
+      - 'Bearer P651fk3gVadev6DhEa8Zb4c'
     controller: null
     method: null
     route: null
