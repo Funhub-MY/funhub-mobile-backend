@@ -96,12 +96,16 @@ class MissionController extends Controller
             $query->whereIn('frequency', $frequencies);
         });
 
-        $query->when($request->has('completed_only') && $request->completed_only, function($query) {
+        // when completed_only = 1
+        $query->when($request->has('completed_only') && $request->completed_only && $request->completed_only == 1, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('missions_users.is_completed', true);
             });
-        }, function($query) {
+        });
+
+        // when completed_only = 0
+        $query->when($request->has('completed_only') && $request->completed_only && $request->completed_only == 0, function($query) {
             $query->where(function($query) {
                 $query->whereDoesntHave('participants', function($query) {
                     $query->where('user_id', auth()->user()->id);

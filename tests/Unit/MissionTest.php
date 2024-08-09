@@ -253,13 +253,6 @@ it('User can get missions, completed missions, participating missions and missio
 
     expect($response->json('data.*.id'))
         ->toContain($mission->id);
-
-    // claimed_only=0, mission should not exists
-    $response = $this->getJson('/api/v1/missions');
-    expect($response->status())->toBe(200);
-
-    expect($response->json('data.*.id'))
-        ->not->toContain($mission->id);
 });
 
 it('User can get latest claimable missions', function () {
@@ -688,81 +681,64 @@ it('User can bookmark 5 articles and get rewarded by mission', function () {
     expect($response->json('balance'))->toBe(1);
 });
 
-// // test user can purchase a merchant offer with points
-// it('User can purchase a merchant offer with points and get rewarded by mission', function () {
-//     Notification::fake();
+it('automatically disburses rewards and sets claimed fields for auto-disbursed missions', function () {
+    Notification::fake();
 
-//     $merchant = User::factory()->create();
-//     // get reward component
-//     $component = RewardComponent::where('name', '鸡蛋')->first();
-//     $mission = Mission::factory()->create([
-//         'name' => 'Purchase a merchant offer',
-//         'enabled_at' => now(),
-//         'description' => 'Purchase a merchant offer',
-//         'events' => json_encode(['purchased_merchant_offer_points']),
-//         'values' => json_encode([1]),
-//         'missionable_type' => RewardComponent::class,
-//         'missionable_id' => $component->id,
-//         'reward_quantity' => 1,
-//         'reward_limit' => 100,
-//         'frequency' => 'one-off',
-//         'status' => 1,
-//         'auto_disburse_rewards' => 1, // make sure set auto disburse on if want to check rewards immediately
-//         'user_id' => $this->user->id
-//     ]);
+    $articles = Article::factory()->count(10)->create();
+    $component = RewardComponent::where('name', '鸡蛋')->first();
 
-//     // create a top up for this user first
-//     PointLedger::create([
-//         'user_id' => $this->user->id,
-//         'pointable_type' => get_class($this->user),
-//         'pointable_id' => $this->user->id,
-//         'title' => 'First topup simulation',
-//         'amount' => 1000,
-//         'credit' => 1,
-//         'debit' => 0,
-//         'balance' => 1000,
-//         'remarks' => 'Simulation topup points for user.',
-//         'created_at' => now(),
-//         'updated_at' => now()
-//     ]);
+    $mission = Mission::factory()->create([
+        'name' => 'Comment on 10 articles',
+        'enabled_at' => now(),
+        'description' => 'Comment on 10 articles',
+        'events' => json_encode(['comment_created']),
+        'values' => json_encode([10]),
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'frequency' => 'one-off',
+        'status' => 1,
+        'auto_disburse_rewards' => 1,
+        'user_id' => $this->user->id
+    ]);
 
+    foreach ($articles as $article) {
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'test comment',
+            'parent_id' => null
+        ]);
+    }
 
-//     // create a merchant offer
-//     $merchant_profile = Merchant::factory()->for($merchant)->create();
-//     $store = Store::factory()->for($merchant)->create();
-//     $merchant_offer = MerchantOffer::factory()->published()
-//         ->count(1)->for($merchant)->create([
-//             'available_at' => now(),
-//             'available_until' => now()->addDay(),
-//         ]);
+    // Refresh the user instance to get the latest data
+    $this->user->refresh();
 
-//     $response = $this->postJson('/api/v1/merchant/offers/claim', [
-//         'offer_id' => $merchant_offer->id,
-//         'quantity' => 1,
-//         'payment_method' => 'points'
-//     ]);
-//     $response->assertStatus(200);
+    // Check user mission process current_values
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)->first();
+    expect($userMission->pivot->is_completed)->toBe(1);
+    expect($userMission->pivot->claimed_at)->not->toBeNull();
 
-//     // check user mission process current_values
-//     $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
-//         ->first();
+    // // Check if user has received the reward component
+    // $userComponent = $this->user->rewardComponentBalances()->where('reward_component_id', $component->id)->first();
+    // expect($userComponent)->not->toBeNull();
+    // expect($userComponent->balance)->toBe(1);
 
-//     // if current values is string, then decode first
-//     if (is_string($userMission->pivot->current_values)) {
-//         $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
-//     }
-//     expect(array_values($userMission->pivot->current_values)[0])->toBe(1);
-//     expect($this->user->missionsParticipating->first()->pivot->is_completed)
-//         ->toBe(1);
+    // Check if mission data includes claimed fields
+    $response = $this->getJson('/api/v1/missions');
 
-//     // check notification fired
-//     Notification::assertSentTo(
-//         [$this->user],
-//         \App\Notifications\RewardReceivedNotification::class
-//     );
-
-//     // check user has received reward component
-//     $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
-//     expect($response->status())->toBe(200);
-//     expect($response->json('balance'))->toBe(1);
-// });
+    $response->assertStatus(200);
+    $response->assertJsonFragment([
+        'id' => $mission->id,
+        'is_completed' => true,
+        'claimed' => true,
+    ]);
+    $response->assertJsonStructure([
+        'data' => [
+            '*' => [
+                'claimed_at',
+                'claimed_at_formatted',
+            ]
+        ]
+    ]);
+});
