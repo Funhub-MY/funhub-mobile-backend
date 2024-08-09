@@ -32,7 +32,7 @@ class MissionController extends Controller
      *
      * @group Mission
      * @urlParam completed_only boolean optional Only show completed missions(is_completed=1). Example: 0
-     * @urlParam claimed_only boolean optional Only show claimed missions(is_completed=1). Example: 0
+     * @urlParam claimed_only boolean optional Only show claimed missions(claimed_only=1). Example: 0
      * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly
      * @response scenario=success {
      * "current_page": 1,
@@ -114,11 +114,7 @@ class MissionController extends Controller
 
         // when completed_only = 0
         $query->when($request->has('completed_only') && $request->completed_only && $request->completed_only == 0, function($query) {
-            $query->where(function($query) {
-                $query->whereDoesntHave('participants', function($query) {
-                    $query->where('user_id', auth()->user()->id);
-                })
-                ->orWhereHas('participants', function($query) {
+            $query->whereHas('participants', function($query) {
                     $query->where('user_id', auth()->user()->id)
                         ->where('missions_users.is_completed', false);
                 });
