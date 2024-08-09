@@ -30,7 +30,7 @@ endpoints:
         custom: []
       claimed_only:
         name: claimed_only
-        description: 'boolean optional Only show claimed missions(is_completed=1).'
+        description: 'boolean optional Only show claimed missions(claimed_only=1).'
         required: false
         example: '0'
         type: string
@@ -98,7 +98,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1dgkecf5D483aZb66vhVaEP'
+      - 'Bearer ka6ea4EPfhb638c51gdVDZv'
     controller: null
     method: null
     route: null
@@ -158,7 +158,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a8hEvdZ4g6DaP53Vk6cebf1'
+      - 'Bearer Ve6g3kbdP56cvafE1D4hZ8a'
     controller: null
     method: null
     route: null
@@ -207,7 +207,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P651fk3gVadev6DhEa8Zb4c'
+      - 'Bearer dgaP568aefDhc1Z36kvEbV4'
     controller: null
     method: null
     route: null

@@ -15,12 +15,14 @@ use App\Models\Location;
 use App\Models\LocationRating;
 use App\Models\User;
 use App\Models\UserBlock;
+use App\Models\UserTutorialCompletion;
 use App\Services\OtpRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -455,7 +457,7 @@ class UserController extends Controller
             $query->where('status', User::STATUS_ACTIVE);
         }, 'followers' => function ($query) {
             $query->where('status', User::STATUS_ACTIVE);
-        }]);
+        }, 'tutorialCompletions']);
 
         $userData = new UserResource($user, true);
 
@@ -972,6 +974,53 @@ class UserController extends Controller
             'message' => __('messages.success.user_controller.Article_categories_linked_to_user'),
             'category_ids' => $user->articleCategoriesInterests->pluck('id')->toArray(),
             'user' => $userData,
+        ]);
+    }
+
+    /**
+     * Save user tutorial progress
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User
+     * @subgroup Tutorial
+     * @bodyParam tutorial_step string required The tutorial step. Example: first_time_visit_mission_tab
+     * @response scenario=success {
+     * "message": "Tutorial progress saved",
+     * "tutorial_step": "first_time_visit_mission_tab",
+     * "completed_at": "2024-08-09 15:46:46"
+     * }
+     * @response status=422 scenario="Invalid Form Fields" {"errors": ["tutorial_step": ["The Tutorial Step field is required."] ]}
+     */
+    public function postTutorialProgress(Request $request)
+    {
+        $tutorialSteps = config('app.tutorial_steps');
+
+        $this->validate($request, [
+            'tutorial_step' => [
+                'required',
+                'string',
+                Rule::in($tutorialSteps)
+            ]
+        ]);
+
+        $user = auth()->user();
+
+        // create a new record for user tutorial completion
+
+        // ensure user dont have record for this tutorial step
+        $userTutorialCompletion = $user->tutorialCompletions()->updateOrCreate([
+            'user_id' => $user->id,
+            'tutorial_step' => $request->tutorial_step,
+        ], [
+            'completed_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => __('messages.success.user_controller.Tutorial_progress_saved'),
+            'tutorial_step' => $request->tutorial_step,
+            'completed_at' => $userTutorialCompletion->completed_at,
         ]);
     }
 

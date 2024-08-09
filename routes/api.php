@@ -122,6 +122,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::get('user/my_blocked_users', [\App\Http\Controllers\Api\UserController::class, 'getMyBlockedUsers']);
         Route::post('user/delete/request-otp', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccountRequestOtp']);
         Route::post('user/delete', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccount']);
+        Route::post('user/tutorial-progress', [\App\Http\Controllers\Api\UserController::class, 'postTutorialProgress']);
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {

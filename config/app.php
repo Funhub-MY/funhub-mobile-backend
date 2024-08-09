@@ -320,6 +320,17 @@ return [
 
     'auto_article_categories' => env('AUTO_ARTICLE_CATEGORIES', false),
 
+    'tutorial_steps' => [
+        "first_time_visit_recommend_screen",
+        "first_time_visit_nearby_stores_screen",
+        "first_time_visit_any_store",
+        "first_time_visit_review_tab_in_any_store",
+        "first_time_visit_mission_tab",
+        "first_time_visit_super_deals_tab",
+        "first_time_visit_single_deal_screen",
+        "second_time_visit_mission_tab"
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails

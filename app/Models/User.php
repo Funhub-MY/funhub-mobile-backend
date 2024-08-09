@@ -402,6 +402,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(UserUsernameChange::class, 'user_id');
     }
 
+    public function tutorialCompletions()
+    {
+        return $this->hasMany(UserTutorialCompletion::class, 'user_id');
+    }
+
     // /**
     //  * Get the user's point balance
     //  */

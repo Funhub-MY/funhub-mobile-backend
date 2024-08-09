@@ -87,6 +87,7 @@ return [
             'Avatar_uploaded' => '头像已上传',
             'Cover_uploaded' => '封面已上传',
             'Article_categories_linked_to_user' => '探文类别已与用户连接',
+            'Tutorial_progress_saved' => '教程进度已保存',
         ],
         'user_following_controller' => [
             'Follow_request_sent' => '已发送关注请求',

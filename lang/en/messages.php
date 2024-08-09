@@ -87,6 +87,7 @@ return [
             'Avatar_uploaded' => 'Avatar uploaded',
             'Cover_uploaded' => 'Cover uploaded',
             'Article_categories_linked_to_user' => 'Article categories linked to user',
+            'Tutorial_progress_saved' => 'Tutorial progress saved',
         ],
         'user_following_controller' => [
             'Follow_request_sent' => 'Follow request sent',
