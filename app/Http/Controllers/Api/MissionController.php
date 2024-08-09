@@ -115,9 +115,8 @@ class MissionController extends Controller
         // when completed_only = 0
         $query->when($request->has('completed_only') && $request->completed_only && $request->completed_only == 0, function($query) {
             $query->whereHas('participants', function($query) {
-                    $query->where('user_id', auth()->user()->id)
-                        ->where('missions_users.is_completed', false);
-                });
+                $query->where('user_id', auth()->user()->id)
+                    ->where('missions_users.is_completed', false);
             });
         });
 
