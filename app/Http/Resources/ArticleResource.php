@@ -35,6 +35,14 @@ class ArticleResource extends JsonResource
             }
         }
 
+        $userAvatar = ($this->user->media->count() > 0) ? $this->user->media->filter(function ($item) {
+            return $item->collection_name == 'avatar';
+        })->first() : null;
+
+        if ($userAvatar) {
+            $userAvatar = $userAvatar->getFullUrl();
+        }
+
         return [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -45,9 +53,7 @@ class ArticleResource extends JsonResource
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'username' => $this->user->username,
-                'avatar' => ($this->user->media->count() > 0) ? $this->user->media->filter(function ($item) {
-                    return $item->collection_name == 'avatar';
-                })->first()->getFullUrl() : null,
+                'avatar' => $userAvatar,
                 'avatar_thumb' => $this->user->avatar_thumb_url,
                 'following_count' => $this->user_followings_count,
                 'followers_count' => $this->user_followers_count,
