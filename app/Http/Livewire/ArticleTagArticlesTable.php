@@ -72,6 +72,14 @@ class ArticleTagArticlesTable extends Component implements HasTable
                 ->label('Likes')
                 ->counts('likes')
                 ->sortable(),
+            TextColumn::make('bookmarks_count')
+                ->label('Bookmarks')
+                ->counts('bookmarks')
+                ->sortable(),
+            TextColumn::make('shares_count')
+                ->label('Shares')
+                ->counts('shares')
+                ->sortable(),
             TextColumn::make('comments_count')
                 ->label('Comments')
                 ->counts('comments')
