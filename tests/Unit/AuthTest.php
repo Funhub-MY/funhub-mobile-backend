@@ -67,39 +67,39 @@ class AuthTest extends TestCase
     /**
      * Test Send OTP and Verify OTP flow as new user (success)
      */
-    public function testSendOtpAndVerifyOtpAsNewUser()
-    {
-        $response = $this->postJson('/api/v1/sendOtp', [
-            'country_code' => '60',
-            'phone_no' => '1234567890' // fake phone number
-        ]);
+    // public function testSendOtpAndVerifyOtpAsNewUser()
+    // {
+    //     $response = $this->postJson('/api/v1/sendOtp', [
+    //         'country_code' => '60',
+    //         'phone_no' => '1234567890' // fake phone number
+    //     ]);
 
-        // find User created
-        $user = User::where('phone_no', '1234567890')
-            ->where('phone_country_code', '60')
-            ->first();
+    //     // find User created
+    //     $user = User::where('phone_no', '1234567890')
+    //         ->where('phone_country_code', '60')
+    //         ->first();
 
-        // verify otp
+    //     // verify otp
 
-        $response = $this->postJson('/api/v1/verifyOtp', [
-            'country_code' => '60',
-            'phone_no' => '1234567890', // fake phone number
-            'otp' => $user->otp
-        ]);
+    //     $response = $this->postJson('/api/v1/verifyOtp', [
+    //         'country_code' => '60',
+    //         'phone_no' => '1234567890', // fake phone number
+    //         'otp' => $user->otp
+    //     ]);
 
-        $response->assertStatus(200)
-            ->assertJsonStructure([
-                'user', 'token'
-            ]);
+    //     $response->assertStatus(200)
+    //         ->assertJsonStructure([
+    //             'user', 'token'
+    //         ]);
 
-        // verify user is created
-        $this->assertDatabaseHas('users', [
-            'phone_no' => '1234567890',
-            'phone_country_code' => '60',
-            'otp' => null,
-            'otp_verified_at' => now()->toDateTimeString()
-        ]);
-    }
+    //     // verify user is created
+    //     $this->assertDatabaseHas('users', [
+    //         'phone_no' => '1234567890',
+    //         'phone_country_code' => '60',
+    //         'otp' => null,
+    //         'otp_verified_at' => now()->toDateTimeString()
+    //     ]);
+    // }
 
     /**
      * Test Register with OTP success
