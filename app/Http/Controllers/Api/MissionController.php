@@ -105,7 +105,7 @@ class MissionController extends Controller
         });
 
         // when completed_only = 1
-        $query->when($request->has('completed_only') && $request->completed_only && $request->completed_only == 1, function($query) {
+        $query->when($request->has('completed_only') && $request->completed_only == 1, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('missions_users.is_completed', true);
@@ -113,7 +113,7 @@ class MissionController extends Controller
         });
 
         // when completed_only = 0
-        $query->when($request->has('completed_only') && $request->completed_only && $request->completed_only == 0, function($query) {
+        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('missions_users.is_completed', false);

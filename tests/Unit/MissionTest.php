@@ -719,13 +719,8 @@ it('automatically disburses rewards and sets claimed fields for auto-disbursed m
     expect($userMission->pivot->is_completed)->toBe(1);
     expect($userMission->pivot->claimed_at)->not->toBeNull();
 
-    // // Check if user has received the reward component
-    // $userComponent = $this->user->rewardComponentBalances()->where('reward_component_id', $component->id)->first();
-    // expect($userComponent)->not->toBeNull();
-    // expect($userComponent->balance)->toBe(1);
-
     // Check if mission data includes claimed fields
-    $response = $this->getJson('/api/v1/missions');
+    $response = $this->getJson('/api/v1/missions?completed_only=1');
 
     $response->assertStatus(200);
     $response->assertJsonFragment([
@@ -741,4 +736,13 @@ it('automatically disburses rewards and sets claimed fields for auto-disbursed m
             ]
         ]
     ]);
+
+    // load completed_only=0 should not show this mission->id
+    $response = $this->getJson('/api/v1/missions?completed_only=0');
+    $response->assertStatus(200);
+
+    $this->assertNotContains($mission->id, collect($response->json('data'))->pluck('id')->toArray());
+
+    // assert meta.total is 0
+    $this->assertEquals(0, $response->json('meta.total'));
 });
