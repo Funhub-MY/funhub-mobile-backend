@@ -41,6 +41,7 @@ class ArticleResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+
     protected function getTableQuery(): Builder
     {
         return Article::query();
