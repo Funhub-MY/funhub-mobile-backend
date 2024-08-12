@@ -681,7 +681,7 @@ it('User can bookmark 5 articles and get rewarded by mission', function () {
     expect($response->json('balance'))->toBe(1);
 });
 
-it('automatically disburses rewards and sets claimed fields for auto-disbursed missions', function () {
+it('automatically disburses rewards and sets claimed fields for non-auto-disbursed missions with multiple instances', function () {
     Notification::fake();
 
     $articles = Article::factory()->count(10)->create();
@@ -696,10 +696,26 @@ it('automatically disburses rewards and sets claimed fields for auto-disbursed m
         'missionable_type' => RewardComponent::class,
         'missionable_id' => $component->id,
         'reward_quantity' => 1,
-        'frequency' => 'one-off',
+        'frequency' => 'daily',
         'status' => 1,
-        'auto_disburse_rewards' => 1,
+        'auto_disburse_rewards' => 0, // Set auto_disburse_rewards to 0 so suer need self claim rewards
         'user_id' => $this->user->id
+    ]);
+
+    // Create multiple instances of the same mission for the user on different days
+    $this->user->missionsParticipating()->attach($mission->id, [
+        'started_at' => now()->subDays(2),
+        'current_values' => json_encode([0]),
+        'is_completed' => 0,
+        'created_at' => now()->subDays(2),
+        'updated_at' => now()->subDays(2),
+    ]);
+    $this->user->missionsParticipating()->attach($mission->id, [
+        'started_at' => now(),
+        'current_values' => json_encode([0]),
+        'is_completed' => 0,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     foreach ($articles as $article) {
@@ -715,14 +731,45 @@ it('automatically disburses rewards and sets claimed fields for auto-disbursed m
     $this->user->refresh();
 
     // Check user mission process current_values
-    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)->first();
-    expect($userMission->pivot->is_completed)->toBe(1);
-    expect($userMission->pivot->claimed_at)->not->toBeNull();
+    $userMissions = $this->user->missionsParticipating()->where('mission_id', $mission->id)->get();
+
+    foreach ($userMissions as $userMission) {
+        expect($userMission->pivot->is_completed)->toBe(1);
+        expect($userMission->pivot->claimed_at)->toBeNull(); // claimed_at should be null since rewards are not auto-disbursed
+    }
+
+    // Call the complete mission endpoint for the latest mission instance
+    $response = $this->postJson('/api/v1/missions/complete', ['mission_id' => $mission->id]);
+    $response->assertStatus(200);
+
+    // Refresh the user instance again to get the updated data
+    $this->user->refresh();
+
+    // Check if the claimed_at field is updated for the latest mission instance
+    $userMissions = $this->user->missionsParticipating()->where('mission_id', $mission->id)->get();
+
+    // check if MissionRewardDisbursement record is created
+    $this->assertDatabaseHas('mission_reward_disbursements', [
+        'mission_id' => $mission->id,
+        'user_id' => $this->user->id,
+        'reward_quantity' => $mission->reward_quantity
+    ]);
+
+    // dd($userMissions->toArray());
+
+    foreach ($userMissions as $userMission) {
+        if ($userMission->pivot->id == $userMissions->last()->pivot->id) {
+            expect($userMission->pivot->claimed_at)->not->toBeNull();
+        } else {
+            expect($userMission->pivot->claimed_at)->toBeNull();
+        }
+    }
 
     // Check if mission data includes claimed fields
     $response = $this->getJson('/api/v1/missions?completed_only=1');
 
     $response->assertStatus(200);
+
     $response->assertJsonFragment([
         'id' => $mission->id,
         'is_completed' => true,

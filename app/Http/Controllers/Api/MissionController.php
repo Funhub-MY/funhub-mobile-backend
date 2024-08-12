@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MissionResource;
 use App\Models\Mission;
+use App\Models\MissionRewardDisbursement;
+use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\User;
 use App\Notifications\MissionCompleted;
@@ -200,7 +202,7 @@ class MissionController extends Controller
         // update pivot table
         $user->missionsParticipating()->updateExistingPivot($mission->id, [
             'is_completed' => true,
-            'completed_at' => now(),
+            'completed_at' => now()
         ]);
         try {
             $locale = auth()->user()->last_lang ?? config('app.locale');
@@ -213,10 +215,7 @@ class MissionController extends Controller
             ]);
         }
 
-        // disburse rewards if auto_disburse_rewards is true
-        if ($mission->auto_disburse_rewards) {
-            $this->disburseRewards($mission, $user);
-        }
+        $this->disburseRewards($mission, $user);
     }
 
     /**
@@ -233,6 +232,7 @@ class MissionController extends Controller
             'user' => $user->id
         ]);
 
+        $hasDisbursement = false;
 
         if ($mission->missionable_type == Reward::class) {
             // reward point via pointService
@@ -244,13 +244,7 @@ class MissionController extends Controller
                 'reward' => $mission->reward_quantity
             ]);
 
-
-            // if mission is not auto disbursed, also update claimed_at
-            if (!$mission->auto_disburse_rewards) {
-                $user->missionsParticipating()->updateExistingPivot($mission->id, [
-                    'claimed_at' => now(),
-                ]);
-            }
+            $hasDisbursement = true;
         } else if ($mission->missionable_type == RewardComponent::class) {
             // reward point via pointComponentService
             $this->pointComponentService->credit(
@@ -267,18 +261,58 @@ class MissionController extends Controller
                 'reward' => $mission->reward_quantity
             ]);
 
-            // if mission is not auto disbursed, also update claimed_at
-            if (!$mission->auto_disburse_rewards) {
-                $user->missionsParticipating()->updateExistingPivot($mission->id, [
-                    'claimed_at' => now(),
-                ]);
-            }
+            $hasDisbursement = true;
         } else {
             Log::error('Mission Completed but no reward disbursed', [
                 'mission' => $mission->id,
                 'user' => $user->id,
                 'reward_type' => 'none'
             ]);
+        }
+
+        if ($hasDisbursement) {
+            // if mission is not auto disbursed, also update claimed_at
+            if (!$mission->auto_disburse_rewards) {
+                MissionRewardDisbursement::create([
+                    'mission_id' => $mission->id,
+                    'user_id' => $user->id,
+                    'reward_quantity' => $mission->reward_quantity
+                ]);
+
+                // update user mission ensure claimed_at is updated based on mission frequency
+                if ($mission->frequency == 'one-off') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->orderByDesc('id')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                } elseif ($mission->frequency == 'daily') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->where('missions_users.created_at', '>=', now()->startOfDay())
+                        ->where('missions_users.created_at', '<', now()->endOfDay())
+                        ->orderByDesc('missions_users.created_at')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                } elseif ($mission->frequency == 'monthly') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->where('missions_users.created_at', '>=', now()->startOfMonth())
+                        ->where('missions_users.created_at', '<', now()->endOfMonth())
+                        ->orderByDesc('missions_users.created_at')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                }
+            }
         }
     }
 

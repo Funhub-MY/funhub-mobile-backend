@@ -4,6 +4,7 @@ namespace App\Services\Byteplus;
 
 use Exception;
 use GuzzleHttp\Psr7\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Psr\Http\Message\RequestInterface;
 
@@ -173,6 +174,11 @@ class SignatureV4
         $canon .= implode("\n", $canonHeaders) . "\n\n"
             . $signedHeadersString . "\n"
             . $payload;
+
+        Log::info('Canonicalized Request', [
+            'creq' => $canon,
+            'headers' => $signedHeadersString
+        ]);
 
         return ['creq' => $canon, 'headers' => $signedHeadersString];
     }

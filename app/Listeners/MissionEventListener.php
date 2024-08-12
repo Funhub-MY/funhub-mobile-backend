@@ -305,7 +305,6 @@ class MissionEventListener
                 'reward' => $mission->reward_quantity
             ]);
         }
-
         try {
             MissionRewardDisbursement::create([
                 'mission_id' => $mission->id,
@@ -313,10 +312,7 @@ class MissionEventListener
                 'reward_quantity' => $mission->reward_quantity
             ]);
 
-            // update user mission ensure claimed_at is updated
-            $user->missionsParticipating()->updateExistingPivot($mission->id, [
-                'claimed_at' => now(),
-            ]);
+            // here dont update claimed_at as claimed_at is for manual claiming /api/missions/complete
         } catch (\Exception $e) {
             Log::error('[MissionEventListener] Error disbursing reward for mission ' . $mission->id . ' and user ' . $user->id . ' error: ' . $e->getMessage());
         }

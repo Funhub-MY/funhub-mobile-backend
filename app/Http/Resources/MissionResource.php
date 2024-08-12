@@ -18,9 +18,23 @@ class MissionResource extends JsonResource
     public function toArray($request)
     {
         $isParticipating = $this->participants->contains(auth()->user()->id);
-        $myParticipation = $this->participants()->where('user_id', auth()->user()->id)
-            ->latest()
-            ->first();
+        $myParticipation = $this->participants()->where('user_id', auth()->user()->id);
+
+        if ($this->frequency == 'one-off') {
+            $myParticipation = $myParticipation->latest()->first();
+        } elseif ($this->frequency == 'daily') {
+            $myParticipation = $myParticipation
+                ->where('missions_users.created_at', '>=', now()->startOfDay())
+                ->where('missions_users.created_at', '<', now()->endOfDay())
+                ->latest()
+                ->first();
+        } elseif ($this->frequency == 'monthly') {
+            $myParticipation = $myParticipation
+                ->where('missions_users.created_at', '>=', now()->startOfMonth())
+                ->where('missions_users.created_at', '<', now()->endOfMonth())
+                ->latest()
+                ->first();
+        }
 
         $currentValues = [];
         if ($myParticipation) {
@@ -85,10 +99,11 @@ class MissionResource extends JsonResource
             'is_completed' => ($myParticipation) ? (bool) $myParticipation->is_completed : false,
             'completed_at' => ($myParticipation) ? $myParticipation->completed_at : null,
             'completed_at_formatted' => ($myParticipation && $myParticipation->completed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,
-            'claimed' => ($myParticipation) ? (bool) ($myParticipation->claimed_at) : false,
-            'claimed_at' => ($myParticipation) ? $myParticipation->claimed_at : null,
-            'claimed_at_formatted' => ($myParticipation && $myParticipation->claimed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,
-            'claimed_at_ago' => ($myParticipation && $myParticipation->claimed_at) ? Carbon::parse($myParticipation->completed_at)->diffForHumans() : null,
+            'last_rewarded_at' => ($myParticipation) ? $myParticipation->last_rewarded_at : null, // applicable for auto disburse rewards
+            'claimed' => ($myParticipation) ? (bool) ($myParticipation->claimed_at) : false, // only applicable non-auto disburse rewards
+            'claimed_at' => ($myParticipation) ? $myParticipation->claimed_at : null, // only applicable non-auto disburse rewards
+            'claimed_at_formatted' => ($myParticipation && $myParticipation->claimed_at) ? Carbon::parse($myParticipation->completed_at)->format('d/m/Y') : null,  // only applicable non-auto disburse rewards
+            'claimed_at_ago' => ($myParticipation && $myParticipation->claimed_at) ? Carbon::parse($myParticipation->completed_at)->diffForHumans() : null, // only applicable non-auto disburse rewards
         ];
     }
 }
