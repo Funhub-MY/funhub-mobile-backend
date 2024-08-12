@@ -865,11 +865,6 @@ class ArticleController extends Controller
                 return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
-
-            foreach ($tags as $tag) {
-                // update article tag articles count (queued)
-                UpdateArticleTagArticlesCount::dispatch($tag);
-            }
         }
 
         // attach location with rating
