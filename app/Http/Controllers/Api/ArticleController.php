@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Console\Commands\UpdateArticleTagsArticlesCount;
 use App\Events\ArticleCreated;
 use App\Events\RatedLocation;
 use App\Http\Controllers\Controller;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\City;
 use App\Models\SearchKeyword;
 use App\Models\Setting;
@@ -863,6 +865,11 @@ class ArticleController extends Controller
                 return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
+
+            foreach ($tags as $tag) {
+                // update article tag articles count (queued)
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            }
         }
 
         // attach location with rating
