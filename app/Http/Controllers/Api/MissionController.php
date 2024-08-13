@@ -79,7 +79,7 @@ class MissionController extends Controller
             ->orderBy('created_at', 'desc');
 
         // filter by claimed_only
-        $query->when($request->has('claimed_only') && $request->claimed_only && $request->claimed_only == 1, function($query) {
+        $query->when($request->has('claimed_only') && $request->claimed_only == 1, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->whereNotNull('missions_users.claimed_at');
@@ -87,7 +87,7 @@ class MissionController extends Controller
         });
 
         // filter by claimed_only false
-        $query->when($request->has('claimed_only') && $request->claimed_only && $request->claimed_only == 0, function($query) {
+        $query->when($request->has('claimed_only') && $request->claimed_only == 0, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->whereNull('missions_users.claimed_at');
