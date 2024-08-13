@@ -21,18 +21,18 @@ class MissionResource extends JsonResource
         $myParticipation = $this->participants()->where('user_id', auth()->user()->id);
 
         if ($this->frequency == 'one-off') {
-            $myParticipation = $myParticipation->latest()->first();
+            $myParticipation = $myParticipation->orderByDesc('missions_users.id')->first();
         } elseif ($this->frequency == 'daily') {
             $myParticipation = $myParticipation
                 ->where('missions_users.created_at', '>=', now()->startOfDay())
                 ->where('missions_users.created_at', '<', now()->endOfDay())
-                ->latest()
+                ->orderByDesc('missions_users.id')
                 ->first();
         } elseif ($this->frequency == 'monthly') {
             $myParticipation = $myParticipation
                 ->where('missions_users.created_at', '>=', now()->startOfMonth())
                 ->where('missions_users.created_at', '<', now()->endOfMonth())
-                ->latest()
+                ->orderByDesc('missions_users.id')
                 ->first();
         }
 
