@@ -152,6 +152,29 @@ class MissionEventListener
                 ->first();
 
             if (!$userMission) {
+                // Check if user has already completed the mission within the current day or month
+                if ($mission->frequency == 'daily') {
+                    $completedToday = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where('completed_at', '>=', now()->startOfDay())
+                        ->where('completed_at', '<', now()->endOfDay())
+                        ->exists();
+
+                    if ($completedToday) {
+                        continue; // Skip creating a new record if already completed today
+                    }
+                } elseif ($mission->frequency == 'monthly') {
+                    $completedThisMonth = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where('completed_at', '>=', now()->startOfMonth())
+                        ->where('completed_at', '<', now()->endOfMonth())
+                        ->exists();
+
+                    if ($completedThisMonth) {
+                        continue; // Skip creating a new record if already completed this month
+                    }
+                }
+
                 $currentValues = [];
                 $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
 
@@ -201,6 +224,33 @@ class MissionEventListener
             }
         }
     }
+
+    private function disburseRewardsBasedOnFrequency($mission, $user)
+    {
+        $userMission = $user->missionsParticipating()->where('mission_id', $mission->id)->first();
+        $lastRewardedAt = $userMission->pivot->last_rewarded_at;
+
+        if ($mission->frequency == 'one-off' && !$lastRewardedAt) {
+            $this->disburseRewards($mission, $user);
+            $userMission->pivot->last_rewarded_at = now();
+            $userMission->pivot->save();
+        } elseif ($mission->frequency == 'daily') {
+            $currentDate = now()->startOfDay();
+            if (!$lastRewardedAt || $lastRewardedAt->lt($currentDate)) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = $currentDate;
+                $userMission->pivot->save();
+            }
+        } elseif ($mission->frequency == 'monthly') {
+            $currentMonth = now()->startOfMonth();
+            if (!$lastRewardedAt || $lastRewardedAt->lt($currentMonth)) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = $currentMonth;
+                $userMission->pivot->save();
+            }
+        }
+    }
+
     /**
      * Check if Mission is Completed
      */
@@ -240,35 +290,6 @@ class MissionEventListener
             'current' => $currentValues
         ]);
         return true;
-    }
-
-    /**
-     * Disburse Rewards Based on Frequency
-     */
-    private function disburseRewardsBasedOnFrequency($mission, $user)
-    {
-        $userMission = $user->missionsParticipating()->where('mission_id', $mission->id)->first();
-        $lastRewardedAt = $userMission->pivot->last_rewarded_at;
-
-        if ($mission->frequency == 'one-off' && !$lastRewardedAt) {
-            $this->disburseRewards($mission, $user);
-            $userMission->pivot->last_rewarded_at = now();
-            $userMission->pivot->save();
-        } elseif ($mission->frequency == 'daily') {
-            $currentDate = now()->startOfDay();
-            if (!$lastRewardedAt || $lastRewardedAt->lt($currentDate)) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = $currentDate;
-                $userMission->pivot->save();
-            }
-        } elseif ($mission->frequency == 'monthly') {
-            $currentMonth = now()->startOfMonth();
-            if (!$lastRewardedAt || $lastRewardedAt->lt($currentMonth)) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = $currentMonth;
-                $userMission->pivot->save();
-            }
-        }
     }
 
     private function disburseRewards($mission, $user)
