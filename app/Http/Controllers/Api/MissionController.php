@@ -88,9 +88,13 @@ class MissionController extends Controller
 
         // filter by claimed_only false
         $query->when($request->has('claimed_only') && $request->claimed_only == 0, function($query) {
-            $query->whereHas('participants', function($query) {
-                $query->where('user_id', auth()->user()->id)
-                    ->whereNull('missions_users.claimed_at');
+            $query->where(function ($query) {
+                $query->whereHas('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id)
+                        ->whereNull('missions_users.claimed_at');
+                })->orWhereDoesntHave('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                });
             });
         });
 
