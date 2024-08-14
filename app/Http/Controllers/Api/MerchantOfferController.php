@@ -112,6 +112,7 @@ class MerchantOfferController extends Controller
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
+        $userPurchasedBeforeFromMerchantIds = [];
         if ($request->user() && config('app.same_merchant_spend_limit')) {
             $user = $request->user();
             // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
@@ -124,12 +125,10 @@ class MerchantOfferController extends Controller
                     ->pluck('merchant_offer_id')
                     ->toArray();
 
-                $excludedMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
+                $userPurchasedBeforeFromMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
                     ->pluck('user_id')
                     ->unique()
                     ->toArray();
-
-                $query->whereNotIn('user_id', $excludedMerchantIds);
             }
         }
 
@@ -231,8 +230,20 @@ class MerchantOfferController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->paginate(config('app.paginate_per_page'));
+
+        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
+        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
+            if (in_array($item->id, $userPurchasedBeforeFromMerchantIds)) {
+                $item->user_purchased_before_from_merchant = true;
+            } else {
+                $item->user_purchased_before_from_merchant = false;
+            }
+            return $item;
+        });
+
         return MerchantOfferResource::collection($data);
     }
+
 
     /**
      * Get My Merchant Offers (Logged in User)
@@ -323,6 +334,30 @@ class MerchantOfferController extends Controller
                 $query->where('user_id', auth()->user()->id);
             },
         ]);
+
+        // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
+        // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
+        $userPurchasedBeforeFromMerchantIds = [];
+        if (auth()->user() && config('app.same_merchant_spend_limit')) {
+            $user = auth()->user();
+            // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
+            $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
+
+            if (!$isWhitelisted) {
+                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
+                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
+                    ->pluck('merchant_offer_id')
+                    ->toArray();
+
+                $userPurchasedBeforeFromMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
+                    ->pluck('user_id')
+                    ->unique()
+                    ->toArray();
+            }
+        }
+
+        $offer->user_purchased_before_from_merchant = in_array($offer->id, $userPurchasedBeforeFromMerchantIds);
 
         return new MerchantOfferResource($offer);
     }
