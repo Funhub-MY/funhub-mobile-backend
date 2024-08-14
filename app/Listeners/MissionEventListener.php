@@ -55,6 +55,8 @@ class MissionEventListener
             $this->updateMissionProgress('completed_profile_setup', $event->user, 1);
         } else if ($event instanceof \App\Events\PurchasedMerchantOffer) {
             $this->handlePurchasedMerchantOffer($event);
+        } else if ($event instanceof \App\Events\RatedStore) {
+            $this->handleRatedStore($event);
         }
     }
 
@@ -65,6 +67,11 @@ class MissionEventListener
         } else if ($event->paymentMethod == 'cash') {
             $this->updateMissionProgress('purchased_merchant_offer_cash', $event->user, 1);
         }
+    }
+
+    private function handleRatedStore($event)
+    {
+        $this->updateMissionProgress('reviewed_store', $event->user, 1);
     }
 
     /**

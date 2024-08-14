@@ -279,6 +279,7 @@ return [
         'purchased_merchant_offer_points' => 'Purchase a merchant offer with points',
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
+        'reviewed_store' => 'Reviewed a store',
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),

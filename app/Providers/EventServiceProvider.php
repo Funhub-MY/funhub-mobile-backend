@@ -98,6 +98,7 @@ class EventServiceProvider extends ServiceProvider
 
         RatedStore::class => [
             UpdateLastRatedForMerchantOfferClaim::class,
+            MissionEventListener::class,
         ]
     ];
 
