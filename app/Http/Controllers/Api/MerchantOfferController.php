@@ -212,7 +212,7 @@ class MerchantOfferController extends Controller
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
         // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
         $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
-            if (in_array($item->user_id, $userPurchasedBeforeFromMerchantIds)) {
+            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
                 $item->user_purchased_before_from_merchant = true;
             } else {
                 $item->user_purchased_before_from_merchant = false;
@@ -245,6 +245,10 @@ class MerchantOfferController extends Controller
                 Log::info('User purchased before from merchant ids', [
                     'user_id' => $user->id,
                     'user_purchased_before_from_merchant_ids' => $userPurchasedBeforeFromMerchantIds,
+                ]);
+            } else {
+                Log::info('User in whitelist', [
+                    'user_id' => $user->id,
                 ]);
             }
         }
@@ -945,6 +949,17 @@ class MerchantOfferController extends Controller
                     $query = $this->merchantOfferQueryBuilder($query, $request);
                 })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
+
+        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
+        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
+        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
+            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
+                $item->user_purchased_before_from_merchant = true;
+            } else {
+                $item->user_purchased_before_from_merchant = false;
+            }
+            return $item;
+        });
 
         return MerchantOfferResource::collection($data);
     }
