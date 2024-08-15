@@ -729,6 +729,8 @@ class MerchantOfferTest extends TestCase
         $this->assertNotEmpty($response->json('last_purchase_offer_id'));
         $this->assertNotEmpty($response->json('last_purchase_date'));
 
+        $last_purchase_offer_id = $response->json('last_purchase_offer_id');
+
         // get single offer
         $response = $this->getJson('/api/v1/merchant/offers/' . $response->json('last_purchase_offer_id'));
         $response->assertStatus(200)
@@ -757,5 +759,16 @@ class MerchantOfferTest extends TestCase
 
         // asset data is not empty
         $this->assertFalse($response->json('data')[0]['user_purchased_before_from_merchant']);
+
+        $response = $this->getJson('/api/v1/merchant/offers/' . $last_purchase_offer_id);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'user_purchased_before_from_merchant'
+                ]
+            ]);
+
+        // assett user_purchased_before_from_merchant is true
+        $this->assertFalse($response->json('data.user_purchased_before_from_merchant'));
     }
 }
