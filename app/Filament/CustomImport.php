@@ -153,45 +153,52 @@ class CustomImport
         $importSuccess = true;
         $skipped = 0;
 
-        foreach ($this->getSpreadsheetData() as $line => $row) {
-            $prepareData = collect([]);
+        $this->getSpreadsheetData()->chunk(100, function ($rows) use (&$importSuccess, &$skipped) {
+            foreach ($rows as $line => $row) {
+                $prepareData = collect([]);
 
-            foreach (Arr::dot($this->fields) as $key => $value) {
-                $field = $this->formSchemas[$key];
-                $fieldValue = $value;
+                foreach (Arr::dot($this->fields) as $key => $value) {
+                    $field = $this->formSchemas[$key];
+                    $fieldValue = $value;
 
-                if ($field instanceof ImportField) {
-                    if (! $field->isRequired() && blank(@$row[$value])) {
-                        continue;
-                    }
-
-                    $fieldValue = $field->doMutateBeforeCreate($row[$value], collect($row)) ?? $row[$value];
-                }
-
-                $prepareData[$key] = $fieldValue;
-            }
-
-            $storeId = $prepareData['store_id'];
-            $categoryNames = explode(',', $prepareData['category_names']);
-
-            $store = Store::find($storeId);
-
-            if ($store) {
-                foreach ($categoryNames as $categoryName) {
-                    $merchantCategory = MerchantCategory::where('name', $categoryName)->first();
-
-                    if ($merchantCategory) {
-                        if ($store->categories->contains('id', $merchantCategory->id)) {
-                            Log::info('Store category already attached, skip attaching to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
+                    if ($field instanceof ImportField) {
+                        if (! $field->isRequired() && blank(@$row[$value])) {
                             continue;
                         }
 
-                        Log::info('Attaching store category to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
-                        $store->categories()->attach($merchantCategory->id);
+                        $fieldValue = $field->doMutateBeforeCreate($row[$value], collect($row)) ?? $row[$value];
+                    }
+
+                    $prepareData[$key] = $fieldValue;
+                }
+
+                $storeId = $prepareData['store_id'];
+                $categoryNames = explode(',', $prepareData['category_names']);
+                $status = $prepareData['status'];
+
+                $store = Store::find($storeId);
+
+                if ($store) {
+                    // Update the store's status
+                    $store->status = array_search($status, Store::STATUS);
+                    $store->save();
+
+                    foreach ($categoryNames as $categoryName) {
+                        $merchantCategory = MerchantCategory::where('name', $categoryName)->first();
+
+                        if ($merchantCategory) {
+                            if ($store->categories->contains('id', $merchantCategory->id)) {
+                                Log::info('Store category already attached, skip attaching to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
+                                continue;
+                            }
+
+                            Log::info('Attaching store category to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
+                            $store->categories()->attach($merchantCategory->id);
+                        }
                     }
                 }
             }
-        }
+        });
 
         if ($importSuccess) {
             Notification::make()
