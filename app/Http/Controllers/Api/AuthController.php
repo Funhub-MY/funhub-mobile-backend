@@ -284,7 +284,7 @@ class AuthController extends Controller
         // Fires SMS
         if ($user) {
             try {
-                $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
+                $this->smsService->sendSms($user->full_phone_no,  " Your OTP is ".$user->otp);
             } catch (\Exception $e) {
                 Log::error($e->getMessage(), [
                     'phone_no' => $user->full_phone_no,

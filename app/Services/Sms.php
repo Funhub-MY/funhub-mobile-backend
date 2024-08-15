@@ -94,6 +94,14 @@ class Sms {
             if ($response->status() == 200) {
                 return $response->body();
             } else {
+                Log::error('Error sending SMS using BytePlus: ' . $response->body(), [
+                    'params' => $params,
+                    'byteplus_credentials' => [
+                        'url' => $this->byteplusUrl,
+                        'username' => $this->byteplusUsername,
+                        'password' => $this->byteplusPassword,
+                    ],
+                ]);
                 return false;
             }
         } catch (\Exception $e) {

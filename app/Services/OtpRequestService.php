@@ -8,7 +8,7 @@ use App\Services\Sms;
 class OtpRequestService
 {
     protected $smsService;
-    protected $defaultGateway = 'movider';
+    protected $defaultGateway = 'byteplus';
 
     public function __construct()
     {
