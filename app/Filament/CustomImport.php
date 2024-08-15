@@ -153,7 +153,9 @@ class CustomImport
         $importSuccess = true;
         $skipped = 0;
 
-        $this->getSpreadsheetData()->chunk(100, function ($rows) use (&$importSuccess, &$skipped) {
+        $chunks = $this->getSpreadsheetData()->chunk(100);
+
+        foreach ($chunks as $rows) {
             foreach ($rows as $line => $row) {
                 $prepareData = collect([]);
 
@@ -179,26 +181,57 @@ class CustomImport
                 $store = Store::find($storeId);
 
                 if ($store) {
-                    // Update the store's status
-                    $store->status = array_search($status, Store::STATUS);
-                    $store->save();
+                    Log::info('Store found, id: ' . $store->id);
+                    // update the store's status
+                    try {
+                        $status = Store::STATUS_LABEL[$status];
+
+                        if (isset($status)) {
+                            $store->status = $status;
+                            $store->save();
+
+                            Log::info('Store status updated to: ' . $status, [
+                                'store_id' => $store->id,
+                                'original_status' => $store->status,
+                            ]);
+                        } else {
+                            Log::info('Store status not updated, current status: ' . $store->status, [
+                                'store_id' => $store->id,
+                                'status' => $status,
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error updating store status', [
+                            'store_id' => $store->id,
+                            'status' => $status,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
 
                     foreach ($categoryNames as $categoryName) {
-                        $merchantCategory = MerchantCategory::where('name', $categoryName)->first();
+                        try {
+                            $merchantCategory = MerchantCategory::where('name', $categoryName)->first();
 
-                        if ($merchantCategory) {
-                            if ($store->categories->contains('id', $merchantCategory->id)) {
-                                Log::info('Store category already attached, skip attaching to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
-                                continue;
+                            if ($merchantCategory) {
+                                if ($store->categories->contains('id', $merchantCategory->id)) {
+                                    Log::info('Store category already attached, skip attaching to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
+                                    continue;
+                                }
+
+                                Log::info('Attaching store category to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
+                                $store->categories()->attach($merchantCategory->id);
                             }
-
-                            Log::info('Attaching store category to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
-                            $store->categories()->attach($merchantCategory->id);
+                        } catch (\Exception $e) {
+                            Log::error('Error attaching store category to store id: ' . $store->id . ' category id: ' . $categoryName, [
+                                'error' => $e->getMessage(),
+                            ]);
                         }
                     }
+                } else {
+                    Log::info('Store not found, id: ' . $storeId);
                 }
             }
-        });
+        };
 
         if ($importSuccess) {
             Notification::make()
