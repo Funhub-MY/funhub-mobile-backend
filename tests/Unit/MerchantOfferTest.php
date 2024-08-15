@@ -717,7 +717,6 @@ class MerchantOfferTest extends TestCase
         // Check if the claimed offer is still available in the response by checking user_purchased_before_from_merchant flag true or false from data
         $this->assertTrue($response->json('data')[0]['user_purchased_before_from_merchant']);
 
-
         // get user's last purchased offer id and date from /merchant/offers/last_purchase
         $response = $this->getJson('/api/v1/merchant/offers/last_purchase?merchant_user_id=' . $this->merchant->user->id);
         $response->assertStatus(200)
@@ -729,6 +728,18 @@ class MerchantOfferTest extends TestCase
         // assert data is not empty for last_purchase_offer_id and last_purchase_date
         $this->assertNotEmpty($response->json('last_purchase_offer_id'));
         $this->assertNotEmpty($response->json('last_purchase_date'));
+
+        // get single offer
+        $response = $this->getJson('/api/v1/merchant/offers/' . $response->json('last_purchase_offer_id'));
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'user_purchased_before_from_merchant'
+                ]
+            ]);
+
+        // assett user_purchased_before_from_merchant is true
+        $this->assertTrue($response->json('data.user_purchased_before_from_merchant'));
 
         // Add the customer to the whitelist
         OfferLimitWhitelist::create([
