@@ -13,9 +13,16 @@ class OtpRequestService
     public function __construct()
     {
         $this->smsService = new \App\Services\Sms(
-            config('services.movider.api_url'),
-            config('services.movider.key'),
-            config('services.movider.secret')
+            [
+                'url' => config('services.byteplus.sms_url'),
+                'username' => config('services.byteplus.sms_account'),
+                'password' => config('services.byteplus.sms_password'),
+            ],
+            [
+                'api_url' => config('services.movider.api_url'),
+                'key' => config('services.movider.key'),
+                'secret' => config('services.movider.secret'),
+            ]
         );
     }
 
