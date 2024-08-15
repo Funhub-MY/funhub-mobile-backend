@@ -83,7 +83,7 @@ class Sms {
 
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json;charset=utf-8',
-                'Authorization' => 'Basic ' . base64_encode($this->byteplusUsername . ':asdadsasds' . $this->byteplusPassword),
+                'Authorization' => 'Basic ' . base64_encode($this->byteplusUsername . ':' . $this->byteplusPassword),
             ])->post($this->byteplusUrl, $params);
 
             Log::info('BytePlus SMS response', [
