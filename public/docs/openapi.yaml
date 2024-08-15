@@ -299,7 +299,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 16
+                  example: 9
                 reason:
                   type: string
                   description: 'The reason for reporting the comment.'
@@ -307,11 +307,11 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: occaecati
+                  example: animi
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: est
+                  example: nobis
                 article:
                   type: integer
                   description: 'The id of the article.'
@@ -454,7 +454,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - asperiores
+                    - ea
                   items:
                     type: string
                 category_ids:
@@ -537,7 +537,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: ''
-                  example: 14
+                  example: 19
               required:
                 - keyword_id
     parameters:
@@ -609,7 +609,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - quod
+                    - numquam
                   items:
                     type: string
                 category_ids:
@@ -1309,7 +1309,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: quia
+        example: amet
         required: true
         schema:
           type: string
@@ -1390,11 +1390,11 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: qui
+                  example: quaerat
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: totam
+                  example: nisi
               required:
                 - comment_id
                 - reason
@@ -1696,7 +1696,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: sed
+        example: aut
         required: true
         schema:
           type: string
@@ -4629,7 +4629,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: ugrant@example.net
+                  example: zkautzer@example.com
                 phone:
                   type: string
                   description: 'The phone of the respondant.'
@@ -4714,7 +4714,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1585
+                      line: 1587
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5136,7 +5136,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1585
+                        line: 1587
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -5564,7 +5564,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: sed
+                  example: expedita
               required:
                 - share_code
   /api/v1/public_user:
@@ -5598,7 +5598,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: dolores
+                  example: praesentium
               required:
                 - username
   /api/v1/public_offer:
@@ -5628,7 +5628,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 838
+                      line: 885
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6050,7 +6050,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 838
+                        line: 885
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -6478,7 +6478,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: id
+                  example: rerum
               required:
                 - share_code
   /api/v1/public_store:
@@ -7358,7 +7358,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: id
+                  example: officia
               required:
                 - share_code
   /api/v1/help/faqs:
@@ -8037,7 +8037,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - et
+                    - odio
                   items:
                     type: string
                 name:
@@ -8218,13 +8218,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - reprehenderit
+            - consequuntur
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - reprehenderit
+              - consequuntur
             items:
               type: string
         -
@@ -8410,7 +8410,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - ipsum
+                    - eos
                   items:
                     type: string
                 city:
@@ -8670,6 +8670,44 @@ paths:
           present:
             summary: 'When the value is present'
             value: 0.0
+  /api/v1/merchant/offers/last_purchase:
+    get:
+      summary: 'Get Last Purchase Date of user on a Merchant User'
+      operationId: getLastPurchaseDateOfUserOnAMerchantUser
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  last_purchase_offer_id: 1
+                  last_purchase_date: '2023-08-01 12:00:00'
+                properties:
+                  last_purchase_offer_id:
+                    type: integer
+                    example: 1
+                  last_purchase_date:
+                    type: string
+                    example: '2023-08-01 12:00:00'
+      tags:
+        - Merchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                merchant_user_id:
+                  type: integer
+                  description: 'Merchant User ID(merchant->user->id).'
+                  example: 1
+              required:
+                - merchant_user_id
   '/api/v1/merchant/offers/{offer_id}':
     get:
       summary: 'Get Offer By ID'
@@ -8706,7 +8744,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: soluta
+        example: illo
         required: true
         schema:
           type: string
@@ -10184,7 +10222,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: quia
+                  example: autem
               required:
                 - store_ids
     parameters:
@@ -10247,7 +10285,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: dolorem
+                  example: earum
               required:
                 - store_ids
     parameters:
@@ -10294,7 +10332,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: natus
+                  example: tempore
               required:
                 - location_id
     parameters:
@@ -10864,7 +10902,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 14
+                  example: 16
               required:
                 - user_id
   /api/v1/user/unfollow:
@@ -10910,7 +10948,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 12
+                  example: 13
               required:
                 - user_id
   /api/v1/user/request_follow/accept:
@@ -10956,7 +10994,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 12
+                  example: 11
               required:
                 - user_id
   /api/v1/user/request_follow/reject:
@@ -10990,7 +11028,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 4
+                  example: 8
               required:
                 - user_id
   /api/v1/user/request_follows:
@@ -11051,15 +11089,15 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: commodi
+                  example: reprehenderit
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: et
+                  example: quod
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: sit
+                  example: soluta
                 also_block_user:
                   type: boolean
                   description: 'optional Whether to block the user or not.'
@@ -11284,7 +11322,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: aut
+                  example: vel
               required:
                 - user_ids
     parameters:
@@ -12251,7 +12289,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   enum:
                     - male
                     - female
@@ -12384,7 +12422,7 @@ paths:
                 last_lang:
                   type: string
                   description: ''
-                  example: en
+                  example: zh
                   enum:
                     - en
                     - zh

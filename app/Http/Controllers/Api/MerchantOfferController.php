@@ -1028,4 +1028,46 @@ class MerchantOfferController extends Controller
 
         return $query;
     }
+
+    /**
+     * Get Last Purchase Date of user on a Merchant User
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @bodyParam merchant_user_id integer required Merchant User ID(merchant->user->id). Example: 1
+     * @response scenario=success {
+     * "last_purchase_offer_id": 1,
+     * "last_purchase_date": "2023-08-01 12:00:00"
+     * }
+     */
+    public function getLastPurchaseDateFromMerchantUser(Request $request)
+    {
+        $this->validate($request, [
+            'merchant_user_id' => 'required|exists:users,id'
+        ]);
+
+        // check any MerchantOfferClaims for this auth user has the merchant user
+        $claim = MerchantOfferClaim::where('user_id', auth()->user()->id)
+            ->whereHas('merchantOffer', function ($query) use ($request) {
+                $query->where('user_id', $request->merchant_user_id);
+            })
+            ->latest()
+            ->where('status', MerchantOffer::CLAIM_SUCCESS)
+            ->first();
+
+        if ($claim) {
+            return response()->json([
+                'last_purchase_offer_id' => $claim->merchant_offer_id,
+                'last_purchase_date' => $claim->created_at
+            ]);
+        } else {
+            return response()->json([
+                'last_purchase_offer_id' => null,
+                'last_purchase_date' => null
+            ]);
+        }
+    }
 }

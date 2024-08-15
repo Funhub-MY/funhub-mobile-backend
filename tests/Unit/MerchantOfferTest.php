@@ -15,6 +15,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantCategory;
 use App\Models\MerchantOfferCategory;
 use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferClaimRedemptions;
 use App\Models\MerchantOfferVoucher;
 use App\Models\OfferLimitWhitelist;
 use Database\Factories\MerchantFactory;
@@ -713,20 +714,21 @@ class MerchantOfferTest extends TestCase
                 'meta'
             ]);
 
-        // assert data is empty
-        $this->assertEmpty($response->json('data'));
+        // Check if the claimed offer is still available in the response by checking user_purchased_before_from_merchant flag true or false from data
+        $this->assertTrue($response->json('data')[0]['user_purchased_before_from_merchant']);
 
-        // Check if the claimed offer is still available in the response
-        $claimedOfferFound = false;
-        foreach ($response->json('data') as $data) {
-            if ($data['id'] == $offer->id) {
-                $claimedOfferFound = true;
-                break;
-            }
-        }
 
-        // Assert that the claimed offer is not available in the response
-        $this->assertFalse($claimedOfferFound);
+        // get user's last purchased offer id and date from /merchant/offers/last_purchase
+        $response = $this->getJson('/api/v1/merchant/offers/last_purchase?merchant_user_id=' . $this->merchant->user->id);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'last_purchase_offer_id',
+                'last_purchase_date'
+            ]);
+
+        // assert data is not empty for last_purchase_offer_id and last_purchase_date
+        $this->assertNotEmpty($response->json('last_purchase_offer_id'));
+        $this->assertNotEmpty($response->json('last_purchase_date'));
 
         // Add the customer to the whitelist
         OfferLimitWhitelist::create([
@@ -743,18 +745,6 @@ class MerchantOfferTest extends TestCase
             ]);
 
         // asset data is not empty
-        $this->assertNotEmpty($response->json('data'));
-
-        // Check if the claimed offer is now available in the response
-        $claimedOfferFound = false;
-        foreach ($response->json('data') as $data) {
-            if ($data['id'] == $offer->id) {
-                $claimedOfferFound = true;
-                break;
-            }
-        }
-
-        // Assert that the claimed offer is now available in the response
-        $this->assertTrue($claimedOfferFound);
+        $this->assertFalse($response->json('data')[0]['user_purchased_before_from_merchant']);
     }
 }
