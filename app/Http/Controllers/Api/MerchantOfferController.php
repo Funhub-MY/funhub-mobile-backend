@@ -212,7 +212,7 @@ class MerchantOfferController extends Controller
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
         // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
         $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
-            if (in_array($item->id, $userPurchasedBeforeFromMerchantIds)) {
+            if (in_array($item->user_id, $userPurchasedBeforeFromMerchantIds)) {
                 $item->user_purchased_before_from_merchant = true;
             } else {
                 $item->user_purchased_before_from_merchant = false;
