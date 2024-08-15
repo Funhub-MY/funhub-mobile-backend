@@ -1003,29 +1003,6 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
-        // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
-        if ($request->user() && config('app.same_merchant_spend_limit')) {
-            $user = $request->user();
-            // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
-            $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
-
-            if (!$isWhitelisted) {
-                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
-                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
-                    ->pluck('merchant_offer_id')
-                    ->toArray();
-
-                $excludedMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
-                    ->pluck('user_id')
-                    ->unique()
-                    ->toArray();
-
-                $query->whereNotIn('user_id', $excludedMerchantIds);
-            }
-        }
-
         $query ->with([
             'user',
             'user.merchant',
