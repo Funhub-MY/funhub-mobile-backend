@@ -95,12 +95,7 @@ class Sms {
                 return $response->body();
             } else {
                 Log::error('Error sending SMS using BytePlus: ' . $response->body(), [
-                    'params' => $params,
-                    'byteplus_credentials' => [
-                        'url' => $this->byteplusUrl,
-                        'username' => $this->byteplusUsername,
-                        'password' => $this->byteplusPassword,
-                    ],
+                    'params' => $params
                 ]);
                 return false;
             }
@@ -141,6 +136,7 @@ class Sms {
             if ($response->status() == 200) {
                 return $response->body();
             } else {
+                Log::error('Error sending SMS using Movider: ' . $response->body());
                 return false;
             }
         } catch (\Exception $e) {
