@@ -54,13 +54,13 @@ class MissionCompleted extends Notification
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->mission),
-                'object_id' => (string) $this->mission->id,
+                'object_id' => (int) $this->mission->id,
                 'link_to_url' => (string) 'false',
-                'link_to' => (string) $this->mission->id, // if link to url false, means get link_to_object
+                'link_to' => (int) $this->mission->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
                 'action' => 'mission_completed',
                 'from_name' => (string) $this->user->name,
-                'from_id' => (string) $this->user->id,
+                'from_id' => (int) $this->user->id,
                 'title' => __('messages.notification.fcm.MissionCompletedTitle'),
                 'message' => (string) $this->getMessage(),
             ])
