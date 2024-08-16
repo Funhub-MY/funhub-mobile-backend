@@ -24,9 +24,16 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->smsService = new \App\Services\Sms(
-            config('services.movider.api_url'),
-            config('services.movider.key'),
-            config('services.movider.secret')
+            [
+                'url' => config('services.byteplus.sms_url'),
+                'username' => config('services.byteplus.sms_account'),
+                'password' => config('services.byteplus.sms_password'),
+            ],
+            [
+                'api_url' => config('services.movider.api_url'),
+                'key' => config('services.movider.key'),
+                'secret' => config('services.movider.secret'),
+            ]
         );
     }
 
@@ -245,7 +252,6 @@ class AuthController extends Controller
         } else if (substr($request->phone_no, 0, 2) == '60') {
             $request->merge(['phone_no' => substr($request->phone_no, 2)]);
         }
-
         // get user
         $user = User::where('phone_no', $request->phone_no)
             ->where('phone_country_code', $request->country_code)
@@ -278,7 +284,7 @@ class AuthController extends Controller
         // Fires SMS
         if ($user) {
             try {
-                $this->smsService->sendSms($user->full_phone_no, config('app.name')." - Your OTP is ".$user->otp);
+                $this->smsService->sendSms($user->full_phone_no, config('app.name') . " - Your OTP is ".$user->otp);
             } catch (\Exception $e) {
                 Log::error($e->getMessage(), [
                     'phone_no' => $user->full_phone_no,

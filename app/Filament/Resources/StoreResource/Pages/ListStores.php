@@ -24,12 +24,14 @@ class ListStores extends ListRecords
         return [
             Actions\CreateAction::make(),
 
+            // Import Stores csv
             SyncStoreCategoriesAction::make(),
 
+            // Export Stores csv
             ExportAction::make()
                 ->exports([
                     ExcelExport::make()
-                        ->label('Export Stores Categories')
+                        ->label('Export Stores (CSV)')
                         ->withColumns([
                             Column::make('id')->heading('store_id'),
                             Column::make('name')->heading('store_name'),

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Config;
 
 class UserResource extends JsonResource
 {
@@ -46,6 +47,16 @@ class UserResource extends JsonResource
             $avatar_thumb_url = $this->avatar_thumb_url;
         }
 
+        $tutorialSteps = Config::get('app.tutorial_steps', []);
+        $completedSteps = $this->tutorialCompletions->pluck('tutorial_step')->toArray();
+
+        $tutorialProgress = array_map(function ($step) use ($completedSteps) {
+            return [
+                'step' => $step,
+                'completed' => in_array($step, $completedSteps)
+            ];
+        }, $tutorialSteps);
+
         return [
             'id' => $this->id,
             'name' => $name,
@@ -79,6 +90,7 @@ class UserResource extends JsonResource
             'onesignal_subscription_id' => $this->when($this->isAuthUser, $this->onesignal_subscription_id),
             'onesignal_user_id' => $this->when($this->isAuthUser, $this->onesignal_user_id),
             'created_at' => $this->created_at,
+            'tutorial_progress' => $this->when($this->isAuthUser, $tutorialProgress),
         ];
     }
 }

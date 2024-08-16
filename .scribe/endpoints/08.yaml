@@ -46,6 +46,24 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      include_unlisted:
+        name: include_unlisted
+        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      include_listed_unlisted:
+        name: include_listed_unlisted
+        description: 'optional Include all listed and unlisted stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       limit:
         name: limit
         description: 'optional Per Page Limit.'
@@ -59,6 +77,8 @@ endpoints:
       categories_id: '1,2,3'
       merchant_ids: '1,2,3'
       store_ids: '1,2,3'
+      include_unlisted: 1
+      include_listed_unlisted: 1
       limit: 10
     queryParameters: []
     cleanQueryParameters: []
@@ -80,7 +100,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer vc6adD54kbhPVZafEge8361'
+      - 'Bearer gkhVcD3e6Eba85P4a16vdfZ'
     controller: null
     method: null
     route: null
@@ -121,13 +141,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: eos
+        example: autem
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: eos
+      store_ids: autem
     fileParameters: []
     responses:
       -
@@ -140,7 +160,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer gEv48k61h5aP6eZbcafD3Vd'
+      - 'Bearer 3h5EagZeD8d6VkPvfa46c1b'
     controller: null
     method: null
     route: null
@@ -183,7 +203,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4kb16ceVhdv86g5aEa3ZPDf'
+      - 'Bearer 5g3cDb61VEhd8afa46evZPk'
     controller: null
     method: null
     route: null
@@ -224,13 +244,13 @@ endpoints:
         name: store_ids
         description: ''
         required: true
-        example: alias
+        example: earum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      store_ids: alias
+      store_ids: earum
     fileParameters: []
     responses:
       -
@@ -247,7 +267,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bk36aEdV6P4ch1vZef5ga8D'
+      - 'Bearer d56aPhcea3fV4E61Z8bDkgv'
     controller: null
     method: null
     route: null
@@ -288,13 +308,13 @@ endpoints:
         name: location_id
         description: ''
         required: true
-        example: ut
+        example: tempore
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      location_id: ut
+      location_id: tempore
     fileParameters: []
     responses:
       -
@@ -311,7 +331,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer hDbEP5fga61364VcvZea8kd'
+      - 'Bearer 4D8k3hvegEa5f1a6VbPd6Zc'
     controller: null
     method: null
     route: null
@@ -435,7 +455,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer efP5ba3Ec6ad6k4V1Dghv8Z'
+      - 'Bearer v5Pcg1a3b8dkaheDfV6EZ64'
     controller: null
     method: null
     route: null
@@ -528,7 +548,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6f3PDV46d8Zb1ekga5hEcav'
+      - 'Bearer ecav645EVPa36ZbkhDdgf81'
     controller: null
     method: null
     route: null
@@ -592,7 +612,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E3VhcZavka6D465bPf1gde8'
+      - 'Bearer 4aEZ8fb3ekgDVd6ah6cv51P'
     controller: null
     method: null
     route: null
@@ -675,7 +695,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer akPg6f1cD6Z5Va83v4bedEh'
+      - 'Bearer 66ecagZP35hkbDE14df8vaV'
     controller: null
     method: null
     route: null

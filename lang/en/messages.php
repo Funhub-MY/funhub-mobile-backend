@@ -87,6 +87,7 @@ return [
             'Avatar_uploaded' => 'Avatar uploaded',
             'Cover_uploaded' => 'Cover uploaded',
             'Article_categories_linked_to_user' => 'Article categories linked to user',
+            'Tutorial_progress_saved' => 'Tutorial progress saved',
         ],
         'user_following_controller' => [
             'Follow_request_sent' => 'Follow request sent',
@@ -246,6 +247,7 @@ return [
             'CommentLiked' => ':username liked your comment ":comment"',
             'CommentRepliedTitle' => 'New Comment Reply',
             'CommentReplied' => ':username replied to your comment ":comment"',
+            "MissionCompletedTitle" => "Mission Completed",
             'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
             'Newfollower' => ':followerName followed you, let\'s meet new friends!',
             'NewFollowRequest' => ':followerName requested to follow you',
@@ -282,6 +284,7 @@ return [
             'CommentLiked' => 'Liked your comment, it is really interesting!',
             'CommentRepliedTitle' => 'New Comment Reply',
             'CommentReplied' => ':username replied to your comment ":comment"',
+            "MissionCompletedTitle" => "Mission Completed",
             'MissionCompleted' => 'Completed mission":missionName",  Randomly Acquire :reward x :rewardQuantity',
             'Newfollower' => 'Followed you, let\'s meet new friends',
             'NewFollowRequest' => 'Requested to follow you',

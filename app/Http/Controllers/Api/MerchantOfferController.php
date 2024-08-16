@@ -110,29 +110,6 @@ class MerchantOfferController extends Controller
                 },
             ]);
 
-        // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
-        // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
-        if ($request->user() && config('app.same_merchant_spend_limit')) {
-            $user = $request->user();
-            // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
-            $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
-
-            if (!$isWhitelisted) {
-                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
-                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
-                    ->pluck('merchant_offer_id')
-                    ->toArray();
-
-                $excludedMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
-                    ->pluck('user_id')
-                    ->unique()
-                    ->toArray();
-
-                $query->whereNotIn('user_id', $excludedMerchantIds);
-            }
-        }
-
         // category_ids filter
         if ($request->has('category_ids')) {
             // explode categories ids
@@ -231,8 +208,54 @@ class MerchantOfferController extends Controller
         $this->buildQuery($query, $request);
 
         $data = $query->paginate(config('app.paginate_per_page'));
+
+        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
+        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
+        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
+            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
+                $item->user_purchased_before_from_merchant = true;
+            } else {
+                $item->user_purchased_before_from_merchant = false;
+            }
+            return $item;
+        });
+
         return MerchantOfferResource::collection($data);
     }
+
+    protected function getUserPurchasedBeforeFromMerchantIds($user)
+    {
+        $userPurchasedBeforeFromMerchantIds = [];
+        if ($user && config('app.same_merchant_spend_limit')) {
+            // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
+            $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
+
+            if (!$isWhitelisted) {
+                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
+                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
+                    ->pluck('merchant_offer_id')
+                    ->toArray();
+
+                $userPurchasedBeforeFromMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
+                    ->pluck('user_id')
+                    ->unique()
+                    ->toArray();
+
+                Log::info('User purchased before from merchant ids', [
+                    'user_id' => $user->id,
+                    'user_purchased_before_from_merchant_ids' => $userPurchasedBeforeFromMerchantIds,
+                ]);
+            } else {
+                Log::info('User in whitelist', [
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        return $userPurchasedBeforeFromMerchantIds;
+    }
+
 
     /**
      * Get My Merchant Offers (Logged in User)
@@ -323,6 +346,13 @@ class MerchantOfferController extends Controller
                 $query->where('user_id', auth()->user()->id);
             },
         ]);
+
+        // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
+        // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
+        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds(auth()->user());
+
+        // override $offer->user_purchased_before_from_merchant with the value
+        $offer->user_purchased_before_from_merchant = in_array($offer->user->id, $userPurchasedBeforeFromMerchantIds) ? true : false;
 
         return new MerchantOfferResource($offer);
     }
@@ -903,6 +933,17 @@ class MerchantOfferController extends Controller
                 })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
 
+        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
+        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
+        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
+            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
+                $item->user_purchased_before_from_merchant = true;
+            } else {
+                $item->user_purchased_before_from_merchant = false;
+            }
+            return $item;
+        });
+
         return MerchantOfferResource::collection($data);
     }
 
@@ -945,29 +986,6 @@ class MerchantOfferController extends Controller
             $query->where('flash_deal', false);
         }
 
-         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
-        // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
-        if ($request->user() && config('app.same_merchant_spend_limit')) {
-            $user = $request->user();
-            // Check if the user belongs to the limit whitelist first if whitelisted, they can repeatedly buy any merchant offers
-            $isWhitelisted = OfferLimitWhitelist::where('user_id', $user->id)->exists();
-
-            if (!$isWhitelisted) {
-                $merchantIds = MerchantOfferClaim::where('user_id', $user->id)
-                    ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
-                    ->where('created_at', '>=', now()->subDays(config('app.same_merchant_spend_limit_days')))
-                    ->pluck('merchant_offer_id')
-                    ->toArray();
-
-                $excludedMerchantIds = MerchantOffer::whereIn('id', $merchantIds)
-                    ->pluck('user_id')
-                    ->unique()
-                    ->toArray();
-
-                $query->whereNotIn('user_id', $excludedMerchantIds);
-            }
-        }
-
         $query ->with([
             'user',
             'user.merchant',
@@ -992,5 +1010,47 @@ class MerchantOfferController extends Controller
         ]);
 
         return $query;
+    }
+
+    /**
+     * Get Last Purchase Date of user on a Merchant User
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Merchant
+     * @subgroup Merchant Offers
+     * @bodyParam merchant_user_id integer required Merchant User ID(merchant->user->id). Example: 1
+     * @response scenario=success {
+     * "last_purchase_offer_id": 1,
+     * "last_purchase_date": "2023-08-01 12:00:00"
+     * }
+     */
+    public function getLastPurchaseDateFromMerchantUser(Request $request)
+    {
+        $this->validate($request, [
+            'merchant_user_id' => 'required|exists:users,id'
+        ]);
+
+        // check any MerchantOfferClaims for this auth user has the merchant user
+        $claim = MerchantOfferClaim::where('user_id', auth()->user()->id)
+            ->whereHas('merchantOffer', function ($query) use ($request) {
+                $query->where('user_id', $request->merchant_user_id);
+            })
+            ->latest()
+            ->where('status', MerchantOffer::CLAIM_SUCCESS)
+            ->first();
+
+        if ($claim) {
+            return response()->json([
+                'last_purchase_offer_id' => $claim->merchant_offer_id,
+                'last_purchase_date' => $claim->created_at
+            ]);
+        } else {
+            return response()->json([
+                'last_purchase_offer_id' => null,
+                'last_purchase_date' => null
+            ]);
+        }
     }
 }

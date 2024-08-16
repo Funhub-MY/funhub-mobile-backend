@@ -2,8 +2,6 @@
 
 namespace Tests\Unit;
 
-namespace Tests\Unit;
-
 use App\Models\ArticleCategory;
 use App\Mail\EmailVerification;
 use Tests\TestCase;
@@ -84,5 +82,90 @@ class UserContactTest extends TestCase
 
         // check 2 with related_user_id
         $this->assertEquals(2, $contacts->whereNotNull('related_user_id')->count());
+    }
+
+    // test import contacts with invalid data
+    public function testImportContactsInvalidData()
+    {
+        $contacts = [
+            [
+                'country_code' => '60',
+                'phone_no' => '',
+                'name' => 'John 88',
+            ],
+            [
+                'country_code' => '',
+                'phone_no' => '123456799',
+                'name' => 'John 99',
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/user/import-contacts', [
+            'contacts' => $contacts,
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['contacts.0.phone_no', 'contacts.1.country_code']);
+    }
+
+    // test import contacts with no contacts data
+    public function testImportContactsNoContactsData()
+    {
+        $response = $this->postJson('/api/v1/user/import-contacts', []);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['contacts']);
+    }
+
+    // test get contacts not yet followed
+    public function testGetContactsNotYetFollowed()
+    {
+        // create users first
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
+        // create user contacts
+        UserContact::factory()->create([
+            'phone_country_code' => $user1->phone_country_code,
+            'phone_no' => $user1->phone_no,
+            'imported_by_id' => $this->user->id,
+            'related_user_id' => $user1->id,
+        ]);
+
+        UserContact::factory()->create([
+            'phone_country_code' => $user2->phone_country_code,
+            'phone_no' => $user2->phone_no,
+            'imported_by_id' => $this->user->id,
+            'related_user_id' => $user2->id,
+        ]);
+
+        UserContact::factory()->create([
+            'phone_country_code' => $user3->phone_country_code,
+            'phone_no' => $user3->phone_no,
+            'imported_by_id' => $this->user->id,
+            'related_user_id' => $user3->id,
+        ]);
+
+        // let user follow user1
+        $this->user->followings()->attach($user1->id);
+
+        $response = $this->getJson('/api/v1/user/contacts-friends');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(2, 'users');
+        $response->assertJsonPath('users.0.id', $user2->id);
+        $response->assertJsonPath('users.1.id', $user3->id);
+    }
+
+    // test get contacts not yet followed but no contacts found
+    public function testGetContactsNotYetFollowedNoContacts()
+    {
+        $response = $this->getJson('/api/v1/user/contacts-friends');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'No friends found',
+        ]);
     }
 }

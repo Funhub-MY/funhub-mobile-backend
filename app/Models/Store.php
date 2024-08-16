@@ -25,6 +25,12 @@ class Store extends BaseModel implements HasMedia, Auditable
         self::STATUS_ARCHIVED => 'Archived'
     ];
 
+    const STATUS_LABEL = [
+        'Listed' => 1,
+        'Unlisted' => 0,
+        'Archived' => 2
+    ];
+
     const MEDIA_COLLECTION_PHOTOS = 'store_photos';
 
     /**

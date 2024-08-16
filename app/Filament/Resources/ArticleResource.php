@@ -41,6 +41,7 @@ class ArticleResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+
     protected function getTableQuery(): Builder
     {
         return Article::query();
@@ -411,6 +412,14 @@ class ArticleResource extends Resource
                     ->sortable()
                     ->counts('likes')
                     ->label('Likes'),
+                Tables\Columns\TextColumn::make('bookmarks_count')
+                    ->label('Bookmarks')
+                    ->counts('bookmarks')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('shares_count')
+                    ->label('Shares')
+                    ->counts('shares')
+                    ->sortable(),
 
                 // comments count
                 Tables\Columns\TextColumn::make('comments_count')

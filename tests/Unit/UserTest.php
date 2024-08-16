@@ -36,7 +36,7 @@ class UserTest extends TestCase
 
         $response = $this->getJson("/api/v1/user");
         //dd($response->json());
-        
+
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
@@ -67,7 +67,7 @@ class UserTest extends TestCase
             ],
             'token',
         ]);
-        
+
     }
 
     /**
@@ -76,12 +76,12 @@ class UserTest extends TestCase
     public function testGetPublicUser() {
         $user = User::factory()->create();
         Sanctum::actingAs($user,['*']);
-            
+
             $response = $this->getJson("/api/v1/public/user/{$user->id}");
             //dd($response->json());
-            
+
             $response->assertStatus(200);
-    
+
             $response->assertJsonStructure([
                 'data' => [
                     'id',
@@ -400,7 +400,7 @@ class UserTest extends TestCase
     public function testPostUpdateUserDetailsLocation() {
         $this->seed('CountriesTableSeeder');
         $this->seed('StatesTableSeeder');
-    
+
         $country = Country::where('code', 'MY')->first();
         $state = State::where('country_id', $country->id)->first();
 
@@ -603,7 +603,7 @@ class UserTest extends TestCase
         Sanctum::actingAs($this->user,['*']);
 
         $response = $this ->postJson("/api/v1/user/password", [
-            'old_password' => 'password', 
+            'old_password' => 'password',
             'new_password' => 'abcd1234',
             'new_password_confirmation' => 'abcd1234',
         ]);
@@ -689,7 +689,43 @@ class UserTest extends TestCase
             'id' => $this->user->id,
             'email' => 'test123@gmail.com',
         ]);
-    
+
+    }
+
+    /**
+     * Test post tutorial progress
+     */
+    public function testPostTutorialProgress()
+    {
+        // Get the tutorial steps from the config
+        $tutorialSteps = config('app.tutorial_steps');
+
+        // Choose a random step from the tutorial steps
+        $randomStep = 'first_time_visit_any_store';
+
+        $response = $this->postJson("/api/v1/user/tutorial-progress", [
+            'tutorial_step' => $randomStep
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'message',
+            'tutorial_step',
+            'completed_at',
+        ]);
+
+        $response->assertJson([
+            'message' => __('messages.success.user_controller.Tutorial_progress_saved'),
+            'tutorial_step' => $randomStep,
+        ]);
+
+        // Test with an invalid step
+        $response = $this->postJson("/api/v1/user/tutorial-progress", [
+            'tutorial_step' => 'invalid_step'
+        ]);
+
+        $response->assertStatus(422);
     }
 
 }

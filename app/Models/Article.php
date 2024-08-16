@@ -256,6 +256,18 @@ class Article extends BaseModel implements HasMedia, Auditable
             ->where('type', Interaction::TYPE_LIKE);
     }
 
+    public function shares()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+            ->where('type', Interaction::TYPE_SHARE);
+    }
+
+    public function bookmarks()
+    {
+        return $this->morphMany(Interaction::class, 'interactable')
+            ->where('type', Interaction::TYPE_BOOKMARK);
+    }
+
     // public function relatedThroughCategory()
     // {
     //     return $this->hasManyRelatedThrough(ArticleCategory::class, 'articles_article_categories');

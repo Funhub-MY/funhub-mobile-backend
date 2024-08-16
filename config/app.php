@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'FUNHUB'),
 
     /*
     |--------------------------------------------------------------------------
@@ -279,6 +279,7 @@ return [
         'purchased_merchant_offer_points' => 'Purchase a merchant offer with points',
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
+        'reviewed_store' => 'Reviewed a store',
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
@@ -319,6 +320,17 @@ return [
     'recommended_media_partner_article_hide_after_days' => env('RECOMMENDED_MEDIA_PARTNER_ARTICLE_HIDE_AFTER_DAYS', 30),
 
     'auto_article_categories' => env('AUTO_ARTICLE_CATEGORIES', false),
+
+    'tutorial_steps' => [
+        "first_time_visit_recommend_screen",
+        "first_time_visit_nearby_stores_screen",
+        "first_time_visit_any_store",
+        "first_time_visit_review_tab_in_any_store",
+        "first_time_visit_mission_tab",
+        "first_time_visit_super_deals_tab",
+        "first_time_visit_single_deal_screen",
+        "second_time_visit_mission_tab"
+    ],
 
     /*
     |--------------------------------------------------------------------------

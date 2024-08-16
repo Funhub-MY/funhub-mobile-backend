@@ -128,6 +128,7 @@ class MerchantOfferResource extends JsonResource
             'user_bookmarked' => $this->whenLoaded('interactions', function () {
                 return $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->isNotEmpty();
             }, false),
+            'user_purchased_before_from_merchant' => (isset($this->user_purchased_before_from_merchant)) ? $this->user_purchased_before_from_merchant : false,
             'categories' => MerchantCategoryResource::collection($this->categories),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

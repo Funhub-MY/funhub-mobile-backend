@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Console\Commands\UpdateArticleTagsArticlesCount;
 use App\Events\ArticleCreated;
 use App\Events\RatedLocation;
 use App\Http\Controllers\Controller;
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\City;
 use App\Models\SearchKeyword;
 use App\Models\Setting;
@@ -112,7 +114,15 @@ class ArticleController extends Controller
         if ($request->has('tag_ids')) {
             $tagIds = explode(',', $request->tag_ids);
             // get all articles ids associated with this tag
-            $articlesTags = ArticleTag::whereIn('id', $tagIds)->with('articles')->get();
+            $articlesTags = ArticleTag::whereIn('id', $tagIds)->get();
+            // get the name of tags then search by tag name instead
+            // get unique name from articlesTags->name into an array
+            $articlesTagsNames = $articlesTags->pluck('name')->unique()->toArray();
+
+            $articlesTags = ArticleTag::whereIn('name', $articlesTagsNames)
+                ->with('articles')
+                ->get();
+
             // get all articles ids
             $articleIds = $articlesTags->pluck('articles')->flatten()->pluck('id')->toArray();
             $query->whereIn('id', $articleIds);

@@ -87,6 +87,7 @@ return [
             'Avatar_uploaded' => '头像已上传',
             'Cover_uploaded' => '封面已上传',
             'Article_categories_linked_to_user' => '探文类别已与用户连接',
+            'Tutorial_progress_saved' => '教程进度已保存',
         ],
         'user_following_controller' => [
             'Follow_request_sent' => '已发送关注请求',
@@ -249,6 +250,7 @@ return [
             'CommentLiked' => ':username 赞了你的评论 ":comment"',
             'CommentRepliedTitle' => '新评论回复',
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
+            'MissionCompletedTitle' => "任务完成",
             'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
             'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => ':followerName 请求关注您',
@@ -285,6 +287,7 @@ return [
             'CommentLiked' => '赞了你的评论，觉得超有趣!',
             'CommentRepliedTitle' => '新评论回复',
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
+            'MissionCompletedTitle' => "任务完成",
             'MissionCompleted' => '已完成任务“:missionName”，随机获得 :reward x :rewardQuantity',
             'Newfollower' => '狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => '请求关注您',

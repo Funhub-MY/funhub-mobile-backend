@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MissionResource;
 use App\Models\Mission;
+use App\Models\MissionRewardDisbursement;
+use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\User;
 use App\Notifications\MissionCompleted;
@@ -31,7 +33,9 @@ class MissionController extends Controller
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      *
      * @group Mission
-     * @urlParam completed_only boolean optional Only show completed missions(is_completed=true). Example: false
+     * @urlParam completed_only boolean optional Only show completed missions(is_completed=1). Example: 0
+     * @urlParam claimed_only boolean optional Only show claimed missions(claimed_only=1). Example: 0
+     * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
@@ -65,7 +69,7 @@ class MissionController extends Controller
      * "per_page": 15,
      * }
      */
-    public function index()
+    public function index(Request $request)
     {
         // get all missions available with participants select only auth user
         $query = Mission::enabled()
@@ -74,35 +78,58 @@ class MissionController extends Controller
             }])
             ->orderBy('created_at', 'desc');
 
-        // if (request()->has('claimed_only') && request()->claimed_only) {
-        //     $query->whereHas('participants', function($query) {
-        //         $query->where('user_id', auth()->user()->id)
-        //             ->where('is_completed', true);
-        //     });
-        // } else {
-        //     $query->whereDoesntHave('participants', function($query) {
-        //         $query->where('user_id', auth()->user()->id)
-        //             ->where('is_completed', true);
-        //     });
-        // }
+        // filter by claimed_only
+        $query->when($request->has('claimed_only') && $request->claimed_only == 1, function($query) {
+            $query->whereHas('participants', function($query) {
+                $query->where('user_id', auth()->user()->id)
+                    ->whereNotNull('claimed_at');
+            });
+        });
 
-        if (request()->has('completed_only') && request()->completed_only) {
+        // filter by claimed_only false
+        $query->when($request->has('claimed_only') && $request->claimed_only == 0, function($query) {
+            $query->where(function($query) {
+                $query->whereHas('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id)
+                        ->whereNull('claimed_at');
+                })->orWhereDoesntHave('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                });
+            });
+        });
+
+        // filter by type of mission one-off, daily, monthly
+        $query->when($request->has('frequency') && $request->frequency, function($query) use ($request) {
+            // check if frequency contains one-off/daily/monthly or mix
+            if (!preg_match('/(one-off|daily|monthly)/', $request->frequency)) {
+                $request->validate([
+                    'frequency' => 'in:one-off,daily,monthly'
+                ]);
+            }
+            $frequencies = explode(',', $request->frequency);
+            $query->whereIn('frequency', $frequencies);
+        });
+
+        // when completed_only = 1
+        $query->when($request->has('completed_only') && $request->completed_only == 1, function($query) {
             $query->whereHas('participants', function($query) {
                 $query->where('user_id', auth()->user()->id)
                     ->where('missions_users.is_completed', true);
             });
-        } else {
-            // inverse: missions not yet participated by auth user OR not yet completed
-            $query->where(function($query) {
-                $query->whereDoesntHave('participants', function($query) {
-                    $query->where('user_id', auth()->user()->id);
-                })
-                ->orWhereHas('participants', function($query) {
+        });
+
+        // when completed_only = 0
+        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) {
+            // is not participating, or where is participating and is_completed is false
+            $query->where(function ($query) {
+                $query->whereHas('participants', function($query) {
                     $query->where('user_id', auth()->user()->id)
                         ->where('missions_users.is_completed', false);
+                })->orWhereDoesntHave('participants', function($query) {
+                    $query->where('user_id', auth()->user()->id);
                 });
             });
-        }
+        });
 
         $missions = $query->paginate(config('app.paginate_per_page'));
 
@@ -182,18 +209,20 @@ class MissionController extends Controller
             'completed_at' => now()
         ]);
 
-        try {
-            $locale = auth()->user()->last_lang ?? config('app.locale');
-            auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-        } catch (\Exception $e) {
-            Log::error('Mission Completed Notification Error', [
-                'mission_id' => $mission->id,
-                'user' => $user->id,
-                'error' => $e->getMessage()
-            ]);
-        }
+        // // if self claim(non-auto disburse rewards) then no need send mission completed notification
+        // if (!$mission->auto_disburse_rewards) {
+        //     try {
+        //         $locale = auth()->user()->last_lang ?? config('app.locale');
+        //         auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+        //     } catch (\Exception $e) {
+        //         Log::error('Mission Completed Notification Error', [
+        //             'mission_id' => $mission->id,
+        //             'user' => $user->id,
+        //             'error' => $e->getMessage()
+        //         ]);
+        //     }
+        // }
 
-        // disburse rewards
         $this->disburseRewards($mission, $user);
     }
 
@@ -210,6 +239,9 @@ class MissionController extends Controller
             'mission' => $mission->toArray(),
             'user' => $user->id
         ]);
+
+        $hasDisbursement = false;
+
         if ($mission->missionable_type == Reward::class) {
             // reward point via pointService
             $this->pointService->credit($mission, $user, $mission->reward_quantity, 'Mission Completed - '. $mission->name);
@@ -219,6 +251,8 @@ class MissionController extends Controller
                 'reward_type' => 'point',
                 'reward' => $mission->reward_quantity
             ]);
+
+            $hasDisbursement = true;
         } else if ($mission->missionable_type == RewardComponent::class) {
             // reward point via pointComponentService
             $this->pointComponentService->credit(
@@ -234,12 +268,59 @@ class MissionController extends Controller
                 'reward_type' => 'point component',
                 'reward' => $mission->reward_quantity
             ]);
+
+            $hasDisbursement = true;
         } else {
             Log::error('Mission Completed but no reward disbursed', [
                 'mission' => $mission->id,
                 'user' => $user->id,
                 'reward_type' => 'none'
             ]);
+        }
+
+        if ($hasDisbursement) {
+            // if mission is not auto disbursed, also update claimed_at
+            if (!$mission->auto_disburse_rewards) {
+                MissionRewardDisbursement::create([
+                    'mission_id' => $mission->id,
+                    'user_id' => $user->id,
+                    'reward_quantity' => $mission->reward_quantity
+                ]);
+
+                // update user mission ensure claimed_at is updated based on mission frequency
+                if ($mission->frequency == 'one-off') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->orderByDesc('id')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                } elseif ($mission->frequency == 'daily') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->where('missions_users.created_at', '>=', now()->startOfDay())
+                        ->where('missions_users.created_at', '<', now()->endOfDay())
+                        ->orderByDesc('missions_users.created_at')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                } elseif ($mission->frequency == 'monthly') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->where('missions_users.created_at', '>=', now()->startOfMonth())
+                        ->where('missions_users.created_at', '<', now()->endOfMonth())
+                        ->orderByDesc('missions_users.created_at')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                }
+            }
         }
     }
 

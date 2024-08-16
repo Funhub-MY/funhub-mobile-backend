@@ -14,6 +14,7 @@ use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
 use Illuminate\Support\Facades\Log;
 use App\Services\PointComponentService;
@@ -54,6 +55,8 @@ class MissionEventListener
             $this->updateMissionProgress('completed_profile_setup', $event->user, 1);
         } else if ($event instanceof \App\Events\PurchasedMerchantOffer) {
             $this->handlePurchasedMerchantOffer($event);
+        } else if ($event instanceof \App\Events\RatedStore) {
+            $this->handleRatedStore($event);
         }
     }
 
@@ -64,6 +67,11 @@ class MissionEventListener
         } else if ($event->paymentMethod == 'cash') {
             $this->updateMissionProgress('purchased_merchant_offer_cash', $event->user, 1);
         }
+    }
+
+    private function handleRatedStore($event)
+    {
+        $this->updateMissionProgress('reviewed_store', $event->user, 1);
     }
 
     /**
@@ -151,6 +159,29 @@ class MissionEventListener
                 ->first();
 
             if (!$userMission) {
+                // Check if user has already completed the mission within the current day or month
+                if ($mission->frequency == 'daily') {
+                    $completedToday = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where('completed_at', '>=', now()->startOfDay())
+                        ->where('completed_at', '<', now()->endOfDay())
+                        ->exists();
+
+                    if ($completedToday) {
+                        continue; // Skip creating a new record if already completed today
+                    }
+                } elseif ($mission->frequency == 'monthly') {
+                    $completedThisMonth = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where('completed_at', '>=', now()->startOfMonth())
+                        ->where('completed_at', '<', now()->endOfMonth())
+                        ->exists();
+
+                    if ($completedThisMonth) {
+                        continue; // Skip creating a new record if already completed this month
+                    }
+                }
+
                 $currentValues = [];
                 $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
 
@@ -183,12 +214,50 @@ class MissionEventListener
                     'completed_at' => now()
                 ]);
 
+                try {
+                    $locale = $user->last_lang ?? config('app.locale');
+                    $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+                } catch (\Exception $e) {
+                    Log::error('Mission Completed Notification Error', [
+                        'mission_id' => $mission->id,
+                        'user' => $user->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+
                 if ($mission->auto_disburse_rewards) {
                     $this->disburseRewardsBasedOnFrequency($mission, $user);
                 }
             }
         }
     }
+
+    private function disburseRewardsBasedOnFrequency($mission, $user)
+    {
+        $userMission = $user->missionsParticipating()->where('mission_id', $mission->id)->first();
+        $lastRewardedAt = $userMission->pivot->last_rewarded_at;
+
+        if ($mission->frequency == 'one-off' && !$lastRewardedAt) {
+            $this->disburseRewards($mission, $user);
+            $userMission->pivot->last_rewarded_at = now();
+            $userMission->pivot->save();
+        } elseif ($mission->frequency == 'daily') {
+            $currentDate = now()->startOfDay();
+            if (!$lastRewardedAt || $lastRewardedAt->lt($currentDate)) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = $currentDate;
+                $userMission->pivot->save();
+            }
+        } elseif ($mission->frequency == 'monthly') {
+            $currentMonth = now()->startOfMonth();
+            if (!$lastRewardedAt || $lastRewardedAt->lt($currentMonth)) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = $currentMonth;
+                $userMission->pivot->save();
+            }
+        }
+    }
+
     /**
      * Check if Mission is Completed
      */
@@ -230,35 +299,6 @@ class MissionEventListener
         return true;
     }
 
-    /**
-     * Disburse Rewards Based on Frequency
-     */
-    private function disburseRewardsBasedOnFrequency($mission, $user)
-    {
-        $userMission = $user->missionsParticipating()->where('mission_id', $mission->id)->first();
-        $lastRewardedAt = $userMission->pivot->last_rewarded_at;
-
-        if ($mission->frequency == 'one-off' && !$lastRewardedAt) {
-            $this->disburseRewards($mission, $user);
-            $userMission->pivot->last_rewarded_at = now();
-            $userMission->pivot->save();
-        } elseif ($mission->frequency == 'daily') {
-            $currentDate = now()->startOfDay();
-            if (!$lastRewardedAt || $lastRewardedAt->lt($currentDate)) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = $currentDate;
-                $userMission->pivot->save();
-            }
-        } elseif ($mission->frequency == 'monthly') {
-            $currentMonth = now()->startOfMonth();
-            if (!$lastRewardedAt || $lastRewardedAt->lt($currentMonth)) {
-                $this->disburseRewards($mission, $user);
-                $userMission->pivot->last_rewarded_at = $currentMonth;
-                $userMission->pivot->save();
-            }
-        }
-    }
-
     private function disburseRewards($mission, $user)
     {
         $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
@@ -293,22 +333,36 @@ class MissionEventListener
                 'reward' => $mission->reward_quantity
             ]);
         }
+        try {
+            MissionRewardDisbursement::create([
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'reward_quantity' => $mission->reward_quantity
+            ]);
 
-        MissionRewardDisbursement::create([
-            'mission_id' => $mission->id,
-            'user_id' => $user->id,
-            'reward_quantity' => $mission->reward_quantity
-        ]);
+            // here dont update claimed_at as claimed_at is for manual claiming /api/missions/complete
+        } catch (\Exception $e) {
+            Log::error('[MissionEventListener] Error disbursing reward for mission ' . $mission->id . ' and user ' . $user->id . ' error: ' . $e->getMessage());
+        }
 
         $locale = $user->last_lang ?? config('app.locale');
 
-        $user->notify((new RewardReceivedNotification(
-            $mission->missionable,
-            $mission->reward_quantity,
-            $user,
-            $mission->name
-        ))->locale($locale));
-
+        try {
+            $locale = $user->last_lang ?? config('app.locale');
+            $user->notify((new RewardReceivedNotification(
+                $mission->missionable,
+                $mission->reward_quantity,
+                $user,
+                $mission->name,
+                $mission
+            ))->locale($locale));
+        } catch (\Exception $e) {
+            Log::error('Reward Received Notification Error', [
+                'mission_id' => $mission->id,
+                'user' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     private function isSpamInteraction($user, $interaction)

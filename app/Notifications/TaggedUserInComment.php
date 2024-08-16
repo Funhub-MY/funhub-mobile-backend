@@ -85,6 +85,11 @@ class TaggedUserInComment extends Notification
             'from_id' => $this->user->id,
             'title' => $this->user->name,
             'message' => $this->getMessage(),
+            'extra' => [
+                'parent_id' => ($this->comment->parent_id) ? $this->comment->parent_id : null,
+                'reply_to_id' => ($this->comment->reply_to_id) ? $this->comment->reply_to_id : null,
+                'comment_id' => $this->comment->id,
+            ]
         ];
     }
 }
