@@ -209,19 +209,19 @@ class MissionController extends Controller
             'completed_at' => now()
         ]);
 
-        // if self claim(non-auto disburse rewards) then no need send mission completed notification
-        if (!$mission->auto_disburse_rewards) {
-            try {
-                $locale = auth()->user()->last_lang ?? config('app.locale');
-                auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-            } catch (\Exception $e) {
-                Log::error('Mission Completed Notification Error', [
-                    'mission_id' => $mission->id,
-                    'user' => $user->id,
-                    'error' => $e->getMessage()
-                ]);
-            }
-        }
+        // // if self claim(non-auto disburse rewards) then no need send mission completed notification
+        // if (!$mission->auto_disburse_rewards) {
+        //     try {
+        //         $locale = auth()->user()->last_lang ?? config('app.locale');
+        //         auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+        //     } catch (\Exception $e) {
+        //         Log::error('Mission Completed Notification Error', [
+        //             'mission_id' => $mission->id,
+        //             'user' => $user->id,
+        //             'error' => $e->getMessage()
+        //         ]);
+        //     }
+        // }
 
         $this->disburseRewards($mission, $user);
     }
