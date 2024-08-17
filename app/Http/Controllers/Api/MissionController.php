@@ -223,6 +223,17 @@ class MissionController extends Controller
         //     }
         // }
 
+        // if mission is auto disburse, dont disburse rewards
+        if ($mission->auto_disburse_rewards) {
+            Log::info('Mission '.$mission->id.' is auto disburse but user called complete mission.', [
+                'mission' => $mission->id,
+                'user' => $user->id,
+                'reward_type' => 'auto disburse',
+                'reward_quantity' => $mission->reward_quantity
+            ]);
+            return;
+        }
+
         $this->disburseRewards($mission, $user);
     }
 
