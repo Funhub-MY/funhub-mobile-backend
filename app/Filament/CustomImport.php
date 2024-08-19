@@ -175,7 +175,10 @@ class CustomImport
                 }
 
                 $storeId = $prepareData['store_id'];
-                $categoryNames = explode(',', $prepareData['category_names']);
+
+                // ensure category_names dont have space between category names
+                $categoryNames = explode(',', preg_replace('/\s+/', ' ', $prepareData['category_names']));
+                // $categoryNames = explode(',', $prepareData['category_names']);
                 $status = $prepareData['status'];
 
                 $store = Store::find($storeId);
@@ -208,24 +211,29 @@ class CustomImport
                         ]);
                     }
 
-                    foreach ($categoryNames as $categoryName) {
-                        try {
-                            $merchantCategory = MerchantCategory::where('name', $categoryName)->first();
+                    // get all category ids
+                    // trim each category name
+                    try {
+                        $categoryNames = array_map(function ($categoryName) {
+                            return trim($categoryName);
+                        }, $categoryNames);
 
-                            if ($merchantCategory) {
-                                if ($store->categories->contains('id', $merchantCategory->id)) {
-                                    Log::info('Store category already attached, skip attaching to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
-                                    continue;
-                                }
+                        $categoryIds = MerchantCategory::whereIn('name', $categoryNames)->pluck('id')->toArray();
 
-                                Log::info('Attaching store category to store id: ' . $store->id . ' category id: ' . $merchantCategory->id);
-                                $store->categories()->attach($merchantCategory->id);
-                            }
-                        } catch (\Exception $e) {
-                            Log::error('Error attaching store category to store id: ' . $store->id . ' category id: ' . $categoryName, [
-                                'error' => $e->getMessage(),
-                            ]);
+                        if (count($categoryIds) > 0) {
+                            // sync store categories
+                            $store->categories()->sync($categoryIds);
+                            Log::info('Store category synced, store id: ' . $store->id . ' category ids: ' . implode(',', $categoryIds));
+                        } else {
+                            // detach all
+                            $store->categories()->detach();
                         }
+                    } catch (\Exception $e) {
+                        Log::error('Error syncing store categories', [
+                            'store_id' => $store->id,
+                            'category_names' => $categoryNames,
+                            'error' => $e->getMessage(),
+                        ]);
                     }
                 } else {
                     Log::info('Store not found, id: ' . $storeId);
