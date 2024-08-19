@@ -44,6 +44,8 @@ class ArticleInteracted extends Notification implements ShouldQueue
             ->setData([
                 'object' => (string) get_class($this->interaction),
                 'object_id' => (string) $this->interaction->id,
+                'article_id' => (string) $this->interaction->interactable->id, // for articles related notification
+                'article_type' => (string) $this->interaction->interactable->type,  // for articles related notification
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->interaction->interactable->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) $this->interaction->interactable_type, // if link to url false, means get link_to_object
@@ -54,7 +56,7 @@ class ArticleInteracted extends Notification implements ShouldQueue
                 'message' => __('messages.notification.database.ArticleInteracted'),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('探文互动')
+                ->setTitle(__('messages.notification.fcm.ArticleInteractedTitle'))
                 ->setBody(__('messages.notification.fcm.ArticleInteracted', [
                     'username' => $this->interaction->user->name,
                     'action' => $this->getAction(),
@@ -89,7 +91,7 @@ class ArticleInteracted extends Notification implements ShouldQueue
     {
         switch($this->interaction->type) {
             case Interaction::TYPE_LIKE:
-                return '赞了';
+                return __('messages.notification.database.ArticleLiked');
             // case Interaction::TYPE_DISLIKE:
             //     return 'disliked';
             // case Interaction::TYPE_SHARE:
