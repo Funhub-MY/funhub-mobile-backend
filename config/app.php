@@ -249,7 +249,7 @@ return [
     |
     */
 
-    'rate_limit' => env('RATE_LIMIT', 60),
+    'rate_limit' => env('RATE_LIMIT', 120),
 
     'paginate_per_page' => env('PAGINATE_PER_PAGE', 10),
     'max_images_per_article' => env('MAX_IMAGES_PER_ARTICLE', 9),
