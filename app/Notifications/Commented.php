@@ -63,16 +63,6 @@ class Commented extends Notification implements ShouldQueue
                     'username' => $this->comment->user->name,
                     'commentTitle' => $this->comment->commentable->title
                 ]))
-            )
-            ->setApns(
-                ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios'))
-                    ->setPayload(['aps' => ['sound' => 'default']])
-            )
-            ->setAndriod(
-                AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics_android'))
-                    ->setNotification(AndroidNotification::create()->setSound('default'))
             );
     }
 
