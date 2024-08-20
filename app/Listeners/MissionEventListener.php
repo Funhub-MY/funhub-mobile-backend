@@ -180,6 +180,16 @@ class MissionEventListener
                     if ($completedThisMonth) {
                         continue; // Skip creating a new record if already completed this month
                     }
+                } elseif ($mission->frequency == 'accumulated') {
+                    // check if user has completed similar mission before if not, skip
+                    $completedMissions = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->whereNull('completed_at')
+                        ->get();
+
+                    if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
+                        continue;
+                    }
                 }
 
                 $currentValues = [];
@@ -255,11 +265,22 @@ class MissionEventListener
                 $userMission->pivot->last_rewarded_at = $currentMonth;
                 $userMission->pivot->save();
             }
+        } elseif ($mission->frequency == 'accumulated') {
+            if (!$lastRewardedAt) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = now();
+                $userMission->pivot->save();
+            }
         }
     }
 
     /**
      * Check if Mission is Completed
+     *
+     * @param array $missionEvents
+     * @param array $missionValues
+     * @param array $currentValues
+     * @return boolean
      */
     private function isMissionCompleted($missionEvents, $missionValues, $currentValues)
     {
@@ -299,6 +320,13 @@ class MissionEventListener
         return true;
     }
 
+    /**
+     * Disburse rewards to user
+     *
+     * @param Mission $mission
+     * @param User $user
+     * @return void
+     */
     private function disburseRewards($mission, $user)
     {
         $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
@@ -365,6 +393,13 @@ class MissionEventListener
         }
     }
 
+    /**
+     * Check if user has spam interaction
+     *
+     * @param User $user
+     * @param Interaction $interaction
+     * @return boolean
+     */
     private function isSpamInteraction($user, $interaction)
     {
         $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));
@@ -378,6 +413,13 @@ class MissionEventListener
         return $recentInteractions > 1;
     }
 
+    /**
+     * Check if user has spam following
+     *
+     * @param User $user
+     * @param User $followedUser
+     * @return boolean
+     */
     private function isSpamFollowing($user, $followedUser)
     {
         $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));

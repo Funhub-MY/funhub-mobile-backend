@@ -57,6 +57,15 @@ class NotificationResource extends JsonResource
                         $article_cover = $media->getFullUrl();
                     }
                 }
+            } else if ($this->data['object'] == \App\Models\Mission::class) {
+                // get if user claimed this mission before or not
+                $mission = MissionClaim::where('mission_id', $this->data['object_id'])
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                if ($mission) {
+                    $mission_claimed = true;
+                }
             }
         }
 

@@ -256,8 +256,9 @@ class MissionResource extends Resource
                                 ->label('Frequency')
                                 ->options([
                                     'one-off' => 'One-off (Non Repeatable)',
-                                    'daily' => 'Daily at Midnight',
-                                    'monthly' => 'Monthly at Start of Month',
+                                    'accumulated' => 'Accumulated (Repeatable)',
+                                    'daily' => 'Daily, Resets Midnight (Repeatable)',
+                                    'monthly' => 'Monthly, Resets Start of Month (Repeatable)',
                                 ])
                                 ->helperText('This determins how often mission is checked with user current scores to determine whether to disburse reward or not.')
                                 ->default('one-off')

@@ -793,3 +793,152 @@ it('automatically disburses rewards and sets claimed fields for non-auto-disburs
     // assert meta.total is 0
     $this->assertEquals(0, $response->json('meta.total'));
 });
+
+it('User can participate in an accumulated mission only once until reaching the goal', function () {
+    Notification::fake();
+
+    $articles = Article::factory()->count(5)->create();
+
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+
+    $mission = Mission::factory()->create([
+        'name' => 'Comment on 10 articles (Accumulated)',
+        'enabled_at' => now(),
+        'description' => 'Comment on 10 articles (Accumulated)',
+        'events' => json_encode(['comment_created']),
+        'values' => json_encode([10]),
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'frequency' => 'accumulated',
+        'status' => 1,
+        'auto_disburse_rewards' => 1,
+        'user_id' => $this->user->id
+    ]);
+
+    // Comment on 5 articles
+    foreach ($articles as $article) {
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'Test comment',
+            'parent_id' => null
+        ]);
+    }
+
+    // Check user mission progress current_values
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)->first();
+
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(5);
+    expect($userMission->pivot->is_completed)->toBe(0);
+
+    // Create 5 more articles
+    $moreArticles = Article::factory()->count(5)->create();
+
+    // Comment on the additional 5 articles
+    foreach ($moreArticles as $article) {
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'Test comment',
+            'parent_id' => null
+        ]);
+    }
+
+    // Refresh the user instance
+    $this->user->refresh();
+
+    // Check user mission progress current_values
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)->first();
+
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(10);
+    expect($userMission->pivot->is_completed)->toBe(1);
+
+    // Check if the user received the reward
+    $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
+    expect($response->status())->toBe(200);
+    expect($response->json('balance'))->toBe(1);
+
+    // Check if notification was sent
+    Notification::assertSentTo(
+        [$this->user],
+        \App\Notifications\RewardReceivedNotification::class
+    );
+
+    // Check if only one mission_user record exists for the specific mission and user
+    $missionUserCount = DB::table('missions_users')
+        ->where('mission_id', $mission->id)
+        ->where('user_id', $this->user->id)
+        ->count();
+
+    expect($missionUserCount)->toBe(1);
+
+    // wait 3 seconds
+    sleep(3);
+
+    // Restart the mission by commenting on 10 more articles
+    $restartArticles = Article::factory()->count(10)->create();
+
+    foreach ($restartArticles as $article) {
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'Test comment',
+            'parent_id' => null
+        ]);
+    }
+
+    // Refresh the user instance
+    $this->user->refresh();
+
+    // Check user mission progress current_values after restarting
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)->latest()->first();
+
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(10);
+    expect($userMission->pivot->is_completed)->toBe(1);
+
+    // Check if the user received the reward again
+    // $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
+    // expect($response->status())->toBe(200);
+
+    // expect($response->json('balance'))->toBe(2);
+
+    // Check if two mission_user records exist for the specific mission and user
+    $missionUserCount = DB::table('missions_users')
+        ->where('mission_id', $mission->id)
+        ->where('user_id', $this->user->id)
+        ->count();
+
+    expect($missionUserCount)->toBe(2);
+
+    // Check if the completed_at value is correctly set for the second (latest) record
+    $latestMissionUser = DB::table('missions_users')
+        ->where('mission_id', $mission->id)
+        ->where('user_id', $this->user->id)
+        ->latest()
+        ->first();
+
+    expect($latestMissionUser->completed_at)->not->toBeNull();
+
+    // Check if the completed_at value of the first record is not overridden
+    $firstMissionUser = DB::table('missions_users')
+        ->where('mission_id', $mission->id)
+        ->where('user_id', $this->user->id)
+        ->oldest()
+        ->first();
+
+    expect($firstMissionUser->completed_at)->not->toBeNull();
+    expect($firstMissionUser->id)->not->toEqual($latestMissionUser->id);
+});

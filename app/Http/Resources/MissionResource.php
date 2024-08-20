@@ -34,6 +34,8 @@ class MissionResource extends JsonResource
                 ->where('missions_users.created_at', '<', now()->endOfMonth())
                 ->orderByDesc('missions_users.id')
                 ->first();
+        } elseif ($this->frequency == 'accumulated') {
+            $myParticipation = $myParticipation->orderByDesc('missions_users.id')->first(); // only latest one by user_id
         }
 
         $currentValues = [];

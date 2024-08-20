@@ -15,6 +15,7 @@ use Filament\Forms\Components\Section;
 use Filament\Pages\Dashboard as BasePage;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Filters\Filter;
+use Filament\Widgets\FilamentInfoWidget;
 
 class Dashboard extends BasePage
 {
@@ -35,10 +36,12 @@ class Dashboard extends BasePage
     protected function getWidgets(): array
     {
         $widgets = [
-            StatsOverview::class,
             UsersChart::class,
-            ArticleCountChartOverMonths::class,
-            TopContributor::class,
+
+            // StatsOverview::class,
+            // UsersChart::class,
+            // ArticleCountChartOverMonths::class,
+            // TopContributor::class,
             // ArticleUserEngagementCategory::class,
         ];
 

@@ -102,9 +102,9 @@ class MissionController extends Controller
         // filter by type of mission one-off, daily, monthly
         $query->when($request->has('frequency') && $request->frequency, function($query) use ($request) {
             // check if frequency contains one-off/daily/monthly or mix
-            if (!preg_match('/(one-off|daily|monthly)/', $request->frequency)) {
+            if (!preg_match('/(one-off|daily|monthly|accumulated)/', $request->frequency)) {
                 $request->validate([
-                    'frequency' => 'in:one-off,daily,monthly'
+                    'frequency' => 'in:one-off,daily,monthly,accumulated'
                 ]);
             }
             $frequencies = explode(',', $request->frequency);
