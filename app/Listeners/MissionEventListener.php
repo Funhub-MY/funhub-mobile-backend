@@ -224,16 +224,16 @@ class MissionEventListener
                     'completed_at' => now()
                 ]);
 
-                // try {
+                try {
                     $locale = $user->last_lang ?? config('app.locale');
                     $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-                // } catch (\Exception $e) {
-                //     Log::error('Mission Completed Notification Error', [
-                //         'mission_id' => $mission->id,
-                //         'user' => $user->id,
-                //         'error' => $e->getMessage()
-                //     ]);
-                // }
+                } catch (\Exception $e) {
+                    Log::error('Mission Completed Notification Error', [
+                        'mission_id' => $mission->id,
+                        'user' => $user->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
 
                 if ($mission->auto_disburse_rewards) {
                     $this->disburseRewardsBasedOnFrequency($mission, $user);
