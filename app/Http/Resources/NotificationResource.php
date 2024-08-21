@@ -25,6 +25,9 @@ class NotificationResource extends JsonResource
         $article_type = null;
         $article_cover = null;
 
+        $mission_claimed = false;
+        $mission_completed = false;
+
         $object = $this->data['object']::find($this->data['object_id']);
 
         if ($object) {
@@ -64,8 +67,7 @@ class NotificationResource extends JsonResource
                     ->where('user_id', auth()->id())
                     ->orderBy('id', 'desc')
                     ->first();
-                $mission_claimed = false;
-                $mission_completed = false;
+
                 if ($missionUser) {
                     if ($missionUser->is_completed) {
                         $mission_completed = true;
@@ -76,19 +78,6 @@ class NotificationResource extends JsonResource
                     } else {
                         $mission_claimed = false;
                     }
-                }
-
-                // appends to $this->extra
-                if (isset($this->extra)) {
-                    $this->extra['mission_id'] = $this->data['object_id'];
-                    $this->extra['mission_claimed'] = $mission_claimed;
-                    $this->extra['mission_completed'] = $mission_completed;
-                } else {
-                    $this['extra'] = [
-                        'mission_id' => $this->data['object_id'],
-                        'mission_claimed' => $mission_claimed,
-                        'mission_completed' => $mission_completed,
-                    ];
                 }
             }
         }
@@ -109,6 +98,8 @@ class NotificationResource extends JsonResource
             'from_user' => new UserResource($this->from_user) ?? null,
             'is_read' => $this->read_at ? true : false,
             'extra' => $this->extra ?? null,
+            'mission_claimed' => $mission_claimed ?? null,
+            'mission_completed' => $mission_completed ?? null,
             'created_at_raw' => $this->created_at,
             'created_at' => $this->created_at->diffForHumans(),
         ];
