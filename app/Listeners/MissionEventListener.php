@@ -190,6 +190,16 @@ class MissionEventListener
                     if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
                         continue;
                     }
+                } else if ($mission->frequency == 'one-off') {
+                    // check if user has completed similar mission before if not, skip. since one-off user can only do once
+                    $completedMissions = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->where('completed_at', '>=', now())
+                        ->get();
+
+                    if ($completedMissions->count() > 0) { // since user can only do one-off mission once per time.
+                        continue;
+                    }
                 }
 
                 $currentValues = [];
