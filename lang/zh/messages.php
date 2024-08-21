@@ -249,6 +249,7 @@ return [
             'ArticleLiked'  => '赞了',
             'CommentedTitle' => '新评论',
             'Commented' => ':username 评论了你的探文 ":commentTitle"',
+            'CommentLikedTitle' => '新评论赞',
             'CommentLiked' => ':username 赞了你的评论 ":comment"',
             'CommentRepliedTitle' => '新评论回复',
             'CommentReplied' => ':username 回复了你的评论 ":comment"',

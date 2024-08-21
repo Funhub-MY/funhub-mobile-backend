@@ -246,6 +246,7 @@ return [
             'ArticleLiked' => 'liked',
             'CommentedTitle' => 'New Comment',
             'Commented' => ':username commented on your post ":commentTitle"',
+            'CommentLikedTitle' => 'New Comment Like',
             'CommentLiked' => ':username liked your comment ":comment"',
             'CommentRepliedTitle' => 'New Comment Reply',
             'CommentReplied' => ':username replied to your comment ":comment"',

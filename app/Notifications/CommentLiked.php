@@ -64,7 +64,7 @@ class CommentLiked extends Notification implements ShouldQueue
                 ]
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('探文互动')
+                ->setTitle(__('messages.notification.fcm.CommentLikedTitle'))
                 ->setBody(__('messages.notification.fcm.CommentLiked', [
                     'username' => $this->user->name,
                     'comment' => Str::limit($this->comment->body, 10, '...')

@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Interaction;
 use App\Models\SystemNotification;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class NotificationResource extends JsonResource
@@ -59,13 +60,30 @@ class NotificationResource extends JsonResource
                 }
             } else if ($this->data['object'] == \App\Models\Mission::class) {
                 // get if user claimed this mission before or not
-                $mission = MissionClaim::where('mission_id', $this->data['object_id'])
+                $missionUser = DB::table('missions_users')->where('mission_id', $this->data['object_id'])
                     ->where('user_id', auth()->id())
+                    ->orderBy('id', 'desc')
                     ->first();
+                $mission_claimed = false;
+                $mission_completed = false;
+                if ($missionUser) {
+                    if ($missionUser->is_completed) {
+                        $mission_completed = true;
+                    }
 
-                if ($mission) {
-                    $mission_claimed = true;
+                    if ($missionUser->claimed_at || $missionUser->last_rewarded_at) {
+                        $mission_claimed = true;
+                    } else {
+                        $mission_claimed = false;
+                    }
                 }
+
+                // appends to extra
+                $this->data['extra'] = [
+                    'mission_id' => $this->data['object_id'],
+                    'mission_claimed' => $mission_claimed,
+                    'mission_completed' => $mission_completed,
+                ];
             }
         }
 
