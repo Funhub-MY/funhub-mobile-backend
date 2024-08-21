@@ -79,9 +79,17 @@ class NotificationResource extends JsonResource
                 }
 
                 // appends to $this->extra
-                $this->extra['mission_id'] = $this->data['object_id'];
-                $this->extra['mission_claimed'] = $mission_claimed;
-                $this->extra['mission_completed'] = $mission_completed;
+                if (isset($this->extra)) {
+                    $this->extra['mission_id'] = $this->data['object_id'];
+                    $this->extra['mission_claimed'] = $mission_claimed;
+                    $this->extra['mission_completed'] = $mission_completed;
+                } else {
+                    $this['extra'] = [
+                        'mission_id' => $this->data['object_id'],
+                        'mission_claimed' => $mission_claimed,
+                        'mission_completed' => $mission_completed,
+                    ];
+                }
             }
         }
 
