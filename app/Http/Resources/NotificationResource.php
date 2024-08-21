@@ -78,12 +78,10 @@ class NotificationResource extends JsonResource
                     }
                 }
 
-                // appends to extra
-                $this->data['extra'] = [
-                    'mission_id' => $this->data['object_id'],
-                    'mission_claimed' => $mission_claimed,
-                    'mission_completed' => $mission_completed,
-                ];
+                // appends to $this->extra
+                $this->extra['mission_id'] = $this->data['object_id'];
+                $this->extra['mission_claimed'] = $mission_claimed;
+                $this->extra['mission_completed'] = $mission_completed;
             }
         }
 
