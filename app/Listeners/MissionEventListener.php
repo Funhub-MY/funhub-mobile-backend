@@ -158,6 +158,10 @@ class MissionEventListener
                 ->where('mission_id', $mission->id)
                 ->first();
 
+            if ($userMission && $userMission->pivot->is_completed && $mission->frequency == 'one-off') {
+                continue; // skip if user already completed one-off mission
+            }
+
             if (!$userMission) {
                 // Check if user has already completed the mission within the current day or month
                 if ($mission->frequency == 'daily') {
@@ -188,16 +192,6 @@ class MissionEventListener
                         ->get();
 
                     if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
-                        continue;
-                    }
-                } else if ($mission->frequency == 'one-off') {
-                    // check if user has completed similar mission before if not, skip. since one-off user can only do once
-                    $completedMissions = $user->missionsParticipating()
-                        ->where('mission_id', $mission->id)
-                        ->where('completed_at', '>=', now())
-                        ->get();
-
-                    if ($completedMissions->count() > 0) { // since user can only do one-off mission once per time.
                         continue;
                     }
                 }
