@@ -165,9 +165,16 @@ class ArticleController extends Controller
 
         // store id
         if ($request->has('store_id')) {
-            $query->whereHas('stores', function ($query) use ($request) {
-                $query->where('stores.id', $request->store_id);
-            });
+            $locationIds = DB::table('locatables as article_locatables')
+                ->join('locatables as store_locatables', function ($join) use ($request) {
+                    $join->on('article_locatables.location_id', '=', 'store_locatables.location_id')
+                        ->where('store_locatables.locatable_type', Store::class)
+                        ->where('store_locatables.locatable_id', $request->store_id);
+                })
+                ->where('article_locatables.locatable_type', Article::class)
+                ->pluck('article_locatables.locatable_id');
+
+            $query->whereIn('articles.id', $locationIds);
         }
 
         $this->filterArticlesBlockedOrHidden($query);
