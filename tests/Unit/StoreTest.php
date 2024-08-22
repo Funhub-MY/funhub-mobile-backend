@@ -603,4 +603,68 @@ class StoreTest extends TestCase
         // asset data first store id is $store->id
         $this->assertEquals($store->id, $response->json()['data'][0]['id']);
     }
+
+    public function testGetArticlesUsingStoreId()
+    {
+        // create a new user
+        $merchantUser = User::factory()->create();
+
+        // create a store for the user
+        $store = Store::factory()->create([
+            'user_id' => $merchantUser->id,
+        ]);
+
+        // create a location and attach it to the store
+        $location = Location::factory()->create([
+            'name' => 'Test Location',
+            'address' => 'Test Address',
+            'lat' => 1.234,
+            'lng' => 1.234,
+            'address_2' => 'Test Address 2',
+            'city' => 'Test City',
+            'state_id' => State::first()->id,
+            'zip_code' => '123456',
+        ]);
+        $store->location()->attach($location->id);
+
+        // create articles with the same location
+        $articles = Article::factory()->count(5)->create([
+            'visibility' => Article::VISIBILITY_PUBLIC,
+            'user_id' => $this->user->id, // auth user is owner
+        ]);
+
+        // attach to same location as store
+        foreach ($articles as $article) {
+            $article->location()->attach($location->id);
+        }
+
+        // Make a request to get articles of the store
+        $response = $this->getJson("/api/v1/articles?store_id={$store->id}&include_own_article=1");
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'title',
+                        'body',
+                    ],
+                ],
+                'meta' => [
+                    'total',
+                ],
+            ]);
+
+        // assert the correct number of articles are returned
+        $this->assertEquals(5, $response->json('meta.total'));
+
+        // assert the returned articles belong to the store
+        foreach ($response->json('data') as $article) {
+            $this->assertDatabaseHas('locatables', [
+                'locatable_id' => $article['id'],
+                'locatable_type' => Article::class,
+                'location_id' => $location->id,
+            ]);
+        }
+    }
 }
