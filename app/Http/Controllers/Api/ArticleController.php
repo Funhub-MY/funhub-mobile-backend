@@ -70,6 +70,7 @@ class ArticleController extends Controller
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
+     * @bodyParam store_id integer optional Filter by Store Id. Example: 1
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
      * @bodyParam pinned_only integer optional Filter by Pinned Articles. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
@@ -159,6 +160,13 @@ class ArticleController extends Controller
         if ($request->has('location_id')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('locations.id', $request->location_id);
+            });
+        }
+
+        // store id
+        if ($request->has('store_id')) {
+            $query->whereHas('stores', function ($query) use ($request) {
+                $query->where('stores.id', $request->store_id);
             });
         }
 

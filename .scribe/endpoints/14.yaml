@@ -41,7 +41,7 @@ endpoints:
         name: frequency
         description: 'optional Filter by frequency, can combine frquency with multiple comma separated.'
         required: false
-        example: 'one-off,daily,monthly'
+        example: 'one-off,daily,monthly,accumulated'
         type: string
         enumValues: []
         exampleWasSpecified: true
@@ -49,7 +49,7 @@ endpoints:
     cleanUrlParameters:
       completed_only: '0'
       claimed_only: '0'
-      frequency: 'one-off,daily,monthly'
+      frequency: 'one-off,daily,monthly,accumulated'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -98,7 +98,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8ac3PgEeb6Vkh16d4aDfZ5v'
+      - 'Bearer dE6g13PZafbh8D5evkVac46'
     controller: null
     method: null
     route: null
@@ -158,7 +158,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k15hbvPdaDe634E6ZgV8cfa'
+      - 'Bearer vkcd1PEgf3DZa5eh68b6aV4'
     controller: null
     method: null
     route: null
@@ -207,7 +207,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer P3ehZ8fka6gVcv5a4Dd1E6b'
+      - 'Bearer gd4VfakZDh6P1Ec5e83a6bv'
     controller: null
     method: null
     route: null

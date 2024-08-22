@@ -624,7 +624,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php",
-                      "line": 581,
+                      "line": 587,
                       "function": "userFromToken",
                       "class": "Laravel\\Socialite\\Two\\AbstractProvider",
                       "type": "->"
@@ -1096,8 +1096,8 @@ endpoints:
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '55'
+          x-ratelimit-limit: '120'
+          x-ratelimit-remaining: '115'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1243,7 +1243,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php",
-                      "line": 623,
+                      "line": 629,
                       "function": "userFromToken",
                       "class": "Laravel\\Socialite\\Two\\AbstractProvider",
                       "type": "->"
@@ -1715,8 +1715,8 @@ endpoints:
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          x-ratelimit-limit: '60'
-          x-ratelimit-remaining: '54'
+          x-ratelimit-limit: '120'
+          x-ratelimit-remaining: '114'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1946,7 +1946,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 85a3Zveb1k66aV4chPEfdgD'
+      - 'Bearer PD81ahk6gcEZfev65dVba43'
     controller: null
     method: null
     route: null
@@ -2034,7 +2034,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kvg4E8ea3PD6dfZVhacb651'
+      - 'Bearer 4vedVhkD586P1bca3fgZ6Ea'
     controller: null
     method: null
     route: null
@@ -2084,7 +2084,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer d4ef356VkD1EbacP8Zvag6h'
+      - 'Bearer akc6v8PbdE1Z4D53agVfeh6'
     controller: null
     method: null
     route: null
@@ -2140,7 +2140,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer b6a5Z6D4vPgEfh1V3cek8da'
+      - 'Bearer 3Zfc4D65PV6kvdbEaga8h1e'
     controller: null
     method: null
     route: null

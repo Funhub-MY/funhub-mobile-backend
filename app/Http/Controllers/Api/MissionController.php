@@ -36,7 +36,7 @@ class MissionController extends Controller
      * @group Mission
      * @urlParam completed_only boolean optional Only show completed missions(is_completed=1). Example: 0
      * @urlParam claimed_only boolean optional Only show claimed missions(claimed_only=1). Example: 0
-     * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly
+     * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly,accumulated
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
