@@ -322,19 +322,34 @@ class StoreResource extends Resource
                 SelectFilter::make('status')
                     ->options(Store::STATUS)
                     ->label('Status'),
+                Filter::make('categories')
+                    ->form([
+                        Select::make('categories')
+                            ->options(function () {
+                                return MerchantCategory::pluck('name', 'id');
+                            })
+                            ->placeholder('Select progress status'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if (isset($data['categories'])) {
+                            $query->whereHas('categories', function (Builder $query) use ($data) {
+                                $query->whereIn('merchant_category_id', (array) $data['categories']);
+                            });
+                        }
+                    })
+                    ->label('Progress'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
+//                 Tables\Actions\DeleteBulkAction::make(),
                 ExportBulkAction::make()
                 ->exports([
                     ExcelExport::make()
                         ->label('Export Stores Categories')
                         ->withColumns([
                             Column::make('id')->heading('store_id'),
-                            Column::make('name')->heading('store_name'),
                             Column::make('categories.name')
                                 ->heading('category_names')
                                 ->getStateUsing(fn ($record) => $record->categories->pluck('name')->join(',')),

@@ -285,23 +285,19 @@ class MissionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('frequency')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 // morph to missionable column
                 Tables\Columns\TextColumn::make('missionable.name')
                     ->label('Rewards')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('reward_quantity')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('reward_quantity'),
 
-                Tables\Columns\TextColumn::make('reward_limit')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('reward_limit'),
 
                 Tables\Columns\BadgeColumn::make('auto_disburse_rewards')
                     ->label('Auto Disburse Rewards')
@@ -312,8 +308,7 @@ class MissionResource extends Resource
                     ->colors([
                         'secondary' => false,
                         'success' => true,
-                    ])
-                    ->sortable(),
+                    ]),
 
 
                 Tables\Columns\BadgeColumn::make('status')
@@ -324,16 +319,16 @@ class MissionResource extends Resource
                     ->colors([
                         'secondary' => 0,
                         'success' => 1,
-                    ])
-                    ->sortable(),
+                    ]),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('participants_count')
+                    ->label('Total Participants')
+                    ->counts('participants'),
             ])
             ->filters([
                 //
