@@ -328,16 +328,19 @@ class StoreResource extends Resource
                             ->options(function () {
                                 return MerchantCategory::pluck('name', 'id');
                             })
-                            ->placeholder('Select progress status'),
+                            ->placeholder('Select Category'),
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if (isset($data['categories'])) {
-                            $query->whereHas('categories', function (Builder $query) use ($data) {
-                                $query->whereIn('merchant_category_id', (array) $data['categories']);
-                            });
+                        if (!$data['categories']) {
+                            // no filter
+                        } else{
+                            if (isset($data['categories'])) {
+                                $query->whereHas('categories', function (Builder $query) use ($data) {
+                                    $query->whereIn('merchant_category_id', (array) $data['categories']);
+                                });
+                            }
                         }
                     })
-                    ->label('Progress'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

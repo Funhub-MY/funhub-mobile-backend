@@ -120,7 +120,16 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\BadgeColumn::make('latestSuccessfulClaim.status')
                     ->label('Financial Status')
                     ->default(0)
-                    ->sortable()
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderBy(
+                            MerchantOfferClaim::select('status')
+                                ->whereColumn('voucher_id', 'merchant_offer_vouchers.id')
+                                ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                                ->latest('created_at')
+                                ->limit(1),
+                            $direction
+                        );
+                    })
                     ->enum([
                         0 => 'Unclaimed',
                         1 => MerchantOfferClaim::CLAIM_STATUS[1],
@@ -137,8 +146,12 @@ class MerchantOfferVoucherResource extends Resource
                 // redemptions status
                 Tables\Columns\BadgeColumn::make('voucher_redeemed') // using append.
                     ->label('Redemption Status')
-                    ->default(0)
-                    ->sortable()
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->leftJoin('merchant_offer_user', 'merchant_offer_vouchers.id', '=', 'merchant_offer_user.voucher_id')
+                            ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_user.id', '=', 'merchant_offer_claims_redemptions.claim_id')
+                            ->orderByRaw("CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END {$direction}")
+                            ->select('merchant_offer_vouchers.*');
+                    })
                     ->enum([
                         false => 'Not Redeemed',
                         true => 'Redeemed'
@@ -155,7 +168,16 @@ class MerchantOfferVoucherResource extends Resource
 
                 Tables\Columns\TextColumn::make('latestSuccessfulClaim.purchase_method')
                     ->label('Purchase Method')
-                    ->sortable()
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderBy(
+                            MerchantOfferClaim::select('purchase_method')
+                                ->whereColumn('voucher_id', 'merchant_offer_vouchers.id')
+                                ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                                ->latest('created_at')
+                                ->limit(1),
+                            $direction
+                        );
+                    })
                     ->formatStateUsing(function ($state) {
                         if ($state == 'fiat') {
                             return 'Cash';
@@ -164,11 +186,19 @@ class MerchantOfferVoucherResource extends Resource
                         } else {
                             return '-';
                         }
-                    })
-                    ->sortable(),
+                    }),
 
                 Tables\Columns\TextColumn::make('latestSuccessfulClaim.net_amount')
-                    ->sortable()
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderBy(
+                            MerchantOfferClaim::select('net_amount')
+                                ->whereColumn('voucher_id', 'merchant_offer_vouchers.id')
+                                ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                                ->latest('created_at')
+                                ->limit(1),
+                            $direction
+                        );
+                    })
                     ->formatStateUsing(function ($state) {
                         if ($state) {
                             return number_format($state, 2);
@@ -181,8 +211,16 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\TextColumn::make('latestSuccessfulClaim.created_at')
                     ->label('Purchased At')
                     ->date('d/m/Y h:ia')
-                    ->sortable(),
-
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query->orderBy(
+                            MerchantOfferClaim::select('created_at')
+                                ->whereColumn('voucher_id', 'merchant_offer_vouchers.id')
+                                ->where('status', MerchantOfferClaim::CLAIM_SUCCESS)
+                                ->latest('created_at')
+                                ->limit(1),
+                            $direction
+                        );
+                    }),
                 Tables\Columns\TextColumn::make('voided')
                     ->label('Voided')
                     ->formatStateUsing(function ($state) {
@@ -194,7 +232,7 @@ class MerchantOfferVoucherResource extends Resource
                                 return 'Yes';
                                 break;
                         }
-                    }),
+                    })
             ])
             ->filters([
                 SelectFilter::make('claimStatus')
@@ -337,17 +375,6 @@ class MerchantOfferVoucherResource extends Resource
                     ExcelExport::make('table')->fromTable(),
                 ])
             ]);
-    }
-
-    public static function getTableQuery(): Builder
-    {
-        return parent::getTableQuery()
-            ->orderBy(DB::raw('(
-            SELECT status
-            FROM merchant_offer_user
-            WHERE merchant_offer_vouchers`.`id` = `merchant_offer_user`.`voucher_id
-            LIMIT 1)'),'asc'
-            );
     }
     public static function getRelations(): array
     {
