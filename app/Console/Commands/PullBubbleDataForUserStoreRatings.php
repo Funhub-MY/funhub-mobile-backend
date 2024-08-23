@@ -6,6 +6,7 @@ use App\Models\RatingCategory;
 use App\Models\Store;
 use App\Models\StoreRating;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -178,11 +179,16 @@ class PullBubbleDataForUserStoreRatings extends Command
 
                     if ($store && $authUser && !$storeRating) { // if store exists and authUser exists and storeRating not exists
                         // add store ratings of this user id
+                        // parse CreatedDate
+                        $createdDate = Carbon::parse($review['Created Date']);
+
                         $rating = $store->storeRatings()->create([
                             'user_id' => $authUser->id,
                             'rating' => $review['Rating'],
                             'comment' => (isset($review['Comments'])) ? $review['Comments'] : null,
                             'external_review_id' => $review['_id'],
+                            'created_at' => $createdDate,
+                            'updated_at' => $createdDate,
                         ]);
                         $this->info("-- Created rating for store: " . $store->id . " and user: " . $authUser->id);
 
