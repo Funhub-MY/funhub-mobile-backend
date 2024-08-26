@@ -5,9 +5,11 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use App\Models\User;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables;
 use App\Models\Reward;
 use App\Models\Approval;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
@@ -31,6 +33,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Filters\SelectFilter;
+use Symfony\Component\Finder\Iterator\DateRangeFilterIterator;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class UserResource extends Resource
@@ -201,8 +204,10 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make(name: 'name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make(name: 'username')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name: 'name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make(name: 'username')
+                    ->searchable(),
                 // status
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum([
@@ -215,11 +220,12 @@ class UserResource extends Resource
                         'danger' => 2,
                         'secondary' => 3,
                     ])
-                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('full_phone_no')->label('Phone No'),
-                Tables\Columns\TextColumn::make(name: 'email')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make(name: 'email_verified_at')->sortable(),
+                Tables\Columns\TextColumn::make('full_phone_no')
+                    ->label('Phone No')
+                    ->sortable(['phone_country_code','phone_no']),
+                Tables\Columns\TextColumn::make(name: 'email')->searchable(),
+                Tables\Columns\TextColumn::make(name: 'email_verified_at'),
                 Tables\Columns\BadgeColumn::make('profile_is_private')
                     ->label('Profile Privacy')
                     ->enum([
@@ -243,11 +249,16 @@ class UserResource extends Resource
                     ]),
                 // referred_by_id
                 Tables\Columns\TextColumn::make('referredBy.name')
+                    ->sortable()
                     ->label('Referred By'),
 
                 Tables\Columns\TextColumn::make('point_balance')
+                    ->sortable()
                     ->label('Funhub Balance'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()
+                Tables\Columns\TextColumn::make('total_engagement')
+                    ->label('Total Engagement')
+                    ->formatStateUsing(fn($record) => $record->interactions()->count()),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()
             ])
             ->filters([
                 // filter by status
@@ -258,6 +269,47 @@ class UserResource extends Resource
                         2 => 'Suspended',
                         3 => 'Archived',
                     ]),
+                Filter::make('referred_by')
+                    ->form([
+                        TextInput::make('referred_by')
+                            ->label('Referred By (ID, Username, or Name)')
+                            ->placeholder('Enter ID, Username, or Name')
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        $searchTerm = $data['referred_by'];
+
+                        if ($searchTerm) {
+                            $query->whereHas('referredBy', function (Builder $subQuery) use ($searchTerm) {
+                                $subQuery->where('id', $searchTerm)
+                                    ->orWhere('username', 'like', "%$searchTerm%")
+                                    ->orWhere('name', 'like', "%$searchTerm%");
+                            });
+                        }
+                    })
+                    ->label('Referred By'),
+                Filter::make('created_from')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->placeholder('Select start date'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['created_from']) {
+                            $query->whereDate('created_at', '>=', $data['created_from']);
+                        }
+                    })
+                    ->label('Created From'),
+
+                Filter::make('created_until')
+                    ->form([
+                        DatePicker::make('created_until')
+                            ->placeholder('Select end date'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['created_until']) {
+                            $query->whereDate('created_at', '<=', $data['created_until']);
+                        }
+                    })
+                    ->label('Created Until'),
             ])
             ->actions([
                 Tables\Actions\Action::make('View')
@@ -380,6 +432,7 @@ class UserResource extends Resource
         return [
             RelationManagers\RolesRelationManager::class,
             AuditsRelationManager::class,
+            RelationManagers\EngagementHistoryRelationManager::class, // Add this line
         ];
     }
 

@@ -2,14 +2,23 @@
 
 namespace App\Filament\Resources\MissionResource\RelationManagers;
 
+use App\Models\Store;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Tables;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Illuminate\Support\Facades\DB;
+use pxlrbt\FilamentExcel\Actions\Pages\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class ParticipantsRelationManager extends RelationManager
 {
@@ -29,11 +38,15 @@ class ParticipantsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('user_id')
                     ->label('User ID')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('username')
+                    ->label('Funhub ID')
+                    ->sortable()
                     ->searchable(['username', 'name']),
                 Tables\Columns\TextColumn::make('missionsParticipating')
                     ->label('Progress')
+                    ->sortable(['missions_users.is_completed'])
                     ->formatStateUsing(function (Model $record, $state) {
                         if ($record->is_completed) {
                             return 'Completed';
@@ -57,10 +70,55 @@ class ParticipantsRelationManager extends RelationManager
 
                             return $totalCurrentEventValue . '/' . $totalMissionEventValue;
                         }
-                        })
+                    }),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Action At')
+                    ->sortable(['missions_users.created_at']),
             ])
             ->filters([
-                //
+                Filter::make('progress')
+                    ->form([
+                        Select::make('progress')
+                            ->options([
+                                'completed' => 'Completed',
+                                'ongoing' => 'Ongoing',
+                            ])
+                            ->placeholder('Select progress status'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if (isset($data['progress'])) {
+                            $progress = $data['progress'] === 'completed' ? 1 : 0;
+//                            $query->whereHas('participants', function (Builder $query) use ($progress) {
+                                $query->where('is_completed', $progress);
+//                            });
+                        }
+                    })
+                    ->label('Progress'),
+                Filter::make('created_from')
+                    ->form([
+                        DatePicker::make('created_from')
+                            ->placeholder('Select start date'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['created_from']) {
+                            // Specify the table name for created_at
+                            $query->whereDate($query->getModel()->getTable() . '.created_at', '>=', $data['created_from']);
+                        }
+                    })
+                    ->label('Actioned From'),
+
+                Filter::make('created_until')
+                    ->form([
+                        DatePicker::make('created_until')
+                            ->placeholder('Select end date'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['created_until']) {
+                            // Specify the table name for created_at
+                            $query->whereDate($query->getModel()->getTable() . '.created_at', '<=', $data['created_until']);
+                        }
+                    })
+                    ->label('Actioned Until'),
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make(),
@@ -71,6 +129,18 @@ class ParticipantsRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()
+                    ->exports([
+                        ExcelExport::make()
+                            ->label('Export Participants')
+                            ->withColumns([
+                                Column::make('id')->heading('user_id'),
+                                Column::make('username')->heading('funhub_id'),
+                                Column::make('created_at')->heading('Action At')
+                            ])
+                            ->withFilename(fn () => 'Participants-' . date('Y-m-d'))
+                            ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+                    ]),
             ]);
     }
 }

@@ -55,8 +55,8 @@ class VouchersRelationManager extends RelationManager
                 ->searchable(),
 
                 Tables\Columns\BadgeColumn::make('latestSuccessfulClaim.status')
-                ->label('Financial Status')
-                ->default(0)
+                    ->label('Financial Status')
+                    ->default(0)
                     ->sortable()
                     ->enum([
                         0 => 'Unclaimed',
