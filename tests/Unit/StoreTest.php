@@ -630,6 +630,7 @@ class StoreTest extends TestCase
         // create articles with the same location
         $articles = Article::factory()->count(5)->create([
             'visibility' => Article::VISIBILITY_PUBLIC,
+            'status' => Article::STATUS_PUBLISHED,
             'user_id' => $this->user->id, // auth user is owner
         ]);
 
@@ -637,6 +638,15 @@ class StoreTest extends TestCase
         foreach ($articles as $article) {
             $article->location()->attach($location->id);
         }
+
+        // ensure articles are whitelisted for home recommendation
+        $articles->each(function ($article) {
+            $article->hidden_from_home = false;
+            $article->save();
+        });
+
+        // acting as this user
+        $this->actingAs($this->user);
 
         // Make a request to get articles of the store
         $response = $this->getJson("/api/v1/articles?store_id={$store->id}&include_own_article=1");
