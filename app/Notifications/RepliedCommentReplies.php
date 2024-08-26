@@ -57,11 +57,11 @@ class RepliedCommentReplies extends Notification
                 'title' => (string) $this->comment->user->name,
                 'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
                 'comment_id' => (string) $this->comment->id,
-                'extra' => [
+                'extra' => json_encode([
                     'parent_id' =>(string) $this->replyingComment->parent_id,
                     'reply_to_id' => (string) $this->comment->reply_to_id,
                     'comment_id' => (string) $this->comment->id,
-                ]
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.CommentRepliedTitle'))

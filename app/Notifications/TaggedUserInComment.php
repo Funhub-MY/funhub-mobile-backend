@@ -62,11 +62,11 @@ class TaggedUserInComment extends Notification
                 'from_id' => (string) $this->user->id,
                 'title' => (string) $this->user->name,
                 'message' => (string) $this->getMessage(),
-                'extra' => [
+                'extra' => json_encode([
                     'parent_id' => ($this->comment->parent_id) ? (string) $this->comment->parent_id : null,
                     'reply_to_id' => ($this->comment->reply_to_id) ? (string) $this->comment->reply_to_id : null,
                     'comment_id' => (string) $this->comment->id,
-                ]
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.TaggedUser'))
