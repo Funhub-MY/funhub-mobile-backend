@@ -64,6 +64,12 @@ class ReferralResource extends Resource
                     ->searchable(),
                 TextColumn::make('referral_total_number')
                     ->label('Referral Total Number')
+                    ->sortable(query: function (Builder $query, $direction) {
+                        $query->leftJoin('users as ref', 'ref.referred_by_id', '=', 'users.id')
+                            ->selectRaw('users.*, COUNT(ref.id) as referral_total_number')
+                            ->groupBy('users.id')
+                            ->orderBy('referral_total_number', $direction);
+                    })
                     ->getStateUsing(function (User $record) {
                         return $record->referrals()->count();
                     }),
