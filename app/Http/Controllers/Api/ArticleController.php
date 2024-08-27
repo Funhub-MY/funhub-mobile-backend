@@ -880,6 +880,18 @@ class ArticleController extends Controller
                 return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
+
+            // Dispatch job to update article count for each tag
+            $tags->each(function ($tagId) {
+                $tag = ArticleTag::find($tagId);
+                if ($tag) {
+                    // Dispatch the job with the ArticleTag model
+                    UpdateArticleTagArticlesCount::dispatch($tag);
+                } else {
+                    // Log an error if the tag was not
+                    Log::error('ArticleTag with ID ' . $tagId . ' not found.');
+                }
+            });
         }
 
         // attach location with rating
