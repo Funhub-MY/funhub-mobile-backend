@@ -14,7 +14,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 class MissionCompleted extends Notification
 {
 
-    protected $mission, $user, $reward, $rewardQuantity;
+    protected $mission, $user, $reward, $rewardQuantity, $translatedMissionName;
 
     /**
      * Create a new notification instance.
@@ -27,6 +27,19 @@ class MissionCompleted extends Notification
         $this->user = $user;
         $this->reward = $reward;
         $this->rewardQuantity = $rewardQuantity;
+
+        if ($this->mission) {
+            $locale = $this->user->last_lang ?? config('app.locale');
+            $this->translatedMissionName = $this->mission->name;
+            if (isset($this->mission->name_translation)) {
+                $this->translatedMissionName = json_decode($this->mission->name_translation, true);
+                if ($this->translatedMissionName && isset($this->translatedMissionName[$locale])) {
+                    $this->translatedMissionName = $this->translatedMissionName[$locale];
+                } else {
+                    $this->translatedMissionName = $this->translatedMissionName[config('app.locale')];
+                }
+            }
+        }
     }
 
     /**
@@ -61,7 +74,7 @@ class MissionCompleted extends Notification
                 'action' => 'mission_completed',
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
-                'title' => __('messages.notification.fcm.MissionCompletedTitle'),
+                'title' => (string) $this->translatedMissionName,
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -87,7 +100,7 @@ class MissionCompleted extends Notification
             'action' => 'mission_completed',
             'from_name' => $this->user->name,
             'from_id' => $this->user->id,
-            'title' => __('messages.notification.database.MissionCompletedTitle'),
+            'title' => $this->translatedMissionName,
             'message' => $this->getMessage(),
         ];
     }
