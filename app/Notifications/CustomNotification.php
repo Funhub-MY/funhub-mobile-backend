@@ -117,9 +117,9 @@ class CustomNotification extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         $toArrayData = [
-            'title' => $this->getTitleAndContent()['title'],
-            'message' => $this->getTitleAndContent()['content'],
-            'redirect' => $this->customNotification->page_redirect?? null,
+            'title' => (string) $this->getTitleAndContent()['title'],
+            'message' => (string) $this->getTitleAndContent()['content'],
+            'redirect' => (string) $this->customNotification->page_redirect?? null,
             'object' => get_class($this->customNotification), // App/Models/SystemNotification
             'object_id' => (string) $this->customNotification->id,
             'link_to_url' => $this->customNotification->web_link ? true : false,
