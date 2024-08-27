@@ -57,11 +57,11 @@ class CommentLiked extends Notification implements ShouldQueue
                 'from_id' => (string) $this->user->id,
                 'title' => (string) $this->user->name,
                 'message' => __('messages.notification.database.CommentLiked'),
-                'extra' => [
-                    'parent_id' => ($this->comment->parent_id) ? (string) $this->comment->parent_id : null,
-                    'reply_to_id' => ($this->comment->reply_to_id) ? (string) $this->comment->reply_to_id : null,
-                    'comment_id' => (string) $this->comment->id
-                ]
+                'extra' => json_encode([
+                    'parent_id' => (string) $this->comment->parent_id,
+                    'reply_to_id' => (string) $this->comment->reply_to_id,
+                    'comment_id' => (string) $this->comment->id,
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.CommentLikedTitle'))

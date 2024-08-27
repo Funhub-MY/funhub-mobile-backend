@@ -59,10 +59,10 @@ class Commented extends Notification implements ShouldQueue
                 'from_id' => (string) $this->comment->user->id,
                 'title' => (string) $this->comment->user->name,
                 'message' => __('messages.notification.database.Commented'),
-                'extra' => [
+                'extra' => json_encode([
                     'parent_id' => ($this->comment->parent_id) ? (string) $this->comment->parent_id : null,
                     'comment_id' => (string) $this->comment->id,
-                ]
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.CommentedTitle'))
