@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:sync-location-as-stores')->hourly();
 
         // match contacts to users(related_user_id) in user_contacts table
-        $schedule->job(new ImportedContactMatching())->hourly();
+        $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
 
         // sync bubble contact for users, stores, and ratings
         if (config('services.bubble.status') == true) {
