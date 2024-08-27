@@ -1692,6 +1692,44 @@ class ArticleTest extends TestCase
         $this->assertContains($article->id, collect($response->json('data'))->pluck('id')->toArray());
     }
 
+    public function testArticleTagsCreatedCountReflect()
+    {
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#test', '#test2'],
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        $article_id = $response->json('article.id');
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Test Article with Images',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $this->user->id,
+        ]);
+
+        // check article has tags attached (two tags)
+        $this->assertDatabaseHas('articles_article_tags', [
+            'article_id' => $article_id,
+            'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
+        ]);
+        $this->assertDatabaseHas('articles_article_tags', [
+            'article_id' => $article_id,
+            'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
+        ]);
+    }
 
     // public function testArticleNotInterestedByUser()
     // {
