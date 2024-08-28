@@ -1694,41 +1694,63 @@ class ArticleTest extends TestCase
 
     public function testArticleTagsCreatedCountReflect()
     {
-        $response = $this->postJson('/api/v1/articles', [
-            'title' => 'Test Article with Images',
-            'body' => 'Test Article Body',
+        // Create the first article with the tag '#test'
+        $response1 = $this->postJson('/api/v1/articles', [
+            'title' => 'First Article with Tag',
+            'body' => 'First Article Body',
             'type' => 'multimedia',
-            'published_at' => now(),
-            'status' => 1,
             'published_at' => now()->toDateTimeString(),
-            'tags' => ['#test', '#test2'],
+            'status' => 1,
+            'tags' => ['#test'],
         ]);
 
-        $response->assertStatus(200)
+        $response1->assertStatus(200)
             ->assertJsonStructure([
                 'message',
                 'article',
             ]);
 
-        $article_id = $response->json('article.id');
+        // Create the second article with the same tag '#test'
+        $response2 = $this->postJson('/api/v1/articles', [
+            'title' => 'Second Article with Tag',
+            'body' => 'Second Article Body',
+            'type' => 'multimedia',
+            'published_at' => now()->toDateTimeString(),
+            'status' => 1,
+            'tags' => ['#test'],
+        ]);
 
+        $response2->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article',
+            ]);
+
+        // Verify both articles are in the database
         $this->assertDatabaseHas('articles', [
-            'title' => 'Test Article with Images',
-            'body' => 'Test Article Body',
+            'title' => 'First Article with Tag',
+            'body' => 'First Article Body',
             'type' => 'multimedia',
             'status' => 1,
             'user_id' => $this->user->id,
         ]);
 
-        // check article has tags attached (two tags)
-        $this->assertDatabaseHas('articles_article_tags', [
-            'article_id' => $article_id,
-            'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Second Article with Tag',
+            'body' => 'Second Article Body',
+            'type' => 'multimedia',
+            'status' => 1,
+            'user_id' => $this->user->id,
         ]);
-        $this->assertDatabaseHas('articles_article_tags', [
-            'article_id' => $article_id,
-            'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
-        ]);
+
+        // Retrieve the tag from the database
+        $articleTag = ArticleTag::where('name', '#test')->first();
+
+        // Ensure the tag is associated with two articles
+        $articlesWithTag = $articleTag ? $articleTag->articles : collect();
+
+        // Verify the number of articles associated with the tag '#test' is 2
+        $this->assertCount(2, $articlesWithTag, 'There should be 2 articles with tag #test');
     }
 
     // public function testArticleNotInterestedByUser()
