@@ -880,6 +880,10 @@ class ArticleController extends Controller
                 return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
+            $article->refresh();
+            $article->tags->each(function ($tag) {
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            });
         }
 
         // attach location with rating
