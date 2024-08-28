@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Approval;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
+use App\Events\CommentLiked;
 use App\Events\CompletedProfile;
 use App\Events\FollowedUser;
 use App\Listeners\MediaListener;
@@ -98,6 +99,10 @@ class EventServiceProvider extends ServiceProvider
 
         RatedStore::class => [
             UpdateLastRatedForMerchantOfferClaim::class,
+            MissionEventListener::class,
+        ],
+
+        CommentLiked::class => [
             MissionEventListener::class,
         ]
     ];

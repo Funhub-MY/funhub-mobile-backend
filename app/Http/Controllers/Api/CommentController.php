@@ -515,7 +515,7 @@ class CommentController extends Controller
             $comment->likes()->create([
                 'user_id' => auth()->id(),
             ]);
-            event(new \App\Events\CommentLiked($comment, true)); // fires event
+            event(new \App\Events\CommentLiked($comment, true, auth()->user())); // fires event
 
             if ($comment && $comment->user && $comment->user->id != auth()->id()) {
                 $locale = $comment->user->last_lang ?? config('app.locale');
@@ -527,7 +527,7 @@ class CommentController extends Controller
         } else {
             // unlike
             $comment->likes()->where('user_id', auth()->id())->delete();
-            event(new \App\Events\CommentLiked($comment, false)); // fires event
+            event(new \App\Events\CommentLiked($comment, false, auth()->user())); // fires event
             return response()->json(['message' => __('messages.success.comment_controller.Comment_Un-Liked')]);
         }
     }

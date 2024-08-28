@@ -15,16 +15,17 @@ class CommentLiked
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $comment, $liked;
+    public $comment, $liked, $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Comment $comment, bool $liked)
+    public function __construct(Comment $comment, bool $liked, $user = null)
     {
         $this->comment = $comment;
         $this->liked = $liked;
+        $this->user = $user;
     }
 }

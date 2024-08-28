@@ -9,6 +9,7 @@ use App\Models\Interaction;
 use App\Events\FollowedUser;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
+use App\Events\CommentLiked;
 use App\Services\PointService;
 use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
@@ -47,6 +48,8 @@ class MissionEventListener
             $this->handleInteractionCreated($event);
         } else if ($event instanceof CommentCreated) {
             $this->handleCommentCreated($event);
+        } else if ($event instanceof CommentLiked) {
+            $this->handleCommentLiked($event);
         } else if ($event instanceof ArticleCreated) {
             $this->handleArticleCreated($event);
         } else if ($event instanceof FollowedUser) {
@@ -112,6 +115,16 @@ class MissionEventListener
         $comment = $event->comment;
         $user = $comment->user;
         $this->updateMissionProgress('comment_created', $user, 1);
+    }
+
+    private function handleCommentLiked($event)
+    {
+        $user = $event->user;
+        $liked = $event->liked;
+
+        if ($liked) {
+            $this->updateMissionProgress('like_comment', $user, 1);
+        }
     }
 
     /**
