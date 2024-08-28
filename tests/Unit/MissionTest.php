@@ -6,6 +6,7 @@ use App\Events\CompletedProfile;
 use App\Events\UserSettingsUpdated;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Comment;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -941,4 +942,71 @@ it('User can participate in an accumulated mission only once until reaching the 
 
     expect($firstMissionUser->completed_at)->not->toBeNull();
     expect($firstMissionUser->id)->not->toEqual($latestMissionUser->id);
+});
+
+it('User can like a comment and get rewarded by mission', function () {
+    Notification::fake();
+
+    // Create an article
+    $article = Article::factory()->create();
+
+    // Create comments associated with the article and the logged-in user
+    $comments = Comment::factory()->count(5)->create([
+        'commentable_id' => $article->id,
+        'commentable_type' => Article::class,
+        'user_id' => $this->user->id,
+    ]);
+
+    // get reward component
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+    $mission = Mission::factory()->create([
+        'name' => 'Like 5 comments',
+        'enabled_at' => now(),
+        'description' => 'Like 5 comments',
+        'events' => json_encode(['like_comment']),
+        'values' => json_encode([5]),
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'reward_limit' => 100,
+        'frequency' => 'one-off',
+        'status' => 1,
+        'auto_disburse_rewards' => 1,
+        'user_id' => $this->user->id
+    ]);
+
+    foreach ($comments as $comment) {
+        // like each comment
+        $response = $this->postJson('/api/v1/comments/like_toggle', [
+            'comment_id' => $comment->id,
+        ]);
+        $response->assertStatus(200);
+    }
+
+    // check user mission process current_values
+    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
+        ->first();
+
+    // if current values is string, then decode first
+    if (is_string($userMission->pivot->current_values)) {
+        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+    }
+
+    // expect current_values to be 5
+    expect(array_values($userMission->pivot->current_values)[0])->toBe(5);
+
+    // expect pivot is_completed is true
+    expect($this->user->missionsParticipating->first()->pivot->is_completed)
+        ->toBe(1);
+
+    // check notification fired
+    Notification::assertSentTo(
+        [$this->user],
+        \App\Notifications\RewardReceivedNotification::class
+    );
+
+    // check user has received reward component
+    $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
+    expect($response->status())->toBe(200);
+    expect($response->json('balance'))->toBe(1);
 });
