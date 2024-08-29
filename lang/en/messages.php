@@ -241,9 +241,12 @@ return [
     ],
     'notification' => [
         'fcm' => [
+            'ArticleInteractedTitle' => 'Article Activity',
             'ArticleInteracted' => ':username :action your ":articleTitle"',
+            'ArticleLiked' => 'liked',
             'CommentedTitle' => 'New Comment',
             'Commented' => ':username commented on your post ":commentTitle"',
+            'CommentLikedTitle' => 'New Comment Like',
             'CommentLiked' => ':username liked your comment ":comment"',
             'CommentRepliedTitle' => 'New Comment Reply',
             'CommentReplied' => ':username replied to your comment ":comment"',
@@ -262,6 +265,7 @@ return [
             'PurchasedGiftCardNotification' => '',
             'PurchasedOfferNotification' => '',
             'RedemptionExpirationNotification' => 'The voucher ":offerName" will expire in :daysLeft days.',
+            'TaggedUser' => 'Someone @ you',
             'TaggedUserInArticle' => 'Didn\'t forget to @ you even while playing, come have a look',
             'TaggedUserInComment' => 'Mentioned you in the comments',
             'VoucherRedeemedNotification' => 'Voucher redeemed',
@@ -279,6 +283,7 @@ return [
         ],
         'database' => [
             'ArticleInteracted' => 'Liked your post, it is really interesting!',
+            'ArticleLiked' => 'liked',
             'CommentedTitle' => 'New Comment',
             'Commented' => 'Commented on your post, go and have a look',
             'CommentLiked' => 'Liked your comment, it is really interesting!',
@@ -299,6 +304,7 @@ return [
             'PurchasedGiftCardNotification' => '',
             'PurchasedOfferNotification' => '',
             'RedemptionExpirationNotification' => 'The voucher ":offerName" will expire in :daysLeft days."',
+            'TaggedUser' => 'Someone @ you',
             'TaggedUserInArticle' => 'Didn\'t forget to @ you even while playing, come have a look',
             'TaggedUserInComment' => 'Mentioned you in the comments',
             'VoucherRedeemedNotification' => 'Voucher redeemed',

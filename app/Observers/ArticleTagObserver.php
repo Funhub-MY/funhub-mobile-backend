@@ -16,4 +16,9 @@ class ArticleTagObserver
     {
         UpdateArticleTagArticlesCount::dispatch($articleTag);
     }
+
+    public function deleted(ArticleTag $articleTag)
+    {
+        UpdateArticleTagArticlesCount::dispatch($articleTag);
+    }
 }

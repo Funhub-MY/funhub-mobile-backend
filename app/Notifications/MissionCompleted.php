@@ -14,7 +14,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 class MissionCompleted extends Notification
 {
 
-    protected $mission, $user, $reward, $rewardQuantity;
+    protected $mission, $user, $reward, $rewardQuantity, $translatedMissionName;
 
     /**
      * Create a new notification instance.
@@ -27,6 +27,19 @@ class MissionCompleted extends Notification
         $this->user = $user;
         $this->reward = $reward;
         $this->rewardQuantity = $rewardQuantity;
+
+        if ($this->mission) {
+            $locale = $this->user->last_lang ?? config('app.locale');
+            $this->translatedMissionName = $this->mission->name;
+            if (isset($this->mission->name_translation)) {
+                $this->translatedMissionName = json_decode($this->mission->name_translation, true);
+                if ($this->translatedMissionName && isset($this->translatedMissionName[$locale])) {
+                    $this->translatedMissionName = $this->translatedMissionName[$locale];
+                } else {
+                    $this->translatedMissionName = $this->translatedMissionName[config('app.locale')];
+                }
+            }
+        }
     }
 
     /**
@@ -54,14 +67,14 @@ class MissionCompleted extends Notification
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->mission),
-                'object_id' => (int) $this->mission->id,
+                'object_id' => (string) $this->mission->id,
                 'link_to_url' => (string) 'false',
-                'link_to' => (int) $this->mission->id, // if link to url false, means get link_to_object
+                'link_to' => (string) $this->mission->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
                 'action' => 'mission_completed',
                 'from_name' => (string) $this->user->name,
-                'from_id' => (int) $this->user->id,
-                'title' => __('messages.notification.fcm.MissionCompletedTitle'),
+                'from_id' => (string) $this->user->id,
+                'title' => (string) $this->translatedMissionName,
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -87,7 +100,7 @@ class MissionCompleted extends Notification
             'action' => 'mission_completed',
             'from_name' => $this->user->name,
             'from_id' => $this->user->id,
-            'title' => __('messages.notification.database.MissionCompletedTitle'),
+            'title' => $this->translatedMissionName,
             'message' => $this->getMessage(),
         ];
     }

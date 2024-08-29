@@ -9,6 +9,7 @@ use App\Models\Interaction;
 use App\Events\FollowedUser;
 use App\Events\ArticleCreated;
 use App\Events\CommentCreated;
+use App\Events\CommentLiked;
 use App\Services\PointService;
 use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
@@ -47,6 +48,8 @@ class MissionEventListener
             $this->handleInteractionCreated($event);
         } else if ($event instanceof CommentCreated) {
             $this->handleCommentCreated($event);
+        } else if ($event instanceof CommentLiked) {
+            $this->handleCommentLiked($event);
         } else if ($event instanceof ArticleCreated) {
             $this->handleArticleCreated($event);
         } else if ($event instanceof FollowedUser) {
@@ -114,6 +117,16 @@ class MissionEventListener
         $this->updateMissionProgress('comment_created', $user, 1);
     }
 
+    private function handleCommentLiked($event)
+    {
+        $user = $event->user;
+        $liked = $event->liked;
+
+        if ($liked) {
+            $this->updateMissionProgress('like_comment', $user, 1);
+        }
+    }
+
     /**
      * Handle Article Created
      */
@@ -153,9 +166,30 @@ class MissionEventListener
             return in_array($eventType, $mission->events);
         });
 
+        // double check if user has completed one-off mission, if yes then skip below
+        $oneOffMissions = $user->missionsParticipating()->where('is_completed', true)
+            ->whereIn('mission_id', $missions->pluck('id'))
+            ->where('frequency', 'one-off')
+            ->get();
+
+        if ($oneOffMissions->count() > 0) {
+            Log::info('User already completed one-off mission', [
+                'user' => $user->id,
+                'missions' => $missions->pluck('id')->toArray(),
+                'latest_completions' => $oneOffMissions->map(function ($mission) {
+                    return [
+                        'mission_id' => $mission->mission_id,
+                        'completed_at' => $mission->completed_at,
+                    ];
+                })->toArray(),
+            ]);
+            return;
+        }
+
         foreach ($missions as $mission) {
             $userMission = $user->missionsParticipating()->where('is_completed', false)
                 ->where('mission_id', $mission->id)
+                ->orderBy('id', 'desc') // latest one first
                 ->first();
 
             if (!$userMission) {
@@ -179,6 +213,16 @@ class MissionEventListener
 
                     if ($completedThisMonth) {
                         continue; // Skip creating a new record if already completed this month
+                    }
+                } elseif ($mission->frequency == 'accumulated') {
+                    // check if user has completed similar mission before if not, skip
+                    $completedMissions = $user->missionsParticipating()
+                        ->where('mission_id', $mission->id)
+                        ->whereNull('completed_at')
+                        ->get();
+
+                    if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
+                        continue;
                     }
                 }
 
@@ -255,11 +299,22 @@ class MissionEventListener
                 $userMission->pivot->last_rewarded_at = $currentMonth;
                 $userMission->pivot->save();
             }
+        } elseif ($mission->frequency == 'accumulated') {
+            if (!$lastRewardedAt) {
+                $this->disburseRewards($mission, $user);
+                $userMission->pivot->last_rewarded_at = now();
+                $userMission->pivot->save();
+            }
         }
     }
 
     /**
      * Check if Mission is Completed
+     *
+     * @param array $missionEvents
+     * @param array $missionValues
+     * @param array $currentValues
+     * @return boolean
      */
     private function isMissionCompleted($missionEvents, $missionValues, $currentValues)
     {
@@ -299,6 +354,13 @@ class MissionEventListener
         return true;
     }
 
+    /**
+     * Disburse rewards to user
+     *
+     * @param Mission $mission
+     * @param User $user
+     * @return void
+     */
     private function disburseRewards($mission, $user)
     {
         $disbursedRewardCount = MissionRewardDisbursement::where('mission_id', $mission->id)->sum('reward_quantity');
@@ -365,6 +427,13 @@ class MissionEventListener
         }
     }
 
+    /**
+     * Check if user has spam interaction
+     *
+     * @param User $user
+     * @param Interaction $interaction
+     * @return boolean
+     */
     private function isSpamInteraction($user, $interaction)
     {
         $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));
@@ -378,6 +447,13 @@ class MissionEventListener
         return $recentInteractions > 1;
     }
 
+    /**
+     * Check if user has spam following
+     *
+     * @param User $user
+     * @param User $followedUser
+     * @return boolean
+     */
     private function isSpamFollowing($user, $followedUser)
     {
         $spamThreshold = now()->subMinutes(config('app.missions_spam_threshold'));

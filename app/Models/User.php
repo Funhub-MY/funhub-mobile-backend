@@ -381,6 +381,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->belongsTo(User::class, 'referred_by_id');
     }
 
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by_id');
+    }
+
     public function merchantRatings()
     {
         return $this->hasMany(MerchantRating::class, 'user_id');

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
 use NotificationChannels\Fcm\FcmChannel;
@@ -48,6 +49,8 @@ class Commented extends Notification implements ShouldQueue
             ->setData([
                 'object' => (string) get_class($this->comment),
                 'object_id' => (string) $this->comment->id,
+                'article_id' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->id : null,
+                'article_type' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->type : null,
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->comment->commentable->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) $this->comment->commentable_type, // if link to url false, means get link_to_object
@@ -56,6 +59,10 @@ class Commented extends Notification implements ShouldQueue
                 'from_id' => (string) $this->comment->user->id,
                 'title' => (string) $this->comment->user->name,
                 'message' => __('messages.notification.database.Commented'),
+                'extra' => json_encode([
+                    'parent_id' => ($this->comment->parent_id) ? (string) $this->comment->parent_id : null,
+                    'comment_id' => (string) $this->comment->id,
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.CommentedTitle'))

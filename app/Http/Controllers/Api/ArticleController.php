@@ -70,6 +70,7 @@ class ArticleController extends Controller
      * @bodyParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @bodyParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
+     * @bodyParam store_id integer optional Filter by Store Id. Example: 1
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
      * @bodyParam pinned_only integer optional Filter by Pinned Articles. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
@@ -160,6 +161,20 @@ class ArticleController extends Controller
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('locations.id', $request->location_id);
             });
+        }
+
+        // store id
+        if ($request->has('store_id')) {
+            $locationIds = DB::table('locatables as article_locatables')
+                ->join('locatables as store_locatables', function ($join) use ($request) {
+                    $join->on('article_locatables.location_id', '=', 'store_locatables.location_id')
+                        ->where('store_locatables.locatable_type', Store::class)
+                        ->where('store_locatables.locatable_id', $request->store_id);
+                })
+                ->where('article_locatables.locatable_type', Article::class)
+                ->pluck('article_locatables.locatable_id');
+
+            $query->whereIn('articles.id', $locationIds);
         }
 
         $this->filterArticlesBlockedOrHidden($query);
@@ -865,6 +880,10 @@ class ArticleController extends Controller
                 return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
+            $article->refresh();
+            $article->tags->each(function ($tag) {
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            });
         }
 
         // attach location with rating
@@ -1045,11 +1064,17 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::with('user', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-        ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount('media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
         // withCount comment where dont have parent_id
         ->withCount(['comments' => function ($query) {
             $query->whereNull('parent_id')
             ->whereHas('user' , function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            });
+        }])
+        ->withCount(['interactions' => function ($query) {
+            // user must be active
+            $query->whereHas('user', function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             });
         }])

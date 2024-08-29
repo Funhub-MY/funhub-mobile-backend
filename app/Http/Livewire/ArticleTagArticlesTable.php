@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\ArticleTag;
+use Filament\Tables\Filters\Filter;
 use Livewire\Component;
 use App\Models\Article;
 use App\Models\ArticleTagsArticlesCount;
@@ -13,6 +14,11 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Support\Facades\Response;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ArticleTagArticlesTable extends Component implements HasTable
 {
@@ -98,8 +104,40 @@ class ArticleTagArticlesTable extends Component implements HasTable
             SelectFilter::make('status')
                 ->label('Status')
                 ->options(Article::STATUS),
+            Filter::make('created_from')
+                ->form([
+                    \Filament\Forms\Components\DatePicker::make('created_from')
+                        ->placeholder('Select start date'),
+                ])
+                ->query(function (Builder $query, array $data) {
+                    if ($data['created_from']) {
+                        $query->whereDate('created_at', '>=', $data['created_from']);
+                    }
+                })
+                ->label('Created From'),
+            Filter::make('created_until')
+                ->form([
+                    \Filament\Forms\Components\DatePicker::make('created_until')
+                        ->placeholder('Select end date'),
+                ])
+                ->query(function (Builder $query, array $data) {
+                    if ($data['created_until']) {
+                        $query->whereDate('created_at', '<=', $data['created_until']);
+                    }
+                })
+                ->label('Created Until'),
+        ];
+    }
 
-
+    protected function getTableBulkActions(): array
+    {
+        return [
+            ExportBulkAction::make()->exports([
+                ExcelExport::make('table')
+                    ->fromTable()
+                    ->withFilename(fn () => 'articles_tags_' . date('Y-m-d'))
+                    ->withColumns(['id'])
+            ]),
         ];
     }
 

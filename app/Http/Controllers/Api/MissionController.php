@@ -10,6 +10,7 @@ use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\User;
 use App\Notifications\MissionCompleted;
+use App\Notifications\RewardReceivedNotification;
 use Illuminate\Http\Request;
 use App\Services\PointService;
 use App\Services\PointComponentService;
@@ -35,7 +36,7 @@ class MissionController extends Controller
      * @group Mission
      * @urlParam completed_only boolean optional Only show completed missions(is_completed=1). Example: 0
      * @urlParam claimed_only boolean optional Only show claimed missions(claimed_only=1). Example: 0
-     * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly
+     * @urlParam frequency string optional Filter by frequency, can combine frquency with multiple comma separated. Example: one-off,daily,monthly,accumulated
      * @response scenario=success {
      * "current_page": 1,
      * "data": [
@@ -101,9 +102,9 @@ class MissionController extends Controller
         // filter by type of mission one-off, daily, monthly
         $query->when($request->has('frequency') && $request->frequency, function($query) use ($request) {
             // check if frequency contains one-off/daily/monthly or mix
-            if (!preg_match('/(one-off|daily|monthly)/', $request->frequency)) {
+            if (!preg_match('/(one-off|daily|monthly|accumulated)/', $request->frequency)) {
                 $request->validate([
-                    'frequency' => 'in:one-off,daily,monthly'
+                    'frequency' => 'in:one-off,daily,monthly,accumulated'
                 ]);
             }
             $frequencies = explode(',', $request->frequency);
@@ -297,6 +298,24 @@ class MissionController extends Controller
                     'user_id' => $user->id,
                     'reward_quantity' => $mission->reward_quantity
                 ]);
+
+                // fire mission rewarded notification
+                try {
+                    $locale = $user->last_lang ?? config('app.locale');
+                    $user->notify((new RewardReceivedNotification(
+                        $mission->missionable,
+                        $mission->reward_quantity,
+                        $user,
+                        $mission->name,
+                        $mission
+                    ))->locale($locale));
+                } catch (\Exception $e) {
+                    Log::error('Reward Received Notification Error', [
+                        'mission_id' => $mission->id,
+                        'user' => $user->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
 
                 // update user mission ensure claimed_at is updated based on mission frequency
                 if ($mission->frequency == 'one-off') {

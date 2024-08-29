@@ -118,7 +118,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             ],
             'status' => $this->status,
             'name' => $this->name,
-            'description' => $this->description,
+            // 'description' => $this->description,
             'unit_price' => $this->unit_price,
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,

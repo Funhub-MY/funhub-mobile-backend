@@ -51,6 +51,8 @@ class TaggedUserInArticle extends Notification
             ->setData([
                 'object' => (string) get_class($this->article),
                 'object_id' => (string) $this->article->id,
+                'article_id' => (string) $this->article->id,
+                'article_type' => (string) $this->article->type,
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->article->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
@@ -61,7 +63,7 @@ class TaggedUserInArticle extends Notification
                 'message' => (string) $this->getMessage(),
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('有人@你了')
+                ->setTitle(__('messages.notification.fcm.TaggedUser'))
                 ->setBody($this->getMessage())
             );
     }

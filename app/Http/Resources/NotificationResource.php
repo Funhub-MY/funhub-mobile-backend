@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Interaction;
 use App\Models\SystemNotification;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class NotificationResource extends JsonResource
@@ -23,6 +24,9 @@ class NotificationResource extends JsonResource
         $article_id = null;
         $article_type = null;
         $article_cover = null;
+
+        $mission_claimed = false;
+        $mission_completed = false;
 
         $object = $this->data['object']::find($this->data['object_id']);
 
@@ -57,6 +61,24 @@ class NotificationResource extends JsonResource
                         $article_cover = $media->getFullUrl();
                     }
                 }
+            } else if ($this->data['object'] == \App\Models\Mission::class) {
+                // get if user claimed this mission before or not
+                $missionUser = DB::table('missions_users')->where('mission_id', $this->data['object_id'])
+                    ->where('user_id', auth()->id())
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($missionUser) {
+                    if ($missionUser->is_completed) {
+                        $mission_completed = true;
+                    }
+
+                    if ($missionUser->claimed_at || $missionUser->last_rewarded_at) {
+                        $mission_claimed = true;
+                    } else {
+                        $mission_claimed = false;
+                    }
+                }
             }
         }
 
@@ -76,6 +98,8 @@ class NotificationResource extends JsonResource
             'from_user' => new UserResource($this->from_user) ?? null,
             'is_read' => $this->read_at ? true : false,
             'extra' => $this->extra ?? null,
+            'mission_claimed' => $mission_claimed ?? null,
+            'mission_completed' => $mission_completed ?? null,
             'created_at_raw' => $this->created_at,
             'created_at' => $this->created_at->diffForHumans(),
         ];

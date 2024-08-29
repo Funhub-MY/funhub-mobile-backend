@@ -244,9 +244,12 @@ return [
     ],
     'notification' => [
         'fcm' => [
+            'ArticleInteractedTitle' => '探文互动',
             'ArticleInteracted' => ':username :action你的 ":articleTitle"',
+            'ArticleLiked'  => '赞了',
             'CommentedTitle' => '新评论',
             'Commented' => ':username 评论了你的探文 ":commentTitle"',
+            'CommentLikedTitle' => '新评论赞',
             'CommentLiked' => ':username 赞了你的评论 ":comment"',
             'CommentRepliedTitle' => '新评论回复',
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
@@ -265,6 +268,7 @@ return [
             'PurchasedGiftCardNotification' => '',
             'PurchasedOfferNotification' => '',
             'RedemptionExpirationNotification' => '优惠券“:offerName”即将于:daysLeft天后逾期',
+            'TaggedUser' => '有人@你了',
             'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',
@@ -282,6 +286,7 @@ return [
         ],
         'database' => [
             'ArticleInteracted' => '赞了你的探文，觉得超有趣！',
+            'ArticleLiked'  => '赞了',
             'CommentedTitle' => '新评论',
             'Commented' => '评论了你的探文，快去看看吧',
             'CommentLiked' => '赞了你的评论，觉得超有趣!',
@@ -302,6 +307,7 @@ return [
             'PurchasedGiftCardNotification' => '',
             'PurchasedOfferNotification' => '',
             'RedemptionExpirationNotification' => '优惠券“:offerName”即将于:daysLeft天后逾期',
+            'TaggedUser' => '有人@你了',
             'TaggedUserInArticle' => '去探玩还不忘@你，快来看看吧',
             'TaggedUserInComment' => '在留言里提到了你',
             'VoucherRedeemedNotification' => '',

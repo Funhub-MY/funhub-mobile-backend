@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Article;
 use App\Models\User;
 use App\Models\Comment;
 use Illuminate\Support\Str;
@@ -46,6 +47,8 @@ class CommentLiked extends Notification implements ShouldQueue
             ->setData([
                 'object' => (string) get_class($this->comment),
                 'object_id' => (string) $this->comment->id,
+                'article_id' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->id : null,
+                'article_type' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->type : null,
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->comment->commentable->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) $this->comment->commentable_type, // if link to url false, means get link_to_object
@@ -54,9 +57,14 @@ class CommentLiked extends Notification implements ShouldQueue
                 'from_id' => (string) $this->user->id,
                 'title' => (string) $this->user->name,
                 'message' => __('messages.notification.database.CommentLiked'),
+                'extra' => json_encode([
+                    'parent_id' => (string) $this->comment->parent_id,
+                    'reply_to_id' => (string) $this->comment->reply_to_id,
+                    'comment_id' => (string) $this->comment->id,
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('探文互动')
+                ->setTitle(__('messages.notification.fcm.CommentLikedTitle'))
                 ->setBody(__('messages.notification.fcm.CommentLiked', [
                     'username' => $this->user->name,
                     'comment' => Str::limit($this->comment->body, 10, '...')

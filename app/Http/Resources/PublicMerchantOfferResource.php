@@ -48,16 +48,16 @@ class PublicMerchantOfferResource extends JsonResource
             ],
             'logo' => ($this->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'merchant' => [
-                'id' => ($this->user) ? $this->user->merchant->id : null,
-                'brand_name' => ($this->user) ? $this->user->merchant->brand_name : null,
-                'business_name' => ($this->user) ? $this->user->merchant->business_name : null,
-                'business_phone_no' => ($this->user) ? $this->user->merchant->business_phone_no : null,
+                'id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
+                'logo' => ($this->user && $this->user->merchant && $this->user->merchant->media->count() > 0) ? $this->user->merchant->media->filter(function ($media) {
+                    return $media->collection_name == Merchant::MEDIA_COLLECTION_NAME;
+                })->first()->original_url : null,
+                'brand_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->brand_name : null,
+                'business_name' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_name : null,
+                'business_phone_no' => ($this->user && $this->user->merchant) ? $this->user->merchant->business_phone_no : null,
                 'user' => [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
-                    'username' => $this->user->username,
-                    'avatar' => $this->user->avatar_url,
-                    'avatar_thumb' => $this->user->avatar_thumb_url,
                 ]
             ],
             'name' => $this->name,
