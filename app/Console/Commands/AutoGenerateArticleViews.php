@@ -34,53 +34,73 @@ class AutoGenerateArticleViews extends Command
     {
         try {
             Log::info('[AutoGenerateArticleViews] Running AutoGenerateArticleViews');
-    
+
             $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())
                                 ->where('is_processed', false)
                                 ->get();
-    
+
+            $this->info('Total ViewQueue Records: ' . $viewQueueRecords->count());
+
             if ($viewQueueRecords->isNotEmpty()) {
+                // list all not processed records's article id
+                $this->info('Not Processed ViewQueue Records: ' . $viewQueueRecords->where('is_processed', false)->pluck('article_id')->implode(','));
+
+                $viewsData = [];
+                $recordsToUpdate = [];
+
+                $superAdminUserId = $this->getSuperAdminUserId();
+
                 foreach ($viewQueueRecords as $record) {
                     $articleId = $record->article_id;
                     $scheduledViews = $record->scheduled_views;
                     if ($record->updated_scheduled_views) {
                         $scheduledViews = $record->updated_scheduled_views;
                     }
-    
+
                     for ($i = 0; $i < $scheduledViews; $i++) {
-                        View::create([
-                            'user_id' => $this->getSuperAdminUserId(),
+                        $viewsData[] = [
+                            'user_id' => $superAdminUserId,
                             'viewable_type' => Article::class,
                             'viewable_id' => $articleId,
                             'ip_address' => null,
                             'is_system_generated' => true,
-                        ]);
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
                     }
 
-                    $record->update(['is_processed' => true]);
-
+                    $recordsToUpdate[] = $record->id;
+                    $this->info('Generated ' . $scheduledViews . ' views for article id: ' . $articleId);
                     Log::info('[AutoGenerateArticleViews] Generated ', ['scheduled_views' => $scheduledViews, 'article_id' => $articleId]);
                 }
+
+                if (!empty($viewsData)) {
+                    View::insert($viewsData);
+                }
+
+                if (!empty($recordsToUpdate)) {
+                    ViewQueue::whereIn('id', $recordsToUpdate)->update(['is_processed' => true]);
+                }
             }
-    
+
             Log::info('[AutoGenerateArticleViews] AutoGenerateArticleViews completed successfully');
             return Command::SUCCESS;
         } catch (\Exception $e) {
             Log::error('[AutoGenerateArticleViews] Error: ' . $e->getMessage());
             return Command::FAILURE;
         }
-        
+
     }
 
     protected function getSuperAdminUserId() {
         $superAdminUser = User::whereHas('roles', function ($query) {
             $query->where('name', 'super_admin');
         })->first();
-    
+
         if ($superAdminUser) {
             return $superAdminUser->id;
         }
-    
+
         return null;
     }
 
