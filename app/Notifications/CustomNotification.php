@@ -77,7 +77,7 @@ class CustomNotification extends Notification implements ShouldQueue
         $data = [
             'title' => (string) $this->getTitleAndContent()['title'],
             'message' => (string) $this->getTitleAndContent()['content'],
-            'redirect' => $this->customNotification->page_redirect?? null,
+            'redirect' => (string) $this->customNotification->page_redirect?? null,
             'object' => get_class($this->customNotification), // App/Models/SystemNotification
             'object_id' => (string) $this->customNotification->id,
             'link_to_url' => (string) $this->customNotification->web_link ? 'true' : 'false',
