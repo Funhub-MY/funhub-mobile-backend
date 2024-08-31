@@ -36,30 +36,42 @@ class AutoGenerateArticleViews extends Command
             Log::info('[AutoGenerateArticleViews] Running AutoGenerateArticleViews');
 
             $viewQueueRecords = ViewQueue::where('scheduled_at', '<=', now())
+                                ->whereHas('article', function ($query) {
+                                    $query->where('status', Article::STATUS_PUBLISHED)
+                                        ->where('visibility', Article::VISIBILITY_PUBLIC);
+                                })
                                 ->where('is_processed', false)
                                 ->get();
 
             $this->info('Total ViewQueue Records: ' . $viewQueueRecords->count());
 
             if ($viewQueueRecords->isNotEmpty()) {
-                // list all not processed records's article id
-                $this->info('Not Processed ViewQueue Records: ' . $viewQueueRecords->where('is_processed', false)->pluck('article_id')->implode(','));
-
+                $batchSize = 250; // Batch size for inserting views
                 $viewsData = [];
                 $recordsToUpdate = [];
 
-                $superAdminUserId = $this->getSuperAdminUserId();
-
+                $articleViews = [];
                 foreach ($viewQueueRecords as $record) {
-                    $articleId = $record->article_id;
-                    $scheduledViews = $record->scheduled_views;
-                    if ($record->updated_scheduled_views) {
-                        $scheduledViews = $record->updated_scheduled_views;
+                    if (!$record) {
+                        Log::error('[AutoGenerateArticleViews] ViewQueue record not found for id: ' . $record->id);
+                        continue;
                     }
 
-                    for ($i = 0; $i < $scheduledViews; $i++) {
+                    $articleId = $record->article_id;
+                    $scheduledViews = $record->scheduled_views;
+
+                    if (!isset($articleViews[$articleId])) {
+                        $articleViews[$articleId] = 0;
+                    }
+                    $articleViews[$articleId] += $scheduledViews;
+
+                    $recordsToUpdate[] = $record->id;
+                }
+
+                foreach ($articleViews as $articleId => $totalViews) {
+                    for ($i = 0; $i < $totalViews; $i++) {
                         $viewsData[] = [
-                            'user_id' => $superAdminUserId,
+                            'user_id' => $this->getSuperAdminUserId(),
                             'viewable_type' => Article::class,
                             'viewable_id' => $articleId,
                             'ip_address' => null,
@@ -67,15 +79,21 @@ class AutoGenerateArticleViews extends Command
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
+
+                        if (count($viewsData) === $batchSize) {
+                            $this->info('Inserting ' . count($viewsData) . ' views for Article ID: ' . $articleId);
+                            View::insert($viewsData);
+                            $viewsData = []; // resets
+                        }
                     }
 
-                    $recordsToUpdate[] = $record->id;
-                    $this->info('Generated ' . $scheduledViews . ' views for article id: ' . $articleId);
-                    Log::info('[AutoGenerateArticleViews] Generated ', ['scheduled_views' => $scheduledViews, 'article_id' => $articleId]);
-                }
+                    if (!empty($viewsData)) { // remainder if there is
+                        $this->info('Inserting ' . count($viewsData) . ' views for Article ID: ' . $articleId);
+                        View::insert($viewsData);
+                        $viewsData = [];
+                    }
 
-                if (!empty($viewsData)) {
-                    View::insert($viewsData);
+                    Log::info('[AutoGenerateArticleViews] Generated ', ['total_views' => $totalViews, 'article_id' => $articleId]);
                 }
 
                 if (!empty($recordsToUpdate)) {
@@ -89,7 +107,6 @@ class AutoGenerateArticleViews extends Command
             Log::error('[AutoGenerateArticleViews] Error: ' . $e->getMessage());
             return Command::FAILURE;
         }
-
     }
 
     protected function getSuperAdminUserId() {
