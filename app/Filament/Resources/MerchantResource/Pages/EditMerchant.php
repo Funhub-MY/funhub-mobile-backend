@@ -71,18 +71,15 @@ class EditMerchant extends EditRecord
                 ];
             }
 
-            // Clear the existing menu collection
-            $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
-
             foreach ($data['menus'] as $index => $menu) {
                 $file = $menu['file'];
-                $filePath = Storage::disk($disk)->path($file);
 
                 // Check if the file exists in the temporary directory or on the storage disk
                 if (isset($existingMenus[$file])) {
                     $filePath = $existingMenus[$file]['path'];
                     $customProperties = array_merge($existingMenus[$file]['custom_properties'], ['name' => $menu['name']]);
                 } elseif (Storage::disk($disk)->exists($file)) {
+                    $filePath = Storage::disk($disk)->path($file);
                     $customProperties = ['name' => $menu['name']];
                 } else {
                     // Skip the file if it doesn't exist
@@ -108,6 +105,9 @@ class EditMerchant extends EditRecord
 
             // Delete the temporary directory
             Storage::deleteDirectory($tempDir);
+
+            // Clear the media collection after processing all files
+            $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
         } else {
             $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
         }
