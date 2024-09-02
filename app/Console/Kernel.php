@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
 
         //run scheduled publish article every minute
-        // $schedule->command('article:publish')->everyFiveMinutes();
+        $schedule->command('article:publish')->everyFiveMinutes();
 
         // run publish merchant offers every midnight
         $schedule->command('merchant-offers:publish')->dailyAt('00:00');
