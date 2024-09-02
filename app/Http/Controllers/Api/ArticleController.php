@@ -1063,7 +1063,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::with('user', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        $article = Article::with('user', 'user.followers', 'comments', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
         ->withCount('media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
         // withCount comment where dont have parent_id
         ->withCount(['comments' => function ($query) {
@@ -1072,8 +1072,15 @@ class ArticleController extends Controller
                 $query->where('status', User::STATUS_ACTIVE);
             });
         }])
+        // counter also must be active users only for any interactions
         ->withCount(['interactions' => function ($query) {
             // user must be active
+            $query->whereHas('user', function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            });
+        }])
+        // interactions where user is active
+        ->with(['interactions' => function ($query) {
             $query->whereHas('user', function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             });
