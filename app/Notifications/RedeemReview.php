@@ -55,9 +55,9 @@ class RedeemReview extends Notification
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->store),
-                'object_id' => (string) ($this->store) ? $this->store->id : null,
+                'object_id' => ($this->store) ?  (string) $this->store->id : null,
                 'link_to_url' => (string) 'false',
-                'link_to' => (string) ($this->store) ? $this->store->id : null, // if link to url false, means get link_to_object
+                'link_to' => ($this->store) ? (string) $this->store->id : null, // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
                 'action' => 'redeemed_review',
                 'from_name' => (string) $this->user->name,
@@ -82,7 +82,7 @@ class RedeemReview extends Notification
     {
         return [
             'object' => (string) get_class($this->store),
-            'object_id' => (string) ($this->store) ? $this->store->id : null,
+            'object_id' =>($this->store) ?  (string) $this->store->id : null,
             'link_to_url' => false,
             'link_to' => (string) ($this->store) ? $this->store->id : null, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
