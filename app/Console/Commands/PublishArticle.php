@@ -32,6 +32,8 @@ class PublishArticle extends Command
         $articles = Article::where('status', Article::STATUS_DRAFT)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
+            ->whereDoesntHave('imports') // exclude articles with media partners
+            ->where('source', '!=', 'mobile') // exclude articles with source "mobile"
             ->get();
 
         if (!$articles->isEmpty()) {
