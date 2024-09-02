@@ -228,6 +228,7 @@ class MerchantResource extends Resource
                                             return 's3_public';
                                         }
                                     })
+                                    ->required()
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->rules('mimes:pdf')
                                     ->getUploadedFileUrlUsing(function ($file) {
