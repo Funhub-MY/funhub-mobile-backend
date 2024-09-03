@@ -51,9 +51,7 @@ class MessagesRelationManager extends RelationManager
                     ->label('Message')
                     ->getStateUsing( function (Model $record){
                         $mediaLinks = $record->getMedia('support_uploads')->map(function ($media) {
-                            if (strpos($media->file_name, 'scaled_') === 0) {
-                                return '<a href="' . $media->getUrl() . '" target="_blank" style="color: blue; text-decoration: underline;">' . $media->file_name . '</a>';
-                            }
+                            return '<a href="' . $media->getUrl() . '" target="_blank" style="color: blue; text-decoration: underline;">' . $media->file_name . '</a>';
                         })->filter()->implode('<br>');
                         return new HtmlString($record->message . ($mediaLinks ? '<br>' . $mediaLinks : ''));
                     })
