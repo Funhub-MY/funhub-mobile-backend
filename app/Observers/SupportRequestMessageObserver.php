@@ -19,8 +19,15 @@ class SupportRequestMessageObserver
      */
     public function created(SupportRequestMessage $supportRequestMessage)
     {
-        // if admin created message, notify requestor via FCM 
-        if ($supportRequestMessage->user->hasRole('super_admin')) { 
+        // dont notifty if not production
+        if (config('app.env') != 'production') {
+            // log
+            Log::info('SupportRequestMessage created but not in production environment, skipping notification', ['supportRequestMessage' => $supportRequestMessage]);
+            return;
+        }
+
+        // if admin created message, notify requestor via FCM
+        if ($supportRequestMessage->user->hasRole('super_admin')) {
             try {
                 $locale = $supportRequestMessage->request->requestor->last_lang ?? config('app.locale');
                 $supportRequestMessage->request->requestor->notify((new NewSupportRequestMessage($supportRequestMessage))->locale($locale));
