@@ -72,6 +72,7 @@ class ArticleController extends Controller
      * @bodyParam location_id integer optional Filter by Location Id. Example: 1
      * @bodyParam store_id integer optional Filter by Store Id. Example: 1
      * @bodyParam include_own_article integer optional Include own article. Example: 1 or 0
+     * @bodyParam disable_home_conditions boolean optional Disable Home Conditions like hidden from home or whitelisted. Example: 1 or 0
      * @bodyParam pinned_only integer optional Filter by Pinned Articles. Example: 1 or 0
      * @bodyParam build_recommendations boolean optional Build Recommendations On or Off, On by Default. Example: 1 or 0
      * @bodyParam refresh_recommendations boolean optional Refresh Recommendations. Example: 1 or 0
@@ -182,6 +183,7 @@ class ArticleController extends Controller
         // only show those thats is not hidden from home
         // not applicable for following only, tag_ids, location_id queries
         if (!$request->has('following_only')
+            && !$request->has('disable_home_conditions')
             && !$request->has('tag_ids')
             && !$request->has('location_id')) {
             // query only get articles that author is in articleFeedWhitelist or not hidden_from_home
@@ -197,16 +199,6 @@ class ArticleController extends Controller
         } else {
             $query->where('pinned_recommended', false); // normal dont query pinned articles
         }
-
-        // new logic: Hide articles from media partners if they are older than the specified number of days
-        // requested by content team as of 17 jul 2024
-        // $query->where(function ($query) {
-        //     $query->doesntHave('imports') // non media partner articles
-        //         ->orWhere(function ($query) { // if media partner articles
-        //             $query->has('imports')
-        //                 ->where('created_at', '>=', now()->subDays(config('app.recommended_media_partner_article_hide_after_days'))); // must not be older than config('app.recommended_media_partner_article_hide_after_days')
-        //         });
-        // });
 
         if (!$request->has('lat') && !$request->has('lng')) {
             $query->latest();
