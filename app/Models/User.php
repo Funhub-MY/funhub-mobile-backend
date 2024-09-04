@@ -412,6 +412,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasMany(UserTutorialCompletion::class, 'user_id');
     }
 
+    public function cards()
+    {
+        return $this->hasMany(UserCard::class, 'user_id');
+    }
+
     // /**
     //  * Get the user's point balance
     //  */

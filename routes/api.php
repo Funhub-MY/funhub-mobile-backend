@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\Api\MerchantOfferCategoryController;
+use App\Http\Controllers\Api\UserSettingsController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -211,6 +213,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             // Onesignal
             Route::post('/onesignal/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalSubscriptionId']);
             Route::post('/onesignal/user_id/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalUserId']);
+
+            // Add Payment Cards
+            Route::get('/card-tokenization', [UserSettingsController::class, 'cardTokenization'])->name('payment.card-tokenization');
         });
 
         // TODO: secure this route
