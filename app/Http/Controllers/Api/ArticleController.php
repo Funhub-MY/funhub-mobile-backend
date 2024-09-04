@@ -218,7 +218,7 @@ class ArticleController extends Controller
                 'media', 'imports',
                 'categories', 'subCategories', 'tags',
                 'user', 'user.media',
-                'comments', 'interactions', 'interactions.user', 'interactions.user.media',
+                'comments', 'interactions.user', 'interactions.user.media',
                 'location','location.state', 'location.country', 'location.ratings')
             ->withCount('media', 'tags', 'views', 'userFollowers', 'userFollowings')
             // withCount comment where dont have parent_id
@@ -227,6 +227,11 @@ class ArticleController extends Controller
                     ->whereHas('user' , function ($query) {
                         $query->where('status', User::STATUS_ACTIVE);
                     });
+            }])
+            ->with(['interactions' => function ($query) {
+                $query->whereHas('user', function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
             }])
             ->paginate($paginatePerPage);
 
