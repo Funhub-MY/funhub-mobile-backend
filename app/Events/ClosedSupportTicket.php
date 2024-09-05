@@ -15,7 +15,7 @@ class ClosedSupportTicket
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $supportRequest;
+    public $supportRequest;
 
     /**
      * Create a new event instance.

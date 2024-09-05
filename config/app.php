@@ -338,9 +338,7 @@ return [
         "first_time_visit_create_screen",
         "first_time_visit_post_screen",
         "first_time_visit_following_article_tab",
-        //  first time see nearby store coachmark
         "first_time_see_nearby_store_coachmark",
-        // first time see create article coachmark
         "first_time_see_create_article_coachmark",
     ],
 
