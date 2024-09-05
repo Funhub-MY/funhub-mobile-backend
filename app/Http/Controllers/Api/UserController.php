@@ -13,9 +13,11 @@ use App\Models\Comment;
 use App\Models\Interaction;
 use App\Models\Location;
 use App\Models\LocationRating;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserBlock;
 use App\Models\UserTutorialCompletion;
+use App\Services\Mpay;
 use App\Services\OtpRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -1058,5 +1061,4 @@ class UserController extends Controller
             'articles' => PublicArticleResource::collection($recentArticles),
         ]);
     }
-
 }

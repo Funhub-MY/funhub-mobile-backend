@@ -86,6 +86,54 @@ class Mpay {
         return $data;
     }
 
+
+    /**
+     * Create card tokenization
+     *
+     * @param string $uuid
+     * @param string $redirectUrl
+     * @param string|null $phoneNo
+     * @param string|null $email
+     * @return void
+     */
+    public function createCardTokenization(string $uuid, string $redirectUrl, string $phoneNo = null, string $email = null)
+    {
+        // check if mid and hashKey is set
+        if (!$this->mid || !$this->hashKey) {
+            throw new \Exception('Mpay MID or hash key is not set');
+        }
+
+        if(!$email) {
+            $defaultEmail = $uuid . config('app.mpay_default_email_tld');
+            Log::info('[MPAY] Email is not set, using default email:'. $defaultEmail);
+        }
+
+        if (!$phoneNo) {
+            $defaultPhone = config('app.mpay_default_phone');
+            Log::info('[MPAY] Phone is not set, using default phone:'. $defaultPhone);
+        }
+
+        $data = [
+            'url' => $this->url .'payment/eCommerce',
+            'formData' => [
+                'secureHash' => $this->generateHashForRequest($this->mid, $uuid, '000000000000'),
+                'mid' => $this->mid,
+                'invno' => $uuid,
+                'amt' => '000000000000',
+                'desc' => 'Card Tokenization',
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo ? $phoneNo : $defaultPhone,
+                'email' => $email ? $email : $defaultEmail,
+                'specialParam' => 'cardenrolment',
+                'uuid' => $uuid,
+            ]
+        ];
+
+        Log::info('Mpay create card tokenization data', $data);
+
+        return $data;
+    }
+
     /**
      * Generate hash for request
      *
