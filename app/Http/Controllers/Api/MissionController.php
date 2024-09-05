@@ -349,6 +349,18 @@ class MissionController extends Controller
                         ->update([
                             'claimed_at' => now(),
                         ]);
+                } elseif ($mission->frequency == 'accumulated') {
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->whereHas('mission', function ($query) use ($mission) {
+                            $query->where('frequency', 'accumulated');
+                        })
+                        ->wherePivot('claimed_at', null)
+                        ->orderByDesc('missions_users.id')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
                 }
             }
         }
