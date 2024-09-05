@@ -195,27 +195,23 @@ class MissionEventListener
             return in_array($eventType, $mission->events);
         });
 
-        // double check if user has completed one-off mission, if yes then skip below
-        $oneOffMissions = $user->missionsParticipating()->where('is_completed', true)
-            ->whereIn('mission_id', $missions->pluck('id'))
-            ->where('frequency', 'one-off')
-            ->get();
-
-        if ($oneOffMissions->count() > 0) {
-            Log::info('User already completed one-off mission', [
-                'user' => $user->id,
-                'missions' => $missions->pluck('id')->toArray(),
-                'latest_completions' => $oneOffMissions->map(function ($mission) {
-                    return [
-                        'mission_id' => $mission->mission_id,
-                        'completed_at' => $mission->completed_at,
-                    ];
-                })->toArray(),
-            ]);
-            return;
-        }
-
         foreach ($missions as $mission) {
+             // check if the user has completed the specific one-off mission
+            if ($mission->frequency == 'one-off') {
+                $completedOneOff = $user->missionsParticipating()
+                    ->where('is_completed', true)
+                    ->where('mission_id', $mission->id)
+                    ->exists();
+
+                if ($completedOneOff) {
+                    Log::info('User already completed one-off mission', [
+                        'user' => $user->id,
+                        'mission' => $mission->id,
+                    ]);
+                    continue; // skip the current one-off mission and move to the next mission
+                }
+            }
+
             $userMission = $user->missionsParticipating()->where('is_completed', false)
                 ->where('mission_id', $mission->id)
                 ->orderBy('id', 'desc') // latest one first
