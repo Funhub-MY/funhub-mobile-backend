@@ -250,6 +250,12 @@ class MissionEventListener
                         ->whereNull('completed_at')
                         ->get();
 
+                    Log::info('[Accumulated] Checking if user has completed similar mission before', [
+                        'user' => $user->id,
+                        'mission' => $mission->id,
+                        'completedMissions' => $completedMissions->count(),
+                    ]);
+
                     if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
                         continue;
                     }
@@ -267,6 +273,10 @@ class MissionEventListener
                 ]);
 
             } else if (!$userMission->pivot->is_completed) {
+                Log::info('User mission not complete yet', [
+                    'user' => $user->id,
+                    'mission' => $mission->id,
+                ]);
                 // if current_value is string, decode it first
                 $currentValues = is_string($userMission->pivot->current_values) ? json_decode($userMission->pivot->current_values, true) : $userMission->pivot->current_values;
 
