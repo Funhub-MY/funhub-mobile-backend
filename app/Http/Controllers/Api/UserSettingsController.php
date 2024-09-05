@@ -1007,7 +1007,7 @@ class UserSettingsController extends Controller
         );
 
         $user = auth()->user();
-        $uuid = 'CARD_' . Str::random(10);
+        $uuid = 'CARD' . strtoupper(Str::random(16)); // 20 char
         $redirectUrl = route('payment.card-tokenization.return');
 
         $transaction = new Transaction();

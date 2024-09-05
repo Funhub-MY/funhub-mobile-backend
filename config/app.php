@@ -280,6 +280,7 @@ return [
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
         'reviewed_store' => 'Reviewed a store',
+        'closed_a_ticket' => 'Closed a ticket raised by user'
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),

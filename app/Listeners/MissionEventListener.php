@@ -15,6 +15,7 @@ use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use App\Models\SupportRequest;
 use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
 use Illuminate\Support\Facades\Log;
@@ -60,6 +61,8 @@ class MissionEventListener
             $this->handlePurchasedMerchantOffer($event);
         } else if ($event instanceof \App\Events\RatedStore) {
             $this->handleRatedStore($event);
+        } else if ($event instanceof \App\Events\ClosedSupportTicket) {
+            $this->handleClosedSupportTicket($event);
         }
     }
 
@@ -151,6 +154,32 @@ class MissionEventListener
         }
         $this->updateMissionProgress('follow_a_user', $event->user, 1);
         $this->updateMissionProgress('accumulated_followers', $event->followedUser, 1);
+    }
+
+    /*
+     * Handle closed support ticket
+     * Update mission progress if request is closed
+     *
+     * @param \App\Events\ClosedSupportTicket $event
+     */
+    private function handleClosedSupportTicket($event)
+    {
+        $supportRequest = $event->supportRequest;
+
+        $closedAudits = $supportRequest->audits()
+            ->where('new_values->status', SupportRequest::STATUS_CLOSED)
+            ->where('old_values->status', '!=', SupportRequest::STATUS_CLOSED)
+            ->exists();
+
+        if ($closedAudits) {
+            Log::info('[MissionEventListener] Support Request was closed before', [
+                'support_request' => $supportRequest->id,
+            ]);
+            return;
+        }
+
+        // update 1 request is closed
+        $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
     }
 
     /**
