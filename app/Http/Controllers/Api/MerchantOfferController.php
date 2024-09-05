@@ -369,6 +369,7 @@ class MerchantOfferController extends Controller
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: points/fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
+     * @bodyParam wallet_type string optional Wallet Type. Example: TNG
      * @response scenario=success {
      * "message": "Offer Claimed"
      * }
@@ -494,6 +495,12 @@ class MerchantOfferController extends Controller
                 ], 422);
             }
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
+            $walletType = null;
+
+            // if request has payment type, then use it
+            if ($request->has('wallet_type')) {
+                $walletType = $request->wallet_type;
+            }
 
             // create payment transaction first, not yet claim
             $transaction = $this->transactionService->create(
@@ -501,7 +508,7 @@ class MerchantOfferController extends Controller
                 $net_amount,
                 config('app.default_payment_gateway'),
                 $user->id,
-                $request->fiat_payment_method,
+                ($walletType) ? $walletType : $request->fiat_payment_method,
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
@@ -521,7 +528,8 @@ class MerchantOfferController extends Controller
                     $transaction->transaction_no,
                     secure_url('/payment/return'),
                     $user->full_phone_no ?? null,
-                    $user->email ?? null
+                    $user->email ?? null,
+                    $walletType // for use this type
                 );
 
                 $offer->claims()->attach($user->id, [

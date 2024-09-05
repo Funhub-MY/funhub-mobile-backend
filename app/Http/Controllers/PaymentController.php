@@ -442,4 +442,26 @@ class PaymentController extends Controller
             ]);
         }
     }
+
+    /**
+     * Get available payment types
+     *
+     * @group Payment
+     * @response status=200 {
+     *  "availablePaymentTypes": [
+     *      "fpx",
+     *      "card"
+     *  ]
+     * }
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAvailablePaymentTypes()
+    {
+        $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
+        return response()->json([
+            'availablePaymentTypes' => $availablePaymentTypes
+        ]);
+    }
 }

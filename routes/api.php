@@ -308,5 +308,8 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Maintenance
         Route::get('/maintenance', [MaintenanceController::class, 'getMaintenanceInfo']);
+
+        // Payments
+        Route::get('/payment/available_payment_types', [PaymentController::class, 'getAvailablePaymentTypes']);
     });
 });

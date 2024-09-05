@@ -41,10 +41,19 @@ class Mpay {
      * @param string $redirectUrl   Redirect URL after success/failure
      * @param string $phoneNo       Phone No Eg. 60123456789
      * @param string $email         Email Eg. john@smith.com
+     * @param string $paymentType   Payment Type
      * @param string $param         Merchant have to add in the delimiter “|” to separate each parameter value. Noted: “|” is “7C” in hexadecimal of ASCII code table.
      * @return void
      */
-    public function createTransaction(string $invoice_no, float $amount, string $desc, string $redirectUrl, string $phoneNo = null, string $email = null, $param = null)
+    public function createTransaction(
+        string $invoice_no,
+        float $amount,
+        string $desc,
+        string $redirectUrl,
+        string $phoneNo = null,
+        string $email = null,
+        $paymentType = null,
+        $param = null)
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
@@ -65,6 +74,7 @@ class Mpay {
             Log::info('[MPAY] Phone is not set, using default phone:'. $defaultPhone);
         }
 
+
         $data = [
             'url' => $this->url .'/payment/eCommerce',
             'formData' => [
@@ -80,6 +90,10 @@ class Mpay {
                 'param' => $param,
             ]
         ];
+
+        if ($paymentType) {
+            $data['paymentType'] = $paymentType;
+        }
 
         Log::info('Mpay create transaction data', $data);
 
@@ -132,6 +146,37 @@ class Mpay {
         Log::info('Mpay create card tokenization data', $data);
 
         return $data;
+    }
+
+    public function checkAvailablePaymentTypes()
+    {
+        $url = $this->url . '/api/paymentService/checkPaymentType/';
+
+        $data = [
+            'mid' => $this->mid,
+            'secureHash' => $this->generateHashForCheckPaymentType(),
+        ];
+
+        $response = Http::post($url, $data);
+
+        if ($response->successful()) {
+            $responseData = $response->json();
+            if ($responseData['responseCode'] == '00') {
+                return $responseData['paymentTypeList'];
+            } else {
+                Log::error('Error checking available payment types: ' . $responseData['responseDesc']);
+                return [];
+            }
+        } else {
+            Log::error('Error checking available payment types: ' . $response->body());
+            return [];
+        }
+    }
+
+    private function generateHashForCheckPaymentType()
+    {
+        $string = $this->hashKey . $this->mid;
+        return $this->secureHash->generateSecureHash($string);
     }
 
     /**
