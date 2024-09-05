@@ -166,19 +166,12 @@ class MissionEventListener
     {
         $supportRequest = $event->supportRequest;
 
-        Log::info('Audits', [
-            'audits' => $supportRequest->audits()
-            ->where('new_values->status', SupportRequest::STATUS_CLOSED)
-            ->where('old_values->status', '!=', SupportRequest::STATUS_CLOSED)
-            ->get(),
-        ]);
-
         $closedAudits = $supportRequest->audits()
             ->where('new_values->status', SupportRequest::STATUS_CLOSED)
             ->where('old_values->status', '!=', SupportRequest::STATUS_CLOSED)
-            ->exists();
+            ->count();
 
-        if ($closedAudits) {
+        if ($closedAudits > 1) {
             Log::info('[MissionEventListener] Support Request was closed before', [
                 'support_request' => $supportRequest->id,
             ]);
