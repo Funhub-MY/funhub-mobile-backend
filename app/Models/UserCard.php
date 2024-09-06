@@ -13,8 +13,25 @@ class UserCard extends Model
 
     protected $guarded = ['id'];
 
+    protected $appends = ['is_expired'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getIsExpiredAttribute()
+    {
+        $cardExpiryMonth = $this->card_expiry_month;
+        $cardExpiryYear = $this->card_expiry_year;
+        $now = now();
+
+        if ($cardExpiryMonth && $cardExpiryYear) {
+            $cardExpiryDate = Carbon::createFromFormat('mY', $cardExpiryMonth . '-' . $cardExpiryYear);
+            if ($cardExpiryDate->isPast()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

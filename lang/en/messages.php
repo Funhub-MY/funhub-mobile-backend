@@ -115,6 +115,8 @@ return [
             'Phone_updated' => 'Phone No. updated',
             'Referral_code_generated' => 'Come and join me with my referral code :code',
             'Referral_saved' => 'Successfully saved referral code',
+            'Card_removed' => 'Card removed',
+            'Card_set_as_default' => 'Card set as default',
         ],
         'view_controller' => [
             'View_recorded' => 'View recorded',
@@ -237,6 +239,7 @@ return [
             'Referral_code_expired' => 'Referral code expired',
             'You_can_only_change_your_username_once_every_x_days' => 'You can only change your username once every :days days',
             'Username_already_changed_before' => 'Username already changed before',
+            'No_Cards_found' => 'No cards found',
         ],
     ],
     'notification' => [
