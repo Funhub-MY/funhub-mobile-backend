@@ -1151,6 +1151,9 @@ class UserSettingsController extends Controller
                 ], 404);
         }
 
+        // make sure all other cards are not default
+        $user->cards()->where('is_default', 1)->update(['is_default' => 0]);
+
         // set card is_default
         $card->is_default = true;
         $card->save();

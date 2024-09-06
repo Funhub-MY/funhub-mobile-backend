@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,14 +25,19 @@ class UserCard extends Model
     {
         $cardExpiryMonth = $this->card_expiry_month;
         $cardExpiryYear = $this->card_expiry_year;
-        $now = now();
 
         if ($cardExpiryMonth && $cardExpiryYear) {
-            $cardExpiryDate = Carbon::createFromFormat('mY', $cardExpiryMonth . '-' . $cardExpiryYear);
-            if ($cardExpiryDate->isPast()) {
-                return true;
-            }
+            // Ensure month is zero-padded to two digits
+            $cardExpiryMonth = str_pad($cardExpiryMonth, 2, '0', STR_PAD_LEFT);
+
+            // Create date string in the format 'm/Y'
+            $dateString = $cardExpiryMonth . '/' . $cardExpiryYear;
+            $cardExpiryDate = Carbon::createFromFormat('m/Y', $dateString);
+            $cardExpiryDate->endOfMonth();
+
+            return $cardExpiryDate->isPast();
         }
-        return false;
+
+        return true;
     }
 }
