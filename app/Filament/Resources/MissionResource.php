@@ -180,9 +180,8 @@ class MissionResource extends Resource
                                ->acceptedFileTypes(['image/*'])
                                ->maxFiles(20)
                                ->rules('image'),
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('mission_completed_image')
                                ->label('Completed Mission Image')
-                               ->multiple()
                                ->collection(Mission::COMPLETED_MISSION_COLLECTION)
                                ->columnSpan('full')
                                // disk is s3_public
