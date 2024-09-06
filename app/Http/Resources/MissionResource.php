@@ -88,6 +88,7 @@ class MissionResource extends JsonResource
             'id' => $this->id, // mission id
             'name' => $translatedName, // mission name
             'image_url' => $this->getFirstMediaUrl(Mission::MEDIA_COLLECTION_NAME), // mission image
+            'completed_image_url' => $this->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION), // completed mission image
             'is_participating' => $isParticipating, // is user participating in this mission
             'description' => $translatedDescription, // mission description
             'events' => $this->events, // events that caused this mission

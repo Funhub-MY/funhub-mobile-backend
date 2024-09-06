@@ -167,7 +167,7 @@ class MissionResource extends Resource
 
                           // media gallery
                             Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
-                               ->label('Images')
+                               ->label('Reward Image')
                                ->multiple()
                                ->collection(Mission::MEDIA_COLLECTION_NAME)
                                ->columnSpan('full')
@@ -180,7 +180,21 @@ class MissionResource extends Resource
                                ->acceptedFileTypes(['image/*'])
                                ->maxFiles(20)
                                ->rules('image'),
-                            ]),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
+                               ->label('Completed Mission Image')
+                               ->multiple()
+                               ->collection(Mission::COMPLETED_MISSION_COLLECTION)
+                               ->columnSpan('full')
+                               // disk is s3_public
+                               ->disk(function () {
+                                   if (config('filesystems.default') === 's3') {
+                                       return 's3_public';
+                                   }
+                               })
+                               ->acceptedFileTypes(['image/*'])
+                               ->maxFiles(20)
+                               ->rules('image'),
+                    ]),
                     Section::make('Mission Goals')
                             ->schema([
                                  // events and values repeater

@@ -76,6 +76,10 @@ class MissionCompleted extends Notification
                 'from_id' => (string) $this->user->id,
                 'title' => (string) $this->translatedMissionName,
                 'message' => (string) $this->getMessage(),
+                'extra' => json_encode([
+                    'complete_mission_image_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION),
+                    'frequency' => $this->mission->frequency,
+                ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.MissionCompletedTitle'))
@@ -102,6 +106,10 @@ class MissionCompleted extends Notification
             'from_id' => $this->user->id,
             'title' => $this->translatedMissionName,
             'message' => $this->getMessage(),
+            'extra' => [
+                'complete_mission_image_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION),
+                'frequency' => $this->mission->frequency,
+            ]
         ];
     }
 }

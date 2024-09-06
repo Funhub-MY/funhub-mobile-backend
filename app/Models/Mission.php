@@ -15,6 +15,7 @@ class Mission extends BaseModel implements HasMedia, Auditable
     use HasFactory, SoftDeletes, InteractsWithMedia, \OwenIt\Auditing\Auditable;
 
     const MEDIA_COLLECTION_NAME = 'mission_gallery';
+    const COMPLETED_MISSION_COLLECTION = 'completed_mission';
 
     protected $guarded = [
         'id'
