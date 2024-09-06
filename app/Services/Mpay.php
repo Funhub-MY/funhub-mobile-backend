@@ -148,6 +148,11 @@ class Mpay {
         return $data;
     }
 
+    /**
+     * Check available payment types
+     *
+     * @return array
+     */
     public function checkAvailablePaymentTypes()
     {
         $url = $this->url . '/api/paymentService/checkPaymentType/';
