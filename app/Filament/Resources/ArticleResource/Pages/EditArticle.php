@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\ArticleResource\Pages;
 
+use App\Jobs\UpdateArticleTagArticlesCount;
+use App\Models\ArticleTag;
 use Filament\Pages\Actions;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\ArticleResource;
 use App\Models\Article;
+use Illuminate\Support\Str;
 
 class EditArticle extends EditRecord
 {
@@ -53,6 +56,35 @@ class EditArticle extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        $article = $this->record;
+
+        // Attach categories, do not create new categories if not exist
+        if (isset($this->data['categories']) && !empty($this->data['categories'])) {
+            $article->categories()->sync($this->data['categories']);
+        }
+
+        // Extract hashtags from the content
+        $content = $article->body;
+        preg_match_all('/#(\w+)/', $content, $matches);
+        $hashtags = $matches[0];
+
+        // Attach or create tags based on detected hashtags
+        if (!empty($hashtags)) {
+            $tags = collect($hashtags)->map(function ($tag) {
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()]);
+            });
+            // Sync the tags with the article
+            $article->tags()->syncWithoutDetaching($tags);
+
+            $tags->each(function ($tagId) {
+                $tag = ArticleTag::find($tagId);
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            });
+        }
     }
 
 }

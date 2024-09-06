@@ -148,7 +148,7 @@ test('save date of birth', function () {
     $date = [
         'year' => 1990,
         'month' => fake()->date('m'),
-        'day' => fake()->date('d'),
+        'day' => 2,
     ];
 
     $response = $this->postJson('/api/v1/user/settings/dob', [

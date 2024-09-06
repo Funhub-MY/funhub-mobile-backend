@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
+use App\Models\Transaction;
 use App\Models\User;
+use App\Services\Mpay;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class UserSettingsController extends Controller
 {
@@ -981,5 +984,54 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Saved']);
+    }
+
+
+    /**
+     * Add a Card (Tokenization)
+     *
+     * @group User Settings
+     * @response status=200 {
+     *  "status": "success",
+     *  "data": {
+     *
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cardTokenization(Request $request)
+    {
+        $gateway = new Mpay(
+            config('services.mpay.mid'),
+            config('services.mpay.hash_key'),
+        );
+
+        $user = auth()->user();
+        $uuid = 'CARD' . strtoupper(Str::random(16)); // 20 char
+        $redirectUrl = route('payment.card-tokenization.return');
+
+        $transaction = new Transaction();
+        $transaction->transaction_no = $uuid;
+        $transaction->transactionable_type = User::class;
+        $transaction->transactionable_id = $user->id;
+        $transaction->user_id = $user->id;
+        $transaction->amount = 0;
+        $transaction->gateway = 'Mpay';
+        $transaction->gateway_transaction_id = '';
+        $transaction->status = Transaction::STATUS_PENDING;
+        $transaction->save();
+
+        $data = $gateway->createCardTokenization(
+            $uuid, $redirectUrl, $user->full_phone_no, $user->email
+        );
+
+        Log::info('Mpay Card Tokenization Data: ', [
+            'uuid' => $uuid,
+        ]);
+
+        return [
+            'status' => 'success',
+            'data' => $data,
+        ];
     }
 }

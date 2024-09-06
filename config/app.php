@@ -280,6 +280,7 @@ return [
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
         'reviewed_store' => 'Reviewed a store',
+        'closed_a_ticket' => 'Closed a ticket raised by user'
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
@@ -329,7 +330,16 @@ return [
         "first_time_visit_mission_tab",
         "first_time_visit_super_deals_tab",
         "first_time_visit_single_deal_screen",
-        "second_time_visit_mission_tab"
+        "second_time_visit_mission_tab",
+        "first_time_visit_profile_screen",
+        "second_time_visit_profile_screen",
+        "first_time_open_profile_drawer",
+        "first_time_visit_any_article",
+        "first_time_visit_create_screen",
+        "first_time_visit_post_screen",
+        "first_time_visit_following_article_tab",
+        "first_time_see_nearby_store_coachmark",
+        "first_time_see_create_article_coachmark",
     ],
 
     /*

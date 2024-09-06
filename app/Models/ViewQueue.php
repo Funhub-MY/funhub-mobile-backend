@@ -19,4 +19,9 @@ class ViewQueue extends Model
     //     'is_processed',
     //     'scheduled_at',
     // ];
+
+    public function article()
+    {
+        return $this->belongsTo(Article::class, 'article_id');
+    }
 }

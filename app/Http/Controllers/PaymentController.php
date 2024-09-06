@@ -11,9 +11,11 @@ use App\Models\MerchantOfferClaim;
 use App\Notifications\OfferClaimed;
 use Illuminate\Support\Facades\Log;
 use App\Models\MerchantOfferVoucher;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
-
+use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
     protected $gateway;
@@ -375,5 +377,91 @@ class PaymentController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * Card Tokenization Return form Gateway (called by Gateway)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function cardTokenizationReturn(Request $request)
+    {
+        // validate secureHash
+
+        if ($request->responseCode == 0 || $request->responseCode == '0') {
+            // success
+            // get transaction from uuid
+            $transaction = Transaction::where('transaction_no', $request->uuid)->first();
+            if (!$transaction) {
+                Log::error('Mpay Card Tokenization Failed: Transaction not found', [
+                    'uuid' => $request->uuid,
+                    'request' => $request->all(),
+                ]);
+
+                return response()->json([
+                    'message' => 'Transaction not found',
+                    'success' => false
+                ]);
+            } else {
+                $transaction->update([
+                    'status' => Transaction::STATUS_SUCCESS,
+                    'gateway_transaction_id' => $request->mpay_ref_no,
+                ]);
+
+                $user = User::where('id', $transaction->user_id)->first();
+
+                if ($user) {
+                    $user->cards()->create([
+                        'card_type' => $request->paymentType,
+                        'card_last_four' => substr($request->maskedPAN, -4),
+                        'card_holder_name' => '', // You can get this from the form if needed
+                        'card_expiry_month' => '', // You can get this from the form if needed
+                        'card_expiry_year' => '', // You can get this from the form if needed
+                        'card_token' => $request->token,
+                        'is_default' => $user->cards()->count() == 0,
+                    ]);
+                } else {
+                    Log::error('Mpay Card Tokenization Failed: User not found', [
+                        'uuid' => $request->uuid,
+                        'request' => $request->all(),
+                    ]);
+
+                    return response()->json([
+                        'message' => 'User not found',
+                        'transaction_id' => $transaction->id,
+                        'success' => false
+                    ]);
+                }
+            }
+        } else {
+            // failed
+            return response()->json([
+                'message' => 'Mpay Card Tokenization Pending/Failed',
+                'success' => false
+            ]);
+        }
+    }
+
+    /**
+     * Get available payment types
+     *
+     * @group Payment
+     * @response status=200 {
+     *  "availablePaymentTypes": [
+     *      "fpx",
+     *      "card"
+     *  ]
+     * }
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAvailablePaymentTypes()
+    {
+        $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
+        return response()->json([
+            'availablePaymentTypes' => $availablePaymentTypes
+        ]);
     }
 }

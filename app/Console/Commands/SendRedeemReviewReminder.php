@@ -24,6 +24,7 @@ class SendRedeemReviewReminder extends Command
         $this->info('[SendRedeemReviewReminder] Total Redemptions Past 7 days: ' . count($recentRedemptions));
 
         foreach ($recentRedemptions as $redemption) {
+            $this->info('Processing redemption for user ID ' . $redemption->user_id. ' and merchant offer ID '. $redemption->claim->merchantOffer->id);
             $user = $redemption->user;
             $stores = $redemption->claim->merchantOffer->stores;
 
