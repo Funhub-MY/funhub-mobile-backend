@@ -77,7 +77,8 @@ class MissionCompleted extends Notification
                 'title' => (string) $this->translatedMissionName,
                 'message' => (string) $this->getMessage(),
                 'extra' => json_encode([
-                    'complete_mission_image_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION),
+                    'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
+                    'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                     'frequency' => $this->mission->frequency,
                 ])
             ])
