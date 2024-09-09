@@ -115,6 +115,8 @@ return [
             'Phone_updated' => '电话号码已更新',
             'Referral_code_generated' => ':code',
             'Referral_saved' => '推荐码已保存',
+            'Card_removed' => '卡已删除',
+            'Card_set_as_default' => '卡已设为Default',
         ],
         'view_controller' => [
             'View_recorded' => '已记录观看数',
@@ -240,6 +242,7 @@ return [
             'Referral_code_expired' => '推荐码已过期',
             'You_can_only_change_your_username_once_every_x_days' => '您只能每 :days 天更改一次用户名',
             'Username_already_changed_before' => '您已经在过去更改过用户名',
+            'No_Cards_found' => '没有卡已添加',
         ],
     ],
     'notification' => [

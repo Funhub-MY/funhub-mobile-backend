@@ -1034,4 +1034,132 @@ class UserSettingsController extends Controller
             'data' => $data,
         ];
     }
+
+    /**
+     * Get User Cards
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Card
+     * @response status=200 {
+     * "cards": []
+     * }
+     */
+    public function getCards(Request $request)
+    {
+        $user = auth()->user();
+        $cards = $user->cards()->get();
+
+        if (!$cards) {
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.No_Cards_found')
+            ], 404);
+        }
+
+        return response()->json([
+            'cards' => $cards
+        ]);
+    }
+
+    /**
+     * Remove a Card
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Card
+     * @bodyParam card_id integer required The id of the card. Example: 1
+     * @response status=200 {
+     * "message": "Card removed"
+     * }
+     */
+    public function postRemoveCard(Request $request)
+    {
+        $request->validate([
+            'card_id' => 'required|exists:user_cards,id'
+        ]);
+
+        $user = auth()->user();
+
+        $card = $user->cards()->find($request->card_id);
+
+        if (!$card) {
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.No_Cards_found')
+            ], 404);
+        }
+
+        // check if card is default
+        if ($card->is_default) {
+            // set latest not expired card to default
+            $latestNotExpiredCard = $user->cards()->where('is_default', false)
+                ->where('card_expiry_month', '<=', now()->month)
+                ->where('card_expiry_year', '<=', now()->year)
+                ->latest()
+                ->first();
+            if ($latestNotExpiredCard) { // set this card as default
+                $latestNotExpiredCard->is_default = true;
+                $latestNotExpiredCard->save();
+            }
+        }
+
+        $card_last_four = $card->card_last_four;
+        $card_type = $card->card_type;
+
+        // delete card
+        $card->delete();
+
+        Log::info('Card removed', [
+            'user_id' => $user->id,
+            'card_last_four' => $card_last_four,
+            'card_type' => $card_type,
+        ]);
+
+        return response()->json([
+            'message' => __('messages.success.user_settings_controller.Card_removed')
+        ]);
+    }
+
+    /**
+     * Set Card as Default
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Card
+     * @bodyParam card_id integer required The id of the card. Example: 1
+     * @response status=200 {
+     * "message": "Card set as default"
+     * }
+     */
+    public function postSetCardAsDefault(Request $request)
+    {
+        $request->validate([
+            'card_id' => 'required|exists:user_cards,id'
+        ]);
+
+        $user = auth()->user();
+
+        $card = $user->cards()->find($request->card_id);
+        if (!$card) {
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.No_Cards_found')
+                ], 404);
+        }
+
+        // make sure all other cards are not default
+        $user->cards()->where('is_default', 1)->update(['is_default' => 0]);
+
+        // set card is_default
+        $card->is_default = true;
+        $card->save();
+
+        return response()->json([
+            'message' => __('messages.success.user_settings_controller.Card_set_as_default')
+        ]);
+    }
 }

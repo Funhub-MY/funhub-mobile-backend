@@ -216,6 +216,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
             // Add Payment Cards
             Route::get('/card-tokenization', [UserSettingsController::class, 'cardTokenization'])->name('payment.card-tokenization');
+            Route::get('/cards', [UserSettingsController::class, 'getCards'])->name('payment.cards');
+            Route::post('/card/remove', [UserSettingsController::class, 'postRemoveCard'])->name('payment.card.remove');
+            Route::post('/card/set-as-default', [UserSettingsController::class, 'postSetCardAsDefault'])->name('payment.card.set-as-default');
         });
 
         // TODO: secure this route
