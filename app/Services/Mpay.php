@@ -87,6 +87,7 @@ class Mpay {
                 'callback_url' => secure_url('/payment/callback'),
                 'phone' => $phoneNo ? $phoneNo : $defaultPhone,
                 'email' => $email ? $email : $defaultEmail,
+                'paymentType' => $paymentType ? $paymentType : null,
                 'param' => $param,
             ]
         ];

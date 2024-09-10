@@ -112,6 +112,7 @@ class ProductController extends Controller
         $user = request()->user();
         $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
 
+        $walletType = null;
         // if request has payment type, then use it
         if ($request->has('wallet_type')) {
             $walletType = $request->wallet_type;
@@ -142,7 +143,7 @@ class ProductController extends Controller
                 $transaction->transaction_no,
                 secure_url('/payment/return'),
                 $user->full_phone_no ?? null,
-                $user->email ?? null
+                $user->email ?? null,
                 ($walletType) ? $walletType : null,
             );
 
