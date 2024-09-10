@@ -143,7 +143,7 @@ class ProductController extends Controller
                 $transaction->transaction_no,
                 secure_url('/payment/return'),
                 $user->full_phone_no ?? null,
-                $user->email ?? null
+                $user->email ?? null,
                 ($walletType) ? $walletType : null,
             );
 
