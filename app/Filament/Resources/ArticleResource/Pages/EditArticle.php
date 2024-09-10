@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\ArticleResource;
 use App\Models\Article;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class EditArticle extends EditRecord
 {
@@ -38,12 +40,24 @@ class EditArticle extends EditRecord
         if ($data['locations']) {
             $record->location()->sync($data['locations']);
         }
-        
+
         return $record;
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        // Fetch fresh media for video thumbnail
+        $videoThumbnail = $this->record->getMedia(Article::MEDIA_COLLECTION_NAME)
+            ->where('custom_properties.is_cover', true)
+            ->first();
+        $data['video_thumbnail'] = $videoThumbnail ? $videoThumbnail->getPath() : null;
+
+        // Fetch fresh media for video
+        $video = $this->record->getMedia(Article::MEDIA_COLLECTION_NAME)
+            ->where('custom_properties.is_cover', false)
+            ->first();
+        $data['video'] = $video ? $video->getPath() : null;
+
         $data['sub_categories'] = $this->record->subCategories->pluck('id')->toArray();
         $data['locations'] = $this->record->location->pluck('id')->toArray();
 
@@ -52,6 +66,130 @@ class EditArticle extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $article = $this->record;
+
+        if ($article->type === 'video'){
+            // Handle Video Thumbnail
+            if (isset($data['video_thumbnail'])) {
+                $disk = config('filesystems.default');
+                if ($disk == 's3') {
+                    $disk = 's3_public';
+                }
+
+                Log::info('Video thumbnail: ', ['video_thumbnail' => $data['video_thumbnail']]);
+
+                // Save existing media to a temporary directory
+                $tempDir = Storage::disk($disk)->path('temp/' . Str::random(10));
+                Storage::disk($disk)->makeDirectory($tempDir);
+
+                $existingThumbnail = [];
+                $media = $this->record->getMedia(Article::MEDIA_COLLECTION_NAME)->where('custom_properties.is_cover', true)->first();
+
+                if ($media) {
+                    $tempFilePath = $tempDir . '/' . $media->file_name;
+                    if (Storage::disk($disk)->exists($media->getPath())) {
+                        $fileContents = Storage::disk($disk)->get($media->getPath());
+                        Storage::disk($disk)->put($tempFilePath, $fileContents);
+                        $existingThumbnail[$media->file_name] = [
+                            'path' => $tempFilePath,
+                            'custom_properties' => $media->custom_properties,
+                        ];
+                    } else {
+                        Log::warning('Existing file not found: ', ['file' => $media->getPath()]);
+                    }
+                }
+
+                $file = $data['video_thumbnail'];
+
+                // Check if the file exists in the temporary directory or on the storage disk
+                if (isset($existingThumbnail[$file])) {
+                    $filePath = $existingThumbnail[$file]['path'];
+                    $customProperties = array_merge($existingThumbnail[$file]['custom_properties'], ['is_cover' => true]);
+                } elseif (Storage::disk($disk)->exists($file)) {
+                    $filePath = Storage::disk($disk)->path($file);
+                    $customProperties = ['is_cover' => true];
+                } else {
+                    Log::warning('File not found: ', ['file' => $file]);
+                    return $data;
+                }
+
+                $media = $article->addMediaFromDisk($data['video_thumbnail'])
+                    ->withCustomProperties(['is_cover' => true])
+                    ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $disk);
+
+                Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
+
+                // Delete the file from the temporary directory if it exists
+                if (isset($existingThumbnail[$file])) {
+                    Storage::disk($disk)->delete($existingThumbnail[$file]['path']);
+                }
+
+                $media->save();
+                Storage::deleteDirectory($tempDir);
+            }
+
+            // Handle Video
+            if (isset($data['video'])) {
+                $disk = config('filesystems.default');
+                if ($disk == 's3') {
+                    $disk = 's3_public';
+                }
+
+                Log::info('Video: ', ['video' => $data['video']]);
+
+                // Save existing video media to a temporary directory
+                $tempDir = Storage::disk($disk)->path('temp/' . Str::random(10));
+                Storage::disk($disk)->makeDirectory($tempDir);
+
+                $existingVideo = [];
+                $media = $this->record->getMedia(Article::MEDIA_COLLECTION_NAME)->where('custom_properties.is_cover', false)->first();
+
+                if ($media) {
+                    $tempFilePath = $tempDir . '/' . $media->file_name;
+                    if (Storage::disk($disk)->exists($media->getPath())) {
+                        $fileContents = Storage::disk($disk)->get($media->getPath());
+                        Storage::disk($disk)->put($tempFilePath, $fileContents);
+                        $existingVideo[$media->file_name] = [
+                            'path' => $tempFilePath,
+                            'custom_properties' => $media->custom_properties,
+                        ];
+                    } else {
+                        Log::warning('Existing file not found: ', ['file' => $media->getPath()]);
+                    }
+                }
+
+                $file = $data['video'];
+
+                // Check if the file exists in the temporary directory or on the storage disk
+                if (isset($existingVideo[$file])) {
+                    $filePath = $existingVideo[$file]['path'];
+                    $customProperties = array_merge($existingVideo[$file]['custom_properties'], ['is_cover' => false]);
+                } elseif (Storage::disk($disk)->exists($file)) {
+                    $filePath = Storage::disk($disk)->path($file);
+                    $customProperties = ['is_cover' => false];
+                } else {
+                    Log::warning('File not found: ', ['file' => $file]);
+                    return $data;
+                }
+
+                $media = $article->addMediaFromDisk($data['video'])
+                    ->withCustomProperties(['is_cover' => false])
+                    ->toMediaCollection(Article::MEDIA_COLLECTION_NAME, $disk);
+
+                Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
+
+                // Delete the file from the temporary directory if it exists
+                if (isset($existingVideo[$file])) {
+                    Storage::disk($disk)->delete($existingVideo[$file]['path']);
+                }
+
+                $media->save();
+                Storage::deleteDirectory($tempDir);
+
+            }
+            $this->record->clearMediaCollection(Article::MEDIA_COLLECTION_NAME);
+            return $data;
+        }
         return $data;
     }
 
