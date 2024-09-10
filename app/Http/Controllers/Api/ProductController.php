@@ -49,6 +49,7 @@ class ProductController extends Controller
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
+     * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @response scenario=success {
      * "message": "Redirect to Gateway"
      * }
@@ -111,6 +112,11 @@ class ProductController extends Controller
         $user = request()->user();
         $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
 
+        // if request has payment type, then use it
+        if ($request->has('wallet_type')) {
+            $walletType = $request->wallet_type;
+        }
+
         // create payment transaction, pending status
         $transaction = $this->transactionService->create(
             $product,
@@ -137,6 +143,7 @@ class ProductController extends Controller
                 secure_url('/payment/return'),
                 $user->full_phone_no ?? null,
                 $user->email ?? null
+                ($walletType) ? $walletType : null,
             );
 
             //if this product has limited supply, reduce quantity

@@ -369,7 +369,7 @@ class MerchantOfferController extends Controller
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: points/fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
-     * @bodyParam wallet_type string optional Wallet Type. Example: TNG
+     * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @response scenario=success {
      * "message": "Offer Claimed"
      * }
