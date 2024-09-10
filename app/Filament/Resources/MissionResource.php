@@ -167,7 +167,7 @@ class MissionResource extends Resource
 
                           // media gallery
                             Forms\Components\SpatieMediaLibraryFileUpload::make('gallery')
-                               ->label('Images')
+                               ->label('Reward Image')
                                ->multiple()
                                ->collection(Mission::MEDIA_COLLECTION_NAME)
                                ->columnSpan('full')
@@ -180,7 +180,33 @@ class MissionResource extends Resource
                                ->acceptedFileTypes(['image/*'])
                                ->maxFiles(20)
                                ->rules('image'),
-                            ]),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('mission_completed_image_en')
+                               ->label('Completed Mission Image (Engish)')
+                               ->collection(Mission::COMPLETED_MISSION_COLLECTION_EN)
+                               ->columnSpan('full')
+                               // disk is s3_public
+                               ->disk(function () {
+                                   if (config('filesystems.default') === 's3') {
+                                       return 's3_public';
+                                   }
+                               })
+                               ->acceptedFileTypes(['image/*'])
+                               ->maxFiles(20)
+                               ->rules('image'),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('mission_completed_image_zh')
+                               ->label('Completed Mission Image (Chinese)')
+                               ->collection(Mission::COMPLETED_MISSION_COLLECTION_ZH)
+                               ->columnSpan('full')
+                               // disk is s3_public
+                               ->disk(function () {
+                                   if (config('filesystems.default') === 's3') {
+                                       return 's3_public';
+                                   }
+                               })
+                               ->acceptedFileTypes(['image/*'])
+                               ->maxFiles(20)
+                               ->rules('image'),
+                    ]),
                     Section::make('Mission Goals')
                             ->schema([
                                  // events and values repeater

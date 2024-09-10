@@ -152,7 +152,7 @@ class Store extends BaseModel implements HasMedia, Auditable
 
         // unonboarded merchants do not have user_id, make them searcheable
         // note: unonboarded merchants are auto synced from Article location -> stores
-        return $this->status === self::STATUS_ACTIVE;;
+        return $this->status !== self::STATUS_ARCHIVED;
     }
 
     public function merchant()

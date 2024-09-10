@@ -54,7 +54,7 @@ class SyncArticlesLocationAsStores extends Command
 
                 $status = Store::STATUS_ACTIVE;
                 // if full address starts with Lorong, Jalan or Street then set to unlisted first
-                $smallLetterAddress = trim(strtolower($location->full_address));
+                $smallLetterAddress = trim(strtolower($location->name));
                 if (str_starts_with($smallLetterAddress, 'lorong') || str_starts_with($smallLetterAddress, 'jalan') || str_starts_with($smallLetterAddress, 'street')) {
                     $status = Store::STATUS_INACTIVE;
                 }

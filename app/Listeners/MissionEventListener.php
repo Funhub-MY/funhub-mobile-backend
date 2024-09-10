@@ -15,6 +15,7 @@ use App\Events\InteractionCreated;
 use App\Models\MissionRewardDisbursement;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use App\Models\SupportRequest;
 use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
 use Illuminate\Support\Facades\Log;
@@ -60,6 +61,8 @@ class MissionEventListener
             $this->handlePurchasedMerchantOffer($event);
         } else if ($event instanceof \App\Events\RatedStore) {
             $this->handleRatedStore($event);
+        } else if ($event instanceof \App\Events\ClosedSupportTicket) {
+            $this->handleClosedSupportTicket($event);
         }
     }
 
@@ -153,6 +156,32 @@ class MissionEventListener
         $this->updateMissionProgress('accumulated_followers', $event->followedUser, 1);
     }
 
+    /*
+     * Handle closed support ticket
+     * Update mission progress if request is closed
+     *
+     * @param \App\Events\ClosedSupportTicket $event
+     */
+    private function handleClosedSupportTicket($event)
+    {
+        $supportRequest = $event->supportRequest;
+
+        $closedAudits = $supportRequest->audits()
+            ->where('new_values->status', SupportRequest::STATUS_CLOSED)
+            ->where('old_values->status', '!=', SupportRequest::STATUS_CLOSED)
+            ->count();
+
+        if ($closedAudits > 1) {
+            Log::info('[MissionEventListener] Support Request was closed before', [
+                'support_request' => $supportRequest->id,
+            ]);
+            return;
+        }
+
+        // update 1 request is closed
+        $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
+    }
+
     /**
      * Update Mission Progress
      */
@@ -166,27 +195,23 @@ class MissionEventListener
             return in_array($eventType, $mission->events);
         });
 
-        // double check if user has completed one-off mission, if yes then skip below
-        $oneOffMissions = $user->missionsParticipating()->where('is_completed', true)
-            ->whereIn('mission_id', $missions->pluck('id'))
-            ->where('frequency', 'one-off')
-            ->get();
-
-        if ($oneOffMissions->count() > 0) {
-            Log::info('User already completed one-off mission', [
-                'user' => $user->id,
-                'missions' => $missions->pluck('id')->toArray(),
-                'latest_completions' => $oneOffMissions->map(function ($mission) {
-                    return [
-                        'mission_id' => $mission->mission_id,
-                        'completed_at' => $mission->completed_at,
-                    ];
-                })->toArray(),
-            ]);
-            return;
-        }
-
         foreach ($missions as $mission) {
+             // check if the user has completed the specific one-off mission
+            if ($mission->frequency == 'one-off') {
+                $completedOneOff = $user->missionsParticipating()
+                    ->where('is_completed', true)
+                    ->where('mission_id', $mission->id)
+                    ->exists();
+
+                if ($completedOneOff) {
+                    Log::info('User already completed one-off mission', [
+                        'user' => $user->id,
+                        'mission' => $mission->id,
+                    ]);
+                    continue; // skip the current one-off mission and move to the next mission
+                }
+            }
+
             $userMission = $user->missionsParticipating()->where('is_completed', false)
                 ->where('mission_id', $mission->id)
                 ->orderBy('id', 'desc') // latest one first
@@ -221,6 +246,12 @@ class MissionEventListener
                         ->whereNull('completed_at')
                         ->get();
 
+                    Log::info('[Accumulated] Checking if user has completed similar mission before', [
+                        'user' => $user->id,
+                        'mission' => $mission->id,
+                        'completedMissions' => $completedMissions->count(),
+                    ]);
+
                     if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
                         continue;
                     }
@@ -238,6 +269,10 @@ class MissionEventListener
                 ]);
 
             } else if (!$userMission->pivot->is_completed) {
+                Log::info('User mission not complete yet', [
+                    'user' => $user->id,
+                    'mission' => $mission->id,
+                ]);
                 // if current_value is string, decode it first
                 $currentValues = is_string($userMission->pivot->current_values) ? json_decode($userMission->pivot->current_values, true) : $userMission->pivot->current_values;
 
