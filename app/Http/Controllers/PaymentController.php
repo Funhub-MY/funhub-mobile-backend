@@ -383,11 +383,14 @@ class PaymentController extends Controller
      * Card Tokenization Return form Gateway (called by Gateway)
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return View
      */
     public function cardTokenizationReturn(Request $request)
     {
         // validate secureHash
+        Log::info('[cardTokenizationReturn] Card Tokenization Return from MPAY', [
+            'request' => $request->all(),
+        ]);
 
         if ($request->responseCode == 0 || $request->responseCode == '0') {
             // success
@@ -421,6 +424,12 @@ class PaymentController extends Controller
                         'card_expiry_year' => '', // You can get this from the form if needed
                         'card_token' => $request->token,
                         'is_default' => $user->cards()->count() == 0,
+                    ]);
+
+                    Log::info('Mpay Card Tokenization Success', [
+                        'uuid' => $request->uuid,
+                        'mpay_returrned' => $request->all(),
+                        'user' => $user->id,
                     ]);
 
                     return view('payment-return', [
