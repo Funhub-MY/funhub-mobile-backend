@@ -38,6 +38,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
+use Filament\Forms\Components\Tabs\Tab;
 
 class ArticleResource extends Resource
 {
@@ -386,6 +387,14 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+
+                Tables\Columns\BadgeColumn::make('type')
+                    ->enum(Article::TYPE)
+                    ->colors([
+                        'primary' => 'video',
+                        'secondary' => 'multimedia',
+                    ])
+                    ->sortable(),
 
                 Tables\Columns\BadgeColumn::make('hidden_from_home')
                     ->label('Hidden (Home)')
