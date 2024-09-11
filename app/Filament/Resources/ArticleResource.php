@@ -6,10 +6,16 @@ use Closure;
 use Filament\Forms;
 use App\Models\User;
 use App\Models\View;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables;
 use App\Models\Article;
 use App\Models\Location;
 use App\Models\ArticleTag;
+use Google\Model;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
@@ -28,6 +34,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ArticleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ArticleResource\RelationManagers;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
 
@@ -118,35 +126,52 @@ class ArticleResource extends Resource
 
                             //  video upload
                             // image upload for video thumbnail
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('video_thumbnail')
+                            FileUpload::make('video_thumbnail')
                                 ->label('Video Thumbnail')
                                 ->helperText('This image will be used as the thumbnail for the video')
-                                ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
                                     }
                                 })
-                                ->customProperties(['is_cover' => true])
+                                ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['image/*'])
-                                ->maxFiles(1)
+                                ->rules('image')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('image'),
+                                ->getUploadedFileUrlUsing(function ($file) {
+                                    $disk = config('filesystems.default');
 
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('video')
+                                    if (config('filesystems.default') === 's3') {
+                                        $disk = 's3_public';
+                                        Log::info('Disk: '. $disk);
+                                    }
+                                    Log::info(Storage::disk($disk)->url($file));
+                                    return Storage::disk($disk)->url($file);
+                                }),
+                            FileUpload::make('video')
                                 ->label('Video File')
-                                ->collection(Article::MEDIA_COLLECTION_NAME)
+                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->columnSpan('full')
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
                                     }
                                 })
+                                ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['video/*'])
-                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
+                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb'))
+                                ->getUploadedFileUrlUsing(function ($file) {
+                                    $disk = config('filesystems.default');
+
+                                    if (config('filesystems.default') === 's3') {
+                                        $disk = 's3_public';
+                                        Log::info('Disk: '. $disk);
+                                    }
+                                    Log::info(Storage::disk($disk)->url($file));
+                                    return Storage::disk($disk)->url($file);
+                                }),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),
