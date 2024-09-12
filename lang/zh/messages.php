@@ -176,6 +176,7 @@ return [
             'Invalid_merchant_redeem_code' => '商家兑换码无效',
             'Deal_not_found' => '优惠券不存在',
             'Merchant_not_found' => '商家不存在',
+            'No_Card_Selected' => '未选择卡/卡不存在',
         ],
         'notification_controller' => [
             'Notification_not_found' => '通知不存在',

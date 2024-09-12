@@ -16,6 +16,7 @@ use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use App\Models\ShareableLink;
 use App\Models\Transaction;
+use App\Models\UserCard;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
 use App\Notifications\PurchasedOfferNotification;
@@ -369,6 +370,7 @@ class MerchantOfferController extends Controller
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: points/fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
+     * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @response scenario=success {
      * "message": "Offer Claimed"
@@ -402,6 +404,7 @@ class MerchantOfferController extends Controller
             'offer_id' => 'required|integer|exists:merchant_offers,id',
             'payment_method' => 'required|in:points,fiat',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
+            'card_id' => 'required_if:fiat_payment_method,card,exists:user_cards,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
@@ -429,6 +432,8 @@ class MerchantOfferController extends Controller
 
         $user = request()->user();
         if ($request->payment_method == 'points') {
+            // ------------------------------------ POINTS CHECKOUT ------------------------------------
+
             $net_amount = $offer->unit_price * $request->quantity;
             $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
 
@@ -488,6 +493,7 @@ class MerchantOfferController extends Controller
             }
 
         } else if($request->payment_method == 'fiat') {
+            // ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
             // check if user has verified email address
             if (!$user->hasVerifiedEmail()) {
                 return response()->json([
@@ -500,6 +506,22 @@ class MerchantOfferController extends Controller
             // if request has payment type, then use it
             if ($request->has('wallet_type')) {
                 $walletType = $request->wallet_type;
+            }
+
+            // get card if payment mode via card
+            $selectedCard = null;
+            if ($request->fiat_payment_method == 'card') {
+                // check user has a saved card
+                $selectedCard = UserCard::where('user_id', $user->id)
+                    ->where('is_default', true)
+                    ->notExpired()
+                    ->first();
+
+                if (!$selectedCard) {
+                    return response()->json([
+                        'message' => __('messages.error.merchant_offer_controller.No_Card_Selected')
+                    ], 422);
+                }
             }
 
             // create payment transaction first, not yet claim
@@ -529,7 +551,8 @@ class MerchantOfferController extends Controller
                     secure_url('/payment/return'),
                     $user->full_phone_no ?? null,
                     $user->email ?? null,
-                    $walletType // for use this type
+                    $walletType, // FPX-CIMB,GRAB,TNG
+                    $selectedCard ? $selectedCard->card_token : null
                 );
 
                 $offer->claims()->attach($user->id, [
