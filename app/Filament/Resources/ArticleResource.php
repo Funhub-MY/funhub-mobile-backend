@@ -7,13 +7,11 @@ use Filament\Forms;
 use App\Models\User;
 use App\Models\View;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables;
 use App\Models\Article;
 use App\Models\Location;
 use App\Models\ArticleTag;
-use Google\Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -34,11 +32,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ArticleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ArticleResource\RelationManagers;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
-use Filament\Forms\Components\Tabs\Tab;
 
 class ArticleResource extends Resource
 {
@@ -313,7 +308,8 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Tags')->schema([
                             Forms\Components\Select::make('tags')
                                 ->label('')
-                                ->relationship('tags', 'name')->createOptionForm([
+                                ->relationship('tags', 'name')
+                                ->createOptionForm([
                                     Forms\Components\TextInput::make('name')
                                         ->required()
                                         ->placeholder('Tag name'),
