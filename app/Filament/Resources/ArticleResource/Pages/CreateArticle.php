@@ -27,7 +27,7 @@ class CreateArticle extends CreateRecord
 
         // Extract hashtags from the content
         $content = $article->body;
-        preg_match_all('/#(\w+)/', $content, $matches);
+        preg_match_all('/#([\p{L}\p{N}_]+)/u', $content, $matches);
         $hashtags = $matches[0];
 
         // Attach or create tags based on detected hashtags
