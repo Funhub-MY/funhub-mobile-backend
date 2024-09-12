@@ -226,6 +226,11 @@ class EditArticle extends EditRecord
                 UpdateArticleTagArticlesCount::dispatch($tag);
             }
         }
+        
+        // Attach categories, do not create new categories if not exist
+        if (isset($this->data['categories']) && !empty($this->data['categories'])) {
+            $article->categories()->sync($this->data['categories']);
+        }
 
         // Extract hashtags from the content
         $content = $article->body;
