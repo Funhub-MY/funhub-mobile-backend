@@ -10,6 +10,8 @@ use Filament\Tables;
 use App\Models\Article;
 use App\Models\Location;
 use App\Models\ArticleTag;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
@@ -287,7 +289,8 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Tags')->schema([
                             Forms\Components\Select::make('tags')
                                 ->label('')
-                                ->relationship('tags', 'name')->createOptionForm([
+                                ->relationship('tags', 'name')
+                                ->createOptionForm([
                                     Forms\Components\TextInput::make('name')
                                         ->required()
                                         ->placeholder('Tag name'),

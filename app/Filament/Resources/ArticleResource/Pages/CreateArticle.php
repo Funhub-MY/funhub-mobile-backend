@@ -7,6 +7,7 @@ use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\Article;
 use App\Models\ArticleTag;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Log;
 
 class CreateArticle extends CreateRecord
 {
@@ -29,13 +30,23 @@ class CreateArticle extends CreateRecord
         // Attach or create tags based on detected hashtags
         if (!empty($hashtags)) {
             $tags = collect($hashtags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()]);
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             // Sync the tags with the article
             $article->tags()->syncWithoutDetaching($tags);
 
             $tags->each(function ($tagId) {
                 $tag = ArticleTag::find($tagId);
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            });
+        }
+
+        $tags = $article->tags;
+
+        // Dispatch the job for each tag associated with the article
+        if (!empty($tags)) {
+            $tags->each(function ($tag) {
+                Log::info('Create Article Firing job for tag: ' . $tag->name);
                 UpdateArticleTagArticlesCount::dispatch($tag);
             });
         }

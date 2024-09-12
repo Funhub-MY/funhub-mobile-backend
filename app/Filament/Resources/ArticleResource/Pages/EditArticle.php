@@ -16,6 +16,15 @@ class EditArticle extends EditRecord
 {
     protected static string $resource = ArticleResource::class;
 
+    // Store the original tags to compare after editing
+    protected $originalTags;
+
+    // Capture original tags before the form is loaded
+    protected function beforeFill(): void
+    {
+        $this->originalTags = $this->record->tags->pluck('id')->toArray();
+    }
+
     protected function getActions(): array
     {
         return [
@@ -62,9 +71,23 @@ class EditArticle extends EditRecord
     {
         $article = $this->record;
 
-        // Attach categories, do not create new categories if not exist
-        if (isset($this->data['categories']) && !empty($this->data['categories'])) {
-            $article->categories()->sync($this->data['categories']);
+        $originalTags = $this->originalTags ?? [];
+        $newTags = $article->tags->pluck('id')->toArray();
+        $removedTags = array_diff($originalTags, $newTags);
+
+        // Dispatch the job for the attached tags
+        $article->tags->each(function ($tag) {
+            Log::info('Dispatching job for tag: ' . $tag->name);
+            UpdateArticleTagArticlesCount::dispatch($tag);
+        });
+
+        // Dispatch jobs for removed tags
+        foreach ($removedTags as $tagId) {
+            $tag = ArticleTag::find($tagId);
+            if ($tag) {
+                Log::info('Dispatching job for removed tag: ' . $tag->name);
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            }
         }
 
         // Extract hashtags from the content
@@ -75,7 +98,7 @@ class EditArticle extends EditRecord
         // Attach or create tags based on detected hashtags
         if (!empty($hashtags)) {
             $tags = collect($hashtags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()]);
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             // Sync the tags with the article
             $article->tags()->syncWithoutDetaching($tags);
@@ -84,6 +107,12 @@ class EditArticle extends EditRecord
                 $tag = ArticleTag::find($tagId);
                 UpdateArticleTagArticlesCount::dispatch($tag);
             });
+        }
+
+        // get article updated tags and final fire the job to get latest count
+        $updated_article_tags = $article->tags()->get();
+        foreach($updated_article_tags as $tag) {
+            UpdateArticleTagArticlesCount::dispatch($tag);
         }
     }
 
