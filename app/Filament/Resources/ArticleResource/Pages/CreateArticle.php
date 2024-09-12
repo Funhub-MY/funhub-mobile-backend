@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\ArticleTag;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class CreateArticle extends CreateRecord
 {
@@ -41,6 +40,16 @@ class CreateArticle extends CreateRecord
             $tags->each(function ($tagId) {
                 $tag = ArticleTag::find($tagId);
                 Log::info('Firing job for detecting hashtag');
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            });
+        }
+
+        $tags = $article->tags;
+
+        // Dispatch the job for each tag associated with the article
+        if (!empty($tags)) {
+            $tags->each(function ($tag) {
+                Log::info('Create Article Firing job for tag: ' . $tag->name);
                 UpdateArticleTagArticlesCount::dispatch($tag);
             });
         }

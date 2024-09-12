@@ -208,15 +208,23 @@ class EditArticle extends EditRecord
     {
         $article = $this->record;
 
+        $originalTags = $this->originalTags ?? [];
+        $newTags = $article->tags->pluck('id')->toArray();
+        $removedTags = array_diff($originalTags, $newTags);
+
         // Dispatch the job for the attached tags
         $article->tags->each(function ($tag) {
             Log::info('Dispatching job for tag: ' . $tag->name);
             UpdateArticleTagArticlesCount::dispatch($tag);
         });
 
-        // Attach categories, do not create new categories if not exist
-        if (isset($this->data['categories']) && !empty($this->data['categories'])) {
-            $article->categories()->sync($this->data['categories']);
+        // Dispatch jobs for removed tags
+        foreach ($removedTags as $tagId) {
+            $tag = ArticleTag::find($tagId);
+            if ($tag) {
+                Log::info('Dispatching job for removed tag: ' . $tag->name);
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            }
         }
 
         // Extract hashtags from the content
@@ -242,12 +250,17 @@ class EditArticle extends EditRecord
         // get article updated tags and final fire the job to get latest count
         $updated_article_tags = $article->tags()->get();
         foreach($updated_article_tags as $tag) {
+<<<<<<< HEAD
             Log::info('final fire for tags');
             UpdateArticleTagArticlesCount::dispatch($tag);
         }
 
         // trigger searcheable to reindex
         $article->searchable();
+=======
+            UpdateArticleTagArticlesCount::dispatch($tag);
+        }
+>>>>>>> 5b34edbf (FIX: Solved ArticleTag count cant update)
     }
 
 }
