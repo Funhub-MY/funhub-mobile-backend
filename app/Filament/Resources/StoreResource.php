@@ -73,6 +73,10 @@ class StoreResource extends Resource
                             ->helperText('Unlisted store will not show up in App')
                             ->label('Status')
                             ->required(),
+                        Forms\Components\Toggle::make('is_closed')
+                            ->label('Is Closed ?')
+                            ->onIcon('heroicon-s-check-circle')
+                            ->offIcon('heroicon-s-x-circle'),
                         Forms\Components\TextInput::make('name')
                             ->label('Store Name')
                             ->autofocus()
@@ -296,7 +300,10 @@ class StoreResource extends Resource
                 // Tables\Columns\TextColumn::make('lang'),
                 // Tables\Columns\TextColumn::make('long'),
                 Tables\Columns\ToggleColumn::make('is_hq')
-                    ->label('Headquarter')
+                    ->label('Headquarter'),
+
+                Tables\Columns\ToggleColumn::make('is_closed')
+                    ->label('Is Closed')
             ])
             ->filters([
                 Filter::make('created_at')

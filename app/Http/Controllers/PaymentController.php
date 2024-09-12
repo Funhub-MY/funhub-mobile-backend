@@ -383,11 +383,14 @@ class PaymentController extends Controller
      * Card Tokenization Return form Gateway (called by Gateway)
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return View
      */
     public function cardTokenizationReturn(Request $request)
     {
         // validate secureHash
+        Log::info('[cardTokenizationReturn] Card Tokenization Return from MPAY', [
+            'request' => $request->all(),
+        ]);
 
         if ($request->responseCode == 0 || $request->responseCode == '0') {
             // success
@@ -399,8 +402,9 @@ class PaymentController extends Controller
                     'request' => $request->all(),
                 ]);
 
-                return response()->json([
-                    'message' => 'Transaction not found',
+                return view('payment-return', [
+                    'message' => 'Transaction Failed - No transaction',
+                    'transaction_id' => null,
                     'success' => false
                 ]);
             } else {
@@ -421,23 +425,36 @@ class PaymentController extends Controller
                         'card_token' => $request->token,
                         'is_default' => $user->cards()->count() == 0,
                     ]);
+
+                    Log::info('Mpay Card Tokenization Success', [
+                        'uuid' => $request->uuid,
+                        'mpay_returrned' => $request->all(),
+                        'user' => $user->id,
+                    ]);
+
+                    return view('payment-return', [
+                        'message' => 'Card Added',
+                        'transaction_id' => $transaction->id,
+                        'success' => true
+                    ]);
                 } else {
                     Log::error('Mpay Card Tokenization Failed: User not found', [
                         'uuid' => $request->uuid,
                         'request' => $request->all(),
                     ]);
 
-                    return response()->json([
-                        'message' => 'User not found',
-                        'transaction_id' => $transaction->id,
+                    return view('payment-return', [
+                        'message' => 'Transaction Failed - User not found',
+                        'transaction_id' => null,
                         'success' => false
                     ]);
                 }
             }
         } else {
             // failed
-            return response()->json([
-                'message' => 'Mpay Card Tokenization Pending/Failed',
+            return view('payment-return', [
+                'message' => 'Transaction Failed - Unknown Failure',
+                'transaction_id' => null,
                 'success' => false
             ]);
         }

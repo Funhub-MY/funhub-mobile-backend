@@ -42,6 +42,7 @@ class Mpay {
      * @param string $phoneNo       Phone No Eg. 60123456789
      * @param string $email         Email Eg. john@smith.com
      * @param string $paymentType   Payment Type
+     * @param string $card          Card Token
      * @param string $param         Merchant have to add in the delimiter “|” to separate each parameter value. Noted: “|” is “7C” in hexadecimal of ASCII code table.
      * @return void
      */
@@ -53,6 +54,7 @@ class Mpay {
         string $phoneNo = null,
         string $email = null,
         $paymentType = null,
+        $cardToken = null,
         $param = null)
     {
         // check if mid and hashKey is set
@@ -91,6 +93,10 @@ class Mpay {
                 'param' => $param,
             ]
         ];
+
+        if ($cardToken) {
+            $data['formData']['token'] = $cardToken;
+        }
 
         if ($paymentType) {
             $data['paymentType'] = $paymentType;

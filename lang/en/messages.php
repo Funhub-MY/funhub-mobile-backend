@@ -173,6 +173,7 @@ return [
             'Invalid_merchant_redeem_code' => 'Invalid merchant redeem code',
             'Deal_not_found' => 'Deal not found',
             'Merchant_not_found' => 'Merchant not found',
+            'No_Card_Selected' => 'No Card Selected/Card does not exist',
         ],
         'notification_controller' => [
             'Notification_not_found' => 'Notification not found.',
