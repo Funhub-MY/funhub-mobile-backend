@@ -245,6 +245,9 @@ class EditArticle extends EditRecord
             Log::info('final fire for tags');
             UpdateArticleTagArticlesCount::dispatch($tag);
         }
+
+        // trigger searcheable to reindex
+        $article->searchable();
     }
 
 }
