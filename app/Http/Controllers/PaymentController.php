@@ -416,9 +416,9 @@ class PaymentController extends Controller
                 $user = User::where('id', $transaction->user_id)->first();
 
                 $cardType = null;
-                if ($request->paymentType == 'Master' || $request->paymentType == 'MasterCard') {
+                if ($request->paymentType == 'Master' || $request->paymentType == 'MasterCard' || $request->paymentType == 'MASTER') {
                     $cardType = 'master';
-                } elseif ($request->paymentType == 'Visa' || $request->paymentType == 'VisaCard') {
+                } elseif ($request->paymentType == 'Visa' || $request->paymentType == 'VisaCard' || $request->paymentType == 'VISA') {
                     $cardType = 'visa';
                 } else if ($request->paymentType == 'Amex' || $request->paymentType == 'AmexCard') {
                     $cardType = 'amex';
