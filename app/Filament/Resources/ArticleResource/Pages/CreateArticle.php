@@ -40,6 +40,7 @@ class CreateArticle extends CreateRecord
 
             $tags->each(function ($tagId) {
                 $tag = ArticleTag::find($tagId);
+                Log::info('Firing job for detecting hashtag');
                 UpdateArticleTagArticlesCount::dispatch($tag);
             });
         }

@@ -33,6 +33,9 @@ class UpdateArticleTagArticlesCount implements ShouldQueue
             return;
         }
 
+        Log::info('Current ArticleTag Model: ', $articlesCount->toArray());
+        Log::info('Article count for article tag: "' . $this->articleTag->name . '" is: ' . $articlesCount->articles_count);
+
         try {
             DB::table('article_tags_articles_count')->updateOrInsert(
                 ['name' => $this->articleTag->name],
