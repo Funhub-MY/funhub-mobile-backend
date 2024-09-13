@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserCard;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
 use Illuminate\Support\Str;
@@ -425,15 +426,31 @@ class PaymentController extends Controller
                 }
 
                 if ($user) {
-                    $user->cards()->create([
-                        'card_type' => $cardType,
-                        'card_last_four' => substr($request->maskedPAN, -4), // last four digits of card number
-                        'card_holder_name' => '',
-                        'card_expiry_month' => '',
-                        'card_expiry_year' => '',
-                        'card_token' => $request->token,
-                        'is_default' => $user->cards()->count() == 0,
-                    ]);
+                    // check if card exists in user_cards table
+                    $cardExists = UserCard::where('user_id', $user->id)
+                        ->where('card_type', $cardType)
+                        ->where('card_last_four', substr($request->maskedPAN, -4))
+                        ->exists();
+
+                    if (!$cardExists) {
+                        // create new card
+                        $user->cards()->create([
+                            'card_type' => $cardType,
+                            'card_last_four' => substr($request->maskedPAN, -4), // last four digits of card number
+                            'card_holder_name' => '',
+                            'card_expiry_month' => '',
+                            'card_expiry_year' => '',
+                            'card_token' => $request->token,
+                            'is_default' => $user->cards()->count() == 0,
+                        ]);
+                    } else {
+                        // update token
+                        $user->cards()->where('card_type', $cardType)
+                            ->where('card_last_four', substr($request->maskedPAN, -4))
+                            ->update([
+                                'card_token' => $request->token,
+                            ]);
+                    }
 
                     Log::info('Mpay Card Tokenization Success', [
                         'uuid' => $request->invno,
