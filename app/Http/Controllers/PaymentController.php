@@ -395,7 +395,7 @@ class PaymentController extends Controller
         if ($request->responseCode == 0 || $request->responseCode == '0') {
             // success
             // get transaction from uuid
-            $transaction = Transaction::where('transaction_no', $request->uuid)->first();
+            $transaction = Transaction::where('transaction_no', $request->invno)->first();
             if (!$transaction) {
                 Log::error('Mpay Card Tokenization Failed: Transaction not found', [
                     'uuid' => $request->uuid,
@@ -415,19 +415,28 @@ class PaymentController extends Controller
 
                 $user = User::where('id', $transaction->user_id)->first();
 
+                $cardType = null;
+                if ($request->paymentType == 'Master' || $request->paymentType == 'MasterCard') {
+                    $cardType = 'master';
+                } elseif ($request->paymentType == 'Visa' || $request->paymentType == 'VisaCard') {
+                    $cardType = 'visa';
+                } else if ($request->paymentType == 'Amex' || $request->paymentType == 'AmexCard') {
+                    $cardType = 'amex';
+                }
+
                 if ($user) {
                     $user->cards()->create([
-                        'card_type' => $request->paymentType,
-                        'card_last_four' => substr($request->maskedPAN, -4),
-                        'card_holder_name' => '', // You can get this from the form if needed
-                        'card_expiry_month' => '', // You can get this from the form if needed
-                        'card_expiry_year' => '', // You can get this from the form if needed
+                        'card_type' => $cardType,
+                        'card_last_four' => substr($request->maskedPAN, -4), // last four digits of card number
+                        'card_holder_name' => '',
+                        'card_expiry_month' => '',
+                        'card_expiry_year' => '',
                         'card_token' => $request->token,
                         'is_default' => $user->cards()->count() == 0,
                     ]);
 
                     Log::info('Mpay Card Tokenization Success', [
-                        'uuid' => $request->uuid,
+                        'uuid' => $request->invno,
                         'mpay_returrned' => $request->all(),
                         'user' => $user->id,
                     ]);
