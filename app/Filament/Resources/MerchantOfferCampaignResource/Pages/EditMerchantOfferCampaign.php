@@ -9,6 +9,7 @@ use App\Models\MerchantOfferVoucher;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions;
+use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Log;
 
@@ -23,6 +24,23 @@ class EditMerchantOfferCampaign extends EditRecord
         ];
     }
 
+    protected function getSaveFormAction(): Action
+    {
+        return Action::make('save')
+            ->label('Save changes')
+            ->action(function () {
+                $this->validate();
+                $data = $this->form->getState();
+                $this->handleRecordUpdate($this->record, $data);
+                Notification::make()
+                    ->success()
+                    ->title('Saved')
+                    ->send();
+            })
+            ->requiresConfirmation()
+            ->modalHeading('Confirm Save Changes');
+    }
+    
     protected function mutateFormDataBeforeSave(array $data): array
     {
         return $data;
