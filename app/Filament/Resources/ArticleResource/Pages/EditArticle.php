@@ -17,6 +17,15 @@ class EditArticle extends EditRecord
 {
     protected static string $resource = ArticleResource::class;
 
+    // Store the original tags to compare after editing
+    protected $originalTags;
+
+    // Capture original tags before the form is loaded
+    protected function beforeFill(): void
+    {
+        $this->originalTags = $this->record->tags->pluck('id')->toArray();
+    }
+
     protected function getActions(): array
     {
         return [
@@ -199,6 +208,12 @@ class EditArticle extends EditRecord
     {
         $article = $this->record;
 
+        // Dispatch the job for the attached tags
+        $article->tags->each(function ($tag) {
+            Log::info('Dispatching job for tag: ' . $tag->name);
+            UpdateArticleTagArticlesCount::dispatch($tag);
+        });
+
         // Attach categories, do not create new categories if not exist
         if (isset($this->data['categories']) && !empty($this->data['categories'])) {
             $article->categories()->sync($this->data['categories']);
@@ -206,22 +221,33 @@ class EditArticle extends EditRecord
 
         // Extract hashtags from the content
         $content = $article->body;
-        preg_match_all('/#(\w+)/', $content, $matches);
+        preg_match_all('/#([\p{L}\p{N}_]+)/u', $content, $matches);
         $hashtags = $matches[0];
 
         // Attach or create tags based on detected hashtags
         if (!empty($hashtags)) {
             $tags = collect($hashtags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()]);
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             // Sync the tags with the article
             $article->tags()->syncWithoutDetaching($tags);
 
             $tags->each(function ($tagId) {
                 $tag = ArticleTag::find($tagId);
+                Log::info('Dispatching job for hashtag');
                 UpdateArticleTagArticlesCount::dispatch($tag);
             });
         }
+
+        // get article updated tags and final fire the job to get latest count
+        $updated_article_tags = $article->tags()->get();
+        foreach($updated_article_tags as $tag) {
+            Log::info('final fire for tags');
+            UpdateArticleTagArticlesCount::dispatch($tag);
+        }
+
+        // trigger searcheable to reindex
+        $article->searchable();
     }
 
 }

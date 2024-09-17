@@ -27,19 +27,30 @@ class CreateArticle extends CreateRecord
 
         // Extract hashtags from the content
         $content = $article->body;
-        preg_match_all('/#(\w+)/', $content, $matches);
+        preg_match_all('/#([\p{L}\p{N}_]+)/u', $content, $matches);
         $hashtags = $matches[0];
 
         // Attach or create tags based on detected hashtags
         if (!empty($hashtags)) {
             $tags = collect($hashtags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()]);
+                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             // Sync the tags with the article
             $article->tags()->syncWithoutDetaching($tags);
 
             $tags->each(function ($tagId) {
                 $tag = ArticleTag::find($tagId);
+                Log::info('Firing job for detecting hashtag');
+                UpdateArticleTagArticlesCount::dispatch($tag);
+            });
+        }
+
+        $tags = $article->tags;
+
+        // Dispatch the job for each tag associated with the article
+        if (!empty($tags)) {
+            $tags->each(function ($tag) {
+                Log::info('Create Article Firing job for tag: ' . $tag->name);
                 UpdateArticleTagArticlesCount::dispatch($tag);
             });
         }
@@ -53,6 +64,9 @@ class CreateArticle extends CreateRecord
             // fire ArticleCreated event
             event(new \App\Events\ArticleCreated($this->record));
         }
+
+        // trigger searcheable to reindex
+        $this->record->searchable();
     }
 
     protected function handleRecordCreation(array $data): Model

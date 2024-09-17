@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserCard;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
 use Illuminate\Support\Str;
@@ -395,7 +396,7 @@ class PaymentController extends Controller
         if ($request->responseCode == 0 || $request->responseCode == '0') {
             // success
             // get transaction from uuid
-            $transaction = Transaction::where('transaction_no', $request->uuid)->first();
+            $transaction = Transaction::where('transaction_no', $request->invno)->first();
             if (!$transaction) {
                 Log::error('Mpay Card Tokenization Failed: Transaction not found', [
                     'uuid' => $request->uuid,
@@ -415,19 +416,44 @@ class PaymentController extends Controller
 
                 $user = User::where('id', $transaction->user_id)->first();
 
+                $cardType = null;
+                if ($request->paymentType == 'Master' || $request->paymentType == 'MasterCard' || $request->paymentType == 'MASTER') {
+                    $cardType = 'master';
+                } elseif ($request->paymentType == 'Visa' || $request->paymentType == 'VisaCard' || $request->paymentType == 'VISA') {
+                    $cardType = 'visa';
+                } else if ($request->paymentType == 'Amex' || $request->paymentType == 'AmexCard') {
+                    $cardType = 'amex';
+                }
+
                 if ($user) {
-                    $user->cards()->create([
-                        'card_type' => $request->paymentType,
-                        'card_last_four' => substr($request->maskedPAN, -4),
-                        'card_holder_name' => '', // You can get this from the form if needed
-                        'card_expiry_month' => '', // You can get this from the form if needed
-                        'card_expiry_year' => '', // You can get this from the form if needed
-                        'card_token' => $request->token,
-                        'is_default' => $user->cards()->count() == 0,
-                    ]);
+                    // check if card exists in user_cards table
+                    $cardExists = UserCard::where('user_id', $user->id)
+                        ->where('card_type', $cardType)
+                        ->where('card_last_four', substr($request->maskedPAN, -4))
+                        ->exists();
+
+                    if (!$cardExists) {
+                        // create new card
+                        $user->cards()->create([
+                            'card_type' => $cardType,
+                            'card_last_four' => substr($request->maskedPAN, -4), // last four digits of card number
+                            'card_holder_name' => '',
+                            'card_expiry_month' => '',
+                            'card_expiry_year' => '',
+                            'card_token' => $request->token,
+                            'is_default' => $user->cards()->count() == 0,
+                        ]);
+                    } else {
+                        // update token
+                        $user->cards()->where('card_type', $cardType)
+                            ->where('card_last_four', substr($request->maskedPAN, -4))
+                            ->update([
+                                'card_token' => $request->token,
+                            ]);
+                    }
 
                     Log::info('Mpay Card Tokenization Success', [
-                        'uuid' => $request->uuid,
+                        'uuid' => $request->invno,
                         'mpay_returrned' => $request->all(),
                         'user' => $user->id,
                     ]);
