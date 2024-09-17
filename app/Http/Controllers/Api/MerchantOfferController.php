@@ -510,11 +510,12 @@ class MerchantOfferController extends Controller
 
             // get card if payment mode via card
             $selectedCard = null;
-            if ($request->fiat_payment_method == 'card') {
+            if ($request->fiat_payment_method == 'card' && $request->has('card_id')) {
                 // check user has a saved card
-                $selectedCard = UserCard::where('user_id', $user->id)
-                    ->where('is_default', true)
-                    ->notExpired()
+                $selectedCard = UserCard::where('id', $request->card_id)
+                    ->where('user_id', $user->id)
+                    // ->where('is_default', true)
+                    // ->notExpired()
                     ->first();
 
                 if (!$selectedCard) {
