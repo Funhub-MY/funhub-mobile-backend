@@ -95,7 +95,10 @@ class Mpay {
         ];
 
         if ($cardToken) {
-            $data['formData']['token'] = $cardToken;
+            // token format split string by % symbol
+            $cardToken = explode('%', $cardToken);
+
+            $data['formData']['token'] = $cardToken[0]; // first part of token
             $data['formData']['uuid'] = $invoice_no; // must be same as during card tokenization
         }
 
