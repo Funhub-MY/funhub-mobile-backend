@@ -96,6 +96,7 @@ class Mpay {
 
         if ($cardToken) {
             $data['formData']['token'] = $cardToken;
+            $data['formData']['uuid'] = $invoice_no; // must be same as during card tokenization
         }
 
         if ($paymentType) {
