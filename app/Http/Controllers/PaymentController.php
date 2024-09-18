@@ -479,7 +479,8 @@ class PaymentController extends Controller
                         ]);
                     } else {
                         // update token
-                        $user->cards()->where('card_type', $cardType)
+                        UserCard::where('user_id', $user->id)
+                            ->where('card_type', $cardType)
                             ->where('card_last_four', substr($request->maskedPAN, -4))
                             ->update([
                                 'card_token' => $request->token,
