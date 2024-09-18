@@ -360,6 +360,7 @@ class StoreResource extends Resource
                         ->label('Export Stores Categories')
                         ->withColumns([
                             Column::make('id')->heading('store_id'),
+                            Column::make('name')->heading('store_name'),
                             Column::make('categories.name')
                                 ->heading('category_names')
                                 ->getStateUsing(fn ($record) => $record->categories->pluck('name')->join(',')),
