@@ -43,6 +43,7 @@ class Mpay {
      * @param string $email         Email Eg. john@smith.com
      * @param string $paymentType   Payment Type
      * @param string $card          Card Token
+     * @param string $uuid          Card Token UUID (Required same as the one used when card enrollment)
      * @param string $param         Merchant have to add in the delimiter “|” to separate each parameter value. Noted: “|” is “7C” in hexadecimal of ASCII code table.
      * @return void
      */
@@ -55,6 +56,7 @@ class Mpay {
         string $email = null,
         $paymentType = null,
         $cardToken = null,
+        $uuid = null,
         $param = null)
     {
         // check if mid and hashKey is set
@@ -100,7 +102,7 @@ class Mpay {
 
             $data['formData']['specialParam'] = 'cardvault';
             $data['formData']['token'] = $cardToken[0]; // first part of token
-            $data['formData']['uuid'] = $invoice_no; // must be same as during card tokenization
+            $data['formData']['uuid'] = $uuid; // must be same as during card tokenization/enrolment
         }
 
         if ($paymentType) {

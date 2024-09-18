@@ -86,6 +86,8 @@ class MerchantOfferResource extends JsonResource
             'cancellation_policy' => $this->cancellation_policy,
             'point_cost' => floatval($this->unit_price),
             'point_fiat_price' => floatval($this->point_fiat_price),
+            'available_points_to_discount' => null,
+            'price_after_discount_with_points' => null,
             'discounted_point_fiat_price' => floatval($this->discounted_point_fiat_price),
             'fiat_price' => floatval($this->fiat_price),
             'discounted_fiat_price' => floatval($this->discounted_fiat_price),

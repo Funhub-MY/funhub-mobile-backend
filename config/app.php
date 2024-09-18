@@ -342,6 +342,8 @@ return [
         "first_time_see_create_article_coachmark",
     ],
 
+    'funbox_ringgit_value' => env('FUNBOX_RINGGIT_VALUE', 5),
+
     /*
     |--------------------------------------------------------------------------
     | Support Emails

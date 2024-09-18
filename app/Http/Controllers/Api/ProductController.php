@@ -165,7 +165,8 @@ class ProductController extends Controller
                 $user->full_phone_no ?? null,
                 $user->email ?? null,
                 ($walletType) ? $walletType : null, // FPX-CIMB,GRAB,TNG
-                $selectedCard ? $selectedCard->card_token : null
+                $selectedCard ? $selectedCard->card_token : null,
+                $user->id
             );
 
             //if this product has limited supply, reduce quantity
@@ -222,5 +223,4 @@ class ProductController extends Controller
             'message' => __('messages.success.product_controller.Transaction_cancelled')
         ], 200);
     }
-
 }

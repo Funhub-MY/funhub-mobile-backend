@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserCard;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
+use App\Services\PointService;
 use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
@@ -130,12 +131,41 @@ class PaymentController extends Controller
                 }
             }
 
+            // ===================== SUCCESS
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
-                  // update transaction status to success first with gateway transaction id
-                  $transaction->update([
+
+                // if transaction has use using_point_discount then we need deduct the point ledger
+                if ($transaction->using_point_discount) {
+                    $pointService = new PointService();
+                    $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
+
+                    // check if user has enough points to use
+                    if ($latestBalancePointsOfUser < $transaction->points_to_use) {
+                        Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
+                        return view('payment-return', [
+                            'message' => 'Transaction Failed - Insufficient Point Balance',
+                            'transaction_id' => $transaction->id,
+                            'success' => false
+                        ]);
+                    }
+
+                    // deduct point from user's account
+                    $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
+                }
+
+                $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => $request->mpay_ref_no,
-                ]);
+                ];
+
+                if ($transaction->using_point_discount) {
+                    $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
+                    $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
+                }
+
+                // update transaction status to success first with gateway transaction id
+                $transaction->update($transactionUpdateData);
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
 
@@ -166,12 +196,16 @@ class PaymentController extends Controller
                     'transaction_id' => $transaction->id,
                     'success' => true
                 ]);
+
+            // ===================== PENDING
             } else if ($request->responseCode == 'PE') { // pending
                 Log::info('Payment return/callback pending', [
                     'transaction_id' => $transaction->id,
                     'request' => request()->all()
                 ]);
                 return 'Transaction Still Pending';
+
+            // ===================== FAILED
             } else { // failed
                 Log::error('Payment return failed', [
                     'error' => 'Transaction Failed - Gateway Response Code Failed',
@@ -505,6 +539,22 @@ class PaymentController extends Controller
         $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
         return response()->json([
             'availablePaymentTypes' => $availablePaymentTypes
+        ]);
+    }
+
+    /**
+     * Get Funbox Ringgit Value
+     *
+     * @return JsonResponse
+     * @group Payment
+     * @response status=200 {
+     *  "funbox_ringgit_value": 5
+     * }
+     */
+    public function getFunboxRinggitValue()
+    {
+        return response()->json([
+            'funbox_ringgit_value' => config('app.funbox_ringgit_value')
         ]);
     }
 }

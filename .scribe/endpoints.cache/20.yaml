@@ -44,7 +44,50 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3v8Zfa1D45d66gEaecbVhkP'
+      - 'Bearer 65f6a3E1DdVeacPZvgh4b8k'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/payment/funbox_ringgit_value
+    metadata:
+      groupName: Payment
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Funbox Ringgit Value'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "funbox_ringgit_value": 5
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 4vgbVfEaD8d51Pe6hkZ63ca'
     controller: null
     method: null
     route: null

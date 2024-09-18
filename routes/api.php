@@ -314,5 +314,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Payments
         Route::get('/payment/available_payment_types', [PaymentController::class, 'getAvailablePaymentTypes']);
+        Route::get('/payment/funbox_ringgit_value', [PaymentController::class, 'getFunboxRinggitValue']);
     });
 });

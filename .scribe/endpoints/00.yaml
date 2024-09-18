@@ -27,13 +27,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: voluptatem
+        example: sint
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: voluptatem
+      share_code: sint
     fileParameters: []
     responses:
       -
@@ -533,7 +533,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fcD6aEg6vP3d1khVZeb8a54'
+      - 'Bearer 46d1hec8PgbEVka6aZ5vD3f'
     controller: null
     method: null
     route: null
@@ -564,13 +564,13 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: repudiandae
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      username: repudiandae
+      username: dolorum
     fileParameters: []
     responses:
       -
@@ -588,7 +588,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a8PDfg6bdvh51Vea63EZck4'
+      - 'Bearer D3bca66dk84aEh1fgePZ5Vv'
     controller: null
     method: null
     route: null
@@ -619,13 +619,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: omnis
+        example: doloribus
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: omnis
+      share_code: doloribus
     fileParameters: []
     responses:
       -
@@ -646,7 +646,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 899,
+                      "line": 928,
                       "function": "abort"
                   },
                   {
@@ -1125,7 +1125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6VE3aPvg6b8ahfd41DekZc5'
+      - 'Bearer 56deDE4P1h8aafk6gVZ3cvb'
     controller: null
     method: null
     route: null
@@ -1156,13 +1156,13 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: nisi
+        example: labore
         type: string
         enumValues: []
         exampleWasSpecified: false
         custom: []
     cleanBodyParameters:
-      share_code: nisi
+      share_code: labore
     fileParameters: []
     responses:
       -
@@ -1662,7 +1662,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer VEf4bck5va6Z6d1Dh83Pgae'
+      - 'Bearer ED5b8Pc6Zfe31ka4gvVhad6'
     controller: null
     method: null
     route: null

@@ -221,9 +221,51 @@ class MerchantOfferController extends Controller
             return $item;
         });
 
+        $data = $this->getPointDiscount($data);
+
         return MerchantOfferResource::collection($data);
     }
 
+    /**
+     * Get Point Discount for Offers
+     *
+     * @param EloquentCollection $offersCollection
+     * @return EloquentCollection
+     */
+    protected function getPointDiscount($offersCollection)
+    {
+        // get user's balance points
+        $pointService = new PointService();
+        $user = auth()->user();
+        $latestBalancePointsOfUser = cache()->remember('latestBalancePointsOfUser_' . $user->id, 5, function () use ($user, $pointService) {
+            return $pointService->getBalanceOfUser($user);
+        });
+
+        // loop each data to calculate available points to discount
+        $offersCollection->each(function ($offer) use ($latestBalancePointsOfUser) {
+            $price = $offer->fiat_price;
+            $priceValueOfPoints = config('app.funbox_ringgit_value');
+
+            // calculate how many points can be used for $price based on value of funbox
+            $maxPointsForPrice = floor($price / $priceValueOfPoints);
+
+            // determine available points to discount (minimum of user's balance and max points for price)
+            $offer->available_points_to_discount = min($latestBalancePointsOfUser, $maxPointsForPrice);
+
+            // calculate price after discount
+            $discountAmount = $offer->available_points_to_discount * $priceValueOfPoints;
+            $offer->price_after_discount_with_points = max(0, $price - $discountAmount);
+        });
+
+        return $offersCollection;
+    }
+
+    /**
+     * Get User Purchased Before From Merchant Ids
+     *
+     * @param $user
+     * @return array
+     */
     protected function getUserPurchasedBeforeFromMerchantIds($user)
     {
         $userPurchasedBeforeFromMerchantIds = [];
@@ -372,6 +414,8 @@ class MerchantOfferController extends Controller
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
      * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
+     * @bodyParam use_point_discount boolean optional Use Point(Funbox) Discount. Example: 1
+     * @bodyParam points_to_use integer optional Points(Funbox) to Use. Example: 2
      * @response scenario=success {
      * "message": "Offer Claimed"
      * }
@@ -405,7 +449,9 @@ class MerchantOfferController extends Controller
             'payment_method' => 'required|in:points,fiat',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
             'card_id' => 'required_if:fiat_payment_method,card,exists:user_cards,id',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'use_point_discount' => 'nullable|boolean',
+            'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
         ]);
 
         // check offer is still valid by checking available_at and available_until
@@ -500,6 +546,7 @@ class MerchantOfferController extends Controller
                     'message' => __('messages.error.merchant_offer_controller.Please_verify_your_email_address_first')
                 ], 422);
             }
+            $amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
             $walletType = null;
 
@@ -525,13 +572,36 @@ class MerchantOfferController extends Controller
                 }
             }
 
+            // discount using funbox logic (Point)
+            $discount_amount = 0;
+            if ($request->has('use_point_discount')
+                && $request->use_point_discount == true
+                && $request->has('points_to_use')) {
+                // make sure net amount is wlays using not discounted fiat_price
+                $net_amount = $offer->fiat_price &  $request->quantity;
+
+                $pointService = new PointService();
+                $latestBalancePointsOfUser = $pointService->getBalanceOfUser($user);
+
+                // check if user has enough points to use
+                if ($latestBalancePointsOfUser < $request->points_to_use) {
+                    return response()->json([
+                        'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance')
+                    ], 422);
+                }
+
+                $discount_amount = $request->points_to_use * config('app.funbox_ringgit_value');
+                $net_amount = $net_amount - $discount_amount;
+            }
+
             // create payment transaction first, not yet claim
             $transaction = $this->transactionService->create(
                 $offer,
-                $net_amount,
+                ($discount_amount > 0) ? $amount : $net_amount, // if has discount, log amount is raw amount, if not just use net amount
                 config('app.default_payment_gateway'),
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
+                $discount_amount
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
@@ -547,13 +617,14 @@ class MerchantOfferController extends Controller
                 // generates required form post fields data for frontend(app) usages
                 $mpayData = $mpayService->createTransaction(
                     $transaction->transaction_no,
-                    $net_amount,
+                    $net_amount, // always use net amount for gateway checkout
                     $transaction->transaction_no,
                     secure_url('/payment/return'),
                     $user->full_phone_no ?? null,
                     $user->email ?? null,
                     $walletType, // FPX-CIMB,GRAB,TNG
-                    $selectedCard ? $selectedCard->card_token : null
+                    $selectedCard ? $selectedCard->card_token : null,
+                    $user->id
                 );
 
                 $offer->claims()->attach($user->id, [
@@ -562,7 +633,7 @@ class MerchantOfferController extends Controller
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
-                    'total' => $net_amount,
+                    'total' => ($discount_amount > 0) ? $amount : $net_amount,
                     'purchase_method' => 'fiat',
                     'discount' => 0,
                     'tax' => 0,
