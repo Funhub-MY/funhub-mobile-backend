@@ -145,7 +145,7 @@ class Mpay {
         $data = [
             'url' => $this->url .'payment/eCommerce',
             'formData' => [
-                'secureHash' => $this->generateHashForRequest($this->mid, $uuid, '000000000000'),
+                'secureHash' => $this->generateHashForRequest($this->mid, $invno, '000000000000'),
                 'mid' => $this->mid,
                 'invno' => $invno,
                 'amt' => '000000000000',
