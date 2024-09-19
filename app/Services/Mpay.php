@@ -120,11 +120,12 @@ class Mpay {
      *
      * @param string $uuid
      * @param string $redirectUrl
+     * @param string $invno
      * @param string|null $phoneNo
      * @param string|null $email
      * @return void
      */
-    public function createCardTokenization(string $uuid, string $redirectUrl, string $phoneNo = null, string $email = null)
+    public function createCardTokenization(string $uuid, string $redirectUrl, string $invno, string $phoneNo = null, string $email = null)
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
@@ -146,7 +147,7 @@ class Mpay {
             'formData' => [
                 'secureHash' => $this->generateHashForRequest($this->mid, $uuid, '000000000000'),
                 'mid' => $this->mid,
-                'invno' => $uuid,
+                'invno' => $invno,
                 'amt' => '000000000000',
                 'desc' => 'Card Tokenization',
                 'postURL' => $redirectUrl,
@@ -162,7 +163,13 @@ class Mpay {
         return $data;
     }
 
-
+    /**
+     * Query Card Token
+     *
+     * @param $uuid
+     * @param $invno
+     * @return void
+     */
     public function queryCardToken($uuid, $invno)
     {
         // check if mid and hashKey is set

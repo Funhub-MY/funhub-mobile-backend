@@ -1008,10 +1008,11 @@ class UserSettingsController extends Controller
 
         $user = auth()->user();
         $uuid = $user->id;
+        $transaction_no = 'CARD'.strtoupper(Str::random(6)).rand(0, 999); // 20 char
         $redirectUrl = route('payment.card-tokenization.return');
 
         $transaction = new Transaction();
-        $transaction->transaction_no = $uuid;
+        $transaction->transaction_no = $transaction_no;
         $transaction->transactionable_type = User::class;
         $transaction->transactionable_id = $user->id;
         $transaction->user_id = $user->id;
@@ -1022,11 +1023,17 @@ class UserSettingsController extends Controller
         $transaction->save();
 
         $data = $gateway->createCardTokenization(
-            $uuid, $redirectUrl, $user->full_phone_no, $user->email
+            $uuid, // user id
+            $redirectUrl, // /payment/card-tokenization/return
+            $transaction_no, // invno
+            $user->full_phone_no,
+            $user->email
         );
 
         Log::info('Mpay Card Tokenization Data: ', [
             'uuid' => $uuid,
+            'transaction_no' => $transaction_no,
+            'transaction_id' => $transaction->id,
         ]);
 
         return [
