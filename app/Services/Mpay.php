@@ -162,6 +162,39 @@ class Mpay {
         return $data;
     }
 
+
+    public function queryCardToken($uuid, $invno)
+    {
+        // check if mid and hashKey is set
+        if (!$this->mid || !$this->hashKey) {
+            throw new \Exception('Mpay MID or hash key is not set');
+        }
+
+        // api/paymentService/queryToken/
+        $url = $this->url . '/api/paymentService/queryToken/';
+        $data = [
+            'secureHash' => $this->generateHashForTokenQuery($uuid, $invno),
+            'mid' => $this->mid,
+            'invno' => $invno,
+            'uuid' => $uuid
+        ];
+
+        Log::info('Mpay queryCardToken data', $data);
+
+        // send post request
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json;charset=utf-8',
+        ])->post($url, $data);
+
+        $results = json_decode($response->body(), true);
+
+        Log::info('Mpay queryCardToken response', [
+            'response' => $results,
+        ]);
+
+        return $results;
+    }
+
     /**
      * Check available payment types
      *
@@ -204,6 +237,17 @@ class Mpay {
     {
         $string = $this->hashKey . 'Continue' . $this->mid;
         Log::info('Mpay generateHashForCheckPaymentType', [
+            'string' => $string,
+        ]);
+        return $this->secureHash->generateSecureHash($string);
+    }
+
+    private function generateHashForTokenQuery($uuid, $invno)
+    {
+        // hash key + "Continue" + mid + uuid + invno
+        $string = $this->hashKey . 'Continue' . $this->mid . $uuid . $invno;
+
+        Log::info('Mpay generateHashForTokenQuery', [
             'string' => $string,
         ]);
         return $this->secureHash->generateSecureHash($string);

@@ -427,7 +427,7 @@ class PaymentController extends Controller
             'request' => $request->all(),
         ]);
 
-        if ($request->responseCode == 0 || $request->responseCode == '0') {
+        if (($request->responseCode == 0 || $request->responseCode == '0') && $request->has('token')) {
             // success
             // get transaction from uuid
             $transaction = Transaction::where('transaction_no', $request->invno)->first();
@@ -511,6 +511,49 @@ class PaymentController extends Controller
                     ]);
                 }
             }
+        } else if (($request->responseCode == 0 || $request->responseCode == '0')
+            && !$request->has('token')) {
+                // ===================== CARD TOKENIZATION UPDATE, SO RE-QUERY CARD TOKLEN
+                $transaction = Transaction::where('transaction_no', $request->invno)->first();
+                if (!$transaction) {
+                    Log::error('[PaymentController] Mpay Card Tokenization Failed: Transaction not found', [
+                        'request' => $request->all(),
+                    ]);
+
+                    return view('payment-return', [
+                        'message' => 'Transaction Failed - Transaction not found',
+                        'transaction_id' => null,
+                        'success' => false
+                    ]);
+                }
+
+                $user = User::find($transaction->user_id);
+                // token not returned meaning card was tokenized before, start querying first for the token
+                $results = $this->gateway->queryCardToken($transaction->user_id, $request->invno);
+
+                if ($results['responseCode'] == '0') {
+                    // success, update token of card based on cardLast4Digit
+                    $user->cards()->where('card_last_four', $results['cardLast4Digit'])->update([
+                        'card_token' => $results['token'],
+                    ]);
+                    Log::info('Mpay Card Tokenization Success (Updated)', [
+                        'uuid' => $request->uuid,
+                        'mpay_returrned' => $request->all(),
+                        'user' => $user->id,
+                    ]);
+
+                    return view('payment-return', [
+                        'message' => 'Card Added',
+                        'transaction_id' => $transaction->id,
+                        'success' => true
+                    ]);
+                } else {
+                    return view('payment-return', [
+                        'message' => 'Transaction Failed - Card token query failed',
+                        'transaction_id' => null,
+                        'success' => false
+                    ]);
+                }
         } else {
             // failed
             return view('payment-return', [
