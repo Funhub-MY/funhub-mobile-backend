@@ -445,7 +445,7 @@ class PaymentController extends Controller
             } else {
                 $transaction->update([
                     'status' => Transaction::STATUS_SUCCESS,
-                    'gateway_transaction_id' => $request->result,
+                    'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : 'NO REF NO',
                 ]);
 
                 $user = User::where('id', $transaction->user_id)->first();
