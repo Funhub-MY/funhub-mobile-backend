@@ -271,7 +271,7 @@ return [
         'share_article' => 'Shared an Article',
         'bookmark_an_article' => 'Bookmarked an Article',
         'follow_a_user' => 'Followed a User',
-        // 'accumulated_followers' => 'Accumulated Followers',
+        'accumulated_followers' => 'Accumulated Followers',
         // 'accumulated_article_likes' => 'Accumulated Likes On My Articles',
         // 'accumulated_article_bookmarks' => 'Accumulated Bookmarks On My Articles',
         'completed_profile_setup' => 'Completed profile setup & uploaded avatar',
