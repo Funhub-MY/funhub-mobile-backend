@@ -169,7 +169,7 @@ class MissionEventListener
         // Check if the support request category type is 'complain'
         $isComplainCategory = $supportRequest->whereHas('category', function($query) {
             $query->where('type', 'complain');
-        })->exist();
+        })->exists();
 
         // if type is not "complain", then do nothing
         if (!$isComplainCategory) {
