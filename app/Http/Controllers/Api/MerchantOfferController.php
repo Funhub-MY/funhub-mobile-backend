@@ -234,25 +234,18 @@ class MerchantOfferController extends Controller
      */
     protected function getPointDiscount($offersCollection)
     {
-        // get user's balance points
-        $pointService = new PointService();
         $user = auth()->user();
-        $latestBalancePointsOfUser = cache()->remember('latestBalancePointsOfUser_' . $user->id, 5, function () use ($user, $pointService) {
-            return $pointService->getBalanceOfUser($user);
+        $latestBalancePointsOfUser = cache()->remember('latestBalancePointsOfUser_' . $user->id, 5, function () use ($user) {
+            return $this->pointService->getBalanceOfUser($user);
         });
 
-        // loop each data to calculate available points to discount
         $offersCollection->each(function ($offer) use ($latestBalancePointsOfUser) {
             $price = $offer->fiat_price;
             $priceValueOfPoints = config('app.funbox_ringgit_value');
 
-            // calculate how many points can be used for $price based on value of funbox
             $maxPointsForPrice = floor($price / $priceValueOfPoints);
-
-            // determine available points to discount (minimum of user's balance and max points for price)
             $offer->available_points_to_discount = min($latestBalancePointsOfUser, $maxPointsForPrice);
 
-            // calculate price after discount
             $discountAmount = $offer->available_points_to_discount * $priceValueOfPoints;
             $offer->price_after_discount_with_points = max(0, $price - $discountAmount);
         });
@@ -397,6 +390,7 @@ class MerchantOfferController extends Controller
         // override $offer->user_purchased_before_from_merchant with the value
         $offer->user_purchased_before_from_merchant = in_array($offer->user->id, $userPurchasedBeforeFromMerchantIds) ? true : false;
 
+        $offer = $this->getPointDiscount(collect([$offer]))->first();
         return new MerchantOfferResource($offer);
     }
 
