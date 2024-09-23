@@ -423,7 +423,7 @@ class UserResource extends Resource
                         Select::make('rewardComponent')
                             ->label('Reward Component')
                             ->options(RewardComponent::all()->pluck('name', 'id'))
-                    ])
+                    ])->deselectRecordsAfterCompletion()
             ]);
     }
 
