@@ -22,6 +22,9 @@ class CreateArticle extends CreateRecord
             // fire ArticleCreated event
             event(new \App\Events\ArticleCreated($this->record));
         }
+
+        // trigger searcheable to reindex
+        $this->record->searchable();
     }
 
 }

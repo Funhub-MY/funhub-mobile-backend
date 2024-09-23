@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
+use Illuminate\Support\Facades\Log;
 
 class ArticleResource extends Resource
 {
@@ -560,6 +561,23 @@ class ArticleResource extends Resource
                     if (count($livewire->selectedTableRecords) > 0) {
                         Article::whereIn('id', $livewire->selectedTableRecords)
                             ->update(['hidden_from_home' => $data['hidden_from_home']]);
+
+                       try {
+                         // trigger searcheable to reindex
+                         foreach ($livewire->selectedTableRecords as $article_id) {
+                            $article = Article::find($article_id);
+                            if ($article) {
+                                $article->searchable();
+                                Log::info('[ArticleResource] Hidden from Home Bulk Action, article added.removed to search index(algolia)', [
+                                    'article_id' => $article_id,
+                                ]);
+                            }
+                        }
+                       } catch (\Exception $e) {
+                           Log::error('[ArticleResource] Hidden from Home Bulk Action Error', [
+                               'error' => $e->getMessage()
+                           ]);
+                       }
                     }
                 })->requiresConfirmation(),
 

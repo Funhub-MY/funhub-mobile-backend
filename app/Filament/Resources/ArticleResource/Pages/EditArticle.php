@@ -38,7 +38,7 @@ class EditArticle extends EditRecord
         if ($data['locations']) {
             $record->location()->sync($data['locations']);
         }
-        
+
         return $record;
     }
 
@@ -55,4 +55,11 @@ class EditArticle extends EditRecord
         return $data;
     }
 
+    protected function afterSave(): void
+    {
+        if (isset($this->record)) {
+            // trigger searcheable to reindex
+            $this->record->searchable();
+        }
+    }
 }
