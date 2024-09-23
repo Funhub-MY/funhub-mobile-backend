@@ -347,7 +347,7 @@ class UserResource extends Resource
                             ])
                             ->required(),
                     ])
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
                 // Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\BulkAction::make('Unsuspend User')
@@ -355,13 +355,13 @@ class UserResource extends Resource
                         $records->each(function (User $record) {
                             $record->update(['status' => User::STATUS_ACTIVE]);
                         });
-                    })->requiresConfirmation(),
+                    })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 Tables\Actions\BulkAction::make('Suspend User')
                     ->action(function (Collection $records) {
                         $records->each(function (User $record) {
                             $record->update(['status' => User::STATUS_SUSPENDED]);
                         });
-                    })->requiresConfirmation(),
+                    })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 BulkAction::make('reward')
                     ->label('Reward')
                     ->action(function (Collection $records, array $data): void {
