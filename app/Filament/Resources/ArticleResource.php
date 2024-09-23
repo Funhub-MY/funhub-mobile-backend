@@ -565,19 +565,19 @@ class ArticleResource extends Resource
                             'published_at' => now()
                         ]);
                     });
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 Tables\Actions\BulkAction::make('Change to Draft')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 0]);
                     });
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 Tables\Actions\BulkAction::make('Move to Archived')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 2]);
                     });
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 // table bulkaction to mark hidden from home toggle
                 Tables\Actions\BulkAction::make('toggle_hidden_from_home')
                 ->label('Toggle Home Hidden/Visible')
@@ -591,7 +591,7 @@ class ArticleResource extends Resource
                         Article::whereIn('id', $livewire->selectedTableRecords)
                             ->update(['hidden_from_home' => $data['hidden_from_home']]);
                     }
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
                 // toggle pinned_recommended
                 Tables\Actions\BulkAction::make('toggle_pinned_recommended')
@@ -606,7 +606,7 @@ class ArticleResource extends Resource
                         Article::whereIn('id', $livewire->selectedTableRecords)
                             ->update(['pinned_recommended' => $data['pinned_recommended']]);
                     }
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
             ]);
     }

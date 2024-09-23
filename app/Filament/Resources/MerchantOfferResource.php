@@ -523,7 +523,7 @@ class MerchantOfferResource extends Resource
                             ->title('Successfully updated '.$success.' offers status to' . MerchantOffer::STATUS[$data['status']])
                             ->send();
                         }
-                    })
+                    })->deselectRecordsAfterCompletion(),
             ]);
     }
 

@@ -386,7 +386,7 @@ class StoreResource extends Resource
                         foreach ($records as $record) {
                             $record->update(['status' => $data['status']]);
                         }
-                    })
+                    })->deselectRecordsAfterCompletion(),
             ]);
     }
 
