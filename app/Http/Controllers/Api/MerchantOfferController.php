@@ -385,7 +385,7 @@ class MerchantOfferController extends Controller
                 $query->where('user_id', auth()->user()->id);
             },
         ])
-        ->withCount([
+        ->loadCount([
             'unclaimedVouchers',
         ]);
 
@@ -1110,6 +1110,9 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
+        ])
+        ->withCount([
+            'unclaimedVouchers',
         ]);
 
         return $query;
