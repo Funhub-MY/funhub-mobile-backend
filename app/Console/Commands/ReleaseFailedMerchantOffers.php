@@ -64,7 +64,7 @@ class ReleaseFailedMerchantOffers extends Command
                 $release = true;
             }
 
-            $this->info('[ReleaseFailedMerchantOffers] Set to release, Transaction ID ' . $transaction->id . ' Current Status: ' . $transaction->status);
+            $this->info('[ReleaseFailedMerchantOffers] Set to release, Transaction ID ' . $transaction->id . ' Current Status: ' . $transaction->status. ' Release: '. $release);
 
             if ($release) {
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
