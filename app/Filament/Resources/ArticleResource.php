@@ -34,7 +34,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
-use Illuminate\Support\Facades\Log;
 
 class ArticleResource extends Resource
 {
