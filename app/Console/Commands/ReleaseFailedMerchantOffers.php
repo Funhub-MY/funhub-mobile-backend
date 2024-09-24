@@ -46,7 +46,8 @@ class ReleaseFailedMerchantOffers extends Command
         foreach ($transactions as $transaction) {
             $release = false;
 
-            if ($transaction->created_at->diffInMinutes(now()) > config('app.release_offer_stock_after_min') && $transaction->status == \App\Models\Transaction::STATUS_PENDING) {
+            if ($transaction->created_at->diffInMinutes(now()) > config('app.release_offer_stock_after_min')
+                && $transaction->status == \App\Models\Transaction::STATUS_PENDING) {
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                 ]);
@@ -58,9 +59,12 @@ class ReleaseFailedMerchantOffers extends Command
                 $this->info('[ReleaseFailedMerchantOffers] Updated Transaction to Failed due to expired time limit, Transaction ID ' . $transaction->id);
             }
 
+            // if already failed but claim still havent release voucher
             if ($transaction->status == \App\Models\Transaction::STATUS_FAILED) {
                 $release = true;
             }
+
+            $this->info('[ReleaseFailedMerchantOffers] Set to release, Transaction ID ' . $transaction->id . ' Current Status: ' . $transaction->status);
 
             if ($release) {
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
