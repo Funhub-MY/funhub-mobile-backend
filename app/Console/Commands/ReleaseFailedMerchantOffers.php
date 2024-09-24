@@ -91,6 +91,7 @@ class ReleaseFailedMerchantOffers extends Command
                                 'transaction_id' => $transaction->id,
                                 'merchant_offer_id' => $offer->id,
                             ]);
+                            $this->info('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
                         }
 
                         if ($claim->voucher_id) {
@@ -112,7 +113,11 @@ class ReleaseFailedMerchantOffers extends Command
                                     'voucher_id' => $voucher->id,
                                     'quantity' => $releaseQuantity,
                                 ]);
+                                $this->info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
                             }
+                        } else {
+                            // dont have voucher id to release
+                            $this->info('[ReleaseFailedMerchantOffers] No voucher id to release, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
                         }
                     } catch (Exception $ex) {
                         Log::error('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [

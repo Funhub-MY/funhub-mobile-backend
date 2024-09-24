@@ -135,33 +135,34 @@ class PaymentController extends Controller
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
 
                 // if transaction has use using_point_discount then we need deduct the point ledger
-                if ($transaction->using_point_discount) {
-                    $pointService = new PointService();
-                    $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
+                // DEPRECATED: 24 sep
+                // if ($transaction->using_point_discount) {
+                //     $pointService = new PointService();
+                //     $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
 
-                    // check if user has enough points to use
-                    if ($latestBalancePointsOfUser < $transaction->points_to_use) {
-                        Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
-                        return view('payment-return', [
-                            'message' => 'Transaction Failed - Insufficient Point Balance',
-                            'transaction_id' => $transaction->id,
-                            'success' => false
-                        ]);
-                    }
+                //     // check if user has enough points to use
+                //     if ($latestBalancePointsOfUser < $transaction->points_to_use) {
+                //         Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
+                //         return view('payment-return', [
+                //             'message' => 'Transaction Failed - Insufficient Point Balance',
+                //             'transaction_id' => $transaction->id,
+                //             'success' => false
+                //         ]);
+                //     }
 
-                    // deduct point from user's account
-                    $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
-                }
+                //     // deduct point from user's account
+                //     $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
+                // }
 
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => $request->mpay_ref_no,
                 ];
 
-                if ($transaction->using_point_discount) {
-                    $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
-                    $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
-                }
+                // if ($transaction->using_point_discount) {
+                //     $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
+                //     $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
+                // }
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
