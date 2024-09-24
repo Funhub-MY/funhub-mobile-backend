@@ -95,7 +95,7 @@ class MerchantOfferResource extends JsonResource
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
             'expiry_days' => $this->expiry_days,
-            'quantity' => $this->quantity,
+            'quantity' => $this->unclaimed_vouchers_count,
             'claimed_quantity' => ($this->claims) ? $this->claims->filter(function ($q) {
                 return $q->pivot->status == MerchantOffer::CLAIM_SUCCESS;
             })->count() : 0,

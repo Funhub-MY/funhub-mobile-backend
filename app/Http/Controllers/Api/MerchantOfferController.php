@@ -109,6 +109,9 @@ class MerchantOfferController extends Controller
                 'interactions' => function ($query) {
                     $query->where('user_id', auth()->user()->id);
                 },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
             ]);
 
         // category_ids filter
@@ -381,6 +384,9 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
+        ])
+        ->withCount([
+            'unclaimedVouchers',
         ]);
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
