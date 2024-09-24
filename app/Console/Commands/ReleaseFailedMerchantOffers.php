@@ -70,8 +70,6 @@ class ReleaseFailedMerchantOffers extends Command
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
                     ->first();
 
-                $this->info('Offer found - '. $offer->id);
-
                 if (!$offer) {
                     // Log::error('[ReleaseFailedMerchantOffers] Merchant Offer not found', [
                     //     'transaction_id' => $transaction->id,
@@ -79,6 +77,8 @@ class ReleaseFailedMerchantOffers extends Command
                     // ]);
                     $this->info('[ReleaseFailedMerchantOffers] Merchant Offer not found, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $transaction->transactionable_id);
                     continue;
+                } else {
+                    $this->info('Offer found - '. $offer->id);
                 }
 
                 $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
