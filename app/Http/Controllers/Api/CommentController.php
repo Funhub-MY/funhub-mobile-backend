@@ -201,7 +201,7 @@ class CommentController extends Controller
                         $locale = $taggedUser->last_lang ?? config('app.locale');
                         $taggedUser->notify((new TaggedUserInComment($comment, $comment->user))->locale($locale));
                     } catch (\Exception $e) {
-                        Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser]);
+                        Log::error('[CommentController] Notification error when tagged user', ['message' => $e->getMessage(), 'user' => $taggedUser, 'trace' => $e->getTraceAsString()]);
                     }
                 });
             }
@@ -225,7 +225,7 @@ class CommentController extends Controller
                 $comment->parent->user->notify((new \App\Notifications\CommentReplied($comment, $comment->parent))->locale($locale)); // send notification
             }
         } catch (\Exception $e) {
-            Log::error('[CommentController] Notification error when comment', ['message' => $e->getMessage()]);
+            Log::error('[CommentController] Notification error when comment', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
 
