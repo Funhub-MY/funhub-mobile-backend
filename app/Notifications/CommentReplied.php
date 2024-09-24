@@ -66,7 +66,7 @@ class CommentReplied extends Notification
                 ->setTitle(__('messages.notification.fcm.CommentRepliedTitle'))
                 ->setBody(__('messages.notification.fcm.CommentReplied', [
                     'username' => $this->comment->user->name,
-                    'comment' => Str::limit($this->comment->replyingComment->body, 10, '...')
+                    'comment' => Str::limit($this->replyingComment->body, 10, '...')
                 ]))
             );
     }
