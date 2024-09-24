@@ -237,7 +237,7 @@ class CommentController extends Controller
                 $comment->commentable->user->notify((new \App\Notifications\Commented($comment))->locale($locale)); // send notification
             }
         } catch (\Exception $e) {
-            Log::error('[CommentController] Notification error when commentable user', ['message' => $e->getMessage()]);
+            Log::error('[CommentController] Notification error when commentable user', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
         }
 
         $comment->load(['replies' => function ($query) {

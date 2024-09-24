@@ -52,7 +52,7 @@ class Commented extends Notification implements ShouldQueue
                 'article_id' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->id : null,
                 'article_type' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->type : null,
                 'link_to_url' => (string) 'false',
-                'link_to' => (string) $this->comment->commentable->id, // if link to url false, means get link_to_object
+                'link_to' => (string) $this->comment->commentable->id, // article id
                 'link_to_object' => (string) $this->comment->commentable_type, // if link to url false, means get link_to_object
                 'action' => (string) 'commented',
                 'from_name' => (string) $this->comment->user->name,
