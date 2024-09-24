@@ -70,7 +70,7 @@ class ReleaseFailedMerchantOffers extends Command
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
                     ->first();
 
-                $this->info('Offer found - '.  json_encode($offer));
+                $this->info('Offer found - '. $offer->id);
 
                 if (!$offer) {
                     // Log::error('[ReleaseFailedMerchantOffers] Merchant Offer not found', [
