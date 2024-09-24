@@ -39,7 +39,9 @@ Route::get('/s/{link}', [\App\Http\Controllers\Api\ShareableLinkController::clas
 
 Route::post('/payment/return', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);
 Route::post('/payment/callback', [\App\Http\Controllers\PaymentController::class, 'paymentReturn']);
-Route::post('/card-tokenization/return', [PaymentController::class, 'cardTokenizationReturn'])->name('payment.card-tokenization.return');
+Route::post('/card-tokenization/return', [PaymentController::class, 'cardTokenizationReturn'])
+    ->name('payment.card-tokenization.return')
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 // any route other than /s redirect to /admin/login
 Route::get('/{any}', function () {

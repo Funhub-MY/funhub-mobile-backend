@@ -42,6 +42,8 @@ class Mpay {
      * @param string $phoneNo       Phone No Eg. 60123456789
      * @param string $email         Email Eg. john@smith.com
      * @param string $paymentType   Payment Type
+     * @param string $card          Card Token
+     * @param string $uuid          Card Token UUID (Required same as the one used when card enrollment)
      * @param string $param         Merchant have to add in the delimiter “|” to separate each parameter value. Noted: “|” is “7C” in hexadecimal of ASCII code table.
      * @return void
      */
@@ -53,6 +55,8 @@ class Mpay {
         string $phoneNo = null,
         string $email = null,
         $paymentType = null,
+        $cardToken = null,
+        $uuid = null,
         $param = null)
     {
         // check if mid and hashKey is set
@@ -87,9 +91,19 @@ class Mpay {
                 'callback_url' => secure_url('/payment/callback'),
                 'phone' => $phoneNo ? $phoneNo : $defaultPhone,
                 'email' => $email ? $email : $defaultEmail,
+                'paymentType' => $paymentType ? $paymentType : null,
                 'param' => $param,
             ]
         ];
+
+        if ($cardToken) {
+            // token format split string by % symbol
+            $cardToken = explode('%', $cardToken);
+
+            $data['formData']['specialParam'] = 'cardvault';
+            $data['formData']['token'] = $cardToken[0]; // first part of token
+            $data['formData']['uuid'] = $uuid; // must be same as during card tokenization/enrolment
+        }
 
         if ($paymentType) {
             $data['paymentType'] = $paymentType;
@@ -106,11 +120,12 @@ class Mpay {
      *
      * @param string $uuid
      * @param string $redirectUrl
+     * @param string $invno
      * @param string|null $phoneNo
      * @param string|null $email
      * @return void
      */
-    public function createCardTokenization(string $uuid, string $redirectUrl, string $phoneNo = null, string $email = null)
+    public function createCardTokenization(string $uuid, string $redirectUrl, string $invno, string $phoneNo = null, string $email = null)
     {
         // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
@@ -130,9 +145,9 @@ class Mpay {
         $data = [
             'url' => $this->url .'payment/eCommerce',
             'formData' => [
-                'secureHash' => $this->generateHashForRequest($this->mid, $uuid, '000000000000'),
+                'secureHash' => $this->generateHashForRequest($this->mid, $invno, '000000000000'),
                 'mid' => $this->mid,
-                'invno' => $uuid,
+                'invno' => $invno,
                 'amt' => '000000000000',
                 'desc' => 'Card Tokenization',
                 'postURL' => $redirectUrl,
@@ -146,6 +161,45 @@ class Mpay {
         Log::info('Mpay create card tokenization data', $data);
 
         return $data;
+    }
+
+    /**
+     * Query Card Token
+     *
+     * @param $uuid
+     * @param $invno
+     * @return void
+     */
+    public function queryCardToken($uuid, $invno)
+    {
+        // check if mid and hashKey is set
+        if (!$this->mid || !$this->hashKey) {
+            throw new \Exception('Mpay MID or hash key is not set');
+        }
+
+        // api/paymentService/queryToken/
+        $url = $this->url . '/api/paymentService/queryToken/';
+        $data = [
+            'secureHash' => $this->generateHashForTokenQuery($uuid, $invno),
+            'mid' => $this->mid,
+            'invno' => $invno,
+            'uuid' => $uuid
+        ];
+
+        Log::info('Mpay queryCardToken data', $data);
+
+        // send post request
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json;charset=utf-8',
+        ])->post($url, $data);
+
+        $results = json_decode($response->body(), true);
+
+        Log::info('Mpay queryCardToken response', [
+            'response' => $results,
+        ]);
+
+        return $results;
     }
 
     /**
@@ -190,6 +244,17 @@ class Mpay {
     {
         $string = $this->hashKey . 'Continue' . $this->mid;
         Log::info('Mpay generateHashForCheckPaymentType', [
+            'string' => $string,
+        ]);
+        return $this->secureHash->generateSecureHash($string);
+    }
+
+    private function generateHashForTokenQuery($uuid, $invno)
+    {
+        // hash key + "Continue" + mid + uuid + invno
+        $string = $this->hashKey . 'Continue' . $this->mid . $uuid . $invno;
+
+        Log::info('Mpay generateHashForTokenQuery', [
             'string' => $string,
         ]);
         return $this->secureHash->generateSecureHash($string);

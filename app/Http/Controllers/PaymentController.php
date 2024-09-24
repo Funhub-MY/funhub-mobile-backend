@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Log;
 use App\Models\MerchantOfferVoucher;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserCard;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
+use App\Services\PointService;
 use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
@@ -129,12 +131,41 @@ class PaymentController extends Controller
                 }
             }
 
+            // ===================== SUCCESS
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
-                  // update transaction status to success first with gateway transaction id
-                  $transaction->update([
+
+                // if transaction has use using_point_discount then we need deduct the point ledger
+                if ($transaction->using_point_discount) {
+                    $pointService = new PointService();
+                    $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
+
+                    // check if user has enough points to use
+                    if ($latestBalancePointsOfUser < $transaction->points_to_use) {
+                        Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
+                        return view('payment-return', [
+                            'message' => 'Transaction Failed - Insufficient Point Balance',
+                            'transaction_id' => $transaction->id,
+                            'success' => false
+                        ]);
+                    }
+
+                    // deduct point from user's account
+                    $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
+                }
+
+                $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => $request->mpay_ref_no,
-                ]);
+                ];
+
+                if ($transaction->using_point_discount) {
+                    $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
+                    $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
+                }
+
+                // update transaction status to success first with gateway transaction id
+                $transaction->update($transactionUpdateData);
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
 
@@ -165,12 +196,16 @@ class PaymentController extends Controller
                     'transaction_id' => $transaction->id,
                     'success' => true
                 ]);
+
+            // ===================== PENDING
             } else if ($request->responseCode == 'PE') { // pending
                 Log::info('Payment return/callback pending', [
                     'transaction_id' => $transaction->id,
                     'request' => request()->all()
                 ]);
                 return 'Transaction Still Pending';
+
+            // ===================== FAILED
             } else { // failed
                 Log::error('Payment return failed', [
                     'error' => 'Transaction Failed - Gateway Response Code Failed',
@@ -383,43 +418,85 @@ class PaymentController extends Controller
      * Card Tokenization Return form Gateway (called by Gateway)
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return View
      */
     public function cardTokenizationReturn(Request $request)
     {
         // validate secureHash
+        Log::info('[cardTokenizationReturn] Card Tokenization Return from MPAY', [
+            'request' => $request->all(),
+        ]);
 
-        if ($request->responseCode == 0 || $request->responseCode == '0') {
+        if (($request->responseCode == 0 || $request->responseCode == '0') && $request->has('token')) {
             // success
             // get transaction from uuid
-            $transaction = Transaction::where('transaction_no', $request->uuid)->first();
+            $transaction = Transaction::where('transaction_no', $request->invno)->first();
             if (!$transaction) {
                 Log::error('Mpay Card Tokenization Failed: Transaction not found', [
                     'uuid' => $request->uuid,
                     'request' => $request->all(),
                 ]);
 
-                return response()->json([
-                    'message' => 'Transaction not found',
+                return view('payment-return', [
+                    'message' => 'Transaction Failed - No transaction',
+                    'transaction_id' => null,
                     'success' => false
                 ]);
             } else {
                 $transaction->update([
                     'status' => Transaction::STATUS_SUCCESS,
-                    'gateway_transaction_id' => $request->mpay_ref_no,
+                    'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : 'NO REF NO',
                 ]);
 
                 $user = User::where('id', $transaction->user_id)->first();
 
+                $cardType = null;
+                if ($request->paymentType == 'Master' || $request->paymentType == 'MasterCard' || $request->paymentType == 'MASTER') {
+                    $cardType = 'master';
+                } elseif ($request->paymentType == 'Visa' || $request->paymentType == 'VisaCard' || $request->paymentType == 'VISA') {
+                    $cardType = 'visa';
+                } else if ($request->paymentType == 'Amex' || $request->paymentType == 'AmexCard') {
+                    $cardType = 'amex';
+                }
+
                 if ($user) {
-                    $user->cards()->create([
-                        'card_type' => $request->paymentType,
-                        'card_last_four' => substr($request->maskedPAN, -4),
-                        'card_holder_name' => '', // You can get this from the form if needed
-                        'card_expiry_month' => '', // You can get this from the form if needed
-                        'card_expiry_year' => '', // You can get this from the form if needed
-                        'card_token' => $request->token,
-                        'is_default' => $user->cards()->count() == 0,
+                    // check if card exists in user_cards table
+                    $cardExists = UserCard::where('user_id', $user->id)
+                        ->where('card_type', $cardType)
+                        ->where('card_last_four', substr($request->maskedPAN, -4))
+                        ->exists();
+
+                    if (!$cardExists) {
+                        // create new card
+                        $user->cards()->create([
+                            'card_type' => $cardType,
+                            'card_last_four' => substr($request->maskedPAN, -4), // last four digits of card number
+                            'card_holder_name' => '',
+                            'card_expiry_month' => '',
+                            'card_expiry_year' => '',
+                            'card_token' => $request->token,
+                            'is_default' => $user->cards()->count() == 0,
+                        ]);
+                    } else {
+                        // update token
+                        UserCard::where('user_id', $user->id)
+                            ->where('card_type', $cardType)
+                            ->where('card_last_four', substr($request->maskedPAN, -4))
+                            ->update([
+                                'card_token' => $request->token,
+                            ]);
+                    }
+
+                    Log::info('Mpay Card Tokenization Success', [
+                        'uuid' => $request->invno,
+                        'mpay_returrned' => $request->all(),
+                        'user' => $user->id,
+                    ]);
+
+                    return view('payment-return', [
+                        'message' => 'Card Added',
+                        'transaction_id' => $transaction->id,
+                        'success' => true
                     ]);
                 } else {
                     Log::error('Mpay Card Tokenization Failed: User not found', [
@@ -427,17 +504,61 @@ class PaymentController extends Controller
                         'request' => $request->all(),
                     ]);
 
-                    return response()->json([
-                        'message' => 'User not found',
-                        'transaction_id' => $transaction->id,
+                    return view('payment-return', [
+                        'message' => 'Transaction Failed - User not found',
+                        'transaction_id' => null,
                         'success' => false
                     ]);
                 }
             }
+        } else if (($request->responseCode == 0 || $request->responseCode == '0')
+            && !$request->has('token')) {
+                // ===================== CARD TOKENIZATION UPDATE, SO RE-QUERY CARD TOKLEN
+                $transaction = Transaction::where('transaction_no', $request->invno)->first();
+                if (!$transaction) {
+                    Log::error('[PaymentController] Mpay Card Tokenization Failed: Transaction not found', [
+                        'request' => $request->all(),
+                    ]);
+
+                    return view('payment-return', [
+                        'message' => 'Transaction Failed - Transaction not found',
+                        'transaction_id' => null,
+                        'success' => false
+                    ]);
+                }
+
+                $user = User::find($transaction->user_id);
+                // token not returned meaning card was tokenized before, start querying first for the token
+                $results = $this->gateway->queryCardToken($transaction->user_id, $request->invno);
+
+                if ($results['responseCode'] == '0') {
+                    // success, update token of card based on cardLast4Digit
+                    $user->cards()->where('card_last_four', $results['cardLast4Digit'])->update([
+                        'card_token' => $results['token'],
+                    ]);
+                    Log::info('Mpay Card Tokenization Success (Updated)', [
+                        'uuid' => $request->uuid,
+                        'mpay_returrned' => $request->all(),
+                        'user' => $user->id,
+                    ]);
+
+                    return view('payment-return', [
+                        'message' => 'Card Added',
+                        'transaction_id' => $transaction->id,
+                        'success' => true
+                    ]);
+                } else {
+                    return view('payment-return', [
+                        'message' => 'Transaction Failed - Card token query failed',
+                        'transaction_id' => null,
+                        'success' => false
+                    ]);
+                }
         } else {
             // failed
-            return response()->json([
-                'message' => 'Mpay Card Tokenization Pending/Failed',
+            return view('payment-return', [
+                'message' => 'Transaction Failed - Unknown Failure',
+                'transaction_id' => null,
                 'success' => false
             ]);
         }
@@ -462,6 +583,22 @@ class PaymentController extends Controller
         $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
         return response()->json([
             'availablePaymentTypes' => $availablePaymentTypes
+        ]);
+    }
+
+    /**
+     * Get Funbox Ringgit Value
+     *
+     * @return JsonResponse
+     * @group Payment
+     * @response status=200 {
+     *  "funbox_ringgit_value": 5
+     * }
+     */
+    public function getFunboxRinggitValue()
+    {
+        return response()->json([
+            'funbox_ringgit_value' => config('app.funbox_ringgit_value')
         ]);
     }
 }

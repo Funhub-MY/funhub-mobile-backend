@@ -166,6 +166,18 @@ class MissionEventListener
     {
         $supportRequest = $event->supportRequest;
 
+        // Check if the support request category type is 'complain'
+        $isComplainCategory = $supportRequest->category->type === 'complain';
+
+        // if type is not "complain", then do nothing
+        if (!$isComplainCategory) {
+            Log::info('[MissionEventListener] Support Request is not in "Complain" category, skipping mission progress update', [
+                'support_request' => $supportRequest->id,
+                'category' => $supportRequest->category->type,
+            ]);
+            return;
+        }
+
         $closedAudits = $supportRequest->audits()
             ->where('new_values->status', SupportRequest::STATUS_CLOSED)
             ->where('old_values->status', '!=', SupportRequest::STATUS_CLOSED)

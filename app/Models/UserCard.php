@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,5 +40,11 @@ class UserCard extends Model
         }
 
         return true;
+    }
+
+    public function scopeNotExpired(Builder $query): void
+    {
+        $query->where('card_expiry_month', '<=', now()->month)
+            ->where('card_expiry_year', '<=', now()->year);
     }
 }

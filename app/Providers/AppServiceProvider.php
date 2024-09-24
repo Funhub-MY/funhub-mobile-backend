@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Filament\Macros\TranslationsMacro;
+use App\Models\ArticleFeedWhitelistUser;
 use App\Models\MerchantOffer;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Field;
@@ -37,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         MerchantOffer::observe(\App\Observers\MerchantOfferObserver::class);
+        ArticleFeedWhitelistUser::observe(\App\Observers\ArticleFeedWhitelistUserObserver::class);
 
         // TextInput::macro('translations', function ($fieldName) {
         //     $locales = config('app.available_locales');

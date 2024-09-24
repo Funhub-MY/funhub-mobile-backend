@@ -6,10 +6,14 @@ use Closure;
 use Filament\Forms;
 use App\Models\User;
 use App\Models\View;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables;
 use App\Models\Article;
 use App\Models\Location;
 use App\Models\ArticleTag;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
@@ -118,35 +122,52 @@ class ArticleResource extends Resource
 
                             //  video upload
                             // image upload for video thumbnail
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('video_thumbnail')
+                            FileUpload::make('video_thumbnail')
                                 ->label('Video Thumbnail')
                                 ->helperText('This image will be used as the thumbnail for the video')
-                                ->collection(Article::MEDIA_COLLECTION_NAME)
                                 ->columnSpan('full')
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
                                     }
                                 })
-                                ->customProperties(['is_cover' => true])
+                                ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['image/*'])
-                                ->maxFiles(1)
+                                ->rules('image')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('image'),
+                                ->getUploadedFileUrlUsing(function ($file) {
+                                    $disk = config('filesystems.default');
 
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('video')
+                                    if (config('filesystems.default') === 's3') {
+                                        $disk = 's3_public';
+                                        Log::info('Disk: '. $disk);
+                                    }
+                                    Log::info(Storage::disk($disk)->url($file));
+                                    return Storage::disk($disk)->url($file);
+                                }),
+                            FileUpload::make('video')
                                 ->label('Video File')
-                                ->collection(Article::MEDIA_COLLECTION_NAME)
+                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->columnSpan('full')
                                 ->disk(function () {
                                     if (config('filesystems.default') === 's3') {
                                         return 's3_public';
                                     }
                                 })
+                                ->directory('filament-article-uploads')
                                 ->acceptedFileTypes(['video/*'])
-                                ->helperText('One Video Only, Maximum file size: '. (config('app.max_size_per_video_kb') / 1024 / 1024). ' MB. Allowable types: mp4, mov')
                                 ->hidden(fn (Closure $get) => $get('type') !== 'video')
-                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb')),
+                                ->rules('mimes:m4v,mp4,mov|max:'.config('app.max_size_per_video_kb'))
+                                ->getUploadedFileUrlUsing(function ($file) {
+                                    $disk = config('filesystems.default');
+
+                                    if (config('filesystems.default') === 's3') {
+                                        $disk = 's3_public';
+                                        Log::info('Disk: '. $disk);
+                                    }
+                                    Log::info(Storage::disk($disk)->url($file));
+                                    return Storage::disk($disk)->url($file);
+                                }),
                         ])->columnSpan('full')
                     ])
                     ->columnSpan(['lg' => 2]),
@@ -287,7 +308,8 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Tags')->schema([
                             Forms\Components\Select::make('tags')
                                 ->label('')
-                                ->relationship('tags', 'name')->createOptionForm([
+                                ->relationship('tags', 'name')
+                                ->createOptionForm([
                                     Forms\Components\TextInput::make('name')
                                         ->required()
                                         ->placeholder('Tag name'),
@@ -361,6 +383,14 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+
+                Tables\Columns\BadgeColumn::make('type')
+                    ->enum(Article::TYPE)
+                    ->colors([
+                        'primary' => 'video',
+                        'secondary' => 'multimedia',
+                    ])
+                    ->sortable(),
 
                 Tables\Columns\BadgeColumn::make('hidden_from_home')
                     ->label('Hidden (Home)')
@@ -535,19 +565,19 @@ class ArticleResource extends Resource
                             'published_at' => now()
                         ]);
                     });
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 Tables\Actions\BulkAction::make('Change to Draft')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 0]);
                     });
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 Tables\Actions\BulkAction::make('Move to Archived')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 2]);
                     });
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 // table bulkaction to mark hidden from home toggle
                 Tables\Actions\BulkAction::make('toggle_hidden_from_home')
                 ->label('Toggle Home Hidden/Visible')
@@ -560,8 +590,25 @@ class ArticleResource extends Resource
                     if (count($livewire->selectedTableRecords) > 0) {
                         Article::whereIn('id', $livewire->selectedTableRecords)
                             ->update(['hidden_from_home' => $data['hidden_from_home']]);
+
+                       try {
+                         // trigger searcheable to reindex
+                         foreach ($livewire->selectedTableRecords as $article_id) {
+                            $article = Article::find($article_id);
+                            if ($article) {
+                                $article->searchable();
+                                Log::info('[ArticleResource] Hidden from Home Bulk Action, article added.removed to search index(algolia)', [
+                                    'article_id' => $article_id,
+                                ]);
+                            }
+                        }
+                       } catch (\Exception $e) {
+                           Log::error('[ArticleResource] Hidden from Home Bulk Action Error', [
+                               'error' => $e->getMessage()
+                           ]);
+                       }
                     }
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
                 // toggle pinned_recommended
                 Tables\Actions\BulkAction::make('toggle_pinned_recommended')
@@ -576,7 +623,7 @@ class ArticleResource extends Resource
                         Article::whereIn('id', $livewire->selectedTableRecords)
                             ->update(['pinned_recommended' => $data['pinned_recommended']]);
                     }
-                })->requiresConfirmation(),
+                })->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
             ]);
     }
