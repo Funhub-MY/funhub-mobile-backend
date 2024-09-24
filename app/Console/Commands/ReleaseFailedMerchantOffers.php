@@ -70,6 +70,8 @@ class ReleaseFailedMerchantOffers extends Command
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
                     ->first();
 
+                $this->info('Offer found - '.  json_encode($offer));
+
                 if (!$offer) {
                     // Log::error('[ReleaseFailedMerchantOffers] Merchant Offer not found', [
                     //     'transaction_id' => $transaction->id,
@@ -86,8 +88,10 @@ class ReleaseFailedMerchantOffers extends Command
                     ->first();
 
                 if ($claim) {
+                    $this->info('Claim found - '.  json_encode($claim));
+
                     try {
-                        if ($claim->status == MerchantOffer::CLAIM_AWAIT_PAYMENT) {
+                        if ($claim->status == MerchantOfferClaim::CLAIM_AWAIT_PAYMENT) {
                             $claim->update([
                                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
                             ]);
