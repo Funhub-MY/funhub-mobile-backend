@@ -282,11 +282,15 @@ class MissionEventListener
                     ->where('is_completed', true)
                     // where auto_disburse_rewards is not set
                     ->where('auto_disburse_rewards', false)
+                    // applies to one off frequency
+                    ->where('frequency', 'one-off')
                     ->where('claimed_at', null)
                     ->first();
 
                 if ($previousSelfClaimedCompletedMission) {
-                    Log::info('[MissionEventListener] Previous mission is completed but not claimed yet, skipping new mission start for user: ' . $user->id);
+                    Log::info('[MissionEventListener] Previous mission is completed but not claimed yet, skipping new mission start for user: ' . $user->id, [
+                        'previousSelfClaimedCompletedMission' => $previousSelfClaimedCompletedMission->toArray()
+                    ]);
                     continue;
                 }
 
