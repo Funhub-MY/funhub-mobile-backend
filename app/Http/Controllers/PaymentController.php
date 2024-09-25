@@ -204,7 +204,12 @@ class PaymentController extends Controller
                         $claim_id = $claim->id;
                         // redemption dates is claim created_at + offer expiry_days
                         $redemption_start_date = $claim->created_at;
-                        $redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+
+                        if (isset($claim->merchantOffer)) {
+                            $redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+                        } else {
+                            $redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
+                        }
                     }
                 }
 
