@@ -68,7 +68,7 @@ class MissionStarted extends Notification
                 'link_to_url' => (string) 'false',
                 'link_to' => (string) $this->mission->id, // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
-                'action' => 'mission_completed',
+                'action' => 'mission_started',
                 'from_name' => (string) $this->user->name,
                 'from_id' => (string) $this->user->id,
                 'title' => (string) $this->translatedMissionName,
@@ -101,7 +101,7 @@ class MissionStarted extends Notification
             'link_to_url' => false,
             'link_to' => $this->mission->id, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object
-            'action' => 'mission_completed',
+            'action' => 'mission_started',
             'from_name' => $this->user->name,
             'from_id' => $this->user->id,
             'title' => $this->translatedMissionName,

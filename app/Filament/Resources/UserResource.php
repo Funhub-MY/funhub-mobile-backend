@@ -30,9 +30,12 @@ use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Forms\Components\Actions\Action;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Finder\Iterator\DateRangeFilterIterator;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -362,6 +365,21 @@ class UserResource extends Resource
                             $record->update(['status' => User::STATUS_SUSPENDED]);
                         });
                     })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+                BulkAction::make('Reset All Mission Progress')
+                    ->action(function (Collection $records, array $data): void {
+                        $resetCount = 0;
+                        foreach ($records as $record) {
+                            Log::info('[UserResource] Resetting mission progress for user: ' . $record->id);
+                            $record->missionsParticipating()->delete();
+                        }
+                        if ($resetCount > 0) {
+                            Notification::make()
+                            ->success()
+                            ->title('Successfully reset mission progress of '.$resetCount.' users')
+                            ->send();
+                        }
+                    })
+                    ->requiresConfirmation(),
                 BulkAction::make('reward')
                     ->label('Reward')
                     ->action(function (Collection $records, array $data): void {
