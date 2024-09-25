@@ -192,12 +192,20 @@ class PaymentController extends Controller
 
                 // if transactionable_type is merchant_offer, get the relevant claim id
                 $claim_id = null;
+                $redemption_start_date = null;
+                $redemption_end_date = null;
                 if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
                     $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
                         ->where('user_id', $transaction->user_id)
                         ->latest()
                         ->first();
-                    $claim_id = $claim ? $claim->id : null;
+
+                    if ($claim) {
+                        $claim_id = $claim->id;
+                        // redemption dates is claim created_at + offer expiry_days
+                        $redemption_start_date = $claim->created_at;
+                        $redemption_end_date = $claim->created_at->addDays($claim->offer->expiry_days)->endOfDay();
+                    }
                 }
 
                 // return with js
@@ -205,7 +213,9 @@ class PaymentController extends Controller
                 return view('payment-return', [
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
-                    'claim_id' => $claim_id,
+                    'offer_claim_id' => $claim_id,
+                    'redemption_start_date' => $redemption_start_date,
+                    'redemption_end_date' => $redemption_end_date,
                     'success' => true
                 ]);
 

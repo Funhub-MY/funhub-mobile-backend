@@ -478,6 +478,8 @@ class MerchantOfferController extends Controller
 
         $user = request()->user();
         $claim = null;
+        $redemption_start_date = null;
+        $redemption_end_date = null;
         if ($request->payment_method == 'points') {
             // ------------------------------------ POINTS CHECKOUT ------------------------------------
 
@@ -524,10 +526,13 @@ class MerchantOfferController extends Controller
 
             event(new PurchasedMerchantOffer($user, $offer, 'points'));
 
+            $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
             if ($user->email) {
-                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
                 $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
             }
+
+            $redemption_start_date = $claim->created_at;
+            $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
             try {
                 // notify user offer claimed
@@ -666,7 +671,9 @@ class MerchantOfferController extends Controller
         $offer->refresh();
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
-            'claim_id' => $claim->id,
+            'offer_claim_id' => $claim->id,
+            'redemption_start_date' => $redemption_start_date,
+            'redemption_end_date' => $redemption_end_date,
             'offer' => new MerchantOfferResource($offer)
         ], 200);
     }
