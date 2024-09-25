@@ -276,6 +276,21 @@ class MissionEventListener
                 foreach ($mission->events as $event) {
                     $currentValues[$event] = ($event == $eventType) ? $increments : 0;
                 }
+
+                // dont start new mission if previous mission is completed but not claimed yet
+                $previousSelfClaimedCompletedMission = $user->missionsParticipating()->where('mission_id', $mission->id)
+                    ->where('is_completed', true)
+                    // where auto_disburse_rewards is not set
+                    ->where('auto_disburse_rewards', false)
+                    ->where('claimed_at', null)
+                    ->first();
+
+                if ($previousSelfClaimedCompletedMission) {
+                    Log::info('[MissionEventListener] Previous mission is completed but not claimed yet, skipping new mission start for user: ' . $user->id);
+                    continue;
+                }
+
+                // create new mission for this user (start as new mission)
                 $user->missionsParticipating()->attach($mission->id, [
                     'started_at' => now(),
                     'current_values' => json_encode($currentValues)
@@ -288,8 +303,7 @@ class MissionEventListener
                 } catch (\Exception $e) {
                     Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
                 }
-
-            } else if (!$userMission->pivot->is_completed) {
+            } else if (!$userMission->pivot->is_completed) { // progress the mission
                 Log::info('User mission not complete yet', [
                     'user' => $user->id,
                     'mission' => $mission->id,
