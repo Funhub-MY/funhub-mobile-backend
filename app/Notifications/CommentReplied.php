@@ -42,6 +42,9 @@ class CommentReplied extends Notification
 
     public function toFcm($notifiable)
     {
+        // regex match @[__43__](__Steven Yew__) to show only username
+        $body =
+
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->comment), // comment object

@@ -477,6 +477,7 @@ class MerchantOfferController extends Controller
         }
 
         $user = request()->user();
+        $claim = null;
         if ($request->payment_method == 'points') {
             // ------------------------------------ POINTS CHECKOUT ------------------------------------
 
@@ -665,6 +666,7 @@ class MerchantOfferController extends Controller
         $offer->refresh();
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
+            'claim_id' => $claim->id,
             'offer' => new MerchantOfferResource($offer)
         ], 200);
     }

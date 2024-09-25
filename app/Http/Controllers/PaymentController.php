@@ -190,11 +190,22 @@ class PaymentController extends Controller
                     'request' => request()->all()
                 ]);
 
+                // if transactionable_type is merchant_offer, get the relevant claim id
+                $claim_id = null;
+                if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+                    $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+                        ->where('user_id', $transaction->user_id)
+                        ->latest()
+                        ->first();
+                    $claim_id = $claim ? $claim->id : null;
+                }
+
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
                 return view('payment-return', [
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
+                    'claim_id' => $claim_id,
                     'success' => true
                 ]);
 
