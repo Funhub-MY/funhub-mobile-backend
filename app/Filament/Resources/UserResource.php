@@ -35,6 +35,7 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Finder\Iterator\DateRangeFilterIterator;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -366,11 +367,15 @@ class UserResource extends Resource
                         });
                     })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 BulkAction::make('Reset All Mission Progress')
-                    ->action(function (Collection $records, array $data): void {
+               ->action(function (Collection $records, array $data): void {
                         $resetCount = 0;
                         foreach ($records as $record) {
-                            Log::info('[UserResource] Resetting mission progress for user: ' . $record->id);
-                            $record->missionsParticipating()->delete();
+                            Log::info('[UserResource] Resetting mission progress for user: ' . $record->id, [
+                                'missions' => $record->missionsParticipating()->pluck('mission_id')->toArray(),
+                                'reseted_by' => auth()->user()->id,
+                            ]);
+                            DB::table('missions_users')->where('user_id', $record->id)->delete();
+                            $resetCount++;
                         }
                         if ($resetCount > 0) {
                             Notification::make()

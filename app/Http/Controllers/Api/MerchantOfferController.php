@@ -305,6 +305,7 @@ class MerchantOfferController extends Controller
      * @subgroup Merchant Offers
      * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
      * @urlParam is_expired number optional Filter by Expired. Example: 0/1
+     * @urlParam claim_id integer optional Filter by Claim ID. Example: 1
      * @response scenario=success {
      * "data": []
      * }
@@ -314,6 +315,10 @@ class MerchantOfferController extends Controller
         // get merchant offers claimed by user
         $query = MerchantOfferClaim::where('user_id', auth()->user()->id)
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+
+        if ($request->has('claim_id')) {
+            $query->where('id', $request->claim_id);
+        }
 
         if ($request->has('is_redeemed')) {
             if ($request->get('is_redeemed') == 1) { // true
