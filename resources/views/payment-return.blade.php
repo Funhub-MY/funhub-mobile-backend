@@ -17,7 +17,13 @@
 <b>{{ $message }}</b>
 <br/>
 <b>{{  $success }}</b>
+<br/>
 <b>{{  $transaction_id }}</b>
-<b>{{  $offer_claim_id }}</b>
+<br/>
+<b>{{ (isset($offer_claim_id)) ? $offer_claim_id : '' }}</b>
+<br/>
+<b>{{ isset($redemption_start_date) ? $redemption_start_date : '' }}</b>
+<br/>
+<b>{{ isset($redemption_end_date) ? $redemption_end_date : '' }}</b>
 </body>
 </html>
