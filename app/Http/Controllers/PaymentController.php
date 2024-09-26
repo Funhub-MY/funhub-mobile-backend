@@ -256,7 +256,7 @@ class PaymentController extends Controller
 
                 return view('payment-return', [
                     'message' => 'Transaction Failed - Gateway Response Code Failed [2]',
-                    'transaction_id' => 0,
+                    'transaction_id' => $transaction->id,
                     'success' => false
                 ]);
             }
