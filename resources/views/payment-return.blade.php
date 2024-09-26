@@ -12,6 +12,7 @@
         'redemption_end_date': "{{ isset($redemption_end_date) ? $redemption_end_date : '' }}",
     });
 </script>
+<b>Mpay Payment Return</b>
 <b>{{ $message }}</b>
 </body>
 </html>
