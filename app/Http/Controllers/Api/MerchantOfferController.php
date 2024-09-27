@@ -459,13 +459,12 @@ class MerchantOfferController extends Controller
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
         ]);
 
-        // check offer is still valid by checking available_at and available_until
+        // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
             ->with('user', 'user.merchant', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
-            ->where('quantity', '>=', $request->quantity)
             ->first();
 
         if (!$offer) {
@@ -474,10 +473,14 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        // double check quantity via unclaimed vouchers
+        // check available quantity of vouchers, even though locked vouchers will be counted as it will be releaed when failed payment/15min voucher release lock
         if ($offer->unclaimedVouchers()->count() < $request->quantity) {
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out')
+                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                'quantity' => $request->quantity,
+                'available_quantity' => $offer->unclaimedVouchers()->count(),
+                'user_id' => auth()->user()->id,
+                'offer_id' => $offer->id,
             ], 422);
         }
 
