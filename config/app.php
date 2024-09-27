@@ -280,7 +280,7 @@ return [
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
         'reviewed_store' => 'Reviewed a store',
-        'closed_a_ticket' => 'Closed a ticket raised by user',
+        'closed_a_ticket' => 'Closed a complain ticket raised by user',
         'closed_an_information_update_ticket' => 'Closed an information update ticket raised by user'
     ],
 
