@@ -6,7 +6,7 @@
 <script>
     console.log('Mpay Payment Return');
     window.flutter_inappwebview.callHandler('paymentData', {
-        'success': {{ $success }},
+        'success': {{  $success ? 1 : 0 }},
         'transaction_id': "{{ $transaction_id }}",
         /*
         'offer_claim_id': "{{ (isset($offer_claim_id)) ? $offer_claim_id : 'null' }}",
@@ -17,7 +17,7 @@
 </script>
 <b>Mpay Payment Return</b>
 <br>
-<b>Success: {{ $success }}</b>
+<b>Success: {{ $success ? 1 : 0 }}</b>
 <br>
 <b>{{ $message }}</b>
 </body>
