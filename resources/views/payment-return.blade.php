@@ -8,22 +8,17 @@
     window.flutter_inappwebview.callHandler('paymentData', {
         'success': {{ $success }},
         'transaction_id': "{{ $transaction_id }}",
+        /*
         'offer_claim_id': "{{ (isset($offer_claim_id)) ? $offer_claim_id : 'null' }}",
         'redemption_start_date': "{{ isset($redemption_start_date) ? $redemption_start_date : 'null' }}",
         'redemption_end_date': "{{ isset($redemption_end_date) ? $redemption_end_date : 'null' }}",
+        */
     });
 </script>
 <b>Mpay Payment Return</b>
+<br>
+<b>Success: {{ $success }}</b>
+<br>
 <b>{{ $message }}</b>
-<br/>
-<b>{{  $success }}</b>
-<br/>
-<b>{{  $transaction_id }}</b>
-<br/>
-<b>{{ (isset($offer_claim_id)) ? $offer_claim_id : '' }}</b>
-<br/>
-<b>{{ isset($redemption_start_date) ? $redemption_start_date : '' }}</b>
-<br/>
-<b>{{ isset($redemption_end_date) ? $redemption_end_date : '' }}</b>
 </body>
 </html>
