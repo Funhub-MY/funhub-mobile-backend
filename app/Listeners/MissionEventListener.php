@@ -167,11 +167,11 @@ class MissionEventListener
     {
         $supportRequest = $event->supportRequest;
 
-        // Check if the support request category type is 'complain'
-        $isComplainCategory = $supportRequest->category->type === 'complain';
+        // Check if the support request category type is 'complain' / 'information_update'
+        $isEligibleTypeTicket = $supportRequest->category->type === 'complain' || $supportRequest->category->type === 'information_update';
 
         // if type is not "complain", then do nothing
-        if (!$isComplainCategory) {
+        if (!$isEligibleTypeTicket) {
             Log::info('[MissionEventListener] Support Request is not in "Complain" category, skipping mission progress update', [
                 'support_request' => $supportRequest->id,
                 'category' => $supportRequest->category->type,
@@ -192,7 +192,11 @@ class MissionEventListener
         }
 
         // update 1 request is closed
-        $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
+        if ($supportRequest->category->type === 'complain') {
+            $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
+        } else if ($supportRequest->category->type === 'information_update') {
+            $this->updateMissionProgress('closed_an_information_update_ticket', $event->supportRequest->requestor, 1);
+        }
     }
 
     /**
