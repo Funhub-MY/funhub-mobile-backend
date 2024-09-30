@@ -48,8 +48,8 @@ class PaymentController extends Controller
             Log::error('Payment return failed', [
                 'error' => 'Missingh parameter from request',
                 'missing' => [
-                    'result' => $request->has('result'),
-                    'secureHash' => $request->has('secureHash'),
+                    // 'result' => $request->has('result'),
+                    // 'secureHash' => $request->has('secureHash'),
                     'mid' => $request->has('mid'),
                     'responseCode' => $request->has('responseCode'),
                     'authCode' => $request->has('authCode'),
