@@ -10,7 +10,7 @@ class Mpay {
 
     public function __construct($mid, $hashKey, $fpxOrCardOnly = false)
     {
-        if (config('app.env') == 'production' && !config('app.debug')) {
+        if ((config('app.env') == 'production' && !config('app.debug')) || config('app.env') == 'preprod') {
             $this->url = config('services.mpay.prod_url');
         } else {
             // uat mode
@@ -209,7 +209,11 @@ class Mpay {
      */
     public function checkAvailablePaymentTypes()
     {
-        $url = $this->url . '/api/paymentService/checkPaymentType/';
+        $baseUrl = $this->url;
+        if (substr($baseUrl, -1) === '/') {
+            $baseUrl = rtrim($baseUrl, '/');
+        }
+        $url = $baseUrl . '/api/paymentService/checkPaymentType/';
 
         $data = [
             'mid' => $this->mid,
