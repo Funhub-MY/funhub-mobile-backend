@@ -172,12 +172,10 @@ class Mpay {
      */
     public function queryCardToken($uuid, $invno)
     {
-        // check if mid and hashKey is set
         if (!$this->mid || !$this->hashKey) {
             throw new \Exception('Mpay MID or hash key is not set');
         }
 
-        // api/paymentService/queryToken/
         $url = $this->url . '/api/paymentService/queryToken/';
         $data = [
             'secureHash' => $this->generateHashForTokenQuery($uuid, $invno),
@@ -186,20 +184,13 @@ class Mpay {
             'uuid' => $uuid
         ];
 
-        Log::info('Mpay queryCardToken data', $data);
+        Log::info('Mpay queryCardToken request', ['url' => $url, 'data' => $data]);
 
-        // send post request
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json;charset=utf-8',
-        ])->post($url, $data);
+        $response = $this->curlRequest($url, $data);
 
-        $results = json_decode($response->body(), true);
+        Log::info('Mpay queryCardToken response', $response);
 
-        Log::info('Mpay queryCardToken response', [
-            'response' => $results,
-        ]);
-
-        return $results;
+        return json_decode($response['body'], true);
     }
 
     /**
@@ -209,37 +200,34 @@ class Mpay {
      */
     public function checkAvailablePaymentTypes()
     {
-        $baseUrl = $this->url;
-        if (substr($baseUrl, -1) === '/') {
-            $baseUrl = rtrim($baseUrl, '/');
-        }
-        $url = $baseUrl . '/api/paymentService/checkPaymentType/';
+        $url = rtrim(trim($this->url), '/') . '/api/paymentService/checkPaymentType/';
 
         $data = [
             'mid' => $this->mid,
             'secureHash' => $this->generateHashForCheckPaymentType(),
         ];
 
-        $response = Http::post($url, $data);
+        Log::info('Mpay checkPaymentType request', ['url' => $url, 'data' => $data]);
 
-        if ($response->successful()) {
-            $responseData = $response->json();
-            if ($responseData['responseCode'] == '00' && isset($responseData['paymentTypeList'])) {
-                // decode [Card, FPX-ABB0234, FPX-Affin Bank, FPX-AGRONet, FPX-Alliance Bank, FPX-AmBank, FPX-Bank Islam, FPX-Bank Muamalat, FPX-Bank Of China, FPX-Bank Rakyat, FPX-BSN, FPX-CIMB Clicks, FPX-Citibank, FPX-Hong Leong Bank, FPX-HSBC Bank, FPX-KFH, FPX-Maybank2U, FPX-OCBC Bank, FPX-Public Bank, FPX-RHB Bank, FPX-SBI Bank A, FPX-SBI Bank B, FPX-SBI Bank C, FPX-Standard Chartered, FPX-UOB Bank, FPX-UOB0229, FPX-B2B-Affin Bank, FPX-B2B-AFFINMAX, FPX-B2B-AGRONetBIZ, FPX-B2B-Alliance Bank, FPX-B2B-AmBank, FPX-B2B-Bank Islam, FPX-B2B-Bank Muamalat, FPX-B2B-Bank Rakyat, FPX-B2B-BNP Paribas, FPX-B2B-CIMB Bank, FPX-B2B-Citibank CorporateBanking, FPX-B2B-Deutsche Bank, FPX-B2B-Hong Leong Bank, FPX-B2B-HSBC Bank, FPX-B2B-KFH, FPX-B2B-LOAD001, FPX-B2B-Maybank2E, FPX-B2B-OCBC Bank, FPX-B2B-PBB0234, FPX-B2B-Public Bank, FPX-B2B-RHB Bank, FPX-B2B-SBI Bank A, FPX-B2B-SBI Bank B, FPX-B2B-SBI Bank C, FPX-B2B-Standard Chartered, FPX-B2B-UOB Bank, FPX-B2B-UOB0228, Boost, GrabPay, TNG]
-                // as array
-                $paymentTypes = explode(',', $responseData['paymentTypeList']);
-                // remove any prefix with [ or suffix ] and trim
-                $paymentTypes = array_map(function ($paymentType) {
-                    return trim(str_replace(['[', ']'], '', $paymentType));
-                }, $paymentTypes);
+        $response = $this->curlRequest($url, $data);
 
-                return $paymentTypes;
-            } else {
-                Log::error('Error checking available payment types: ' . $responseData['responseDesc']);
-                return [];
-            }
+        Log::info('Mpay checkPaymentType response', $response);
+
+        if (isset($response['error'])) {
+            return [];
+        }
+
+        $responseData = json_decode($response['body'], true);
+        if ($response['status'] == 200 && isset($responseData['responseCode']) && $responseData['responseCode'] == '00' && isset($responseData['paymentTypeList'])) {
+            $paymentTypes = explode(',', $responseData['paymentTypeList']);
+            return array_map(function ($paymentType) {
+                return trim(str_replace(['[', ']'], '', $paymentType));
+            }, $paymentTypes);
         } else {
-            Log::error('Error checking available payment types: ' . $response->body());
+            Log::error('Error checking available payment types', [
+                'status' => $response['status'],
+                'response' => $responseData
+            ]);
             return [];
         }
     }
@@ -294,5 +282,59 @@ class Mpay {
         // append hashkey,mid,responseocde,authcode,invoice_no,amount into a string and call gensecurehash
         $string = $this->hashKey . $mid . $responseCode . $authCode . $invoice_no . $amount;
         return $this->secureHash->generateSecureHash($string);
+    }
+
+    /**
+     * cURL request
+     * We implemented this due to inconsistent guzzle http package usage of uri causing issues like URL not valid
+     *
+     * @param [type] $url
+     * @param [type] $data
+     * @param string $method
+     * @return void
+     */
+    private function curlRequest($url, $data, $method = 'POST')
+    {
+        $url = trim($url);
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            Log::error('Invalid URL in curlRequest', ['url' => $url]);
+            return ['error' => 'Invalid URL'];
+        }
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ],
+            // CURLOPT_SSL_VERIFYPEER => false, // Only for testing, remove in production
+            // CURLOPT_SSL_VERIFYHOST => false, // Only for testing, remove in production
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
+            Log::error('cURL error in curlRequest', [
+                'error' => $error,
+                'url' => $url,
+                'data' => $data,
+                'curl_info' => curl_getinfo($ch)
+            ]);
+            curl_close($ch);
+            return ['error' => $error];
+        }
+
+        curl_close($ch);
+
+        return [
+            'status' => $httpCode,
+            'body' => $response
+        ];
     }
 }
