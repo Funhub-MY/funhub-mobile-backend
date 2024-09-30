@@ -42,10 +42,13 @@ class CommentReplied extends Notification
 
     public function toFcm($notifiable)
     {
+        // regex match @[__43__](__Steven Yew__) to show only username
+        $body =
+
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->comment), // comment object
-                'object_id' => (string) $this->comment->replyingComment->id, // returns parent comment
+                'object_id' => (string) $this->replyingComment->id, // returns parent comment
                 'article_id' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->id : null,
                 'article_type' => ($this->comment->commentable_type == Article::class) ? (string) $this->comment->commentable->type : null,
                 'link_to_url' => (string) 'false',
@@ -66,7 +69,7 @@ class CommentReplied extends Notification
                 ->setTitle(__('messages.notification.fcm.CommentRepliedTitle'))
                 ->setBody(__('messages.notification.fcm.CommentReplied', [
                     'username' => $this->comment->user->name,
-                    'comment' => Str::limit($this->comment->replyingComment->body, 10, '...')
+                    'comment' => Str::limit($this->replyingComment->body, 10, '...')
                 ]))
             );
     }
@@ -81,7 +84,7 @@ class CommentReplied extends Notification
     {
         return [
             'object' => get_class($this->comment), // comment object
-            'object_id' => $this->comment->replyingComment->id, // returns parent comment
+            'object_id' => $this->replyingComment->id, // returns parent comment
             'link_to_url' => false,
             'link_to' => $this->comment->commentable->id, // if link to url false, means get link_to_object
             'link_to_object' => $this->comment->commentable_type, // if link to url false, means get link_to_object

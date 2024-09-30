@@ -109,6 +109,9 @@ class MerchantOfferController extends Controller
                 'interactions' => function ($query) {
                     $query->where('user_id', auth()->user()->id);
                 },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
             ]);
 
         // category_ids filter
@@ -302,6 +305,7 @@ class MerchantOfferController extends Controller
      * @subgroup Merchant Offers
      * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
      * @urlParam is_expired number optional Filter by Expired. Example: 0/1
+     * @urlParam claim_id integer optional Filter by Claim ID. Example: 1
      * @response scenario=success {
      * "data": []
      * }
@@ -311,6 +315,10 @@ class MerchantOfferController extends Controller
         // get merchant offers claimed by user
         $query = MerchantOfferClaim::where('user_id', auth()->user()->id)
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+
+        if ($request->has('claim_id')) {
+            $query->where('id', $request->claim_id);
+        }
 
         if ($request->has('is_redeemed')) {
             if ($request->get('is_redeemed') == 1) { // true
@@ -381,6 +389,9 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
+        ])
+        ->loadCount([
+            'unclaimedVouchers',
         ]);
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
@@ -448,13 +459,12 @@ class MerchantOfferController extends Controller
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
         ]);
 
-        // check offer is still valid by checking available_at and available_until
+        // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
             ->with('user', 'user.merchant', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
-            ->where('quantity', '>=', $request->quantity)
             ->first();
 
         if (!$offer) {
@@ -463,14 +473,21 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        // double check quantity via unclaimed vouchers
+        // check available quantity of vouchers, even though locked vouchers will be counted as it will be releaed when failed payment/15min voucher release lock
         if ($offer->unclaimedVouchers()->count() < $request->quantity) {
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out')
+                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                'quantity' => $request->quantity,
+                'available_quantity' => $offer->unclaimedVouchers()->count(),
+                'user_id' => auth()->user()->id,
+                'offer_id' => $offer->id,
             ], 422);
         }
 
         $user = request()->user();
+        $claim = null;
+        $redemption_start_date = null;
+        $redemption_end_date = null;
         if ($request->payment_method == 'points') {
             // ------------------------------------ POINTS CHECKOUT ------------------------------------
 
@@ -517,10 +534,13 @@ class MerchantOfferController extends Controller
 
             event(new PurchasedMerchantOffer($user, $offer, 'points'));
 
+            $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
             if ($user->email) {
-                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
                 $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
             }
+
+            $redemption_start_date = $claim->created_at;
+            $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
             try {
                 // notify user offer claimed
@@ -659,6 +679,9 @@ class MerchantOfferController extends Controller
         $offer->refresh();
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
+            'offer_claim_id' => $claim->id,
+            'redemption_start_date' => $redemption_start_date,
+            'redemption_end_date' => $redemption_end_date,
             'offer' => new MerchantOfferResource($offer)
         ], 200);
     }
@@ -1104,6 +1127,9 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
+        ])
+        ->withCount([
+            'unclaimedVouchers',
         ]);
 
         return $query;

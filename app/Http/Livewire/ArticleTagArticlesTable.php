@@ -136,7 +136,6 @@ class ArticleTagArticlesTable extends Component implements HasTable
                 ExcelExport::make('table')
                     ->fromTable()
                     ->withFilename(fn () => 'articles_tags_' . date('Y-m-d'))
-                    ->withColumns(['id'])
             ]),
         ];
     }

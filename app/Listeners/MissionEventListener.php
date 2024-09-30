@@ -17,6 +17,7 @@ use App\Models\Reward;
 use App\Models\RewardComponent;
 use App\Models\SupportRequest;
 use App\Notifications\MissionCompleted;
+use App\Notifications\MissionStarted;
 use App\Notifications\RewardReceivedNotification;
 use Illuminate\Support\Facades\Log;
 use App\Services\PointComponentService;
@@ -166,11 +167,11 @@ class MissionEventListener
     {
         $supportRequest = $event->supportRequest;
 
-        // Check if the support request category type is 'complain'
-        $isComplainCategory = $supportRequest->category->type === 'complain';
+        // Check if the support request category type is 'complain' / 'information_update'
+        $isEligibleTypeTicket = $supportRequest->category->type === 'complain' || $supportRequest->category->type === 'information_update';
 
         // if type is not "complain", then do nothing
-        if (!$isComplainCategory) {
+        if (!$isEligibleTypeTicket) {
             Log::info('[MissionEventListener] Support Request is not in "Complain" category, skipping mission progress update', [
                 'support_request' => $supportRequest->id,
                 'category' => $supportRequest->category->type,
@@ -191,7 +192,11 @@ class MissionEventListener
         }
 
         // update 1 request is closed
-        $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
+        if ($supportRequest->category->type === 'complain') {
+            $this->updateMissionProgress('closed_a_ticket', $event->supportRequest->requestor, 1);
+        } else if ($supportRequest->category->type === 'information_update') {
+            $this->updateMissionProgress('closed_an_information_update_ticket', $event->supportRequest->requestor, 1);
+        }
     }
 
     /**
@@ -275,12 +280,38 @@ class MissionEventListener
                 foreach ($mission->events as $event) {
                     $currentValues[$event] = ($event == $eventType) ? $increments : 0;
                 }
+
+                // dont start new mission if previous mission is completed but not claimed yet
+                $previousSelfClaimedCompletedMission = $user->missionsParticipating()->where('mission_id', $mission->id)
+                    ->where('is_completed', true)
+                    // where auto_disburse_rewards is not set
+                    ->where('auto_disburse_rewards', false)
+                    // applies to one off frequency
+                    ->where('frequency', 'one-off')
+                    ->where('claimed_at', null)
+                    ->first();
+
+                if ($previousSelfClaimedCompletedMission) {
+                    Log::info('[MissionEventListener] Previous mission is completed but not claimed yet, skipping new mission start for user: ' . $user->id, [
+                        'previousSelfClaimedCompletedMission' => $previousSelfClaimedCompletedMission->toArray()
+                    ]);
+                    continue;
+                }
+
+                // create new mission for this user (start as new mission)
                 $user->missionsParticipating()->attach($mission->id, [
                     'started_at' => now(),
                     'current_values' => json_encode($currentValues)
                 ]);
 
-            } else if (!$userMission->pivot->is_completed) {
+                // just started fire notification
+                try {
+                    $locale = $user->last_lang ?? config('app.locale');
+                    $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
+                } catch (\Exception $e) {
+                    Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                }
+            } else if (!$userMission->pivot->is_completed) { // progress the mission
                 Log::info('User mission not complete yet', [
                     'user' => $user->id,
                     'mission' => $mission->id,

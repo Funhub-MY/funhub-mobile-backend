@@ -135,33 +135,34 @@ class PaymentController extends Controller
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
 
                 // if transaction has use using_point_discount then we need deduct the point ledger
-                if ($transaction->using_point_discount) {
-                    $pointService = new PointService();
-                    $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
+                // DEPRECATED: 24 sep
+                // if ($transaction->using_point_discount) {
+                //     $pointService = new PointService();
+                //     $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
 
-                    // check if user has enough points to use
-                    if ($latestBalancePointsOfUser < $transaction->points_to_use) {
-                        Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
-                        return view('payment-return', [
-                            'message' => 'Transaction Failed - Insufficient Point Balance',
-                            'transaction_id' => $transaction->id,
-                            'success' => false
-                        ]);
-                    }
+                //     // check if user has enough points to use
+                //     if ($latestBalancePointsOfUser < $transaction->points_to_use) {
+                //         Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
+                //         return view('payment-return', [
+                //             'message' => 'Transaction Failed - Insufficient Point Balance',
+                //             'transaction_id' => $transaction->id,
+                //             'success' => false
+                //         ]);
+                //     }
 
-                    // deduct point from user's account
-                    $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
-                }
+                //     // deduct point from user's account
+                //     $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
+                // }
 
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => $request->mpay_ref_no,
                 ];
 
-                if ($transaction->using_point_discount) {
-                    $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
-                    $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
-                }
+                // if ($transaction->using_point_discount) {
+                //     $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
+                //     $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
+                // }
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -189,11 +190,37 @@ class PaymentController extends Controller
                     'request' => request()->all()
                 ]);
 
+                // if transactionable_type is merchant_offer, get the relevant claim id
+                $claim_id = null;
+                $redemption_start_date = null;
+                $redemption_end_date = null;
+                if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+                    $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+                        ->where('user_id', $transaction->user_id)
+                        ->latest()
+                        ->first();
+
+                    if ($claim) {
+                        $claim_id = $claim->id;
+                        // redemption dates is claim created_at + offer expiry_days
+                        $redemption_start_date = $claim->created_at;
+
+                        if (isset($claim->merchantOffer)) {
+                            $redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+                        } else {
+                            $redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
+                        }
+                    }
+                }
+
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
                 return view('payment-return', [
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
+                    'offer_claim_id' => $claim_id,
+                    'redemption_start_date' => $redemption_start_date,
+                    'redemption_end_date' => $redemption_end_date,
                     'success' => true
                 ]);
 

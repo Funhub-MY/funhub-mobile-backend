@@ -80,6 +80,7 @@ class SupportRequestCategoryResource extends Resource
                             'complain' => 'Complain',
                             'bug' => 'Bug',
                             'feature_request' => 'Feature Request',
+                            'information_update' => 'Information Update',
                             'others' => 'Others',
                         ]),
 
