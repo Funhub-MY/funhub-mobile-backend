@@ -175,7 +175,8 @@ class ArticleController extends Controller
                 ->where('article_locatables.locatable_type', Article::class)
                 ->pluck('article_locatables.locatable_id');
 
-            $query->whereIn('articles.id', $locationIds);
+            $query->whereIn('articles.id', $locationIds)
+                ->public(); // must be public only if has store id grab articles
         }
 
         $this->filterArticlesBlockedOrHidden($query);
