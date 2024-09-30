@@ -78,6 +78,10 @@ class Mpay {
             Log::info('[MPAY] Phone is not set, using default phone:'. $defaultPhone);
         }
 
+        // check if redirect url is http, if yes, use https
+        if (substr($redirectUrl, 0, 4) === 'http') {
+            $redirectUrl = str_replace('http://', 'https://', $redirectUrl);
+        }
 
         $data = [
             'url' => $this->url .'/payment/eCommerce',
@@ -140,6 +144,11 @@ class Mpay {
         if (!$phoneNo) {
             $defaultPhone = config('app.mpay_default_phone');
             Log::info('[MPAY] Phone is not set, using default phone:'. $defaultPhone);
+        }
+
+        // check if redirect url is http, if yes, use https
+        if (substr($redirectUrl, 0, 4) === 'http') {
+            $redirectUrl = str_replace('http://', 'https://', $redirectUrl);
         }
 
         $data = [
