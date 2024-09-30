@@ -42,8 +42,8 @@ class CommentReplied extends Notification
 
     public function toFcm($notifiable)
     {
-        // regex match @[__43__](__Steven Yew__) to show only username
-        $body =
+        $body = $this->replyingComment->body;
+        $body = preg_replace('/@\[__\d+__\]\(__(.+?)__\)/', '$1', $body);
 
         return FcmMessage::create()
             ->setData([
@@ -58,7 +58,7 @@ class CommentReplied extends Notification
                 'from_name' => (string) $this->comment->user->name,
                 'from_id' => (string) $this->comment->user->id,
                 'title' => (string) $this->comment->user->name,
-                'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
+                'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($body, 10, '...')]),
                 'comment_id' => (string) $this->comment->id,
                 'extra' => json_encode([
                     'parent_id' => (string) $this->replyingComment->id,
@@ -69,7 +69,7 @@ class CommentReplied extends Notification
                 ->setTitle(__('messages.notification.fcm.CommentRepliedTitle'))
                 ->setBody(__('messages.notification.fcm.CommentReplied', [
                     'username' => $this->comment->user->name,
-                    'comment' => Str::limit($this->replyingComment->body, 10, '...')
+                    'comment' => Str::limit($body, 10, '...')
                 ]))
             );
     }
@@ -82,6 +82,9 @@ class CommentReplied extends Notification
      */
     public function toArray($notifiable)
     {
+        $body = $this->replyingComment->body;
+        $body = preg_replace('/@\[__\d+__\]\(__(.+?)__\)/', '$1', $body);
+
         return [
             'object' => get_class($this->comment), // comment object
             'object_id' => $this->replyingComment->id, // returns parent comment
@@ -92,7 +95,7 @@ class CommentReplied extends Notification
             'from_name' => $this->comment->user->name,
             'from_id' => $this->comment->user->id,
             'title' => $this->comment->user->name,
-            'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($this->replyingComment->body, 10, '...')]),
+            'message' => __('messages.notification.database.CommentReplied', ['username' => $this->comment->user->name , 'comment' => Str::limit($body, 10, '...')]),
             'comment_id' => (string) $this->comment->id,
             'extra' => [
                 'parent_id' => $this->replyingComment->id,
