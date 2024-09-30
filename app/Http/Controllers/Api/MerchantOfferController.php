@@ -680,6 +680,7 @@ class MerchantOfferController extends Controller
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
             'offer_claim_id' => $claim->id,
+            'server_time' => Carbon::now(),
             'redemption_start_date' => $redemption_start_date,
             'redemption_end_date' => $redemption_end_date,
             'offer' => new MerchantOfferResource($offer)

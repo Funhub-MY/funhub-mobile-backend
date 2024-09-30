@@ -17,6 +17,7 @@ use App\Models\UserCard;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
 use App\Services\PointService;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
@@ -609,7 +610,8 @@ class PaymentController extends Controller
     {
         $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
         return response()->json([
-            'availablePaymentTypes' => $availablePaymentTypes
+            'availablePaymentTypes' => $availablePaymentTypes,
+            'server_time' => Carbon::now(),
         ]);
     }
 
