@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\ArticleTag;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CreateArticle extends CreateRecord
 {
