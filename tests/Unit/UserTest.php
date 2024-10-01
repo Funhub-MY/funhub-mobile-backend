@@ -300,8 +300,8 @@ class UserTest extends TestCase
     public function testPostUpdateUserDetailsDob() {
         $date = [
             'year' => 1990,
-            'month' => fake()->date('m'),
-            'day' => fake()->date('d'),
+            'month' => 12,
+            'day' => 1,
         ];
 
         $response = $this->postJson("/api/v1/user", [

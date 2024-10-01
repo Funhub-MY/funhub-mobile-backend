@@ -600,7 +600,9 @@ class PaymentController extends Controller
      *  "availablePaymentTypes": [
      *      "fpx",
      *      "card"
-     *  ]
+     *  ],
+     *  "server_time": "2023-10-01 12:00:00",
+     *  "last_payment_method": "FPX-CIMB"
      * }
      *
      * @param Request $request
