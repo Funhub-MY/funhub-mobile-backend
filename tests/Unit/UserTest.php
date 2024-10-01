@@ -728,4 +728,35 @@ class UserTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function testPostUpdateLastKnownLocation()
+    {
+        $lat = '3.123456';
+        $lng = '101.123456';
+
+        $response = $this->postJson('/api/v1/user/last_known_location', [
+            'lat' => $lat,
+            'lng' => $lng,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Location updated'
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $this->user->id,
+            'last_lat' => $lat,
+            'last_lng' => $lng,
+        ]);
+
+        $response = $this->postJson('/api/v1/user/last_known_location', [
+            'lng' => $lng,
+        ]);
+        $response->assertStatus(422);
+
+        $response = $this->postJson('/api/v1/user/last_known_location', [
+            'lat' => $lat,
+        ]);
+        $response->assertStatus(422);
+    }
 }
