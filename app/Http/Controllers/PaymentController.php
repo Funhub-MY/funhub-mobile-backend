@@ -157,7 +157,7 @@ class PaymentController extends Controller
 
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
-                    'gateway_transaction_id' => $request->mpay_ref_no,
+                    'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
                 ];
 
                 // if ($transaction->using_point_discount) {

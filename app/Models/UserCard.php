@@ -27,6 +27,10 @@ class UserCard extends Model
         $cardExpiryMonth = $this->card_expiry_month;
         $cardExpiryYear = $this->card_expiry_year;
 
+        if (!$cardExpiryMonth || !$cardExpiryYear) {
+            return false;
+        }
+
         if ($cardExpiryMonth && $cardExpiryYear) {
             // Ensure month is zero-padded to two digits
             $cardExpiryMonth = str_pad($cardExpiryMonth, 2, '0', STR_PAD_LEFT);
