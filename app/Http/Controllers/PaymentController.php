@@ -608,10 +608,24 @@ class PaymentController extends Controller
      */
     public function getAvailablePaymentTypes()
     {
+        $user = auth()->user();
+
+        // user last users payment type , get last successful transaction
+        $lastSuccessfulTransaction = Transaction::where('user_id', $user->id)
+            ->where('status', Transaction::STATUS_SUCCESS)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $lastSuccessfulTransactionType = null;
+        if ($lastSuccessfulTransaction) {
+            $lastSuccessfulTransactionType = $lastSuccessfulTransaction->payment_method;
+        }
+
         $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
         return response()->json([
             'availablePaymentTypes' => $availablePaymentTypes,
             'server_time' => Carbon::now(),
+            'last_payment_method' => $lastSuccessfulTransactionType
         ]);
     }
 
