@@ -17,6 +17,7 @@ use App\Models\UserCard;
 use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
 use App\Services\PointService;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
@@ -44,12 +45,12 @@ class PaymentController extends Controller
         ]);
 
         // check if request has {"result":null,"secureHash":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mid":"7860","responseCode":"XC","maskedPAN":null,"authCode":null,"amt":"150.00","invno":"2308106HLQ8S","responseDesc":"Seller Exchange Encryption Error","tranDate":"2023-08-09 12:05:04","paymentType":"FPX-B2C","securehash2":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mpay_ref_no":"REF007860021002"}
-        if (!$request->has('result') || !$request->has('secureHash') || !$request->has('mid') || !$request->has('responseCode') || !$request->has('authCode') || !$request->has('amt') || !$request->has('invno') || !$request->has('responseDesc') || !$request->has('tranDate') || !$request->has('paymentType') || !$request->has('securehash2')) {
+        if (!$request->has('mid') || !$request->has('responseCode') || !$request->has('authCode') || !$request->has('amt') || !$request->has('invno') || !$request->has('responseDesc') || !$request->has('tranDate') || !$request->has('paymentType') || !$request->has('securehash2')) {
             Log::error('Payment return failed', [
                 'error' => 'Missingh parameter from request',
                 'missing' => [
-                    'result' => $request->has('result'),
-                    'secureHash' => $request->has('secureHash'),
+                    // 'result' => $request->has('result'),
+                    // 'secureHash' => $request->has('secureHash'),
                     'mid' => $request->has('mid'),
                     'responseCode' => $request->has('responseCode'),
                     'authCode' => $request->has('authCode'),
@@ -609,7 +610,8 @@ class PaymentController extends Controller
     {
         $availablePaymentTypes = $this->gateway->checkAvailablePaymentTypes();
         return response()->json([
-            'availablePaymentTypes' => $availablePaymentTypes
+            'availablePaymentTypes' => $availablePaymentTypes,
+            'server_time' => Carbon::now(),
         ]);
     }
 

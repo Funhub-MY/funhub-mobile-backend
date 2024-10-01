@@ -43,7 +43,7 @@ class RatedLocationListener implements ShouldQueue
 
                 // update store->ratings avg
                 $store->update([
-                    'ratings' => $store->ratings()->avg('rating')
+                    'ratings' => $store->storeRatings()->avg('rating')
                 ]);
 
                 Log::info('Store rating created', [
