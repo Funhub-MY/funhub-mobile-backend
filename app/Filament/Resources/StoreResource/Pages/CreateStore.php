@@ -102,5 +102,6 @@ class CreateStore extends CreateRecord
                 Log::info('Failed to get location data from Google Maps API');
             }
         }
+        $this->record->searchable();
     }
 }
