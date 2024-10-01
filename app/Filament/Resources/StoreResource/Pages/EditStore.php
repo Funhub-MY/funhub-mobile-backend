@@ -178,4 +178,12 @@ class EditStore extends EditRecord
 
         return $data;
     }
+
+    protected function afterSave(): void
+    {
+        if (isset($this->record)) {
+            // trigger searcheable to reindex
+            $this->record->searchable();
+        }
+    }
 }
