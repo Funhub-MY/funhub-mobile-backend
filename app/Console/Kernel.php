@@ -53,7 +53,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly();
 
         // sync article ratings to store ratings
-        $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes();
+        $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes()->withoutOverlapping();
 
         // run article engagements
         $schedule->command('articles:run-engagements')->everyMinute();
