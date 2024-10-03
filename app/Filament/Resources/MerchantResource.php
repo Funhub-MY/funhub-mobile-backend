@@ -353,7 +353,7 @@ class MerchantResource extends Resource
                                 $user->password = bcrypt($record->default_password);
                                 $user->save();
                             }
-                            $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
+                            // $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
 
                             Notification::make()
                                 ->success()

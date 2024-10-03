@@ -21,7 +21,8 @@ class SupportRequestCategory extends BaseModel implements Auditable
         'complain',
         'bug',
         'feature_request',
-        'others'
+        'others',
+        'information_update'
     ];
 
     public function support_requests()

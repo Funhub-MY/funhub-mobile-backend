@@ -125,6 +125,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('user/delete/request-otp', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccountRequestOtp']);
         Route::post('user/delete', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccount']);
         Route::post('user/tutorial-progress', [\App\Http\Controllers\Api\UserController::class, 'postTutorialProgress']);
+        Route::post('user/last_known_location', [\App\Http\Controllers\Api\UserController::class, 'postUpdateLastKnownLocation']);
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {

@@ -453,7 +453,7 @@ class MerchantOfferController extends Controller
             'offer_id' => 'required|integer|exists:merchant_offers,id',
             'payment_method' => 'required|in:points,fiat',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
-            'card_id' => 'required_if:fiat_payment_method,card,exists:user_cards,id',
+            'card_id' => 'exists:user_cards,id',
             'quantity' => 'required|integer|min:1',
             'use_point_discount' => 'nullable|boolean',
             'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
@@ -578,12 +578,6 @@ class MerchantOfferController extends Controller
                     // ->where('is_default', true)
                     // ->notExpired()
                     ->first();
-
-                if (!$selectedCard) {
-                    return response()->json([
-                        'message' => __('messages.error.merchant_offer_controller.No_Card_Selected')
-                    ], 422);
-                }
             }
 
             // discount using funbox logic (Point)

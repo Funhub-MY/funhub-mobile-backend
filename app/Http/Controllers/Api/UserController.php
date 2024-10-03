@@ -1061,4 +1061,36 @@ class UserController extends Controller
             'articles' => PublicArticleResource::collection($recentArticles),
         ]);
     }
+
+    /**
+     * Update Last Known Location
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User
+     * @bodyParam lat string required The lat of the user's last known location. Example: 3.123456
+     * @bodyParam lng string required The lng of the user's last known location. Example: 101.123456
+     * @response status=200 {
+     * "message": "Location updated"
+     * }
+     */
+    public function postUpdateLastKnownLocation(Request $request)
+    {
+        $this->validate($request, [
+            'lat' => 'required|string',
+            'lng' => 'required|string',
+        ]);
+
+        $user = auth()->user();
+
+        $user->update([
+            'last_lat' => $request->lat,
+            'last_lng' => $request->lng,
+        ]);
+
+        return response()->json([
+            'message' => 'Location updated'
+        ]);
+    }
 }
