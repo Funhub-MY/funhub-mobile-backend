@@ -37,6 +37,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleResource extends Resource
 {
