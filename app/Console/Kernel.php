@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
 
         //run scheduled publish article every minute
-        // $schedule->command('article:publish')->everyFiveMinutes();
+        $schedule->command('article:publish')->everyFiveMinutes();
 
         // run publish merchant offers every midnight
         $schedule->command('merchant-offers:publish')->dailyAt('00:00');
@@ -53,7 +53,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly();
 
         // sync article ratings to store ratings
-        $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes();
+        $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes()->withoutOverlapping();
 
         // run article engagements
         $schedule->command('articles:run-engagements')->everyMinute();

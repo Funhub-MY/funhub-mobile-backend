@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Approval;
 use App\Events\ArticleCreated;
+use App\Events\ClosedSupportTicket;
 use App\Events\CommentCreated;
 use App\Events\CommentLiked;
 use App\Events\CompletedProfile;
@@ -103,6 +104,10 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         CommentLiked::class => [
+            MissionEventListener::class,
+        ],
+
+        ClosedSupportTicket::class => [
             MissionEventListener::class,
         ]
     ];

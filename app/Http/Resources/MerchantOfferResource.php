@@ -86,6 +86,8 @@ class MerchantOfferResource extends JsonResource
             'cancellation_policy' => $this->cancellation_policy,
             'point_cost' => floatval($this->unit_price),
             'point_fiat_price' => floatval($this->point_fiat_price),
+            'available_points_to_discount' => $this->when(isset($this->available_points_to_discount), floatval($this->available_points_to_discount)),
+            'price_after_discount_with_points' => $this->when(isset($this->price_after_discount_with_points), floatval($this->price_after_discount_with_points)),
             'discounted_point_fiat_price' => floatval($this->discounted_point_fiat_price),
             'fiat_price' => floatval($this->fiat_price),
             'discounted_fiat_price' => floatval($this->discounted_fiat_price),
@@ -93,7 +95,7 @@ class MerchantOfferResource extends JsonResource
             'available_at' => $this->available_at,
             'available_until' => $this->available_until,
             'expiry_days' => $this->expiry_days,
-            'quantity' => $this->quantity,
+            'quantity' => $this->unclaimed_vouchers_count,
             'claimed_quantity' => ($this->claims) ? $this->claims->filter(function ($q) {
                 return $q->pivot->status == MerchantOffer::CLAIM_SUCCESS;
             })->count() : 0,

@@ -175,7 +175,8 @@ class ArticleController extends Controller
                 ->where('article_locatables.locatable_type', Article::class)
                 ->pluck('article_locatables.locatable_id');
 
-            $query->whereIn('articles.id', $locationIds);
+            $query->whereIn('articles.id', $locationIds)
+                ->public(); // must be public only if has store id grab articles
         }
 
         $this->filterArticlesBlockedOrHidden($query);
@@ -210,7 +211,7 @@ class ArticleController extends Controller
                 'media', 'imports',
                 'categories', 'subCategories', 'tags',
                 'user', 'user.media',
-                'comments', 'interactions', 'interactions.user', 'interactions.user.media',
+                'comments', 'interactions.user', 'interactions.user.media',
                 'location','location.state', 'location.country', 'location.ratings')
             ->withCount('media', 'tags', 'views', 'userFollowers', 'userFollowings')
             // withCount comment where dont have parent_id
@@ -219,6 +220,11 @@ class ArticleController extends Controller
                     ->whereHas('user' , function ($query) {
                         $query->where('status', User::STATUS_ACTIVE);
                     });
+            }])
+            ->with(['interactions' => function ($query) {
+                $query->whereHas('user', function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
             }])
             ->paginate($paginatePerPage);
 
@@ -1055,7 +1061,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        $article = Article::with('user', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
+        $article = Article::with('user', 'user.followers', 'comments', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
         ->withCount('media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
         // withCount comment where dont have parent_id
         ->withCount(['comments' => function ($query) {
@@ -1064,8 +1070,15 @@ class ArticleController extends Controller
                 $query->where('status', User::STATUS_ACTIVE);
             });
         }])
+        // counter also must be active users only for any interactions
         ->withCount(['interactions' => function ($query) {
             // user must be active
+            $query->whereHas('user', function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            });
+        }])
+        // interactions where user is active
+        ->with(['interactions' => function ($query) {
             $query->whereHas('user', function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             });

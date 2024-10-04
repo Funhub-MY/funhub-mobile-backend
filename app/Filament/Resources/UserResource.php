@@ -30,9 +30,13 @@ use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Forms\Components\Actions\Action;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Finder\Iterator\DateRangeFilterIterator;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
@@ -347,7 +351,7 @@ class UserResource extends Resource
                             ])
                             ->required(),
                     ])
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()->deselectRecordsAfterCompletion(),
 
                 // Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\BulkAction::make('Unsuspend User')
@@ -355,13 +359,32 @@ class UserResource extends Resource
                         $records->each(function (User $record) {
                             $record->update(['status' => User::STATUS_ACTIVE]);
                         });
-                    })->requiresConfirmation(),
+                    })->requiresConfirmation()->deselectRecordsAfterCompletion(),
                 Tables\Actions\BulkAction::make('Suspend User')
                     ->action(function (Collection $records) {
                         $records->each(function (User $record) {
                             $record->update(['status' => User::STATUS_SUSPENDED]);
                         });
-                    })->requiresConfirmation(),
+                    })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+                BulkAction::make('Reset All Mission Progress')
+               ->action(function (Collection $records, array $data): void {
+                        $resetCount = 0;
+                        foreach ($records as $record) {
+                            Log::info('[UserResource] Resetting mission progress for user: ' . $record->id, [
+                                'missions' => $record->missionsParticipating()->pluck('mission_id')->toArray(),
+                                'reseted_by' => auth()->user()->id,
+                            ]);
+                            DB::table('missions_users')->where('user_id', $record->id)->delete();
+                            $resetCount++;
+                        }
+                        if ($resetCount > 0) {
+                            Notification::make()
+                            ->success()
+                            ->title('Successfully reset mission progress of '.$resetCount.' users')
+                            ->send();
+                        }
+                    })
+                    ->requiresConfirmation(),
                 BulkAction::make('reward')
                     ->label('Reward')
                     ->action(function (Collection $records, array $data): void {
@@ -423,7 +446,7 @@ class UserResource extends Resource
                         Select::make('rewardComponent')
                             ->label('Reward Component')
                             ->options(RewardComponent::all()->pluck('name', 'id'))
-                    ])
+                    ])->deselectRecordsAfterCompletion()
             ]);
     }
 

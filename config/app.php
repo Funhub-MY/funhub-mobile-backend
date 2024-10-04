@@ -271,7 +271,7 @@ return [
         'share_article' => 'Shared an Article',
         'bookmark_an_article' => 'Bookmarked an Article',
         'follow_a_user' => 'Followed a User',
-        // 'accumulated_followers' => 'Accumulated Followers',
+        'accumulated_followers' => 'Accumulated Followers',
         // 'accumulated_article_likes' => 'Accumulated Likes On My Articles',
         // 'accumulated_article_bookmarks' => 'Accumulated Bookmarks On My Articles',
         'completed_profile_setup' => 'Completed profile setup & uploaded avatar',
@@ -280,6 +280,8 @@ return [
         'sign_in' => 'Signed in',
         'purchase_gift_card' => 'Purchase a gift card',
         'reviewed_store' => 'Reviewed a store',
+        'closed_a_ticket' => 'Closed a complain ticket raised by user',
+        'closed_an_information_update_ticket' => 'Closed an information update ticket raised by user'
     ],
 
     'auto_disburse_reward' => env('AUTO_DISBURSE_REWARD', false),
@@ -340,6 +342,8 @@ return [
         "first_time_see_nearby_store_coachmark",
         "first_time_see_create_article_coachmark",
     ],
+
+    'funbox_ringgit_value' => env('FUNBOX_RINGGIT_VALUE', 5),
 
     /*
     |--------------------------------------------------------------------------

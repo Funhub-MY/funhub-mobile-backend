@@ -24,19 +24,24 @@ class UpdateArticleTagArticlesCount implements ShouldQueue
 
     public function handle()
     {
-        $articlesCount = ArticleTag::where('name', $this->articleTag->name)
+        $articlesCounts = ArticleTag::where('name', $this->articleTag->name)
             ->withCount('articles')
-            ->first();
+            ->get();
 
-        if (!$articlesCount) {
+        if (empty($articlesCounts)) {
             Log::error('ArticleTagArticlesCount not found for article tag: ' . $this->articleTag->name);
             return;
         }
 
+        //TODO: get all article tag -> sum all article tag count -> use new article tag count
+        $sumArticlesCounts = $articlesCounts->sum('articles_count');
+
+        Log::info('Current ArticleTag Model: ', $articlesCounts->toArray());
+
         try {
             DB::table('article_tags_articles_count')->updateOrInsert(
                 ['name' => $this->articleTag->name],
-                ['articles_count' => $articlesCount->articles_count, 'updated_at' => now()]
+                ['articles_count' => $sumArticlesCounts, 'updated_at' => now()]
             );
         } catch (\Exception $e) {
             Log::error('Error updating article tag articles count: ' . $e->getMessage(), [

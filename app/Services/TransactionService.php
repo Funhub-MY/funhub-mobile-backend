@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\PointLedger;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use App\Models\Transaction;
@@ -15,9 +16,12 @@ class TransactionService {
      * @param int $user_id
      * @param string $payment_method
      * @param string $transaction_no
+     * @param float $discount
+     * @param int $discount_point_ledger_id
+     *
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $transaction_no = null)
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $transaction_no = null, $discount = 0, $points_to_use = 0)
     {
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
@@ -42,7 +46,7 @@ class TransactionService {
                 $tries++;
             }
 
-            $transaction = $transactionable->transactions()->create([
+            $data = [
                 'transaction_no' => $transaction_no,
                 'user_id' => $user_id,
                 'amount' => $amount,
@@ -50,7 +54,24 @@ class TransactionService {
                 'status' => Transaction::STATUS_PENDING,
                 'gateway_transaction_id' => 'N/A',
                 'payment_method' => $payment_method,
-            ]);
+            ];
+
+            if ($discount > 0 && $points_to_use > 0) {
+                $data['using_point_discount'] = true;
+                // $data['point_ledger_id'] = $discount_point_ledger_id;
+                $data['discount_amount'] = $discount;
+                $data['net_amount'] = $amount - $discount;
+                $data['points_to_use'] = $points_to_use;
+
+                // $ledger = PointLedger::where('id', $discount_point_ledger_id)->first();
+                // if (!$ledger) {
+                //     Log::error('[TransactionService] PointLedger not found for id: ' . $discount_point_ledger_id);
+                // }
+                // // get point balance after usage
+                // $data['point_balance_after_usage'] = $ledger->balance;
+            }
+
+            $transaction = $transactionable->transactions()->create($data);
 
             Log::info('Transaction created', [
                 'transaction' => $transaction->toArray()

@@ -13,6 +13,7 @@ use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\UserCard;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
 use App\Services\Mpay;
@@ -49,6 +50,8 @@ class ProductController extends Controller
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
+     * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
+     * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @response scenario=success {
      * "message": "Redirect to Gateway"
      * }
@@ -78,6 +81,7 @@ class ProductController extends Controller
             'product_id' => 'required|integer',
             'payment_method' => 'required',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
+            'card_id' => 'exists:user_cards,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
@@ -111,13 +115,30 @@ class ProductController extends Controller
         $user = request()->user();
         $net_amount = (($product->discount_price) ?? $product->unit_price)  * $request->quantity;
 
+        $walletType = null;
+        // if request has payment type, then use it
+        if ($request->has('wallet_type')) {
+            $walletType = $request->wallet_type;
+        }
+
+        // get card if payment mode via card
+        $selectedCard = null;
+        if ($request->fiat_payment_method == 'card' && $request->has('card_id')) {
+            // check user has a saved card
+            $selectedCard = UserCard::where('id', $request->card_id)
+                ->where('user_id', $user->id)
+                // ->where('is_default', true)
+                // ->notExpired()
+                ->first();
+        }
+
         // create payment transaction, pending status
         $transaction = $this->transactionService->create(
             $product,
             $net_amount,
             config('app.default_payment_gateway'),
             $user->id,
-            $request->fiat_payment_method,
+            ($walletType) ? $walletType : $request->fiat_payment_method,
         );
 
         // if gateway is mpay call mpay service generate Hash for frontend form
@@ -136,7 +157,10 @@ class ProductController extends Controller
                 $transaction->transaction_no,
                 secure_url('/payment/return'),
                 $user->full_phone_no ?? null,
-                $user->email ?? null
+                $user->email ?? null,
+                ($walletType) ? $walletType : null, // FPX-CIMB,GRAB,TNG
+                $selectedCard ? $selectedCard->card_token : null,
+                $user->id
             );
 
             //if this product has limited supply, reduce quantity
@@ -193,5 +217,4 @@ class ProductController extends Controller
             'message' => __('messages.success.product_controller.Transaction_cancelled')
         ], 200);
     }
-
 }

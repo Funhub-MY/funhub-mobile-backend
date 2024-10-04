@@ -115,6 +115,8 @@ return [
             'Phone_updated' => '电话号码已更新',
             'Referral_code_generated' => ':code',
             'Referral_saved' => '推荐码已保存',
+            'Card_removed' => '卡已删除',
+            'Card_set_as_default' => '卡已设为Default',
         ],
         'view_controller' => [
             'View_recorded' => '已记录观看数',
@@ -174,6 +176,7 @@ return [
             'Invalid_merchant_redeem_code' => '商家兑换码无效',
             'Deal_not_found' => '优惠券不存在',
             'Merchant_not_found' => '商家不存在',
+            'No_Card_Selected' => '未选择卡/卡不存在',
         ],
         'notification_controller' => [
             'Notification_not_found' => '通知不存在',
@@ -240,6 +243,7 @@ return [
             'Referral_code_expired' => '推荐码已过期',
             'You_can_only_change_your_username_once_every_x_days' => '您只能每 :days 天更改一次用户名',
             'Username_already_changed_before' => '您已经在过去更改过用户名',
+            'No_Cards_found' => '没有卡已添加',
         ],
     ],
     'notification' => [
@@ -255,6 +259,8 @@ return [
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
             'MissionCompletedTitle' => "任务完成",
             'MissionCompleted' => '已完成任务“:missionName”，随机获得:reward x :rewardQuantity',
+            "MissionStartedTitle" => '任务开始',
+            "MissionStarted" => '开始任务 :missionName',
             'Newfollower' => ':followerName 狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => ':followerName 请求关注您',
             'NewFunboxRewardApproved' => ':username 您有新的饭盒',
@@ -294,6 +300,8 @@ return [
             'CommentReplied' => ':username 回复了你的评论 ":comment"',
             'MissionCompletedTitle' => "任务完成",
             'MissionCompleted' => '已完成任务“:missionName”，随机获得 :reward x :rewardQuantity',
+            "MissionStartedTitle" => '任务开始',
+            "MissionStarted" => '开始任务 :missionName',
             'Newfollower' => '狠狠关注了你，来认识新朋友吧',
             'NewFollowRequest' => '请求关注您',
             'NewFunboxRewardApproved' => '您有新的饭盒',

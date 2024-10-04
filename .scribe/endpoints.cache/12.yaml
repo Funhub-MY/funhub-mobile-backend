@@ -52,6 +52,15 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      card_id:
+        name: card_id
+        description: 'required_if:fiat_payment_method,card Card ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
       quantity:
         name: quantity
         description: Quantity.
@@ -61,11 +70,22 @@ endpoints:
         enumValues: []
         exampleWasSpecified: true
         custom: []
+      wallet_type:
+        name: wallet_type
+        description: 'optional Wallet Type.'
+        required: false
+        example: TNG/FPX-CIMB
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
     cleanBodyParameters:
       product_id: 1
       payment_method: fiat
       fiat_payment_method: fpx/card
+      card_id: 1
       quantity: 1
+      wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
       -
@@ -112,7 +132,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer k6cef3E8Z6dVg5hDPvba4a1'
+      - 'Bearer 5D4eEk8h6cdvZfaP1b3gVa6'
     controller: null
     method: null
     route: null
@@ -165,7 +185,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fhg8EPcDk66Vabedv15a34Z'
+      - 'Bearer 6D1gkdv56fE3ZabVec4P8ah'
     controller: null
     method: null
     route: null

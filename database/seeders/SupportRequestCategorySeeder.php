@@ -98,6 +98,5 @@ class SupportRequestCategorySeeder extends Seeder
             'status' => 1,
             'description' => '其他相关建议',
         ]);
-
     }
 }

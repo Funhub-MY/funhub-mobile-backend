@@ -79,6 +79,7 @@ class StoreController extends Controller
             'location',
             'location.articles' => function ($query) {
                 $query->published()
+                    ->public()
                     ->latest();
             },
             'location.articles.media',

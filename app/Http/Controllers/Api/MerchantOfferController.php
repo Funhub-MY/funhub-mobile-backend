@@ -16,6 +16,7 @@ use App\Models\MerchantOfferClaim;
 use App\Models\MerchantOfferVoucher;
 use App\Models\ShareableLink;
 use App\Models\Transaction;
+use App\Models\UserCard;
 use App\Notifications\OfferClaimed;
 use App\Notifications\OfferRedeemed;
 use App\Notifications\PurchasedOfferNotification;
@@ -108,6 +109,9 @@ class MerchantOfferController extends Controller
                 'interactions' => function ($query) {
                     $query->where('user_id', auth()->user()->id);
                 },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
             ]);
 
         // category_ids filter
@@ -220,9 +224,44 @@ class MerchantOfferController extends Controller
             return $item;
         });
 
+        $data = $this->getPointDiscount($data);
+
         return MerchantOfferResource::collection($data);
     }
 
+    /**
+     * Get Point Discount for Offers
+     *
+     * @param EloquentCollection $offersCollection
+     * @return EloquentCollection
+     */
+    protected function getPointDiscount($offersCollection)
+    {
+        $user = auth()->user();
+        $latestBalancePointsOfUser = cache()->remember('latestBalancePointsOfUser_' . $user->id, 5, function () use ($user) {
+            return $this->pointService->getBalanceOfUser($user);
+        });
+
+        $offersCollection->each(function ($offer) use ($latestBalancePointsOfUser) {
+            $price = $offer->fiat_price;
+            $priceValueOfPoints = config('app.funbox_ringgit_value');
+
+            $maxPointsForPrice = floor($price / $priceValueOfPoints);
+            $offer->available_points_to_discount = min($latestBalancePointsOfUser, $maxPointsForPrice);
+
+            $discountAmount = $offer->available_points_to_discount * $priceValueOfPoints;
+            $offer->price_after_discount_with_points = max(0, $price - $discountAmount);
+        });
+
+        return $offersCollection;
+    }
+
+    /**
+     * Get User Purchased Before From Merchant Ids
+     *
+     * @param $user
+     * @return array
+     */
     protected function getUserPurchasedBeforeFromMerchantIds($user)
     {
         $userPurchasedBeforeFromMerchantIds = [];
@@ -266,6 +305,7 @@ class MerchantOfferController extends Controller
      * @subgroup Merchant Offers
      * @urlParam is_redeemed number optional Filter by Redeemed. Example: 0/1
      * @urlParam is_expired number optional Filter by Expired. Example: 0/1
+     * @urlParam claim_id integer optional Filter by Claim ID. Example: 1
      * @response scenario=success {
      * "data": []
      * }
@@ -275,6 +315,10 @@ class MerchantOfferController extends Controller
         // get merchant offers claimed by user
         $query = MerchantOfferClaim::where('user_id', auth()->user()->id)
             ->where('status', MerchantOfferClaim::CLAIM_SUCCESS);
+
+        if ($request->has('claim_id')) {
+            $query->where('id', $request->claim_id);
+        }
 
         if ($request->has('is_redeemed')) {
             if ($request->get('is_redeemed') == 1) { // true
@@ -345,6 +389,9 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
+        ])
+        ->loadCount([
+            'unclaimedVouchers',
         ]);
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
@@ -354,6 +401,7 @@ class MerchantOfferController extends Controller
         // override $offer->user_purchased_before_from_merchant with the value
         $offer->user_purchased_before_from_merchant = in_array($offer->user->id, $userPurchasedBeforeFromMerchantIds) ? true : false;
 
+        $offer = $this->getPointDiscount(collect([$offer]))->first();
         return new MerchantOfferResource($offer);
     }
 
@@ -369,6 +417,10 @@ class MerchantOfferController extends Controller
      * @bodyParam quantity integer required Quantity. Example: 1
      * @bodyParam payment_method string required Payment Method. Example: points/fiat
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
+     * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
+     * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
+     * @bodyParam use_point_discount boolean optional Use Point(Funbox) Discount. Example: 1
+     * @bodyParam points_to_use integer optional Points(Funbox) to Use. Example: 2
      * @response scenario=success {
      * "message": "Offer Claimed"
      * }
@@ -401,16 +453,18 @@ class MerchantOfferController extends Controller
             'offer_id' => 'required|integer|exists:merchant_offers,id',
             'payment_method' => 'required|in:points,fiat',
             'fiat_payment_method' => 'required_if:payment_method,fiat,in:fpx,card',
-            'quantity' => 'required|integer|min:1'
+            'card_id' => 'exists:user_cards,id',
+            'quantity' => 'required|integer|min:1',
+            'use_point_discount' => 'nullable|boolean',
+            'points_to_use' => 'nullable|required_if:use_point_discount,true|integer|exists:point_ledgers,id',
         ]);
 
-        // check offer is still valid by checking available_at and available_until
+        // check offer is still valid by checking available_at and available_until, available quantity check is at next statement
         $offer = MerchantOffer::where('id', request()->offer_id)
             ->published()
             ->with('user', 'user.merchant', 'store', 'claims')
             ->where('available_at', '<=', now())
             ->where('available_until', '>=', now())
-            ->where('quantity', '>=', $request->quantity)
             ->first();
 
         if (!$offer) {
@@ -419,15 +473,24 @@ class MerchantOfferController extends Controller
             ], 422);
         }
 
-        // double check quantity via unclaimed vouchers
+        // check available quantity of vouchers, even though locked vouchers will be counted as it will be releaed when failed payment/15min voucher release lock
         if ($offer->unclaimedVouchers()->count() < $request->quantity) {
             return response()->json([
-                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out')
+                'message' => __('messages.error.merchant_offer_controller.Offer_is_sold_out'),
+                'quantity' => $request->quantity,
+                'available_quantity' => $offer->unclaimedVouchers()->count(),
+                'user_id' => auth()->user()->id,
+                'offer_id' => $offer->id,
             ], 422);
         }
 
         $user = request()->user();
+        $claim = null;
+        $redemption_start_date = null;
+        $redemption_end_date = null;
         if ($request->payment_method == 'points') {
+            // ------------------------------------ POINTS CHECKOUT ------------------------------------
+
             $net_amount = $offer->unit_price * $request->quantity;
             $voucher = $offer->unclaimedVouchers()->orderBy('id', 'asc')->first();
 
@@ -471,10 +534,13 @@ class MerchantOfferController extends Controller
 
             event(new PurchasedMerchantOffer($user, $offer, 'points'));
 
+            $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
             if ($user->email) {
-                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
                 $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
             }
+
+            $redemption_start_date = $claim->created_at;
+            $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
             try {
                 // notify user offer claimed
@@ -487,21 +553,63 @@ class MerchantOfferController extends Controller
             }
 
         } else if($request->payment_method == 'fiat') {
+            // ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
             // check if user has verified email address
             if (!$user->hasVerifiedEmail()) {
                 return response()->json([
                     'message' => __('messages.error.merchant_offer_controller.Please_verify_your_email_address_first')
                 ], 422);
             }
+            $amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
             $net_amount = (($offer->discounted_fiat_price) ?? $offer->fiat_price)  * $request->quantity;
+            $walletType = null;
+
+            // if request has payment type, then use it
+            if ($request->has('wallet_type')) {
+                $walletType = $request->wallet_type;
+            }
+
+            // get card if payment mode via card
+            $selectedCard = null;
+            if ($request->fiat_payment_method == 'card' && $request->has('card_id')) {
+                // check user has a saved card
+                $selectedCard = UserCard::where('id', $request->card_id)
+                    ->where('user_id', $user->id)
+                    // ->where('is_default', true)
+                    // ->notExpired()
+                    ->first();
+            }
+
+            // discount using funbox logic (Point)
+            $discount_amount = 0;
+            if ($request->has('use_point_discount')
+                && $request->use_point_discount == true
+                && $request->has('points_to_use')) {
+                // make sure net amount is wlays using not discounted fiat_price
+                $net_amount = $offer->fiat_price &  $request->quantity;
+
+                $pointService = new PointService();
+                $latestBalancePointsOfUser = $pointService->getBalanceOfUser($user);
+
+                // check if user has enough points to use
+                if ($latestBalancePointsOfUser < $request->points_to_use) {
+                    return response()->json([
+                        'message' => __('messages.error.merchant_offer_controller.Insufficient_Point_Balance')
+                    ], 422);
+                }
+
+                $discount_amount = $request->points_to_use * config('app.funbox_ringgit_value');
+                $net_amount = $net_amount - $discount_amount;
+            }
 
             // create payment transaction first, not yet claim
             $transaction = $this->transactionService->create(
                 $offer,
-                $net_amount,
+                ($discount_amount > 0) ? $amount : $net_amount, // if has discount, log amount is raw amount, if not just use net amount
                 config('app.default_payment_gateway'),
                 $user->id,
-                $request->fiat_payment_method,
+                ($walletType) ? $walletType : $request->fiat_payment_method,
+                $discount_amount
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
@@ -517,11 +625,14 @@ class MerchantOfferController extends Controller
                 // generates required form post fields data for frontend(app) usages
                 $mpayData = $mpayService->createTransaction(
                     $transaction->transaction_no,
-                    $net_amount,
+                    $net_amount, // always use net amount for gateway checkout
                     $transaction->transaction_no,
                     secure_url('/payment/return'),
                     $user->full_phone_no ?? null,
-                    $user->email ?? null
+                    $user->email ?? null,
+                    $walletType, // FPX-CIMB,GRAB,TNG
+                    $selectedCard ? $selectedCard->card_token : null,
+                    $user->id
                 );
 
                 $offer->claims()->attach($user->id, [
@@ -530,7 +641,7 @@ class MerchantOfferController extends Controller
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
-                    'total' => $net_amount,
+                    'total' => ($discount_amount > 0) ? $amount : $net_amount,
                     'purchase_method' => 'fiat',
                     'discount' => 0,
                     'tax' => 0,
@@ -562,6 +673,10 @@ class MerchantOfferController extends Controller
         $offer->refresh();
         return response()->json([
             'message' => __('messages.success.merchant_offer_controller.Claimed_successfully'),
+            'offer_claim_id' => $claim->id,
+            'server_time' => Carbon::now(),
+            'redemption_start_date' => $redemption_start_date,
+            'redemption_end_date' => $redemption_end_date,
             'offer' => new MerchantOfferResource($offer)
         ], 200);
     }
@@ -1007,6 +1122,9 @@ class MerchantOfferController extends Controller
             'interactions' => function ($query) {
                 $query->where('user_id', auth()->user()->id);
             },
+        ])
+        ->withCount([
+            'unclaimedVouchers',
         ]);
 
         return $query;

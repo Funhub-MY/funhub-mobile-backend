@@ -115,6 +115,8 @@ return [
             'Phone_updated' => 'Phone No. updated',
             'Referral_code_generated' => 'Come and join me with my referral code :code',
             'Referral_saved' => 'Successfully saved referral code',
+            'Card_removed' => 'Card removed',
+            'Card_set_as_default' => 'Card set as default',
         ],
         'view_controller' => [
             'View_recorded' => 'View recorded',
@@ -171,6 +173,7 @@ return [
             'Invalid_merchant_redeem_code' => 'Invalid merchant redeem code',
             'Deal_not_found' => 'Deal not found',
             'Merchant_not_found' => 'Merchant not found',
+            'No_Card_Selected' => 'No Card Selected/Card does not exist',
         ],
         'notification_controller' => [
             'Notification_not_found' => 'Notification not found.',
@@ -237,6 +240,7 @@ return [
             'Referral_code_expired' => 'Referral code expired',
             'You_can_only_change_your_username_once_every_x_days' => 'You can only change your username once every :days days',
             'Username_already_changed_before' => 'Username already changed before',
+            'No_Cards_found' => 'No cards found',
         ],
     ],
     'notification' => [
@@ -252,6 +256,8 @@ return [
             'CommentReplied' => ':username replied to your comment ":comment"',
             "MissionCompletedTitle" => "Mission Completed",
             'MissionCompleted' => 'Completed mission ":missionName",  Randomly Acquire :reward x :rewardQuantity',
+            "MissionStartedTitle" => "Mission Started",
+            "MissionStarted" => "Started mission :missionName",
             'Newfollower' => ':followerName followed you, let\'s meet new friends!',
             'NewFollowRequest' => ':followerName requested to follow you',
             'NewFunboxRewardApproved' => ':username you have received Funbox',
@@ -291,6 +297,8 @@ return [
             'CommentReplied' => ':username replied to your comment ":comment"',
             "MissionCompletedTitle" => "Mission Completed",
             'MissionCompleted' => 'Completed mission":missionName",  Randomly Acquire :reward x :rewardQuantity',
+            "MissionStartedTitle" => "Mission Started",
+            "MissionStarted" => "Started mission :missionName",
             'Newfollower' => 'Followed you, let\'s meet new friends',
             'NewFollowRequest' => 'Requested to follow you',
             'NewFunboxRewardApproved' => 'You have received Funbox',

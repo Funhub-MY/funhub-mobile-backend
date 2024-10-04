@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\Api\MerchantOfferCategoryController;
+use App\Http\Controllers\Api\UserSettingsController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,6 +125,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('user/delete/request-otp', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccountRequestOtp']);
         Route::post('user/delete', [\App\Http\Controllers\Api\UserController::class, 'postDeleteAccount']);
         Route::post('user/tutorial-progress', [\App\Http\Controllers\Api\UserController::class, 'postTutorialProgress']);
+        Route::post('user/last_known_location', [\App\Http\Controllers\Api\UserController::class, 'postUpdateLastKnownLocation']);
 
         // Merchant Offers
         Route::prefix('/merchant/offers')->group(function () {
@@ -211,6 +214,12 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             // Onesignal
             Route::post('/onesignal/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalSubscriptionId']);
             Route::post('/onesignal/user_id/save', [\App\Http\Controllers\Api\UserSettingsController::class, 'postSaveOneSignalUserId']);
+
+            // Add Payment Cards
+            Route::get('/card-tokenization', [UserSettingsController::class, 'cardTokenization'])->name('payment.card-tokenization');
+            Route::get('/cards', [UserSettingsController::class, 'getCards'])->name('payment.cards');
+            Route::post('/card/remove', [UserSettingsController::class, 'postRemoveCard'])->name('payment.card.remove');
+            Route::post('/card/set-as-default', [UserSettingsController::class, 'postSetCardAsDefault'])->name('payment.card.set-as-default');
         });
 
         // TODO: secure this route
@@ -303,5 +312,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Maintenance
         Route::get('/maintenance', [MaintenanceController::class, 'getMaintenanceInfo']);
+
+        // Payments
+        Route::get('/payment/available_payment_types', [PaymentController::class, 'getAvailablePaymentTypes']);
+        Route::get('/payment/funbox_ringgit_value', [PaymentController::class, 'getFunboxRinggitValue']);
     });
 });

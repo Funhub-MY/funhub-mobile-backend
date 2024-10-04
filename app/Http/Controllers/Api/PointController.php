@@ -45,14 +45,10 @@ class PointController extends Controller
     {
         $user = auth()->user();
         $locale = $request->header('X-Locale') ?? config('app.locale');
-
         // reward
         $reward = Reward::first();
 
-        $point = PointLedger::where('user_id', $user->id)
-            ->orderBy('id', 'desc')
-            ->first();
-
+        $pointBalance = $this->pointService->getBalanceOfUser($user);
 
         // get current available reward components
         $rewardComponents = RewardComponent::all();
@@ -93,7 +89,7 @@ class PointController extends Controller
                 'id' => $reward->id,
                 'name' => $reward->name,
                 'thumbnail_url' => $reward->thumbnail_url,
-                'balance' => $point ? $point->balance : 0
+                'balance' => $pointBalance
             ],
             'point_components' => $pointComponents
         ]);

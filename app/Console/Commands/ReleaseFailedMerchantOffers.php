@@ -46,7 +46,8 @@ class ReleaseFailedMerchantOffers extends Command
         foreach ($transactions as $transaction) {
             $release = false;
 
-            if ($transaction->created_at->diffInMinutes(now()) > config('app.release_offer_stock_after_min') && $transaction->status == \App\Models\Transaction::STATUS_PENDING) {
+            if ($transaction->created_at->diffInMinutes(now()) > config('app.release_offer_stock_after_min')
+                && $transaction->status == \App\Models\Transaction::STATUS_PENDING) {
                 $transaction->update([
                     'status' => \App\Models\Transaction::STATUS_FAILED,
                 ]);
@@ -58,9 +59,12 @@ class ReleaseFailedMerchantOffers extends Command
                 $this->info('[ReleaseFailedMerchantOffers] Updated Transaction to Failed due to expired time limit, Transaction ID ' . $transaction->id);
             }
 
+            // if already failed but claim still havent release voucher
             if ($transaction->status == \App\Models\Transaction::STATUS_FAILED) {
                 $release = true;
             }
+
+            $this->info('[ReleaseFailedMerchantOffers] Set to release, Transaction ID ' . $transaction->id . ' Current Status: ' . $transaction->status. ' Release: '. $release);
 
             if ($release) {
                 $offer = MerchantOffer::where('id', $transaction->transactionable_id)
@@ -73,6 +77,8 @@ class ReleaseFailedMerchantOffers extends Command
                     // ]);
                     $this->info('[ReleaseFailedMerchantOffers] Merchant Offer not found, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $transaction->transactionable_id);
                     continue;
+                } else {
+                    $this->info('Offer found - '. $offer->id);
                 }
 
                 $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
@@ -82,8 +88,10 @@ class ReleaseFailedMerchantOffers extends Command
                     ->first();
 
                 if ($claim) {
+                    $this->info('Claim found - '.  json_encode($claim));
+
                     try {
-                        if ($claim->status == MerchantOffer::CLAIM_AWAIT_PAYMENT) {
+                        if ($claim->status == MerchantOfferClaim::CLAIM_AWAIT_PAYMENT) {
                             $claim->update([
                                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
                             ]);
@@ -91,6 +99,7 @@ class ReleaseFailedMerchantOffers extends Command
                                 'transaction_id' => $transaction->id,
                                 'merchant_offer_id' => $offer->id,
                             ]);
+                            $this->info('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
                         }
 
                         if ($claim->voucher_id) {
@@ -112,7 +121,11 @@ class ReleaseFailedMerchantOffers extends Command
                                     'voucher_id' => $voucher->id,
                                     'quantity' => $releaseQuantity,
                                 ]);
+                                $this->info('[ReleaseFailedMerchantOffers] Stock Quantity Reverted, Voucher Released, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
                             }
+                        } else {
+                            // dont have voucher id to release
+                            $this->info('[ReleaseFailedMerchantOffers] No voucher id to release, Transaction ID ' . $transaction->id . ' - Offer ID: ' . $offer->id);
                         }
                     } catch (Exception $ex) {
                         Log::error('[ReleaseFailedMerchantOffers] Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [

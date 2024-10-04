@@ -113,6 +113,7 @@ class StoreResource extends JsonResource
             'lang' => $this->lang,
             'long' => $this->long,
             'is_hq' => $this->is_hq,
+            'is_closed' => $this->is_closed,
             'user_id' => $this->user_id,
             'state_id' => $this->state_id,
             'country_id' => $this->country_id,

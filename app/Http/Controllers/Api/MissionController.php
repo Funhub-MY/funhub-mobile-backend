@@ -159,31 +159,22 @@ class MissionController extends Controller
     public function postCompleteMission(Request $request)
     {
         $this->validate($request, [
-            'mission_id' => 'nullable|exists:missions,id'
+            'mission_id' => 'required|exists:missions,id'
         ]);
 
         $user = auth()->user();
         $completed_missions = [];
 
-        if ($request->has('mission_id')) {
-            // check if user has participated in this mission
-            $user->missionsParticipating()->where('mission_id', $request->mission_id)->firstOrFail();
-            // complete single mission
-            $mission = Mission::find($request->mission_id);
-            $this->completeMission($mission, $user);
-            $completed_missions[] = $mission->id;
-        } else {
-            // complete all missions
-            $missions = $user->missionsParticipating()->where('is_completed', false)
-                ->whereRaw('JSON_CONTAINS(current_values, \'true\', "$")')
-                ->get();
+        // check if user has participated in this mission, get the latest one
+        $user->missionsParticipating()
+            ->where('mission_id', $request->mission_id)
+            ->firstOrFail();
 
-            // disburse rewards
-            foreach ($missions as $mission) {
-                $this->completeMission($mission, $user);
-                $completed_missions[] = $mission->id;
-            }
-        }
+        // complete single mission
+        $mission = Mission::find($request->mission_id);
+        $this->completeMission($mission, $user);
+
+        $completed_missions[] = $mission->id;
 
         return response()->json([
             'message' => __('messages.success.mission_controller.Mission(s)_completed_successfully'),
@@ -204,26 +195,6 @@ class MissionController extends Controller
      */
     private function completeMission($mission, $user)
     {
-        // update pivot table
-        $user->missionsParticipating()->updateExistingPivot($mission->id, [
-            'is_completed' => true,
-            'completed_at' => now()
-        ]);
-
-        // // if self claim(non-auto disburse rewards) then no need send mission completed notification
-        // if (!$mission->auto_disburse_rewards) {
-        //     try {
-        //         $locale = auth()->user()->last_lang ?? config('app.locale');
-        //         auth()->user()->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-        //     } catch (\Exception $e) {
-        //         Log::error('Mission Completed Notification Error', [
-        //             'mission_id' => $mission->id,
-        //             'user' => $user->id,
-        //             'error' => $e->getMessage()
-        //         ]);
-        //     }
-        // }
-
         // if mission is auto disburse, dont disburse rewards
         if ($mission->auto_disburse_rewards) {
             Log::info('Mission '.$mission->id.' is auto disburse but user called complete mission.', [
@@ -247,7 +218,7 @@ class MissionController extends Controller
      */
     private function disburseRewards($mission, $user)
     {
-        Log::info('Mission Completed', [
+        Log::info('Mission Completed, User claim reward', [
             'mission' => $mission->toArray(),
             'user' => $user->id
         ]);
@@ -319,6 +290,10 @@ class MissionController extends Controller
 
                 // update user mission ensure claimed_at is updated based on mission frequency
                 if ($mission->frequency == 'one-off') {
+                    Log::info('Mission Completed, User claim reward, One-Off', [
+                        'mission' => $mission->id,
+                        'user' => $user->id,
+                    ]);
                     $user->missionsParticipating()
                         ->wherePivot('mission_id', $mission->id)
                         ->wherePivot('claimed_at', null)
@@ -328,6 +303,10 @@ class MissionController extends Controller
                             'claimed_at' => now(),
                         ]);
                 } elseif ($mission->frequency == 'daily') {
+                    Log::info('Mission Completed, User claim reward, Daily', [
+                        'mission' => $mission->id,
+                        'user' => $user->id,
+                    ]);
                     $user->missionsParticipating()
                         ->wherePivot('mission_id', $mission->id)
                         ->wherePivot('claimed_at', null)
@@ -339,12 +318,29 @@ class MissionController extends Controller
                             'claimed_at' => now(),
                         ]);
                 } elseif ($mission->frequency == 'monthly') {
+                    Log::info('Mission Completed, User claim reward, Monthly', [
+                        'mission' => $mission->id,
+                        'user' => $user->id,
+                    ]);
                     $user->missionsParticipating()
                         ->wherePivot('mission_id', $mission->id)
                         ->wherePivot('claimed_at', null)
                         ->where('missions_users.created_at', '>=', now()->startOfMonth())
                         ->where('missions_users.created_at', '<', now()->endOfMonth())
                         ->orderByDesc('missions_users.created_at')
+                        ->limit(1)
+                        ->update([
+                            'claimed_at' => now(),
+                        ]);
+                } elseif ($mission->frequency == 'accumulated') {
+                    Log::info('Mission Completed, User claim reward, Accumulated', [
+                        'mission' => $mission->id,
+                        'user' => $user->id,
+                    ]);
+                    $user->missionsParticipating()
+                        ->wherePivot('mission_id', $mission->id)
+                        ->wherePivot('claimed_at', null)
+                        ->orderByDesc('missions_users.id')
                         ->limit(1)
                         ->update([
                             'claimed_at' => now(),

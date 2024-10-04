@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserSettingsRequest;
 use App\Models\ArticleCategory;
+use App\Models\Transaction;
 use App\Models\User;
+use App\Services\Mpay;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class UserSettingsController extends Controller
 {
@@ -981,5 +984,189 @@ class UserSettingsController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Saved']);
+    }
+
+
+    /**
+     * Add a Card (Tokenization)
+     *
+     * @group User Settings
+     * @response status=200 {
+     *  "status": "success",
+     *  "data": {
+     *
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cardTokenization(Request $request)
+    {
+        $gateway = new Mpay(
+            config('services.mpay.mid'),
+            config('services.mpay.hash_key'),
+        );
+
+        $user = auth()->user();
+        $uuid = $user->id;
+        $transaction_no = 'CARD'.strtoupper(Str::random(6)).rand(0, 999); // 20 char
+        $redirectUrl = route('payment.card-tokenization.return');
+
+        $transaction = new Transaction();
+        $transaction->transaction_no = $transaction_no;
+        $transaction->transactionable_type = User::class;
+        $transaction->transactionable_id = $user->id;
+        $transaction->user_id = $user->id;
+        $transaction->amount = 0;
+        $transaction->gateway = 'Mpay';
+        $transaction->gateway_transaction_id = '';
+        $transaction->status = Transaction::STATUS_PENDING;
+        $transaction->save();
+
+        $data = $gateway->createCardTokenization(
+            $uuid, // user id
+            $redirectUrl, // /payment/card-tokenization/return
+            $transaction_no, // invno
+            $user->full_phone_no,
+            $user->email
+        );
+
+        Log::info('Mpay Card Tokenization Data: ', [
+            'uuid' => $uuid,
+            'transaction_no' => $transaction_no,
+            'transaction_id' => $transaction->id,
+        ]);
+
+        return [
+            'status' => 'success',
+            'data' => $data,
+        ];
+    }
+
+    /**
+     * Get User Cards
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Card
+     * @response status=200 {
+     * "cards": []
+     * }
+     */
+    public function getCards(Request $request)
+    {
+        $user = auth()->user();
+        $cards = $user->cards()->get();
+
+        if (!$cards) {
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.No_Cards_found')
+            ], 404);
+        }
+
+        return response()->json([
+            'cards' => $cards
+        ]);
+    }
+
+    /**
+     * Remove a Card
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Card
+     * @bodyParam card_id integer required The id of the card. Example: 1
+     * @response status=200 {
+     * "message": "Card removed"
+     * }
+     */
+    public function postRemoveCard(Request $request)
+    {
+        $request->validate([
+            'card_id' => 'required|exists:user_cards,id'
+        ]);
+
+        $user = auth()->user();
+
+        $card = $user->cards()->find($request->card_id);
+
+        if (!$card) {
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.No_Cards_found')
+            ], 404);
+        }
+
+        // check if card is default
+        if ($card->is_default) {
+            // set latest not expired card to default
+            $latestNotExpiredCard = $user->cards()->where('is_default', false)
+                ->where('card_expiry_month', '<=', now()->month)
+                ->where('card_expiry_year', '<=', now()->year)
+                ->latest()
+                ->first();
+            if ($latestNotExpiredCard) { // set this card as default
+                $latestNotExpiredCard->is_default = true;
+                $latestNotExpiredCard->save();
+            }
+        }
+
+        $card_last_four = $card->card_last_four;
+        $card_type = $card->card_type;
+
+        // delete card
+        $card->delete();
+
+        Log::info('Card removed', [
+            'user_id' => $user->id,
+            'card_last_four' => $card_last_four,
+            'card_type' => $card_type,
+        ]);
+
+        return response()->json([
+            'message' => __('messages.success.user_settings_controller.Card_removed')
+        ]);
+    }
+
+    /**
+     * Set Card as Default
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group User Settings
+     * @subgroup Card
+     * @bodyParam card_id integer required The id of the card. Example: 1
+     * @response status=200 {
+     * "message": "Card set as default"
+     * }
+     */
+    public function postSetCardAsDefault(Request $request)
+    {
+        $request->validate([
+            'card_id' => 'required|exists:user_cards,id'
+        ]);
+
+        $user = auth()->user();
+
+        $card = $user->cards()->find($request->card_id);
+        if (!$card) {
+            return response()->json([
+                'message' => __('messages.error.user_settings_controller.No_Cards_found')
+                ], 404);
+        }
+
+        // make sure all other cards are not default
+        $user->cards()->where('is_default', 1)->update(['is_default' => 0]);
+
+        // set card is_default
+        $card->is_default = true;
+        $card->save();
+
+        return response()->json([
+            'message' => __('messages.success.user_settings_controller.Card_set_as_default')
+        ]);
     }
 }
