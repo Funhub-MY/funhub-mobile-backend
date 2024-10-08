@@ -148,7 +148,7 @@ class UserFollowingTest extends TestCase
         $this->assertCount(10, $response->json()['data']);
 
         // check if followings of logged in user id are same as the users id
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $users->pluck('id')->toArray(),
             collect($response->json()['data'])->pluck('id')->toArray()
         );
