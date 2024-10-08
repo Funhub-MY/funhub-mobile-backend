@@ -187,7 +187,7 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-        $query = $user->followers()->where('status', User::STATUS_ACTIVE);
+        $query = $user->followers()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc');;
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
         }
