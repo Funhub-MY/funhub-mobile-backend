@@ -114,7 +114,7 @@ class UserFollowingTest extends TestCase
         $this->assertCount(10, $response->json()['data']);
 
         // check if the followers are the same as the users
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $users->pluck('id')->toArray(),
             collect($response->json()['data'])->pluck('id')->toArray()
         );
