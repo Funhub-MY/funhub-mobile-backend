@@ -32,6 +32,7 @@ class Store extends BaseModel implements HasMedia, Auditable
     ];
 
     const MEDIA_COLLECTION_PHOTOS = 'store_photos';
+    const MEDIA_COLLECTION_MENUS = 'menus';
 
     /**
      * All of the relationships to be touched.

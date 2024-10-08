@@ -6,10 +6,13 @@ use App\Filament\Resources\StoreResource;
 use App\Models\Country;
 use App\Models\Location;
 use App\Models\State;
+use App\Models\Store;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class CreateStore extends CreateRecord
 {
@@ -27,6 +30,26 @@ class CreateStore extends CreateRecord
         }
 
         return $data;
+    }
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        $merchant = $this->getModel()::create($data);
+
+        // create menus
+        if (isset($data['menus'])) {
+            foreach ($data['menus'] as $menu) {
+                // add from url to media collection with custom properties $menu['name'] then remove from file
+                $merchant->addMediaFromDisk($menu['file'])
+                    ->withCustomProperties(['name' => $menu['name']])
+                    ->toMediaCollection(Store::MEDIA_COLLECTION_MENUS);
+
+                // remove $menu['file'] from storage as moved to spatiemedialibrary
+                Storage::delete($menu['file']);
+            }
+        }
+
+        return $merchant;
     }
 
     protected function afterCreate(): void
