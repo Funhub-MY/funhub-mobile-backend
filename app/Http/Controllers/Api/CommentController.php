@@ -555,7 +555,7 @@ class CommentController extends Controller
             ->where('status', User::STATUS_ACTIVE)
             ->whereIn('id', $myFollowers)
             ->when($request->has('query'), function ($query) use ($request) {
-                $query->where('name', 'like', "%{$request->query}%");
+                $query->where('name', 'like', '%' . $request->input('query') . '%');
             });
 
         // paginate
