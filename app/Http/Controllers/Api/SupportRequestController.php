@@ -86,7 +86,8 @@ class SupportRequestController extends Controller
     public function postRaiseSupportRequest(Request $request)
     {
         $this->validate($request, [
-            'supportable' => 'required|string',
+            'supportable' => 'nullable|string',
+            'supportable_id' => 'required_with:supportable|integer',
             'category_id' => 'required|exists:support_requests_categories,id',
             'title' => 'required|string',
             'message' => 'required|string',
@@ -101,7 +102,7 @@ class SupportRequestController extends Controller
         $supportRequest = $request->user()->supportRequests()->create([
             'category_id' => $request->category_id,
             'supportable_type' => $request->supportable,
-            'supportable_id' => $request->id,
+            'supportable_id' => $request->supportable_id,
             'title' => $request->title,
             'status' => SupportRequest::STATUS_PENDING
         ]);
