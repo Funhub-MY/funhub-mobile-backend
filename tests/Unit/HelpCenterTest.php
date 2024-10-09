@@ -148,6 +148,7 @@ it('testRaiseSupportRequests', function () {
         'title' => 'My support request',
         'message' => 'This is my message',
         'supportable' => 'article',
+        'supportable_id' => '1',
         'media_ids' => null
     ];
     // post another time.
