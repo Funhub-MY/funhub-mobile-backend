@@ -6,14 +6,56 @@ use App\Filament\Resources\MerchantOfferCampaignResource;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferVoucher;
+use Carbon\Carbon;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateMerchantOfferCampaign extends CreateRecord
 {
     protected static string $resource = MerchantOfferCampaignResource::class;
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        // create schedules from this interval
+        $startDate = Carbon::parse($data['start_date']);
+        $endDate = Carbon::parse($data['end_date']);
+        $intervalDays = (int) $data['interval_days'];
+        $daysPerSchedule = (int) $data['days_per_schedule'];
+        $availableQuantity = (int) $data['available_quantity'];
+
+        $schedules = [];
+
+        while ($startDate->lte($endDate)) {
+            $scheduleEndDate = $startDate->copy()->addDays($daysPerSchedule - 1);
+            if ($scheduleEndDate->gt($endDate)) {
+                $scheduleEndDate = $endDate;
+            }
+
+            $schedules[] = [
+                'status' => 0, // Assuming 0 is the default status
+                'publish_at' => $startDate->format('Y-m-d'),
+                'available_at' => $startDate->format('Y-m-d H:i:s'),
+                'available_until' => $scheduleEndDate->format('Y-m-d 23:59:59'),
+                'quantity' => $availableQuantity,
+                'user_id' => auth()->id(),
+            ];
+
+            $startDate->addDays($intervalDays + $daysPerSchedule);
+        }
+
+        // all data create first
+        $model = $this->getModel()::create($data);
+
+        // create schedules for this model
+        foreach ($schedules as $schedule) {
+            $model->schedules()->create($schedule);
+        }
+
+        return $model;
+    }
 
     protected function afterCreate(): void
     {
