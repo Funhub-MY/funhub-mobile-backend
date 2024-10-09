@@ -105,7 +105,7 @@ class StoreResource extends Resource
                             ->disabled()
                             ->numeric()
                             ->nullable()
-                            ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
+                            ->unique(Store::class, 'redeem_code', ignoreRecord: true)
                             ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store'),
 
                         // categories
