@@ -51,18 +51,21 @@ class MerchantRegister extends Component implements HasForms
             'phone_country_code' => 'required',
             'business_phone_no' => 'required|unique:users,phone_no',
             'address' => 'required',
-            'company_logo' => 'required',
-            'company_photos' => 'required',
+            // 'company_logo' => 'required',
+            // 'company_photos' => 'required',
             // 'auto_complete_address' => 'nullable',
             // 'location' => 'nullable',
             'zip_code' => 'required|numeric',
             'state_id' => 'required',
             'country_id' => 'required',
-            'pic_name' => 'required',
-            'pic_designation' => 'required',
-            'pic_ic_no' => 'required|numeric',
-            'pic_phone_no' => 'required',
-            'pic_email' => 'required|email',
+            // 'pic_name' => 'required',
+            // 'pic_designation' => 'required',
+            // 'pic_ic_no' => 'required|numeric',
+            // 'pic_phone_no' => 'required',
+            'pic_email' => 'email',
+            'authorised_personnel_name' => 'required',
+            'authorised_personnel_designation' => 'required',
+            'authorised_personnel_ic_no' => 'required',
             // 'stores' => 'required',
             // 'stores.*.name' => 'required',
             // 'stores.*.is_hq' => 'boolean',
@@ -136,11 +139,14 @@ class MerchantRegister extends Component implements HasForms
                 'address_postcode' => $data['zip_code'],
                 'state_id' => $data['state_id'],
                 'country_id' => $data['country_id'],
-                'pic_name' => $data['pic_name'],
-                'pic_designation' => $data['pic_designation'],
-                'pic_ic_no' => $data['pic_ic_no'],
-                'pic_phone_no' => $data['pic_phone_no'],
-                'pic_email' => $data['pic_email'],
+                'pic_name' => isset($data['pic_name']) ? $data['pic_name'] : null,
+                'pic_designation' => isset($data['pic_designation']) ? $data['pic_designation'] : null,
+                'pic_ic_no' => isset($data['pic_ic_no']) ? $data['pic_ic_no'] : null,
+                'pic_phone_no' => isset($data['pic_phone_no']) ? $data['pic_phone_no'] : null,
+                'pic_email' => isset($data['pic_email']) ? $data['pic_email'] : null,
+                'authorised_personnel_name' => isset($data['authorised_personnel_name']) ? $data['authorised_personnel_name'] : null,
+                'authorised_personnel_designation' => isset($data['authorised_personnel_designation']) ? $data['authorised_personnel_designation'] : null,
+                'authorised_personnel_ic_no' => isset($data['authorised_personnel_ic_no']) ? $data['authorised_personnel_ic_no'] : null,
                 'default_password' => $password,
             ]);
 
@@ -168,35 +174,34 @@ class MerchantRegister extends Component implements HasForms
         }
 
         //save the company logo to the merchant's media collection
-        //dd($data['company_logo']);
-        try {
-            $company_logo_livewire_tmp = array_values($data['company_logo'])[0];
-            Log::info($company_logo_livewire_tmp);
-            Log::info('[MerchantOnboarding] Company logo upload: ' . $company_logo_livewire_tmp->getRealPath());
-            $merchant->addMediaFromDisk($company_logo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
-        } catch (\Exception $e) {
-            Log::error('[MerchantOnboarding] Company logo upload failed: ' . $e->getMessage());
-            session()->flash('error', 'Company logo upload failed. Please try again.');
-        }
+        // try {
+        //     $company_logo_livewire_tmp = array_values($data['company_logo'])[0];
+        //     Log::info($company_logo_livewire_tmp);
+        //     Log::info('[MerchantOnboarding] Company logo upload: ' . $company_logo_livewire_tmp->getRealPath());
+        //     $merchant->addMediaFromDisk($company_logo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+        //         ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME);
+        // } catch (\Exception $e) {
+        //     Log::error('[MerchantOnboarding] Company logo upload failed: ' . $e->getMessage());
+        //     session()->flash('error', 'Company logo upload failed. Please try again.');
+        // }
 
         //save the company photos to the merchant's media collection
-        try {
-            foreach ($data['company_photos'] as $company_photo) {
-                $company_photo_livewire_tmp = $company_photo;
-                Log::info($company_photo_livewire_tmp);
-                Log::info('[MerchantOnboarding] Company photo upload: ' . $company_photo_livewire_tmp->getRealPath());
-                $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+        // try {
+        //     foreach ($data['company_photos'] as $company_photo) {
+        //         $company_photo_livewire_tmp = $company_photo;
+        //         Log::info($company_photo_livewire_tmp);
+        //         Log::info('[MerchantOnboarding] Company photo upload: ' . $company_photo_livewire_tmp->getRealPath());
+        //         $merchant->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+        //             ->toMediaCollection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
 
-                // also add to store photos
-                // $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
-                //     ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
-            }
-        } catch (\Exception $e) {
-            Log::error('[MerchantOnboarding] Company photos upload failed: ' . $e->getMessage());
-            session()->flash('error', 'Company photos upload failed. Please try again.');
-        }
+        //         // also add to store photos
+        //         // $store->addMediaFromDisk($company_photo_livewire_tmp->getRealPath(), (config('filesystems.default') == 's3' ? 's3_public' : config('filesystems.default')))
+        //         //     ->toMediaCollection(Store::MEDIA_COLLECTION_PHOTOS);
+        //     }
+        // } catch (\Exception $e) {
+        //     Log::error('[MerchantOnboarding] Company photos upload failed: ' . $e->getMessage());
+        //     session()->flash('error', 'Company photos upload failed. Please try again.');
+        // }
 
         $merchant->save();
 
@@ -455,23 +460,23 @@ class MerchantRegister extends Component implements HasForms
                                         ->options(Country::all()->pluck('name', 'id')->toArray()),
                                 ])
                         ])->columnSpan(['lg' => 1]),
-                        SpatieMediaLibraryFileUpload::make('company_logo')
-                            ->label('Company Logo')
-                            ->maxFiles(1)
-                            ->collection(Merchant::MEDIA_COLLECTION_NAME)
-                            ->required()
-                            ->columnSpan('full')
-                            ->acceptedFileTypes(['image/*'])
-                            ->rules('image'),
-                        SpatieMediaLibraryFileUpload::make('company_photos')
-                            ->label('Company Photos')
-                            ->multiple()
-                            ->maxFiles(7)
-                            ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
-                            ->required()
-                            ->columnSpan('full')
-                            ->acceptedFileTypes(['image/*'])
-                            ->rules('image'),
+                        // SpatieMediaLibraryFileUpload::make('company_logo')
+                        //     ->label('Company Logo')
+                        //     ->maxFiles(1)
+                        //     ->collection(Merchant::MEDIA_COLLECTION_NAME)
+                        //     ->required()
+                        //     ->columnSpan('full')
+                        //     ->acceptedFileTypes(['image/*'])
+                        //     ->rules('image'),
+                        // SpatieMediaLibraryFileUpload::make('company_photos')
+                        //     ->label('Company Photos')
+                        //     ->multiple()
+                        //     ->maxFiles(7)
+                        //     ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
+                        //     ->required()
+                        //     ->columnSpan('full')
+                        //     ->acceptedFileTypes(['image/*'])
+                        //     ->rules('image'),
                     ])->beforeValidation(function ($livewire, $state) {
                         $data = [
                             'business_name' => $livewire->business_name,
@@ -481,8 +486,8 @@ class MerchantRegister extends Component implements HasForms
                             'zip_code' => $livewire->zip_code,
                             'state_id' => $livewire->state_id,
                             'country_id' => $livewire->country_id,
-                            'company_logo' => $livewire->company_logo,
-                            'company_photos' => $livewire->company_photos,
+                            // 'company_logo' => $livewire->company_logo,
+                            // 'company_photos' => $livewire->company_photos,
                         ];
                         Validator::make($data, [
                             'business_name' => 'required',
@@ -492,32 +497,52 @@ class MerchantRegister extends Component implements HasForms
                             'zip_code' => 'required|numeric',
                             'state_id' => 'required',
                             'country_id' => 'required',
-                            'company_logo' => 'required',
-                            'company_photos' => 'required',
+                            // 'company_logo' => 'required',
+                            // 'company_photos' => 'required',
                         ])->validate();
                     }),
-                Wizard\Step::make('PIC')
+                Wizard\Step::make('PIC / Authorised Personnel')
                     ->schema([
-                        TextInput::make('pic_name') //merchant's table 'pic_name'
-                            ->label('PIC Name')
-                            ->required()
-                            ->placeholder('Enter PIC Name'),
-                        TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
-                            ->label('Designation')
-                            ->required()
-                            ->placeholder('Enter Designation'),
-                        TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
-                            ->label('IC Number')
-                            ->required()
-                            ->placeholder('Enter IC Number'),
-                        TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
-                            ->label('Contact Number')
-                            ->required()
-                            ->placeholder('Enter Contact Number'),
-                        TextInput::make('pic_email') //merchant's table column 'pic_email'
-                            ->label('PIC Email')
-                            ->required()
-                            ->placeholder('Enter Email'),
+                        Group::make()
+                            ->columnSpanFull()
+                            ->columns(2)
+                            ->schema([
+                                Section::make('Person In Charge Information')
+                                    ->columnSpan(1)
+                                    ->schema([
+                                        TextInput::make('pic_name') //merchant's table 'pic_name'
+                                            ->label('PIC Name')
+                                            ->placeholder('Enter PIC Name'),
+                                        TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
+                                            ->label('Designation')
+                                            ->placeholder('Enter Designation'),
+                                        TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
+                                            ->label('IC Number')
+                                            ->placeholder('Enter IC Number'),
+                                        TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
+                                            ->label('Contact Number')
+                                            ->placeholder('Enter Contact Number'),
+                                        TextInput::make('pic_email') //merchant's table column 'pic_email'
+                                            ->label('PIC Email')
+                                            ->required()
+                                            ->placeholder('Enter Email'),
+                                    ]),
+                                Section::make('Authorised Personnel Information')
+                                    ->columnSpan(1)
+                                    ->schema([
+                                        Placeholder::make('authorised_personnel_information')
+                                            ->label('Authorised Personnel are people who has authority to sign contract on behalf of business'),
+                                        TextInput::make('authorised_personnel_designation')
+                                            ->required()
+                                            ->label('Authorised Personnel Designation'),
+                                        TextInput::make('authorised_personnel_name')
+                                            ->required()
+                                            ->label('Authorised Personnel Name'),
+                                        TextInput::make('authorised_personnel_ic_no')
+                                            ->required()
+                                            ->label('Authorised Personnel IC Number'),
+                                    ]),
+                        ]),
                     ])->beforeValidation(function ($livewire, $state) {
                         $data = [
                             'pic_name' => $livewire->pic_name,
@@ -525,161 +550,164 @@ class MerchantRegister extends Component implements HasForms
                             'pic_ic_no' => $livewire->pic_ic_no,
                             'pic_phone_no' => $livewire->pic_phone_no,
                             'pic_email' => $livewire->pic_email,
+                            'authorised_personnel_designation' => $livewire->authorised_personnel_designation,
+                            'authorised_personnel_name' => $livewire->authorised_personnel_name,
+                            'authorised_personnel_ic_no' => $livewire->authorised_personnel_ic_no,
                         ];
                         Validator::make($data, [
-                            'pic_name' => 'required',
-                            'pic_designation' => 'required',
-                            'pic_ic_no' => 'required|numeric',
-                            'pic_phone_no' => 'required',
-                            'pic_email' => 'required|email',
+                            'pic_ic_no' => 'numeric',
+                            'pic_email' => 'email',
+                            'authorised_personne_designation' => 'required',
+                            'authorised_personnel_name' => 'required',
+                            'authorised_personnel_ic_no' => 'required',
                         ])->validate();
                     }),
-                Wizard\Step::make('Store')
-                    ->schema([
-                        // Repeater::make('stores')
-                        //     ->schema([
-                                TextInput::make('name') //stores table 'name'
-                                    ->required()
-                                    ->label('Store Name')
-                                    ->columnSpan('full')
-                                    ->placeholder('Enter Store Name'),
-                                Toggle::make('is_hq')
-                                    ->label('Is Headquarters?')
-                                    ->columnSpan('full'),
-                                TextInput::make('manager_name') //stores table new column 'manager_name'
-                                    ->label('Manager Name')
-                                    ->required()
-                                    ->placeholder('Enter Manager Name'),
-                                TextInput::make('store_business_phone_no') //stores table column 'business_phone_no'
-                                    ->label('Store Contact Number')
-                                    ->required()
-                                    ->placeholder('Enter Contact Number for Store'),
-                                // TextInput::make('address') //stores table 'address'
-                                // ->label('Store Address')
-                                // ->required()
-                                // ->placeholder('Enter Location')
-                                // ->columnSpan('full'),
-                                // TextInput::make('address_postcode') //stores table 'address_postcode'
-                                // ->label('Store Address Postcode')
-                                // ->required()
-                                // ->placeholder('Enter Store Address Postcode')
-                                // ->columnSpan('full'),
-                                Group::make([
-                                    Section::make('Location Details')
-                                        ->schema([
-                                            //comment out the map coz 'Force https request to maps API issue on production'
-                                            // TextInput::make('auto_complete_address')
-                                            //     ->label('Find a Location')
-                                            //     ->placeholder('Start typing an address ...'),
+                // Wizard\Step::make('Store')
+                //     ->schema([
+                //         // Repeater::make('stores')
+                //         //     ->schema([
+                //                 TextInput::make('name') //stores table 'name'
+                //                     ->required()
+                //                     ->label('Store Name')
+                //                     ->columnSpan('full')
+                //                     ->placeholder('Enter Store Name'),
+                //                 Toggle::make('is_hq')
+                //                     ->label('Is Headquarters?')
+                //                     ->columnSpan('full'),
+                //                 TextInput::make('manager_name') //stores table new column 'manager_name'
+                //                     ->label('Manager Name')
+                //                     ->required()
+                //                     ->placeholder('Enter Manager Name'),
+                //                 TextInput::make('store_business_phone_no') //stores table column 'business_phone_no'
+                //                     ->label('Store Contact Number')
+                //                     ->required()
+                //                     ->placeholder('Enter Contact Number for Store'),
+                //                 // TextInput::make('address') //stores table 'address'
+                //                 // ->label('Store Address')
+                //                 // ->required()
+                //                 // ->placeholder('Enter Location')
+                //                 // ->columnSpan('full'),
+                //                 // TextInput::make('address_postcode') //stores table 'address_postcode'
+                //                 // ->label('Store Address Postcode')
+                //                 // ->required()
+                //                 // ->placeholder('Enter Store Address Postcode')
+                //                 // ->columnSpan('full'),
+                //                 Group::make([
+                //                     Section::make('Location Details')
+                //                         ->schema([
+                //                             //comment out the map coz 'Force https request to maps API issue on production'
+                //                             // TextInput::make('auto_complete_address')
+                //                             //     ->label('Find a Location')
+                //                             //     ->placeholder('Start typing an address ...'),
 
-                                            // Map::make('location')
-                                            //     ->autocomplete(
-                                            //         fieldName: 'auto_complete_address',
-                                            //         placeField: 'name',
-                                            //         countries: ['MY'],
-                                            //     )
-                                            //     ->reactive()
-                                            //     ->defaultZoom(15)
-                                            //     ->defaultLocation([
-                                            //         // klang valley coordinates
-                                            //         'lat' => 3.1390,
-                                            //         'lng' => 101.6869,
-                                            //     ])
-                                            //     ->reverseGeocode([
-                                            //         'city'   => '%L',
-                                            //         'zip'    => '%z',
-                                            //         'state'  => '%D',
-                                            //         'zip_code' => '%z',
-                                            //         'address' => '%n %S',
-                                            //     ])
-                                            //     ->mapControls([
-                                            //         'mapTypeControl'    => true,
-                                            //         'scaleControl'      => true,
-                                            //         'streetViewControl' => false,
-                                            //         'rotateControl'     => true,
-                                            //         'fullscreenControl' => true,
-                                            //         'searchBoxControl'  => false, // creates geocomplete field inside map
-                                            //         'zoomControl'       => false,
-                                            //     ])
-                                            //     ->clickable(true),
+                //                             // Map::make('location')
+                //                             //     ->autocomplete(
+                //                             //         fieldName: 'auto_complete_address',
+                //                             //         placeField: 'name',
+                //                             //         countries: ['MY'],
+                //                             //     )
+                //                             //     ->reactive()
+                //                             //     ->defaultZoom(15)
+                //                             //     ->defaultLocation([
+                //                             //         // klang valley coordinates
+                //                             //         'lat' => 3.1390,
+                //                             //         'lng' => 101.6869,
+                //                             //     ])
+                //                             //     ->reverseGeocode([
+                //                             //         'city'   => '%L',
+                //                             //         'zip'    => '%z',
+                //                             //         'state'  => '%D',
+                //                             //         'zip_code' => '%z',
+                //                             //         'address' => '%n %S',
+                //                             //     ])
+                //                             //     ->mapControls([
+                //                             //         'mapTypeControl'    => true,
+                //                             //         'scaleControl'      => true,
+                //                             //         'streetViewControl' => false,
+                //                             //         'rotateControl'     => true,
+                //                             //         'fullscreenControl' => true,
+                //                             //         'searchBoxControl'  => false, // creates geocomplete field inside map
+                //                             //         'zoomControl'       => false,
+                //                             //     ])
+                //                             //     ->clickable(true),
 
-                                            TextInput::make('address')
-                                                ->required(),
-                                            TextInput::make('zip_code') //stores table 'address_postcode'
-                                                ->rules('numeric')
-                                                ->label('Postcode')
-                                                ->required(),
-                                            Select::make('state_id') //stores table 'state_id'
-                                                ->label('State')
-                                                ->required()
-                                                ->options(State::all()->pluck('name', 'id')->toArray()),
-                                            Select::make('country_id') //stores table 'country_id'
-                                                ->label('Country')
-                                                ->default(131)
-                                                ->options(Country::all()->pluck('name', 'id')->toArray()),
-                                        ])
-                                ])->columnSpan('full'),
-                                Repeater::make('business_hours') //stores table new column 'business_hours'(json)
-                                    ->schema([
-                                        Select::make('day')
-                                            ->options([
-                                                '1' => 'Monday',
-                                                '2' => 'Tuesday',
-                                                '3' => 'Wednesday',
-                                                '4' => 'Thursday',
-                                                '5' => 'Friday',
-                                                '6' => 'Saturday',
-                                                '7' => 'Sunday',
-                                            ])
-                                            ->required()
-                                            ->label('Day')
-                                            ->columnSpan('full'),
-                                            Grid::make(2)
-                                            ->schema([
-                                                TimePicker::make('open_time')
-                                                    ->withoutSeconds()
-                                                    ->withoutDate()
-                                                    ->required()
-                                                    ->default('09:00')
-                                                    ->label('Open Time'),
-                                                TimePicker::make('close_time')
-                                                    ->withoutSeconds()
-                                                    ->withoutDate()
-                                                    ->required()
-                                                    ->default('17:00')
-                                                    ->label('Close Time'),
-                                            ]),
-                                    ])
-                                    ->columns(2)
-                                    ->columnSpan('full'),
-                            // ])
-                            // ->columns(2)
-                    ])->beforeValidation(function ($livewire, $state) {
-                        $data = [
-                            'name' => $livewire->name,
-                            'is_hq' => $livewire->is_hq,
-                            'manager_name' => $livewire->manager_name,
-                            'store_business_phone_no' => $livewire->store_business_phone_no,
-                            'address' => $livewire->address,
-                            'zip_code' => $livewire->zip_code,
-                            'state_id' => $livewire->state_id,
-                            'country_id' => $livewire->country_id,
-                            'business_hours' => $livewire->business_hours,
-                        ];
+                //                             TextInput::make('address')
+                //                                 ->required(),
+                //                             TextInput::make('zip_code') //stores table 'address_postcode'
+                //                                 ->rules('numeric')
+                //                                 ->label('Postcode')
+                //                                 ->required(),
+                //                             Select::make('state_id') //stores table 'state_id'
+                //                                 ->label('State')
+                //                                 ->required()
+                //                                 ->options(State::all()->pluck('name', 'id')->toArray()),
+                //                             Select::make('country_id') //stores table 'country_id'
+                //                                 ->label('Country')
+                //                                 ->default(131)
+                //                                 ->options(Country::all()->pluck('name', 'id')->toArray()),
+                //                         ])
+                //                 ])->columnSpan('full'),
+                //                 Repeater::make('business_hours') //stores table new column 'business_hours'(json)
+                //                     ->schema([
+                //                         Select::make('day')
+                //                             ->options([
+                //                                 '1' => 'Monday',
+                //                                 '2' => 'Tuesday',
+                //                                 '3' => 'Wednesday',
+                //                                 '4' => 'Thursday',
+                //                                 '5' => 'Friday',
+                //                                 '6' => 'Saturday',
+                //                                 '7' => 'Sunday',
+                //                             ])
+                //                             ->required()
+                //                             ->label('Day')
+                //                             ->columnSpan('full'),
+                //                             Grid::make(2)
+                //                             ->schema([
+                //                                 TimePicker::make('open_time')
+                //                                     ->withoutSeconds()
+                //                                     ->withoutDate()
+                //                                     ->required()
+                //                                     ->default('09:00')
+                //                                     ->label('Open Time'),
+                //                                 TimePicker::make('close_time')
+                //                                     ->withoutSeconds()
+                //                                     ->withoutDate()
+                //                                     ->required()
+                //                                     ->default('17:00')
+                //                                     ->label('Close Time'),
+                //                             ]),
+                //                     ])
+                //                     ->columns(2)
+                //                     ->columnSpan('full'),
+                //             // ])
+                //             // ->columns(2)
+                //     ])->beforeValidation(function ($livewire, $state) {
+                //         $data = [
+                //             'name' => $livewire->name,
+                //             'is_hq' => $livewire->is_hq,
+                //             'manager_name' => $livewire->manager_name,
+                //             'store_business_phone_no' => $livewire->store_business_phone_no,
+                //             'address' => $livewire->address,
+                //             'zip_code' => $livewire->zip_code,
+                //             'state_id' => $livewire->state_id,
+                //             'country_id' => $livewire->country_id,
+                //             'business_hours' => $livewire->business_hours,
+                //         ];
 
-                        Validator::make($data, [
-                            'name' => 'required',
-                            'is_hq' => 'boolean',
-                            'manager_name' => 'required',
-                            'store_business_phone_no' => 'required',
-                            'address' => 'required',
-                            'zip_code' => 'required|numeric',
-                            'business_hours' => 'required',
-                            'business_hours.*.day' => 'required',
-                            'business_hours.*.open_time' => 'required',
-                            'business_hours.*.close_time' => 'required',
-                        ])->validate();
-                    }),
+                //         Validator::make($data, [
+                //             'name' => 'required',
+                //             'is_hq' => 'boolean',
+                //             'manager_name' => 'required',
+                //             'store_business_phone_no' => 'required',
+                //             'address' => 'required',
+                //             'zip_code' => 'required|numeric',
+                //             'business_hours' => 'required',
+                //             'business_hours.*.day' => 'required',
+                //             'business_hours.*.open_time' => 'required',
+                //             'business_hours.*.close_time' => 'required',
+                //         ])->validate();
+                //     }),
 
             ])
             ->submitAction(new HtmlString('<button type="submit" class="filament-button filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset min-h-[2rem] px-3 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700" wire:loading.attr="disabled">
