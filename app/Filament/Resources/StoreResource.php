@@ -17,6 +17,7 @@ use App\Filament\Resources\StoreResource\RelationManagers;
 use App\Filament\Resources\StoreResource\RelationManagers\LocationRelationManager;
 use App\Models\Location;
 use App\Models\MerchantCategory;
+use Awcodes\FilamentTableRepeater\Components\TableRepeater;
 use Cheesegrits\FilamentGoogleMaps\Fields\Geocomplete;
 use Cheesegrits\FilamentGoogleMaps\Fields\Map;
 use Filament\Forms\Components\FileUpload;
@@ -62,62 +63,75 @@ class StoreResource extends Resource
         return ($unlistedStores > 0) ? (string) $unlistedStores : null;
     }
 
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Basic Information')
+                Group::make()
+                    ->columnSpanFull()
+                    ->columns([
+                        'xs' => 1,
+                        'lg' => 2,
+                        'md' => 2,
+                    ])
                     ->schema([
-                        Forms\Components\Select::make('status')
-                            ->options(Store::STATUS)
-                            ->default(Store::STATUS_ACTIVE)
-                            ->helperText('Unlisted store will not show up in App')
-                            ->label('Status')
-                            ->required(),
-                        Forms\Components\Toggle::make('is_closed')
-                            ->label('Is Closed ?')
-                            ->onIcon('heroicon-s-check-circle')
-                            ->offIcon('heroicon-s-x-circle'),
-                        Forms\Components\TextInput::make('name')
-                            ->label('Store Name')
-                            ->autofocus()
-                            ->helperText('Will be also used as Location name, if new location is added. eg. KFC Midvalley')
-                            ->required()
-                            ->rules('required', 'max:255'),
-                        Forms\Components\Select::make('user_id')
-                            ->label('Linked User Account')
-                            ->searchable()
-                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->username ? ' (username: ' . $record->username  . ')' : ''))
-                            ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
-                            ->relationship('user', 'name'),
+                        Forms\Components\Section::make('Basic Information')
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->label('Store Name')
+                                ->autofocus()
+                                ->helperText('Will be also used as Location name, if new location is added. eg. KFC Midvalley')
+                                ->required()
+                                ->rules('required', 'max:255'),
+                            Forms\Components\Select::make('user_id')
+                                ->label('Linked User Account')
+                                ->searchable()
+                                ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->username ? ' (username: ' . $record->username  . ')' : ''))
+                                ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
+                                ->relationship('user', 'name'),
 
-                        Toggle::make('use_store_redeem')
-                            ->label('Use Store Redeem Code Instead')
-                            ->onIcon('heroicon-s-check-circle')
-                            ->offIcon('heroicon-s-x-circle')
-                            ->reactive()
-                            ->default(false),
+                            Toggle::make('use_store_redeem')
+                                ->label('Use Store Redeem Code Instead')
+                                ->onIcon('heroicon-s-check-circle')
+                                ->offIcon('heroicon-s-x-circle')
+                                ->reactive()
+                                ->default(false),
 
-                        TextInput::make('redeem_code')
-                            ->label('Cashier Redeem Code (6 Digit)')
-                            ->visible(fn($get) => $get('use_store_redeem') === true)
-                            ->disabled(fn($livewire) => $livewire instanceof CreateRecord)
-                            ->rules('digits:6')
-                            ->disabled()
-                            ->numeric()
-                            ->nullable()
-                            ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
-                            ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store'),
+                            TextInput::make('redeem_code')
+                                ->label('Cashier Redeem Code (6 Digit)')
+                                ->visible(fn($get) => $get('use_store_redeem') === true)
+                                ->disabled(fn($livewire) => $livewire instanceof CreateRecord)
+                                ->rules('digits:6')
+                                ->disabled()
+                                ->numeric()
+                                ->nullable()
+                                ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
+                                ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store'),
 
-                        // categories
-                        Select::make('categories')
-                            ->relationship('categories', 'name')
-                            ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->parent ? ' - ' . $record->parent->name : ''))
-                            ->searchable()
-                            ->preload()
-                            ->multiple(),
+                            // categories
+                            Select::make('categories')
+                                ->relationship('categories', 'name')
+                                ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->parent ? ' - ' . $record->parent->name : ''))
+                                ->searchable()
+                                ->preload()
+                                ->multiple(),
 
+                        ]),
+                        Forms\Components\Section::make('Operation')
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\Select::make('status')
+                                ->options(Store::STATUS)
+                                ->default(Store::STATUS_ACTIVE)
+                                ->helperText('Unlisted store will not show up in App')
+                                ->label('Status')
+                                ->required(),
+                            Forms\Components\Toggle::make('is_closed')
+                                ->label('No longer operating (Permenant/Temporary Closure)')
+                                ->onIcon('heroicon-s-check-circle')
+                                ->offIcon('heroicon-s-x-circle'),
+                        ])
                     ]),
                 Forms\Components\Section::make('Location Information')
                     ->schema([
@@ -172,6 +186,10 @@ class StoreResource extends Resource
                             })
                             ->searchable(),
 
+                        Forms\Components\Toggle::make('is_hq')
+                            ->label('Is headquarter ?')
+                            ->onIcon('heroicon-s-check-circle')
+                            ->offIcon('heroicon-s-x-circle'),
                         Forms\Components\Textarea::make('address')
                             ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
@@ -179,34 +197,38 @@ class StoreResource extends Resource
                             ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
 
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('state_id')
+                                    ->columnSpan(1)
+                                    ->label('State')
+                                    ->preload()
+                                    ->searchable()
+                                    ->relationship('state', 'name')
+                                    ->required(),
 
-                        Select::make('state_id')
-                            ->label('State')
-                            ->preload()
-                            ->searchable()
-                            ->relationship('state', 'name')
-                            ->required(),
+                                Select::make('country_id')
+                                    ->columnSpan(1)
+                                    ->label('Country')
+                                    ->preload()
+                                    ->searchable()
+                                    ->relationship('country', 'name')
+                                    ->required(),
+                            ]),
 
-                        Select::make('country_id')
-                            ->label('Country')
-                            ->preload()
-                            ->searchable()
-                            ->relationship('country', 'name')
-                            ->required(),
-
-                        Forms\Components\TextInput::make('lang')
-                            ->label('Latitude')
-                            ->helperText('This is to locate your store in the map. Leave 0 if not sure')
-                            ->disabled(fn($get) => $get('location_type') === 'existing'),
-                        Forms\Components\TextInput::make('long')
-                            ->label('Logitude')
-                            ->helperText('This is to locate your store in the map. Leave 0 if not sure')
-                            ->disabled(fn($get) => $get('location_type') === 'existing'),
-
-                        Forms\Components\Toggle::make('is_hq')
-                            ->label('Is headquarter ?')
-                            ->onIcon('heroicon-s-check-circle')
-                            ->offIcon('heroicon-s-x-circle'),
+                        Grid::make(2)
+                            ->schema([
+                                Forms\Components\TextInput::make('lang')
+                                    ->columnSpan(1)
+                                    ->label('Latitude')
+                                    ->helperText('This is to locate your store in the map. Leave 0 if not sure')
+                                    ->disabled(fn($get) => $get('location_type') === 'existing'),
+                                Forms\Components\TextInput::make('long')
+                                    ->columnSpan(1)
+                                    ->label('Logitude')
+                                    ->helperText('This is to locate your store in the map. Leave 0 if not sure')
+                                    ->disabled(fn($get) => $get('location_type') === 'existing'),
+                            ]),
 
                         SpatieMediaLibraryFileUpload::make('company_photos')
                             ->label('Store Photos')
@@ -220,6 +242,7 @@ class StoreResource extends Resource
                                 }
                             })
                             ->acceptedFileTypes(['image/*'])
+                            ->enableDownload(true)
                             ->rules('image'),
                         Repeater::make('menus')
                             ->label('Menus')
@@ -227,16 +250,15 @@ class StoreResource extends Resource
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Menu Name')
-                                    ->reactive()
-                                    ->required(),
+                                    ->reactive(),
                                 FileUpload::make('file')
                                     ->label('Menu File (PDF ONLY)')
+                                    ->enableDownload(true)
                                     ->disk(function () {
                                         if (config('filesystems.default') === 's3') {
                                             return 's3_public';
                                         }
                                     })
-                                    ->required()
                                     ->acceptedFileTypes(['application/pdf'])
                                     ->rules('mimes:pdf')
                                     ->getUploadedFileUrlUsing(function ($file) {
@@ -249,41 +271,108 @@ class StoreResource extends Resource
                             ])
                     ]),
 
-                Section::make('Store Business Hours')
-                    ->schema([
-
-                        Repeater::make('business_hours')
-                            ->schema([
-                                Select::make('day')
-                                    ->options([
-                                        '1' => 'Monday',
-                                        '2' => 'Tuesday',
-                                        '3' => 'Wednesday',
-                                        '4' => 'Thursday',
-                                        '5' => 'Friday',
-                                        '6' => 'Saturday',
-                                        '7' => 'Sunday',
-                                    ])
-                                    ->required()
-                                    ->label('Day')
-                                    ->columnSpan('full'),
-                                Grid::make(2)
-                                    ->schema([
-                                        TimePicker::make('open_time')
-                                            ->withoutSeconds()
-                                            ->withoutDate()
-                                            ->required()
-                                            ->default('09:00')
-                                            ->label('Open Time'),
-                                        TimePicker::make('close_time')
-                                            ->withoutSeconds()
-                                            ->withoutDate()
-                                            ->required()
-                                            ->default('17:00')
-                                            ->label('Close Time'),
-                                    ]),
-                            ])
+                Group::make()
+                    ->columnSpanFull()
+                    ->columns([
+                        'xs' => 1,
+                        'lg' => 2,
+                        'md' => 2,
                     ])
+                    ->schema([
+                        Section::make('Store Business Hours')
+                        ->columnSpan(1)
+                        ->schema([
+                            Repeater::make('business_hours')
+                                ->orderable(false)
+                                ->disableLabel(true)
+                                ->disableItemCreation(function ($get){
+                                    // if items are 7 days then disable item creation
+                                    if (count($get('business_hours')) == 7) {
+                                        return true;
+                                    }
+                                    return false;
+                                })
+                                ->default(function () {
+                                    $days = 7;
+                                    $defaultHours = [];
+                                    for ($i = 1; $i <= $days; $i++) {
+                                        $defaultHours[] = [
+                                            'day' => $i,
+                                            'open_time' => '09:00',
+                                            'close_time' => '18:00',
+                                        ];
+                                    }
+                                    return $defaultHours;
+                                })
+                                ->schema([
+                                    Grid::make(3)
+                                        ->schema([
+                                            Select::make('day')
+                                                ->options([
+                                                    '1' => 'Monday',
+                                                    '2' => 'Tuesday',
+                                                    '3' => 'Wednesday',
+                                                    '4' => 'Thursday',
+                                                    '5' => 'Friday',
+                                                    '6' => 'Saturday',
+                                                    '7' => 'Sunday',
+                                                ])
+                                                ->required()
+                                                ->label('Day'),
+                                            TimePicker::make('open_time')
+                                                ->withoutSeconds()
+                                                ->withoutDate()
+                                                ->required()
+                                                ->default('09:00')
+                                                ->label('Open Time'),
+                                            TimePicker::make('close_time')
+                                                ->withoutSeconds()
+                                                ->withoutDate()
+                                                ->required()
+                                                ->default('18:00')
+                                                ->label('Close Time'),
+                                        ]),
+                                ])
+                        ]),
+                        Section::make('Store Rest Hours')
+                            ->columnSpan(1)
+                            ->schema([
+                                Repeater::make('rest_hours')
+                                    ->default([])
+                                    ->orderable(false)
+                                    ->disableLabel(true)
+                                    ->minItems(0)
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                Select::make('day')
+                                                ->options([
+                                                    '1' => 'Monday',
+                                                    '2' => 'Tuesday',
+                                                    '3' => 'Wednesday',
+                                                    '4' => 'Thursday',
+                                                    '5' => 'Friday',
+                                                    '6' => 'Saturday',
+                                                    '7' => 'Sunday',
+                                                ])
+                                                ->required()
+                                                ->label('Day'),
+                                                TimePicker::make('open_time')
+                                                    ->withoutSeconds()
+                                                    ->withoutDate()
+                                                    ->required()
+                                                    ->default('13:00')
+                                                    ->label('Start Time'),
+                                                TimePicker::make('close_time')
+                                                    ->withoutSeconds()
+                                                    ->withoutDate()
+                                                    ->required()
+                                                    ->default('16:00')
+                                                    ->label('End Time'),
+                                            ]) // end grid
+                                    ]) // end repeater
+                            ]) // end seciton store rest hours
+                    ]),
             ]);
     }
 

@@ -50,6 +50,16 @@ class EditStore extends EditRecord
             })->values()->toArray();
         }
 
+        if ($data['rest_hours']) {
+            $data['rest_hours'] = collect(json_decode($data['rest_hours'], true))->map(function ($item, $key) {
+                return [
+                    'day' => $key,
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ];
+            })->values()->toArray();
+        }
+
         $data['menus'] = $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item, $index) {
             return [
                 'name' => (isset($item->custom_properties['name'])) ? $item->custom_properties['name'] : 'Menu ' . ($index + 1),
@@ -178,6 +188,15 @@ class EditStore extends EditRecord
         // handles business hours save
         if (count($data['business_hours']) > 0) {
             $data['business_hours'] = json_encode(collect($data['business_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ]];
+            })->toArray());
+        }
+
+        if (count($data['rest_hours']) > 0) {
+            $data['rest_hours'] = json_encode(collect($data['rest_hours'])->mapWithKeys(function ($item) {
                 return [$item['day'] => [
                     'open_time' => $item['open_time'],
                     'close_time' => $item['close_time']

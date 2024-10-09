@@ -29,6 +29,15 @@ class CreateStore extends CreateRecord
             })->toArray());
         }
 
+        if (count($data['rest_hours']) > 0) {
+            $data['rest_hours'] = json_encode(collect($data['rest_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ]];
+            })->toArray());
+        }
+
         return $data;
     }
 

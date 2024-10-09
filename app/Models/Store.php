@@ -48,6 +48,7 @@ class Store extends BaseModel implements HasMedia, Auditable
         'manager_name',
         'business_phone_no',
         'business_hours',
+        'rest_hours',
         'address',
         'address_postcode',
         'use_store_redeem',
@@ -90,6 +91,7 @@ class Store extends BaseModel implements HasMedia, Auditable
             'onboarded' => ($this->merchant) ? true : false,
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => $this->business_hours,
+            'rest_hours' => $this->rest_hours,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
             'categories' => ($this->categories) ? $this->categories->map(function ($category) {
