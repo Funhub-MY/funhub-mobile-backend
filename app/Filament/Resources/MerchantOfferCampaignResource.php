@@ -177,6 +177,7 @@ class MerchantOfferCampaignResource extends Resource
                                             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
                                                 ->numeric()
                                                 ->decimalPlaces(2)
+                                                ->padFractionalZeros(true)
                                                 ->minValue(1)
                                                 ->thousandsSeparator(','),
                                             ),
@@ -188,6 +189,7 @@ class MerchantOfferCampaignResource extends Resource
                                             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
                                                 ->numeric()
                                                 ->decimalPlaces(2)
+                                                ->padFractionalZeros(true)
                                                 ->minValue(1)
                                                 ->thousandsSeparator(','),
                                             ),
@@ -204,6 +206,7 @@ class MerchantOfferCampaignResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                         Forms\Components\TextInput::make('discounted_fiat_price')
@@ -215,6 +218,7 @@ class MerchantOfferCampaignResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                 ]),
