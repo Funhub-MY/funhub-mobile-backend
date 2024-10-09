@@ -147,6 +147,7 @@ it('testRaiseSupportRequests', function () {
         'category_id' => $this->supportRequestCategories->id,
         'title' => 'My support request',
         'message' => 'This is my message',
+        'supportable' => 'article',
         'media_ids' => null
     ];
     // post another time.
