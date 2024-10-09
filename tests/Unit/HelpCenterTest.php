@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Article;
 use App\Models\Faq;
 use App\Models\User;
 use App\Models\FaqCategory;
@@ -36,6 +37,8 @@ beforeEach(function () {
     ]);
 
     $this->supportRequestCategories = SupportRequestCategory::factory()->create();
+
+    $this->article = Article::factory()->create();
 
     $this->supportRequest = SupportRequest::factory()->create([
         'requestor_id' => $this->user->id,
@@ -147,8 +150,6 @@ it('testRaiseSupportRequests', function () {
         'category_id' => $this->supportRequestCategories->id,
         'title' => 'My support request',
         'message' => 'This is my message',
-        'supportable' => 'article',
-        'supportable_id' => '1',
         'media_ids' => null
     ];
     // post another time.
@@ -161,6 +162,36 @@ it('testRaiseSupportRequests', function () {
     $this->assertDatabaseHas('support_requests', [
         'category_id' => $this->supportRequestCategories->id,
         'title' => 'My support request',
+        'status' => 0,
+    ]);
+});
+
+it('testReportArticleSupportRequest', function () {
+    $body = [];
+    // test validation
+    $response = $this->postJson('/api/v1/comments/report', $body);
+    $response->assertStatus(422)
+        ->assertJsonStructure([
+            'message',
+        ]);
+    $body = [
+        'category_id' => $this->supportRequestCategories->id,
+        'title' => 'Report Article',
+        'message' => 'This is my message',
+        'supportable' => 'article',
+        'supportable_id' => $this->article->id,
+        'media_ids' => null
+    ];
+    // post another time.
+    $response = $this->postJson('api/v1/help/support_requests/raise', $body);
+    $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message', 'request'
+        ]);
+    // check report.
+    $this->assertDatabaseHas('support_requests', [
+        'category_id' => $this->supportRequestCategories->id,
+        'title' => 'Report Article',
         'status' => 0,
     ]);
 });
