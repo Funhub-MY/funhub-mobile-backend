@@ -50,4 +50,9 @@ class SupportRequest extends BaseModel implements Auditable
     {
         return $this->hasMany(SupportRequestMessage::class, 'support_request_id');
     }
+
+    public function supportable()
+    {
+        return $this->morphTo();
+    }
 }
