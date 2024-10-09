@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Article;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
@@ -46,6 +47,13 @@ class SupportRequestResource extends Resource
                             Select::make('category_id')
                                 ->relationship('category', 'name')
                                 ->required(),
+
+                            Forms\Components\MorphToSelect::make('supportable')
+                                ->types([
+                                    // TODO:: at the moment there is only 1 type.
+                                    Forms\Components\MorphToSelect\Type::make(Article::class)->titleColumnName('title'),
+                                ])
+                                ->label('Type'),
 
                             TextInput::make('internal_remarks'),
                         ])
@@ -145,17 +153,17 @@ class SupportRequestResource extends Resource
                         5 => 'Invalid',
                     ])
                     ->label('Status'),
-                    
+
                 SelectFilter::make('assignee_id')
                     ->label('Assignee')
                     ->relationship('assignee', 'name', function (Builder $query) {
-                        $query->whereNotNull('name')->withTrashed();  
+                        $query->whereNotNull('name')->withTrashed();
                     }),
 
                 SelectFilter::make('requestor_id')
                     ->label('Requestor')
                     ->relationship('requestor', 'name', function (Builder $query) {
-                        $query->whereNotNull('name')->withTrashed();  
+                        $query->whereNotNull('name')->withTrashed();
                     }),
             ])
             ->actions([
