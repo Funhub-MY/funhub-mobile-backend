@@ -348,6 +348,7 @@ class MerchantController extends Controller
                 'mobilephone' => $request->phone_no,
                 'postcode' => $request->postcode,
                 'address' => $request->address ?? null,
+                'remarks' => $request->remarks ?? null,
             ]);
 
             $contact = $hubspot->crm()->contacts()->basicApi()->create($contactInput);
