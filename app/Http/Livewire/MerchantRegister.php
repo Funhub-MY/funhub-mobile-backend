@@ -62,7 +62,7 @@ class MerchantRegister extends Component implements HasForms
             // 'pic_designation' => 'required',
             // 'pic_ic_no' => 'required|numeric',
             // 'pic_phone_no' => 'required',
-            'pic_email' => 'email',
+            // 'pic_email' => 'required_with:pic_name|email',
             'authorised_personnel_name' => 'required',
             'authorised_personnel_designation' => 'required',
             'authorised_personnel_ic_no' => 'required',
@@ -77,16 +77,16 @@ class MerchantRegister extends Component implements HasForms
             // 'stores.*.business_hours.*.day' => 'required',
             // 'stores.*.business_hours.*.open_time' => 'required',
             // 'stores.*.business_hours.*.close_time' => 'required',
-            'name' => 'required',
-            'is_hq' => 'boolean',
-            'manager_name' => 'required',
-            'store_business_phone_no' => 'required',
+            // 'name' => 'required',
+            // 'is_hq' => 'boolean',
+            // 'manager_name' => 'required',
+            // 'store_business_phone_no' => 'required',
             'address' => 'required',
             'zip_code' => 'required|numeric',
-            'business_hours' => 'required',
-            'business_hours.*.day' => 'required',
-            'business_hours.*.open_time' => 'required',
-            'business_hours.*.close_time' => 'required',
+            // 'business_hours' => 'required',
+            // 'business_hours.*.day' => 'required',
+            // 'business_hours.*.open_time' => 'required',
+            // 'business_hours.*.close_time' => 'required',
             'company_email' => 'required|email|unique:users,email',
             // 'password' => 'required',
             // 'passwordConfirmation' => 'required|same:password',
@@ -205,13 +205,13 @@ class MerchantRegister extends Component implements HasForms
 
         $merchant->save();
 
-        $businessHours = [];
-        foreach ($data['business_hours'] as $businessHour) {
-            $businessHours[$businessHour['day']] = [
-                'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
-                'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
-            ];
-        }
+        // $businessHours = [];
+        // foreach ($data['business_hours'] as $businessHour) {
+        //     $businessHours[$businessHour['day']] = [
+        //         'open_time' => \Carbon\Carbon::parse($businessHour['open_time'])->format('H:i'),
+        //         'close_time' => \Carbon\Carbon::parse($businessHour['close_time'])->format('H:i'),
+        //     ];
+        // }
 
         //section for getting lang and long-start
         $lang = null;
@@ -252,25 +252,25 @@ class MerchantRegister extends Component implements HasForms
         // Creeate Store
         $store = Store::create([
             'user_id' => $user->id,
-            'name' => $data['name'],
-            'manager_name' => $data['manager_name'],
-            'business_phone_no' => $data['store_business_phone_no'],
-            'business_hours' => json_encode($businessHours),
+            'name' => $data['brand_name'],
+            'manager_name' => null,
+            'business_phone_no' => null,
+            'business_hours' => null,
             'address' => $data['address'],
             'address_postcode' => $data['zip_code'],
             'lang' => $lang,
             'long' => $long,
-            'is_hq' => $data['is_hq'],
+            'is_hq' => false,
             'state_id' => $data['state_id'],
             'country_id' => $data['country_id'],
         ]);
 
 
         // copy from merchant's MEDIA_COLLECTION_NAME_PHOTOS to store's MEDIA_COLLECTION_PHOTOS
-        $merchantPhotos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
-        foreach ($merchantPhotos as $photo) {
-            $photo->copy($store, Store::MEDIA_COLLECTION_PHOTOS);
-        }
+        // $merchantPhotos = $merchant->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS);
+        // foreach ($merchantPhotos as $photo) {
+        //     $photo->copy($store, Store::MEDIA_COLLECTION_PHOTOS);
+        // }
 
 
         $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
@@ -524,7 +524,6 @@ class MerchantRegister extends Component implements HasForms
                                             ->placeholder('Enter Contact Number'),
                                         TextInput::make('pic_email') //merchant's table column 'pic_email'
                                             ->label('PIC Email')
-                                            ->required()
                                             ->placeholder('Enter Email'),
                                     ]),
                                 Section::make('Authorised Personnel Information')
@@ -555,8 +554,7 @@ class MerchantRegister extends Component implements HasForms
                             'authorised_personnel_ic_no' => $livewire->authorised_personnel_ic_no,
                         ];
                         Validator::make($data, [
-                            'pic_ic_no' => 'numeric',
-                            'pic_email' => 'email',
+                            // 'pic_ic_no' => 'numeric',
                             'authorised_personne_designation' => 'required',
                             'authorised_personnel_name' => 'required',
                             'authorised_personnel_ic_no' => 'required',
