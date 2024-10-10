@@ -16,4 +16,11 @@ class EditArticleFeedWhitelistUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $user = $this->record->user;
+        $data['user_id'] = $user ? "{$user->name} ({$user->username})" : null;
+        return $data;
+    }
 }
