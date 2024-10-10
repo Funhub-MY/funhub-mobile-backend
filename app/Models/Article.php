@@ -250,6 +250,11 @@ class Article extends BaseModel implements HasMedia, Auditable
         return $this->morphMany(Reports::class, 'reportable');
     }
 
+    public function supportRequests()
+    {
+        return $this->morphMany(SupportRequest::class, 'supportable');
+    }
+
     public function likes()
     {
         return $this->morphMany(Interaction::class, 'interactable')

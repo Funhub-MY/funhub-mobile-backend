@@ -322,6 +322,7 @@ class MerchantController extends Controller
      * @bodyParam postcode string required Postcode. Example: 47530
      * @bodyParam phone_no string required Phone Number. Example: 0123456789
      * @bodyParam address string optional Address. Example: 123, Jalan ABC
+     * @bodyParam remarks string optional Remarks(Refer By). Example: KOC
      *
      * @response scenario=success {
      * "message": "Created Merchant Contact"
@@ -348,6 +349,7 @@ class MerchantController extends Controller
                 'mobilephone' => $request->phone_no,
                 'postcode' => $request->postcode,
                 'address' => $request->address ?? null,
+                'remarks' => $request->remarks ?? null,
             ]);
 
             $contact = $hubspot->crm()->contacts()->basicApi()->create($contactInput);

@@ -538,6 +538,7 @@ class CommentController extends Controller
      *
      * @group Article
      * @subgroup Comments
+     * @urlParam query string optional Search query. Example: John
      * @response scenario=success {
      * "data": [],
      * }
@@ -545,15 +546,20 @@ class CommentController extends Controller
      *
      * @return JsonResource
      */
-    public function getTaggableUsersInComment()
+    public function getTaggableUsersInComment(Request $request)
     {
         // get my followers
         $myFollowers = auth()->user()->followers->pluck('id')->toArray();
 
-        $taggableUsers = User::where('id', '!=', auth()->id())
+        $query = User::where('id', '!=', auth()->id())
             ->where('status', User::STATUS_ACTIVE)
             ->whereIn('id', $myFollowers)
-            ->paginate(config('app.paginate_per_page'));
+            ->when($request->has('query'), function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->input('query') . '%');
+            });
+
+        // paginate
+        $taggableUsers = $query->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($taggableUsers);
     }
