@@ -250,20 +250,20 @@ class MerchantRegister extends Component implements HasForms
         }
 
         // Creeate Store
-        $store = Store::create([
-            'user_id' => $user->id,
-            'name' => $data['brand_name'],
-            'manager_name' => null,
-            'business_phone_no' => null,
-            'business_hours' => null,
-            'address' => $data['address'],
-            'address_postcode' => $data['zip_code'],
-            'lang' => $lang,
-            'long' => $long,
-            'is_hq' => false,
-            'state_id' => $data['state_id'],
-            'country_id' => $data['country_id'],
-        ]);
+        // $store = Store::create([
+        //     'user_id' => $user->id,
+        //     'name' => $data['brand_name'],
+        //     'manager_name' => null,
+        //     'business_phone_no' => null,
+        //     'business_hours' => null,
+        //     'address' => $data['address'],
+        //     'address_postcode' => $data['zip_code'],
+        //     'lang' => $lang,
+        //     'long' => $long,
+        //     'is_hq' => false,
+        //     'state_id' => $data['state_id'],
+        //     'country_id' => $data['country_id'],
+        // ]);
 
 
         // copy from merchant's MEDIA_COLLECTION_NAME_PHOTOS to store's MEDIA_COLLECTION_PHOTOS
@@ -273,62 +273,62 @@ class MerchantRegister extends Component implements HasForms
         // }
 
 
-        $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
-        Log::info('[MerchantRegister] Location data from Google Maps API: ' . json_encode($locationFromGoogle));
-        if ($locationFromGoogle) {
-            $location = null;
-            // must create a location data if not exists
-            if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
-                $location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
-            } else {
-                // if location cant be found by google_id, then find by lat,lng
-                $location = Location::where('lat', $locationFromGoogle['lat'])
-                    ->where('lng', $locationFromGoogle['lng'])
-                    ->first();
-            }
+        // $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
+        // Log::info('[MerchantRegister] Location data from Google Maps API: ' . json_encode($locationFromGoogle));
+        // if ($locationFromGoogle) {
+        //     $location = null;
+        //     // must create a location data if not exists
+        //     if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
+        //         $location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
+        //     } else {
+        //         // if location cant be found by google_id, then find by lat,lng
+        //         $location = Location::where('lat', $locationFromGoogle['lat'])
+        //             ->where('lng', $locationFromGoogle['lng'])
+        //             ->first();
+        //     }
 
-            if (!$location) {
-                $addressComponents = collect($locationFromGoogle['address_components']);
-                $city = $addressComponents->filter(function ($component) {
-                    return in_array('locality', $component['types']);
-                })->first();
+        //     if (!$location) {
+        //         $addressComponents = collect($locationFromGoogle['address_components']);
+        //         $city = $addressComponents->filter(function ($component) {
+        //             return in_array('locality', $component['types']);
+        //         })->first();
 
-                $locationData = [
-                    'name' => $data['name'],
-                    'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
-                    'lat' => $lang, // google provided
-                    'lng' => $long, // google provided
-                    'address' => $data['address'] ?? '', // user provided
-                    'address_2' => $data['address_2'] ?? '', // user provided
-                    'zip_code' => $data['zip_code'] ?? '', // user provided
-                    'city' => $city['short_name'] ?? '', // google provided
-                    'state_id' => $data['state_id'], // user provided
-                    'country_id' => $data['country_id'], // user provided
-                ];
-                Log::info('register', [
-                    'name' => $data['name'],
-                    'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
-                    'lat' => $lang, // google provided
-                    'lng' => $long, // google provided
-                    'address' => $data['address'] ?? '', // user provided
-                    'address_2' => $data['address_2'] ?? '', // user provided
-                    'zip_code' => $data['zip_code'] ?? '', // user provided
-                    'city' => $city ?? '', // google provided
-                    'state_id' => $data['state_id'], // user provided
-                    'country_id' => $data['country_id'], // user provided
-                ]);
+        //         $locationData = [
+        //             'name' => $data['brand_name'],
+        //             'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
+        //             'lat' => $lang, // google provided
+        //             'lng' => $long, // google provided
+        //             'address' => $data['address'] ?? '', // user provided
+        //             'address_2' => $data['address_2'] ?? '', // user provided
+        //             'zip_code' => $data['zip_code'] ?? '', // user provided
+        //             'city' => $city['short_name'] ?? '', // google provided
+        //             'state_id' => $data['state_id'], // user provided
+        //             'country_id' => $data['country_id'], // user provided
+        //         ];
+        //         Log::info('register', [
+        //             'name' => $data['name'],
+        //             'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
+        //             'lat' => $lang, // google provided
+        //             'lng' => $long, // google provided
+        //             'address' => $data['address'] ?? '', // user provided
+        //             'address_2' => $data['address_2'] ?? '', // user provided
+        //             'zip_code' => $data['zip_code'] ?? '', // user provided
+        //             'city' => $city ?? '', // google provided
+        //             'state_id' => $data['state_id'], // user provided
+        //             'country_id' => $data['country_id'], // user provided
+        //         ]);
 
-                // create a new location
-                $location = Location::create($locationData);
+        //         // create a new location
+        //         $location = Location::create($locationData);
 
-                Log::info('[MerchantRegister] Location created: ' . $location->id);
-            }
-                // attach store to location
-            $store->location()->attach($location);
-            Log::info('[MerchantRegister] Store '. $store->id . 'attached to location: ' . $location->id);
-        } else {
-            Log::info('[MerchantRegister] Failed to get location data from Google Maps API');
-        }
+        //         Log::info('[MerchantRegister] Location created: ' . $location->id);
+        //     }
+        //         // attach store to location
+        //     $store->location()->attach($location);
+        //     Log::info('[MerchantRegister] Store '. $store->id . 'attached to location: ' . $location->id);
+        // } else {
+        //     Log::info('[MerchantRegister] Failed to get location data from Google Maps API');
+        // }
 
         if ($user && $merchant) {
             session()->flash('message', 'Your Merchant Account has been created. Please await our admins to approve your account and once approved you will received the instructions to login. Thank you!');
