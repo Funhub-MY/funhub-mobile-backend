@@ -207,7 +207,8 @@ class MerchantResource extends Resource
                             ->label('Company Logo')
                             ->maxFiles(1)
                             ->collection(Merchant::MEDIA_COLLECTION_NAME)
-                            ->required()
+                            // ->required()
+                            ->enableDownload(true)
                             ->columnSpan('full')
                             ->disk(function () {
                                 if (config('filesystems.default') === 's3') {
@@ -221,8 +222,9 @@ class MerchantResource extends Resource
                             ->label('Company Photos')
                             ->multiple()
                             ->maxFiles(7)
+                            ->enableDownload(true)
                             ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
-                            ->required()
+                            // ->required()
                             ->columnSpan('full')
                             ->disk(function () {
                                 if (config('filesystems.default') === 's3') {
