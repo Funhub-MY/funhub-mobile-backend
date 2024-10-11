@@ -446,7 +446,23 @@ class UserResource extends Resource
                         Select::make('rewardComponent')
                             ->label('Reward Component')
                             ->options(RewardComponent::all()->pluck('name', 'id'))
-                    ])->deselectRecordsAfterCompletion()
+
+                    ])->deselectRecordsAfterCompletion(),
+                BulkAction::make('resetTutorialProgress')
+                    ->label('Reset Tutorial Progress')
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion()
+                    ->action(function ($records) {
+                        $records->each(function ($user) {
+                            $user->tutorialCompletions()->delete();
+                        });
+
+                        Notification::make()
+                            ->title('Tutorial progress reset successfully')
+                            ->success()
+                            ->send();
+                    }),
+
             ]);
     }
 
