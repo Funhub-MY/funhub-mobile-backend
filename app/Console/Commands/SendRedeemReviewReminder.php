@@ -17,7 +17,8 @@ class SendRedeemReviewReminder extends Command
     {
         // Get recent redemptions (e.g., within the last 7 days)
         $recentRedemptions = MerchantOfferClaimRedemptions::with(['claim', 'claim.merchantOffer', 'claim.merchantOffer.stores', 'user'])
-            ->where('created_at', '>=', now()->subDays(7))
+            ->where('created_at', '<=', now()->subHours(2))
+            ->whereNull('reminder_sent_at')
             ->get();
 
         Log::info('[SendRedeemReviewReminder] Total Redemptions Past 7 days: ' . count($recentRedemptions));
@@ -43,14 +44,17 @@ class SendRedeemReviewReminder extends Command
             }
 
             if (!$hasReviewedAnyStore) {
-                // Send the RedeemReview notification to the user
-                $user->notify(new RedeemReview($redemption->claim, $user, $store));
-                Log::info('[SendRedeemReviewReminder] User Redeemed from Store: ' . $store->id . ' and Notified to remind for review', [
-                    'user_id' => $user->id,
-                    'store_id' => $store->id,
-                ]);
+                foreach ($stores as $store) {
+                    // Send the RedeemReview notification to the user
+                    $user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
+                    Log::info('[SendRedeemReviewReminder] User Redeemed from Store: ' . $store->id . ' and Notified to remind for review', [
+                        'user_id' => $user->id,
+                        'store_id' => $store->id,
+                    ]);
+                }
+                $redemption->update(['reminder_sent_at' => now()]);
 
-                $this->info('[SendRedeemReviewReminder] User '. $user->id .' Redeemed from Store: ' . $store->id . ' and Notified to remind for review');
+                $this->info('[SendRedeemReviewReminder] User '. $user->id);
             }
         }
     }
