@@ -21,8 +21,8 @@ class SendRedeemReviewReminder extends Command
             ->whereNull('reminder_sent_at')
             ->get();
 
-        Log::info('[SendRedeemReviewReminder] Total Redemptions Past 7 days: ' . count($recentRedemptions));
-        $this->info('[SendRedeemReviewReminder] Total Redemptions Past 7 days: ' . count($recentRedemptions));
+        Log::info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
+        $this->info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
 
         foreach ($recentRedemptions as $redemption) {
             $this->info('Processing redemption for user ID ' . $redemption->user_id. ' and merchant offer ID '. $redemption->claim->merchantOffer->id);
