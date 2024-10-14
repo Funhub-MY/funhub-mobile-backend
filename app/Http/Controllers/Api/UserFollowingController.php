@@ -226,6 +226,7 @@ class UserFollowingController extends Controller
         if ($request->has('query')) {
             $query->where('name', 'like', '%' . $request->input('query') . '%');
         }
+        
         $followings = $query->paginate(config('app.paginate_per_page'));
 
         return UserResource::collection($followings);
