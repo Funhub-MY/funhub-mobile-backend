@@ -635,9 +635,10 @@ class MerchantOfferController extends Controller
                     $user->id
                 );
 
+                $orderNo = 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3));
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
-                    'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
+                    'order_no' => $orderNo,
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,
@@ -660,6 +661,13 @@ class MerchantOfferController extends Controller
 
                 // fire event
                 event(new PurchasedMerchantOffer($user, $offer, 'fiat'));
+
+                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
+                if ($user->email) {
+                    $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
+                }
+                $redemption_start_date = $claim->created_at;
+                $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([
