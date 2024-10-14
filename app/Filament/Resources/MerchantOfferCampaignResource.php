@@ -233,21 +233,20 @@ class MerchantOfferCampaignResource extends Resource
                                                 ->schema([
                                                     DatePicker::make('start_date')
                                                         ->label('Start Date')
-                                                        ->required()
-                                                        ->reactive(),
+                                                        ->required(),
 
                                                     DatePicker::make('end_date')
                                                         ->label('End Date')
-                                                        ->required()
-                                                        ->reactive()
                                                         ->afterOrEqual('start_date'),
+
+                                                    TextInput::make('vouchers_count')
+                                                        ->required()
+                                                        ->label('Total No. of Vouchers')
+                                                        ->numeric(),
 
                                                     TextInput::make('interval_days')
                                                         ->label('Interval (Days)')
-                                                        ->numeric()
-                                                        ->minValue(1)
-                                                        ->required()
-                                                        ->reactive(),
+                                                        ->numeric(),
 
                                                     TextInput::make('days_per_schedule')
                                                         ->label('Days Per Schedule')
@@ -260,7 +259,6 @@ class MerchantOfferCampaignResource extends Resource
                                                         ->label('Available Quantity per Schedule')
                                                         ->numeric()
                                                         ->minValue(1)
-                                                        ->required()
                                                 ])
                                                 ->columns(2),
                                     ])
