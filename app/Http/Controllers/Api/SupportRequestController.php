@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Article;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\SupportRequest;
@@ -74,6 +75,7 @@ class SupportRequestController extends Controller
      * @group Help Center
      * @subgroup Support Requests
      * @bodyParam category_id integer required Category id. Example: 1
+     * @bodyParam supportable string required The type of supportable. Example: article
      * @bodyParam title string required Title of support request. Example: My support request
      * @bodyParam message string required Message to send. Example: This is my message
      * @bodyParam media_ids array optional Array of media ids. Example: [1,2,3]
@@ -84,15 +86,23 @@ class SupportRequestController extends Controller
     public function postRaiseSupportRequest(Request $request)
     {
         $this->validate($request, [
+            'supportable' => 'nullable|string',
+            'supportable_id' => 'required_with:supportable|integer',
             'category_id' => 'required|exists:support_requests_categories,id',
             'title' => 'required|string',
             'message' => 'required|string',
             'media_ids' => 'nullable|array',
         ]);
 
+        if ($request->supportable == 'article') {
+            $request->merge(['supportable' => Article::class]);
+        }
+
         // create new support request
         $supportRequest = $request->user()->supportRequests()->create([
             'category_id' => $request->category_id,
+            'supportable_type' => $request->supportable,
+            'supportable_id' => $request->supportable_id,
             'title' => $request->title,
             'status' => SupportRequest::STATUS_PENDING
         ]);

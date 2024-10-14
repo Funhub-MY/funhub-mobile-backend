@@ -28,7 +28,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - consequatur
+          - dolores
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -98,7 +98,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - consequatur
+        - dolores
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -125,7 +125,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DvVPa3cbke465h8g6fa1EZd'
+      - 'Bearer c38e4Dhb56E1PaZavfkVg6d'
     controller: null
     method: null
     route: null
@@ -189,7 +189,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZDP6Ec14e5bVgd6a38hvkaf'
+      - 'Bearer D3vhPZkaa6cd4Ve86b15Efg'
     controller: null
     method: null
     route: null

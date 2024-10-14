@@ -61,7 +61,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8f4ZgaVdkE3Deh6bvPc15a6'
+      - 'Bearer vaD5fhVE6a1k3b64gcPZ8ed'
     controller: null
     method: null
     route: null
@@ -104,7 +104,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1DbV4fkc86hZv3ge65PdaaE'
+      - 'Bearer 8EVc5a3g16b6Ddh4eavfPkZ'
     controller: null
     method: null
     route: null
@@ -193,7 +193,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a5Pf1E3Zvkdac6Dbh48Vg6e'
+      - 'Bearer P1a3abVvd8Zg66fec4DhkE5'
     controller: null
     method: null
     route: null
@@ -220,6 +220,24 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      supportable:
+        name: supportable
+        description: 'The type of supportable.'
+        required: true
+        example: article
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        custom: []
+      supportable_id:
+        name: supportable_id
+        description: 'This field is required when <code>supportable</code> is present.'
+        required: false
+        example: 11
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        custom: []
       category_id:
         name: category_id
         description: 'Category id.'
@@ -260,6 +278,8 @@ endpoints:
         exampleWasSpecified: true
         custom: []
     cleanBodyParameters:
+      supportable: article
+      supportable_id: 11
       category_id: 1
       title: 'My support request'
       message: 'This is my message'
@@ -282,7 +302,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DgV3PZ1E4bk5d6av68ehcaf'
+      - 'Bearer hv8P41d3ZacfkVeb6EaDg65'
     controller: null
     method: null
     route: null
@@ -372,7 +392,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer a1hDk56adf68EePcvbgV4Z3'
+      - 'Bearer 6ag68a4cDdkEhvfZVe3Pb51'
     controller: null
     method: null
     route: null
@@ -435,7 +455,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer akDce3bhagVZ6v4dPfE8615'
+      - 'Bearer 6eabVDv8f4haP35dkcgZ6E1'
     controller: null
     method: null
     route: null
@@ -498,7 +518,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 56D1hkcPdEbfeaavV8Z3g46'
+      - 'Bearer DeaP3vh18dg6bckV6Z4faE5'
     controller: null
     method: null
     route: null
@@ -551,7 +571,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer akaE56Dgced4hf81bZV3vP6'
+      - 'Bearer v6Egdb45ZD86c3aVh1eaPkf'
     controller: null
     method: null
     route: null
@@ -618,7 +638,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer EZeavhc458ga6kP1V6dDfb3'
+      - 'Bearer V34PEd5bfkga6D8vhac6eZ1'
     controller: null
     method: null
     route: null
