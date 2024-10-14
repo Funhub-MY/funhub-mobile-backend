@@ -662,13 +662,6 @@ class MerchantOfferController extends Controller
                 // fire event
                 event(new PurchasedMerchantOffer($user, $offer, 'fiat'));
 
-                $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
-                if ($user->email) {
-                    $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
-                }
-                $redemption_start_date = $claim->created_at;
-                $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
-
                 // Claim is not successful yet, return mpay data for app to redirect (post)
                 return response()->json([
                     'message' => __('messages.success.merchant_offer_controller.Redirect_to_Gateway'),
