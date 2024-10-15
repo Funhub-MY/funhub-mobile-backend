@@ -284,6 +284,7 @@ class StoreResource extends Resource
                         ->schema([
                             Repeater::make('business_hours')
                                 ->orderable(false)
+                                ->cloneable(true)
                                 ->disableLabel(true)
                                 ->disableItemCreation(function ($get){
                                     // if items are 7 days then disable item creation
@@ -340,6 +341,7 @@ class StoreResource extends Resource
                                 Repeater::make('rest_hours')
                                     ->default([])
                                     ->orderable(false)
+                                    ->cloneable(true)
                                     ->disableLabel(true)
                                     ->minItems(0)
                                     ->schema([
