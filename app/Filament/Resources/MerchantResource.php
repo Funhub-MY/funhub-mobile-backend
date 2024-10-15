@@ -364,6 +364,17 @@ class MerchantResource extends Resource
                     ->label('Approve Merchant')
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
+                            // must have company photos and logos
+                            if (!$record->getMedia(Merchant::MEDIA_COLLECTION_NAME)->first()
+                                 || !$record->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)->first()) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Merchant must have company photos and logos first to approve')
+                                    ->send();
+
+                                continue;
+                            }
+
                             $record->update(['status' => Merchant::STATUS_APPROVED]);
 
                             if (empty($record->default_password)) {
