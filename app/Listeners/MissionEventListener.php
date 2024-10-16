@@ -304,12 +304,15 @@ class MissionEventListener
                     'current_values' => json_encode($currentValues)
                 ]);
 
-                // just started fire notification
-                try {
-                    $locale = $user->last_lang ?? config('app.locale');
-                    $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
-                } catch (\Exception $e) {
-                    Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                // fire notification only if fcm_disable is false
+                if (!$mission->disable_fcm) {
+                    try {
+                        $locale = $user->last_lang ?? config('app.locale');
+                        // just started fire notification
+                        $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
+                    } catch (\Exception $e) {
+                        Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                    }
                 }
             } else if (!$userMission->pivot->is_completed) { // progress the mission
                 Log::info('User mission not complete yet', [
@@ -336,15 +339,18 @@ class MissionEventListener
                     'completed_at' => now()
                 ]);
 
-                try {
-                    $locale = $user->last_lang ?? config('app.locale');
-                    $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-                } catch (\Exception $e) {
-                    Log::error('Mission Completed Notification Error', [
-                        'mission_id' => $mission->id,
-                        'user' => $user->id,
-                        'error' => $e->getMessage()
-                    ]);
+                // fire notification only if fcm_disable is false
+                if (!$mission->disable_fcm) {
+                    try {
+                        $locale = $user->last_lang ?? config('app.locale');
+                        $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+                    } catch (\Exception $e) {
+                        Log::error('Mission Completed Notification Error', [
+                            'mission_id' => $mission->id,
+                            'user' => $user->id,
+                            'error' => $e->getMessage()
+                        ]);
+                    }
                 }
 
                 if ($mission->auto_disburse_rewards) {
