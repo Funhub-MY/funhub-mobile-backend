@@ -251,6 +251,11 @@ class MissionResource extends Resource
                                 ->nullable()
                                 ->helperText('If you choose a future date, mission only enabled at that point'),
 
+                            Forms\Components\Toggle::make('disable_fcm')
+                                ->label('Disable FCM')
+                                ->onIcon('heroicon-s-check-circle')
+                                ->offIcon('heroicon-s-x-circle'),
+
                         ]),
                     Section::make('Reward Details')
                         ->schema([
@@ -346,6 +351,9 @@ class MissionResource extends Resource
                         'secondary' => 0,
                         'success' => 1,
                     ]),
+
+                Tables\Columns\ToggleColumn::make('disable_fcm')
+                    ->label('Disable FCM'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable(),
