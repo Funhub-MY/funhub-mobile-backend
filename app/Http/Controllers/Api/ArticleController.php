@@ -213,7 +213,10 @@ class ArticleController extends Controller
                 'user', 'user.media',
                 'comments', 'interactions.user', 'interactions.user.media',
                 'location','location.state', 'location.country', 'location.ratings')
-            ->withCount('media', 'tags', 'views', 'userFollowers', 'userFollowings')
+            ->withCount('media', 'tags', 'views', 'userFollowings')
+            ->withCount(['userFollowers' => function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            }])
             // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
@@ -619,7 +622,10 @@ class ArticleController extends Controller
         $this->filterArticlesBlockedOrHidden($query);
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+            ->withCount(['userFollowers' => function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            }])
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
@@ -713,7 +719,10 @@ class ArticleController extends Controller
         }
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+            ->withCount(['userFollowers' => function ($query) {
+                $query->where('status', User::STATUS_ACTIVE);
+            }])
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
@@ -1062,7 +1071,10 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::with('user', 'user.followers', 'comments', 'media', 'categories', 'tags', 'location', 'location.ratings', 'taggedUsers')
-        ->withCount('media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount('media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+        ->withCount(['userFollowers' => function ($query) {
+            $query->where('status', User::STATUS_ACTIVE);
+        }])
         // withCount comment where dont have parent_id
         ->withCount(['comments' => function ($query) {
             $query->whereNull('parent_id')
@@ -1668,7 +1680,10 @@ class ArticleController extends Controller
             $query->where('user_id', auth()->user()->id);
         })
         ->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-        ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowers', 'userFollowings')
+        ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+        ->withCount(['userFollowers' => function ($query) {
+            $query->where('status', User::STATUS_ACTIVE);
+        }])
         ->withCount(['comments' => function ($query) {
             $query->whereNull('parent_id')
             ->whereHas('user' , function ($query) {

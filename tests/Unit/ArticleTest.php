@@ -1340,7 +1340,7 @@ class ArticleTest extends TestCase
         $this->assertCount(5, $followings->json()['data']);
 
         // check if followings of logged in user id are same as the users id
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $users->pluck('id')->toArray(),
             collect($followings->json()['data'])->pluck('id')->toArray()
         );
