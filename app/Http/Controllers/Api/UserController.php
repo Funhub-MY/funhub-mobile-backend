@@ -1112,12 +1112,12 @@ class UserController extends Controller
             $this->dispatch(new PopulateLocationAddressForUser($loc));
 
             return response()->json([
-                'message' => 'Location updated and historical record created'
+                'message' => 'Location updated'
             ]);
         }
 
         return response()->json([
-            'message' => 'Location not updated (less than 300m movement)'
+            'message' => 'Location not updated'
         ]);
     }
 
