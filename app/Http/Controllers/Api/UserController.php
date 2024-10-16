@@ -1084,13 +1084,54 @@ class UserController extends Controller
 
         $user = auth()->user();
 
-        $user->update([
-            'last_lat' => $request->lat,
-            'last_lng' => $request->lng,
-        ]);
+        // current lat lng
+        $currentLat = $user->last_lat ?? null;
+        $currentLng = $user->last_lng ?? null;
+
+        // calculate distance if both current and new coordinates are available
+        $distance = 0;
+        if ($currentLat !== null && $currentLng !== null) {
+            $distance = $this->calculateDistance($currentLat, $currentLng, $request->lat, $request->lng);
+        }
+
+        // update location and create historical record if distance > 100 meters
+        if ($distance > 100 || $currentLat === null || $currentLng === null) {
+            $user->update([
+                'last_lat' => $request->lat,
+                'last_lng' => $request->lng,
+            ]);
+
+            // create new historical location
+            $user->historicalLocations()->create([
+                'lat' => $request->lat,
+                'lng' => $request->lng,
+            ]);
+
+            return response()->json([
+                'message' => 'Location updated and historical record created'
+            ]);
+        }
 
         return response()->json([
-            'message' => 'Location updated'
+            'message' => 'Location not updated (less than 500m movement)'
         ]);
+    }
+
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371000; // in meters
+
+        $lat1 = deg2rad($lat1);
+        $lon1 = deg2rad($lon1);
+        $lat2 = deg2rad($lat2);
+        $lon2 = deg2rad($lon2);
+
+        $latDelta = $lat2 - $lat1;
+        $lonDelta = $lon2 - $lon1;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($lat1) * cos($lat2) * pow(sin($lonDelta / 2), 2)));
+
+        return $angle * $earthRadius;
     }
 }
