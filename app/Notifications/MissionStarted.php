@@ -49,7 +49,13 @@ class MissionStarted extends Notification
      */
     public function via($notifiable)
     {
-        return [FcmChannel::class, 'database'];
+        $channels = ['database'];
+
+        if (!$this->mission->disable_fcm) {
+            $channels[] = FcmChannel::class;
+        }
+
+        return $channels;
     }
 
     protected function getMessage()
