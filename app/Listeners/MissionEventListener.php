@@ -304,9 +304,9 @@ class MissionEventListener
                     'current_values' => json_encode($currentValues)
                 ]);
 
+                // just started fire notification
                 try {
                     $locale = $user->last_lang ?? config('app.locale');
-                    // just started fire notification
                     $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
                 } catch (\Exception $e) {
                     Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
