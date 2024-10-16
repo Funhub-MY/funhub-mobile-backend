@@ -11,8 +11,16 @@ class UserHistoricalLocation extends Model
 
     protected $guarded = ['id'];
 
+    protected $appends = ['full_address'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // getter full address
+    public function getFullAddressAttribute()
+    {
+        return $this->address . ', ' . $this->address_2 . ', ' . $this->zip_code . ', ' . $this->city . ', ' . $this->state . ', ' . $this->country;
     }
 }

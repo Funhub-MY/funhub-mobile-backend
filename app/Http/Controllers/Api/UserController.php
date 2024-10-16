@@ -7,6 +7,7 @@ use App\Http\Resources\PublicArticleResource;
 use App\Http\Resources\PublicUserResource;
 use App\Http\Resources\UserBlockResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\PopulateLocationAddressForUser;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Comment;
@@ -1094,18 +1095,21 @@ class UserController extends Controller
             $distance = $this->calculateDistance($currentLat, $currentLng, $request->lat, $request->lng);
         }
 
-        // update location and create historical record if distance > 100 meters
-        if ($distance > 100 || $currentLat === null || $currentLng === null) {
+        // update location and create historical record if distance > 300 meters
+        if ($distance > 300 || $currentLat === null || $currentLng === null) {
             $user->update([
                 'last_lat' => $request->lat,
                 'last_lng' => $request->lng,
             ]);
 
             // create new historical location
-            $user->historicalLocations()->create([
+            $loc = $user->historicalLocations()->create([
                 'lat' => $request->lat,
                 'lng' => $request->lng,
             ]);
+
+            // dispatch job to populate location address for user(allow google )
+            $this->dispatch(new PopulateLocationAddressForUser($loc));
 
             return response()->json([
                 'message' => 'Location updated and historical record created'
@@ -1113,7 +1117,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => 'Location not updated (less than 500m movement)'
+            'message' => 'Location not updated (less than 300m movement)'
         ]);
     }
 
