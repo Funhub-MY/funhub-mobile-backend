@@ -15,6 +15,8 @@ use App\Filament\Resources\SettingResource\Pages;
 
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SettingResource\RelationManagers;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Textarea;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class SettingResource extends Resource
@@ -29,12 +31,16 @@ class SettingResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('key')
-                    ->autofocus()
-                    ->required()
-                    ->unique(ignoreRecord:true),
-                TextInput::make('value')
-                    ->required(),
+                Card::make([
+                    TextInput::make('key')
+                        ->autofocus()
+                        ->required()
+                        // disabled if context is edit
+                        ->disabledOn('edit')
+                        ->unique(ignoreRecord:true),
+                    Textarea::make('value')
+                        ->required(),
+                ])
             ]);
     }
 
@@ -58,14 +64,14 @@ class SettingResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             AuditsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -73,5 +79,5 @@ class SettingResource extends Resource
             'create' => Pages\CreateSetting::route('/create'),
             'edit' => Pages\EditSetting::route('/{record}/edit'),
         ];
-    }    
+    }
 }

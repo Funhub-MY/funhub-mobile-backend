@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Setting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use OpenAI;
@@ -32,8 +33,12 @@ class ProcessArticleToCategoriesML extends Command
      */
     public function handle()
     {
+        $this->info('Auto Categorization Started');
+
         $client = OpenAI::client(config('services.openai.secret'));
         $dryRun = $this->option('dry-run');
+        $promptSetting = Setting::where('key', 'auto_categorization_prompt')->first();
+        $systemPrompt = $promptSetting ? $promptSetting->value : '';
 
         // get all subcategories
         $subCategories = ArticleCategory::where('parent_id', '!=', null)->get();

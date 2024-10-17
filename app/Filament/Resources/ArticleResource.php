@@ -227,7 +227,22 @@ class ArticleResource extends Resource
                             Toggle::make('hidden_from_home')
                                 ->label('Hide from Home?')
                                 ->helperText('Article will not showed in Recommendations. Whitelist user to bypass.')
-                                ->default(false),
+                                ->default(false)
+                                ->afterStateUpdated(function ($record) {
+                                    if ($record) {
+                                        try {
+                                            $record->searchable();
+                                            Log::info('[ArticleResource] Hidden from home toggle button, article added/removed to search index(algolia)', [
+                                                'article_id' => $record->id,
+                                            ]);
+                                        } catch (\Exception $e) {
+                                            Log::error('[ArticleResource] Hidden from Home Toggle Error', [
+                                                'article_id' => $record->id,
+                                                'error' => $e->getMessage()
+                                            ]);
+                                        }
+                                    }
+                                }),
                             // Toggle::make('pinned_recommended')
                             //     ->label('Pin to top in Recommendations?')
                             //     ->helperText('Article will be pinned to top in Recommendations.')

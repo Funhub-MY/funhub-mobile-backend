@@ -7,13 +7,16 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferCampaignSchedule;
 use App\Models\MerchantOfferClaim;
+use App\Models\MerchantOfferClaimRedemptions;
 use App\Models\MerchantOfferVoucher;
 use App\Models\MerchantOfferVoucherMovement;
+use App\Notifications\RedeemReview;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
@@ -219,7 +222,65 @@ class VouchersRelationManager extends RelationManager
                         ->label('Remarks')
                         ->rows(2)
                         ->nullable(),
-                ])
+                ]),
+                BulkAction::make('sendRedeemReviewReminder')
+                    ->label('Send Redeem Review Reminder')
+                    ->icon('heroicon-o-bell')
+                    ->action(function (Collection $records): void {
+                        $sentCount = 0;
+                        $failedCount = 0;
+
+                        foreach ($records as $voucher) {
+                            try {
+                                // Check if the voucher has been redeemed
+                                $redemption = MerchantOfferClaimRedemptions::where('claim_id', $voucher->claim->id)
+                                    ->first();
+
+                                if ($redemption) {
+                                    // Clear the reminder_sent_at column
+                                    $redemption->update(['reminder_sent_at' => null]);
+
+                                    // Get the user and store information
+                                    $user = $redemption->user;
+                                    $store = $redemption->claim->merchantOffer->stores->first();
+
+                                    // Log the data we're about to use
+                                    Log::info('Preparing to send RedeemReview notification', [
+                                        'user_id' => $user->id,
+                                        'claim_id' => $redemption->claim->id,
+                                        'store_id' => $store ? $store->id : null,
+                                        'merchant_offer_id' => $redemption->claim->merchant_offer_id
+                                    ]);
+
+                                    // Send the notification
+                                    $user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
+                                    $sentCount++;
+
+                                    Log::info('RedeemReview notification sent successfully');
+                                    $redemption->update(['reminder_sent_at' => now()]);
+
+                                } else {
+                                    Log::warning('Voucher not redeemed', ['voucher_id' => $voucher->id]);
+                                    $failedCount++;
+                                }
+                            } catch (\Exception $e) {
+                                Log::error('Failed to send RedeemReview notification', [
+                                    'voucher_id' => $voucher->id,
+                                    'error' => $e->getMessage(),
+                                    'trace' => $e->getTraceAsString()
+                                ]);
+                                $failedCount++;
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Redeem Review Reminders Sent')
+                            ->body("Successfully sent {$sentCount} reminders. Failed to send {$failedCount} reminders.")
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->requiresConfirmation()
             ]);
     }
 }

@@ -12,12 +12,17 @@ use App\Models\MerchantOfferCategory;
 use App\Models\Store;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Resource;
@@ -172,6 +177,7 @@ class MerchantOfferCampaignResource extends Resource
                                             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
                                                 ->numeric()
                                                 ->decimalPlaces(2)
+                                                ->padFractionalZeros(true)
                                                 ->minValue(1)
                                                 ->thousandsSeparator(','),
                                             ),
@@ -183,6 +189,7 @@ class MerchantOfferCampaignResource extends Resource
                                             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask
                                                 ->numeric()
                                                 ->decimalPlaces(2)
+                                                ->padFractionalZeros(true)
                                                 ->minValue(1)
                                                 ->thousandsSeparator(','),
                                             ),
@@ -199,6 +206,7 @@ class MerchantOfferCampaignResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                         Forms\Components\TextInput::make('discounted_fiat_price')
@@ -210,16 +218,60 @@ class MerchantOfferCampaignResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                 ]),
                             ])->columns(2),
 
+                            Group::make()
+                            ->visible(fn ($context) => ($context == 'create') ? true : false)
+                            ->schema([
+                                    Section::make('Schedule Generator')
+                                        ->schema([
+                                            Grid::make()
+                                                ->schema([
+                                                    DatePicker::make('start_date')
+                                                        ->label('Start Date')
+                                                        ->required(),
+
+                                                    DatePicker::make('end_date')
+                                                        ->label('End Date')
+                                                        ->afterOrEqual('start_date'),
+
+                                                    TextInput::make('vouchers_count')
+                                                        ->required()
+                                                        ->label('Total No. of Vouchers')
+                                                        ->numeric(),
+
+                                                    TextInput::make('interval_days')
+                                                        ->label('Interval (Days)')
+                                                        ->numeric(),
+
+                                                    TextInput::make('days_per_schedule')
+                                                        ->label('Days Per Schedule')
+                                                        ->numeric()
+                                                        ->minValue(1)
+                                                        ->required()
+                                                        ->reactive(),
+
+                                                    TextInput::make('available_quantity')
+                                                        ->label('Available Quantity per Schedule')
+                                                        ->numeric()
+                                                        ->minValue(1)
+                                                ])
+                                                ->columns(2),
+                                    ])
+                                ])
+                            ->columnSpan('full'),
 
                             Forms\Components\Group::make()
+                            // visible on edit only
+                            ->visible(fn ($context) => ($context == 'edit') ? true : false)
                             ->schema([
                                 Forms\Components\Repeater::make('Schedules')
                                     ->orderable(false)
+                                    ->reactive()
                                     ->hint('Each schedules represents one merchant offer')
                                     ->relationship('schedules')
                                     ->schema([
@@ -276,7 +328,7 @@ class MerchantOfferCampaignResource extends Resource
 
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Other')
+                        Forms\Components\Section::make('Merchant')
                             ->schema([
 
                                 Forms\Components\Select::make('user_id')
