@@ -635,9 +635,10 @@ class MerchantOfferController extends Controller
                     $user->id
                 );
 
+                $orderNo = 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3));
                 $offer->claims()->attach($user->id, [
                     // order no is CLAIM(YMd)
-                    'order_no' => 'CLAIM-'. date('Ymd') .strtoupper(Str::random(3)),
+                    'order_no' => $orderNo,
                     'user_id' => $user->id,
                     'quantity' => $request->quantity,
                     'unit_price' => $offer->unit_price,

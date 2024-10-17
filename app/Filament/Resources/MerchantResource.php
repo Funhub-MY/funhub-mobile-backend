@@ -30,6 +30,8 @@ use App\Filament\Resources\MerchantResource\RelationManagers;
 use App\Filament\Resources\MerchantResource\RelationManagers\StoresRelationManager;
 use App\Models\Store;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -69,126 +71,144 @@ class MerchantResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Basic Information')
+                Group::make()
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
+                        Forms\Components\Section::make('Basic Information')
+                            ->columnSpan(1)
+                            ->schema([
+                                Forms\Components\Select::make('status')
+                                    ->label('Account Status')
+                                    ->options([
+                                        Merchant::STATUS_PENDING => 'Pending',
+                                        Merchant::STATUS_APPROVED => 'Approved',
+                                        Merchant::STATUS_REJECTED => 'Rejected',
+                                    ])
+                                    ->required(),
+                                Forms\Components\Select::make('user_id')
+                                    ->label('Linked User Account')
+                                    ->relationship('user', 'name')
+                                    ->searchable()
+                                    ->required(),
 
-                        Forms\Components\Select::make('status')
-                            ->label('Account Status')
-                            ->options([
-                                Merchant::STATUS_PENDING => 'Pending',
-                                Merchant::STATUS_APPROVED => 'Approved',
-                                Merchant::STATUS_REJECTED => 'Rejected',
-                            ])
-                            ->required(),
-                        Forms\Components\Select::make('user_id')
-                            ->label('Linked User Account')
-                            ->relationship('user', 'name')
-                            ->searchable()
-                            ->required(),
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Merchant Name')
+                                    ->autofocus()
+                                    ->required()
+                                    ->rules('required', 'max:255'),
 
-                        Forms\Components\TextInput::make('name')
-                            ->label('Merchant Name')
-                            ->autofocus()
-                            ->required()
-                            ->rules('required', 'max:255'),
+                                Forms\Components\TextInput::make('brand_name')
+                                    ->label('Brand Name')
+                                    ->rules('max:255'),
 
-                        Forms\Components\TextInput::make('brand_name')
-                            ->label('Brand Name')
-                            ->rules('max:255'),
+                                TextInput::make('redeem_code')
+                                    ->label('Cashier Redeem Code (6 Digit)')
+                                    ->disabled(fn ($livewire) => $livewire instanceof CreateRecord)
+                                    ->rules('digits:6')
+                                    ->disabled()
+                                    ->numeric()
+                                    ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
+                                    ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
 
-                        TextInput::make('redeem_code')
-                            ->label('Cashier Redeem Code (6 Digit)')
-                            ->disabled(fn ($livewire) => $livewire instanceof CreateRecord)
-                            ->rules('digits:6')
-                            ->disabled()
-                            ->numeric()
-                            ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
-                            ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
+                                TextInput::make('email')
+                                    ->label('Email (used for Login)')
+                                    ->email(true)
+                                    ->helperText('System auto send an email with their Login Email, Password to this address when created.')
+                                    ->required()
+                                    ->rules(['email', 'required', function ($context, ?Model $record) {
+                                        return function (string $attribute, $value, Closure $fail) use ($context, $record) {
+                                            if ($context === 'create' || !$record) {
+                                                $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
+                                                    ->exists();
+                                            } elseif ($context === 'edit' && $record instanceof Model)  {
+                                                $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
+                                                    ->where('id', '!=', $record->user_id) // excluding current user record in the table
+                                                    ->exists();
+                                            }
 
-                        TextInput::make('email')
-                            ->label('Email (used for Login)')
-                            ->email(true)
-                            ->helperText('System auto send an email with their Login Email, Password to this address when created.')
-                            ->required()
-                            ->rules(['email', 'required', function ($context, ?Model $record) {
-                                return function (string $attribute, $value, Closure $fail) use ($context, $record) {
-                                    if ($context === 'create' || !$record) {
-                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
-                                            ->exists();
-                                    } elseif ($context === 'edit' && $record instanceof Model)  {
-                                        $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
-                                            ->where('id', '!=', $record->user_id) // excluding current user record in the table
-                                            ->exists();
-                                    }
+                                            // Check the result and fail if the email already exists
+                                            if ($is_user_exists) {
+                                                $fail('The :attribute is exists');
+                                            }
+                                        };
+                                    }]),
 
-                                    // Check the result and fail if the email already exists
-                                    if ($is_user_exists) {
-                                        $fail('The :attribute is exists');
-                                    }
-                                };
-                            }]),
-
-                        // categories
-                        Select::make('categories')
-                            ->label('Merchant Categories')
-                            ->relationship('categories', 'name')
-                            ->multiple()
-                            ->preload()
-                            ->searchable(),
-
-                        //
-
-                    ]),
-                Forms\Components\Section::make('Business Information')
+                                // categories
+                                Select::make('categories')
+                                    ->label('Merchant Categories')
+                                    ->relationship('categories', 'name')
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable(),
+                            ]),
+                        Forms\Components\Section::make('Business Information')
+                            ->columnSpan(1)
+                            ->schema([
+                                Forms\Components\TextInput::make('business_name')
+                                    ->required()
+                                    ->label('Name')
+                                    ->rules('required', 'max:255'),
+                                TextInput::make('company_reg_no') //merchant's table new column 'company_reg_no'
+                                    ->label('Registration Number')
+                                    ->required()
+                                    ->placeholder('Enter Registration Number'),
+                                Forms\Components\TextInput::make('business_phone_no')
+                                    ->required()
+                                    ->label('Phone Number')
+                                    ->rules('required'),
+                                Forms\Components\Textarea::make('address')
+                                    ->required(),
+                                Forms\Components\TextInput::make('address_postcode')
+                                    ->required(),
+                            ]),
+                ]),
+                Group::make()
+                    ->columnSpanFull()
+                    ->columns(2)
                     ->schema([
-                        Forms\Components\TextInput::make('business_name')
-                            ->required()
-                            ->label('Name')
-                            ->rules('required', 'max:255'),
-                        TextInput::make('company_reg_no') //merchant's table new column 'company_reg_no'
-                            ->label('Registration Number')
-                            ->required()
-                            ->placeholder('Enter Registration Number'),
-                        Forms\Components\TextInput::make('business_phone_no')
-                            ->required()
-                            ->label('Phone Number')
-                            ->rules('required'),
-                        Forms\Components\Textarea::make('address')
-                            ->required(),
-                        Forms\Components\TextInput::make('address_postcode')
-                            ->required(),
-                    ]),
-                Forms\Components\Section::make('Person In Charge Information')
-                    ->schema([
-                        TextInput::make('pic_name') //merchant's table 'pic_name'
-                            ->label('PIC Name')
-                            ->required()
-                            ->placeholder('Enter PIC Name'),
-                        TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
-                            ->label('Designation')
-                            ->required()
-                            ->placeholder('Enter Designation'),
-                        TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
-                            ->label('IC Number')
-                            ->required()
-                            ->placeholder('Enter IC Number'),
-                        TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
-                            ->label('Contact Number')
-                            ->required()
-                            ->placeholder('Enter Contact Number'),
-                        TextInput::make('pic_email') //merchant's table column 'pic_email'
-                            ->label('PIC Email')
-                            ->required()
-                            ->placeholder('Enter Email'),
-                    ]),
+                        Forms\Components\Section::make('Person In Charge Information')
+                            ->columnSpan(1)
+                            ->schema([
+                                TextInput::make('pic_name') //merchant's table 'pic_name'
+                                    ->label('PIC Name')
+                                    ->placeholder('Enter PIC Name'),
+                                TextInput::make('pic_designation') //merchant's table new column 'pic_designation'
+                                    ->label('Designation')
+                                    ->placeholder('Enter Designation'),
+                                TextInput::make('pic_ic_no') //merchant's table new column 'pic_ic_no'
+                                    ->label('IC Number')
+                                    ->placeholder('Enter IC Number'),
+                                TextInput::make('pic_phone_no') //merchant's table column 'pic_phone_no'
+                                    ->label('Contact Number')
+                                    ->placeholder('Enter Contact Number'),
+                                TextInput::make('pic_email') //merchant's table column 'pic_email'
+                                    ->label('PIC Email')
+                                    ->placeholder('Enter Email'),
+                            ]),
 
+                        Forms\Components\Section::make('Authorised Personnel Information')
+                            ->columnSpan(1)
+                            ->schema([
+                                Placeholder::make('authorised_personnel_information')
+                                    ->label('Authorised Personnel are people who has authority to sign contract on behalf of business'),
+                                TextInput::make('authorised_personnel_designation')
+                                    ->label('Authorised Personnel Designation'),
+                                TextInput::make('authorised_personnel_name')
+                                    ->label('Authorised Personnel Name'),
+                                TextInput::make('authorised_personnel_ic_no')
+                                    ->label('Authorised Personnel IC Number'),
+                            ]),
+
+                        ]),
                 Forms\Components\Section::make('Photos')
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('company_logo')
                             ->label('Company Logo')
                             ->maxFiles(1)
                             ->collection(Merchant::MEDIA_COLLECTION_NAME)
-                            ->required()
+                            // ->required()
+                            ->enableDownload(true)
                             ->columnSpan('full')
                             ->disk(function () {
                                 if (config('filesystems.default') === 's3') {
@@ -202,8 +222,9 @@ class MerchantResource extends Resource
                             ->label('Company Photos')
                             ->multiple()
                             ->maxFiles(7)
+                            ->enableDownload(true)
                             ->collection(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)
-                            ->required()
+                            // ->required()
                             ->columnSpan('full')
                             ->disk(function () {
                                 if (config('filesystems.default') === 's3') {
@@ -213,32 +234,32 @@ class MerchantResource extends Resource
                             ->acceptedFileTypes(['image/*'])
                             ->rules('image'),
 
-                        Repeater::make('menus')
-                            ->label('Menus')
-                            ->createItemButtonLabel('Add Menu')
-                            ->schema([
-                                TextInput::make('name')
-                                    ->label('Menu Name')
-                                    ->reactive()
-                                    ->required(),
-                                FileUpload::make('file')
-                                    ->label('Menu File (PDF ONLY)')
-                                    ->disk(function () {
-                                        if (config('filesystems.default') === 's3') {
-                                            return 's3_public';
-                                        }
-                                    })
-                                    ->required()
-                                    ->acceptedFileTypes(['application/pdf'])
-                                    ->rules('mimes:pdf')
-                                    ->getUploadedFileUrlUsing(function ($file) {
-                                        $disk = config('filesystems.default');
-                                        if (config('filesystems.default') === 's3') {
-                                            $disk = 's3_public';
-                                        }
-                                        return Storage::disk($disk)->url($file);
-                                    }),
-                            ])
+                        // Repeater::make('menus')
+                        //     ->label('Menus')
+                        //     ->createItemButtonLabel('Add Menu')
+                        //     ->schema([
+                        //         TextInput::make('name')
+                        //             ->label('Menu Name')
+                        //             ->reactive()
+                        //             ->required(),
+                        //         FileUpload::make('file')
+                        //             ->label('Menu File (PDF ONLY)')
+                        //             ->disk(function () {
+                        //                 if (config('filesystems.default') === 's3') {
+                        //                     return 's3_public';
+                        //                 }
+                        //             })
+                        //             ->required()
+                        //             ->acceptedFileTypes(['application/pdf'])
+                        //             ->rules('mimes:pdf')
+                        //             ->getUploadedFileUrlUsing(function ($file) {
+                        //                 $disk = config('filesystems.default');
+                        //                 if (config('filesystems.default') === 's3') {
+                        //                     $disk = 's3_public';
+                        //                 }
+                        //                 return Storage::disk($disk)->url($file);
+                        //             }),
+                        //     ])
                     ]),
             ]);
     }
@@ -343,6 +364,17 @@ class MerchantResource extends Resource
                     ->label('Approve Merchant')
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
+                            // must have company photos and logos
+                            if (!$record->getMedia(Merchant::MEDIA_COLLECTION_NAME)->first()
+                                 || !$record->getMedia(Merchant::MEDIA_COLLECTION_NAME_PHOTOS)->first()) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Merchant must have company photos and logos first to approve')
+                                    ->send();
+
+                                continue;
+                            }
+
                             $record->update(['status' => Merchant::STATUS_APPROVED]);
 
                             if (empty($record->default_password)) {

@@ -7,6 +7,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use Illuminate\Notifications\Notification;
@@ -17,18 +18,19 @@ class RedeemReview extends Notification
 {
     use Queueable;
 
-    protected $claim, $user, $store;
+    protected $claim, $user, $store, $merchant_offer_id;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(MerchantOfferClaim  $claim, User $user, Store $store = null)
+    public function __construct(MerchantOfferClaim  $claim, User $user, Store $store = null, $merchant_offer_id = null)
     {
         $this->claim = $claim;
         $this->user = $user;
         $this->store = $store;
+        $this->merchant_offer_id = $merchant_offer_id;
     }
 
     /**
@@ -54,10 +56,11 @@ class RedeemReview extends Notification
 
         return FcmMessage::create()
             ->setData([
-                'object' => (string) get_class($this->store),
-                'object_id' => ($this->store) ?  (string) $this->store->id : null,
+                'object' => $this->store ? (string) get_class($this->store) : 'App\Models\Store',
+                'object_id' => $this->store ? (string) $this->store->id : '',
+                'merchant_offer_id' => (string) $this->merchant_offer_id,
                 'link_to_url' => (string) 'false',
-                'link_to' => ($this->store) ? (string) $this->store->id : null, // if link to url false, means get link_to_object
+                'link_to' => ($this->store) ? (string) $this->store->id : '', // if link to url false, means get link_to_object
                 'link_to_object' => (string) 'null', // if link to url false, means get link_to_object
                 'action' => 'redeemed_review',
                 'from_name' => (string) $this->user->name,
@@ -83,6 +86,7 @@ class RedeemReview extends Notification
         return [
             'object' => (string) get_class($this->store),
             'object_id' =>($this->store) ?  (string) $this->store->id : null,
+            'merchant_offer_id' => (string) $this->merchant_offer_id,
             'link_to_url' => false,
             'link_to' => (string) ($this->store) ? $this->store->id : null, // if link to url false, means get link_to_object
             'link_to_object' => null, // if link to url false, means get link_to_object

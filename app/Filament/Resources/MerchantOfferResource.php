@@ -187,6 +187,7 @@ class MerchantOfferResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                     Forms\Components\TextInput::make('discounted_point_fiat_price')
@@ -198,6 +199,7 @@ class MerchantOfferResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                 ]),
@@ -213,6 +215,7 @@ class MerchantOfferResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                         Forms\Components\TextInput::make('discounted_fiat_price')
@@ -224,6 +227,7 @@ class MerchantOfferResource extends Resource
                                                 ->numeric()
                                                 ->decimalPlaces(2)
                                                 ->minValue(1)
+                                                ->padFractionalZeros(true)
                                                 ->thousandsSeparator(','),
                                             ),
                                 ]),

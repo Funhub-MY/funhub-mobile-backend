@@ -31,7 +31,8 @@ class StoresRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->url(fn ($record) => route('filament.resources.stores.edit', $record->id)),
                 Tables\Columns\TextColumn::make('address'),
                 Tables\Columns\TextColumn::make('manager_name'),
                 Tables\Columns\TextColumn::make('address_postcode'),
@@ -59,12 +60,12 @@ class StoresRelationManager extends RelationManager
                 //     ])->confirm(fn ($record) => "Are you sure you want to attach this store to {$record->name}?"),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DetachBulkAction::make(),
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

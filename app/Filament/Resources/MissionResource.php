@@ -251,6 +251,11 @@ class MissionResource extends Resource
                                 ->nullable()
                                 ->helperText('If you choose a future date, mission only enabled at that point'),
 
+                            Forms\Components\Toggle::make('disable_fcm')
+                                ->label('Disable FCM')
+                                ->onIcon('heroicon-s-check-circle')
+                                ->offIcon('heroicon-s-x-circle'),
+
                         ]),
                     Section::make('Reward Details')
                         ->schema([
@@ -260,7 +265,15 @@ class MissionResource extends Resource
                             ->label('Reward Type')
                             ->types([
                                 Forms\Components\MorphToSelect\Type::make(Reward::class)
-                                ->titleColumnName('name'),
+                                    ->titleColumnName('name')
+                                    ->modifyOptionsQueryUsing(function ($query) {
+                                        return $query->select('rewards.id', 'rewards.name')
+                                            ->whereIn('id', function($subquery) {
+                                                $subquery->selectRaw('MIN(id)')
+                                                    ->from('rewards')
+                                                    ->groupBy('name');
+                                            });
+                                    }),
                                 Forms\Components\MorphToSelect\Type::make(RewardComponent::class)
                                 ->titleColumnName('name'),
                             ]),
@@ -346,6 +359,9 @@ class MissionResource extends Resource
                         'secondary' => 0,
                         'success' => 1,
                     ]),
+
+                Tables\Columns\ToggleColumn::make('disable_fcm')
+                    ->label('Disable FCM'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->searchable(),

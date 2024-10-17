@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use Carbon\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -127,6 +128,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             'status' => $this->status,
             'published_at' => $this->published_at,
             'created_at' => $this->created_at,
+            'created_at_unix' => Carbon::parse($this->created_at)->timestamp,
             'updated_at' => $this->updated_at,
             'gallery' => $this->getMedia(self::MEDIA_COLLECTION_NAME)->map(function ($media) {
                 return $media->getUrl();
@@ -137,6 +139,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             'share_count' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
             'bookmarks_count' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
             'views_count' => $this->views->count(),
+            'organic_views_count' => $this->views()->where('is_system_generated', false)->count(),
             // 'count' => [
             //     'comments' => $this->comments->count(),
             //     'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
