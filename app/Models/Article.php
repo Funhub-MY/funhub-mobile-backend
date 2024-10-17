@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use Carbon\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -127,6 +128,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             'status' => $this->status,
             'published_at' => $this->published_at,
             'created_at' => $this->created_at,
+            'created_at_unix' => Carbon::parse($this->created_at)->timestamp,
             'updated_at' => $this->updated_at,
             'gallery' => $this->getMedia(self::MEDIA_COLLECTION_NAME)->map(function ($media) {
                 return $media->getUrl();
