@@ -139,7 +139,7 @@ class Article extends BaseModel implements HasMedia, Auditable
             'share_count' => $this->interactions->where('type', Interaction::TYPE_SHARE)->count(),
             'bookmarks_count' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
             'views_count' => $this->views->count(),
-            'organic_views_count' => $this->views->where('is_system_generated', false)->count(),
+            'organic_views_count' => $this->views()->where('is_system_generated', false)->count(),
             // 'count' => [
             //     'comments' => $this->comments->count(),
             //     'likes' => $this->interactions->where('type', Interaction::TYPE_LIKE)->count(),
