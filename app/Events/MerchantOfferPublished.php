@@ -15,7 +15,7 @@ class MerchantOfferPublished
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $merchantOffer;
+    public $merchantOffer;
 
     /**
      * Create a new event instance.
