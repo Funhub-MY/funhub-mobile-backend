@@ -265,7 +265,15 @@ class MissionResource extends Resource
                             ->label('Reward Type')
                             ->types([
                                 Forms\Components\MorphToSelect\Type::make(Reward::class)
-                                ->titleColumnName('name'),
+                                    ->titleColumnName('name')
+                                    ->modifyOptionsQueryUsing(function ($query) {
+                                        return $query->select('rewards.id', 'rewards.name')
+                                            ->whereIn('id', function($subquery) {
+                                                $subquery->selectRaw('MIN(id)')
+                                                    ->from('rewards')
+                                                    ->groupBy('name');
+                                            });
+                                    }),
                                 Forms\Components\MorphToSelect\Type::make(RewardComponent::class)
                                 ->titleColumnName('name'),
                             ]),
