@@ -12,6 +12,8 @@ use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class EditStore extends EditRecord
 {
@@ -47,6 +49,23 @@ class EditStore extends EditRecord
                 ];
             })->values()->toArray();
         }
+
+        if ($data['rest_hours']) {
+            $data['rest_hours'] = collect(json_decode($data['rest_hours'], true))->map(function ($item, $key) {
+                return [
+                    'day' => $key,
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ];
+            })->values()->toArray();
+        }
+
+        $data['menus'] = $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item, $index) {
+            return [
+                'name' => (isset($item->custom_properties['name'])) ? $item->custom_properties['name'] : 'Menu ' . ($index + 1),
+                'file' => $item->getPath(),
+            ];
+        });
         return $data;
     }
 
@@ -174,6 +193,79 @@ class EditStore extends EditRecord
                     'close_time' => $item['close_time']
                 ]];
             })->toArray());
+        }
+
+        if (count($data['rest_hours']) > 0) {
+            $data['rest_hours'] = json_encode(collect($data['rest_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ]];
+            })->toArray());
+        }
+
+        if (isset($data['menus'])) {
+            $disk = config('filesystems.default');
+            if ($disk == 's3') {
+                // use s3_public
+                $disk = 's3_public';
+            }
+
+            Log::info('Menus: ', ['menus' => $data['menus']]);
+            // Save existing menu files to a temporary directory
+            $tempDir = Storage::disk($disk)->path('temp/' . Str::random(10));
+            Storage::disk($disk)->makeDirectory($tempDir);
+
+            $existingMenus = [];
+            foreach ($this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS) as $media) {
+                $tempFilePath = $tempDir . '/' . $media->file_name;
+                $fileContents = Storage::disk($disk)->get($media->getPath());
+                Storage::disk($disk)->put($tempFilePath, $fileContents);
+                $existingMenus[$media->file_name] = [
+                    'path' => $tempFilePath,
+                    'custom_properties' => $media->custom_properties,
+                ];
+            }
+
+            foreach ($data['menus'] as $index => $menu) {
+                $file = $menu['file'];
+
+                // Check if the file exists in the temporary directory or on the storage disk
+                if (isset($existingMenus[$file])) {
+                    $filePath = $existingMenus[$file]['path'];
+                    $customProperties = array_merge($existingMenus[$file]['custom_properties'], ['name' => $menu['name']]);
+                } elseif (Storage::disk($disk)->exists($file)) {
+                    $filePath = Storage::disk($disk)->path($file);
+                    $customProperties = ['name' => $menu['name']];
+                } else {
+                    // Skip the file if it doesn't exist
+                    Log::warning('File not found: ', ['file' => $file]);
+                    continue;
+                }
+
+                $media = $this->record->addMediaFromDisk($filePath, $disk)
+                    ->withCustomProperties($customProperties)
+                    ->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+
+                Log::info('File uploaded: ', ['media' => $media, 'file' => $file]);
+
+                // Delete the file from the temporary directory if it exists
+                if (isset($existingMenus[$file])) {
+                    Storage::disk($disk)->delete($existingMenus[$file]['path']);
+                }
+
+                // Set the order of the media item
+                $media->order_column = $index + 1;
+                $media->save();
+            }
+
+            // Delete the temporary directory
+            Storage::deleteDirectory($tempDir);
+
+            // Clear the media collection after processing all files
+            $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+        } else {
+            $this->record->clearMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
         }
 
         return $data;
