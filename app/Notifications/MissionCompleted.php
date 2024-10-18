@@ -70,6 +70,8 @@ class MissionCompleted extends Notification
 
     public function toFcm($notifiable)
     {
+        $completedTitle = (!$this->mission->auto_disburse_rewards) ? __('messages.notification.fcm.MissionCompletedTitleSelfClaim', ['missionName' => $this->mission->name]) : __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->mission),
@@ -89,7 +91,7 @@ class MissionCompleted extends Notification
                 ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle(__('messages.notification.fcm.MissionCompletedTitle'))
+                ->setTitle($completedTitle)
                 ->setBody($this->getMessage())
             );
     }
@@ -102,6 +104,8 @@ class MissionCompleted extends Notification
      */
     public function toArray($notifiable)
     {
+        $completedTitle = (!$this->mission->auto_disburse_rewards) ? __('messages.notification.fcm.MissionCompletedTitleSelfClaim', ['missionName' => $this->mission->name]) : __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+
         return [
             'object' => get_class($this->mission),
             'object_id' => $this->mission->id,
@@ -111,7 +115,7 @@ class MissionCompleted extends Notification
             'action' => 'mission_completed',
             'from_name' => $this->user->name,
             'from_id' => $this->user->id,
-            'title' => $this->translatedMissionName,
+            'title' => $completedTitle,
             'message' => $this->getMessage(),
             'extra' => [
                 'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
