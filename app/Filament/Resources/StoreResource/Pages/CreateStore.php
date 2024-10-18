@@ -20,22 +20,43 @@ class CreateStore extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $completeBusinessWeek = [];
+        $completeRestWeek = [];
+        for ($i = 1; $i <= 7; $i++) {
+            $completeBusinessWeek[$i] = [
+                'open_time' => null,
+                'close_time' => null
+            ];
+            $completeRestWeek[$i] = [
+                'open_time' => null,
+                'close_time' => null
+            ];
+        }
+
         if (count($data['business_hours']) > 0) {
-            $data['business_hours'] = json_encode(collect($data['business_hours'])->mapWithKeys(function ($item) {
-                return [$item['day'] => [
+            $businessHours = collect($data['business_hours'])->mapWithKeys(function ($item) {
+                return [(int)$item['day'] => [
                     'open_time' => $item['open_time'],
                     'close_time' => $item['close_time']
                 ]];
-            })->toArray());
+            })->toArray();
+
+            // Merge with the complete week structure
+            $completeBusinessWeek = array_replace($completeBusinessWeek, $businessHours);
+            $data['business_hours'] = json_encode($completeBusinessWeek);
         }
 
         if (count($data['rest_hours']) > 0) {
-            $data['rest_hours'] = json_encode(collect($data['rest_hours'])->mapWithKeys(function ($item) {
-                return [$item['day'] => [
+            $restHours = collect($data['rest_hours'])->mapWithKeys(function ($item) {
+                return [(int)$item['day'] => [
                     'open_time' => $item['open_time'],
                     'close_time' => $item['close_time']
                 ]];
-            })->toArray());
+            })->toArray();
+
+            // Merge with the complete week structure
+            $completeRestWeek = array_replace($completeRestWeek, $restHours);
+            $data['rest_hours'] = json_encode($completeRestWeek);
         }
 
         return $data;
