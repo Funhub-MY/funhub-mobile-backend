@@ -185,43 +185,23 @@ class EditStore extends EditRecord
             }
         }
 
-        $completeBusinessWeek = [];
-        $completeRestWeek = [];
-        for ($i = 1; $i <= 7; $i++) {
-            $completeBusinessWeek[$i] = [
-                'open_time' => null,
-                'close_time' => null
-            ];
-            $completeRestWeek[$i] = [
-                'open_time' => null,
-                'close_time' => null
-            ];
-        }
-
+        // handles business hours save
         if (count($data['business_hours']) > 0) {
-            $businessHours = collect($data['business_hours'])->mapWithKeys(function ($item) {
-                return [(int)$item['day'] => [
+            $data['business_hours'] = json_encode(collect($data['business_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
                     'open_time' => $item['open_time'],
                     'close_time' => $item['close_time']
                 ]];
-            })->toArray();
-
-            // Merge with the complete week structure
-            $completeBusinessWeek = array_replace($completeBusinessWeek, $businessHours);
-            $data['business_hours'] = json_encode($completeBusinessWeek);
+            })->toArray());
         }
 
         if (count($data['rest_hours']) > 0) {
-            $restHours = collect($data['rest_hours'])->mapWithKeys(function ($item) {
-                return [(int)$item['day'] => [
+            $data['rest_hours'] = json_encode(collect($data['rest_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
                     'open_time' => $item['open_time'],
                     'close_time' => $item['close_time']
                 ]];
-            })->toArray();
-
-            // Merge with the complete week structure
-            $completeRestWeek = array_replace($completeRestWeek, $restHours);
-            $data['rest_hours'] = json_encode($completeRestWeek);
+            })->toArray());
         }
 
         if (isset($data['menus'])) {
