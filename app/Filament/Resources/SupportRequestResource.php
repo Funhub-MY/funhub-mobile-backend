@@ -53,6 +53,7 @@ class SupportRequestResource extends Resource
                                     // TODO:: at the moment there is only 1 type.
                                     Forms\Components\MorphToSelect\Type::make(Article::class)->titleColumnName('title'),
                                 ])
+                                ->searchable()
                                 ->label('Type'),
 
                             TextInput::make('internal_remarks'),
