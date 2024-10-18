@@ -83,6 +83,7 @@ class StoreResource extends JsonResource
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
             'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,
+            'rest_hours' => ($this->rest_hours) ? json_decode($this->rest_hours) : null,
             'location' => $this->location,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,
