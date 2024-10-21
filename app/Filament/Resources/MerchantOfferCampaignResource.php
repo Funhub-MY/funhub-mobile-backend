@@ -357,7 +357,7 @@ class MerchantOfferCampaignResource extends Resource
 
                             Forms\Components\Section::make('Categories')->schema([
                                 Forms\Components\Select::make('categories')
-                                    ->label('')
+                                    ->label('Select Categories')
                                     ->preload()
                                     ->required()
                                     ->relationship('allOfferCategories', 'name')->createOptionForm([

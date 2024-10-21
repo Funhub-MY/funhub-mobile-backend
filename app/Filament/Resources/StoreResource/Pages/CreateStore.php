@@ -43,11 +43,33 @@ class CreateStore extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        if (is_array($data['rest_hours'])) {
+            // json encode rest hours
+            $data['rest_hours'] = json_encode(collect($data['rest_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ]];
+            })->toArray());
+        }
+
+        if (is_array($data['business_hours'])) {
+            // json encode business hours
+            $data['business_hours'] = json_encode(collect($data['business_hours'])->mapWithKeys(function ($item) {
+                return [$item['day'] => [
+                    'open_time' => $item['open_time'],
+                    'close_time' => $item['close_time']
+                ]];
+            })->toArray());
+        }
+
         $merchant = $this->getModel()::create($data);
 
         // create menus
-        if (isset($data['menus'])) {
+        if (isset($data['menus']) && count($data['menus']) > 0) {
             foreach ($data['menus'] as $menu) {
+                if (!isset($menu['file'])) continue;
+
                 // add from url to media collection with custom properties $menu['name'] then remove from file
                 $merchant->addMediaFromDisk($menu['file'])
                     ->withCustomProperties(['name' => $menu['name']])
