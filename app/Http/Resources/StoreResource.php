@@ -90,6 +90,17 @@ class StoreResource extends JsonResource
             }
         }
 
+        $currentDayRestHour = null;
+        if ($this->rest_hours) {
+            // today day in number, eg, Monday = 1, Sunday = 7
+            $today = date('N');
+            $restHours = json_decode($this->rest_hours, true);
+
+            if (isset($restHours[$today])) {
+                $currentDayRestHour = $restHours[$today];
+            }
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -111,6 +122,7 @@ class StoreResource extends JsonResource
             'business_phone_no' => $this->business_phone_no,
             'business_hours' => $completeBusinessWeek,
             'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,
+            'current_day_rest_hour' => ($this->rest_hours) ? $currentDayRestHour : null,
             'rest_hours' => $completeRestWeek,
             'location' => $this->location,
             'address' => $this->address,
