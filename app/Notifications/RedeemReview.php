@@ -18,7 +18,7 @@ class RedeemReview extends Notification
 {
     use Queueable;
 
-    protected $claim, $user, $store, $merchant_offer_id;
+    protected $claim, $user, $store, $merchant_offer_id, $claim_id, $merchant_id;
 
     /**
      * Create a new notification instance.
@@ -31,6 +31,9 @@ class RedeemReview extends Notification
         $this->user = $user;
         $this->store = $store;
         $this->merchant_offer_id = $merchant_offer_id;
+
+        $this->claim_id = null;
+        $this->merchant_id = null;
     }
 
     /**
@@ -51,8 +54,34 @@ class RedeemReview extends Notification
         ]);
     }
 
+    protected function getOffer()
+    {
+        if ($this->merchant_offer_id) {
+            $offer = MerchantOffer::find($this->merchant_offer_id);
+            if ($offer) {
+                $this->merchant_id = $offer->user->id;
+            }
+        }
+    }
+
+    protected function getClaim()
+    {
+        if ($this->merchant_offer_id && $this->user) {
+            // get claim_id of offer
+            $claim = MerchantOfferClaim::where('merchant_offer_id', $this->merchant_offer_id)
+                ->where('user_id', $this->user->id)
+                ->latest()
+                ->first();
+            if ($claim) {
+                $this->claim_id = $claim->id;
+            }
+        }
+    }
+
     public function toFcm($notifiable)
     {
+        $this->getClaim();
+        $this->getOffer();
 
         return FcmMessage::create()
             ->setData([
@@ -68,7 +97,9 @@ class RedeemReview extends Notification
                 'title' => __('messages.notification.fcm.RedemptioReviewReminderTitle'),
                 'message' => (string) $this->getMessage(),
                 'extra' => json_encode([
-                    'offer_id' => (string) $this->merchant_offer_id
+                    'offer_id' => (string) $this->merchant_offer_id,
+                    'merchant_id' => (string) $this->merchant_id,
+                    'claim_id' => (string) $this->claim_id
                 ])
             ])
             ->setNotification(
@@ -86,6 +117,9 @@ class RedeemReview extends Notification
      */
     public function toArray($notifiable)
     {
+        $this->getClaim();
+        $this->getOffer();
+
         return [
             'object' => (string) get_class($this->store),
             'object_id' =>($this->store) ?  (string) $this->store->id : null,
@@ -99,7 +133,9 @@ class RedeemReview extends Notification
             'title' => __('messages.notification.database.RedemptioReviewReminderTitle'),
             'message' => $this->getMessage(),
             'extra' => json_encode([
-                'offer_id' => (string) $this->merchant_offer_id
+                'offer_id' => (string) $this->merchant_offer_id,
+                'merchant_id' => (string) $this->merchant_id,
+                'claim_id' => (string) $this->claim_id
             ])
         ];
     }
