@@ -67,6 +67,9 @@ class RedeemReview extends Notification
                 'from_id' => (string) $this->user->id,
                 'title' => __('messages.notification.fcm.RedemptioReviewReminderTitle'),
                 'message' => (string) $this->getMessage(),
+                'extra' => json_encode([
+                    'offer_id' => (string) $this->merchant_offer_id
+                ])
             ])
             ->setNotification(
                 \NotificationChannels\Fcm\Resources\Notification::create()
@@ -95,6 +98,9 @@ class RedeemReview extends Notification
             'from_id' => $this->user->id,
             'title' => __('messages.notification.database.RedemptioReviewReminderTitle'),
             'message' => $this->getMessage(),
+            'extra' => json_encode([
+                'offer_id' => (string) $this->merchant_offer_id
+            ])
         ];
     }
 }
