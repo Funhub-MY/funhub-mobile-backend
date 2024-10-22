@@ -287,7 +287,7 @@ class MissionEventListener
                     // where auto_disburse_rewards is not set
                     ->where('auto_disburse_rewards', false)
                     // applies to one off frequency
-                    ->where('frequency', 'one-off')
+                    // ->where('frequency', 'one-off')
                     ->where('claimed_at', null)
                     ->first();
 
