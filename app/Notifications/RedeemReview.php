@@ -59,7 +59,7 @@ class RedeemReview extends Notification
         if ($this->merchant_offer_id) {
             $offer = MerchantOffer::find($this->merchant_offer_id);
             if ($offer) {
-                $this->merchant_id = $offer->user->id;
+                $this->merchant_id = ($offer->user) ? $offer->user->merchant->id : null;
             }
         }
     }
