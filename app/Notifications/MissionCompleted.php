@@ -61,7 +61,7 @@ class MissionCompleted extends Notification
 
     protected function getMessage()
     {
-        return __('messages.notification.fcm.MissionCompleted', [
+        return __('messages.notification.fcm.MissionCompletedTitleSelfClaim', [
             'missionName' => $this->mission->name,
             'reward' => $this->reward,
             'rewardQuantity' => $this->rewardQuantity
@@ -70,7 +70,7 @@ class MissionCompleted extends Notification
 
     public function toFcm($notifiable)
     {
-        $completedTitle = (!$this->mission->auto_disburse_rewards) ? __('messages.notification.fcm.MissionCompletedTitleSelfClaim', ['missionName' => $this->mission->name]) : __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
 
         return FcmMessage::create()
             ->setData([
@@ -104,7 +104,7 @@ class MissionCompleted extends Notification
      */
     public function toArray($notifiable)
     {
-        $completedTitle = (!$this->mission->auto_disburse_rewards) ? __('messages.notification.fcm.MissionCompletedTitleSelfClaim', ['missionName' => $this->mission->name]) : __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
+        $completedTitle = __('messages.notification.fcm.MissionCompletedTitle', ['missionName' => $this->mission->name]);
 
         return [
             'object' => get_class($this->mission),
