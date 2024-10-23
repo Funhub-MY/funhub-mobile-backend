@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class UserHistoricalLocationResource extends Resource
 {
@@ -125,6 +127,9 @@ class UserHistoricalLocationResource extends Resource
                     })
                     ->requiresConfirmation(),
                 // Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make()->exports([
+                    ExcelExport::make('table')->fromTable(),
+                ]),
             ]);
     }
 
