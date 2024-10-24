@@ -48,13 +48,28 @@ class SupportRequestResource extends Resource
                                 ->relationship('category', 'name')
                                 ->required(),
 
-                            Forms\Components\MorphToSelect::make('supportable')
-                                ->types([
-                                    // TODO:: at the moment there is only 1 type.
-                                    Forms\Components\MorphToSelect\Type::make(Article::class)->titleColumnName('title'),
-                                ])
-                                ->searchable()
-                                ->label('Type'),
+							Forms\Components\MorphToSelect::make('supportable')
+								->types([
+									// TODO:: at the moment there is only 1 type.
+									Forms\Components\MorphToSelect\Type::make(Article::class)
+										->titleColumnName('title')
+										->getOptionLabelUsing(function ($value): string {
+											$article = Article::find($value);
+											return "({$article->id}) {$article->title}";
+										})
+										->getSearchResultsUsing(function (string $search): array {
+											return Article::query()
+												->where('title', 'like', "%{$search}%")
+												->limit(50)
+												->get()
+												->mapWithKeys(fn (Article $article) => [
+													$article->id => "({$article->id}) {$article->title}"
+												])
+												->toArray();
+										})
+								])
+								->searchable()
+								->label('Type'),
 
                             TextInput::make('internal_remarks'),
                         ])
