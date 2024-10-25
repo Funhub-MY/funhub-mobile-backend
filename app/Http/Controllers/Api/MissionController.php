@@ -112,20 +112,37 @@ class MissionController extends Controller
         });
 
         // when completed_only = 1
-        $query->when($request->has('completed_only') && $request->completed_only == 1, function($query) {
-            $query->whereHas('participants', function($query) {
+        $query->when($request->has('completed_only') && $request->completed_only == 1, function($query) use ($request) {
+            $query->whereHas('participants', function($query) use ($request) {
                 $query->where('user_id', auth()->user()->id)
-                    ->where('missions_users.is_completed', true);
+                    ->where('missions_users.is_completed', true)
+                    ->when($request->frequency === 'daily', function($query) {
+                        // For daily missions, only show completed ones from the current day
+                        $query->where('missions_users.completed_at', '>=', now()->startOfDay())
+                              ->where('missions_users.completed_at', '<=', now()->endOfDay());
+                    })
+                    ->when($request->frequency === 'monthly', function($query) {
+                        // For monthly missions, only show completed ones from the current month
+                        $query->where('missions_users.completed_at', '>=', now()->startOfMonth())
+                              ->where('missions_users.completed_at', '<=', now()->endOfMonth());
+                    });
             });
         });
 
         // when completed_only = 0
-        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) {
+        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) use ($request) {
             // is not participating, or where is participating and is_completed is false
-            $query->where(function ($query) {
-                $query->whereHas('participants', function($query) {
+            $query->where(function ($query) use ($request) {
+                $query->whereHas('participants', function($query) use ($request) {
                     $query->where('user_id', auth()->user()->id)
-                        ->where('missions_users.is_completed', false);
+                        ->where('missions_users.is_completed', false)
+                        ->when($request->frequency === 'daily', function($query) {
+                            // For daily missions, consider previous day's completed missions as not completed
+                            $query->where(function($q) {
+                                $q->whereNull('missions_users.completed_at')
+                                  ->orWhere('missions_users.completed_at', '>=', now()->startOfDay());
+                            });
+                        });
                 })->orWhereDoesntHave('participants', function($query) {
                     $query->where('user_id', auth()->user()->id);
                 });
