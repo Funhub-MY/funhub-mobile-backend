@@ -125,6 +125,17 @@ class MissionController extends Controller
                         // For monthly missions, only show completed ones from the current month
                         $query->where('missions_users.completed_at', '>=', now()->startOfMonth())
                               ->where('missions_users.completed_at', '<=', now()->endOfMonth());
+                    })
+                    ->when($request->frequency === 'accumulated', function($query) {
+                        // For accumulated missions, only show the completed ones that have been claimed
+                        $query->whereNotNull('missions_users.claimed_at')
+                            ->whereNotExists(function ($subquery) {
+                                $subquery->from('missions_users as mu2')
+                                    ->whereRaw('mu2.mission_id = missions_users.mission_id')
+                                    ->where('mu2.user_id', auth()->user()->id)
+                                    ->whereNull('mu2.claimed_at')
+                                    ->where('mu2.created_at', '>', 'missions_users.created_at');
+                            });
                     });
             });
         });
@@ -142,6 +153,16 @@ class MissionController extends Controller
                                 $q->whereNull('missions_users.completed_at')
                                   ->orWhere('missions_users.completed_at', '>=', now()->startOfDay());
                             });
+                        })
+                        ->when($request->frequency === 'accumulated', function($query) {
+                            // For accumulated missions, only show the latest uncompleted/unclaimed one
+                            $query->whereNull('missions_users.claimed_at')
+                                ->whereNotExists(function ($subquery) {
+                                    $subquery->from('missions_users as mu2')
+                                        ->whereRaw('mu2.mission_id = missions_users.mission_id')
+                                        ->where('mu2.user_id', auth()->user()->id)
+                                        ->where('mu2.created_at', '>', 'missions_users.created_at');
+                                });
                         });
                 })->orWhereDoesntHave('participants', function($query) {
                     $query->where('user_id', auth()->user()->id);
