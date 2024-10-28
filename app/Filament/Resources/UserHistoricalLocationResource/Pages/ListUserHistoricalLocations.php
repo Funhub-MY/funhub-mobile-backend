@@ -23,17 +23,19 @@ class ListUserHistoricalLocations extends ListRecords
                     ExcelExport::make()
                         ->label('Export User Historical Locations (CSV)')
                         ->withColumns([
-                            Column::make('created_at')
-                                ->heading('Recorded On')
-                                ->formatStateUsing(fn($record) => $record->created_at->format('d/m/Y h:iA')),
-                            Column::make('user.name')->heading('User'),
-                            Column::make('lat')->heading('Latitude'),
-                            Column::make('lng')->heading('Longitude'),
-                            Column::make('address')->heading('Address'),
-                            Column::make('address_2')->heading('Address 2'),
-                            Column::make('zip_code')->heading('Zip Code'),
-                            Column::make('city')->heading('City'),
-                            Column::make('state')->heading('State'),
+							Column::make('user_id')->heading('User ID')->getStateUsing(fn($record) => $record->user->id),
+							Column::make('user_name')->heading('User Name')->getStateUsing(fn($record) => $record->user->name),
+							Column::make('age')->heading('Age')
+								->getStateUsing(fn($record) => $record->user->dob ? now()->diffInYears($record->user->dob) : null),
+							Column::make('gender')->heading('Gender')
+								->getStateUsing(fn($record) => $record->user->gender ?? null),
+							Column::make('lat')->heading('Latitude'),
+							Column::make('lng')->heading('Longitude'),
+							Column::make('full_address')->heading('Address')
+								->getStateUsing(fn($record) => $record->address . ($record->address_2 ? ', ' . $record->address_2 : '') . ',' . $record->zip_code),
+							Column::make('city')->heading('City'),
+							Column::make('state')->heading('State'),
+							Column::make('country')->heading('Country'),
                         ])
                         ->withFilename(fn ($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
                         ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
