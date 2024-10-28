@@ -126,10 +126,22 @@ class UserHistoricalLocationResource extends Resource
                             ->send();
                     })
                     ->requiresConfirmation(),
+				ExportBulkAction::make()->exports([
+					ExcelExport::make('user_historical_locations')
+						->withColumns([
+							'User ID' => fn ($record) => $record->user->id,
+							'User Name' => fn ($record) => $record->user->name,
+							'Age' => fn ($record) => $record->user->dob ? now()->diffInYears($record->user->dob) : null,
+							'Gender' => fn ($record) => $record->user->gender ?? null,
+							'Latitude' => fn ($record) => $record->lat,
+							'Longitude' => fn ($record) => $record->lng,
+							'Address' => fn ($record) => $record->address . ($record->address_2 ? ', ' . $record->address_2 : ''),
+							'City' => fn ($record) => $record->city,
+							'State' => fn ($record) => $record->state,
+							'Country' => fn ($record) => $record->country,
+						])
+				]),
                 // Tables\Actions\DeleteBulkAction::make(),
-                ExportBulkAction::make()->exports([
-                    ExcelExport::make('table')->fromTable(),
-                ]),
             ]);
     }
 
