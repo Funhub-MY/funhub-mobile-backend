@@ -954,6 +954,18 @@ class ArticleController extends Controller
         // detach existing location first
         $article->location()->detach(); // detaches all
 
+        // Mall outlets incorrect attaching issue
+        // if location exists, check if is_mall, if is mall check if name of locationData same as location name
+        if ($location->is_mall && $locationData['name'] != $location->name) {
+            // eg. location name is Chagee @ Sunway Pyramid it will have same lat,lng and google_id as Sunway Pyramid
+            // to prevent Chagee @ Sunway Pyramid being attached incorrectly to Sunway Pyramid
+            // search again with name of locationData, lat, lng. instead of just google_id or lat/lng
+            $location = Location::where('lat', $locationData['lat'])
+                ->where('lng', $locationData['lng'])
+                ->where('name', $locationData['name'])
+                ->first();
+        }
+
         if ($location) {
             // just attach to article with new ratings if there is
             $article->location()->attach($location->id);
