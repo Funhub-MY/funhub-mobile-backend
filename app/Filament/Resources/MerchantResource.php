@@ -210,8 +210,7 @@ class MerchantResource extends Resource
 						Forms\Components\Select::make('koc_user_id')
 							->label('KOC User')
 							->relationship('kocUser', 'name')
-							->searchable()
-							->required(),
+							->searchable(),
                         ]),
                 Forms\Components\Section::make('Photos')
                     ->schema([
