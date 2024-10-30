@@ -121,11 +121,6 @@ class Merchant extends BaseModel implements HasMedia, Auditable
 		return $this->belongsTo(User::class);
 	}
 
-	public function kocMerchantHistories()
-	{
-		return $this->hasMany(KocMerchantHistory::class);
-	}
-
     public function offers()
     {
         // has many through User

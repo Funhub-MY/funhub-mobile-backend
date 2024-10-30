@@ -134,18 +134,12 @@ class EditMerchant extends EditRecord
 	{
 		$record = $this->record;
 
-		// Access the original value of koc_user_id
 		$updatedKocUserId = $this->data['koc_user_id'] ?? null;
 
-		Log::info($updatedKocUserId);
-
-		// Check if the koc_user_id has changed
 		if ($this->originalKocUserId !== $updatedKocUserId) {
-			// Record the history
 			KocMerchantHistory::create([
 				'merchant_id' => $record->id,
 				'koc_user_id' => $updatedKocUserId,
-				'assigned_at' => now(), // Add a timestamp for when the KOC was assigned
 			]);
 		}
 	}
