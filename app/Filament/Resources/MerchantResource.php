@@ -36,8 +36,11 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Google\Service\StreetViewPublish\Place;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
+use Nette\Utils\Html;
 
 class MerchantResource extends Resource
 {
@@ -91,6 +94,11 @@ class MerchantResource extends Resource
                                     ->relationship('user', 'name')
                                     ->searchable()
                                     ->required(),
+                                                                    // if edit context and record has auto linked show placeholder
+                                Placeholder::make('business_phone_no')
+                                    ->disableLabel(true)
+                                    ->content(fn () => new HtmlString('<span style="font-weight:bold; color: #ff0000;font-size: 14px;margin-top: -5px">Auto linked with User as Registered Phone No. same as a Registered User </span>'))
+                                    ->visible(fn (Closure $get) => $get('has_auto_linked_user') === true),
 
                                 Forms\Components\TextInput::make('name')
                                     ->label('Merchant Name')
@@ -300,6 +308,11 @@ class MerchantResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
+                    ->formatStateUsing(function ($record) {
+                        return $record->has_auto_linked_user ? $record->user->name. ' (Auto Linked)' : $record->user->name;
+                    })
+                    ->searchable()
+                    ->url(fn ($record) => route('filament.resources.users.view', $record->user))
                     ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_name'),
                 Tables\Columns\TextColumn::make('redeem_code'),

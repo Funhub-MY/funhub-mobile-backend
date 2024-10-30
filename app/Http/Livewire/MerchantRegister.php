@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Country;
 use App\Models\Location;
 use App\Models\Merchant;
+use App\Models\MerchantUserAutolink;
 use App\Models\User;
 use App\Models\State;
 use App\Models\Store;
@@ -49,7 +50,8 @@ class MerchantRegister extends Component implements HasForms
             'company_reg_no' => 'required',
             'brand_name' => 'required',
             'phone_country_code' => 'required',
-            'business_phone_no' => 'required|unique:users,phone_no',
+            // 'business_phone_no' => 'required|unique:users,phone_no',
+            'business_phone_no' => 'required',
             'address' => 'required',
             // 'company_logo' => 'required',
             // 'company_photos' => 'required',
@@ -94,18 +96,34 @@ class MerchantRegister extends Component implements HasForms
 
         //create user using the company_email and password
         $user = null;
+        $hasAutoLinkedUser = false;
 
         // create a default password
         $password = Str::random(8);
 
         try {
-            $user = User::create([
-                'name' => $data['brand_name'],
-                'email' => $data['company_email'],
-                'phone_no' => $data['business_phone_no'],
-                'phone_country_code' => $data['phone_country_code'],
-                'password' => bcrypt($password),
-            ]);
+            if (isset($data['business_phone_no']) && $data['business_phone_no'] != null) {
+                // check if this business has registered with phone_no already
+
+                // auto linked
+                $user = User::where('phone_no', $data['business_phone_no'])
+                    ->where('phone_country_code', $data['phone_country_code'])
+                    ->first();
+
+                if ($user) {
+                    $hasAutoLinkedUser = true;
+                }
+            }
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $data['brand_name'],
+                    'email' => $data['company_email'],
+                    'phone_no' => $data['business_phone_no'],
+                    'phone_country_code' => $data['phone_country_code'],
+                    'password' => bcrypt($password),
+                ]);
+            }
         } catch (\Exception $e) {
             Log::error('[MerchantOnboarding] User creation failed: ' . $e->getMessage());
             session()->flash('error', 'User creation failed. Please try again.');
@@ -151,6 +169,16 @@ class MerchantRegister extends Component implements HasForms
             ]);
 
             if ($merchant) {
+                if ($hasAutoLinkedUser) {
+                    Log::info('[MerchantRegister] Auto linked user with phone_no: ' . $data['business_phone_no']);
+                    MerchantUserAutolink::create([
+                        'merchant_id' => $merchant->id,
+                        'user_id' => $user->id,
+                        'phone_no' => $data['business_phone_no'],
+                        'phone_country_code' => $data['phone_country_code'],
+                    ]);
+                }
+
                 // ensure redeem code is unique loop
                 $maxTries = 0;
                 $data['redeem_code'] = rand(100000, 999999);
@@ -387,7 +415,8 @@ class MerchantRegister extends Component implements HasForms
                         ];
                         Validator::make($data, [
                             'phone_country_code' => 'required|max:255',
-                            'business_phone_no' => 'required|max:255|unique:users,phone_no',
+                            'business_phone_no' => 'required|max:255',
+                            // 'business_phone_no' => 'required|max:255|unique:users,phone_no',
                             'company_email' => 'required|email|unique:users,email|unique:merchants,email',
                         ])->validate();
                     }),
