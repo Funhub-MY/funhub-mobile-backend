@@ -199,7 +199,11 @@ class MerchantResource extends Resource
                                 TextInput::make('authorised_personnel_ic_no')
                                     ->label('Authorised Personnel IC Number'),
                             ]),
-
+						Forms\Components\Select::make('koc_user_id')
+							->label('KOC User')
+							->relationship('kocUser', 'name')
+							->searchable()
+							->required(),
                         ]),
                 Forms\Components\Section::make('Photos')
                     ->schema([

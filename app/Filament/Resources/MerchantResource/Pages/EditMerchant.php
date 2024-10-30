@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\MerchantResource\Pages;
 
+use App\Events\ClosedSupportTicket;
 use App\Filament\Resources\MerchantResource;
+use App\Models\KocMerchantHistory;
 use App\Models\Merchant;
+use App\Models\SupportRequest;
 use Filament\Forms\Components\FileUpload;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -23,7 +26,10 @@ class EditMerchant extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['menus'] = $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item, $index) {
+		$this->originalKocUserId = $data['koc_user_id'] ?? null;
+		Log::info('Original KOC User ID: ', ['originalKocUserId' => $this->originalKocUserId]);
+
+		$data['menus'] = $this->record->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item, $index) {
             return [
                 'name' => (isset($item->custom_properties['name'])) ? $item->custom_properties['name'] : 'Menu ' . ($index + 1),
                 'file' => $item->getPath(),
@@ -123,4 +129,25 @@ class EditMerchant extends EditRecord
         }
         return $data;
     }
+
+	protected function afterSave(): void
+	{
+		$record = $this->record;
+
+		// Access the original value of koc_user_id
+		$updatedKocUserId = $this->data['koc_user_id'] ?? null;
+
+		Log::info($updatedKocUserId);
+
+		// Check if the koc_user_id has changed
+		if ($this->originalKocUserId !== $updatedKocUserId) {
+			// Record the history
+			KocMerchantHistory::create([
+				'merchant_id' => $record->id,
+				'koc_user_id' => $updatedKocUserId,
+				'assigned_at' => now(), // Add a timestamp for when the KOC was assigned
+			]);
+		}
+	}
+
 }
