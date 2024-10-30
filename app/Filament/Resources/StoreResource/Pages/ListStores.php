@@ -24,8 +24,29 @@ class ListStores extends ListRecords
         return [
             Actions\CreateAction::make(),
 
-            // Import Stores csv
-            SyncStoreCategoriesAction::make(),
+			// Import Stores from CSV
+			ImportAction::make('importStores')
+				->label('Import Stores (csv)')
+				->uniqueField('name')
+				->fields([
+					ImportField::make('name')
+						->label('Store Name')
+						->required(),
+					ImportField::make('address')
+						->label('Address')
+						->required(),
+					ImportField::make('address_postcode')
+						->label('Postcode'),
+					ImportField::make('state_id')
+						->label('State ID'),
+					ImportField::make('country_id')
+						->label('Country ID'),
+					ImportField::make('is_hq')
+						->label('Is HQ?'),
+				]),
+
+			// Sync Stores Categories csv
+			SyncStoreCategoriesAction::make(),
 
             // Export Stores csv
             ExportAction::make()
