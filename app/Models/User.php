@@ -427,6 +427,11 @@ class User extends Authenticatable implements HasMedia, FilamentUser, Auditable
         return $this->hasOne(MerchantUserAutolink::class, 'user_id');
     }
 
+    public function articleRecommendations()
+    {
+        return $this->hasMany(ArticleRecommendation::class, 'user_id');
+    }
+
     // /**
     //  * Get the user's point balance
     //  */

@@ -78,6 +78,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::post('articles/not_interested', [\App\Http\Controllers\Api\ArticleController::class, 'postNotInterestedArticle']);
         Route::get('articles/tagged_users', [\App\Http\Controllers\Api\ArticleController::class, 'getTaggedUsersOfArticle']);
         Route::get('articles/merchant_offers/{article}', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleMerchantOffers']);
+        Route::post('articles/recommendations', [\App\Http\Controllers\Api\ArticleController::class, 'postSaveArticleRecommendation']);
 
         Route::get('/articles/nearby', [ArticleController::class, 'getArticlesNearby']);
         Route::get('/articles/keyword', [ArticleController::class, 'getArticlesByKeywordId']);
