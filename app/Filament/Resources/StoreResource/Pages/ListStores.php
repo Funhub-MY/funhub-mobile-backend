@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\StoreResource\Pages;
 
+use App\Filament\Actions\CustomImportStoresAction;
 use App\Filament\Resources\StoreResource;
+use App\Models\Country;
 use App\Models\MerchantCategory;
+use App\Models\State;
 use App\Models\Store;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -37,13 +40,45 @@ class ListStores extends ListRecords
 						->required(),
 					ImportField::make('address_postcode')
 						->label('Postcode'),
-					ImportField::make('state_id')
-						->label('State ID'),
-					ImportField::make('country_id')
-						->label('Country ID'),
+					// Allow user to upload state and country name in csv and convert to id by logic
+					ImportField::make('state_name')
+						->label('State Name')
+						->required()
+						->mutateBeforeCreate(function ($value) {
+							$state = State::where('name', $value)->first();
+							if (!$state) {
+								throw new \Exception("State not found: {$value}");
+							}
+							return $state->id;
+						}),
+					ImportField::make('country_name')
+						->label('Country Name')
+						->required()
+						->mutateBeforeCreate(function ($value) {
+							$country = Country::where('name', $value)->first();
+							if (!$country) {
+								throw new \Exception("Country not found: {$value}");
+							}
+							return $country->id;
+						}),
 					ImportField::make('is_hq')
-						->label('Is HQ?'),
-				]),
+						->label('Is HQ?')
+						->mutateBeforeCreate(function ($value) {
+							$value = strtolower(trim($value));
+							$truthyValues = ['yes', 'true', '1', 'active'];
+							return in_array($value, $truthyValues) ? 1 : 0;
+						}),
+				])
+				->mutateBeforeCreate(function ($data) {
+					return [
+						'name' => $data['name'],
+						'address' => $data['address'],
+						'address_postcode' => $data['address_postcode'] ?? null,
+						'state_id' => $data['state_name'],
+						'country_id' => $data['country_name'],
+						'is_hq' => $data['is_hq'],
+					];
+				}),
 
 			// Sync Stores Categories csv
 			SyncStoreCategoriesAction::make(),
