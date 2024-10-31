@@ -116,6 +116,10 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return $this->belongsTo(Country::class, 'country_id');
     }
 
+	public function kocUser()
+	{
+		return $this->belongsTo(User::class);
+	}
 
     public function offers()
     {
