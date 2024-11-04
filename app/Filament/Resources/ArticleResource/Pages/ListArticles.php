@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ArticleResource\Pages;
 
+use App\Filament\Actions\SyncArticleCategoriesAction;
 use App\Filament\Resources\ArticleResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -14,6 +15,8 @@ class ListArticles extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
-        ];
+
+			SyncArticleCategoriesAction::make(),
+		];
     }
 }
