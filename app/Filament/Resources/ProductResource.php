@@ -39,23 +39,17 @@ class ProductResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Section::make('Product Detials')
+                        Section::make('Product Details')
                             ->schema([
-                                Forms\Components\SpatieMediaLibraryFileUpload::make('images')
-                                    ->label('Images')
-                                    ->multiple()
+                                Forms\Components\SpatieMediaLibraryFileUpload::make('product_image')
+                                    ->label('Image')
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
-                                    ->columnSpan('full')
-                                    ->customProperties(['is_cover' => false])
-                                    // disk is s3_public 
                                     ->disk(function () {
                                         if (config('filesystems.default') === 's3') {
                                             return 's3_public';
                                         }
                                     })
                                     ->acceptedFileTypes(['image/*'])
-                                    ->maxFiles(20)
-                                    ->hidden(fn (Closure $get) => $get('type') !== 'multimedia')
                                     ->rules('image'),
 
                                 TextInput::make('name')
