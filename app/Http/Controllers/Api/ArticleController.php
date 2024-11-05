@@ -105,7 +105,7 @@ class ArticleController extends Controller
         }
 
         // Handle build_recommendations alongside article_ids
-        if ($request->has('build_recommendations') && $request->build_recommendations == 1) {
+        if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
             $recommendedArticleIds = auth()->user()->articleRecommendations()
                 ->whereNull('last_viewed_at')
                 ->inRandomOrder()
