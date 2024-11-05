@@ -28,6 +28,9 @@ class BytePlusTest extends Command
             $this->listVodSpace();
         } elseif ($this->argument('api') == 'upload-video') {
             $this->uploadVideo();
+        } elseif ($this->argument('api') == 'query-upload') {
+            $jobId = $this->ask('Job ID');
+            $this->queryUploadTask($jobId);
         }
     }
 
@@ -62,6 +65,7 @@ class BytePlusTest extends Command
         }
     }
 
+
     private function uploadVideo()
     {
         $videoUrl = $this->ask('video-url');
@@ -70,43 +74,91 @@ class BytePlusTest extends Command
         $tags = $this->ask('Tags');
         $spaceName = $this->ask('Space Name');
 
-
         $url = 'https://vod.byteplusapi.com';
-        $queryParams = [
+
+        // All parameters should be in query string
+        $params = [
             'Action' => 'UploadMediaByUrl',
             'Version' => '2023-01-01',
-        ];
-        $params = [
             'SpaceName' => $spaceName,
-            'URLSets' => json_encode([
-                [
-                    'SourceUrl' => $videoUrl,
-                    'Title' => $title,
-                    'Description' => $description,
-                    'Tags' => $tags,
-                ],
-            ]),
+            'URLSets' => json_encode([[
+                'SourceUrl' => $videoUrl,
+                'Title' => $title,
+                'Description' => $description,
+                'Tags' => $tags,
+            ]])
         ];
 
-        $signature = $this->generateSignature('POST', $url . '?' . http_build_query($queryParams), $params);
-
-        FacadesLog::info('Signature: ' . $signature['signature'], [
-            'params' => $params,
-            'singature' => $signature,
-        ]);
+        $signature = $this->generateSignature('GET', $url, $params);
 
         try {
             $response = Http::withHeaders([
                 'Authorization' => $signature['signature'],
                 'x-date' => $signature['timestamp'],
-            ])->post($url . '?' . http_build_query($queryParams), $params);
+            ])->get($url . '?' . http_build_query($params));
+
+            $this->info('Upload Media Response:');
+            $this->info($response->body());
         } catch (\Exception $e) {
             $this->error('Error: ' . $e->getMessage());
             return;
         }
+    }
 
-        $this->info('Upload Media Response:');
-        $this->info($response->body());
+    private function queryUploadTask($jobId)
+    {
+        $url = 'https://vod.byteplusapi.com';
+
+        // Set up query parameters
+        $params = [
+            'Action' => 'QueryUploadTaskInfo',
+            'Version' => '2023-01-01',
+            'JobIds' => $jobId
+        ];
+
+        // Generate signature
+        $signature = $this->generateSignature('GET', $url, $params);
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => $signature['signature'],
+                'x-date' => $signature['timestamp'],
+            ])->get($url . '?' . http_build_query($params));
+
+            $this->info('Query Upload Task Response:');
+            $this->info($response->body());
+
+            // Parse and display relevant information
+            $responseBody = json_decode($response->body(), true);
+            if (isset($responseBody['Result']['Data']['MediaInfoList'])) {
+                foreach ($responseBody['Result']['Data']['MediaInfoList'] as $mediaInfo) {
+                    $this->info('-- Upload Status:');
+                    $this->info('   Job ID: ' . $mediaInfo['JobId']);
+                    $this->info('   State: ' . $mediaInfo['State']);
+                    $this->info('   Video ID: ' . ($mediaInfo['Vid'] ?? 'N/A'));
+
+                    if (isset($mediaInfo['SourceInfo'])) {
+                        $sourceInfo = $mediaInfo['SourceInfo'];
+                        $this->info('   File Info:');
+                        $this->info('   - Duration: ' . ($sourceInfo['Duration'] ?? 'N/A') . ' seconds');
+                        $this->info('   - Resolution: ' . ($sourceInfo['Width'] ?? 'N/A') . 'x' . ($sourceInfo['Height'] ?? 'N/A'));
+                        $this->info('   - Format: ' . ($sourceInfo['Format'] ?? 'N/A'));
+                        $this->info('   - Bitrate: ' . ($sourceInfo['Bitrate'] ?? 'N/A') . ' Kbps');
+                    }
+                }
+            }
+
+            if (isset($responseBody['Result']['Data']['NotExistJobIds']) && !empty($responseBody['Result']['Data']['NotExistJobIds'])) {
+                $this->error('Non-existent Job IDs:');
+                foreach ($responseBody['Result']['Data']['NotExistJobIds'] as $jobId) {
+                    $this->error('- ' . $jobId);
+                }
+            }
+
+        } catch (\Exception $e) {
+            $this->error('Error: ' . $e->getMessage());
+            return;
+        }
     }
 
     private function generateSignature($method, $url, $params)
