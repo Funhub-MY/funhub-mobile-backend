@@ -48,7 +48,7 @@ class MerchantOnboardEmail extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Welcome to FUNHUB Merchant Portal')
-            ->markdown('emails.merchant-onboard', [
+            ->view('emails.merchant-onboard', [
                 'merchantName' => $this->merchantName,
                 'userEmail' => $this->userEmail,
                 'defaultPassword' => $this->defaultPassword,
