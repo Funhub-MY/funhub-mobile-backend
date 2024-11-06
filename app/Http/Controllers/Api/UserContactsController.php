@@ -32,9 +32,14 @@ class UserContactsController extends Controller
             'contacts.*.phone_no' => 'required|string',
         ]);
 
-        $contacts = $request->input('contacts');
+		$contacts = $request->input('contacts');
 
-//        $importedContacts = [];
+		// Get all existing contacts for this user
+		$existingContacts = UserContact::where('imported_by_id', auth()->user()->id)
+			->get(['phone_country_code', 'phone_no'])
+			->mapWithKeys(function ($contact) {
+				return [$contact->phone_country_code . $contact->phone_no => true];
+			});
 
 		// Prepare data for batch insert with unique identifier by user
 		$contactData = [];
@@ -44,13 +49,10 @@ class UserContactsController extends Controller
 			// Remove leading zeros, country code, or + from phone_no
 			$phone_no = ltrim(ltrim($contact['phone_no'], '0'), '+');
 
-			// Check if the contact already exists for this user
-			$existingContact = UserContact::where('phone_country_code', $contact['country_code'])
-				->where('phone_no', $phone_no)
-				->where('imported_by_id', auth()->user()->id)
-				->exists();
+			$key = $contact['country_code'] . $phone_no;
 
-			if (!$existingContact) {
+			// Check if the contact already exists
+			if (!isset($existingContacts[$key])) {
 				$contactData[] = [
 					'phone_country_code' => $contact['country_code'],
 					'phone_no' => $phone_no,
@@ -59,7 +61,7 @@ class UserContactsController extends Controller
 					'created_at' => now(),
 					'updated_at' => now(),
 				];
-				$phoneNumbers[] = $contact['country_code'] . $phone_no;
+				$phoneNumbers[] = $key;
 			}
 		}
 
