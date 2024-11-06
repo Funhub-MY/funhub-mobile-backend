@@ -109,6 +109,209 @@ class ByteplusService
     }
 
     /**
+     * Query Upload Task Info
+     *
+     * @param string $jobId
+     * @return array
+     */
+    public function queryUploadTaskInfo(string $jobId): array
+    {
+        $params = [
+            'Action' => 'QueryUploadTaskInfo',
+            'Version' => '2023-01-01',
+            'JobIds' => $jobId
+        ];
+
+        try {
+            $signature = $this->generateSignature('GET', $this->baseUrl, $params);
+
+            $response = Http::withHeaders([
+                'Authorization' => $signature['signature'],
+                'x-date' => $signature['timestamp'],
+            ])->get($this->baseUrl . '?' . http_build_query($params));
+
+            if ($response->successful()) {
+                return $response->json()['Result']['Data'] ?? [];
+            }
+
+            Log::error('Byteplus query upload task failed', [
+                'response' => $response->json(),
+                'jobId' => $jobId
+            ]);
+
+            return [];
+        } catch (\Exception $e) {
+            Log::error('Byteplus query upload task error', [
+                'message' => $e->getMessage(),
+                'jobId' => $jobId
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
+     * Get Workflow Execution Status
+     *
+     * @param string $runId
+     * @return array
+     */
+    public function getWorkflowExecution(string $runId): array
+    {
+        $params = [
+            'Action' => 'GetWorkflowExecution',
+            'Version' => '2023-01-01',
+            'RunId' => $runId
+        ];
+
+        try {
+            $signature = $this->generateSignature('GET', $this->baseUrl, $params);
+
+            $response = Http::withHeaders([
+                'Authorization' => $signature['signature'],
+                'x-date' => $signature['timestamp'],
+            ])->get($this->baseUrl . '?' . http_build_query($params));
+
+            if ($response->successful()) {
+                return $response->json()['Result'] ?? [];
+            }
+
+            Log::error('Byteplus get workflow execution failed', [
+                'response' => $response->json(),
+                'runId' => $runId
+            ]);
+
+            return [];
+        } catch (\Exception $e) {
+            Log::error('Byteplus get workflow execution error', [
+                'message' => $e->getMessage(),
+                'runId' => $runId
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
+     * Get Video Playback Information
+     *
+     * @param string $vid
+     * @return array
+     */
+    public function getPlayInfo(string $vid): array
+    {
+        $params = [
+            'Action' => 'GetPlayInfo',
+            'Version' => '2023-01-01',
+            'Vid' => $vid,
+            'FileType' => 'video',
+            'Format' => 'mp4',
+            'Codec' => 'H264',
+            'Ssl' => '1' // always return https
+        ];
+
+        try {
+            $signature = $this->generateSignature('GET', $this->baseUrl, $params);
+
+            $response = Http::withHeaders([
+                'Authorization' => $signature['signature'],
+                'x-date' => $signature['timestamp'],
+            ])->get($this->baseUrl . '?' . http_build_query($params));
+
+            if (!$response->successful()) {
+                Log::error('Byteplus get play info failed', [
+                    'response' => $response->json(),
+                    'vid' => $vid
+                ]);
+                return [];
+            }
+
+            $result = $response->json()['Result'] ?? [];
+
+            Log::info('Byteplus get play info response', [
+                'response' => $response->json(),
+                'vid' => $vid
+            ]);
+
+            // Extract different quality playback URLs
+            $playbackLinks = [
+                'low' => null,    // 360p
+                'medium' => null, // 480p
+                'high' => null    // 720p
+            ];
+
+            if (isset($result['PlayInfoList']) && is_array($result['PlayInfoList'])) {
+                foreach ($result['PlayInfoList'] as $playInfo) {
+                    switch ($playInfo['Definition'] ?? '') {
+                        case '360p':
+                            $playbackLinks['low'] = $playInfo['MainPlayUrl'] ?? null;
+                            break;
+                        case '480p':
+                            $playbackLinks['medium'] = $playInfo['MainPlayUrl'] ?? null;
+                            break;
+                        case '720p':
+                            $playbackLinks['high'] = $playInfo['MainPlayUrl'] ?? null;
+                            break;
+                    }
+                }
+            }
+
+            return $playbackLinks;
+
+        } catch (\Exception $e) {
+            Log::error('Byteplus get play info error', [
+                'message' => $e->getMessage(),
+                'vid' => $vid
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
+     * Publish Video
+     *
+     * @param string $vid
+     * @return bool
+     */
+    public function publishVideo(string $vid): bool
+    {
+        $params = [
+            'Action' => 'UpdateMediaPublishStatus',
+            'Version' => '2023-01-01',
+            'Vid' => $vid,
+            'Status' => 'Published'
+        ];
+
+        try {
+            $signature = $this->generateSignature('GET', $this->baseUrl, $params);
+
+            $response = Http::withHeaders([
+                'Authorization' => $signature['signature'],
+                'x-date' => $signature['timestamp'],
+            ])->get($this->baseUrl . '?' . http_build_query($params));
+
+            if (!$response->successful()) {
+                Log::error('Byteplus publish video failed', [
+                    'response' => $response->json(),
+                    'vid' => $vid
+                ]);
+                return false;
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            Log::error('Byteplus publish video error', [
+                'message' => $e->getMessage(),
+                'vid' => $vid
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
      * Generate signature to use Byteplus API
      *
      * @param String $method
@@ -148,4 +351,6 @@ class ByteplusService
             'timestamp' => $timestamp,
         ];
     }
+
+
 }
