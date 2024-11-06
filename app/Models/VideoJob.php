@@ -12,16 +12,16 @@ class VideoJob extends Model
     use HasFactory;
 
     const STATUS = [
-        0 => 'Uploading',
-        1 => 'Processing',
-        2 => 'Completed',
-        3 => 'Failed'
+        1 => 'Uploading',
+        2 => 'Processing',
+        3 => 'Completed',
+        4 => 'Failed'
     ];
 
-    const STATUS_UPLOADING = 0;
-    const STATUS_PROCESSING = 1;
-    const STATUS_COMPLETED = 2;
-    const STATUS_FAILED = 3;
+    const STATUS_UPLOADING = 1;
+    const STATUS_PROCESSING = 2;
+    const STATUS_COMPLETED = 3;
+    const STATUS_FAILED = 4;
 
     protected $table = 'video_jobs';
 
