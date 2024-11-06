@@ -929,11 +929,12 @@ class ArticleController extends Controller
             }
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
-                $media->move($article, Article::MEDIA_COLLECTION_NAME);
+                $movedMediaItem = $media->move($article, Article::MEDIA_COLLECTION_NAME);
 
                 // when move to article_videos, dispatch byteplus video process
-                if (str_contains($media->mime_type, 'video')) {
-                    ByteplusVODProcess::dispatch($media);
+                if (str_contains($movedMediaItem->mime_type, 'video')) {
+                    // get latest $media after move
+                    ByteplusVODProcess::dispatch($movedMediaItem);
                 }
             });
         }
