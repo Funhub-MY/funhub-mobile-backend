@@ -96,6 +96,44 @@ class CheckByteplusVideoStatus extends Command
     private function checkProcessingVideos(ByteplusService $byteplusService): void
     {
         VideoJob::where('status', VideoJob::STATUS_PROCESSING)
+            ->whereNull('results->workflow_run_id')
+            ->whereNotNull('results->vid') // must have VID to start workflow
+            ->chunk(10, function ($jobs) use ($byteplusService) {
+                foreach ($jobs as $job) {
+                    $this->info("Starting workflow for job without workflow_run_id: {$job->job_id}");
+
+                    $vid = $job->results['vid'] ?? null;
+                    if (!$vid) {
+                        continue;
+                    }
+                    $workflowResult = $byteplusService->startWorkflow($vid);
+
+                    if (!empty($workflowResult)) {
+                        $job->update([
+                            'results' => array_merge(
+                                $job->results ?? [],
+                                [
+                                    'workflow_run_id' => $workflowResult['RunId']
+                                ]
+                            )
+                        ]);
+
+                        $this->info("Workflow started for job: {$job->job_id}");
+                        Log::info('[ByteplusVideoStatus] Started workflow for Video Job ID: '.$job->id, [
+                            'workflowResult' => $workflowResult,
+                        ]);
+                    } else {
+                        $this->error("Failed to start workflow for job: {$job->job_id}");
+                        Log::error('[ByteplusVideoStatus] Failed to start workflow', [
+                            'job_id' => $job->job_id,
+                            'vid' => $vid
+                        ]);
+                    }
+                }
+            });
+
+
+        VideoJob::where('status', VideoJob::STATUS_PROCESSING)
             ->whereNotNull('results->workflow_run_id')
             ->chunk(10, function ($jobs) use ($byteplusService) {
                 foreach ($jobs as $job) {
