@@ -29,6 +29,7 @@ class CheckByteplusVideoStatus extends Command
      */
     private function checkUploadingVideos(ByteplusService $byteplusService): void
     {
+        $this->info('Checking uploading videos');
         VideoJob::where('status', VideoJob::STATUS_UPLOADING)
             ->chunk(10, function ($jobs) use ($byteplusService) {
                 foreach ($jobs as $job) {
@@ -95,6 +96,7 @@ class CheckByteplusVideoStatus extends Command
      */
     private function checkProcessingVideos(ByteplusService $byteplusService): void
     {
+        $this->info('Checking processing videos without workflow started');
         VideoJob::where('status', VideoJob::STATUS_PROCESSING)
             ->whereNull('results->workflow_run_id')
             ->whereNotNull('results->vid') // must have VID to start workflow
@@ -132,7 +134,7 @@ class CheckByteplusVideoStatus extends Command
                 }
             });
 
-
+        $this->info('Checking processing videos with workflow started');
         VideoJob::where('status', VideoJob::STATUS_PROCESSING)
             ->whereNotNull('results->workflow_run_id')
             ->chunk(10, function ($jobs) use ($byteplusService) {
