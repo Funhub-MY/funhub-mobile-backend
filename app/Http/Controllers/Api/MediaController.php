@@ -126,10 +126,6 @@ class MediaController extends Controller
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
                         ->toMediaCollection(User::USER_UPLOADS); // image and video consolidate here
-
-                        if (str_contains($file->mime_type, 'video')) {
-                            ByteplusVODProcess::dispatch($file);
-                        }
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,

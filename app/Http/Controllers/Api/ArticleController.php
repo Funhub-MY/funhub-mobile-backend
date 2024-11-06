@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Jobs\ByteplusVODProcess;
 use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\City;
 use App\Models\SearchKeyword;
@@ -929,6 +930,11 @@ class ArticleController extends Controller
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
                 $media->move($article, Article::MEDIA_COLLECTION_NAME);
+
+                // when move to article_videos, dispatch byteplus video process
+                if (str_contains($media->mime_type, 'video')) {
+                    ByteplusVODProcess::dispatch($media);
+                }
             });
         }
 
