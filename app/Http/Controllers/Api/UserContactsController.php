@@ -32,36 +32,49 @@ class UserContactsController extends Controller
             'contacts.*.phone_no' => 'required|string',
         ]);
 
-        $contacts = $request->input('contacts');
+		$contacts = $request->input('contacts');
 
-        $importedContacts = [];
+		// Get all existing contacts for this user
+		$existingContacts = UserContact::where('imported_by_id', auth()->user()->id)
+			->get(['phone_country_code', 'phone_no'])
+			->mapWithKeys(function ($contact) {
+				return [$contact->phone_country_code . $contact->phone_no => true];
+			});
 
-        foreach ($contacts as $contact) {
-            // check phone no has prefix 0 remove it first
-            $phone_no = $contact['phone_no'];
-            if (substr($phone_no, 0, 1) == '0') {
-                $phone_no = substr($phone_no, 1);
-            } else if (substr($phone_no, 0, 2) == '60') {
-                $phone_no = substr($phone_no, 2);
-            }
+		// Prepare data for batch insert with unique identifier by user
+		$contactData = [];
+		$phoneNumbers = [];
 
-            // check phone no has prefix + remove it first
-            if (substr($phone_no, 0, 1) == '+') {
-                $phone_no = substr($phone_no, 1);
-            }
+		foreach ($contacts as $contact) {
+			// Remove leading zeros, country code, or + from phone_no
+			$phone_no = ltrim(ltrim($contact['phone_no'], '0'), '+');
 
-            // create user contat if country code and phone no havent created before
-            $importedContacts[] = UserContact::firstOrCreate([
-                'phone_country_code' => $contact['country_code'],
-                'phone_no' => $phone_no,
-            ], [
-                'name' => (isset($contact['name']) ? $contact['name'] : '-'),
-                'imported_by_id' => auth()->user()->id,
-            ]);
-        }
+			$key = $contact['country_code'] . $phone_no;
+
+			// Check if the contact already exists
+			if (!isset($existingContacts[$key])) {
+				$contactData[] = [
+					'phone_country_code' => $contact['country_code'],
+					'phone_no' => $phone_no,
+					'name' => $contact['name'] ?? '-',
+					'imported_by_id' => auth()->user()->id,
+					'created_at' => now(),
+					'updated_at' => now(),
+				];
+				$phoneNumbers[] = $key;
+			}
+		}
+
+		// Batch insert unique contacts per user to avoid duplicates
+		UserContact::insertOrIgnore($contactData);
+
+		// Retrieve contacts related to the current import
+		$importedContacts = UserContact::where('imported_by_id', auth()->user()->id)
+			->whereIn(DB::raw('CONCAT(phone_country_code, phone_no)'), $phoneNumbers)
+			->get();
 
         // after import, check related user id match with users table based on phone_country_code and phone_no
-        $importedContacts = collect($importedContacts);
+        // $importedContacts = collect($importedContacts);
 
         // combine into one country code and phone no array
         $importedNumbers = $importedContacts->map(function ($contact) {
