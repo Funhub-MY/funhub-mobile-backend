@@ -281,7 +281,8 @@ class MerchantOfferResource extends Resource
 
                             Forms\Components\Section::make('Categories')->schema([
                                 Forms\Components\Select::make('categories')
-                                    ->label('')
+                                    ->label('Select Categories')
+                                    ->required()
                                     ->preload()
                                     ->relationship('allOfferCategories', 'name')->createOptionForm([
                                         Forms\Components\TextInput::make('name')

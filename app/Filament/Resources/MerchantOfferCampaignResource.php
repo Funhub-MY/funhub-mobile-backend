@@ -23,6 +23,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Resource;
@@ -30,6 +31,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
@@ -357,7 +359,7 @@ class MerchantOfferCampaignResource extends Resource
 
                             Forms\Components\Section::make('Categories')->schema([
                                 Forms\Components\Select::make('categories')
-                                    ->label('')
+                                    ->label('Select Categories')
                                     ->preload()
                                     ->required()
                                     ->relationship('allOfferCategories', 'name')->createOptionForm([
@@ -470,7 +472,7 @@ class MerchantOfferCampaignResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(), // disable delete bulk action, only allow user to archive it.
                 Tables\Actions\BulkAction::make('update_status')
                     ->hidden(fn () => auth()->user()->hasRole('merchant'))
                     ->label('Update Status')
@@ -486,6 +488,19 @@ class MerchantOfferCampaignResource extends Resource
                                 $record->update([
                                     'status' => $data['status'],
                                 ]);
+
+                                try {
+                                    // archive all associated merchant offers
+                                    $record->schedules()->update(['status' => $data['status']]);
+                                    $record->merchantOffers()->update(['status' => $data['status']]);
+                                } catch (\Exception $e) {
+                                    Log::error('[MerchantOfferCampaignResource] Bulk Update Status Error', [
+                                        'record' => $record->toArray(),
+                                        'data' => $data,
+                                        'error' => $e->getMessage(),
+                                    ]);
+                                }
+
                                 $success++;
                             } catch (\Exception $e) {
                                 Log::error('[MerchantOfferResource] Bulk Update Status Error', [
@@ -498,9 +513,9 @@ class MerchantOfferCampaignResource extends Resource
 
                         if ($success > 0) {
                             Notification::make()
-                            ->success()
-                            ->title('Successfully updated '.$success.' offers status to' . MerchantOffer::STATUS[$data['status']])
-                            ->send();
+                                ->success()
+                                ->title('Successfully updated '.$success.' offers status to' . MerchantOfferCampaign::STATUS[$data['status']])
+                                ->send();
                         }
                     })
             ]);
