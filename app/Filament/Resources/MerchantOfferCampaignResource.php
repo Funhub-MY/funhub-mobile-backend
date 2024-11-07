@@ -470,7 +470,7 @@ class MerchantOfferCampaignResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(), // disable delete bulk action, only allow user to archive it.
                 Tables\Actions\BulkAction::make('update_status')
                     ->hidden(fn () => auth()->user()->hasRole('merchant'))
                     ->label('Update Status')

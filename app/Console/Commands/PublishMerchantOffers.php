@@ -37,7 +37,6 @@ class PublishMerchantOffers extends Command
             ->where('publish_at', '<=', Carbon::now())
             ->get();
 
-
         foreach($merchantOffers as $offer)
         {
             $this->info('Publishing merchant offer: '.$offer->id);
