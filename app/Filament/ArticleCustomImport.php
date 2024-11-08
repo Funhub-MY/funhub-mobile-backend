@@ -189,7 +189,7 @@ class ArticleCustomImport
                     Log::info('Article found, id: ' . $article->id);
                     // update the article's status
 //                    try {
-                        $status = Article::STATUS[$status];
+//                        $status = Article::STATUS[$status];
 //
 //                        if (isset($status)) {
 //                            $article->status = $status;

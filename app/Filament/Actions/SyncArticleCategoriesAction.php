@@ -20,7 +20,7 @@ class SyncArticleCategoriesAction extends ImportAction
     {
         parent::setUp();
 
-        $this->label(__('Sync Stores Categories (CSV)'))
+        $this->label(__('Sync Article Categories (CSV)'))
             ->uniqueField('title')
             ->fields([
                 ImportField::make('article_id')
