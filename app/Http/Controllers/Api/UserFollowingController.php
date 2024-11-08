@@ -187,9 +187,14 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-        $query = $user->followers()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
+//        $query = $user->followers()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
+		$query = $user->followers()
+			->select('users.*') // Select only from users table to avoid duplicate columns
+			->where('users.status', User::STATUS_ACTIVE)
+			->orderBy('users_followings.created_at', 'desc');
+
         if ($request->has('query')) {
-            $query->where('name', 'like', '%' . $request->input('query') . '%');
+            $query->where('users.name', 'like', '%' . $request->input('query') . '%');
         }
 
         $followers = $query->paginate(config('app.paginate_per_page'));
@@ -222,9 +227,13 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-        $query = $user->followings()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
+//        $query = $user->followings()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
+		$query = $user->followings()
+			->select('users.*') // Select only from users table to avoid duplicate columns
+			->where('users.status', User::STATUS_ACTIVE)
+			->orderBy('users_followings.created_at', 'desc');
         if ($request->has('query')) {
-            $query->where('name', 'like', '%' . $request->input('query') . '%');
+            $query->where('users.name', 'like', '%' . $request->input('query') . '%');
         }
 
         $followings = $query->paginate(config('app.paginate_per_page'));

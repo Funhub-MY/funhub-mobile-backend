@@ -112,20 +112,58 @@ class MissionController extends Controller
         });
 
         // when completed_only = 1
-        $query->when($request->has('completed_only') && $request->completed_only == 1, function($query) {
-            $query->whereHas('participants', function($query) {
+        $query->when($request->has('completed_only') && $request->completed_only == 1, function($query) use ($request) {
+            $query->whereHas('participants', function($query) use ($request) {
                 $query->where('user_id', auth()->user()->id)
-                    ->where('missions_users.is_completed', true);
+                    ->where('missions_users.is_completed', true)
+                    ->when($request->frequency === 'daily', function($query) {
+                        // For daily missions, only show completed ones from the current day
+                        $query->where('missions_users.completed_at', '>=', now()->startOfDay())
+                              ->where('missions_users.completed_at', '<=', now()->endOfDay());
+                    })
+                    ->when($request->frequency === 'monthly', function($query) {
+                        // For monthly missions, only show completed ones from the current month
+                        $query->where('missions_users.completed_at', '>=', now()->startOfMonth())
+                              ->where('missions_users.completed_at', '<=', now()->endOfMonth());
+                    })
+                    ->when($request->frequency === 'accumulated', function($query) {
+                        // For accumulated missions, only show the completed ones that have been claimed
+                        $query->whereNotNull('missions_users.claimed_at')
+                            ->whereNotExists(function ($subquery) {
+                                $subquery->from('missions_users as mu2')
+                                    ->whereRaw('mu2.mission_id = missions_users.mission_id')
+                                    ->where('mu2.user_id', auth()->user()->id)
+                                    ->whereNull('mu2.claimed_at')
+                                    ->where('mu2.created_at', '>', 'missions_users.created_at');
+                            });
+                    });
             });
         });
 
         // when completed_only = 0
-        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) {
+        $query->when($request->has('completed_only') && $request->completed_only == 0, function($query) use ($request) {
             // is not participating, or where is participating and is_completed is false
-            $query->where(function ($query) {
-                $query->whereHas('participants', function($query) {
+            $query->where(function ($query) use ($request) {
+                $query->whereHas('participants', function($query) use ($request) {
                     $query->where('user_id', auth()->user()->id)
-                        ->where('missions_users.is_completed', false);
+                        ->where('missions_users.is_completed', false)
+                        ->when($request->frequency === 'daily', function($query) {
+                            // For daily missions, consider previous day's completed missions as not completed
+                            $query->where(function($q) {
+                                $q->whereNull('missions_users.completed_at')
+                                  ->orWhere('missions_users.completed_at', '>=', now()->startOfDay());
+                            });
+                        })
+                        ->when($request->frequency === 'accumulated', function($query) {
+                            // For accumulated missions, only show the latest uncompleted/unclaimed one
+                            $query->whereNull('missions_users.claimed_at')
+                                ->whereNotExists(function ($subquery) {
+                                    $subquery->from('missions_users as mu2')
+                                        ->whereRaw('mu2.mission_id = missions_users.mission_id')
+                                        ->where('mu2.user_id', auth()->user()->id)
+                                        ->where('mu2.created_at', '>', 'missions_users.created_at');
+                                });
+                        });
                 })->orWhereDoesntHave('participants', function($query) {
                     $query->where('user_id', auth()->user()->id);
                 });

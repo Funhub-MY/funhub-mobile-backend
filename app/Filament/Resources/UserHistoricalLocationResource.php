@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class UserHistoricalLocationResource extends Resource
 {
@@ -124,6 +127,35 @@ class UserHistoricalLocationResource extends Resource
                             ->send();
                     })
                     ->requiresConfirmation(),
+				ExportBulkAction::make()->exports([
+					ExcelExport::make('user_historical_locations')
+						->withColumns([
+							Column::make('User ID')
+								->getStateUsing(fn ($record) => $record->user->id),
+							Column::make('User Name')
+								->getStateUsing(fn ($record) => $record->user->name),
+							Column::make('Age')
+								->getStateUsing(fn ($record) => $record->user->dob ? now()->diffInYears($record->user->dob) : null),
+							Column::make('Gender')
+								->getStateUsing(fn ($record) => $record->user->gender ?? null),
+							Column::make('Latitude')
+								->getStateUsing(fn ($record) => $record->lat),
+							Column::make('Longitude')
+								->getStateUsing(fn ($record) => $record->lng),
+							Column::make('Address')
+								->getStateUsing(fn ($record) => $record->address),
+							Column::make('Address 2')
+								->getStateUsing(fn ($record) => $record->address_2),
+							Column::make('ZipCode')
+								->getStateUsing(fn ($record) => $record->zip_code),
+							Column::make('City')
+								->getStateUsing(fn ($record) => $record->city),
+							Column::make('State')
+								->getStateUsing(fn ($record) => $record->state),
+							Column::make('Country')
+								->getStateUsing(fn ($record) => $record->country),
+						])
+				]),
                 // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }

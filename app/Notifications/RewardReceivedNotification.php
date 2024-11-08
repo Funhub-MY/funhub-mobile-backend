@@ -45,6 +45,8 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
         $rewardQuantity = $this->rewardQuantity;
         $missionName = $this->missionName;
 
+        $rewardBodyKey = ($rewardName === '饭盒FUNHUB') ? 'messages.notification.fcm.RewardReceivedBodyFunbox' : 'messages.notification.fcm.RewardReceivedBody';
+
         return FcmMessage::create()
             ->setData([
                 'object' => (string) get_class($this->reward),
@@ -56,7 +58,7 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
                 'from_name' => 'Funhub',
                 'from_id' => '',
                 'title' => (string) $this->user->name,
-                'message' => __('messages.notification.database.RewardReceivedBody', [
+                'message' => __($rewardBodyKey, [
                     'rewardName' => $rewardName,
                     'rewardQuantity' => $rewardQuantity,
                     'missionName' => $missionName
@@ -64,7 +66,7 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle(__('messages.notification.fcm.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName')))
-                ->setBody(__('messages.notification.fcm.RewardReceivedBody', compact('rewardName', 'rewardQuantity', 'missionName')))
+                ->setBody(__($rewardBodyKey, compact('rewardName', 'rewardQuantity', 'missionName')))
             );
     }
 
@@ -75,6 +77,9 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
         $rewardQuantity = $this->rewardQuantity;
         $missionName = $this->missionName;
 
+        $rewardReceivedTitle = __('messages.notification.fcm.RewardReceivedTitle', compact('rewardName', 'rewardQuantity', 'missionName'));
+        $rewardBodyKey = ($rewardName === '饭盒FUNHUB') ? 'messages.notification.database.RewardReceivedBodyFunbox' : 'messages.notification.database.RewardReceivedBody';
+
         return [
             'object' => get_class($this->reward),
             'object_id' => $this->reward->id,
@@ -84,8 +89,9 @@ class RewardReceivedNotification extends Notification implements ShouldQueue
             'action' => 'mission_rewarded',
             'from_name' => 'Funhub',
             'from_id' => '',
-            'title' => $this->user->name,
-            'message' => __('messages.notification.database.RewardReceivedBody', [
+//            'title' => $this->user->name,
+            'title' => $rewardReceivedTitle,
+            'message' => __($rewardBodyKey, [
                 'rewardName' => $rewardName,
                 'rewardQuantity' => $rewardQuantity,
                 'missionName' => $missionName

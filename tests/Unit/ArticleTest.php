@@ -8,6 +8,7 @@ use App\Models\ArticleCategory;
 use App\Models\ArticleFeedWhitelistUser;
 use App\Models\ArticleTag;
 use App\Models\Country;
+use App\Models\Location;
 use App\Models\Setting;
 use App\Models\State;
 use App\Models\User;
@@ -1751,6 +1752,217 @@ class ArticleTest extends TestCase
 
         // Verify the number of articles associated with the tag '#test' is 2
         $this->assertCount(2, $articlesWithTag, 'There should be 2 articles with tag #test');
+    }
+
+    /**
+     * Test creating article with mall outlet location not attaching to mall location
+     * /api/v1/articles
+     */
+    public function testCreateArticleWithMallOutletLocation()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+        // 1. First create a mall location
+        $mallLocation = Location::create([
+            'name' => 'Sunway Pyramid',
+            'google_id' => 'mall_google_id_123',
+            'lat' => 3.073210,
+            'lng' => 101.607140,
+            'address' => 'No. 3, Jalan PJS 11/15, Bandar Sunway',
+            'address_2' => '',
+            'city' => 'Petaling Jaya',
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '47500',
+            'is_mall' => true
+        ]);
+
+        // 2. Create an outlet location (same coordinates as mall)
+        $outletLocation = Location::create([
+            'name' => 'Chagee @ Sunway Pyramid',
+            'google_id' => 'outlet_google_id_456',
+            'lat' => 3.073210, // Same coordinates as mall
+            'lng' => 101.607140, // Same coordinates as mall
+            'address' => 'LG2.130, Sunway Pyramid',
+            'address_2' => 'No. 3, Jalan PJS 11/15, Bandar Sunway',
+            'city' => 'Petaling Jaya',
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '47500',
+            'is_mall' => false
+        ]);
+
+        // 3. Create article with outlet location
+        $response = $this->postJson('/api/v1/articles', [
+            'title' => 'Test Article at Mall Outlet',
+            'body' => 'Test Article Body',
+            'type' => 'multimedia',
+            'published_at' => now(),
+            'status' => 1,
+            'published_at' => now()->toDateTimeString(),
+            'tags' => ['#mall', '#cafe'],
+            'location' => [
+                'name' => 'Chagee @ Sunway Pyramid',
+                'address' => 'LG2.130, Sunway Pyramid',
+                'lat' => 3.073210,
+                'lng' => 101.607140,
+                'address_2' => 'No. 3, Jalan PJS 11/15, Bandar Sunway',
+                'city' => 'Petaling Jaya',
+                'state' => 'Selangor',
+                'postcode' => '47500',
+                'rating' => 4
+            ]
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'article' => [
+                    'location' => [
+                        'name',
+                        'address',
+                        'lat',
+                        'lng'
+                    ]
+                ]
+            ]);
+
+        // 4. Assert outlet location was correctly attached
+        $articleId = $response->json('article.id');
+        $article = Article::find($articleId);
+
+        $attachedLocation = $article->location()->first();
+
+        // Assert the correct location was attached
+        $this->assertNotNull($attachedLocation);
+        $this->assertEquals('Chagee @ Sunway Pyramid', $attachedLocation->name);
+        $this->assertEquals('LG2.130, Sunway Pyramid', $attachedLocation->address);
+        $this->assertEquals(3.073210, $attachedLocation->lat);
+        $this->assertEquals(101.607140, $attachedLocation->lng);
+
+        // Assert it didn't attach to the mall location
+        $this->assertNotEquals($mallLocation->id, $attachedLocation->id);
+        $this->assertEquals($outletLocation->id, $attachedLocation->id);
+
+        // Assert rating was correctly added
+        $this->assertDatabaseHas('location_ratings', [
+            'location_id' => $attachedLocation->id,
+            'user_id' => $this->user->id,
+            'rating' => 4
+        ]);
+
+        // 5. Test retrieving the article with location
+        $getResponse = $this->getJson('/api/v1/articles/' . $articleId);
+
+        $getResponse->assertStatus(200)
+            ->assertJson([
+                'article' => [
+                    'location' => [
+                        'name' => 'Chagee @ Sunway Pyramid',
+                        'lat' => 3.07321,
+                        'lng' => 101.60714,
+                    ]
+                ]
+            ]);
+    }
+
+    /**
+     * Test updating article with mall outlet location
+     * /api/v1/articles/{id}
+     */
+    public function testUpdateArticleWithMallOutletLocation()
+    {
+        // ensure countries and states are seeded first
+        $this->seed(CountriesTableSeeder::class);
+        $this->seed(StatesTableSeeder::class);
+
+        // 1. Create initial article with a regular location
+        $article = Article::factory()->create([
+            'user_id' => $this->user->id
+        ]);
+
+        $initialLocation = Location::create([
+            'name' => 'Regular Place',
+            'lat' => 3.123456,
+            'lng' => 101.123456,
+            'address' => 'Test Address',
+            'city' => 'Petaling Jaya',
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '47500',
+            'is_mall' => false
+        ]);
+
+        $article->location()->attach($initialLocation->id);
+
+        // 2. Create mall and outlet locations
+        $mallLocation = Location::create([
+            'name' => 'Sunway Pyramid',
+            'google_id' => 'mall_google_id_789',
+            'lat' => 3.073210,
+            'lng' => 101.607140,
+            'address' => 'No. 3, Jalan PJS 11/15, Bandar Sunway',
+            'city' => 'Petaling Jaya',
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '47500',
+            'is_mall' => true
+        ]);
+
+        $outletLocation = Location::create([
+            'name' => 'Chagee @ Sunway Pyramid',
+            'google_id' => 'outlet_google_id_101',
+            'lat' => 3.073210,
+            'lng' => 101.607140,
+            'address' => 'LG2.130, Sunway Pyramid',
+            'address_2' => 'No. 3, Jalan PJS 11/15, Bandar Sunway',
+            'city' => 'Petaling Jaya',
+            'state_id' => State::where('name', 'Selangor')->first()->id,
+            'country_id' => Country::where('name', 'Malaysia')->first()->id,
+            'zip_code' => '47500',
+            'is_mall' => false
+        ]);
+
+        // 3. Update article with outlet location
+        $response = $this->putJson('/api/v1/articles/' . $article->id, [
+            'body' => 'Updated Article Body',
+            'status' => 1,
+            'location' => [
+                'name' => 'Chagee @ Sunway Pyramid',
+                'address' => 'LG2.130, Sunway Pyramid',
+                'lat' => 3.073210,
+                'lng' => 101.607140,
+                'address_2' => 'No. 3, Jalan PJS 11/15, Bandar Sunway',
+                'city' => 'Petaling Jaya',
+                'state' => 'Selangor',
+                'postcode' => '47500',
+                'rating' => 5
+            ]
+        ]);
+
+        $response->assertStatus(200);
+
+        // 4. Assert correct location was attached
+        $article->refresh();
+        $attachedLocation = $article->location()->first();
+
+        $this->assertNotNull($attachedLocation);
+        $this->assertEquals('Chagee @ Sunway Pyramid', $attachedLocation->name);
+        $this->assertNotEquals($mallLocation->id, $attachedLocation->id);
+        $this->assertEquals($outletLocation->id, $attachedLocation->id);
+
+        // 5. Assert rating was updated
+        $this->assertDatabaseHas('location_ratings', [
+            'location_id' => $attachedLocation->id,
+            'user_id' => $this->user->id,
+            'rating' => 5
+        ]);
+
+        // 6. Verify initial location was detached
+        $this->assertEquals(1, $article->location()->count());
+        $this->assertNotEquals($initialLocation->id, $attachedLocation->id);
     }
 
     // public function testArticleNotInterestedByUser()

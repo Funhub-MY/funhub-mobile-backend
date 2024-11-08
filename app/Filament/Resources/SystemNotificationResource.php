@@ -8,6 +8,7 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Article;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use App\Models\MerchantOffer;
@@ -243,6 +244,7 @@ class SystemNotificationResource extends Resource
                                     ->titleColumnName('title'),
                                 MorphToSelect\Type::make(MerchantOffer::class)
                                     ->label('Deal')
+                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} " . "(" . (Carbon::parse($record->available_at)->format('Y-m-d')) . " - " . (Carbon::parse($record->available_until)->format('Y-m-d')) . ")" )
                                     ->titleColumnName('name'),
                                 MorphToSelect\Type::make(User::class)
                                     ->label('User')

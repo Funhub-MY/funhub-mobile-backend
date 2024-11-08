@@ -205,7 +205,7 @@ class MissionEventListener
     private function updateMissionProgress($eventType, $user, $increments)
     {
         $missions = Mission::where('status', 1)->get();
-        // filter by misisons->events
+        // filter by missions->events
         $missions = $missions->filter(function ($mission) use ($eventType) {
             // if mission event is string decode, if not return as is
             $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
@@ -213,7 +213,7 @@ class MissionEventListener
         });
 
         foreach ($missions as $mission) {
-             // check if the user has completed the specific one-off mission
+            // check if the user has completed the specific one-off mission
             if ($mission->frequency == 'one-off') {
                 $completedOneOff = $user->missionsParticipating()
                     ->where('is_completed', true)
@@ -226,6 +226,24 @@ class MissionEventListener
                         'mission' => $mission->id,
                     ]);
                     continue; // skip the current one-off mission and move to the next mission
+                }
+            }
+
+            // for accumulated missions, first check if there's a completed but unclaimed mission
+            if ($mission->frequency == 'accumulated' && !$mission->auto_disburse_rewards) {
+                $unclaimedCompletedMission = $user->missionsParticipating()
+                    ->where('mission_id', $mission->id)
+                    ->where('is_completed', true)
+                    ->whereNull('claimed_at')
+                    ->first();
+
+                if ($unclaimedCompletedMission) {
+                    Log::info('Accumulated mission completed but not claimed yet, skipping new progress', [
+                        'user' => $user->id,
+                        'mission' => $mission->id,
+                        'mission_user_id' => $unclaimedCompletedMission->pivot->id
+                    ]);
+                    continue; // skip processing new progress if there's an unclaimed completed mission
                 }
             }
 
@@ -257,98 +275,100 @@ class MissionEventListener
                         continue; // Skip creating a new record if already completed this month
                     }
                 } elseif ($mission->frequency == 'accumulated') {
-                    // check if user has completed similar mission before if not, skip
-                    $completedMissions = $user->missionsParticipating()
+                    // for accumulated missions, check for any uncompleted mission first
+                    $incompleteMission = $user->missionsParticipating()
                         ->where('mission_id', $mission->id)
-                        ->whereNull('completed_at')
-                        ->get();
+                        ->where('is_completed', false)
+                        ->first();
 
-                    Log::info('[Accumulated] Checking if user has completed similar mission before', [
-                        'user' => $user->id,
-                        'mission' => $mission->id,
-                        'completedMissions' => $completedMissions->count(),
-                    ]);
+                    if ($incompleteMission) {
+                        $userMission = $incompleteMission; // Use existing incomplete mission
+                    } else {
+                        // only create new mission if there's no incomplete mission and no unclaimed completed mission
+                        $unclaimedCompletedMission = $user->missionsParticipating()
+                            ->where('mission_id', $mission->id)
+                            ->where('is_completed', true)
+                            ->whereNull('claimed_at')
+                            ->exists();
 
-                    if ($completedMissions->count() > 0) { // since user can only do accumulative mission once per time.
-                        continue;
+                        if ($unclaimedCompletedMission) {
+                            Log::info('Accumulated mission already completed but not claimed, skipping new mission creation', [
+                                'user' => $user->id,
+                                'mission' => $mission->id
+                            ]);
+                            continue;
+                        }
                     }
                 }
 
-                $currentValues = [];
-                $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
+                if (!isset($userMission)) { // Only create new if we don't have an existing mission to use
+                    $currentValues = [];
+                    $mission->events = is_string($mission->events) ? json_decode($mission->events) : $mission->events;
 
-                foreach ($mission->events as $event) {
-                    $currentValues[$event] = ($event == $eventType) ? $increments : 0;
-                }
+                    foreach ($mission->events as $event) {
+                        $currentValues[$event] = ($event == $eventType) ? $increments : 0;
+                    }
 
-                // dont start new mission if previous mission is completed but not claimed yet
-                $previousSelfClaimedCompletedMission = $user->missionsParticipating()->where('mission_id', $mission->id)
-                    ->where('is_completed', true)
-                    // where auto_disburse_rewards is not set
-                    ->where('auto_disburse_rewards', false)
-                    // applies to one off frequency
-                    ->where('frequency', 'one-off')
-                    ->where('claimed_at', null)
-                    ->first();
-
-                if ($previousSelfClaimedCompletedMission) {
-                    Log::info('[MissionEventListener] Previous mission is completed but not claimed yet, skipping new mission start for user: ' . $user->id, [
-                        'previousSelfClaimedCompletedMission' => $previousSelfClaimedCompletedMission->toArray()
+                    // create new mission for this user (start as new mission)
+                    $user->missionsParticipating()->attach($mission->id, [
+                        'started_at' => now(),
+                        'current_values' => json_encode($currentValues)
                     ]);
-                    continue;
+
+                    // just started fire notification
+                    try {
+                        $locale = $user->last_lang ?? config('app.locale');
+                        $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
+                    } catch (\Exception $e) {
+                        Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
+                    }
                 }
-
-                // create new mission for this user (start as new mission)
-                $user->missionsParticipating()->attach($mission->id, [
-                    'started_at' => now(),
-                    'current_values' => json_encode($currentValues)
-                ]);
-
-                // just started fire notification
-                try {
-                    $locale = $user->last_lang ?? config('app.locale');
-                    $user->notify((new MissionStarted($mission, $user, 1, json_encode($mission->events)))->locale($locale));
-                } catch (\Exception $e) {
-                    Log::error('Error sending mission start notification to user', ['error' => $e->getMessage(), 'user' => $user->id]);
-                }
-            } else if (!$userMission->pivot->is_completed) { // progress the mission
-                Log::info('User mission not complete yet', [
-                    'user' => $user->id,
-                    'mission' => $mission->id,
-                ]);
-                // if current_value is string, decode it first
-                $currentValues = is_string($userMission->pivot->current_values) ? json_decode($userMission->pivot->current_values, true) : $userMission->pivot->current_values;
-
-                $currentValues[$eventType] = isset($currentValues[$eventType]) ? $currentValues[$eventType] + $increments : $increments;
-                $userMission->pivot->current_values = json_encode($currentValues);
-                $userMission->pivot->save();
             }
 
-            if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
-                Log::info('Mission Completed, auto disburse rewards', [
+            if ($userMission && !$userMission->pivot->is_completed) {
+                Log::info('Updating mission progress', [
+                    'user' => $user->id,
                     'mission' => $mission->id,
-                    'user' => $user->id
+                    'eventType' => $eventType
                 ]);
 
-                // update mission to completed first
-                $user->missionsParticipating()->updateExistingPivot($mission->id, [
-                    'is_completed' => true,
-                    'completed_at' => now()
-                ]);
+                $currentValues = is_string($userMission->pivot->current_values) ?
+                    json_decode($userMission->pivot->current_values, true) :
+                    $userMission->pivot->current_values;
 
-                try {
-                    $locale = $user->last_lang ?? config('app.locale');
-                    $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
-                } catch (\Exception $e) {
-                    Log::error('Mission Completed Notification Error', [
-                        'mission_id' => $mission->id,
-                        'user' => $user->id,
-                        'error' => $e->getMessage()
+                $currentValues[$eventType] = isset($currentValues[$eventType]) ?
+                    $currentValues[$eventType] + $increments :
+                    $increments;
+
+                $userMission->pivot->current_values = json_encode($currentValues);
+                $userMission->pivot->save();
+
+                if ($this->isMissionCompleted($mission->events, $mission->values, $currentValues)) {
+                    Log::info('Mission Completed', [
+                        'mission' => $mission->id,
+                        'user' => $user->id
                     ]);
-                }
 
-                if ($mission->auto_disburse_rewards) {
-                    $this->disburseRewardsBasedOnFrequency($mission, $user);
+                    // update mission to completed first
+                    $user->missionsParticipating()->updateExistingPivot($mission->id, [
+                        'is_completed' => true,
+                        'completed_at' => now()
+                    ]);
+
+                    try {
+                        $locale = $user->last_lang ?? config('app.locale');
+                        $user->notify((new MissionCompleted($mission, $user, $mission->missionable->name, $mission->reward_quantity))->locale($locale));
+                    } catch (\Exception $e) {
+                        Log::error('Mission Completed Notification Error', [
+                            'mission_id' => $mission->id,
+                            'user' => $user->id,
+                            'error' => $e->getMessage()
+                        ]);
+                    }
+
+                    if ($mission->auto_disburse_rewards) {
+                        $this->disburseRewardsBasedOnFrequency($mission, $user);
+                    }
                 }
             }
         }

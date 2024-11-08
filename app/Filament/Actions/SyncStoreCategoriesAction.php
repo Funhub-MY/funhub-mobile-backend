@@ -18,7 +18,7 @@ class SyncStoreCategoriesAction extends ImportAction
     {
         parent::setUp();
 
-        $this->label(__('Import Stores (CSV)'))
+        $this->label(__('Sync Stores Categories (CSV)'))
             ->uniqueField('name')
             ->fields([
                 ImportField::make('store_id')

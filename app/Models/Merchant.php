@@ -15,6 +15,9 @@ class Merchant extends BaseModel implements HasMedia, Auditable
 {
     use HasFactory, InteractsWithMedia, \OwenIt\Auditing\Auditable, Searchable;
 
+    protected $guarded = ['id'];
+    protected $appends = ['has_auto_linked_user'];
+
     const MEDIA_COLLECTION_NAME = 'merchant_logos';
     const MEDIA_COLLECTION_NAME_PHOTOS = 'merchant_photos';
     const MEDIA_COLLECTION_MENUS = 'menus';
@@ -28,7 +31,6 @@ class Merchant extends BaseModel implements HasMedia, Auditable
     const STATUS_PENDING = 0;
     const STATUS_APPROVED = 1;
     const STATUS_REJECTED = 2;
-
 
     /**
      * Search Setup
@@ -93,9 +95,6 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return $this->status === self::STATUS_APPROVED;
     }
 
-
-    protected $guarded = ['id'];
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -117,6 +116,10 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return $this->belongsTo(Country::class, 'country_id');
     }
 
+	public function kocUser()
+	{
+		return $this->belongsTo(User::class);
+	}
 
     public function offers()
     {
@@ -148,8 +151,18 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         return $this->hasMany(MerchantRating::class, 'merchant_id');
     }
 
+    public function autoLink()
+    {
+        return $this->hasOne(MerchantUserAutolink::class, 'merchant_id');
+    }
+
     public function scopeApproved(Builder $query): void
     {
         $query->where($this->getTable() . '.status', self::STATUS_APPROVED);
+    }
+
+    public function getHasAutoLinkedUserAttribute()
+    {
+        return $this->autoLink()->exists();
     }
 }

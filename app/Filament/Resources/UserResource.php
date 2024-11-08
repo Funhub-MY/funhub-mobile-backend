@@ -180,6 +180,10 @@ class UserResource extends Resource
                             ->label('Has Article Personalization?')
                             ->default(false),
 
+                        Forms\Components\Toggle::make('registered_with_merchant_crm')
+                            ->label('Registered with Merchant CRM Form?')
+                            ->default(false),
+
                         // field set location
                         Forms\Components\Fieldset::make('Location')
                             ->schema([
@@ -248,9 +252,21 @@ class UserResource extends Resource
                         true => 'Yes',
                     ])
                     ->colors([
-                        'success' => false,
-                        'danger' => true,
+                        'success' => 1,
+                        'danger' => 0,
                     ]),
+
+                Tables\Columns\BadgeColumn::make('registered_with_merchant_crm')
+                    ->label('Registered Merchant Form?')
+                    ->enum([
+                        false => 'No',
+                        true => 'Yes',
+                    ])
+                    ->colors([
+                        'success' => 1,
+                        'danger' => 0,
+                    ]),
+
                 // referred_by_id
                 Tables\Columns\TextColumn::make('referredBy.name')
                     ->sortable()
@@ -265,6 +281,14 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()
             ])
             ->filters([
+                // filter by registered_with_merchant_crm
+                Tables\Filters\SelectFilter::make('registered_with_merchant_crm')
+                    ->label('Registered with Merchant CRM Form?')
+                    ->options([
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ]),
+
                 // filter by status
                 SelectFilter::make('status')
                     ->label('Status')
