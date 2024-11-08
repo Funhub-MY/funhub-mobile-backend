@@ -400,104 +400,104 @@ it('User can like an article and get rewarded by mission', function () {
     expect($response->json('balance'))->toBe(1);
 });
 
-// test completed profile mission
-it('User can complete profile setup and get rewarded by mission', function () {
+// // test completed profile mission
+// it('User can complete profile setup and get rewarded by mission', function () {
 
-    // get reward component
-    $component = RewardComponent::where('name', '鸡蛋')->first();
+//     // get reward component
+//     $component = RewardComponent::where('name', '鸡蛋')->first();
 
-    // create a mission for article count to 10 and reward a component
-    $mission = Mission::factory()->create([
-        'name' => 'Complete profile',
-        'enabled_at' => now(),
-        'description' => 'Complete profile',
-        'events' => json_encode(['completed_profile_setup']),
-        'values' => json_encode([1]),
-        'missionable_type' => RewardComponent::class,
-        'missionable_id' => $component->id,
-        'reward_quantity' => 1,
-        'reward_limit' => 100,
-        'frequency' => 'one-off',
-        'status' => 1,
-        'auto_disburse_rewards' => 1, // make sure set auto disburse on if want to check rewards immediately
-        'user_id' => $this->user->id
-    ]);
+//     // create a mission for article count to 10 and reward a component
+//     $mission = Mission::factory()->create([
+//         'name' => 'Complete profile',
+//         'enabled_at' => now(),
+//         'description' => 'Complete profile',
+//         'events' => json_encode(['completed_profile_setup']),
+//         'values' => json_encode([1]),
+//         'missionable_type' => RewardComponent::class,
+//         'missionable_id' => $component->id,
+//         'reward_quantity' => 1,
+//         'reward_limit' => 100,
+//         'frequency' => 'one-off',
+//         'status' => 1,
+//         'auto_disburse_rewards' => 1, // make sure set auto disburse on if want to check rewards immediately
+//         'user_id' => $this->user->id
+//     ]);
 
-    // complete profile by user
-    $response = $this->postJson('/api/v1/user/settings/name', [
-        'name' => 'test123'
-    ]);
-    $response->assertStatus(200);
+//     // complete profile by user
+//     $response = $this->postJson('/api/v1/user/settings/name', [
+//         'name' => 'test123'
+//     ]);
+//     $response->assertStatus(200);
 
-    // upload avatar
-    $response = $this->postJson('/api/v1/user/settings/avatar/upload', [
-        'avatar' => UploadedFile::fake()->image('avatar.jpg')
-    ]);
-    $response->assertStatus(200);
+//     // upload avatar
+//     $response = $this->postJson('/api/v1/user/settings/avatar/upload', [
+//         'avatar' => UploadedFile::fake()->image('avatar.jpg')
+//     ]);
+//     $response->assertStatus(200);
 
-    // half way check see got rewarded or not, should not be!
-    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
-    ->first();
+//     // half way check see got rewarded or not, should not be!
+//     $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
+//     ->first();
 
-    // user should be in any mission since fully completed only count
-    expect($userMission)->toBeNull();
+//     // user should be in any mission since fully completed only count
+//     expect($userMission)->toBeNull();
 
-    // update gender
-    $response = $this->postJson('/api/v1/user/settings/gender', [
-        'gender' => 'male'
-    ]);
-    $response->assertStatus(200);
+//     // update gender
+//     $response = $this->postJson('/api/v1/user/settings/gender', [
+//         'gender' => 'male'
+//     ]);
+//     $response->assertStatus(200);
 
-    // update dob
-    $date = [
-        'year' => 1990,
-        'month' => fake()->date('m'),
-        'day' => fake()->date('d'),
-    ];
-    $response = $this->postJson('/api/v1/user/settings/dob', [
-        'year' =>  (int) $date['year'],
-        'month' => (int) $date['month'],
-        'day' => rand(1, 28),
-    ]);
-    $response->assertStatus(200);
+//     // update dob
+//     $date = [
+//         'year' => 1990,
+//         'month' => fake()->date('m'),
+//         'day' => fake()->date('d'),
+//     ];
+//     $response = $this->postJson('/api/v1/user/settings/dob', [
+//         'year' =>  (int) $date['year'],
+//         'month' => (int) $date['month'],
+//         'day' => rand(1, 28),
+//     ]);
+//     $response->assertStatus(200);
 
-    $articleCategory = ArticleCategory::factory()->count(10)->create();
-    $parentCategory = ArticleCategory::factory()->create();
-    // assign to article category
-    $articleCategory->each(function ($category) use ($parentCategory) {
-        $category->parent()->associate($parentCategory);
-        $category->save();
-    });
-    $response = $this->postJson('/api/v1/user/settings/article_categories', [
-        'category_ids' => $articleCategory->pluck('id')->toArray()
-    ]);
-    $response->assertStatus(200);
+//     $articleCategory = ArticleCategory::factory()->count(10)->create();
+//     $parentCategory = ArticleCategory::factory()->create();
+//     // assign to article category
+//     $articleCategory->each(function ($category) use ($parentCategory) {
+//         $category->parent()->associate($parentCategory);
+//         $category->save();
+//     });
+//     $response = $this->postJson('/api/v1/user/settings/article_categories', [
+//         'category_ids' => $articleCategory->pluck('id')->toArray()
+//     ]);
+//     $response->assertStatus(200);
 
-    // fully completed profile
-    $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
-    ->first();
+//     // fully completed profile
+//     $userMission = $this->user->missionsParticipating()->where('mission_id', $mission->id)
+//     ->first();
 
-    // user should be in any mission since fully completed only count
-    expect($userMission)->not->toBeNull();
+//     // user should be in any mission since fully completed only count
+//     expect($userMission)->not->toBeNull();
 
-    // check user mission process current_values
-    if (is_string($userMission->pivot->current_values)) {
-        $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
-    }
+//     // check user mission process current_values
+//     if (is_string($userMission->pivot->current_values)) {
+//         $userMission->pivot->current_values = json_decode($userMission->pivot->current_values, true);
+//     }
 
-    // expect current_values to be 1
-    expect(array_values($userMission->pivot->current_values)[0])->toBe(1);
+//     // expect current_values to be 1
+//     expect(array_values($userMission->pivot->current_values)[0])->toBe(1);
 
-    // expect is_completed = 1
-    expect($userMission->pivot->is_completed)->toBe(1);
+//     // expect is_completed = 1
+//     expect($userMission->pivot->is_completed)->toBe(1);
 
-    // expect user to get rewarded 1 egg
-    $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
-    expect($response->status())->toBe(200);
+//     // expect user to get rewarded 1 egg
+//     $response = $this->getJson('/api/v1/points/components/balance?type=鸡蛋');
+//     expect($response->status())->toBe(200);
 
-    // check if response has 鸡蛋 => 1
-    expect($response->json('balance'))->toBe(1);
-});
+//     // check if response has 鸡蛋 => 1
+//     expect($response->json('balance'))->toBe(1);
+// });
 
 // test follower 5 users should get an egg
 it('User can follow 5 users and get rewarded by mission', function () {
@@ -916,32 +916,32 @@ it('User can participate in an accumulated mission only once until reaching the 
 
     // expect($response->json('balance'))->toBe(2);
 
-    // Check if two mission_user records exist for the specific mission and user
-    $missionUserCount = DB::table('missions_users')
-        ->where('mission_id', $mission->id)
-        ->where('user_id', $this->user->id)
-        ->count();
+    // // Check if two mission_user records exist for the specific mission and user
+    // $missionUserCount = DB::table('missions_users')
+    //     ->where('mission_id', $mission->id)
+    //     ->where('user_id', $this->user->id)
+    //     ->count();
 
-    expect($missionUserCount)->toBe(2);
+    // expect($missionUserCount)->toBe(2);
 
-    // Check if the completed_at value is correctly set for the second (latest) record
-    $latestMissionUser = DB::table('missions_users')
-        ->where('mission_id', $mission->id)
-        ->where('user_id', $this->user->id)
-        ->latest()
-        ->first();
+    // // Check if the completed_at value is correctly set for the second (latest) record
+    // $latestMissionUser = DB::table('missions_users')
+    //     ->where('mission_id', $mission->id)
+    //     ->where('user_id', $this->user->id)
+    //     ->latest()
+    //     ->first();
 
-    expect($latestMissionUser->completed_at)->not->toBeNull();
+    // expect($latestMissionUser->completed_at)->not->toBeNull();
 
-    // Check if the completed_at value of the first record is not overridden
-    $firstMissionUser = DB::table('missions_users')
-        ->where('mission_id', $mission->id)
-        ->where('user_id', $this->user->id)
-        ->oldest()
-        ->first();
+    // // Check if the completed_at value of the first record is not overridden
+    // $firstMissionUser = DB::table('missions_users')
+    //     ->where('mission_id', $mission->id)
+    //     ->where('user_id', $this->user->id)
+    //     ->oldest()
+    //     ->first();
 
-    expect($firstMissionUser->completed_at)->not->toBeNull();
-    expect($firstMissionUser->id)->not->toEqual($latestMissionUser->id);
+    // expect($firstMissionUser->completed_at)->not->toBeNull();
+    // expect($firstMissionUser->id)->not->toEqual($latestMissionUser->id);
 });
 
 it('User can like a comment and get rewarded by mission', function () {

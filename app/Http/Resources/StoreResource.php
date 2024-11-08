@@ -51,6 +51,34 @@ class StoreResource extends JsonResource
             });
         }
 
+        // Initialize complete week structure for business hours and rest hours
+        $completeBusinessWeek = [];
+        $completeRestWeek = [];
+        for ($i = 1; $i <= 7; $i++) {
+            $completeBusinessWeek[$i] = [
+                'open_time' => null,
+                'close_time' => null
+            ];
+            $completeRestWeek[$i] = [
+                'open_time' => null,
+                'close_time' => null
+            ];
+        }
+
+        if ($this->business_hours) {
+            $businessHours = json_decode($this->business_hours, true);
+            if (is_array($businessHours)) {
+                $completeBusinessWeek = array_replace($completeBusinessWeek, $businessHours);
+            }
+        }
+
+        if ($this->rest_hours) {
+            $restHours = json_decode($this->rest_hours, true);
+            if (is_array($restHours)) {
+                $completeRestWeek = array_replace($completeRestWeek, $restHours);
+            }
+        }
+
         $currentDayBusinessHour = null;
         if ($this->business_hours) {
             // today day in number, eg, Monday = 1, Sunday = 7
@@ -59,6 +87,17 @@ class StoreResource extends JsonResource
 
             if (isset($buisnessHours[$today])) {
             $currentDayBusinessHour = $buisnessHours[$today];
+            }
+        }
+
+        $currentDayRestHour = null;
+        if ($this->rest_hours) {
+            // today day in number, eg, Monday = 1, Sunday = 7
+            $today = date('N');
+            $restHours = json_decode($this->rest_hours, true);
+
+            if (isset($restHours[$today])) {
+                $currentDayRestHour = $restHours[$today];
             }
         }
 
@@ -81,8 +120,10 @@ class StoreResource extends JsonResource
                 ];
             }) : null,
             'business_phone_no' => $this->business_phone_no,
-            'business_hours' => ($this->business_hours) ? json_decode($this->business_hours) : null,
+            'business_hours' => $completeBusinessWeek,
             'current_day_business_hour' => ($this->business_hours) ? $currentDayBusinessHour : null,
+            'current_day_rest_hour' => ($this->rest_hours) ? $currentDayRestHour : null,
+            'rest_hours' => $completeRestWeek,
             'location' => $this->location,
             'address' => $this->address,
             'address_postcode' => $this->address_postcode,

@@ -30,8 +30,9 @@ class ArticleFeedWhitelistUserResource extends Resource
         return $form
             ->schema([
                 Select::make('user_id')
+                    ->label('Username')
                 ->searchable()
-                ->relationship('user', 'name', fn (Builder $query) => $query->doesntHave('articleFeedWhitelist'))
+                ->relationship('user', 'username', fn (Builder $query) => $query->doesntHave('articleFeedWhitelist'))
                 ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->name} ({$record->username})")
                     ->helperText('Anyone in whitelist will be included in Home recommendation feed.')
                     ->required(),

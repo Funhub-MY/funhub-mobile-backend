@@ -90,14 +90,9 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $query = Article::published();
-        // ->whereDoesntHave('hiddenUsers', function ($query) {
-        //     $query->where('user_id', auth()->user()->id);
-        // });
 
         if (!$request->has('include_own_article') || $request->include_own_article == 0) {
-            // default to exclude own article
             $query->where('user_id', '!=', auth()->user()->id);
-            // else it will also include own article
         }
 
         // video only
@@ -109,28 +104,53 @@ class ArticleController extends Controller
             $query->whereHas('categories', fn ($q) => $q->whereIn('article_categories.id', explode(',', $request->category_ids)));
         }
 
-        if ($request->has('article_ids')) {
+        // Handle build_recommendations alongside article_ids
+        if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
+            $recommendedArticleIds = auth()->user()->articleRecommendations()
+                ->whereNull('last_viewed_at')
+                ->inRandomOrder()
+                ->pluck('article_id')
+                ->toArray();
+
+            if (!empty($recommendedArticleIds)) {
+                // If there are existing article_ids, intersect with recommendations
+                if ($request->has('article_ids')) {
+                    $requestedIds = explode(',', $request->article_ids);
+                    $intersectedIds = array_intersect($recommendedArticleIds, $requestedIds);
+
+                    // If intersection exists, use it; otherwise fall back to requested IDs
+                    $finalIds = !empty($intersectedIds) ? $intersectedIds : $requestedIds;
+                    $query->whereIn('id', $finalIds);
+                } else {
+                    // No article_ids specified, just use recommendations
+                    $query->whereIn('id', $recommendedArticleIds);
+                }
+
+                // Maintain the random order of recommendations
+                $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
+                $query->orderByRaw($orderString);
+            } elseif ($request->has('article_ids')) {
+                // If no recommendations but article_ids exist, use those
+                $query->whereIn('id', explode(',', $request->article_ids));
+            }
+        } elseif ($request->has('article_ids')) {
+            // Normal article_ids handling if no recommendations
             $query->whereIn('id', explode(',', $request->article_ids));
         }
 
         if ($request->has('tag_ids')) {
             $tagIds = explode(',', $request->tag_ids);
-            // get all articles ids associated with this tag
             $articlesTags = ArticleTag::whereIn('id', $tagIds)->get();
-            // get the name of tags then search by tag name instead
-            // get unique name from articlesTags->name into an array
             $articlesTagsNames = $articlesTags->pluck('name')->unique()->toArray();
 
             $articlesTags = ArticleTag::whereIn('name', $articlesTagsNames)
                 ->with('articles')
                 ->get();
 
-            // get all articles ids
             $articleIds = $articlesTags->pluck('articles')->flatten()->pluck('id')->toArray();
             $query->whereIn('id', $articleIds);
         }
 
-        // get articles from users whose this auth user is following only
         if ($request->has('following_only') && $request->following_only == 1) {
             $myFollowings = auth()->user()->followings;
 
@@ -139,12 +159,10 @@ class ArticleController extends Controller
             });
         }
 
-        // if dont have following only , hide all private articles
         if (!$request->has('following_only')) {
             $query->where('visibility', 'public');
         }
 
-        // get articles by city
         if ($request->has('city')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
@@ -157,14 +175,12 @@ class ArticleController extends Controller
             });
         }
 
-        // location id
         if ($request->has('location_id')) {
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('locations.id', $request->location_id);
             });
         }
 
-        // store id
         if ($request->has('store_id')) {
             $locationIds = DB::table('locatables as article_locatables')
                 ->join('locatables as store_locatables', function ($join) use ($request) {
@@ -176,18 +192,15 @@ class ArticleController extends Controller
                 ->pluck('article_locatables.locatable_id');
 
             $query->whereIn('articles.id', $locationIds)
-                ->public(); // must be public only if has store id grab articles
+                ->public();
         }
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        // only show those thats is not hidden from home
-        // not applicable for following only, tag_ids, location_id queries
         if (!$request->has('following_only')
             && !$request->has('disable_home_conditions')
             && !$request->has('tag_ids')
             && !$request->has('location_id')) {
-            // query only get articles that author is in articleFeedWhitelist or not hidden_from_home
             $query->where(function ($query) {
                 $query
                 ->has('user.articleFeedWhitelist')
@@ -198,11 +211,14 @@ class ArticleController extends Controller
         if ($request->has('pinned_only') && $request->pinned_only == 1) {
             $query->where('pinned_recommended', true);
         } else {
-            $query->where('pinned_recommended', false); // normal dont query pinned articles
+            $query->where('pinned_recommended', false);
         }
 
         if (!$request->has('lat') && !$request->has('lng')) {
-            $query->latest();
+            // Only apply latest() if we're not using recommendations ordering
+            if (!($request->has('build_recommendations') && $request->build_recommendations == 1)) {
+                $query->latest();
+            }
         }
 
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
@@ -217,7 +233,6 @@ class ArticleController extends Controller
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             }])
-            // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                     ->whereHas('user' , function ($query) {
@@ -231,7 +246,7 @@ class ArticleController extends Controller
             }])
             ->paginate($paginatePerPage);
 
-        // get all article location ids, this part of code used for getting merchant offer banenr in article
+        // Handle merchant offers
         $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
         $storesWithOffers = DB::table('locatables as store_locatables')
@@ -257,6 +272,53 @@ class ArticleController extends Controller
         });
 
         return ArticleResource::collection($data);
+    }
+
+    /**
+     * Save Article Recommendations (from Algolia)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @bodyParam article_ids array required Article Ids to Filter. Example [1,2,3]
+     * @response status=200 {
+     * "message": "Article recommendations updated",
+     * "user_id": 1,
+     * "total_articles": 3
+     * }
+     * @response status=401 scenario="Unauthenticated" {"message": "Unauthenticated."}
+     */
+    public function postSaveArticleRecommendation(Request $request)
+    {
+        $request->validate([
+            'article_ids' => 'required',
+        ]);
+
+        try {
+            $articleIds = explode(',', $request->article_ids);
+
+            // clear existing list
+            auth()->user()->articleRecommendations()->delete();
+
+            foreach ($articleIds as $articleId) {
+                // insert
+                auth()->user()->articleRecommendations()->create([
+                    'user_id' => auth()->id(),
+                    'article_id' => $articleId,
+                    'last_viewed_at' => null,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Article recommendations updated',
+                'user_id' => auth()->id(),
+                'total_articles' => count($articleIds),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('[ArticleController] Article recommendations update failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Article recommendations update failed. Please try again later']);
+        }
     }
 
     /**
@@ -953,6 +1015,18 @@ class ArticleController extends Controller
 
         // detach existing location first
         $article->location()->detach(); // detaches all
+
+        // Mall outlets incorrect attaching issue
+        // if location exists, check if is_mall, if is mall check if name of locationData same as location name
+        if ($location && $location->is_mall && $locationData['name'] != $location->name) {
+            // eg. location name is Chagee @ Sunway Pyramid it will have same lat,lng and google_id as Sunway Pyramid
+            // to prevent Chagee @ Sunway Pyramid being attached incorrectly to Sunway Pyramid
+            // search again with name of locationData, lat, lng. instead of just google_id or lat/lng
+            $location = Location::where('lat', $locationData['lat'])
+                ->where('lng', $locationData['lng'])
+                ->where('name', $locationData['name'])
+                ->first();
+        }
 
         if ($location) {
             // just attach to article with new ratings if there is

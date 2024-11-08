@@ -5,6 +5,7 @@ namespace App\Filament\Resources\MerchantOfferCampaignResource\Pages;
 use App\Filament\Resources\MerchantOfferCampaignResource;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferCampaign;
+use App\Models\MerchantOfferCampaignSchedule;
 use App\Models\MerchantOfferVoucher;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
@@ -20,7 +21,24 @@ class EditMerchantOfferCampaign extends EditRecord
     protected function getActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            //Actions\DeleteAction::make(),
+            Actions\Action::make('archive')
+                ->label('Archive')
+                ->action(function () {
+                    $record = $this->record;
+                    $record->update(['status' => MerchantOfferCampaign::STATUS_ARCHIVED]);
+
+                    // archive all associated merchant offers
+                    $record->schedules()->update(['status' => MerchantOfferCampaignSchedule::STATUS_ARCHIVED]);
+                    $record->merchantOffers()->update(['status' => MerchantOffer::STATUS_ARCHIVED]);
+
+                    Notification::make()
+                        ->success()
+                        ->title('Campaign Archived')
+                        ->send();
+                })
+                ->requiresConfirmation()
+                ->modalHeading('Confirm Archive Campaign'),
         ];
     }
 
@@ -40,7 +58,7 @@ class EditMerchantOfferCampaign extends EditRecord
             ->requiresConfirmation()
             ->modalHeading('Confirm Save Changes');
     }
-    
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         return $data;

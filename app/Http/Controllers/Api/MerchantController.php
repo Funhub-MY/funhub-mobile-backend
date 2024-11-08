@@ -353,6 +353,10 @@ class MerchantController extends Controller
             ]);
 
             $contact = $hubspot->crm()->contacts()->basicApi()->create($contactInput);
+
+            if (auth()->user()) {
+                auth()->user()->update(['registered_with_merchant_crm' => true]);
+            }
         } catch (\Exception $e) {
             Log::error('Error creating contact via HubSpot API: ' . $e->getMessage());
             return response()->json(['message' => 'Error creating contact.'], 422);

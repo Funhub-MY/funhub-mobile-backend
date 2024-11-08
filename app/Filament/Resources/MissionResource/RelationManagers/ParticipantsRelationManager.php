@@ -40,10 +40,14 @@ class ParticipantsRelationManager extends RelationManager
                     ->label('User ID')
                     ->sortable()
                     ->searchable(),
+				Tables\Columns\TextColumn::make('name')
+					->label('Name')
+					->sortable()
+					->searchable(),
                 Tables\Columns\TextColumn::make('username')
                     ->label('Funhub ID')
                     ->sortable()
-                    ->searchable(['username', 'name']),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('missionsParticipating')
                     ->label('Progress')
                     ->sortable(['missions_users.is_completed'])
@@ -71,9 +75,9 @@ class ParticipantsRelationManager extends RelationManager
                             return $totalCurrentEventValue . '/' . $totalMissionEventValue;
                         }
                     }),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('completed_at')
                     ->label('Action At')
-                    ->sortable(['missions_users.created_at']),
+                    ->sortable(['missions_users.completed_at']),
             ])
             ->filters([
                 Filter::make('progress')
@@ -94,28 +98,28 @@ class ParticipantsRelationManager extends RelationManager
                         }
                     })
                     ->label('Progress'),
-                Filter::make('created_from')
+                Filter::make('completed_from')
                     ->form([
-                        DatePicker::make('created_from')
+                        DatePicker::make('completed_from')
                             ->placeholder('Select start date'),
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if ($data['created_from']) {
+                        if ($data['completed_from']) {
                             // Specify the table name for created_at
-                            $query->whereDate($query->getModel()->getTable() . '.created_at', '>=', $data['created_from']);
+							$query->whereDate('missions_users.completed_at', '>=', $data['completed_from']);
                         }
                     })
                     ->label('Actioned From'),
 
-                Filter::make('created_until')
+                Filter::make('completed_until')
                     ->form([
-                        DatePicker::make('created_until')
+                        DatePicker::make('completed_until')
                             ->placeholder('Select end date'),
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if ($data['created_until']) {
+                        if ($data['completed_until']) {
                             // Specify the table name for created_at
-                            $query->whereDate($query->getModel()->getTable() . '.created_at', '<=', $data['created_until']);
+                            $query->whereDate('missions_users.completed_at', '<=', $data['completed_until']);
                         }
                     })
                     ->label('Actioned Until'),

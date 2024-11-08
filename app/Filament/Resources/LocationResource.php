@@ -24,6 +24,8 @@ use App\Filament\Resources\LocationResource\Pages;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LocationResource\RelationManagers;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 
 class LocationResource extends Resource
@@ -59,6 +61,12 @@ class LocationResource extends Resource
                             Forms\Components\TextInput::make('name')
                                 ->required()
                                 ->placeholder('Name of Location'),
+
+                            // boolean is_mall
+                            Forms\Components\Toggle::make('is_mall')
+                                ->label('Is Mall ?')
+                                ->helperText('If this location is mall, will be  used to separate mall outlets locations from Mall.')
+                                ->default(false),
 
                             Select::make('merchant_id')
                                 ->label('Attach to Merchant')
@@ -161,6 +169,10 @@ class LocationResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                ToggleColumn::make('is_mall')
+                    ->label('Is Mall ?')
+                    ->sortable(),
+
                 TextColumn::make('address'),
 
                 TextColumn::make('city')
@@ -181,7 +193,13 @@ class LocationResource extends Resource
                 TextColumn::make('country.name')
             ])
             ->filters([
-                //
+                // filter by is_mall
+                Tables\Filters\SelectFilter::make('is_mall')
+                    ->label('Is Mall ?')
+                    ->options([
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
