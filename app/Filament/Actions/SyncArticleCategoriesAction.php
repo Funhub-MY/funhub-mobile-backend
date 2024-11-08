@@ -26,9 +26,6 @@ class SyncArticleCategoriesAction extends ImportAction
                 ImportField::make('article_id')
                     ->label('Article ID')
                     ->required(),
-				ImportField::make('article_title')
-					->label('Article Title')
-					->required(),
                 ImportField::make('category_names')
                     ->label('Category Names')
                     ->required(),

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\Store;
 use Closure;
 use Filament\Forms;
 use App\Models\User;
@@ -650,7 +649,7 @@ class ArticleResource extends Resource
 				ExportBulkAction::make()
 					->exports([
 						ExcelExport::make()
-							->label('Export Stores Categories')
+							->label('Export Articles Categories')
 							->withColumns([
 								Column::make('id')->heading('article_id'),
 								Column::make('title')->heading('article_title'),
