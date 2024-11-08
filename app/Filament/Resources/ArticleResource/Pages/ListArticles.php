@@ -17,7 +17,7 @@ class ListArticles extends ListRecords
     protected function getActions(): array
     {
         return [
-			// Export Stores csv
+			// Export Articles csv
 			ExportAction::make()
 				->exports([
 					ExcelExport::make()
