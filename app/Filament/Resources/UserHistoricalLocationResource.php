@@ -142,6 +142,8 @@ class UserHistoricalLocationResource extends Resource
 								->getStateUsing(fn ($record) => $record->lat),
 							Column::make('Longitude')
 								->getStateUsing(fn ($record) => $record->lng),
+							Column::make('Address')
+								->getStateUsing(fn ($record) => $record->address),
 							Column::make('Address 2')
 								->getStateUsing(fn ($record) => $record->address_2),
 							Column::make('ZipCode')
