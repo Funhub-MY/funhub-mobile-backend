@@ -31,8 +31,9 @@ class ListUserHistoricalLocations extends ListRecords
 								->getStateUsing(fn($record) => $record->user->gender ?? null),
 							Column::make('lat')->heading('Latitude'),
 							Column::make('lng')->heading('Longitude'),
-							Column::make('full_address')->heading('Address')
-								->getStateUsing(fn($record) => $record->address . ($record->address_2 ? ', ' . $record->address_2 : '') . ',' . $record->zip_code),
+							Column::make('address')->heading('Address'),
+							Column::make('address_2')->heading('Address 2'),
+							Column::make('zip_code')->heading('ZipCode'),
 							Column::make('city')->heading('City'),
 							Column::make('state')->heading('State'),
 							Column::make('country')->heading('Country'),
