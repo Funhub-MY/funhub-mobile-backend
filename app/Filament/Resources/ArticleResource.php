@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\Store;
 use Closure;
 use Filament\Forms;
 use App\Models\User;
@@ -33,6 +34,9 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ArticleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ArticleResource\RelationManagers;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Columns\Column;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
@@ -643,6 +647,20 @@ class ArticleResource extends Resource
                             ->update(['pinned_recommended' => $data['pinned_recommended']]);
                     }
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+				ExportBulkAction::make()
+					->exports([
+						ExcelExport::make()
+							->label('Export Stores Categories')
+							->withColumns([
+								Column::make('id')->heading('article_id'),
+								Column::make('title')->heading('article_title'),
+								Column::make('categories.name')
+									->heading('category_names')
+									->getStateUsing(fn($record) => $record->categories->pluck('name')->join(',')),
+							])
+							->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+							->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+					]),
 
             ]);
     }
