@@ -29,6 +29,9 @@ class SyncArticleCategoriesAction extends ImportAction
                 ImportField::make('category_names')
                     ->label('Category Names')
                     ->required(),
+				ImportField::make('sub_categories')
+					->label('Sub Category Names')
+					->required(),
             ]);
 
         $this->action(function (ComponentContainer $form): void {

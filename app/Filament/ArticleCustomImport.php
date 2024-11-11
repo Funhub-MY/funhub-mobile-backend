@@ -180,6 +180,7 @@ class ArticleCustomImport
 
                 // ensure category_names dont have space between category names
                 $categoryNames = explode(',', preg_replace('/\s+/', ' ', $prepareData['category_names']));
+                $subCategoryNames = explode(',', preg_replace('/\s+/', ' ', $prepareData['sub_categories']));
                 // $categoryNames = explode(',', $prepareData['category_names']);
 //                $status = $prepareData['status'];
 
@@ -223,7 +224,7 @@ class ArticleCustomImport
                         $categoryIds = ArticleCategory::whereIn('name', $categoryNames)->pluck('id')->toArray();
 
                         if (count($categoryIds) > 0) {
-                            // sync store categories
+                            // sync article categories
                             $article->categories()->sync($categoryIds);
                             Log::info('Article category synced, article id: ' . $article->id . ' category ids: ' . implode(',', $categoryIds));
                         } else {
@@ -237,6 +238,29 @@ class ArticleCustomImport
                             'error' => $e->getMessage(),
                         ]);
                     }
+
+					try {
+						$subCategoryNames = array_map(function ($subCategory) {
+							return trim($subCategory);
+						}, $subCategoryNames);
+
+						$subCategoryIds = ArticleCategory::whereIn('name', $subCategoryNames)->pluck('id')->toArray();
+
+						if (count($subCategoryIds) > 0) {
+							// sync article categories
+							$article->categories()->sync($subCategoryIds);
+							Log::info('Article sub-category synced, article id: ' . $article->id . ' sub-category ids: ' . implode(',', $subCategoryIds));
+						} else {
+							// detach all
+							$article->subCategories()->detach();
+						}
+					} catch (\Exception $e) {
+						Log::error('Error syncing article categories', [
+							'article_id' => $article->id,
+							'sub_categories' => $subCategoryNames,
+							'error' => $e->getMessage(),
+						]);
+					}
                 } else {
                     Log::info('Article not found, id: ' . $articleId);
                 }
