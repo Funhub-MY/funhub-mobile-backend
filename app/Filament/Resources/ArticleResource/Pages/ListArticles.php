@@ -18,24 +18,24 @@ class ListArticles extends ListRecords
     {
         return [
 			// Export Articles csv
-			ExportAction::make()
-				->exports([
-					ExcelExport::make()
-						->label('Export Articles (CSV)')
-						->withColumns([
-							Column::make('id')->heading('article_id'),
-							Column::make('title')->heading('article_title'),
-							Column::make('categories.name')
-								->heading('category_names')
-								->getStateUsing(fn($record) => $record->categories->pluck('name')->join(',')),
-						])
-						->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
-						->withWriterType(\Maatwebsite\Excel\Excel::CSV)
-				]),
+			// ExportAction::make()
+			// 	->exports([
+			// 		ExcelExport::make()
+			// 			->label('Export Articles (CSV)')
+			// 			->withColumns([
+			// 				Column::make('id')->heading('article_id'),
+			// 				Column::make('title')->heading('article_title'),
+			// 				Column::make('categories.name')
+			// 					->heading('category_names')
+			// 					->getStateUsing(fn($record) => $record->categories->pluck('name')->join(',')),
+			// 			])
+			// 			->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+			// 			->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+			// 	]),
 
             Actions\CreateAction::make(),
 
-			SyncArticleCategoriesAction::make(),
+			//SyncArticleCategoriesAction::make(),
 		];
     }
 }

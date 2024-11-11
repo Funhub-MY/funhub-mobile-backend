@@ -18,5 +18,9 @@
 <b>Success: {{ $success ? 1 : 0 }}</b>
 <br>
 <b>{{ $message }}</b>
+<br>
+<b>Redemption Start Date: {{ $redemption_start_date }}</b>
+<br>
+<b>Redemption End Date: {{ $redemption_end_date }}</b>
 </body>
 </html>

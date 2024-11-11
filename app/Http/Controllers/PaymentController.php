@@ -214,6 +214,11 @@ class PaymentController extends Controller
                     }
                 }
 
+				Log::info('Redemption start and end date', [
+					'redemption_start_date' => $redemption_start_date,
+					'redemption_end_date' => $redemption_end_date,
+				]);
+
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
                 return view('payment-return', [
