@@ -53,6 +53,7 @@ class ListArticles extends ListRecords
 							Column::make('slug')->heading('slug'),
 							Column::make('body')->heading('body')
 						])
+						->withChunkSize(100)
 						->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
 						->withWriterType(\Maatwebsite\Excel\Excel::CSV)
 				]),
