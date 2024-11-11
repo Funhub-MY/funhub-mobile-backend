@@ -214,9 +214,12 @@ class PaymentController extends Controller
                     }
                 }
 
-				Log::info('Redemption start and end date', [
-					'redemption_start_date' => $redemption_start_date,
-					'redemption_end_date' => $redemption_end_date,
+				Log::info('Data being passed to view', [
+					'success' => true,
+					'transaction_id' => $transaction->id,
+					'offer_claim_id' => $claim_id,
+					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
+					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
 				]);
 
                 // return with js
@@ -225,8 +228,8 @@ class PaymentController extends Controller
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
                     'offer_claim_id' => $claim_id,
-                    'redemption_start_date' => $redemption_start_date,
-                    'redemption_end_date' => $redemption_end_date,
+					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
+					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
                 ]);
 
