@@ -26,6 +26,14 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
 
+    // app to app
+    Route::middleware(['application.token'])->group(function() {
+        Route::group(['prefix' => 'external'], function () {
+            Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
+            Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+        });
+    });
+
     // primary otp login
     Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp
     Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
