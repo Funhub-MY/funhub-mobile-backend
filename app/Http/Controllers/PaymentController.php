@@ -114,9 +114,33 @@ class PaymentController extends Controller
                 ]);
 
                 if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
-                    return view('payment-return', [
+					$claim_id = null;
+					$redemption_start_date = null;
+					$redemption_end_date = null;
+					if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+						$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+							->where('user_id', $transaction->user_id)
+							->latest()
+							->first();
+
+						if ($claim) {
+							$claim_id = $claim->id;
+							$redemption_start_date = $claim->created_at;
+
+							if (isset($claim->merchantOffer)) {
+								$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+							} else {
+								$redemption_end_date = $claim->created_at->endOfDay(); // Default to one-day expiry if not set
+							}
+						}
+					}
+
+					return view('payment-return', [
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
+						'offer_claim_id' => $claim_id,
+						'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
+						'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                         'success' => true,
                     ]);
                 } else {
