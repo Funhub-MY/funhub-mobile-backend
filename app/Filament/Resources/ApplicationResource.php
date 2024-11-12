@@ -62,10 +62,6 @@ class ApplicationResource extends Resource
                             ->helperText('API Key is automatically generated')
                             ->visibleOn('edit'),
 
-                        Forms\Components\Pla::make('tokens')
-                            ->view('filament.resources.application.tokens')
-                            ->visibleOn('edit'),
-
                         Forms\Components\KeyValue::make('settings')
                             ->label('Additional Settings')
                             ->helperText('Add any additional configuration key-value pairs')
