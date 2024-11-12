@@ -1,3 +1,6 @@
+@php
+    Illuminate\Support\Facades\Log::info('is redemption start date isset' . isset($redemption_start_date));
+@endphp
 <html>
 <head>
     <title>Payment Return</title>
