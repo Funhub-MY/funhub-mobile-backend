@@ -176,15 +176,8 @@ class ArticleCustomImport
                     $prepareData[$key] = $fieldValue;
                 }
 
-                $articleId = $prepareData['article_id'];
-
-                // ensure category_names dont have space between category names
-                $categoryNames = explode(',', preg_replace('/\s+/', ' ', $prepareData['category_names']));
-                $subCategoryNames = explode(',', preg_replace('/\s+/', ' ', $prepareData['sub_categories']));
-                // $categoryNames = explode(',', $prepareData['category_names']);
-//                $status = $prepareData['status'];
-
-                $article = Article::find($articleId);
+				$articleId = $prepareData['article_id'];
+				$article = Article::find($articleId);
 
                 if ($article) {
                     Log::info('Article found, id: ' . $article->id);
@@ -214,50 +207,45 @@ class ArticleCustomImport
 //                        ]);
 //                    }
 
-                    // get all category ids
-                    // trim each category name
-                    try {
-                        $categoryNames = array_map(function ($categoryName) {
-                            return trim($categoryName);
-                        }, $categoryNames);
-
-                        $categoryIds = ArticleCategory::whereIn('name', $categoryNames)->pluck('id')->toArray();
-
-                        if (count($categoryIds) > 0) {
-                            // sync article categories
-                            $article->categories()->sync($categoryIds);
-                            Log::info('Article category synced, article id: ' . $article->id . ' category ids: ' . implode(',', $categoryIds));
-                        } else {
-                            // detach all
-							$article->categories()->detach();
-                        }
-                    } catch (\Exception $e) {
-                        Log::error('Error syncing article categories', [
-                            'article_id' => $article->id,
-                            'category_names' => $categoryNames,
-                            'error' => $e->getMessage(),
-                        ]);
-                    }
-
 					try {
-						$subCategoryNames = array_map(function ($subCategory) {
-							return trim($subCategory);
-						}, $subCategoryNames);
+						// Clean and prepare category names
+						$categoryNames = array_map(
+							'trim',
+							explode(',', preg_replace('/\s+/', ' ', $prepareData['category_names']))
+						);
 
-						$subCategoryIds = ArticleCategory::whereIn('name', $subCategoryNames)->pluck('id')->toArray();
+						$subCategoryNames = array_map(
+							'trim',
+							explode(',', preg_replace('/\s+/', ' ', $prepareData['sub_categories']))
+						);
 
-						if (count($subCategoryIds) > 0) {
-							// sync article categories
-							$article->categories()->sync($subCategoryIds);
-							Log::info('Article sub-category synced, article id: ' . $article->id . ' sub-category ids: ' . implode(',', $subCategoryIds));
-						} else {
-							// detach all
-							$article->subCategories()->detach();
-						}
+						// Get category IDs
+						$mainCategories = ArticleCategory::whereIn('name', $categoryNames)
+							->whereNull('parent_id')
+							->pluck('id')
+							->toArray();
+
+						$subCategories = ArticleCategory::whereIn('name', $subCategoryNames)
+							->whereNotNull('parent_id')
+							->pluck('id')
+							->toArray();
+
+						// Combine both category types for a single sync operation
+						$allCategoryIds = array_merge($mainCategories, $subCategories);
+
+						// Perform a single sync operation with all category IDs
+						DB::transaction(function () use ($article, $allCategoryIds) {
+							$article->categories()->sync($allCategoryIds);
+						});
+
+						Log::info('Article categories synced successfully', [
+							'article_id' => $article->id,
+							'main_categories' => $mainCategories,
+							'sub_categories' => $subCategories
+						]);
 					} catch (\Exception $e) {
 						Log::error('Error syncing article categories', [
 							'article_id' => $article->id,
-							'sub_categories' => $subCategoryNames,
 							'error' => $e->getMessage(),
 						]);
 					}
