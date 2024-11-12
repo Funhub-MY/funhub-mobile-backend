@@ -117,7 +117,9 @@ class PaymentController extends Controller
                     return view('payment-return', [
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
-                        'success' => true
+                        'success' => true,
+						'redemption_start_date' => now()->toISOString(),
+						'redemption_end_date' => now()->toISOString(),
                     ]);
                 } else {
                     if ($request->responseCode == 'PE') {
