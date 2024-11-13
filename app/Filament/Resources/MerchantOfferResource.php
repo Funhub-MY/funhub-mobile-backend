@@ -36,6 +36,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Toggle;
 use Google\Service\StreetViewPublish\Place;
 
 class MerchantOfferResource extends Resource
@@ -118,7 +119,6 @@ class MerchantOfferResource extends Resource
                                 Forms\Components\TextInput::make('sku')
                                     ->label('SKU')
                                     ->required(),
-
 
                                 Forms\Components\DateTimePicker::make('available_at')
                                     ->required()
@@ -250,6 +250,12 @@ class MerchantOfferResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('status')
                                     ->options(MerchantOffer::STATUS)->default(0),
+
+                                Toggle::make('available_for_web')
+                                    ->label('Available for Web')
+                                    ->helperText('If enabled, this offer will be shown in Funhub Merchant Web.')
+                                    ->default(false),
+
                                 DatePicker::make('publish_at')
                                     ->label('Publish Date')
                                     ->visible(fn(Closure $get) => $get('status') == MerchantOffer::STATUS_DRAFT)

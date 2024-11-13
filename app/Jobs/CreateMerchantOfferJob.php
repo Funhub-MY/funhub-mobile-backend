@@ -37,6 +37,7 @@ class CreateMerchantOfferJob implements ShouldQueue
             'name' => $campaign->name,
             'description' => $campaign->description,
             'sku' => $campaign->sku . '-' . $schedule->id,
+            'available_for_web' => $campaign->available_for_web,
             'fine_print' => $campaign->fine_print,
             'redemption_policy' => $campaign->redemption_policy,
             'cancellation_policy' => $campaign->cancellation_policy,
