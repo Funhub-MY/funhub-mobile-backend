@@ -326,7 +326,7 @@ paths:
                 article_id:
                   type: integer
                   description: ''
-                  example: 2
+                  example: 18
                   nullable: false
                 reason:
                   type: string
@@ -336,12 +336,12 @@ paths:
                 violation_type:
                   type: string
                   description: ''
-                  example: voluptatem
+                  example: officiis
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: laudantium
+                  example: sed
                   nullable: false
                 article:
                   type: integer
@@ -513,7 +513,7 @@ paths:
                   type: array
                   description: 'Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - nobis
+                    - sint
                   items:
                     type: string
               required:
@@ -545,7 +545,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - harum
+                    - enim
                   items:
                     type: string
                 category_ids:
@@ -635,7 +635,7 @@ paths:
                 keyword_id:
                   type: integer
                   description: 'The <code>id</code> of an existing record in the search_keywords table.'
-                  example: 3
+                  example: 13
                   nullable: false
               required:
                 - keyword_id
@@ -709,7 +709,7 @@ paths:
                   type: array
                   description: 'optional Article Ids to Filter. Example [1,2,3]'
                   example:
-                    - quis
+                    - quia
                   items:
                     type: string
                 category_ids:
@@ -1476,7 +1476,7 @@ paths:
         in: path
         name: comment_id
         description: 'The ID of the comment.'
-        example: facilis
+        example: earum
         required: true
         schema:
           type: string
@@ -1567,12 +1567,12 @@ paths:
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: modi
+                  example: excepturi
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: magnam
+                  example: quae
                   nullable: false
               required:
                 - comment_id
@@ -1900,7 +1900,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the comment.'
-        example: laudantium
+        example: nesciunt
         required: true
         schema:
           type: string
@@ -2855,7 +2855,7 @@ paths:
                 email:
                   type: string
                   description: 'The email of the respondant. Example:'
-                  example: wilkinson.jacques@example.com
+                  example: scrooks@example.com
                   nullable: false
                 phone:
                   type: string
@@ -2945,7 +2945,7 @@ paths:
                       type: '->'
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                      line: 1703
+                      line: 1711
                       function: abort
                     -
                       file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3367,7 +3367,7 @@ paths:
                         type: '->'
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php
-                        line: 1703
+                        line: 1711
                         function: abort
                       -
                         file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
@@ -3795,7 +3795,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: vel
+                  example: accusantium
                   nullable: false
               required:
                 - share_code
@@ -3830,7 +3830,7 @@ paths:
                 username:
                   type: string
                   description: ''
-                  example: placeat
+                  example: delectus
                   nullable: false
               required:
                 - username
@@ -4711,7 +4711,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: ex
+                  example: illum
                   nullable: false
               required:
                 - share_code
@@ -5592,7 +5592,7 @@ paths:
                 share_code:
                   type: string
                   description: ''
-                  example: id
+                  example: ut
                   nullable: false
               required:
                 - share_code
@@ -5755,7 +5755,7 @@ paths:
                 supportable_id:
                   type: integer
                   description: 'This field is required when <code>supportable</code> is present.'
-                  example: 7
+                  example: 2
                   nullable: false
                 category_id:
                   type: integer
@@ -6310,7 +6310,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - aspernatur
+                    - qui
                   items:
                     type: string
                 name:
@@ -6375,7 +6375,7 @@ paths:
                   type: array
                   description: 'optional Location Ids to Filter. Example [1,2,3]'
                   example:
-                    - rerum
+                    - nihil
                   items:
                     type: string
                 name:
@@ -6559,964 +6559,718 @@ paths:
       description: ''
       parameters: []
       responses:
-        500:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  message: 'Attempt to read property "id" on null'
-                  exception: ErrorException
-                  file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                  line: 1009
-                  trace:
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php
-                      line: 270
-                      function: handleError
-                      class: Illuminate\Foundation\Bootstrap\HandleExceptions
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 1009
-                      function: 'Illuminate\Foundation\Bootstrap\{closure}'
-                      class: Illuminate\Foundation\Bootstrap\HandleExceptions
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                      line: 1549
-                      function: 'App\Http\Controllers\Api\{closure}'
-                      class: App\Http\Controllers\Api\MerchantOfferController
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                      line: 751
-                      function: 'Illuminate\Database\Eloquent\{closure}'
-                      class: Illuminate\Database\Eloquent\Builder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                      line: 727
-                      function: eagerLoadRelation
-                      class: Illuminate\Database\Eloquent\Builder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                      line: 695
-                      function: eagerLoadRelations
-                      class: Illuminate\Database\Eloquent\Builder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/genealabs/laravel-model-caching/src/Traits/Buildable.php
-                      line: 102
-                      function: get
-                      class: Illuminate\Database\Eloquent\Builder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                      line: 899
-                      function: get
-                      class: GeneaLabs\LaravelModelCaching\CachedBuilder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/genealabs/laravel-model-caching/src/Traits/Buildable.php
-                      line: 164
-                      function: paginate
-                      class: Illuminate\Database\Eloquent\Builder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                      line: 1106
-                      function: paginate
-                      class: GeneaLabs\LaravelModelCaching\CachedBuilder
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
-                      line: 54
-                      function: getPublicOffers
-                      class: App\Http\Controllers\Api\MerchantOfferController
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
-                      line: 43
-                      function: callAction
-                      class: Illuminate\Routing\Controller
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 259
-                      function: dispatch
-                      class: Illuminate\Routing\ControllerDispatcher
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                      line: 205
-                      function: runController
-                      class: Illuminate\Routing\Route
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 798
-                      function: run
-                      class: Illuminate\Routing\Route
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 141
-                      function: 'Illuminate\Routing\{closure}'
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                      line: 47
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: App\Http\Middleware\SetLocaleFromHeader
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
-                      line: 50
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Routing\Middleware\SubstituteBindings
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                      line: 126
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                      line: 92
-                      function: handleRequest
-                      class: Illuminate\Routing\Middleware\ThrottleRequests
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                      line: 54
-                      function: handleRequestUsingNamedLimiter
-                      class: Illuminate\Routing\Middleware\ThrottleRequests
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Routing\Middleware\ThrottleRequests
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 116
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 797
-                      function: then
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 776
-                      function: runRouteWithinStack
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 740
-                      function: runRoute
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                      line: 729
-                      function: dispatchToRoute
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                      line: 190
-                      function: dispatch
-                      class: Illuminate\Routing\Router
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 141
-                      function: 'Illuminate\Foundation\Http\{closure}'
-                      class: Illuminate\Foundation\Http\Kernel
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
-                      line: 19
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Livewire\DisableBrowserCache
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                      line: 21
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
-                      line: 31
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                      line: 21
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
-                      line: 40
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\TrimStrings
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
-                      line: 27
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
-                      line: 86
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
-                      line: 62
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Http\Middleware\HandleCors
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
-                      line: 39
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 180
-                      function: handle
-                      class: Illuminate\Http\Middleware\TrustProxies
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                      line: 116
-                      function: 'Illuminate\Pipeline\{closure}'
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                      line: 165
-                      function: then
-                      class: Illuminate\Pipeline\Pipeline
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                      line: 134
-                      function: sendRequestThroughRouter
-                      class: Illuminate\Foundation\Http\Kernel
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 310
-                      function: handle
-                      class: Illuminate\Foundation\Http\Kernel
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 298
-                      function: callLaravelOrLumenRoute
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 91
-                      function: makeApiCall
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 44
-                      function: makeResponseCall
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                      line: 35
-                      function: makeResponseCallIfConditionsPass
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 237
-                      function: __invoke
-                      class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 163
-                      function: iterateThroughStrategies
-                      class: Knuckles\Scribe\Extracting\Extractor
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                      line: 95
-                      function: fetchResponses
-                      class: Knuckles\Scribe\Extracting\Extractor
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                      line: 125
-                      function: processRoute
-                      class: Knuckles\Scribe\Extracting\Extractor
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                      line: 72
-                      function: extractEndpointsInfoFromLaravelApp
-                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                      line: 50
-                      function: extractEndpointsInfoAndWriteToDisk
-                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
-                      line: 53
-                      function: get
-                      class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 36
-                      function: handle
-                      class: Knuckles\Scribe\Commands\GenerateDocumentation
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
-                      line: 41
-                      function: 'Illuminate\Container\{closure}'
-                      class: Illuminate\Container\BoundMethod
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 93
-                      function: unwrapIfClosure
-                      class: Illuminate\Container\Util
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                      line: 35
-                      function: callBoundMethod
-                      class: Illuminate\Container\BoundMethod
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                      line: 661
-                      function: call
-                      class: Illuminate\Container\BoundMethod
-                      type: '::'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                      line: 183
-                      function: call
-                      class: Illuminate\Container\Container
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
-                      line: 326
-                      function: execute
-                      class: Illuminate\Console\Command
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                      line: 152
-                      function: run
-                      class: Symfony\Component\Console\Command\Command
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                      line: 1078
-                      function: run
-                      class: Illuminate\Console\Command
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                      line: 324
-                      function: doRunCommand
-                      class: Symfony\Component\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                      line: 175
-                      function: doRun
-                      class: Symfony\Component\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
-                      line: 102
-                      function: run
-                      class: Symfony\Component\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
-                      line: 155
-                      function: run
-                      class: Illuminate\Console\Application
-                      type: '->'
-                    -
-                      file: /Users/elson/Documents/Projects/funhub-mobile-backend/artisan
-                      line: 35
-                      function: handle
-                      class: Illuminate\Foundation\Console\Kernel
-                      type: '->'
+                  data:
+                    -
+                      id: 3
+                      sku: TEST123456
+                      merchant_id: 1
+                      store:
+                        id: null
+                        name: null
+                      logo: null
+                      merchant:
+                        id: 1
+                        logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/20150/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg'
+                        brand_name: null
+                        business_name: 'Nedex Solutions'
+                        business_phone_no: '0171234567'
+                        user:
+                          id: 87
+                          name: ' Steven Test'
+                      name: 'test again'
+                      is_flash: 0
+                      description: test
+                      fine_print: null
+                      redemption_policy: null
+                      cancellation_policy: null
+                      point_cost: 1
+                      point_fiat_price: 22
+                      discounted_point_fiat_price: 10
+                      fiat_price: 22
+                      discounted_fiat_price: 6
+                      default_purchase_method: point
+                      available_at: '2024-03-20 00:00:00'
+                      available_until: '2024-10-19 00:00:00'
+                      expiry_days: 20
+                      quantity: 21
+                      media:
+                        -
+                          name: example
+                          file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                          uuid: 90be8469-f320-41d6-bb88-11db160600e3
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                          order: null
+                          custom_properties:
+                            width: 1566
+                            height: 530
+                            is_cover: false
+                          extension: png
+                          size: 505397
+                        -
+                          name: example
+                          file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
+                          uuid: da2d3022-3165-4414-9641-e53f1867500f
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
+                          order: null
+                          custom_properties:
+                            width: 1566
+                            height: 530
+                            is_cover: false
+                          extension: png
+                          size: 505397
+                      horizontal_banner:
+                        name: example
+                        file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
+                        uuid: da2d3022-3165-4414-9641-e53f1867500f
+                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
+                        order: null
+                        custom_properties:
+                          width: 1566
+                          height: 530
+                          is_cover: false
+                        extension: png
+                        size: 505397
+                      vertical_banner:
+                        name: example
+                        file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                        uuid: 90be8469-f320-41d6-bb88-11db160600e3
+                        original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                        order: null
+                        custom_properties:
+                          width: 1566
+                          height: 530
+                          is_cover: false
+                        extension: png
+                        size: 505397
+                      interactions:
+                        -
+                          id: 229
+                          user:
+                            id: 43
+                            name: 'Steven Yew'
+                            avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
+                          type: 4
+                          created_at: '2023-08-10T07:11:02.000000Z'
+                          updated_at: '2023-08-10T07:11:02.000000Z'
+                          share_url: null
+                          created_at_diff: '1 year ago'
+                          updated_at_diff: '1 year ago'
+                      location:
+                        id: 2
+                        name: 'Damen Subang by KL Short Stay'
+                        address: 'Subang Jaya, Subang Jaya, Selangor, Malaysia'
+                        lat: 3.0585253
+                        lng: 101.5926696
+                        rated_count: 1
+                      count:
+                        likes: 0
+                        share: 0
+                        bookmarks: 1
+                        views: 0
+                      categories:
+                        -
+                          id: 2
+                          name: Leisure
+                          slug: fun
+                          parent_id: null
+                          description: null
+                          created_at: '2023-05-07T20:44:53.000000Z'
+                          updated_at: '2024-05-08T02:50:30.000000Z'
+                      created_at: '2023-10-19T07:43:16.000000Z'
+                      updated_at: '2024-11-13T04:10:01.000000Z'
+                      created_at_diff: '1 year ago'
+                      updated_at_diff: '53 minutes ago'
+                  links:
+                    first: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                    last: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                    prev: null
+                    next: null
+                  meta:
+                    current_page: 1
+                    from: 1
+                    last_page: 1
+                    links:
+                      -
+                        url: null
+                        label: '&laquo; Previous'
+                        active: false
+                      -
+                        url: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                        label: '1'
+                        active: true
+                      -
+                        url: null
+                        label: 'Next &raquo;'
+                        active: false
+                    path: 'https://funhub-mobile-backend.test/api/v1/public_offers'
+                    per_page: 10
+                    to: 1
+                    total: 1
                 properties:
-                  message:
-                    type: string
-                    example: 'Attempt to read property "id" on null'
-                  exception:
-                    type: string
-                    example: ErrorException
-                  file:
-                    type: string
-                    example: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                  line:
-                    type: integer
-                    example: 1009
-                  trace:
+                  data:
                     type: array
                     example:
                       -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php
-                        line: 270
-                        function: handleError
-                        class: Illuminate\Foundation\Bootstrap\HandleExceptions
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 1009
-                        function: 'Illuminate\Foundation\Bootstrap\{closure}'
-                        class: Illuminate\Foundation\Bootstrap\HandleExceptions
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                        line: 1549
-                        function: 'App\Http\Controllers\Api\{closure}'
-                        class: App\Http\Controllers\Api\MerchantOfferController
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                        line: 751
-                        function: 'Illuminate\Database\Eloquent\{closure}'
-                        class: Illuminate\Database\Eloquent\Builder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                        line: 727
-                        function: eagerLoadRelation
-                        class: Illuminate\Database\Eloquent\Builder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                        line: 695
-                        function: eagerLoadRelations
-                        class: Illuminate\Database\Eloquent\Builder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/genealabs/laravel-model-caching/src/Traits/Buildable.php
-                        line: 102
-                        function: get
-                        class: Illuminate\Database\Eloquent\Builder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php
-                        line: 899
-                        function: get
-                        class: GeneaLabs\LaravelModelCaching\CachedBuilder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/genealabs/laravel-model-caching/src/Traits/Buildable.php
-                        line: 164
-                        function: paginate
-                        class: Illuminate\Database\Eloquent\Builder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php
-                        line: 1106
-                        function: paginate
-                        class: GeneaLabs\LaravelModelCaching\CachedBuilder
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php
-                        line: 54
-                        function: getPublicOffers
-                        class: App\Http\Controllers\Api\MerchantOfferController
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php
-                        line: 43
-                        function: callAction
-                        class: Illuminate\Routing\Controller
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 259
-                        function: dispatch
-                        class: Illuminate\Routing\ControllerDispatcher
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php
-                        line: 205
-                        function: runController
-                        class: Illuminate\Routing\Route
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 798
-                        function: run
-                        class: Illuminate\Routing\Route
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 141
-                        function: 'Illuminate\Routing\{closure}'
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php
-                        line: 47
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: App\Http\Middleware\SetLocaleFromHeader
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
-                        line: 50
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Routing\Middleware\SubstituteBindings
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                        line: 126
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                        line: 92
-                        function: handleRequest
-                        class: Illuminate\Routing\Middleware\ThrottleRequests
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php
-                        line: 54
-                        function: handleRequestUsingNamedLimiter
-                        class: Illuminate\Routing\Middleware\ThrottleRequests
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Routing\Middleware\ThrottleRequests
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 116
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 797
-                        function: then
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 776
-                        function: runRouteWithinStack
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 740
-                        function: runRoute
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                        line: 729
-                        function: dispatchToRoute
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                        line: 190
-                        function: dispatch
-                        class: Illuminate\Routing\Router
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 141
-                        function: 'Illuminate\Foundation\Http\{closure}'
-                        class: Illuminate\Foundation\Http\Kernel
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php
-                        line: 19
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Livewire\DisableBrowserCache
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                        line: 21
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
-                        line: 31
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                        line: 21
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
-                        line: 40
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\TrimStrings
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php
-                        line: 27
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\ValidatePostSize
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
-                        line: 86
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
-                        line: 62
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Http\Middleware\HandleCors
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
-                        line: 39
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 180
-                        function: handle
-                        class: Illuminate\Http\Middleware\TrustProxies
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                        line: 116
-                        function: 'Illuminate\Pipeline\{closure}'
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                        line: 165
-                        function: then
-                        class: Illuminate\Pipeline\Pipeline
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                        line: 134
-                        function: sendRequestThroughRouter
-                        class: Illuminate\Foundation\Http\Kernel
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 310
-                        function: handle
-                        class: Illuminate\Foundation\Http\Kernel
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 298
-                        function: callLaravelOrLumenRoute
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 91
-                        function: makeApiCall
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 44
-                        function: makeResponseCall
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php
-                        line: 35
-                        function: makeResponseCallIfConditionsPass
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 237
-                        function: __invoke
-                        class: Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 163
-                        function: iterateThroughStrategies
-                        class: Knuckles\Scribe\Extracting\Extractor
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php
-                        line: 95
-                        function: fetchResponses
-                        class: Knuckles\Scribe\Extracting\Extractor
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                        line: 125
-                        function: processRoute
-                        class: Knuckles\Scribe\Extracting\Extractor
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                        line: 72
-                        function: extractEndpointsInfoFromLaravelApp
-                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php
-                        line: 50
-                        function: extractEndpointsInfoAndWriteToDisk
-                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php
-                        line: 53
-                        function: get
-                        class: Knuckles\Scribe\GroupedEndpoints\GroupedEndpointsFromApp
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 36
-                        function: handle
-                        class: Knuckles\Scribe\Commands\GenerateDocumentation
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php
-                        line: 41
-                        function: 'Illuminate\Container\{closure}'
-                        class: Illuminate\Container\BoundMethod
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 93
-                        function: unwrapIfClosure
-                        class: Illuminate\Container\Util
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php
-                        line: 35
-                        function: callBoundMethod
-                        class: Illuminate\Container\BoundMethod
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php
-                        line: 661
-                        function: call
-                        class: Illuminate\Container\BoundMethod
-                        type: '::'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                        line: 183
-                        function: call
-                        class: Illuminate\Container\Container
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php
-                        line: 326
-                        function: execute
-                        class: Illuminate\Console\Command
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php
-                        line: 152
-                        function: run
-                        class: Symfony\Component\Console\Command\Command
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                        line: 1078
-                        function: run
-                        class: Illuminate\Console\Command
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                        line: 324
-                        function: doRunCommand
-                        class: Symfony\Component\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php
-                        line: 175
-                        function: doRun
-                        class: Symfony\Component\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php
-                        line: 102
-                        function: run
-                        class: Symfony\Component\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php
-                        line: 155
-                        function: run
-                        class: Illuminate\Console\Application
-                        type: '->'
-                      -
-                        file: /Users/elson/Documents/Projects/funhub-mobile-backend/artisan
-                        line: 35
-                        function: handle
-                        class: Illuminate\Foundation\Console\Kernel
-                        type: '->'
+                        id: 3
+                        sku: TEST123456
+                        merchant_id: 1
+                        store:
+                          id: null
+                          name: null
+                        logo: null
+                        merchant:
+                          id: 1
+                          logo: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/20150/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg'
+                          brand_name: null
+                          business_name: 'Nedex Solutions'
+                          business_phone_no: '0171234567'
+                          user:
+                            id: 87
+                            name: ' Steven Test'
+                        name: 'test again'
+                        is_flash: 0
+                        description: test
+                        fine_print: null
+                        redemption_policy: null
+                        cancellation_policy: null
+                        point_cost: 1
+                        point_fiat_price: 22
+                        discounted_point_fiat_price: 10
+                        fiat_price: 22
+                        discounted_fiat_price: 6
+                        default_purchase_method: point
+                        available_at: '2024-03-20 00:00:00'
+                        available_until: '2024-10-19 00:00:00'
+                        expiry_days: 20
+                        quantity: 21
+                        media:
+                          -
+                            name: example
+                            file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                            uuid: 90be8469-f320-41d6-bb88-11db160600e3
+                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                            order: null
+                            custom_properties:
+                              width: 1566
+                              height: 530
+                              is_cover: false
+                            extension: png
+                            size: 505397
+                          -
+                            name: example
+                            file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
+                            uuid: da2d3022-3165-4414-9641-e53f1867500f
+                            original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
+                            order: null
+                            custom_properties:
+                              width: 1566
+                              height: 530
+                              is_cover: false
+                            extension: png
+                            size: 505397
+                        horizontal_banner:
+                          name: example
+                          file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
+                          uuid: da2d3022-3165-4414-9641-e53f1867500f
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
+                          order: null
+                          custom_properties:
+                            width: 1566
+                            height: 530
+                            is_cover: false
+                          extension: png
+                          size: 505397
+                        vertical_banner:
+                          name: example
+                          file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                          uuid: 90be8469-f320-41d6-bb88-11db160600e3
+                          original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                          order: null
+                          custom_properties:
+                            width: 1566
+                            height: 530
+                            is_cover: false
+                          extension: png
+                          size: 505397
+                        interactions:
+                          -
+                            id: 229
+                            user:
+                              id: 43
+                              name: 'Steven Yew'
+                              avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
+                            type: 4
+                            created_at: '2023-08-10T07:11:02.000000Z'
+                            updated_at: '2023-08-10T07:11:02.000000Z'
+                            share_url: null
+                            created_at_diff: '1 year ago'
+                            updated_at_diff: '1 year ago'
+                        location:
+                          id: 2
+                          name: 'Damen Subang by KL Short Stay'
+                          address: 'Subang Jaya, Subang Jaya, Selangor, Malaysia'
+                          lat: 3.0585253
+                          lng: 101.5926696
+                          rated_count: 1
+                        count:
+                          likes: 0
+                          share: 0
+                          bookmarks: 1
+                          views: 0
+                        categories:
+                          -
+                            id: 2
+                            name: Leisure
+                            slug: fun
+                            parent_id: null
+                            description: null
+                            created_at: '2023-05-07T20:44:53.000000Z'
+                            updated_at: '2024-05-08T02:50:30.000000Z'
+                        created_at: '2023-10-19T07:43:16.000000Z'
+                        updated_at: '2024-11-13T04:10:01.000000Z'
+                        created_at_diff: '1 year ago'
+                        updated_at_diff: '53 minutes ago'
                     items:
                       type: object
                       properties:
-                        file:
-                          type: string
-                          example: /Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php
-                        line:
+                        id:
                           type: integer
-                          example: 270
-                        function:
+                          example: 3
+                        sku:
                           type: string
-                          example: handleError
-                        class:
+                          example: TEST123456
+                        merchant_id:
+                          type: integer
+                          example: 1
+                        store:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: null
+                            name:
+                              type: string
+                              example: null
+                        logo:
                           type: string
-                          example: Illuminate\Foundation\Bootstrap\HandleExceptions
-                        type:
+                          example: null
+                        merchant:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            logo:
+                              type: string
+                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/20150/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg'
+                            brand_name:
+                              type: string
+                              example: null
+                            business_name:
+                              type: string
+                              example: 'Nedex Solutions'
+                            business_phone_no:
+                              type: string
+                              example: '0171234567'
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 87
+                                name:
+                                  type: string
+                                  example: ' Steven Test'
+                        name:
                           type: string
-                          example: '->'
+                          example: 'test again'
+                        is_flash:
+                          type: integer
+                          example: 0
+                        description:
+                          type: string
+                          example: test
+                        fine_print:
+                          type: string
+                          example: null
+                        redemption_policy:
+                          type: string
+                          example: null
+                        cancellation_policy:
+                          type: string
+                          example: null
+                        point_cost:
+                          type: integer
+                          example: 1
+                        point_fiat_price:
+                          type: integer
+                          example: 22
+                        discounted_point_fiat_price:
+                          type: integer
+                          example: 10
+                        fiat_price:
+                          type: integer
+                          example: 22
+                        discounted_fiat_price:
+                          type: integer
+                          example: 6
+                        default_purchase_method:
+                          type: string
+                          example: point
+                        available_at:
+                          type: string
+                          example: '2024-03-20 00:00:00'
+                        available_until:
+                          type: string
+                          example: '2024-10-19 00:00:00'
+                        expiry_days:
+                          type: integer
+                          example: 20
+                        quantity:
+                          type: integer
+                          example: 21
+                        media:
+                          type: array
+                          example:
+                            -
+                              name: example
+                              file_name: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                              uuid: 90be8469-f320-41d6-bb88-11db160600e3
+                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                              order: null
+                              custom_properties:
+                                width: 1566
+                                height: 530
+                                is_cover: false
+                              extension: png
+                              size: 505397
+                            -
+                              name: example
+                              file_name: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
+                              uuid: da2d3022-3165-4414-9641-e53f1867500f
+                              original_url: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
+                              order: null
+                              custom_properties:
+                                width: 1566
+                                height: 530
+                                is_cover: false
+                              extension: png
+                              size: 505397
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                example: example
+                              file_name:
+                                type: string
+                                example: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                              uuid:
+                                type: string
+                                example: 90be8469-f320-41d6-bb88-11db160600e3
+                              original_url:
+                                type: string
+                                example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                              order:
+                                type: string
+                                example: null
+                              custom_properties:
+                                type: object
+                                properties:
+                                  width:
+                                    type: integer
+                                    example: 1566
+                                  height:
+                                    type: integer
+                                    example: 530
+                                  is_cover:
+                                    type: boolean
+                                    example: false
+                              extension:
+                                type: string
+                                example: png
+                              size:
+                                type: integer
+                                example: 505397
+                        horizontal_banner:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: example
+                            file_name:
+                              type: string
+                              example: XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png
+                            uuid:
+                              type: string
+                              example: da2d3022-3165-4414-9641-e53f1867500f
+                            original_url:
+                              type: string
+                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8115/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png'
+                            order:
+                              type: string
+                              example: null
+                            custom_properties:
+                              type: object
+                              properties:
+                                width:
+                                  type: integer
+                                  example: 1566
+                                height:
+                                  type: integer
+                                  example: 530
+                                is_cover:
+                                  type: boolean
+                                  example: false
+                            extension:
+                              type: string
+                              example: png
+                            size:
+                              type: integer
+                              example: 505397
+                        vertical_banner:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: example
+                            file_name:
+                              type: string
+                              example: vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png
+                            uuid:
+                              type: string
+                              example: 90be8469-f320-41d6-bb88-11db160600e3
+                            original_url:
+                              type: string
+                              example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/8114/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png'
+                            order:
+                              type: string
+                              example: null
+                            custom_properties:
+                              type: object
+                              properties:
+                                width:
+                                  type: integer
+                                  example: 1566
+                                height:
+                                  type: integer
+                                  example: 530
+                                is_cover:
+                                  type: boolean
+                                  example: false
+                            extension:
+                              type: string
+                              example: png
+                            size:
+                              type: integer
+                              example: 505397
+                        interactions:
+                          type: array
+                          example:
+                            -
+                              id: 229
+                              user:
+                                id: 43
+                                name: 'Steven Yew'
+                                avatar: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
+                              type: 4
+                              created_at: '2023-08-10T07:11:02.000000Z'
+                              updated_at: '2023-08-10T07:11:02.000000Z'
+                              share_url: null
+                              created_at_diff: '1 year ago'
+                              updated_at_diff: '1 year ago'
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 229
+                              user:
+                                type: object
+                                properties:
+                                  id:
+                                    type: integer
+                                    example: 43
+                                  name:
+                                    type: string
+                                    example: 'Steven Yew'
+                                  avatar:
+                                    type: string
+                                    example: 'https://funhub-dev.s3.ap-southeast-1.amazonaws.com/9271/image_cropper_1701231380518.jpg'
+                              type:
+                                type: integer
+                                example: 4
+                              created_at:
+                                type: string
+                                example: '2023-08-10T07:11:02.000000Z'
+                              updated_at:
+                                type: string
+                                example: '2023-08-10T07:11:02.000000Z'
+                              share_url:
+                                type: string
+                                example: null
+                              created_at_diff:
+                                type: string
+                                example: '1 year ago'
+                              updated_at_diff:
+                                type: string
+                                example: '1 year ago'
+                        location:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            name:
+                              type: string
+                              example: 'Damen Subang by KL Short Stay'
+                            address:
+                              type: string
+                              example: 'Subang Jaya, Subang Jaya, Selangor, Malaysia'
+                            lat:
+                              type: number
+                              example: 3.0585253
+                            lng:
+                              type: number
+                              example: 101.5926696
+                            rated_count:
+                              type: integer
+                              example: 1
+                        count:
+                          type: object
+                          properties:
+                            likes:
+                              type: integer
+                              example: 0
+                            share:
+                              type: integer
+                              example: 0
+                            bookmarks:
+                              type: integer
+                              example: 1
+                            views:
+                              type: integer
+                              example: 0
+                        categories:
+                          type: array
+                          example:
+                            -
+                              id: 2
+                              name: Leisure
+                              slug: fun
+                              parent_id: null
+                              description: null
+                              created_at: '2023-05-07T20:44:53.000000Z'
+                              updated_at: '2024-05-08T02:50:30.000000Z'
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 2
+                              name:
+                                type: string
+                                example: Leisure
+                              slug:
+                                type: string
+                                example: fun
+                              parent_id:
+                                type: string
+                                example: null
+                              description:
+                                type: string
+                                example: null
+                              created_at:
+                                type: string
+                                example: '2023-05-07T20:44:53.000000Z'
+                              updated_at:
+                                type: string
+                                example: '2024-05-08T02:50:30.000000Z'
+                        created_at:
+                          type: string
+                          example: '2023-10-19T07:43:16.000000Z'
+                        updated_at:
+                          type: string
+                          example: '2024-11-13T04:10:01.000000Z'
+                        created_at_diff:
+                          type: string
+                          example: '1 year ago'
+                        updated_at_diff:
+                          type: string
+                          example: '53 minutes ago'
+                  links:
+                    type: object
+                    properties:
+                      first:
+                        type: string
+                        example: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                      last:
+                        type: string
+                        example: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                      prev:
+                        type: string
+                        example: null
+                      next:
+                        type: string
+                        example: null
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      from:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      links:
+                        type: array
+                        example:
+                          -
+                            url: null
+                            label: '&laquo; Previous'
+                            active: false
+                          -
+                            url: 'https://funhub-mobile-backend.test/api/v1/public_offers?page=1'
+                            label: '1'
+                            active: true
+                          -
+                            url: null
+                            label: 'Next &raquo;'
+                            active: false
+                        items:
+                          type: object
+                          properties:
+                            url:
+                              type: string
+                              example: null
+                            label:
+                              type: string
+                              example: '&laquo; Previous'
+                            active:
+                              type: boolean
+                              example: false
+                      path:
+                        type: string
+                        example: 'https://funhub-mobile-backend.test/api/v1/public_offers'
+                      per_page:
+                        type: integer
+                        example: 10
+                      to:
+                        type: integer
+                        example: 1
+                      total:
+                        type: integer
+                        example: 1
       tags:
         - Merchant
     parameters:
@@ -7565,19 +7319,31 @@ paths:
       -
         in: path
         name: lat
-        description: 'Filter by Lat of User (must provide lng).'
-        example: 3.123456
+        description: 'Optional parameter. optional Filter by Lat of User (must provide lng).'
         required: true
         schema:
           type: number
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 3.123456
       -
         in: path
         name: lng
-        description: 'Filter by Lng of User (must provide lat).'
-        example: 101.123456
+        description: 'Optional parameter. optional Filter by Lng of User (must provide lat).'
         required: true
         schema:
           type: number
+        examples:
+          omitted:
+            summary: 'When the value is omitted'
+            value: ''
+          present:
+            summary: 'When the value is present'
+            value: 101.123456
       -
         in: path
         name: radius
@@ -7651,7 +7417,7 @@ paths:
                 id:
                   type: integer
                   description: ''
-                  example: 4
+                  example: 18
                   nullable: false
               required:
                 - id
@@ -7693,13 +7459,13 @@ paths:
           name: merchant_offer_ids
           description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
           example:
-            - corrupti
+            - molestiae
           required: false
           schema:
             type: array
             description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
             example:
-              - corrupti
+              - molestiae
             items:
               type: string
         -
@@ -7900,7 +7666,7 @@ paths:
                   type: array
                   description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
                   example:
-                    - quos
+                    - id
                   items:
                     type: string
                 city:
@@ -8330,7 +8096,7 @@ paths:
         in: path
         name: offer_id
         description: 'The ID of the offer.'
-        example: voluptas
+        example: facilis
         required: true
         schema:
           type: string
@@ -10037,7 +9803,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: deleniti
+                  example: doloremque
                   nullable: false
               required:
                 - store_ids
@@ -10101,7 +9867,7 @@ paths:
                 store_ids:
                   type: string
                   description: ''
-                  example: placeat
+                  example: architecto
                   nullable: false
               required:
                 - store_ids
@@ -10149,7 +9915,7 @@ paths:
                 location_id:
                   type: string
                   description: ''
-                  example: nihil
+                  example: ducimus
                   nullable: false
               required:
                 - location_id
@@ -10751,7 +10517,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to follow'
-                  example: 4
+                  example: 13
                   nullable: false
               required:
                 - user_id
@@ -10798,7 +10564,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to unfollow'
-                  example: 18
+                  example: 2
                   nullable: false
               required:
                 - user_id
@@ -10845,7 +10611,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to accept follow request'
-                  example: 1
+                  example: 19
                   nullable: false
               required:
                 - user_id
@@ -10880,7 +10646,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'The id of the user to reject follow request'
-                  example: 1
+                  example: 10
                   nullable: false
               required:
                 - user_id
@@ -10950,17 +10716,17 @@ paths:
                 reason:
                   type: string
                   description: ''
-                  example: non
+                  example: doloribus
                   nullable: false
                 violation_level:
                   type: required
                   description: 'The violation level of this report'
-                  example: libero
+                  example: illo
                   nullable: false
                 violation_type:
                   type: required
                   description: 'The violation type of this report'
-                  example: pariatur
+                  example: dolore
                   nullable: false
                 also_block_user:
                   type: boolean
@@ -11234,7 +11000,7 @@ paths:
                 user_ids:
                   type: string
                   description: ''
-                  example: libero
+                  example: quaerat
                   nullable: false
               required:
                 - user_ids
@@ -12235,7 +12001,7 @@ paths:
                 gender:
                   type: string
                   description: ''
-                  example: male
+                  example: female
                   nullable: false
                   enum:
                     - male
@@ -12372,7 +12138,7 @@ paths:
                 last_lang:
                   type: string
                   description: ''
-                  example: en
+                  example: zh
                   nullable: false
                   enum:
                     - en

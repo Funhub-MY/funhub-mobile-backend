@@ -974,8 +974,8 @@ class MerchantOfferController extends Controller
      * @urlParam category_ids array optional Category Ids to Filter. Example: 1,2,3
      * @urlParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example: 1,2,3
      * @urlParam city string optional Filter by City. Example: Subang Jaya
-     * @urlParam lat float required Filter by Lat of User (must provide lng). Example: 3.123456
-     * @urlParam lng float required Filter by Lng of User (must provide lat). Example: 101.123456
+     * @urlParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @urlParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @urlParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @urlParam available_only boolean optional Filter by Available Only. Example: true or 0
      * @urlParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true or 0

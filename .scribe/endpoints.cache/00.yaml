@@ -29,14 +29,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: vel
+        example: accusantium
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: vel
+      share_code: accusantium
     fileParameters: []
     responses:
       -
@@ -57,7 +57,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1703,
+                      "line": 1711,
                       "function": "abort"
                   },
                   {
@@ -536,7 +536,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h1f465vd3aPV6aEbZ8ekcgD'
+      - 'Bearer a8a3kZgbvEedfV56h46DPc1'
     controller: null
     method: null
     route: null
@@ -567,14 +567,14 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: placeat
+        example: delectus
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: placeat
+      username: delectus
     fileParameters: []
     responses:
       -
@@ -592,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer PV3Z465e8fk61vDgdabahEc'
+      - 'Bearer 6Zd1ckPaD4bVEh56avg3ef8'
     controller: null
     method: null
     route: null
@@ -623,14 +623,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: ex
+        example: illum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: ex
+      share_code: illum
     fileParameters: []
     responses:
       -
@@ -1130,7 +1130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ekacVEf3a8dbD6Zhg1P546v'
+      - 'Bearer adZ6vb16aE8egVcfk4hD3P5'
     controller: null
     method: null
     route: null
@@ -1161,14 +1161,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: id
+        example: ut
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: id
+      share_code: ut
     fileParameters: []
     responses:
       -
@@ -1668,7 +1668,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer e41PkcgVf38hE6a6db5DZva'
+      - 'Bearer g4D63V6ZhPEd8e5afvcbka1'
     controller: null
     method: null
     route: null
