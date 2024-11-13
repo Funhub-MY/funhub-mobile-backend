@@ -1115,7 +1115,8 @@ class MerchantOfferController extends Controller
      * @return JsonResponse
      *
      * @group Merchant
-     * @urlParam id integer required The id of the merchant offer. Example: 1
+     * @urlParam id integer optional The id of the merchant offer. Example: 1
+     * @urlParam sku integer optional The id of the merchant offer. Example: 1
      * @response scenario=success {
      * "offer": {}
      * }
@@ -1123,13 +1124,21 @@ class MerchantOfferController extends Controller
     public function getPublicOferSingle(Request $request)
     {
         $this->validate($request, [
-            'id' => 'required|integer'
+            'id' => 'required_if:sku,null|integer',
+            'sku' => 'required_if:id,null',
         ]);
 
-        $offer = MerchantOffer::where('id', $request->id)
-            ->published()
-            ->where('available_for_web', true)
-            ->first();
+        if ($request->has('id')) {
+            $offer = MerchantOffer::where('id', $request->id)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        } else {
+            $offer = MerchantOffer::where('sku', $request->sku)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        }
 
         if (!$offer) {
             return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
