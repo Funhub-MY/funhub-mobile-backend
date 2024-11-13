@@ -112,6 +112,11 @@ class MerchantOfferCampaignResource extends Resource
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
 
+                                Forms\Components\Toggle::make('available_for_web')
+                                    ->label('Available for Web')
+                                    ->helperText('If enabled, this offer will be shown in Funhub Merchant Web.')
+                                    ->default(false),
+
                                 Forms\Components\TextInput::make('expiry_days')
                                     ->label('Expire in (Days) After Purchase')
                                     ->columnSpan(1)
@@ -281,6 +286,7 @@ class MerchantOfferCampaignResource extends Resource
                                             ->schema([
                                                 Forms\Components\Select::make('status')
                                                     ->options(MerchantOfferCampaignSchedule::STATUS)->default(0),
+
                                                 DatePicker::make('publish_at')
                                                     ->label('Publish Date')
                                                     ->helperText('System will change status to Published if publish date is set, change happen at 00:01 of Date.'),
