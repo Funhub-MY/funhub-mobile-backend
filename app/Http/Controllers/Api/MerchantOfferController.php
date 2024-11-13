@@ -1002,12 +1002,12 @@ class MerchantOfferController extends Controller
                 'media',
                 'interactions',
                 'views',
-                'likes' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
-                'interactions' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
+                // 'likes' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
+                // 'interactions' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
             ])
             ->withCount([
                 'unclaimedVouchers',
