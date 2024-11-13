@@ -25,7 +25,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
 
-    Route::get('public_offers', [\App\Http\Controllers\Api\UserController::class, 'getPublicOffers']);
+    Route::get('public_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOffers']);
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
 
     // app to app
