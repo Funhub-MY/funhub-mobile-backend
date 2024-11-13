@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ByteplusVODProcess;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -125,7 +126,6 @@ class MediaController extends Controller
                     // user add media from Storage::file($fullPath) to collection "user_uploads"
                     $file = $user->addMediaFromDisk($fullPath, 's3')
                         ->toMediaCollection(User::USER_UPLOADS); // image and video consolidate here
-
                 } catch (\Exception $e) {
                     Log::error('[MediaController] Error completing file upload to user_uploads: ' . $e->getMessage(), [
                         'uploadId' => $uploadId,
