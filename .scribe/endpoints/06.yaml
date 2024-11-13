@@ -1,16 +1,16 @@
-name: Interactions
+name: Other
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/interactions/users
+    uri: api/v1/countries
     metadata:
-      groupName: Interactions
+      groupName: Other
       groupDescription: ''
-      subgroup: ''
+      subgroup: Country
       subgroupDescription: ''
-      title: 'Get Users of Interaction'
+      title: 'Get Countries'
       description: ''
       authenticated: true
       custom: []
@@ -20,409 +20,6 @@ endpoints:
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: 'article,merchant_offer,merchant_rating,store_rating,store'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      type:
-        name: type
-        description: 'The type of interaction.'
-        required: true
-        example: 'like,dislike,share,bookmark'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
-      id: 1
-      type: 'like,dislike,share,bookmark'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": [],
-          "links": {},
-          "meta": {
-          }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer f6aea64g53cdb1V8EDPhvZk'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/interactions
-    metadata:
-      groupName: Interactions
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get interactions on a interactable type (eg. Articles)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: 'article,merchant_offer,merchant_rating,store_rating,store'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      filter:
-        name: filter
-        description: 'Column to Filter.'
-        required: false
-        example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      filter_value:
-        name: filter_value
-        description: 'Value to Filter.'
-        required: false
-        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      sort:
-        name: sort
-        description: 'Column to Sort.'
-        required: false
-        example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      order:
-        name: order
-        description: 'Direction to Sort.'
-        required: false
-        example: 'Sortable directions are: asc, desc'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      limit:
-        name: limit
-        description: 'Per Page Limit Override.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      offset:
-        name: offset
-        description: 'Offset Override.'
-        required: false
-        example: 0
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
-      id: 1
-      filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
-      sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
-      order: 'Sortable directions are: asc, desc'
-      limit: 10
-      offset: 0
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 404
-        content: ''
-        headers: []
-        description: 'Not Found'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer eEP8V5fav1acd64Zh63gkDb'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/interactions
-    metadata:
-      groupName: Interactions
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Create an interaction for interactable type'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      interactable:
-        name: interactable
-        description: 'The type of interactable.'
-        required: true
-        example: 'article,merchant_offer,merchant_rating,store_rating,store'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      type:
-        name: type
-        description: 'The type of interaction.'
-        required: true
-        example: 'like,dislike,share,bookmark'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      id:
-        name: id
-        description: 'The id of the interactable (eg. Article ID).'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      code:
-        name: code
-        description: 'optional The code of the shareable link(6 characters).'
-        required: false
-        example: '1'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      model_type:
-        name: model_type
-        description: 'optional The model type of the shareable link.'
-        required: false
-        example: 'article,merchant_offer,store'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
-      type: 'like,dislike,share,bookmark'
-      id: 1
-      code: '1'
-      model_type: 'article,merchant_offer,store'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "interaction": {}
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer av668DVZfbdg5kPha14ce3E'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/v1/interactions/{id}'
-    metadata:
-      groupName: Interactions
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Show one interaction by ID'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The id of the interaction.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer gb4ek6dcvEahaP3D5VZ8f61'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/v1/interactions/{id}'
-    metadata:
-      groupName: Interactions
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: |-
-        Remove Interaction By ID
-        Only owner can call this method
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The id of the interaction or interactable(article id).'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      delete_by:
-        name: delete_by
-        description: 'The type of delete, defaults to interaction.'
-        required: false
-        example: 'interactable,interaction'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      interactable:
-        name: interactable
-        description: 'The type of interactable (Required if delete_by is interactable).'
-        required: false
-        example: 'article,merchant_offer,store_rating,store'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      type:
-        name: type
-        description: 'The type of interaction (Required if delete_by is interactable).'
-        required: false
-        example: 'like,dislike,share,bookmark'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanUrlParameters:
-      id: 1
-      delete_by: 'interactable,interaction'
-      interactable: 'article,merchant_offer,store_rating,store'
-      type: 'like,dislike,share,bookmark'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -433,22 +30,59 @@ endpoints:
         status: 200
         content: |-
           {
-          "message": "Interaction deleted"
+          ["id" => 1, "name" => "Nigeria", "code" => "NG"],
           }
         headers: []
         description: success
-        custom: []
-      -
-        status: 404
-        content: "{['message' => 'Interaction not found']}"
-        headers: []
-        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 66gb53c1DdaPkh8f4ZEvVea'
+      - 'Bearer c6kDVh13d4aEag5v8Zb6ePf'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/states
+    metadata:
+      groupName: Other
+      groupDescription: ''
+      subgroup: State
+      subgroupDescription: ''
+      title: 'Get States'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          ["id" => 1, "name" => "Abia", "code" => "AB", "country_id" => 1],
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b5Dch6VZ3d64agkPevf18aE'
     controller: null
     method: null
     route: null

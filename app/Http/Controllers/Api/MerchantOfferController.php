@@ -965,41 +965,6 @@ class MerchantOfferController extends Controller
     }
 
     /**
-     * Get Merchant Offer Public
-     *
-     * @param Request $request
-     * @return void
-     */
-    public function getPublicOfferPublicView(Request $request)
-    {
-        $this->validate($request, [
-            'share_code' => 'required|string'
-        ]);
-        // get merchant offer by ShareableLink
-        $share = ShareableLink::where('link', $request->share_code)
-            ->where('model_type', MerchantOffer::class)
-            ->first();
-
-        if (!$share) {
-            return abort(404);
-        }
-
-        // find offer by model_id
-        $offer = MerchantOffer::where('id', $share->model_id)
-            ->published()
-            ->first();
-
-        if (!$offer) {
-            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
-        }
-
-        // return user profile
-        return response()->json([
-            'offer' => new PublicMerchantOfferResource($offer)
-        ]);
-    }
-
-    /**
      * Get Public Offers(Web)
      *
      * @param Request $request
@@ -1141,6 +1106,73 @@ class MerchantOfferController extends Controller
         $data = $query->paginate(config('app.paginate_per_page'));
 
         return PublicMerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Get Single Public Offer (Web)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam id integer required The id of the merchant offer. Example: 1
+     * @response scenario=success {
+     * "offer": {}
+     * }
+     */
+    public function getPublicOferSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|integer'
+        ]);
+
+        $offer = MerchantOffer::where('id', $request->id)
+            ->published()
+            ->where('available_for_web', true)
+            ->first();
+
+        if (!$offer) {
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
+        }
+
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
+    }
+
+    /**
+     * Get Merchant Offer Public
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getPublicOfferPublicView(Request $request)
+    {
+        $this->validate($request, [
+            'share_code' => 'required|string'
+        ]);
+        // get merchant offer by ShareableLink
+        $share = ShareableLink::where('link', $request->share_code)
+            ->where('model_type', MerchantOffer::class)
+            ->first();
+
+        if (!$share) {
+            return abort(404);
+        }
+
+        // find offer by model_id
+        $offer = MerchantOffer::where('id', $share->model_id)
+            ->published()
+            ->first();
+
+        if (!$offer) {
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
+        }
+
+        // return user profile
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
     }
 
     /**

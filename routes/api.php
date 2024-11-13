@@ -25,8 +25,9 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
 
-    Route::get('public_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOffers']);
+    Route::get('public_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOffers']); // share link
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
+    Route::get('public_offers/{id}', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOferSingle']);
 
     // app to app
     Route::middleware(['application.token'])->group(function() {

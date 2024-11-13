@@ -1,109 +1,16 @@
-name: Point
+name: Product
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/v1/points/my_balance/all
+      - POST
+    uri: api/v1/products/checkout
     metadata:
-      groupName: Point
+      groupName: Product
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Product Rewards'
       subgroupDescription: ''
-      title: 'Get the point & point components balance of the logged in user.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "point_balance": { "id": 1, "name": 'Funhub', "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100 },
-          "point_components": {[
-            {"id": 1, "name": "rice", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 2, "name": "egg", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 3, "name": "vegetable", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 4, "name": "meat", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-            {"id": 5, "name": "fish", "thumbnail_url": 'http://localhost:8000/storage/rewards/1/1.jpg', "balance": 100},
-          ]}
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer P65cd3fZh8DaEvba1eV64kg'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/balance
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get the point balance of the user.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "balance": 100
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer k6cVhv36Da5e1dEgfZ4ba8P'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/components/balance
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get the point component balance of the user.'
+      title: 'Post Checkout'
       description: ''
       authenticated: true
       custom: []
@@ -116,83 +23,120 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      type:
-        name: type
-        description: 'The type of point component.'
+      product_id:
+        name: product_id
+        description: 'Product ID.'
         required: true
-        example: egg
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: fiat
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      card_id:
+        name: card_id
+        description: 'required_if:fiat_payment_method,card Card ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      quantity:
+        name: quantity
+        description: Quantity.
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      wallet_type:
+        name: wallet_type
+        description: 'optional Wallet Type.'
+        required: false
+        example: TNG/FPX-CIMB
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
-      type: egg
+      product_id: 1
+      payment_method: fiat
+      fiat_payment_method: fpx/card
+      card_id: 1
+      quantity: 1
+      wallet_type: TNG/FPX-CIMB
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "type": "egg",
-          "balance": 100
+          "message": "Redirect to Gateway"
           }
         headers: []
         description: success
         custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Pbeda4gVEk6cD51fv63aZh8'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/rewards
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Rewards Available.'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
       -
         status: 200
         content: |-
           {
-          "rewards": [
-          {
-          "id": 1,
-          "name": "Funhub",
-          "description": "Funhub",
-          "components": [],
+          "message": "Product is sold out"
           }
-          ]
         headers: []
-        description: success
+        description: insufficient_product_quantity
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 84665bec1k3afhgdEPaZDvV'
+      - 'Bearer eb64Pgdf8av5EaD3hZ6Vkc1'
     controller: null
     method: null
     route: null
@@ -200,13 +144,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/points/reward_combine
+    uri: api/v1/products/checkout/cancel
     metadata:
-      groupName: Point
+      groupName: Product
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Combine Points Component to Form a Reward'
+      title: 'Cancel Product Checkout'
       description: ''
       authenticated: true
       custom: []
@@ -219,130 +163,25 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      quantity:
-        name: quantity
-        description: 'The quantity of the reward to form.'
+      transaction_no:
+        name: transaction_no
+        description: 'Transaction No.'
         required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      quantity: 1
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer g16evdV4EfDa68PhcZ3akb5'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/ledgers
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Point Ledger'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "data": [
-          {
-            "id": 1,
-            ...
-          }
-          ]
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 41edgaPc86hEf36bakZVv5D'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/points/components/ledgers
-    metadata:
-      groupName: Point
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Point Component Ledgers)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      filter_type:
-        name: filter_type
-        description: 'Type of Component (name).'
-        required: false
-        example: egg
+        example: '11234455'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-    cleanUrlParameters:
-      filter_type: egg
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    cleanBodyParameters:
+      transaction_no: '11234455'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "data": [
-          {
-            "id": 1,
-            ...
-          }
-          ]
+          "message": "Transaction cancelled"
           }
         headers: []
         description: success
@@ -351,7 +190,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZV36aed4g6Efch85PbDk1va'
+      - 'Bearer bcPv6f341ge8VkDaZEa6d5h'
     controller: null
     method: null
     route: null

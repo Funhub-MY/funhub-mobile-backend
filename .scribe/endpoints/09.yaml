@@ -1,16 +1,16 @@
-name: 'User Settings'
+name: Interactions
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/settings
+    uri: api/v1/interactions/users
     metadata:
-      groupName: 'User Settings'
+      groupName: Interactions
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get settings of logged in user'
+      title: 'Get Users of Interaction'
       description: ''
       authenticated: true
       custom: []
@@ -22,47 +22,201 @@ endpoints:
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
+        description: 'The type of interactable.'
+        required: true
+        example: 'article,merchant_offer,merchant_rating,store_rating,store'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'The id of the interactable.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type:
+        name: type
+        description: 'The type of interaction.'
+        required: true
+        example: 'like,dislike,share,bookmark'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
+      id: 1
+      type: 'like,dislike,share,bookmark'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "name": "John Doe",
-           "email": "johndoe@gmail.com"
-           "username": "johndoe",
-           "dob": "1990-01-01",
-           "gender": "male",
-           "bio": "Hello",
-           "job_title": "Engineer",
-           "country_id": 1,
-           "state_id": 1,
-           "avatar": "https://www.example.com/avatar.jpg",
-           "avatar_thumb": "https://www.example.com/avatar_thumb.jpg",
-           "category_ids": [1,2,3]
+          "data": [],
+          "links": {},
+          "meta": {
+          }
           }
         headers: []
         description: success
         custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer beP6hgc5kfV8E1D4dav3a6Z'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/interactions
+    metadata:
+      groupName: Interactions
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get interactions on a interactable type (eg. Articles)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      interactable:
+        name: interactable
+        description: 'The type of interactable.'
+        required: true
+        example: 'article,merchant_offer,merchant_rating,store_rating,store'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'The id of the interactable.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
+      id: 1
+      filter: 'Filterable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, interactable_id, interactable_type, body, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
       -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
         headers: []
-        description: Unauthenticated
+        description: success
         custom: []
       -
         status: 404
-        content: '{"message": "No settings found yet."}'
+        content: ''
         headers: []
-        description: 'No settings found yet'
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer ED4a583VZkcve6f1dPhb6ag'
+      - 'Bearer c6gakPD5V813vZehfab4E6d'
     controller: null
     method: null
     route: null
@@ -70,13 +224,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/settings/phone_no/otp
+    uri: api/v1/interactions
     metadata:
-      groupName: 'User Settings'
+      groupName: Interactions
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update Phone No (send otp)'
+      title: 'Create an interaction for interactable type'
       description: ''
       authenticated: true
       custom: []
@@ -89,1080 +243,84 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      country_code:
-        name: country_code
-        description: 'Country code of the user.'
+      interactable:
+        name: interactable
+        description: 'The type of interactable.'
         required: true
-        example: '60'
+        example: 'article,merchant_offer,merchant_rating,store_rating,store'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      phone_no:
-        name: phone_no
-        description: 'Phone number of the user.'
+      type:
+        name: type
+        description: 'The type of interaction.'
         required: true
-        example: '123456789'
+        example: 'like,dislike,share,bookmark'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '123456789'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "status": "success",
-          "message": "OTP sent"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8Zba5gkV1c63hePv4adDf6E'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/phone_no/verify_otp
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update Phone No (Verify OTP)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: 'Country code of the user.'
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'Phone number of the user.'
-        required: true
-        example: '123456789'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      otp:
-        name: otp
-        description: 'OTP of the user.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '123456789'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "success": true,
-          "message": "Phone No updated"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer ag14b6aZfPekE5Dv86hVc3d'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/email
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Email'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      email:
-        name: email
-        description: 'Email of the user.'
-        required: true
-        example: john@gmail.com
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      email: john@gmail.com
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Email updated",
-          "email": "johndoe@gmail.com"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Email already verified for your account"}'
-        headers: []
-        description: 'Email already verified for your account'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 8ehga3EDd1f5cPVkbaZv466'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/verify/email
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Verify User Email with Token'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      token:
-        name: token
-        description: 'Token of the user.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      token: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Email Verified"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer avZga6hP5bDkVc6E43f8ed1'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/name
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Name'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Name of the user.'
-        required: true
-        example: 'John Doe'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      name: 'John Doe'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Name updated",
-          "name": "John Doe"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 16Vfv8gcdaek6hbZ5P3aD4E'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/article_categories
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Link Article Categories to User (used for interest tagging)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      category_ids:
-        name: category_ids
-        description: 'Array of article category ids.'
-        required: true
-        example:
-          - 1
-          - 2
-          - 3
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      category_ids:
-        - 1
-        - 2
-        - 3
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Article categories linked to user",
-          "category_ids": [1,2,3]
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6vEgadc5eD8V4k13ZabfP6h'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/avatar/upload
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Upload or Update User Profile Picture'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      avatar:
-        name: avatar
-        description: 'One image file to upload.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      avatar: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Avatar uploaded",
-          "avatar": "url",
-          "avatar_thumb": "url"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer f6EevbhPc1Da4da83VZ5gk6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/cover/upload
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Upload or Update User Cover'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: multipart/form-data
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      cover:
-        name: cover
-        description: 'One image file to upload.'
-        required: true
-        example: null
-        type: file
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-    cleanBodyParameters: []
-    fileParameters:
-      cover: null
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Cover uploaded",
-          "cover": "url",
-          "cover_thumb": "url"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Zb65dhP4avVc81EDa63gkfe'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/username
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Username'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      username:
-        name: username
-        description: 'Username of the user.'
-        required: true
-        example: johndoe
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      username: johndoe
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Username updated",
-          "username": "johndoe"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer gva6D8f1caPZEe4Vk653bdh'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/bio
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Bio'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      bio:
-        name: bio
-        description: 'Bio of the user.'
-        required: true
-        example: 'I am a software engineer'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      bio: 'I am a software engineer'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Bio updated",
-          "bio": "I am a software engineer"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 81v63a54ZcgfhePkaVdDEb6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/dob
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Date of Birth'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      day:
-        name: day
-        description: 'Day of the date of birth.'
+      id:
+        name: id
+        description: 'The id of the interactable (eg. Article ID).'
         required: true
         example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      month:
-        name: month
-        description: 'Month of the date of birth.'
-        required: true
-        example: 1
-        type: integer
+      code:
+        name: code
+        description: 'optional The code of the shareable link(6 characters).'
+        required: false
+        example: '1'
+        type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      year:
-        name: year
-        description: 'Year of the date of birth.'
-        required: true
-        example: 1990
-        type: integer
+      model_type:
+        name: model_type
+        description: 'optional The model type of the shareable link.'
+        required: false
+        example: 'article,merchant_offer,store'
+        type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
-      day: 1
-      month: 1
-      year: 1990
+      interactable: 'article,merchant_offer,merchant_rating,store_rating,store'
+      type: 'like,dislike,share,bookmark'
+      id: 1
+      code: '1'
+      model_type: 'article,merchant_offer,store'
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "message": "Date of birth updated",
-          "dob": "1990-01-01"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer aZ64dEb1635D8ghVckaPvef'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/gender
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Save Gender'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      gender:
-        name: gender
-        description: ''
-        required: true
-        example: male
-        type: string
-        enumValues:
-          - male
-          - female
-        exampleWasSpecified: false
-        custom: []
-    cleanBodyParameters:
-      gender: male
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Gender updated",
-          "gender": "male"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 468ZePvgkbf3cd5V1EhDa6a'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/location
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Location'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_id:
-        name: country_id
-        description: 'Country id of the user.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      state_id:
-        name: state_id
-        description: 'State id of the user.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_id: 1
-      state_id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Location updated"
-          "country_id": 1,
-          "state_id": 1
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer cbh16Dak3PdZa5vg4feE68V'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/job-title
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update User Job title'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      job_title:
-        name: job_title
-        description: 'Job title of the user.'
-        required: true
-        example: 'Software Engineer'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      job_title: 'Software Engineer'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Job Title updated",
-          "job_title": "Software Engineer"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Zah66vk8gV1Eac5Pf4Dbe3d'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/language
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Save Language of User'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      last_lang:
-        name: last_lang
-        description: ''
-        required: true
-        example: en
-        type: string
-        enumValues:
-          - en
-          - zh
-        exampleWasSpecified: false
-        custom: []
-      lang:
-        name: lang
-        description: 'The language of the user.'
-        required: true
-        example: en/zh
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      last_lang: en
-      lang: en/zh
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Saved"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer PZ1DVk6bhd4g8v35e6fcaaE'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/postUpdatePassword
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update user password (only for login with OTP)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      old_password:
-        name: old_password
-        description: 'The old password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      password:
-        name: password
-        description: 'The new password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      password_confirmation:
-        name: password_confirmation
-        description: 'The new password confirmation of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      old_password: abcd1234
-      password: abcd1234
-      password_confirmation: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Password updated"
+           "interaction": {}
           }
         headers: []
         description: success
         custom: []
       -
         status: 422
-        content: |-
-          {
-          "message": "The given data was invalid.",
-          "errors": {
-          "old_password": [
-           "The old password is incorrect"
-          ],
-          "password": [
-          "The password confirmation does not match."
-          ]
-          }
+        content: '{}'
         headers: []
-        description: 'validation error'
+        description: ''
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer dVbk5eaEZf43661ahvgcDP8'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/profile-privacy
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Profile Privacy Setting'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      profile_privacy:
-        name: profile_privacy
-        description: 'The profile privacy of the user.'
-        required: true
-        example: public
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      profile_privacy: public
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Profile privacy updated",
-          "profile_privacy": "public"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 6VvEab846d5af1egZDk3chP'
+      - 'Bearer ghEd6vac3Dk1PeaZ5b8V4f6'
     controller: null
     method: null
     route: null
@@ -1170,13 +328,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/user/settings/referrals/my-code
+    uri: 'api/v1/interactions/{id}'
     metadata:
-      groupName: 'User Settings'
+      groupName: Interactions
       groupDescription: ''
-      subgroup: Referral
+      subgroup: ''
       subgroupDescription: ''
-      title: 'Referral - Get My Referral Code'
+      title: 'Show one interaction by ID'
       description: ''
       authenticated: true
       custom: []
@@ -1184,8 +342,108 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the interaction.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer aagDEkP1Vhf8vedbc63Z564'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/v1/interactions/{id}'
+    metadata:
+      groupName: Interactions
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Remove Interaction By ID
+        Only owner can call this method
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The id of the interaction or interactable(article id).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      delete_by:
+        name: delete_by
+        description: 'The type of delete, defaults to interaction.'
+        required: false
+        example: 'interactable,interaction'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      interactable:
+        name: interactable
+        description: 'The type of interactable (Required if delete_by is interactable).'
+        required: false
+        example: 'article,merchant_offer,store_rating,store'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      type:
+        name: type
+        description: 'The type of interaction (Required if delete_by is interactable).'
+        required: false
+        example: 'like,dislike,share,bookmark'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+      delete_by: 'interactable,interaction'
+      interactable: 'article,merchant_offer,store_rating,store'
+      type: 'like,dislike,share,bookmark'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1196,395 +454,22 @@ endpoints:
         status: 200
         content: |-
           {
-          "referral_code": "ABC123",
-          "message": "Come and join with with referral code ABC123"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer cek43Pba68V16DEafhdZ5vg'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/referrals/save
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: Referral
-      subgroupDescription: ''
-      title: 'Referral - Save Referral'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      referral_code:
-        name: referral_code
-        description: 'Referral code of the user.'
-        required: true
-        example: ABC123
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      referral_code: ABC123
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Referral saved"
+          "message": "Interaction deleted"
           }
         headers: []
         description: success
         custom: []
       -
-        status: 422
-        content: |-
-          {
-          "message": "User already referred by someone"
-          }
+        status: 404
+        content: "{['message' => 'Interaction not found']}"
         headers: []
-        description: 'User already referred by someone'
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-          "message": "Referral code not found"
-          }
-        headers: []
-        description: 'Referral code not found'
-        custom: []
-      -
-        status: 422
-        content: |-
-          {
-          "message": "You cannot refer yourself"
-          }
-        headers: []
-        description: 'You cannot refer yourself'
+        description: 'Not Found'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer Pc4edVaZ1ga6fbhEk6Dv583'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/onesignal/save
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Save OneSignal Subscription Id'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      onesignal_subscription_id:
-        name: onesignal_subscription_id
-        description: 'The OneSignal subscription id.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      onesignal_subscription_id: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Saved"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Vg3abZeD5hPv1c648Efkad6'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/onesignal/user_id/save
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Save OneSignal User ID'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      onesignal_user_id:
-        name: onesignal_user_id
-        description: 'The OneSignal user id.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      onesignal_user_id: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Saved"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 15V6adDE8fb6ecvPhk3gZa4'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/user/settings/card-tokenization
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Add a Card (Tokenization)'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "status": "success",
-           "data": {
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer EacPeDVf685kvb13Z6h4gad'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/user/settings/cards
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: Card
-      subgroupDescription: ''
-      title: 'Get User Cards'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "cards": []
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer bPv3DZEg84heaVa6ck6fd15'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/card/remove
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: Card
-      subgroupDescription: ''
-      title: 'Remove a Card'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      card_id:
-        name: card_id
-        description: 'The id of the card.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      card_id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Card removed"
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 5Ebhaga48361vPZD6Vcefkd'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/settings/card/set-as-default
-    metadata:
-      groupName: 'User Settings'
-      groupDescription: ''
-      subgroup: Card
-      subgroupDescription: ''
-      title: 'Set Card as Default'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      card_id:
-        name: card_id
-        description: 'The id of the card.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      card_id: 1
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "message": "Card set as default"
-          }
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer f6bacPdvE31Dgh5Z6kaeV84'
+      - 'Bearer 1ef5Ebg6d6acD83ZPkvV4ha'
     controller: null
     method: null
     route: null
