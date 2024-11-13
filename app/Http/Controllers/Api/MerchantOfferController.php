@@ -965,7 +965,7 @@ class MerchantOfferController extends Controller
     }
 
     /**
-     * Get Public Offers(Web)
+     * Web - Get Public Offers
      *
      * @param Request $request
      * @return JsonResponse
@@ -1109,14 +1109,14 @@ class MerchantOfferController extends Controller
     }
 
     /**
-     * Get Single Public Offer (Web)
+     * Web - Get Single Public Offer
      *
      * @param Request $request
      * @return JsonResponse
      *
      * @group Merchant
      * @urlParam id integer optional The id of the merchant offer. Example: 1
-     * @urlParam sku integer optional The id of the merchant offer. Example: 1
+     * @urlParam sku string optional The id of the merchant offer. Example: ABC-1234
      * @response scenario=success {
      * "offer": {}
      * }
