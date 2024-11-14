@@ -46,6 +46,21 @@ class PublicMerchantOfferResource extends JsonResource
                 'id' => ($this->store) ? $this->store->id : null,
                 'name' => ($this->store) ? $this->store->name : null,
             ],
+            'stores' => ($this->stores) ? $this->stores->map(function ($store) {
+                return [
+                    'id' => $store->id,
+                    'name' => $store->name,
+                    'address' => $store->address,
+                    'ratings' => number_format(floatval($store->ratings), 1),
+                    'total_ratings' => ($store->storeRatings) ? $store->storeRatings->count() : 0,
+                    'address_postcode' => $store->address_postcode,
+                    'lat' => ($store->location && isset($store->location->lat)) ? floatval($store->location->lat) : $store->lang,
+                    'lng' => ($store->location && isset($store->location->lng)) ? floatval($store->location->lng) : $store->long,
+                    'is_hq' => $store->is_hq,
+                    'state' => $store->state,
+                    'country' => $store->country
+                ];
+            }) : null,
             'logo' => ($this->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME)) ? $this->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'merchant' => [
                 'id' => ($this->user && $this->user->merchant) ? $this->user->merchant->id : null,
