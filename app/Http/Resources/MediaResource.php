@@ -6,24 +6,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MediaResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
     public function toArray($request)
     {
-        // encode last part of original_url
         $originalUrl = $this->original_url;
-        // check if cloufront url is provided as only work on cloudfront links
         if ($originalUrl && strpos($originalUrl, 'cloudfront') !== false) {
             $parts = explode('/', $originalUrl);
             $parts[count($parts) - 1] = urlencode($parts[count($parts) - 1]);
             $originalUrl = implode('/', $parts);
         }
 
-        return [
+        $response = [
             'name' => $this->name,
             'file_name' => $this->file_name,
             'uuid' => $this->uuid,
@@ -33,5 +25,17 @@ class MediaResource extends JsonResource
             'extension' => $this->extension,
             'size' => $this->size,
         ];
+
+        // add video resolutions if this is a video with processed resolutions
+        // video resolutions refer to VideoJob
+        if (str_contains($this->mime_type, 'video') && $this->video_resolutions) {
+            $response['resolutions'] = [
+                'low' => $this->video_resolutions['low'] ?? null,
+                'medium' => $this->video_resolutions['medium'] ?? null,
+                'high' => $this->video_resolutions['high'] ?? null,
+            ];
+        }
+
+        return $response;
     }
 }

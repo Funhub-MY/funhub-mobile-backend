@@ -21,10 +21,18 @@ use App\Http\Controllers\PaymentController;
 
 
 Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
-    Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']);
     Route::get('public_user', [\App\Http\Controllers\Api\UserController::class, 'getProfileForPublicView']);
-    Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
+
+    // public routes for articles
+    Route::get('public_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticles']);
+    Route::get('public_articles_single', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticleSingle']);
+    Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']); // share link
+
+    // public routes for merchant offers
+    Route::get('public_offers', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOffers']);
+    Route::get('public_offers_single', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOferSingle']);
+    Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']); // share link
 
     // app to app
     Route::middleware(['application.token'])->group(function() {

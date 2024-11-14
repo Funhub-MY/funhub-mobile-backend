@@ -42,7 +42,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer kah8eEgfcZDd6135a6b4VPv'
+      - 'Bearer ka1Zbf6Eh56vD83adPce4gV'
     controller: null
     method: null
     route: null
@@ -77,6 +77,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       answer:
         name: answer
@@ -86,6 +87,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       question_id: 1
@@ -105,7 +107,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8VbDEgaeP1f436Zadc6h5vk'
+      - 'Bearer 56P4DZ3ad8bceaVfkgvEh16'
     controller: null
     method: null
     route: null
@@ -140,6 +142,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       brand:
         name: brand
@@ -149,6 +152,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       campaign_id: 1
@@ -169,7 +173,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer DEZ51cdVg86b6Phavaef43k'
+      - 'Bearer fe8dDkvEc16hgb6P4VaZ35a'
     controller: null
     method: null
     route: null
@@ -204,6 +208,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       campaign_id: 1
@@ -223,7 +228,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer V3a8EdaP46bghkDv1Z56fec'
+      - 'Bearer 5vfZ6c3b68eEPkg4ahd1VDa'
     controller: null
     method: null
     route: null
@@ -258,6 +263,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       campaign_id:
         name: campaign_id
@@ -267,6 +273,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       brand: 'Brand A'
@@ -287,7 +294,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ck3Zb1e4aVv85EPdah6gD6f'
+      - 'Bearer eDVhdvc38faZP4566gbk1aE'
     controller: null
     method: null
     route: null
@@ -322,6 +329,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       name:
         name: name
@@ -331,15 +339,17 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email:
         name: email
         description: 'The email of the respondant. Example:'
         required: true
-        example: astrid23@example.com
+        example: chelsey36@example.org
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
       phone:
         name: phone
@@ -349,6 +359,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       ic:
         name: ic
@@ -358,6 +369,7 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       address:
         name: address
@@ -367,11 +379,12 @@ endpoints:
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       campaign_id: 1
       name: 'John Doe'
-      email: astrid23@example.com
+      email: chelsey36@example.org
       phone: '0123456789'
       ic: '123456789012'
       address: '123, Jalan ABC, 12345, Kuala Lumpur'
@@ -390,7 +403,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 81D3Pfagkc6E45haVdeZ6bv'
+      - 'Bearer a6ZVb3gE8vhkD64d5eafcP1'
     controller: null
     method: null
     route: null
@@ -425,6 +438,7 @@ endpoints:
         type: integer
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
       campaign_id: 1
@@ -444,7 +458,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 5g3avcf16k8a6PEDh4dbVZe'
+      - 'Bearer PEcbaafkh1vZe85gdV436D6'
     controller: null
     method: null
     route: null

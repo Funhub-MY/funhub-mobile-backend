@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Jobs\ByteplusVODProcess;
 use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\City;
 use App\Models\SearchKeyword;
@@ -224,7 +225,7 @@ class ArticleController extends Controller
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with(
-                'media', 'imports',
+                'media', 'imports', 'media.videoJob',
                 'categories', 'subCategories', 'tags',
                 'user', 'user.media',
                 'comments', 'interactions.user', 'interactions.user.media',
@@ -478,10 +479,10 @@ class ArticleController extends Controller
      * @param Request $request
      * @return QueryBuilder
      */
-    public function articleQueryBuilder($query, $request) {
+    public function articleQueryBuilder($query, $request, $hasUser = true) {
         $query->published();
 
-        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+        if ($hasUser && (!$request->has('include_own_article') || $request->include_own_article == 0)) {
             // default to exclude own article
             $query->where('user_id', '!=', auth()->user()->id);
             // else it will also include own article
@@ -520,6 +521,7 @@ class ArticleController extends Controller
             'categories',
             'subCategories',
             'media',
+            'media.videoJob',
             'tags',
             'location',
             'interactions' => function ($query) {
@@ -683,7 +685,7 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'media.videoJob', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
@@ -780,7 +782,7 @@ class ArticleController extends Controller
             $query->where('type', 'video');
         }
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'media.videoJob', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
@@ -927,7 +929,13 @@ class ArticleController extends Controller
             }
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
-                $media->move($article, Article::MEDIA_COLLECTION_NAME);
+                $movedMediaItem = $media->move($article, Article::MEDIA_COLLECTION_NAME);
+
+                // when move to article_videos, dispatch byteplus video process
+                if (str_contains($movedMediaItem->mime_type, 'video')) {
+                    // get latest $media after move
+                    ByteplusVODProcess::dispatch($movedMediaItem);
+                }
             });
         }
 
@@ -986,7 +994,7 @@ class ArticleController extends Controller
 
         $article = $article->refresh();
         // load relations
-        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
+        $article->load('user', 'comments', 'interactions', 'media', 'media.videoJob', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
@@ -1718,6 +1726,79 @@ class ArticleController extends Controller
                     $query->where('status', User::STATUS_ACTIVE);
                 });
             }]);
+
+        return response()->json([
+            'article' => new PublicArticleResource($article)
+        ]);
+    }
+
+    /**
+     * Web - Get Public Articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam limit integer optional Limit the number of results. Example: 10
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getPublicArticles(Request $request)
+    {
+        $query = Article::query();
+
+        $query->where('available_for_web', true)
+            ->published()
+            ->where('visibility', Article::VISIBILITY_PUBLIC);
+
+        // pass to query builder
+        $data = $this->articleQueryBuilder($query, $request, false);
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+        return PublicArticleResource::collection($data);
+    }
+
+    /**
+     * Web - Get Single Public Article
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam id integer optional The id of the article. Example: 1
+     * @urlParam slug string optional The slug of the article. Example: my-article
+     * @response scenario=success {
+     * "article": {}
+     * }
+     */
+    public function getPublicArticleSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required_if:slug,null|integer',
+            'slug' => 'required_if:id,null|string',
+        ]);
+
+        $article = Article::where('available_for_web', true)
+            ->published()
+            ->where('visibility', Article::VISIBILITY_PUBLIC)
+            ->where(function ($query) use ($request) {
+                if ($request->has('id')) {
+                    $query->where('id', $request->id);
+                } else {
+                    $query->where('slug', $request->slug);
+                }
+            })
+            ->with('user', 'media', 'location', 'location.ratings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            // withCount comment where dont have parent_id
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
+            ->first();
 
         return response()->json([
             'article' => new PublicArticleResource($article)

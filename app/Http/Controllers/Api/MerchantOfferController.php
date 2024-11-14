@@ -965,6 +965,191 @@ class MerchantOfferController extends Controller
     }
 
     /**
+     * Web - Get Public Offers
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam category_ids array optional Category Ids to Filter. Example: 1,2,3
+     * @urlParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example: 1,2,3
+     * @urlParam city string optional Filter by City. Example: Subang Jaya
+     * @urlParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @urlParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
+     * @urlParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @urlParam available_only boolean optional Filter by Available Only. Example: true or 0
+     * @urlParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true or 0
+     */
+    public function getPublicOffers(Request $request)
+    {
+        // ensure only published offers
+        $query = MerchantOffer::query()
+            ->published()
+            ->where('available_for_web', true)
+            // ->available()
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                // 'likes' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
+                // 'interactions' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
+            ]);
+
+        // category_ids filter
+        if ($request->has('category_ids')) {
+            // explode categories ids
+            $category_ids = explode(',', $request->category_ids);
+            if (count($category_ids) > 0) {
+                $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
+                    $q->whereIn('merchant_offer_categories.id', $category_ids);
+                });
+            }
+        }
+
+        if ($request->has('merchant_offer_ids')) {
+            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+        }
+
+        if ($request->has('available_only')) {
+            $query->available();
+        }
+
+        if ($request->has('coming_soon_only')) {
+            $query->where('available_at', '>', now());
+        }
+
+        if ($request->has('except_expired')) {
+            $query->where('available_until', '>', now());
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 1) {
+            $query->flash();
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 0) {
+            $query->where('flash_deal', false);
+        }
+
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        if ($request->has('merchant_id')) {
+            $query->whereHas('merchant', function ($query) use ($request) {
+                $query->where('id', $request->merchant_id);
+            });
+        }
+
+        // get articles by lat, lng
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            // get article where article->location lat,lng is within the radius
+            $query->whereHas('location', function ($query) use ($request, $radius) {
+                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
+                    cos( radians( lat ) )
+                    * cos( radians( lng ) - radians(?)
+                    ) + sin( radians(?) ) *
+                    sin( radians( lat ) ) )
+                    ) AS distance', [$request->lat, $request->lng, $request->lat])
+                    ->havingRaw("distance < ?", [$radius]);
+            });
+        }
+
+        // location id
+        if ($request->has('location_id')) {
+            // where two condition merchant offer locaiton tagged same location id or merchant offer's stores tagged same location id
+            $query->where(function ($subQuery) {
+                $subQuery->whereHas('location', function ($query) {
+                    $query->where('locations.id', request()->location_id);
+                })->orWhereHas('stores', function ($query) {
+                    $query->whereHas('location', function ($query) {
+                        $query->where('locations.id', request()->location_id);
+                    });
+                });
+            });
+        }
+
+        if ($request->has('store_id')) {
+            // explode store_id if has comma
+            $storeIds = explode(',', $request->store_id);
+            $query->whereHas('stores', function ($query) use ($storeIds) {
+                $query->whereIn('stores.id', $storeIds);
+            });
+        }
+
+        // order by available_at from past first to future
+        $query->orderBy('available_at', 'asc');
+
+        $this->buildQuery($query, $request);
+
+        $data = $query->paginate(config('app.paginate_per_page'));
+
+        return PublicMerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Web - Get Single Public Offer
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam id integer optional The id of the merchant offer. Example: 1
+     * @urlParam sku string optional The id of the merchant offer. Example: ABC-1234
+     * @response scenario=success {
+     * "offer": {}
+     * }
+     */
+    public function getPublicOferSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required_if:sku,null|integer',
+            'sku' => 'required_if:id,null',
+        ]);
+
+        if ($request->has('id')) {
+            $offer = MerchantOffer::where('id', $request->id)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        } else {
+            $offer = MerchantOffer::where('sku', $request->sku)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        }
+
+        if (!$offer) {
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
+        }
+
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
+    }
+
+    /**
      * Get Merchant Offer Public
      *
      * @param Request $request
