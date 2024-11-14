@@ -1790,7 +1790,7 @@ class ArticleController extends Controller
                 }
             });
 
-        $article->load('user', 'media', 'location', 'location.ratings')
+        $article->with('user', 'media', 'location', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
             // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
