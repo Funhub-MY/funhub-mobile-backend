@@ -1,779 +1,299 @@
-name: Authentication
+name: Stores
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v1/check_phone_no
+      - GET
+    uri: api/v1/external/stores
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Check phone no exists or not'
+      title: 'Get Stores'
       description: ''
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      categories_id:
+        name: categories_id
+        description: 'optional Categories ID.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_ids:
+        name: merchant_ids
+        description: 'optional Merchant IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      store_ids:
+        name: store_ids
+        description: 'optional Store IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_unlisted:
+        name: include_unlisted
+        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_listed_unlisted:
+        name: include_listed_unlisted
+        description: 'optional Include all listed and unlisted stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      categories_id: '1,2,3'
+      merchant_ids: '1,2,3'
+      store_ids: '1,2,3'
+      include_unlisted: 1
+      include_listed_unlisted: 1
+      limit: 10
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"message" : "Phone Number not registered"}'
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/sendOtp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Send OTP'
-      description: 'Send SMS OTP to phone number'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "message": "OTP Sent!"
+          "current_page": 1,
+          "data": []
           }
         headers: []
         description: success
         custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer e843fZP6Dhdaa5kc1bg6VvE'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/verifyOtp
+      - GET
+    uri: api/v1/stores
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Verify OTP'
-      description: 'Login user into the system with OTP'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid login details"}'
-        headers: []
-        description: 'Invalid Login details'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/loginWithPassword
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Password'
+      title: 'Get Stores'
       description: ''
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      categories_id:
+        name: categories_id
+        description: 'optional Categories ID.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_ids:
+        name: merchant_ids
+        description: 'optional Merchant IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      store_ids:
+        name: store_ids
+        description: 'optional Store IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_unlisted:
+        name: include_unlisted
+        description: 'optional Include unlisted stores, must have store_ids specified else all will be LISTED store only.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      include_listed_unlisted:
+        name: include_listed_unlisted
+        description: 'optional Include all listed and unlisted stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      categories_id: '1,2,3'
+      merchant_ids: '1,2,3'
+      store_ids: '1,2,3'
+      include_unlisted: 1
+      include_listed_unlisted: 1
+      limit: 10
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: 'Country code of phone number.'
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'Phone number.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      password:
-        name: password
-        description: Password.
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      password: abcd1234
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "user": {},
-           "token": "auth_token"
+          "current_page": 1,
+          "data": []
           }
         headers: []
         description: success
         custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid Credentials"}'
-        headers: []
-        description: 'Invalid Credentials'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bgE1Dha3a6vd8cfkV4PZ6e5'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/loginWithOtp
+      - GET
+    uri: api/v1/stores/followings_been_here
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Login with OTP'
+      title: 'Get Stores Following Been Here'
       description: ''
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      store_ids:
+        name: store_ids
+        description: 'The store ids.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_ids: '1,2,3'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
+      store_ids:
+        name: store_ids
+        description: ''
         required: true
-        example: '60'
+        example: ut
         type: string
         enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
+        exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
+      store_ids: ut
     fileParameters: []
     responses:
       -
         status: 200
-        content: |-
-          {
-          "user": {
-             id: 1,
-            name: "John Smith"
-          },
-          "token": "AuthenticationTokenHere"
-          }
+        content: '{"data": [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "John Doe"}]}'
         headers: []
         description: success
         custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid login details"}'
-        headers: []
-        description: 'Invalid Login details'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer P6bvaZD6fg31Vd48ak5Ehce'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/register/otp
+      - GET
+    uri: api/v1/stores/rating_categories
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Register with OTP'
-      description: 'Register user with OTP'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      name:
-        name: name
-        description: 'The name of the use.'
-        required: true
-        example: 'John Smith'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      password:
-        name: password
-        description: 'The password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-      name: 'John Smith'
-      password: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/facebook
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Facebook'
-      description: 'Login user with Facebook'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'The access token of the user from Facebook.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      access_token: '1234567890'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/google
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Google'
-      description: 'Login user with Google'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'The access token of the user from Google.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      access_token: '1234567890'
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/social
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Social (via Firebase Auth)'
-      description: 'Login user with Social'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'Firebase Auth Token ().'
-        required: true
-        example: "'ey271236...'"
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      access_token: "'ey271236...'"
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Invalid Token" ]}'
-        headers: []
-        description: 'Invalid Token'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/reset-password-send-otp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Reset Password Send NEW OTP (Step 1)'
+      title: 'Get Store Rating Categories'
       description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      phone_no:
-        name: phone_no
-        description: 'The phone no of the user.'
-        required: true
-        example: '0123456789'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      phone_no: '0123456789'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "status": "success",
-          "message": "OTP sent successfully"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/reset-password
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Reset Password with OTP (Step 2)'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      phone_no:
-        name: phone_no
-        description: 'The phone no of the user.'
-        required: true
-        example: '0123456789'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      new_password:
-        name: new_password
-        description: 'The new password of the user.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      otp:
-        name: otp
-        description: 'The otp of the user.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      phone_no: '0123456789'
-      new_password: '123456'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "status": "success",
-          "message": "Password reset successfully"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/logout
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: Logout
-      description: 'Log User Out and destroy any active tokens of user'
       authenticated: true
       custom: []
     headers:
@@ -790,112 +310,282 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"message" : "Logged Out"}'
+        content: |-
+          {
+          data: []
+          }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Access Denied"}'
-        headers: []
-        description: 'Access Denied'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer g8VE16cZ6Db4a3k5vPahfed'
+      - 'Bearer 15vegkfa68Vab46DhPd3EcZ'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/complete-profile
+      - GET
+    uri: api/v1/stores/locations
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Complete Profile'
-      description: 'Complete user profile after registration'
+      title: 'Get Store Locations by Store IDS'
+      description: ''
       authenticated: true
       custom: []
     headers:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      store_ids:
+        name: store_ids
+        description: 'Store IDs.'
+        required: true
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_ids: '1,2,3'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      name:
-        name: name
-        description: 'The name of the use.'
+      store_ids:
+        name: store_ids
+        description: ''
         required: true
-        example: 'John Smith'
+        example: voluptatem
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      store_ids: voluptatem
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v356cagZebd864V1kDPEfah'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/stores/stores_by_location
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores by Location ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      location_id:
+        name: location_id
+        description: 'Location ID.'
+        required: true
+        example: '1'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      email:
-        name: email
-        description: 'The email of the user(email verificatioin will be sent).'
+    cleanUrlParameters:
+      location_id: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      location_id:
+        name: location_id
+        description: ''
         required: true
-        example: john@example.com
+        example: error
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      location_id: error
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D8Zbdh6E6ve54gaaVPkfc31'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/stores/{store_id}/ratings'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Stores Ratings'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-      password:
-        name: password
-        description: 'The password of the user(social login do not need to provide).'
+      only_mine:
+        name: only_mine
+        description: 'boolean optional Only show my ratings.'
         required: false
-        example: abcd1234
+        example: 'true'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters:
-      name: 'John Smith'
-      email: john@example.com
-      password: abcd1234
+      user_id:
+        name: user_id
+        description: 'optional Only load specific user ratings.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_id:
+        name: merchant_id
+        description: 'optional Only load specific merchant ratings.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, rating, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 1
+      store: '1'
+      only_mine: 'true'
+      user_id: 1
+      merchant_id: 1
+      sort: 'Sortable columns are: id, rating, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message" : "Profile Updated"}'
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Please verify your phone number first" ]}'
-        headers: []
-        description: 'Invalid Form Fields'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer Ed354bvPcafa16DeV6g8kZh'
+      - 'Bearer 46fvkZaPa3658cDbhEVgd1e'
     controller: null
     method: null
     route: null
@@ -903,13 +593,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/send-email-verification
+    uri: 'api/v1/stores/{store_id}/ratings'
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Send Verification Email with Token Inside'
+      title: 'Rate a Store'
       description: ''
       authenticated: true
       custom: []
@@ -917,28 +607,75 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 1
+      store: '1'
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      email:
-        name: email
-        description: 'You can pass in email address here if user decide to change it again.'
+      rating:
+        name: rating
+        description: Rating.
         required: true
-        example: john@example.com
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      comment:
+        name: comment
+        description: 'optional Comment.'
+        required: false
+        example: 'Good service'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      rating_category_ids:
+        name: rating_category_ids
+        description: 'optional Rating Category IDs.'
+        required: false
+        example: '1,2,3'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
     cleanBodyParameters:
-      email: john@example.com
+      rating: 5
+      comment: 'Good service'
+      rating_category_ids: '1,2,3'
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message" : "Verification Email Sent"}'
+        content: |-
+          {
+          data: {}
+          }
         headers: []
         description: success
         custom: []
@@ -946,21 +683,21 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 36c5aka4feZgb8vVDPhE61d'
+      - 'Bearer Ve63cDf5gakhv14b6PaE8dZ'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/user/verify-email
+      - GET
+    uri: 'api/v1/stores/{store_id}/menus'
     metadata:
-      groupName: Authentication
+      groupName: Stores
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Verify Email with Token'
+      title: 'Get Merchant Menus via Store'
       description: ''
       authenticated: true
       custom: []
@@ -968,42 +705,138 @@ endpoints:
       Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      token:
-        name: token
-        description: 'The email verification token.'
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
         required: true
-        example: '123456'
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
         type: string
         enumValues: []
         exampleWasSpecified: true
         nullable: false
         custom: []
-    cleanBodyParameters:
-      token: '123456'
+    cleanUrlParameters:
+      store_id: 1
+      store: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message" : "Email Verified"}'
+        content: |-
+          {
+          [
+          {'name': 'Menu 1', 'url': 'http://example.com/menu1.jpg'},
+          ]
         headers: []
         description: success
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Invalid Token" ]}'
-        headers: []
-        description: 'Invalid Token'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer h8bf1dPV5eEkac6Zv63a4Dg'
+      - 'Bearer eaabfdvk64583Dc6ZhP1gVE'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/stores/{store_id}/ratings/ratings_categories'
+    metadata:
+      groupName: Stores
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Top X Store Rating Categories of'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      store_id:
+        name: store_id
+        description: 'The ID of the store.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      store:
+        name: store
+        description: 'Store ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Limit.'
+        required: false
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      only_with_ratings:
+        name: only_with_ratings
+        description: 'boolean optional Only with ratings.'
+        required: false
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      store_id: 1
+      store: '1'
+      limit: 3
+      only_with_ratings: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 3ek66aZ1f4vPEcVbDadhg85'
     controller: null
     method: null
     route: null

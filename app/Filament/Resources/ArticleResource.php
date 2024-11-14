@@ -218,6 +218,12 @@ class ArticleResource extends Resource
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
 
+                            // available_for_web
+                            Forms\Components\Toggle::make('available_for_web')
+                                ->label('Available for Web')
+                                ->helperText('If enabled, this article will be shown in Funhub Web.')
+                                ->default(false),
+
                             Forms\Components\Select::make('visibility')
                                 ->default(Article::VISIBILITY_PUBLIC)
                                 ->helperText('If articles are private, only visible if you followed the author. Location ratings will not be public as well.')
