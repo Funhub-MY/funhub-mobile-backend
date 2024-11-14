@@ -479,10 +479,10 @@ class ArticleController extends Controller
      * @param Request $request
      * @return QueryBuilder
      */
-    public function articleQueryBuilder($query, $request) {
+    public function articleQueryBuilder($query, $request, $hasUser = true) {
         $query->published();
 
-        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+        if ($hasUser && (!$request->has('include_own_article') || $request->include_own_article == 0)) {
             // default to exclude own article
             $query->where('user_id', '!=', auth()->user()->id);
             // else it will also include own article
@@ -1726,6 +1726,79 @@ class ArticleController extends Controller
                     $query->where('status', User::STATUS_ACTIVE);
                 });
             }]);
+
+        return response()->json([
+            'article' => new PublicArticleResource($article)
+        ]);
+    }
+
+    /**
+     * Web - Get Public Articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam limit integer optional Limit the number of results. Example: 10
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getPublicArticles(Request $request)
+    {
+        $query = Article::query();
+
+        $query->where('available_for_web', true)
+            ->published()
+            ->where('visibility', Article::VISIBILITY_PUBLIC);
+
+        // pass to query builder
+        $data = $this->articleQueryBuilder($query, $request, false);
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+        return PublicArticleResource::collection($data);
+    }
+
+    /**
+     * Web - Get Single Public Article
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam id integer optional The id of the article. Example: 1
+     * @urlParam slug string optional The slug of the article. Example: my-article
+     * @response scenario=success {
+     * "article": {}
+     * }
+     */
+    public function getPublicArticleSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required_if:slug,null|integer',
+            'slug' => 'required_if:id,null|string',
+        ]);
+
+        $article = Article::where('available_for_web', true)
+            ->published()
+            ->where('visibility', Article::VISIBILITY_PUBLIC)
+            ->where(function ($query) use ($request) {
+                if ($request->has('id')) {
+                    $query->where('id', $request->id);
+                } else {
+                    $query->where('slug', $request->slug);
+                }
+            })
+            ->with('user', 'media', 'location', 'location.ratings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            // withCount comment where dont have parent_id
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
+            ->first();
 
         return response()->json([
             'article' => new PublicArticleResource($article)

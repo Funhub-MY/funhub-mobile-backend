@@ -28,6 +28,12 @@ class SystemNotification extends Model implements Auditable
     //     return $this->belongsToMany(User::class, 'system_notification_user', 'user', 'id');
     // }
 
+	public function users()
+	{
+		return $this->belongsToMany(User::class, 'system_notifications_users', 'system_notification_id', 'user_id')
+			->withTimestamps();
+	}
+
     public function content()
     {
         return $this->morphTo();
