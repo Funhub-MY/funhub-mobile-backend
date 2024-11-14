@@ -444,6 +444,19 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+
+                Tables\Columns\BadgeColumn::make('available_for_web')
+                    ->label('Available for Web')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable(),
+
                 Tables\Columns\BadgeColumn::make('visibility')
                     ->label('Visibility')
                     ->enum([
@@ -594,18 +607,21 @@ class ArticleResource extends Resource
                         ]);
                     });
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
                 Tables\Actions\BulkAction::make('Change to Draft')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 0]);
                     });
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
                 Tables\Actions\BulkAction::make('Move to Archived')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 2]);
                     });
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
                 // table bulkaction to mark hidden from home toggle
                 Tables\Actions\BulkAction::make('toggle_hidden_from_home')
                 ->label('Toggle Home Hidden/Visible')
