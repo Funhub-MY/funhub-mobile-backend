@@ -965,42 +965,7 @@ class MerchantOfferController extends Controller
     }
 
     /**
-     * Get Merchant Offer Public
-     *
-     * @param Request $request
-     * @return void
-     */
-    public function getPublicOfferPublicView(Request $request)
-    {
-        $this->validate($request, [
-            'share_code' => 'required|string'
-        ]);
-        // get merchant offer by ShareableLink
-        $share = ShareableLink::where('link', $request->share_code)
-            ->where('model_type', MerchantOffer::class)
-            ->first();
-
-        if (!$share) {
-            return abort(404);
-        }
-
-        // find offer by model_id
-        $offer = MerchantOffer::where('id', $share->model_id)
-            ->published()
-            ->first();
-
-        if (!$offer) {
-            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
-        }
-
-        // return user profile
-        return response()->json([
-            'offer' => new PublicMerchantOfferResource($offer)
-        ]);
-    }
-
-    /**
-     * Get Public Offers(Web)
+     * Web - Get Public Offers
      *
      * @param Request $request
      * @return JsonResponse
@@ -1009,8 +974,8 @@ class MerchantOfferController extends Controller
      * @urlParam category_ids array optional Category Ids to Filter. Example: 1,2,3
      * @urlParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example: 1,2,3
      * @urlParam city string optional Filter by City. Example: Subang Jaya
-     * @urlParam lat float required Filter by Lat of User (must provide lng). Example: 3.123456
-     * @urlParam lng float required Filter by Lng of User (must provide lat). Example: 101.123456
+     * @urlParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @urlParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
      * @urlParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
      * @urlParam available_only boolean optional Filter by Available Only. Example: true or 0
      * @urlParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true or 0
@@ -1037,12 +1002,12 @@ class MerchantOfferController extends Controller
                 'media',
                 'interactions',
                 'views',
-                'likes' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
-                'interactions' => function ($query) {
-                    $query->where('user_id', auth()->user()->id);
-                },
+                // 'likes' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
+                // 'interactions' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
             ])
             ->withCount([
                 'unclaimedVouchers',
@@ -1141,6 +1106,82 @@ class MerchantOfferController extends Controller
         $data = $query->paginate(config('app.paginate_per_page'));
 
         return PublicMerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Web - Get Single Public Offer
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam id integer optional The id of the merchant offer. Example: 1
+     * @urlParam sku string optional The id of the merchant offer. Example: ABC-1234
+     * @response scenario=success {
+     * "offer": {}
+     * }
+     */
+    public function getPublicOferSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required_if:sku,null|integer',
+            'sku' => 'required_if:id,null',
+        ]);
+
+        if ($request->has('id')) {
+            $offer = MerchantOffer::where('id', $request->id)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        } else {
+            $offer = MerchantOffer::where('sku', $request->sku)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        }
+
+        if (!$offer) {
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
+        }
+
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
+    }
+
+    /**
+     * Get Merchant Offer Public
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getPublicOfferPublicView(Request $request)
+    {
+        $this->validate($request, [
+            'share_code' => 'required|string'
+        ]);
+        // get merchant offer by ShareableLink
+        $share = ShareableLink::where('link', $request->share_code)
+            ->where('model_type', MerchantOffer::class)
+            ->first();
+
+        if (!$share) {
+            return abort(404);
+        }
+
+        // find offer by model_id
+        $offer = MerchantOffer::where('id', $share->model_id)
+            ->published()
+            ->first();
+
+        if (!$offer) {
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
+        }
+
+        // return user profile
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
     }
 
     /**

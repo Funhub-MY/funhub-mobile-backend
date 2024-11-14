@@ -1,1802 +1,412 @@
-name: Authentication
+name: Merchant
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/v1/check_phone_no
+      - GET
+    uri: api/v1/public_offers
     metadata:
-      groupName: Authentication
+      groupName: Merchant
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Check phone no exists or not'
+      title: 'Web - Get Public Offers'
       description: ''
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      category_ids:
+        name: category_ids
+        description: 'array optional Category Ids to Filter.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_offer_ids:
+        name: merchant_offer_ids
+        description: 'array optional Merchant Offer Ids to Filter.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      available_only:
+        name: available_only
+        description: 'boolean optional Filter by Available Only.'
+        required: false
+        example: 'true or 0'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      coming_soon_only:
+        name: coming_soon_only
+        description: 'boolean optional Filter by Coming Soon Only.'
+        required: false
+        example: 'true or 0'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      category_ids: '1,2,3'
+      merchant_offer_ids: '1,2,3'
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      available_only: 'true or 0'
+      coming_soon_only: 'true or 0'
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message" : "Phone Number not registered"}'
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/sendOtp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Send OTP'
-      description: 'Send SMS OTP to phone number'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "message": "OTP Sent!"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/verifyOtp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Verify OTP'
-      description: 'Login user into the system with OTP'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid login details"}'
-        headers: []
-        description: 'Invalid Login details'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/loginWithPassword
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Password'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: 'Country code of phone number.'
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'Phone number.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      password:
-        name: password
-        description: Password.
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      password: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {},
-           "token": "auth_token"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid Credentials"}'
-        headers: []
-        description: 'Invalid Credentials'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/loginWithOtp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with OTP'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "user": {
-             id: 1,
-            name: "John Smith"
-          },
-          "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Invalid login details"}'
-        headers: []
-        description: 'Invalid Login details'
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/register/otp
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Register with OTP'
-      description: 'Register user with OTP'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      country_code:
-        name: country_code
-        description: "The country code of user's phone number."
-        required: true
-        example: '60'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      phone_no:
-        name: phone_no
-        description: 'The Phone No of the user.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      otp:
-        name: otp
-        description: "The OTP sent to user's phone number."
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      name:
-        name: name
-        description: 'The name of the use.'
-        required: true
-        example: 'John Smith'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      password:
-        name: password
-        description: 'The password of the user.'
-        required: true
-        example: abcd1234
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      country_code: '60'
-      phone_no: '1234567890'
-      otp: '123456'
-      name: 'John Smith'
-      password: abcd1234
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
-          }
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"errors": ["country_code": ["The Country COde field is required."], "phone_no": ["The Phone No field is required."] ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/facebook
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Facebook'
-      description: 'Login user with Facebook'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'The access token of the user from Facebook.'
-        required: true
-        example: '1234567890'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      access_token: '1234567890'
-    fileParameters: []
-    responses:
-      -
-        status: 500
-        content: |-
-          {
-              "message": "Client error: `GET https://graph.facebook.com/v3.3/me?access_token=1234567890&fields=name%2Cemail%2Cgender%2Cverified%2Clink` resulted in a `400 Bad Request` response:\n{\"error\":{\"message\":\"Invalid OAuth access token - Cannot parse access token\",\"type\":\"OAuthException\",\"code\":190,\"fbtrace (truncated...)\n",
-              "exception": "GuzzleHttp\\Exception\\ClientException",
-              "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/Exception/RequestException.php",
-              "line": 113,
-              "trace": [
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/Middleware.php",
-                      "line": 72,
-                      "function": "create",
-                      "class": "GuzzleHttp\\Exception\\RequestException",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 209,
-                      "function": "GuzzleHttp\\{closure}",
-                      "class": "GuzzleHttp\\Middleware",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 158,
-                      "function": "callHandler",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/TaskQueue.php",
-                      "line": 52,
-                      "function": "GuzzleHttp\\Promise\\{closure}",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 251,
-                      "function": "run",
-                      "class": "GuzzleHttp\\Promise\\TaskQueue",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 227,
-                      "function": "invokeWaitFn",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 272,
-                      "function": "waitIfPending",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 229,
-                      "function": "invokeWaitList",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 69,
-                      "function": "waitIfPending",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/Client.php",
-                      "line": 189,
-                      "function": "wait",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/ClientTrait.php",
-                      "line": 44,
-                      "function": "request",
-                      "class": "GuzzleHttp\\Client",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php",
-                      "line": 168,
-                      "function": "get",
-                      "class": "GuzzleHttp\\Client",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/FacebookProvider.php",
-                      "line": 102,
-                      "function": "getUserFromAccessToken",
-                      "class": "Laravel\\Socialite\\Two\\FacebookProvider",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/AbstractProvider.php",
-                      "line": 272,
-                      "function": "getUserByToken",
-                      "class": "Laravel\\Socialite\\Two\\FacebookProvider",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php",
-                      "line": 587,
-                      "function": "userFromToken",
-                      "class": "Laravel\\Socialite\\Two\\AbstractProvider",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
-                      "line": 54,
-                      "function": "facebookLogin",
-                      "class": "App\\Http\\Controllers\\Api\\AuthController",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
-                      "line": 43,
-                      "function": "callAction",
-                      "class": "Illuminate\\Routing\\Controller",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 259,
-                      "function": "dispatch",
-                      "class": "Illuminate\\Routing\\ControllerDispatcher",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 205,
-                      "function": "runController",
-                      "class": "Illuminate\\Routing\\Route",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 798,
-                      "function": "run",
-                      "class": "Illuminate\\Routing\\Route",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 141,
-                      "function": "Illuminate\\Routing\\{closure}",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 47,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php",
-                      "line": 50,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Routing\\Middleware\\SubstituteBindings",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 126,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 92,
-                      "function": "handleRequest",
-                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 54,
-                      "function": "handleRequestUsingNamedLimiter",
-                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 116,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 797,
-                      "function": "then",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 776,
-                      "function": "runRouteWithinStack",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 740,
-                      "function": "runRoute",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 729,
-                      "function": "dispatchToRoute",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
-                      "line": 190,
-                      "function": "dispatch",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 141,
-                      "function": "Illuminate\\Foundation\\Http\\{closure}",
-                      "class": "Illuminate\\Foundation\\Http\\Kernel",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php",
-                      "line": 19,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Livewire\\DisableBrowserCache",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php",
-                      "line": 21,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php",
-                      "line": 31,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php",
-                      "line": 21,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php",
-                      "line": 40,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\TrimStrings",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php",
-                      "line": 27,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php",
-                      "line": 86,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php",
-                      "line": 62,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Http\\Middleware\\HandleCors",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php",
-                      "line": 39,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Http\\Middleware\\TrustProxies",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 116,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
-                      "line": 165,
-                      "function": "then",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
-                      "line": 134,
-                      "function": "sendRequestThroughRouter",
-                      "class": "Illuminate\\Foundation\\Http\\Kernel",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 300,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Kernel",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 288,
-                      "function": "callLaravelOrLumenRoute",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 91,
-                      "function": "makeApiCall",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 44,
-                      "function": "makeResponseCall",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 35,
-                      "function": "makeResponseCallIfConditionsPass",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 236,
-                      "function": "__invoke",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 163,
-                      "function": "iterateThroughStrategies",
-                      "class": "Knuckles\\Scribe\\Extracting\\Extractor",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 95,
-                      "function": "fetchResponses",
-                      "class": "Knuckles\\Scribe\\Extracting\\Extractor",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php",
-                      "line": 125,
-                      "function": "processRoute",
-                      "class": "Knuckles\\Scribe\\Extracting\\Extractor",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php",
-                      "line": 72,
-                      "function": "extractEndpointsInfoFromLaravelApp",
-                      "class": "Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php",
-                      "line": 50,
-                      "function": "extractEndpointsInfoAndWriteToDisk",
-                      "class": "Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php",
-                      "line": 53,
-                      "function": "get",
-                      "class": "Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 36,
-                      "function": "handle",
-                      "class": "Knuckles\\Scribe\\Commands\\GenerateDocumentation",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php",
-                      "line": 41,
-                      "function": "Illuminate\\Container\\{closure}",
-                      "class": "Illuminate\\Container\\BoundMethod",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 93,
-                      "function": "unwrapIfClosure",
-                      "class": "Illuminate\\Container\\Util",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 35,
-                      "function": "callBoundMethod",
-                      "class": "Illuminate\\Container\\BoundMethod",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php",
-                      "line": 661,
-                      "function": "call",
-                      "class": "Illuminate\\Container\\BoundMethod",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php",
-                      "line": 183,
-                      "function": "call",
-                      "class": "Illuminate\\Container\\Container",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php",
-                      "line": 326,
-                      "function": "execute",
-                      "class": "Illuminate\\Console\\Command",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php",
-                      "line": 152,
-                      "function": "run",
-                      "class": "Symfony\\Component\\Console\\Command\\Command",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php",
-                      "line": 1078,
-                      "function": "run",
-                      "class": "Illuminate\\Console\\Command",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php",
-                      "line": 324,
-                      "function": "doRunCommand",
-                      "class": "Symfony\\Component\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php",
-                      "line": 175,
-                      "function": "doRun",
-                      "class": "Symfony\\Component\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php",
-                      "line": 102,
-                      "function": "run",
-                      "class": "Symfony\\Component\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php",
-                      "line": 155,
-                      "function": "run",
-                      "class": "Illuminate\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/artisan",
-                      "line": 35,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Console\\Kernel",
-                      "type": "->"
-                  }
-              ]
-          }
+        content: '{"data":[{"id":3,"sku":"TEST123456","merchant_id":1,"store":{"id":null,"name":null},"logo":null,"merchant":{"id":1,"logo":"https:\/\/funhub-dev.s3.ap-southeast-1.amazonaws.com\/20150\/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg","brand_name":null,"business_name":"Nedex Solutions","business_phone_no":"0171234567","user":{"id":87,"name":" Steven Test"}},"name":"test again","is_flash":0,"description":"test","fine_print":null,"redemption_policy":null,"cancellation_policy":null,"point_cost":1,"point_fiat_price":22,"discounted_point_fiat_price":10,"fiat_price":22,"discounted_fiat_price":6,"default_purchase_method":"point","available_at":"2024-03-20 00:00:00","available_until":"2024-10-19 00:00:00","expiry_days":20,"quantity":21,"media":[{"name":"example","file_name":"vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png","uuid":"90be8469-f320-41d6-bb88-11db160600e3","original_url":"https:\/\/funhub-dev.s3.ap-southeast-1.amazonaws.com\/8114\/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png","order":null,"custom_properties":{"width":1566,"height":530,"is_cover":false},"extension":"png","size":505397},{"name":"example","file_name":"XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png","uuid":"da2d3022-3165-4414-9641-e53f1867500f","original_url":"https:\/\/funhub-dev.s3.ap-southeast-1.amazonaws.com\/8115\/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png","order":null,"custom_properties":{"width":1566,"height":530,"is_cover":false},"extension":"png","size":505397}],"horizontal_banner":{"name":"example","file_name":"XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png","uuid":"da2d3022-3165-4414-9641-e53f1867500f","original_url":"https:\/\/funhub-dev.s3.ap-southeast-1.amazonaws.com\/8115\/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png","order":null,"custom_properties":{"width":1566,"height":530,"is_cover":false},"extension":"png","size":505397},"vertical_banner":{"name":"example","file_name":"vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png","uuid":"90be8469-f320-41d6-bb88-11db160600e3","original_url":"https:\/\/funhub-dev.s3.ap-southeast-1.amazonaws.com\/8114\/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png","order":null,"custom_properties":{"width":1566,"height":530,"is_cover":false},"extension":"png","size":505397},"interactions":[{"id":229,"user":{"id":43,"name":"Steven Yew","avatar":"https:\/\/funhub-dev.s3.ap-southeast-1.amazonaws.com\/9271\/image_cropper_1701231380518.jpg"},"type":4,"created_at":"2023-08-10T07:11:02.000000Z","updated_at":"2023-08-10T07:11:02.000000Z","share_url":null,"created_at_diff":"1 year ago","updated_at_diff":"1 year ago"}],"location":{"id":2,"name":"Damen Subang by KL Short Stay","address":"Subang Jaya, Subang Jaya, Selangor, Malaysia","lat":3.0585253,"lng":101.5926696,"rated_count":1},"count":{"likes":0,"share":0,"bookmarks":1,"views":0},"categories":[{"id":2,"name":"Leisure","slug":"fun","parent_id":null,"description":null,"created_at":"2023-05-07T20:44:53.000000Z","updated_at":"2024-05-08T02:50:30.000000Z"}],"created_at":"2023-10-19T07:43:16.000000Z","updated_at":"2024-11-13T04:10:01.000000Z","created_at_diff":"1 year ago","updated_at_diff":"2 hours ago"}],"links":{"first":"https:\/\/funhub-mobile-backend.test\/api\/v1\/public_offers?page=1","last":"https:\/\/funhub-mobile-backend.test\/api\/v1\/public_offers?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"https:\/\/funhub-mobile-backend.test\/api\/v1\/public_offers?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"https:\/\/funhub-mobile-backend.test\/api\/v1\/public_offers","per_page":10,"to":1,"total":1}}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '115'
+          x-ratelimit-remaining: '116'
           access-control-allow-origin: '*'
         description: null
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6dZ53ke8v6cDE1ahb4PgfVa'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/login/google
+      - GET
+    uri: api/v1/public_offers_single
     metadata:
-      groupName: Authentication
+      groupName: Merchant
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Login with Google'
-      description: 'Login user with Google'
-      authenticated: false
+      title: 'Web - Get Single Public Offer'
+      description: ''
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      access_token:
-        name: access_token
-        description: 'The access token of the user from Google.'
-        required: true
-        example: '1234567890'
+    urlParameters:
+      id:
+        name: id
+        description: 'optional The id of the merchant offer.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sku:
+        name: sku
+        description: 'optional The id of the merchant offer.'
+        required: false
+        example: ABC-1234
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-    cleanBodyParameters:
-      access_token: '1234567890'
-    fileParameters: []
-    responses:
-      -
-        status: 500
-        content: |-
-          {
-              "message": "Client error: `GET https://www.googleapis.com/oauth2/v3/userinfo?prettyPrint=false` resulted in a `401 Unauthorized` response:\n{\n  \"error\": \"invalid_request\",\n  \"error_description\": \"Invalid Credentials\"\n}\n",
-              "exception": "GuzzleHttp\\Exception\\ClientException",
-              "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/Exception/RequestException.php",
-              "line": 113,
-              "trace": [
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/Middleware.php",
-                      "line": 72,
-                      "function": "create",
-                      "class": "GuzzleHttp\\Exception\\RequestException",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 209,
-                      "function": "GuzzleHttp\\{closure}",
-                      "class": "GuzzleHttp\\Middleware",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 158,
-                      "function": "callHandler",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/TaskQueue.php",
-                      "line": 52,
-                      "function": "GuzzleHttp\\Promise\\{closure}",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 251,
-                      "function": "run",
-                      "class": "GuzzleHttp\\Promise\\TaskQueue",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 227,
-                      "function": "invokeWaitFn",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 272,
-                      "function": "waitIfPending",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 229,
-                      "function": "invokeWaitList",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/promises/src/Promise.php",
-                      "line": 69,
-                      "function": "waitIfPending",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/Client.php",
-                      "line": 189,
-                      "function": "wait",
-                      "class": "GuzzleHttp\\Promise\\Promise",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/guzzlehttp/guzzle/src/ClientTrait.php",
-                      "line": 44,
-                      "function": "request",
-                      "class": "GuzzleHttp\\Client",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/GoogleProvider.php",
-                      "line": 50,
-                      "function": "get",
-                      "class": "GuzzleHttp\\Client",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/socialite/src/Two/AbstractProvider.php",
-                      "line": 272,
-                      "function": "getUserByToken",
-                      "class": "Laravel\\Socialite\\Two\\GoogleProvider",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/AuthController.php",
-                      "line": 629,
-                      "function": "userFromToken",
-                      "class": "Laravel\\Socialite\\Two\\AbstractProvider",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
-                      "line": 54,
-                      "function": "googleLogin",
-                      "class": "App\\Http\\Controllers\\Api\\AuthController",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
-                      "line": 43,
-                      "function": "callAction",
-                      "class": "Illuminate\\Routing\\Controller",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 259,
-                      "function": "dispatch",
-                      "class": "Illuminate\\Routing\\ControllerDispatcher",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
-                      "line": 205,
-                      "function": "runController",
-                      "class": "Illuminate\\Routing\\Route",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 798,
-                      "function": "run",
-                      "class": "Illuminate\\Routing\\Route",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 141,
-                      "function": "Illuminate\\Routing\\{closure}",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 47,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "App\\Http\\Middleware\\SetLocaleFromHeader",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php",
-                      "line": 50,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Routing\\Middleware\\SubstituteBindings",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 126,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 92,
-                      "function": "handleRequest",
-                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
-                      "line": 54,
-                      "function": "handleRequestUsingNamedLimiter",
-                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 116,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 797,
-                      "function": "then",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 776,
-                      "function": "runRouteWithinStack",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 740,
-                      "function": "runRoute",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
-                      "line": 729,
-                      "function": "dispatchToRoute",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
-                      "line": 190,
-                      "function": "dispatch",
-                      "class": "Illuminate\\Routing\\Router",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 141,
-                      "function": "Illuminate\\Foundation\\Http\\{closure}",
-                      "class": "Illuminate\\Foundation\\Http\\Kernel",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/livewire/livewire/src/DisableBrowserCache.php",
-                      "line": 19,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Livewire\\DisableBrowserCache",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php",
-                      "line": 21,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php",
-                      "line": 31,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php",
-                      "line": 21,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php",
-                      "line": 40,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\TrimStrings",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php",
-                      "line": 27,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php",
-                      "line": 86,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php",
-                      "line": 62,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Http\\Middleware\\HandleCors",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php",
-                      "line": 39,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 180,
-                      "function": "handle",
-                      "class": "Illuminate\\Http\\Middleware\\TrustProxies",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
-                      "line": 116,
-                      "function": "Illuminate\\Pipeline\\{closure}",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
-                      "line": 165,
-                      "function": "then",
-                      "class": "Illuminate\\Pipeline\\Pipeline",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
-                      "line": 134,
-                      "function": "sendRequestThroughRouter",
-                      "class": "Illuminate\\Foundation\\Http\\Kernel",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 300,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Http\\Kernel",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 288,
-                      "function": "callLaravelOrLumenRoute",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 91,
-                      "function": "makeApiCall",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 44,
-                      "function": "makeResponseCall",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 35,
-                      "function": "makeResponseCallIfConditionsPass",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 236,
-                      "function": "__invoke",
-                      "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 163,
-                      "function": "iterateThroughStrategies",
-                      "class": "Knuckles\\Scribe\\Extracting\\Extractor",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 95,
-                      "function": "fetchResponses",
-                      "class": "Knuckles\\Scribe\\Extracting\\Extractor",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php",
-                      "line": 125,
-                      "function": "processRoute",
-                      "class": "Knuckles\\Scribe\\Extracting\\Extractor",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php",
-                      "line": 72,
-                      "function": "extractEndpointsInfoFromLaravelApp",
-                      "class": "Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/GroupedEndpoints/GroupedEndpointsFromApp.php",
-                      "line": 50,
-                      "function": "extractEndpointsInfoAndWriteToDisk",
-                      "class": "Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Commands/GenerateDocumentation.php",
-                      "line": 53,
-                      "function": "get",
-                      "class": "Knuckles\\Scribe\\GroupedEndpoints\\GroupedEndpointsFromApp",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 36,
-                      "function": "handle",
-                      "class": "Knuckles\\Scribe\\Commands\\GenerateDocumentation",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Util.php",
-                      "line": 41,
-                      "function": "Illuminate\\Container\\{closure}",
-                      "class": "Illuminate\\Container\\BoundMethod",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 93,
-                      "function": "unwrapIfClosure",
-                      "class": "Illuminate\\Container\\Util",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php",
-                      "line": 35,
-                      "function": "callBoundMethod",
-                      "class": "Illuminate\\Container\\BoundMethod",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Container/Container.php",
-                      "line": 661,
-                      "function": "call",
-                      "class": "Illuminate\\Container\\BoundMethod",
-                      "type": "::"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php",
-                      "line": 183,
-                      "function": "call",
-                      "class": "Illuminate\\Container\\Container",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Command/Command.php",
-                      "line": 326,
-                      "function": "execute",
-                      "class": "Illuminate\\Console\\Command",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Command.php",
-                      "line": 152,
-                      "function": "run",
-                      "class": "Symfony\\Component\\Console\\Command\\Command",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php",
-                      "line": 1078,
-                      "function": "run",
-                      "class": "Illuminate\\Console\\Command",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php",
-                      "line": 324,
-                      "function": "doRunCommand",
-                      "class": "Symfony\\Component\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/symfony/console/Application.php",
-                      "line": 175,
-                      "function": "doRun",
-                      "class": "Symfony\\Component\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Console/Application.php",
-                      "line": 102,
-                      "function": "run",
-                      "class": "Symfony\\Component\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php",
-                      "line": 155,
-                      "function": "run",
-                      "class": "Illuminate\\Console\\Application",
-                      "type": "->"
-                  },
-                  {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/artisan",
-                      "line": 35,
-                      "function": "handle",
-                      "class": "Illuminate\\Foundation\\Console\\Kernel",
-                      "type": "->"
-                  }
-              ]
-          }
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '114'
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/login/social
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Login with Social (via Firebase Auth)'
-      description: 'Login user with Social'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
+    cleanUrlParameters:
+      id: 1
+      sku: ABC-1234
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      access_token:
-        name: access_token
-        description: 'Firebase Auth Token ().'
-        required: true
-        example: "'ey271236...'"
+      id:
+        name: id
+        description: 'This field is required when <code>sku</code> is <code>null</code>.'
+        required: false
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      sku:
+        name: sku
+        description: 'This field is required when <code>id</code> is <code>null</code>.'
+        required: false
+        example: null
         type: string
         enumValues: []
-        exampleWasSpecified: true
+        exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      access_token: "'ey271236...'"
+      id: 17
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-           "user": {
-              id: 1,
-              name: "John Smith"
-           },
-           "token": "AuthenticationTokenHere"
+          "offer": {}
           }
         headers: []
         description: success
         custom: []
-      -
-        status: 422
-        content: '{"message": "Invalid Token" ]}'
-        headers: []
-        description: 'Invalid Token'
-        custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer kP6DaVvZ8hab64e51f3cEgd'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/reset-password-send-otp
+      - GET
+    uri: api/v1/merchant/offers/nearby
     metadata:
-      groupName: Authentication
+      groupName: Merchant
       groupDescription: ''
-      subgroup: ''
+      subgroup: 'Merchant Offers'
       subgroupDescription: ''
-      title: 'Reset Password Send NEW OTP (Step 1)'
+      title: 'Get Merchant Offers Nearby'
       description: ''
-      authenticated: false
+      authenticated: true
       custom: []
     headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      category_ids:
+        name: category_ids
+        description: 'optional Merchant Category Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_offer_ids:
+        name: merchant_offer_ids
+        description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
+        required: false
+        example:
+          - natus
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City Name.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lat:
+        name: lat
+        description: 'Filter by Lat of User (must provide lng).'
+        required: true
+        example: 3.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'Filter by Lng of User (must provide lat).'
+        required: true
+        example: 101.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      available_only:
+        name: available_only
+        description: 'optional Filter by Available Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      coming_soon_only:
+        name: coming_soon_only
+        description: 'optional Filter by Coming Soon Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      except_expired:
+        name: except_expired
+        description: 'optional Get all coming soon or available only but hide expired offers.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      flash_only:
+        name: flash_only
+        description: 'optional Filter by Flash Deals Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      category_ids:
+        - 1
+        - 2
+        - 3
+      merchant_offer_ids:
+        - natus
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      available_only: true
+      coming_soon_only: true
+      except_expired: true
+      flash_only: true
+      limit: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": [],
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 8fdZ641bc36eDaavgP5VkEh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/my_bookmarks
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get My Bookmarked Merchant Offers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
       Content-Type: application/json
       Accept: application/json
     urlParameters: []
@@ -1804,116 +414,1112 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      filter: 'Filterable columns are:  id, name, description, available_at, available_until, sku'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, title, type, slug, status, published_at, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 86hZ45gVfEDbc13kad6aPev'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get Offers'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      category_ids:
+        name: category_ids
+        description: 'optional Merchant Category Ids to Filter.'
+        required: false
+        example:
+          - 1
+          - 2
+          - 3
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_offer_ids:
+        name: merchant_offer_ids
+        description: 'optional Merchant Offer Ids to Filter. Example [1,2,3]'
+        required: false
+        example:
+          - pariatur
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by City.'
+        required: false
+        example: 'Subang Jaya'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Filter by Lat of User (must provide lng).'
+        required: false
+        example: 3.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Filter by Lng of User (must provide lat).'
+        required: false
+        example: 101.123456
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Filter by Radius (in meters) if provided lat, lng.'
+        required: false
+        example: 10000
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      location_id:
+        name: location_id
+        description: 'optional Filter by Location Id.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      available_only:
+        name: available_only
+        description: 'optional Filter by Available Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      coming_soon_only:
+        name: coming_soon_only
+        description: 'optional Filter by Coming Soon Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      except_expired:
+        name: except_expired
+        description: 'optional Get all coming soon or available only but hide expired offers.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      flash_only:
+        name: flash_only
+        description: 'optional Filter by Flash Deals Only.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_id:
+        name: merchant_id
+        description: 'optional Filter by Merchant ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      store_id:
+        name: store_id
+        description: 'optional Filter by Store ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      hide_purchased:
+        name: hide_purchased
+        description: 'optional Hide Purchased Offers for current logged in user.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      category_ids:
+        - 1
+        - 2
+        - 3
+      merchant_offer_ids:
+        - pariatur
+      city: 'Subang Jaya'
+      lat: 3.123456
+      lng: 101.123456
+      radius: 10000
+      location_id: 1
+      available_only: true
+      coming_soon_only: true
+      except_expired: true
+      flash_only: true
+      merchant_id: 1
+      store_id: 1
+      hide_purchased: true
+      filter: 'Filterable columns are: id, name, description, available_at, available_until, sku'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer f4VedvahgDc3Z8a1E6bk5P6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/claim
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Claim Offer'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      offer_id:
+        name: offer_id
+        description: 'Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      payment_method:
+        name: payment_method
+        description: 'Payment Method.'
+        required: true
+        example: points/fiat
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      fiat_payment_method:
+        name: fiat_payment_method
+        description: 'required_if:payment_method,fiat Payment Method.'
+        required: false
+        example: fpx/card
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      card_id:
+        name: card_id
+        description: 'required_if:fiat_payment_method,card Card ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      quantity:
+        name: quantity
+        description: Quantity.
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      use_point_discount:
+        name: use_point_discount
+        description: 'optional Use Point(Funbox) Discount.'
+        required: false
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      points_to_use:
+        name: points_to_use
+        description: 'optional Points(Funbox) to Use.'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      wallet_type:
+        name: wallet_type
+        description: 'optional Wallet Type.'
+        required: false
+        example: TNG/FPX-CIMB
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      offer_id: 1
+      payment_method: points/fiat
+      fiat_payment_method: fpx/card
+      card_id: 1
+      quantity: 1
+      use_point_discount: true
+      points_to_use: 2
+      wallet_type: TNG/FPX-CIMB
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Offer Claimed"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Insufficient Point Balance"
+          }
+        headers: []
+        description: insufficient_point_balance
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redirect to gateway",
+          "gateway_data": [
+               'url' => $this->url .'/payment/eCommerce',
+                'secureHash' => $this->generateHashForRequest($this->mid, $invoice_no, $amount),
+                'mid' => $this->mid,
+                'invno' => $invoice_no,
+                'capture_amt' => $amount,
+                'desc' => $desc,
+                'postURL' => $redirectUrl,
+                'phone' => $phoneNo,
+                'email' => $email,
+                'param' => $param,
+                'authorize' => 'authorize'
+            ];
+          }
+        headers: []
+        description: fiat_payment_mode
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Offer is no longer valid"
+          }
+        headers: []
+        description: offer_no_longer_valid
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer Zcv84bVaa3DEgef6561dkPh'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/redeem
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: |-
+        Redeem a Merchant Offer (In-Store)
+        This is when customer with claimed merchant offer wishes to redeem in store
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      claim_id:
+        name: claim_id
+        description: 'Claim ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offer_id:
+        name: offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      quantity:
+        name: quantity
+        description: 'Quantity to Redeem.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      redeem_code:
+        name: redeem_code
+        description: 'Redemption Code Provided by Merchant.'
+        required: true
+        example: '123456'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      claim_id: 1
+      offer_id: 1
+      quantity: 1
+      redeem_code: '123456'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Redeemed successfully",
+          "offer": {
+          }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer b56fEVP4c18Da6Zvdheagk3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant/offers/cancel
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Cancel a Merchant Offer Transaction'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      merchant_offer_id:
+        name: merchant_offer_id
+        description: 'Merchant Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      merchant_offer_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Transaction cancelled"
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+          "message": "You have not claimed this offer"
+          }
+        headers: []
+        description: offer_pending_payment_not_found
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bf616cahEV4DPk3Zd8a5gev'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/my_claimed_offers
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get My Merchant Offers (Logged in User)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      is_redeemed:
+        name: is_redeemed
+        description: 'optional Filter by Redeemed.'
+        required: false
+        example: 0.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_expired:
+        name: is_expired
+        description: 'optional Filter by Expired.'
+        required: false
+        example: 0.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      claim_id:
+        name: claim_id
+        description: 'optional Filter by Claim ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      is_redeemed: 0.0
+      is_expired: 0.0
+      claim_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V3h154Pa6ZvEgecdDba6kf8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant/offers/last_purchase
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get Last Purchase Date of user on a Merchant User'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      merchant_user_id:
+        name: merchant_user_id
+        description: 'Merchant User ID(merchant->user->id).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      merchant_user_id: 1
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "last_purchase_offer_id": 1,
+          "last_purchase_date": "2023-08-01 12:00:00"
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ka4DbP3v8chZefV6E6a5g1d'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchant/offers/{offer_id}'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offers'
+      subgroupDescription: ''
+      title: 'Get Offer By ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The ID of the offer.'
+        required: true
+        example: id
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      offer_id: id
+    queryParameters:
+      offer_id:
+        name: offer_id
+        description: 'Offer ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      offer_id: 1
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "offer": {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D3abeg8164acvVhZEP5f6kd'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchants
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchants'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      search:
+        name: search
+        description: 'optional Search by business name.'
+        required: false
+        example: 'business name'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      categories_id:
+        name: categories_id
+        description: 'optional Search by categories id.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant_ids:
+        name: merchant_ids
+        description: 'optional Search by merchant ids.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      store_ids:
+        name: store_ids
+        description: 'optional Search by store ids.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Limit the number of results.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      search: 'business name'
+      categories_id: '1,2,3'
+      merchant_ids: '1,2,3'
+      store_ids: '1,2,3'
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer a81DkvePgbV656aE3d4hfcZ'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchants/crm
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Merchant CRM Record'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      brand_name:
+        name: brand_name
+        description: 'Brand Name.'
+        required: true
+        example: ABC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      pic_name:
+        name: pic_name
+        description: 'PIC Name.'
+        required: true
+        example: 'John Doe'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      postcode:
+        name: postcode
+        description: Postcode.
+        required: true
+        example: '47530'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
       phone_no:
         name: phone_no
-        description: 'The phone no of the user.'
+        description: 'Phone Number.'
         required: true
         example: '0123456789'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
+        custom: []
+      address:
+        name: address
+        description: 'optional Address.'
+        required: false
+        example: '123, Jalan ABC'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      remarks:
+        name: remarks
+        description: 'optional Remarks(Refer By).'
+        required: false
+        example: KOC
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
+      brand_name: ABC
+      pic_name: 'John Doe'
+      postcode: '47530'
       phone_no: '0123456789'
+      address: '123, Jalan ABC'
+      remarks: KOC
     fileParameters: []
     responses:
       -
         status: 200
         content: |-
           {
-          "status": "success",
-          "message": "OTP sent successfully"
+          "message": "Created Merchant Contact"
           }
         headers: []
         description: success
         custom: []
     responseFields: []
-    auth: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer D4Z8bgek3vfVPa65haEdc16'
     controller: null
     method: null
     route: null
     custom: []
   -
     httpMethods:
-      - POST
-    uri: api/v1/reset-password
+      - GET
+    uri: api/v1/merchants/rating_categories
     metadata:
-      groupName: Authentication
+      groupName: Merchant
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Reset Password with OTP (Step 2)'
+      title: 'Get Merchant Rating Categories'
       description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      phone_no:
-        name: phone_no
-        description: 'The phone no of the user.'
-        required: true
-        example: '0123456789'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      new_password:
-        name: new_password
-        description: 'The new password of the user.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-      otp:
-        name: otp
-        description: 'The otp of the user.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      phone_no: '0123456789'
-      new_password: '123456'
-      otp: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-          "status": "success",
-          "message": "Password reset successfully"
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/logout
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: Logout
-      description: 'Log User Out and destroy any active tokens of user'
       authenticated: true
       custom: []
     headers:
@@ -1930,21 +1536,284 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"message" : "Logged Out"}'
+        content: |-
+          {
+          data: []
+          }
         headers: []
         description: success
-        custom: []
-      -
-        status: 401
-        content: '{"message": "Access Denied"}'
-        headers: []
-        description: 'Access Denied'
         custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 1Pad85hZ3bE6ca4ekg6VDvf'
+      - 'Bearer 1gb6kf86h3cD5daaeVEP4Zv'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchants/nearby
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Get Nearby Merchants
+        Will lookup based on user provided lat,lng and search for merchant stores near user
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      lat:
+        name: lat
+        description: Latitude.
+        required: true
+        example: '3.1390'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: Longitude.
+        required: true
+        example: '101.6869'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Radius in km.'
+        required: false
+        example: '10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'optional Limit the number of results.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      lat: '3.1390'
+      lng: '101.6869'
+      radius: '10'
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer bc4fZ6vkh3DgEd5ea1P6Va8'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchants/{merchant_id}/locations'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Location by Merchant ID'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'Merchant ID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer vD6d6bEPa4Vh5Zekg8cf31a'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchants/{merchant_id}/ratings'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchant Ratings'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'optional Only load specific merchant ratings.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      merchant:
+        name: merchant
+        description: 'Merchant ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      only_mine:
+        name: only_mine
+        description: 'boolean optional Only show my ratings.'
+        required: false
+        example: 'true'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      user_id:
+        name: user_id
+        description: 'optional Only load specific user ratings.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, rating, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+      merchant: '1'
+      only_mine: 'true'
+      user_id: 1
+      sort: 'Sortable columns are: id, rating, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer fdVZabgc5416avP83DkheE6'
     controller: null
     method: null
     route: null
@@ -1952,14 +1821,508 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/v1/user/complete-profile
+    uri: 'api/v1/merchants/{merchant_id}/ratings'
     metadata:
-      groupName: Authentication
+      groupName: Merchant
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Complete Profile'
-      description: 'Complete user profile after registration'
+      title: 'Rate a Merchant'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'The ID of the merchant.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      merchant:
+        name: merchant
+        description: 'Merchant ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+      merchant: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      rating:
+        name: rating
+        description: Rating.
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      comment:
+        name: comment
+        description: 'optional Comment.'
+        required: false
+        example: 'Good service'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        custom: []
+      rating_category_ids:
+        name: rating_category_ids
+        description: 'optional Rating Category IDs.'
+        required: false
+        example: '1,2,3'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      rating: 5
+      comment: 'Good service'
+      rating_category_ids: '1,2,3'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          data: {}
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer hPegVZ8E14ad6fDcvakb635'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchants/{merchant_id}/menus'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Merchant Menus'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      merchant_id:
+        name: merchant_id
+        description: 'The ID of the merchant.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      merchant:
+        name: merchant
+        description: 'Merchant ID.'
+        required: true
+        example: '1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      merchant_id: 1
+      merchant: '1'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          [
+          'https://example.com/menu1.pdf',
+          'https://example.com/menu2.pdf',
+          'https://example.com/menu3.pdf',
+          ]
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer DaZg6Pdb4v8f5VEe6hck1a3'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant_offer_categories
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Offer Categories'
+      subgroupDescription: ''
+      title: 'Get All Merchant Offer Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      is_featured:
+        name: is_featured
+        description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      is_active:
+        name: is_active
+        description: 'Is Active Categories.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lat:
+        name: lat
+        description: Latitude.
+        required: false
+        example: 3.139
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: Longitude.
+        required: false
+        example: 101.6869
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      id:
+        name: id
+        description: 'Get subcategories of a specific parent category by its ID.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      is_featured: 1
+      is_active: 0
+      lat: 3.139
+      lng: 101.6869
+      id: 1
+    bodyParameters:
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      limit: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer v35bfe84DdkcaPa6gEZh16V'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/merchant_categories
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Categories'
+      subgroupDescription: ''
+      title: 'Get popular Merchant Categories'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      is_featured:
+        name: is_featured
+        description: 'Is Featured Categories.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      has_offers:
+        name: has_offers
+        description: 'Check if category has published offers.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      has_stores:
+        name: has_stores
+        description: 'Check if category has linked to stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      has_store_offers:
+        name: has_store_offers
+        description: 'Check if category has linked to offers with listed stores.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter:
+        name: filter
+        description: 'Column to Filter.'
+        required: false
+        example: 'Filterable columns are: id, name, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      filter_value:
+        name: filter_value
+        description: 'Value to Filter.'
+        required: false
+        example: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      sort:
+        name: sort
+        description: 'Column to Sort.'
+        required: false
+        example: 'Sortable columns are: id, name, created_at, updated_at'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      order:
+        name: order
+        description: 'Direction to Sort.'
+        required: false
+        example: 'Sortable directions are: asc, desc'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      limit:
+        name: limit
+        description: 'Per Page Limit Override.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      offset:
+        name: offset
+        description: 'Offset Override.'
+        required: false
+        example: 0
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      is_featured: 1
+      has_offers: 1
+      has_stores: 1
+      has_store_offers: 1
+      filter: 'Filterable columns are: id, name, created_at, updated_at'
+      filter_value: 'Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10'
+      sort: 'Sortable columns are: id, name, created_at, updated_at'
+      order: 'Sortable directions are: asc, desc'
+      limit: 10
+      offset: 0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer de6kbE58cVgD1f4a3avhZ6P'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/v1/merchant_categories/{offer_id}'
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Categories'
+      subgroupDescription: ''
+      title: 'Get Merchant Categories by offer id'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      offer_id:
+        name: offer_id
+        description: 'The id of the merchant offer id.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      offer_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "categories": []
+          }
+        headers: []
+        description: success
+        custom: []
+      -
+        status: 404
+        content: ''
+        headers: []
+        description: 'Not Found'
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer V1dcbageh683kfZDP4E5va6'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/merchant-contact
+    metadata:
+      groupName: Merchant
+      groupDescription: ''
+      subgroup: 'Merchant Contact'
+      subgroupDescription: ''
+      title: 'Submit Merchant Contact Information'
+      description: 'Allows users to submit merchant contact information via the API.'
       authenticated: true
       custom: []
     headers:
@@ -1973,172 +2336,126 @@ endpoints:
     bodyParameters:
       name:
         name: name
-        description: 'The name of the use.'
+        description: 'The name of the contact person.'
         required: true
-        example: 'John Smith'
+        example: 'Alex Koh'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
       email:
         name: email
-        description: 'The email of the user(email verificatioin will be sent).'
+        description: 'The email address of the contact person.'
         required: true
-        example: john@example.com
+        example: alex@funhub.my
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: false
         custom: []
-      password:
-        name: password
-        description: 'The password of the user(social login do not need to provide).'
+      tel_no:
+        name: tel_no
+        description: 'The telephone number of the contact person.'
+        required: true
+        example: '182036794'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      company_name:
+        name: company_name
+        description: 'The name of the company.'
+        required: true
+        example: 'Funhub TV'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      business_type:
+        name: business_type
+        description: 'The type of the business.'
+        required: true
+        example: others
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      other_business_type:
+        name: other_business_type
+        description: 'required_if:business_type,others The type of the business.'
         required: false
-        example: abcd1234
+        example: 'IT Consult'
         type: string
         enumValues: []
         exampleWasSpecified: true
+        nullable: true
+        custom: []
+      message_type:
+        name: message_type
+        description: 'The category of the message.'
+        required: true
+        example: 'General Inquiry'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      message:
+        name: message
+        description: 'The message or remarks.'
+        required: true
+        example: 'This is a sample message.'
+        type: text
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
         custom: []
     cleanBodyParameters:
-      name: 'John Smith'
-      email: john@example.com
-      password: abcd1234
+      name: 'Alex Koh'
+      email: alex@funhub.my
+      tel_no: '182036794'
+      company_name: 'Funhub TV'
+      business_type: others
+      other_business_type: 'IT Consult'
+      message_type: 'General Inquiry'
+      message: 'This is a sample message.'
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"message" : "Profile Updated"}'
+        content: |-
+          {
+          "message": "Merchant contact information submitted successfully"
+          }
         headers: []
         description: success
         custom: []
       -
-        status: 401
-        content: '{"message": "Unauthenticated."}'
-        headers: []
-        description: Unauthenticated
-        custom: []
-      -
         status: 422
-        content: '{"errors": ["name": ["The Name field is required."], "email": ["The Email field is required."] ]}'
+        content: |-
+          {
+          "errors": {
+              "name": ["The Name field is required."],
+              "email": ["The Email field must be a valid email address."],
+              "tel_no": ["The Phone Number field is required."],
+              "company_name": ["The Company Name field is required."],
+              "business_type": ["The Business Type field is required."],
+              "message_type": ["The Message Category field is required."],
+              "message": ["The Message field is required."]
+              }
+          }
         headers: []
         description: 'Invalid Form Fields'
         custom: []
-      -
-        status: 422
-        content: '{"message": "Please verify your phone number first" ]}'
-        headers: []
-        description: 'Invalid Form Fields'
-        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer bP16hdf5Zkg4c8aE3a6DveV'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/send-email-verification
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Send Verification Email with Token Inside'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      email:
-        name: email
-        description: 'You can pass in email address here if user decide to change it again.'
-        required: true
-        example: john@example.com
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      email: john@example.com
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"message" : "Verification Email Sent"}'
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer dPeh3Z8bDcvg6aV56fk14Ea'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
-    uri: api/v1/user/verify-email
-    metadata:
-      groupName: Authentication
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Verify Email with Token'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      token:
-        name: token
-        description: 'The email verification token.'
-        required: true
-        example: '123456'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        custom: []
-    cleanBodyParameters:
-      token: '123456'
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"message" : "Email Verified"}'
-        headers: []
-        description: success
-        custom: []
-      -
-        status: 422
-        content: '{"message": "Invalid Token" ]}'
-        headers: []
-        description: 'Invalid Token'
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer vdegb4Ekca61fP3568ZahDV'
+      - 'Bearer fh5age6kZD68vdVE3acP1b4'
     controller: null
     method: null
     route: null

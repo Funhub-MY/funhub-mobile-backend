@@ -175,11 +175,6 @@ class SignatureV4
             . $signedHeadersString . "\n"
             . $payload;
 
-        Log::info('Canonicalized Request', [
-            'creq' => $canon,
-            'headers' => $signedHeadersString
-        ]);
-
         return ['creq' => $canon, 'headers' => $signedHeadersString];
     }
 
