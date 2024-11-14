@@ -10,6 +10,7 @@ use App\Models\FollowRequest;
 use App\Models\User;
 use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserFollowingController extends Controller
 {
@@ -187,11 +188,7 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-//        $query = $user->followers()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
-		$query = $user->followers()
-			->select('users.*') // Select only from users table to avoid duplicate columns
-			->where('users.status', User::STATUS_ACTIVE)
-			->orderBy('users_followings.created_at', 'desc');
+        $query = $user->followers()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
 
         if ($request->has('query')) {
             $query->where('users.name', 'like', '%' . $request->input('query') . '%');
@@ -227,11 +224,8 @@ class UserFollowingController extends Controller
             ], 404);
         }
 
-//        $query = $user->followings()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
-		$query = $user->followings()
-			->select('users.*') // Select only from users table to avoid duplicate columns
-			->where('users.status', User::STATUS_ACTIVE)
-			->orderBy('users_followings.created_at', 'desc');
+        $query = $user->followings()->where('status', User::STATUS_ACTIVE)->orderBy('users_followings.created_at', 'desc')->distinct();
+
         if ($request->has('query')) {
             $query->where('users.name', 'like', '%' . $request->input('query') . '%');
         }
