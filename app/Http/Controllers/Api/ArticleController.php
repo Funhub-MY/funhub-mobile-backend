@@ -479,10 +479,10 @@ class ArticleController extends Controller
      * @param Request $request
      * @return QueryBuilder
      */
-    public function articleQueryBuilder($query, $request) {
+    public function articleQueryBuilder($query, $request, $hasUser = true) {
         $query->published();
 
-        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+        if ($hasUser && (!$request->has('include_own_article') || $request->include_own_article == 0)) {
             // default to exclude own article
             $query->where('user_id', '!=', auth()->user()->id);
             // else it will also include own article
@@ -1753,7 +1753,7 @@ class ArticleController extends Controller
             ->where('visibility', Article::VISIBILITY_PUBLIC);
 
         // pass to query builder
-        $data = $this->articleQueryBuilder($query, $request);
+        $data = $this->articleQueryBuilder($query, $request, false);
         $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return PublicArticleResource::collection($data);
