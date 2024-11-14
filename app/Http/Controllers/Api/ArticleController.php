@@ -1788,9 +1788,8 @@ class ArticleController extends Controller
                 } else {
                     $query->where('slug', $request->slug);
                 }
-            });
-
-        $article->with('user', 'media', 'location', 'location.ratings')
+            })
+            ->with('user', 'media', 'location', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
             // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
@@ -1798,7 +1797,8 @@ class ArticleController extends Controller
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
                 });
-            }])->first();
+            }])
+            ->first();
 
         return response()->json([
             'article' => new PublicArticleResource($article)
