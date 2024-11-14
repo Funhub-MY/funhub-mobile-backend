@@ -1798,7 +1798,7 @@ class ArticleController extends Controller
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
                 });
-            }]);
+            }])->first();
 
         return response()->json([
             'article' => new PublicArticleResource($article)
