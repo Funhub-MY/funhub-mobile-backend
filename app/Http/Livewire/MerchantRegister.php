@@ -102,17 +102,15 @@ class MerchantRegister extends Component implements HasForms
         $password = Str::random(8);
 
         try {
-            if (isset($data['business_phone_no']) && $data['business_phone_no'] != null) {
-                // check if this business has registered with phone_no already
+            // ensure no leading zero
+            $data['business_phone_no'] = ltrim($data['business_phone_no'], '0');
 
-                // auto linked
-                $user = User::where('phone_no', $data['business_phone_no'])
-                    ->where('phone_country_code', $data['phone_country_code'])
-                    ->first();
+            $user = User::where('phone_no', $data['business_phone_no'])
+                ->where('phone_country_code', $data['phone_country_code'])
+                ->first();
 
-                if ($user) {
-                    $hasAutoLinkedUser = true;
-                }
+            if ($user) {
+                $hasAutoLinkedUser = true;
             }
 
             if (!$user) {
