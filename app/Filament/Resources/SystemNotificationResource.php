@@ -314,14 +314,8 @@ class SystemNotificationResource extends Resource
 							->multiple()
 							->searchable()
 							->relationship('users', 'username')
-							->options(function () {
-								// Only shows users who are not yet assigned
-								$assignedUserIds = DB::table('system_notifications_users')->pluck('user_id');
-
-								return User::whereNotIn('id', $assignedUserIds)
-									->pluck('username', 'id')
-									->toArray();
-							})							->placeholder('Enter username or select by user status')
+                            ->options(User::pluck('username', 'id')->toArray())
+							->placeholder('Enter username or select by user status')
 							->hidden(fn (Closure $get) => $get('all_active_users') === true)
 							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below')
 							->rules([
