@@ -6,6 +6,7 @@ use App\Models\MerchantOfferClaimRedemptions;
 use App\Models\StoreRating;
 use App\Notifications\RedeemReview;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
 class SendRedeemReviewReminder extends Command
@@ -21,6 +22,7 @@ class SendRedeemReviewReminder extends Command
 //		    ->whereNull('reminder_sent_at')
 		    ->get();
 
+		Log::info('[SendRedeemReviewReminder] Current locale: ' . App::getLocale());
         Log::info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
         $this->info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
 
@@ -49,6 +51,7 @@ class SendRedeemReviewReminder extends Command
 
             if (!$hasReviewedAnyStore) {
 				$storeIds = $stores->pluck('id')->toArray();  // Extract store IDs into an array
+				Log::info('[SendRedeemReviewReminder] Current locale 2: ' . App::getLocale());
 				Log::info('[SendRedeemReviewReminder] List of stores for user notification', [
 					'user_id' => $user->id,
 					'store_ids' => $storeIds,
@@ -58,7 +61,8 @@ class SendRedeemReviewReminder extends Command
 						'user_id' => $user->id,
 						'store_id' => $store->id,
 					]);
-                    // Send the RedeemReview notification to the user
+					Log::info('[SendRedeemReviewReminder] Current locale 3: ' . App::getLocale());
+					// Send the RedeemReview notification to the user
                     $user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
                     Log::info('[SendRedeemReviewReminder] User Redeemed from Store: ' . $store->id . ' and Notified to remind for review', [
                         'user_id' => $user->id,
