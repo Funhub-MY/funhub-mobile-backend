@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "FUNHUB",
-        "_postman_id": "a0f07a75-f22a-4329-a715-95995d1a88b3",
+        "_postman_id": "3ef5d00d-1a4a-4194-9253-e902357163ba",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -95,7 +95,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":8,\"slug\":\"et\"}"
+                            "raw": "{\"id\":5,\"slug\":\"totam\"}"
                         },
                         "description": ""
                     },
@@ -378,7 +378,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"article_id\":1,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"sit\",\"violation_level\":\"beatae\",\"article\":1}"
+                                    "raw": "{\"article_id\":4,\"reason\":\"Spam     * @bodyParam violation_type required The violation type of this report\",\"violation_type\":\"nihil\",\"violation_level\":\"magni\",\"article\":1}"
                                 },
                                 "description": ""
                             },
@@ -543,7 +543,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"sit\"]}"
+                            "raw": "{\"article_ids\":[\"iure\"]}"
                         },
                         "description": ""
                     },
@@ -584,7 +584,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"quibusdam\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"odio\"],\"category_ids\":[1,2,3],\"video_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"include_own_article\":1,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -627,7 +627,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"keyword_id\":5}"
+                            "raw": "{\"keyword_id\":14}"
                         },
                         "description": ""
                     },
@@ -697,7 +697,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"article_ids\":[\"ullam\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"store_id\":1,\"include_own_article\":1,\"disable_home_conditions\":true,\"pinned_only\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
+                            "raw": "{\"article_ids\":[\"tenetur\"],\"category_ids\":[1,2,3],\"video_only\":1,\"following_only\":1,\"tag_ids\":[1,2,3],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"store_id\":1,\"include_own_article\":1,\"disable_home_conditions\":true,\"pinned_only\":1,\"build_recommendations\":true,\"refresh_recommendations\":true,\"limit\":10}"
                         },
                         "description": ""
                     },
@@ -1261,7 +1261,7 @@
                                         {
                                             "id": "comment_id",
                                             "key": "comment_id",
-                                            "value": "excepturi",
+                                            "value": "fuga",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -1361,7 +1361,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"consequatur\",\"violation_type\":\"commodi\"}"
+                                    "raw": "{\"comment_id\":1,\"reason\":\"Spam\",\"violation_level\":\"voluptates\",\"violation_type\":\"sed\"}"
                                 },
                                 "description": ""
                             },
@@ -1526,7 +1526,7 @@
                                         {
                                             "id": "id",
                                             "key": "id",
-                                            "value": "eum",
+                                            "value": "modi",
                                             "description": "The ID of the comment."
                                         }
                                     ]
@@ -2496,7 +2496,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"mcummings@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
+                            "raw": "{\"campaign_id\":1,\"name\":\"John Doe\",\"email\":\"mraz.kathleen@example.net\",\"phone\":\"0123456789\",\"ic\":\"123456789012\",\"address\":\"123, Jalan ABC, 12345, Kuala Lumpur\"}"
                         },
                         "description": ""
                     },
@@ -2572,7 +2572,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"username\":\"ab\"}"
+                            "raw": "{\"username\":\"consectetur\"}"
                         },
                         "description": ""
                     },
@@ -2628,7 +2628,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"dolorum\"}"
+                            "raw": "{\"share_code\":\"harum\"}"
                         },
                         "description": ""
                     },
@@ -2684,7 +2684,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"velit\"}"
+                            "raw": "{\"share_code\":\"alias\"}"
                         },
                         "description": ""
                     },
@@ -2740,7 +2740,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"share_code\":\"labore\"}"
+                            "raw": "{\"share_code\":\"dolor\"}"
                         },
                         "description": ""
                     },
@@ -2925,7 +2925,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"supportable\":\"article\",\"supportable_id\":2,\"category_id\":1,\"title\":\"My support request\",\"message\":\"This is my message\",\"media_ids\":[1,2,3]}"
+                                    "raw": "{\"supportable\":\"article\",\"supportable_id\":18,\"category_id\":1,\"title\":\"My support request\",\"message\":\"This is my message\",\"media_ids\":[1,2,3]}"
                                 },
                                 "description": ""
                             },
@@ -3444,7 +3444,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_ids\":[\"itaque\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                            "raw": "{\"location_ids\":[\"magnam\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
                         },
                         "description": ""
                     },
@@ -3479,7 +3479,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_ids\":[\"et\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
+                            "raw": "{\"location_ids\":[\"rem\"],\"name\":\"\\\"KFC SS15\\\"\",\"state_id\":1,\"country_id\":1,\"city\":\"\\\"Subang Jaya\\\"\",\"lat\":3.073065,\"lng\":101.607787,\"radius\":10}"
                         },
                         "description": ""
                     },
@@ -3767,7 +3767,7 @@
                                 }
                             ],
                             "code": 200,
-                            "body": "{\"data\":[{\"id\":3,\"sku\":\"TEST123456\",\"merchant_id\":1,\"store\":{\"id\":null,\"name\":null},\"stores\":[],\"logo\":null,\"merchant\":{\"id\":1,\"logo\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/20150\\\/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg\",\"brand_name\":null,\"business_name\":\"Nedex Solutions\",\"business_phone_no\":\"0171234567\",\"user\":{\"id\":87,\"name\":\" Steven Test\"}},\"name\":\"test again\",\"is_flash\":0,\"description\":\"test\",\"fine_print\":null,\"redemption_policy\":null,\"cancellation_policy\":null,\"point_cost\":1,\"point_fiat_price\":22,\"discounted_point_fiat_price\":10,\"fiat_price\":22,\"discounted_fiat_price\":6,\"default_purchase_method\":\"point\",\"available_at\":\"2024-03-20 00:00:00\",\"available_until\":\"2024-10-19 00:00:00\",\"expiry_days\":20,\"quantity\":21,\"media\":[{\"name\":\"example\",\"file_name\":\"vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"90be8469-f320-41d6-bb88-11db160600e3\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8114\\\/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397},{\"name\":\"example\",\"file_name\":\"XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"da2d3022-3165-4414-9641-e53f1867500f\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8115\\\/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397}],\"horizontal_banner\":{\"name\":\"example\",\"file_name\":\"XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"da2d3022-3165-4414-9641-e53f1867500f\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8115\\\/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397},\"vertical_banner\":{\"name\":\"example\",\"file_name\":\"vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"90be8469-f320-41d6-bb88-11db160600e3\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8114\\\/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397},\"interactions\":[{\"id\":229,\"user\":{\"id\":43,\"name\":\"Steven Yew\",\"avatar\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/9271\\\/image_cropper_1701231380518.jpg\"},\"type\":4,\"created_at\":\"2023-08-10T07:11:02.000000Z\",\"updated_at\":\"2023-08-10T07:11:02.000000Z\",\"share_url\":null,\"created_at_diff\":\"1 year ago\",\"updated_at_diff\":\"1 year ago\"}],\"location\":{\"id\":2,\"name\":\"Damen Subang by KL Short Stay\",\"address\":\"Subang Jaya, Subang Jaya, Selangor, Malaysia\",\"lat\":3.0585253,\"lng\":101.5926696,\"rated_count\":1},\"count\":{\"likes\":0,\"share\":0,\"bookmarks\":1,\"views\":0},\"categories\":[{\"id\":2,\"name\":\"Leisure\",\"slug\":\"fun\",\"parent_id\":null,\"description\":null,\"created_at\":\"2023-05-07T20:44:53.000000Z\",\"updated_at\":\"2024-05-08T02:50:30.000000Z\"}],\"created_at\":\"2023-10-19T07:43:16.000000Z\",\"updated_at\":\"2024-11-13T04:10:01.000000Z\",\"created_at_diff\":\"1 year ago\",\"updated_at_diff\":\"1 day ago\"}],\"links\":{\"first\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers?page=1\",\"last\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers?page=1\",\"prev\":null,\"next\":null},\"meta\":{\"current_page\":1,\"from\":1,\"last_page\":1,\"links\":[{\"url\":null,\"label\":\"&laquo; Previous\",\"active\":false},{\"url\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers?page=1\",\"label\":\"1\",\"active\":true},{\"url\":null,\"label\":\"Next &raquo;\",\"active\":false}],\"path\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers\",\"per_page\":10,\"to\":1,\"total\":1}}",
+                            "body": "{\"data\":[{\"id\":3,\"sku\":\"TEST123456\",\"merchant_id\":1,\"store\":{\"id\":null,\"name\":null},\"stores\":[],\"logo\":null,\"merchant\":{\"id\":1,\"logo\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/20150\\\/hAh065E03vaBwPUs0wHSdrLtCEOYXF-metaYXBwX2ljb25fYmV0YS5qcGc%3D-.jpg\",\"brand_name\":null,\"business_name\":\"Nedex Solutions\",\"business_phone_no\":\"0171234567\",\"user\":{\"id\":87,\"name\":\" Steven Test\"}},\"name\":\"test again\",\"is_flash\":0,\"description\":\"test\",\"fine_print\":null,\"redemption_policy\":null,\"cancellation_policy\":null,\"point_cost\":1,\"point_fiat_price\":22,\"discounted_point_fiat_price\":10,\"fiat_price\":22,\"discounted_fiat_price\":6,\"default_purchase_method\":\"point\",\"available_at\":\"2024-03-20 00:00:00\",\"available_until\":\"2024-10-19 00:00:00\",\"expiry_days\":20,\"quantity\":21,\"media\":[{\"name\":\"example\",\"file_name\":\"vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"90be8469-f320-41d6-bb88-11db160600e3\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8114\\\/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397},{\"name\":\"example\",\"file_name\":\"XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"da2d3022-3165-4414-9641-e53f1867500f\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8115\\\/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397}],\"horizontal_banner\":{\"name\":\"example\",\"file_name\":\"XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"da2d3022-3165-4414-9641-e53f1867500f\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8115\\\/XhpO4dJBZubt9PI76yEDwwfcL0dX1v-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397},\"vertical_banner\":{\"name\":\"example\",\"file_name\":\"vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc=-.png\",\"uuid\":\"90be8469-f320-41d6-bb88-11db160600e3\",\"original_url\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/8114\\\/vyM1RHekbMRSlu9V1WHNwSxx6TaBdm-metaZXhhbXBsZS5wbmc%3D-.png\",\"order\":null,\"custom_properties\":{\"width\":1566,\"height\":530,\"is_cover\":false},\"extension\":\"png\",\"size\":505397},\"interactions\":[{\"id\":229,\"user\":{\"id\":43,\"name\":\"Steven Yew\",\"avatar\":\"https:\\\/\\\/funhub-dev.s3.ap-southeast-1.amazonaws.com\\\/9271\\\/image_cropper_1701231380518.jpg\"},\"type\":4,\"created_at\":\"2023-08-10T07:11:02.000000Z\",\"updated_at\":\"2023-08-10T07:11:02.000000Z\",\"share_url\":null,\"created_at_diff\":\"1 year ago\",\"updated_at_diff\":\"1 year ago\"}],\"location\":{\"id\":2,\"name\":\"Damen Subang by KL Short Stay\",\"address\":\"Subang Jaya, Subang Jaya, Selangor, Malaysia\",\"lat\":3.0585253,\"lng\":101.5926696,\"rated_count\":1},\"count\":{\"likes\":0,\"share\":0,\"bookmarks\":1,\"views\":0},\"categories\":[{\"id\":2,\"name\":\"Leisure\",\"slug\":\"fun\",\"parent_id\":null,\"description\":null,\"created_at\":\"2023-05-07T20:44:53.000000Z\",\"updated_at\":\"2024-05-08T02:50:30.000000Z\"}],\"created_at\":\"2023-10-19T07:43:16.000000Z\",\"updated_at\":\"2024-11-13T04:10:01.000000Z\",\"created_at_diff\":\"1 year ago\",\"updated_at_diff\":\"2 days ago\"}],\"links\":{\"first\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers?page=1\",\"last\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers?page=1\",\"prev\":null,\"next\":null},\"meta\":{\"current_page\":1,\"from\":1,\"last_page\":1,\"links\":[{\"url\":null,\"label\":\"&laquo; Previous\",\"active\":false},{\"url\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers?page=1\",\"label\":\"1\",\"active\":true},{\"url\":null,\"label\":\"Next &raquo;\",\"active\":false}],\"path\":\"https:\\\/\\\/funhub-mobile-backend.test\\\/api\\\/v1\\\/public_offers\",\"per_page\":10,\"to\":1,\"total\":1}}",
                             "name": ""
                         }
                     ]
@@ -3808,7 +3808,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":1}"
+                            "raw": "{\"id\":15}"
                         },
                         "description": ""
                     },
@@ -3852,7 +3852,7 @@
                                         },
                                         {
                                             "key": "merchant_offer_ids[0]",
-                                            "value": "dicta",
+                                            "value": "at",
                                             "description": "optional Merchant Offer Ids to Filter. Example [1,2,3]",
                                             "disabled": false
                                         },
@@ -3911,7 +3911,7 @@
                                             "disabled": false
                                         }
                                     ],
-                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=dicta&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
+                                    "raw": "{{baseUrl}}\/api\/v1\/merchant\/offers\/nearby?category_ids[0]=1&category_ids[1]=2&category_ids[2]=3&merchant_offer_ids[0]=at&city=Subang+Jaya&lat=3.123456&lng=101.123456&radius=10000&available_only=1&coming_soon_only=1&except_expired=1&flash_only=1&limit=10"
                                 },
                                 "method": "GET",
                                 "header": [
@@ -3993,7 +3993,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"maxime\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"store_id\":1,\"hide_purchased\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
+                                    "raw": "{\"category_ids\":[1,2,3],\"merchant_offer_ids\":[\"quo\"],\"city\":\"Subang Jaya\",\"lat\":3.123456,\"lng\":101.123456,\"radius\":10000,\"location_id\":1,\"available_only\":true,\"coming_soon_only\":true,\"except_expired\":true,\"flash_only\":true,\"merchant_id\":1,\"store_id\":1,\"hide_purchased\":true,\"filter\":\"Filterable columns are: id, name, description, available_at, available_until, sku\",\"filter_value\":\"Filterable values are: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10\",\"sort\":\"Sortable columns are: id, name, description, available_at, available_until, sku, created_at, updated_at\",\"order\":\"Sortable directions are: asc, desc\",\"limit\":10,\"offset\":0}"
                                 },
                                 "description": ""
                             },
@@ -4241,7 +4241,7 @@
                                         {
                                             "id": "offer_id",
                                             "key": "offer_id",
-                                            "value": "animi",
+                                            "value": "ratione",
                                             "description": "The ID of the offer."
                                         }
                                     ]
@@ -5547,6 +5547,38 @@
             "description": "",
             "item": [
                 {
+                    "name": "Get Products for Sale (Gift Cards)",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/products",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/products"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": ""
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\n\"current_page\": 1,\n\"data\": []\n}",
+                            "name": "success"
+                        }
+                    ]
+                },
+                {
                     "name": "Product Rewards",
                     "description": "",
                     "item": [
@@ -5810,7 +5842,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"store_ids\":\"quasi\"}"
+                            "raw": "{\"store_ids\":\"sed\"}"
                         },
                         "description": ""
                     },
@@ -5885,7 +5917,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"store_ids\":\"atque\"}"
+                            "raw": "{\"store_ids\":\"ea\"}"
                         },
                         "description": ""
                     },
@@ -5928,7 +5960,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"location_id\":\"in\"}"
+                            "raw": "{\"location_id\":\"minima\"}"
                         },
                         "description": ""
                     },
@@ -6459,7 +6491,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":17}"
+                                    "raw": "{\"user_id\":16}"
                                 },
                                 "description": ""
                             },
@@ -6506,7 +6538,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":3}"
+                                    "raw": "{\"user_id\":8}"
                                 },
                                 "description": ""
                             },
@@ -6547,7 +6579,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":10}"
                                 },
                                 "description": ""
                             },
@@ -6588,7 +6620,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":9}"
+                                    "raw": "{\"user_id\":12}"
                                 },
                                 "description": ""
                             },
@@ -6720,7 +6752,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\"user_id\":1,\"reason\":\"vitae\",\"violation_level\":\"neque\",\"violation_type\":\"quia\",\"also_block_user\":true}"
+                                    "raw": "{\"user_id\":1,\"reason\":\"consequatur\",\"violation_level\":\"incidunt\",\"violation_type\":\"consectetur\",\"also_block_user\":true}"
                                 },
                                 "description": ""
                             },
@@ -7034,7 +7066,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_ids\":\"magnam\"}"
+                            "raw": "{\"user_ids\":\"ipsum\"}"
                         },
                         "description": ""
                     },
@@ -7918,7 +7950,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"gender\":\"male\"}"
+                            "raw": "{\"gender\":\"female\"}"
                         },
                         "description": ""
                     },
