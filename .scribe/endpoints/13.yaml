@@ -3,6 +3,50 @@ description: ''
 endpoints:
   -
     httpMethods:
+      - GET
+    uri: api/v1/products
+    metadata:
+      groupName: Product
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Products for Sale (Gift Cards)'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "current_page": 1,
+          "data": []
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6h41P6Vae35gcDkvZabEf8d'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - POST
     uri: api/v1/products/checkout
     metadata:
@@ -136,7 +180,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 614Vbavd83P6EDZcegkhf5a'
+      - 'Bearer 8v5EZba46P1h63fkVdegDac'
     controller: null
     method: null
     route: null
@@ -190,7 +234,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer eDh6vbdkEfa43cPVa186Zg5'
+      - 'Bearer P6hc6Z1bE3f5eVvdkg8D4aa'
     controller: null
     method: null
     route: null
