@@ -18,7 +18,7 @@ class SendRedeemReviewReminder extends Command
     {
         // Get recent redemptions (e.g., more than 2 hours)
 		$recentRedemptions = MerchantOfferClaimRedemptions::with(['claim', 'claim.merchantOffer', 'claim.merchantOffer.stores', 'user'])
-		    ->where('created_at', '>=', now()->subMinutes(30))
+		    ->where('created_at', '>=', now()->subHours(3))
 //		    ->whereNull('reminder_sent_at')
 		    ->get();
 
