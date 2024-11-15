@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         // Every Five Minutes
         $schedule->command('article:publish')->everyFiveMinutes();
         $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
+		$schedule->command('redeem:send-review-reminder')->everyFiveMinutes();
 
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
@@ -56,7 +57,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('article:auto-archive')->dailyAt('00:05');
         $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10');
         $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15');
-        $schedule->command('redeem:send-review-reminder')->dailyAt('10:00');
     }
 
     /**

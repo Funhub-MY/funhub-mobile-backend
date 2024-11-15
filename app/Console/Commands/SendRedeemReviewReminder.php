@@ -15,11 +15,11 @@ class SendRedeemReviewReminder extends Command
 
     public function handle()
     {
-        // Get recent redemptions (e.g., within the last 7 days)
-        $recentRedemptions = MerchantOfferClaimRedemptions::with(['claim', 'claim.merchantOffer', 'claim.merchantOffer.stores', 'user'])
-            ->where('created_at', '<=', now()->subHours(2))
-            ->whereNull('reminder_sent_at')
-            ->get();
+        // Get recent redemptions (e.g., more than 2 hours)
+		$recentRedemptions = MerchantOfferClaimRedemptions::with(['claim', 'claim.merchantOffer', 'claim.merchantOffer.stores', 'user'])
+		    ->where('created_at', '>=', now()->subMinutes(30))
+//		    ->whereNull('reminder_sent_at')
+		    ->get();
 
         Log::info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
         $this->info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
@@ -39,12 +39,25 @@ class SendRedeemReviewReminder extends Command
 
                 if ($existingRating) {
                     $hasReviewedAnyStore = true;
+					Log::info('[SendRedeemReviewReminder] User has already reviewed store', [
+						'user_id' => $user->id,
+						'store_id' => $store->id,
+					]);
                     break;
                 }
             }
 
             if (!$hasReviewedAnyStore) {
-                foreach ($stores as $store) {
+				$storeIds = $stores->pluck('id')->toArray();  // Extract store IDs into an array
+				Log::info('[SendRedeemReviewReminder] List of stores for user notification', [
+					'user_id' => $user->id,
+					'store_ids' => $storeIds,
+				]);
+				foreach ($stores as $store) {
+					Log::info('[SendRedeemReviewReminder] Processing notification for user and store', [
+						'user_id' => $user->id,
+						'store_id' => $store->id,
+					]);
                     // Send the RedeemReview notification to the user
                     $user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
                     Log::info('[SendRedeemReviewReminder] User Redeemed from Store: ' . $store->id . ' and Notified to remind for review', [
