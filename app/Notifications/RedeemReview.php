@@ -7,6 +7,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
@@ -120,6 +121,8 @@ class RedeemReview extends Notification
         $this->getClaim();
         $this->getOffer();
 
+		Log::info('Current locale: ' . App::getLocale());
+		Log::info('Current User Locale' . $this->user->last_lang);
 		Log::info("Redeem review notification completed");
         return [
             'object' => (string) get_class($this->store),
