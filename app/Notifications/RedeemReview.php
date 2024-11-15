@@ -120,6 +120,7 @@ class RedeemReview extends Notification
         $this->getClaim();
         $this->getOffer();
 
+		Log::info("Redeem review notification completed");
         return [
             'object' => (string) get_class($this->store),
             'object_id' =>($this->store) ?  (string) $this->store->id : null,

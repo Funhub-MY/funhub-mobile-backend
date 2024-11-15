@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         // Every Five Minutes
         $schedule->command('article:publish')->everyFiveMinutes();
         $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
+		$schedule->command('redeem:send-review-reminder')->everyFiveMinutes();
 
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
@@ -42,7 +43,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:sync-location-as-stores')->hourly();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
-		$schedule->command('redeem:send-review-reminder')->hourly();
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();
