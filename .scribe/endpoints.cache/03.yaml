@@ -30,6 +30,143 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
+          - itaque
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      name:
+        name: name
+        description: 'optional Search query.'
+        required: false
+        example: '"KFC SS15"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      state_id:
+        name: state_id
+        description: 'optional Filter by state id.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      country_id:
+        name: country_id
+        description: 'optional Filter by country id.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      city:
+        name: city
+        description: 'optional Filter by city.'
+        required: false
+        example: '"Subang Jaya"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lat:
+        name: lat
+        description: 'optional Latitude of User GeoLoc.'
+        required: false
+        example: 3.073065
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      lng:
+        name: lng
+        description: 'optional Longitude of User GeoLoc.'
+        required: false
+        example: 101.607787
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      radius:
+        name: radius
+        description: 'optional Radius (KM) of search if lat,lng provided.'
+        required: false
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      location_ids:
+        - itaque
+      name: '"KFC SS15"'
+      state_id: 1
+      country_id: 1
+      city: '"Subang Jaya"'
+      lat: 3.073065
+      lng: 101.607787
+      radius: 10
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+           "data": [],
+           "links": {},
+           "meta": {
+              "current_page": 1,
+            }
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 5EaZ6bc1e4d6vfk3VP8hDag'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/locations
+    metadata:
+      groupName: Location
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Locations'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      location_ids:
+        name: location_ids
+        description: 'optional Location Ids to Filter. Example [1,2,3]'
+        required: false
+        example:
           - et
         type: 'string[]'
         enumValues: []
@@ -135,144 +272,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer c5gah63kVvZdaDPf1bE846e'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/locations
-    metadata:
-      groupName: Location
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get Locations'
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      location_ids:
-        name: location_ids
-        description: 'optional Location Ids to Filter. Example [1,2,3]'
-        required: false
-        example:
-          - cupiditate
-        type: 'string[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      name:
-        name: name
-        description: 'optional Search query.'
-        required: false
-        example: '"KFC SS15"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      state_id:
-        name: state_id
-        description: 'optional Filter by state id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      country_id:
-        name: country_id
-        description: 'optional Filter by country id.'
-        required: false
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      city:
-        name: city
-        description: 'optional Filter by city.'
-        required: false
-        example: '"Subang Jaya"'
-        type: string
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lat:
-        name: lat
-        description: 'optional Latitude of User GeoLoc.'
-        required: false
-        example: 3.073065
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      lng:
-        name: lng
-        description: 'optional Longitude of User GeoLoc.'
-        required: false
-        example: 101.607787
-        type: number
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-      radius:
-        name: radius
-        description: 'optional Radius (KM) of search if lat,lng provided.'
-        required: false
-        example: 10
-        type: integer
-        enumValues: []
-        exampleWasSpecified: true
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      location_ids:
-        - cupiditate
-      name: '"KFC SS15"'
-      state_id: 1
-      country_id: 1
-      city: '"Subang Jaya"'
-      lat: 3.073065
-      lng: 101.607787
-      radius: 10
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: |-
-          {
-           "data": [],
-           "links": {},
-           "meta": {
-              "current_page": 1,
-            }
-          }
-        headers: []
-        description: success
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer Dec3v8abPkE15fZg66d4aVh'
+      - 'Bearer b8643Pg65Eed1kaZVhacDfv'
     controller: null
     method: null
     route: null
@@ -338,7 +338,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer Df586aabv4eEhdcV13ZkPg6'
+      - 'Bearer g81b3hZdDEkavce6a46V5fP'
     controller: null
     method: null
     route: null
