@@ -39,11 +39,6 @@ class RedeemReview extends Notification
 		// Set the locale based on user's preference
 		if ($this->user && $this->user->last_lang) {
 			App::setLocale($this->user->last_lang);
-			Log::info('Setting locale in notification:', [
-				'user_id' => $this->user->id,
-				'last_lang' => $this->user->last_lang,
-				'current_locale' => App::getLocale()
-			]);
 		}
     }
 
@@ -144,9 +139,6 @@ class RedeemReview extends Notification
         $this->getClaim();
         $this->getOffer();
 
-		Log::info('Current locale: ' . App::getLocale());
-		Log::info('Current User Locale' . $this->user->last_lang);
-		Log::info("Redeem review notification completed");
         return [
             'object' => (string) get_class($this->store),
             'object_id' =>($this->store) ?  (string) $this->store->id : null,
