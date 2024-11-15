@@ -27,14 +27,14 @@ endpoints:
         name: username
         description: ''
         required: true
-        example: et
+        example: ab
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      username: et
+      username: ab
     fileParameters: []
     responses:
       -
@@ -52,7 +52,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer fd5bka8641avgD6e3hPVcEZ'
+      - 'Bearer ba6ekEaZP4fdh6g35VcDv81'
     controller: null
     method: null
     route: null
@@ -83,14 +83,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: explicabo
+        example: dolorum
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: explicabo
+      share_code: dolorum
     fileParameters: []
     responses:
       -
@@ -590,7 +590,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer afvch3d6PDa15EbZ4e8Vk6g'
+      - 'Bearer Z3v6Dedb1PE48gka6f5chaV'
     controller: null
     method: null
     route: null
@@ -621,14 +621,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: et
+        example: velit
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: et
+      share_code: velit
     fileParameters: []
     responses:
       -
@@ -649,7 +649,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1711,
+                      "line": 1712,
                       "function": "abort"
                   },
                   {
@@ -1128,7 +1128,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 34bfdZPcDkah5861ga6eEvV'
+      - 'Bearer hkvPZ6b8Dfe5a34gVE1cd6a'
     controller: null
     method: null
     route: null
@@ -1159,14 +1159,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: distinctio
+        example: labore
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: distinctio
+      share_code: labore
     fileParameters: []
     responses:
       -
@@ -1666,7 +1666,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 8hbZgDe35vk1aEfd6V6Pa4c'
+      - 'Bearer cdEZ5aPf3eabDgh18v66Vk4'
     controller: null
     method: null
     route: null

@@ -27,6 +27,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     // public routes for articles
     Route::get('public_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticles']);
     Route::get('public_articles_single', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticleSingle']);
+    Route::get('public_articles_single/{id}/offers', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticleSingleOffers']);
     Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']); // share link
 
     // public routes for merchant offers
