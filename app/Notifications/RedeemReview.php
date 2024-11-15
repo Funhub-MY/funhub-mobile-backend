@@ -35,6 +35,16 @@ class RedeemReview extends Notification
 
         $this->claim_id = null;
         $this->merchant_id = null;
+
+		// Set the locale based on user's preference
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+			Log::info('Setting locale in notification:', [
+				'user_id' => $this->user->id,
+				'last_lang' => $this->user->last_lang,
+				'current_locale' => App::getLocale()
+			]);
+		}
     }
 
     /**
@@ -50,6 +60,11 @@ class RedeemReview extends Notification
 
     protected function getMessage()
     {
+		// Ensure locale is set before getting translated message
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
+
         return __('messages.notification.fcm.RedemptioReviewReminder', [
             'storeName' => ($this->store) ? $this->store->name : ''
         ]);
@@ -81,6 +96,10 @@ class RedeemReview extends Notification
 
     public function toFcm($notifiable)
     {
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
+
         $this->getClaim();
         $this->getOffer();
 
@@ -118,6 +137,10 @@ class RedeemReview extends Notification
      */
     public function toArray($notifiable)
     {
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
+
         $this->getClaim();
         $this->getOffer();
 
