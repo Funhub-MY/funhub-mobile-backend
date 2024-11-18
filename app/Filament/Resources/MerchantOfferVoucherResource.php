@@ -103,11 +103,21 @@ class MerchantOfferVoucherResource extends Resource
                         return $query->where('code', strtoupper($search)); // exact match with upper case
                     }),
 
+                TextColumn::make('merchant_offer.campaign.name')
+                    ->label('Campaign')
+                    // ->formatStateUsing(function ($state) {
+                    //     return Str::limit($state, 20, '...') ?? '-';
+                    // })
+                    // ->url(fn ($record) => route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign))
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
                     // ->formatStateUsing(function ($state) {
                     //     return Str::limit($state, 20, '...') ?? '-';
                     // })
+                    ->url(fn ($record) => route('filament.resources.merchant-offers.edit', $record->merchant_offer))
                     ->searchable()
                     ->sortable(),
 
