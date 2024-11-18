@@ -31,7 +31,8 @@ class Kernel extends ConsoleKernel
         }
 
         // Every Thirty Minutes
-        $schedule->command('city-names:populate')->everyThirtyMinutes();
+		$schedule->command('redeem:send-review-reminder')->everyThirtyMinutes();
+		$schedule->command('city-names:populate')->everyThirtyMinutes();
         if (config('app.auto_article_categories') == true) {
             $schedule->command('articles:categorize')->everyThirtyMinutes();
         }
@@ -42,7 +43,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:sync-location-as-stores')->hourly();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
-		$schedule->command('redeem:send-review-reminder')->hourly();
+//		$schedule->command('redeem:send-review-reminder')->hourly();
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();
