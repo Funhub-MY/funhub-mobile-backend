@@ -35,7 +35,13 @@ use App\Filament\Resources\MerchantOfferVoucherResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferVoucherResource\RelationManagers;
 use App\Filament\Resources\MerchantOfferVoucherResource\Pages\MerchantOfferVouchersRelationManager;
+use App\Models\MerchantOffer;
+use App\Models\MerchantOfferCampaignSchedule;
+use App\Models\MerchantOfferVoucherMovement;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
 
 class MerchantOfferVoucherResource extends Resource
 {
@@ -103,11 +109,21 @@ class MerchantOfferVoucherResource extends Resource
                         return $query->where('code', strtoupper($search)); // exact match with upper case
                     }),
 
+                TextColumn::make('merchant_offer.campaign.name')
+                    ->label('Campaign')
+                    // ->formatStateUsing(function ($state) {
+                    //     return Str::limit($state, 20, '...') ?? '-';
+                    // })
+                    // ->url(fn ($record) => route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign))
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
                     // ->formatStateUsing(function ($state) {
                     //     return Str::limit($state, 20, '...') ?? '-';
                     // })
+                    ->url(fn ($record) => route('filament.resources.merchant-offers.edit', $record->merchant_offer))
                     ->searchable()
                     ->sortable(),
 
@@ -373,7 +389,89 @@ class MerchantOfferVoucherResource extends Resource
             ->bulkActions([
                 ExportBulkAction::make()->exports([
                     ExcelExport::make('table')->fromTable(),
-                ])
+                ]),
+
+                BulkAction::make('move')
+                ->action(function (Collection $records, array $data): void {
+                    $counter = 0;
+                    foreach($records as $record) {
+                        // move unclaimed vouchers from one merchant offer to another
+                        if ($record->owned_by_id) { // skip those already claimed
+                            continue;
+                        }
+                        $from = $record->merchant_offer_id;
+                        $record->merchant_offer_id = $data['merchant_offer_id'];
+                        $record->save();
+
+                        // ensure move increase for to
+                        MerchantOffer::where('id', $data['merchant_offer_id'])
+                            ->increment('quantity', 1);
+
+                        // count no. of quantity for from based on no. of vouchers unclaimed
+                        $from_count = MerchantOfferVoucher::where('merchant_offer_id', $from)
+                            ->whereNull('owned_by_id')
+                            ->count();
+                        // update from merchant offer quantity to from_count
+                        MerchantOffer::where('id', $from)
+                            ->update(['quantity' => $from_count]);
+
+                        // create a new movement record
+                        MerchantOfferVoucherMovement::create([
+                            'from_merchant_offer_id' => $from,
+                            'to_merchant_offer_id' => $data['merchant_offer_id'],
+                            'voucher_id' => $record->id,
+                            'user_id' => auth()->user()->id,
+                            'remarks' => $data['remarks'],
+                        ]);
+
+                        // also update associated campaign if any schedule quantity:
+                        $schedule_id = MerchantOffer::find($from);
+                        $to_schedule_id = MerchantOffer::find($data['merchant_offer_id']);
+                        $schedule_id = $schedule_id ? $schedule_id->schedule_id : null;
+                        $to_schedule_id = $to_schedule_id ? $to_schedule_id->schedule_id : null;
+                        Log::info('Schedule ID', [
+                            'from_schedule' => $schedule_id,
+                            'to_schedule' => $to_schedule_id,
+                            'from_merchant_offer' => $from,
+                            'to_merchant_offer' => $data['merchant_offer_id'],
+                        ]);
+
+                        if ($schedule_id && $to_schedule_id) {
+                            MerchantOfferCampaignSchedule::where('id', $schedule_id)
+                                ->update(['quantity' => $from_count]);
+
+                            MerchantOfferCampaignSchedule::where('id', $to_schedule_id)
+                                ->increment('quantity', 1);
+                        }
+
+                        Log::info('Voucher moved', [
+                            'from' => $from,
+                            'to' => $data['merchant_offer_id'],
+                            'user_id' => auth()->user()->id,
+                        ]);
+                        $counter++;
+                    }
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Successfully Moved')
+                        ->body('Total '.$counter.' voucher(s) has been to moved.')
+                        ->success()
+                        ->send();
+                })
+                ->requiresConfirmation()
+                ->deselectRecordsAfterCompletion()
+                ->form([
+                    Select::make('merchant_offer_id')
+                        ->relationship('merchant_offer', 'name')
+                        ->getOptionLabelFromRecordUsing(fn (MerchantOffer $record) => $record->name . ' (SKU:'.$record->sku .')')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
+                    Textarea::make('remarks')
+                        ->label('Remarks')
+                        ->rows(2)
+                        ->nullable(),
+                ]),
             ]);
     }
     public static function getRelations(): array
