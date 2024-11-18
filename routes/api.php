@@ -243,6 +243,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
 
         // Products
         Route::prefix('/products')->group(function (){
+            Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index']);
             Route::post('/checkout', [\App\Http\Controllers\Api\ProductController::class, 'postCheckout']);
             Route::post('/checkout/cancel', [\App\Http\Controllers\Api\ProductController::class, 'postCancelCheckout']);
         });

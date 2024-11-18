@@ -62,7 +62,7 @@ class ProductResource extends Resource
 
                                 TextInput::make('sku')
                                     ->label('SKU')
-                                    ->unique()
+                                    ->unique(Product::class, 'sku', ignoreRecord: true)
                                     ->required(),
 
                                 RichEditor::make('description')
@@ -158,7 +158,7 @@ class ProductResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
@@ -166,7 +166,7 @@ class ProductResource extends Resource
             AuditsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -174,5 +174,5 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
-    }    
+    }
 }
