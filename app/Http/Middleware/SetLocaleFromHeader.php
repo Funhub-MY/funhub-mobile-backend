@@ -25,10 +25,6 @@ class SetLocaleFromHeader
         // Get the language from the request header
         $locale = $request->header('X-Locale');
 
-		if (Auth::check()) {
-			Log::info('Current Locale from header: ' . Auth::id() . ' : ' . $locale);
-		}
-
         $supportedLocales = ['en', 'zh'];
 
         if (in_array($locale, $supportedLocales)) {

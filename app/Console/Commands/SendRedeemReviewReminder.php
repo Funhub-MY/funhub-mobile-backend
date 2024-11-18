@@ -18,20 +18,26 @@ class SendRedeemReviewReminder extends Command
     {
         // Get recent redemptions (e.g., more than 2 hours)
 		$recentRedemptions = MerchantOfferClaimRedemptions::with(['claim', 'claim.merchantOffer', 'claim.merchantOffer.stores', 'user'])
-			->where('created_at', '<=', now()->subHours(2))
-			->whereNull('reminder_sent_at')
+			->where('created_at', '<=', now()->subMinutes(30))
+//			->whereNull('reminder_sent_at')
 			->get();
 
+		Log::info('[SendRedeemReviewReminder] Total Redemptions before 1 hours: ' . count($recentRedemptions));
         $this->info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
 
         foreach ($recentRedemptions as $redemption) {
-            $this->info('Processing redemption for user ID ' . $redemption->user_id. ' and merchant offer ID '. $redemption->claim->merchantOffer->id);
+			Log::info('[SendRedeemReviewReminder] Processing redemption for user ID ' . $redemption->user_id. ' and merchant offer ID '. $redemption->claim->merchantOffer->id);
+			$this->info('Processing redemption for user ID ' . $redemption->user_id. ' and merchant offer ID '. $redemption->claim->merchantOffer->id);
             $user = $redemption->user;
             $stores = $redemption->claim->merchantOffer->stores;
 
             $hasReviewedAnyStore = false;
 
             foreach ($stores as $store) {
+				Log::info('[SendRedeemReviewReminder] Store for user', [
+					'user_id' => $user->id,
+					'store_id' => $store->id,
+				]);
                 // Check if the user has already rated the store
                 $existingRating = StoreRating::where('user_id', $user->id)
                     ->where('store_id', $store->id)
@@ -48,6 +54,7 @@ class SendRedeemReviewReminder extends Command
             }
 
             if (!$hasReviewedAnyStore) {
+				Log::info('[SendRedeemReviewReminder] User has not been reviewed the store');
 				foreach ($stores as $store) {
 					// Send the RedeemReview notification to the user
                     $user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
