@@ -34,7 +34,6 @@ class SetLocaleFromHeader
         if (in_array($locale, $supportedLocales)) {
             // Set the locale for the current request
             App::setLocale($locale);
-			Log::info('Current App Locale set as: ' . Auth::id() . ' : ' . $locale);
             // If the user is authenticated, handle language preference
             if (Auth::check()) {
                 $user = Auth::user();
