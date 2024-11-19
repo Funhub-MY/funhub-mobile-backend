@@ -109,23 +109,16 @@ class MerchantOfferVoucherResource extends Resource
                         return $query->where('code', strtoupper($search)); // exact match with upper case
                     }),
 
-                TextColumn::make('merchant_offer.campaign.name')
+                (!auth()->user()->hasRole('merchant')) ?  TextColumn::make('campaign.name')
                     ->label('Campaign')
-                    // ->formatStateUsing(function ($state) {
-                    //     return Str::limit($state, 20, '...') ?? '-';
-                    // })
-                    // ->url(fn ($record) => route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign))
-                    ->searchable()
-                    ->sortable(),
+                    ->url(fn ($record) => ($record->merchant_offer->campaign) ? route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign) : null)
+                    ->searchable() : null,
 
-                TextColumn::make('merchant_offer.name')
+                (!auth()->user()->hasRole('merchant')) ? TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
-                    // ->formatStateUsing(function ($state) {
-                    //     return Str::limit($state, 20, '...') ?? '-';
-                    // })
                     ->url(fn ($record) => route('filament.resources.merchant-offers.edit', $record->merchant_offer))
                     ->searchable()
-                    ->sortable(),
+                    ->sortable() : null,
 
                 // sku
                 TextColumn::make('merchant_offer.sku')
@@ -251,25 +244,41 @@ class MerchantOfferVoucherResource extends Resource
                     })
             ])
             ->filters([
+
+                SelectFilter::make('campaign')
+                ->label('Campaign')
+                ->relationship('campaign', 'name', function ($query) {
+                    return $query->whereHas('merchantOffers', function ($query) {
+                        $query->whereHas('vouchers');
+                    });
+                })
+                ->searchable(),
+
+                SelectFilter::make('merchant_offer_id')
+                    ->label('Merchant Offer')
+                    ->relationship('merchant_offer', 'name')
+                    ->searchable(),
+
                 SelectFilter::make('claimStatus')
-                    // ->options(MerchantOfferClaim::CLAIM_STATUS)
                     ->options([
-                        null => 'Unclaimed',
+                        'unclaimed' => 'Unclaimed',
                         1 => MerchantOfferClaim::CLAIM_STATUS[1],
                         2 => MerchantOfferClaim::CLAIM_STATUS[2],
                         3 => MerchantOfferClaim::CLAIM_STATUS[3],
                     ])
-                    // ->relationship('claim', 'status')
                     ->query(function (Builder $query, array $data) {
-                        if ($data['value'] == null) {
-                            // no filter
-                        } else {
+                        if ($data['value'] === 'unclaimed') {
+                            // For unclaimed vouchers where there's no claim record
+                            $query->whereNull('owned_by_id');
+                        } else if ($data['value']) {
+                            // For specific claim statuses
                             $query->whereHas('latestSuccessfulClaim', function ($q) use ($data) {
                                 $q->where('status', $data['value']);
                             });
                         }
                     })
                     ->label('Financial Status'),
+
                 SelectFilter::make('getVoucherRedeemedAttribute')
                     // ->relationship('redeem', 'id')
                     ->options([
