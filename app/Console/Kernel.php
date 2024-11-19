@@ -29,9 +29,9 @@ class Kernel extends ConsoleKernel
         if (config('services.bubble.status') == true) {
             $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
         }
+		$schedule->command('redeem:send-review-reminder')->everyFifteenMinutes();
 
-        // Every Thirty Minutes
-		$schedule->command('redeem:send-review-reminder')->everyThirtyMinutes();
+		// Every Thirty Minutes
 		$schedule->command('city-names:populate')->everyThirtyMinutes();
         if (config('app.auto_article_categories') == true) {
             $schedule->command('articles:categorize')->everyThirtyMinutes();
