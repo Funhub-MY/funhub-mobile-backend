@@ -29,7 +29,6 @@ class Kernel extends ConsoleKernel
         if (config('services.bubble.status') == true) {
             $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
         }
-		$schedule->command('redeem:send-review-reminder')->everyFifteenMinutes();
 
 		// Every Thirty Minutes
 		$schedule->command('city-names:populate')->everyThirtyMinutes();
@@ -43,7 +42,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:sync-location-as-stores')->hourly();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
-//		$schedule->command('redeem:send-review-reminder')->hourly();
+		$schedule->command('redeem:send-review-reminder')->hourly();
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();
