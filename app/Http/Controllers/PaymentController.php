@@ -140,6 +140,7 @@ class PaymentController extends Controller
                     $params = [
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
+                        'transaction_no' => $transaction->transaction_no,
                         'offer_claim_id' => $claim_id,
                         'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                         'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
@@ -160,14 +161,14 @@ class PaymentController extends Controller
                         if ($transaction->channel === 'app') {
                             return 'Transaction Still Pending';
                         } else if ($transaction->channel === 'funhub_web') {
-                            $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
-                            return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Still Pending', 'success' => false])) . '&hash=' . $hash_string);
+                            return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Still Pending', 'success' => false])));
                         }
                     } else {
                         // FAILURE
                         $params = [
                             'message' => 'Transaction Failed - Already Processed',
                             'transaction_id' => $transaction->id,
+                            'transaction_no' => $transaction->transaction_no,
                             'success' => false
                         ];
                         if ($transaction->channel === 'app') {
@@ -242,6 +243,7 @@ class PaymentController extends Controller
                 $params = [
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no,
                     'offer_claim_id' => $claim_id,
 					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
 					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
@@ -259,6 +261,7 @@ class PaymentController extends Controller
             } else if ($request->responseCode == 'PE') { // pending
                 Log::info('Payment return/callback pending', [
                     'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no,
                     'request' => request()->all()
                 ]);
                 if ($transaction->channel === 'app') {
@@ -292,6 +295,7 @@ class PaymentController extends Controller
                 $params = [
                     'message' => 'Transaction Failed - Gateway Response Code Failed [2]',
                     'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no,
                     'success' => false
                 ];
                 if ($transaction->channel === 'app') {
