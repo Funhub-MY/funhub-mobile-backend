@@ -41,6 +41,11 @@ class ProductResource extends Resource
                     ->schema([
                         Section::make('Product Details')
                             ->schema([
+								TextInput::make('order')
+									->required()
+									->numeric()
+									->label('Order')
+									->default(fn () => (Product::max('order') ?? 0) + 1),
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('product_image')
                                     ->label('Image')
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
@@ -126,6 +131,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+				TextColumn::make('order')
+					->sortable()
+					->label('Order'),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
