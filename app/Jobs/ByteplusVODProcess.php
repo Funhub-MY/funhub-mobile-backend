@@ -21,6 +21,11 @@ class ByteplusVODProcess implements ShouldQueue
 
     public function handle(ByteplusService $byteplusService): void
     {
+        if (config('services.byteplus.enabled_vod') == false) {
+            Log::info('[ByteplusVODProcess] Byteplus VOD is disabled');
+            return;
+        }
+
         $uploadResult = $byteplusService->uploadMediaByUrl(
             $this->media->getUrl(),
             $this->media->name

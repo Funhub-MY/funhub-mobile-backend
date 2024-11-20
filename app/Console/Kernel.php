@@ -21,7 +21,10 @@ class Kernel extends ConsoleKernel
 
         // Every Five Minutes
         $schedule->command('article:publish')->everyFiveMinutes();
-        $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
+
+        if (config('services.btyeplus.enabled_vod') == true) {
+            $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
+        }
 
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();

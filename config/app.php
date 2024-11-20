@@ -347,7 +347,6 @@ return [
 
     'funhub_web_link' => env('FUNHUB_WEB_LINK', 'https://app.funhub.my/payment/status'),
     'funhub_web_hash_secret' => env('FUNHUB_WEB_HASH_SECRET'),
-
     /*
     |--------------------------------------------------------------------------
     | Support Emails
