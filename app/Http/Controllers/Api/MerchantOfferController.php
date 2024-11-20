@@ -582,6 +582,7 @@ class MerchantOfferController extends Controller
             }
 
             // discount using funbox logic (Point)
+            // DEPRECATED
             $discount_amount = 0;
             if ($request->has('use_point_discount')
                 && $request->use_point_discount == true
@@ -610,7 +611,7 @@ class MerchantOfferController extends Controller
                 config('app.default_payment_gateway'),
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
-                $discount_amount,
+                // $discount_amount,
                 $request->has('channel') ? $request->channel : 'app'
             );
 

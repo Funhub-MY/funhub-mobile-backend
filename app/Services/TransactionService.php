@@ -22,7 +22,7 @@ class TransactionService {
      *
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $transaction_no = null, $discount = 0,  $channel = 'app', $points_to_use = 0)
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $transaction_no = null, $discount = 0, $points_to_use = 0)
     {
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
