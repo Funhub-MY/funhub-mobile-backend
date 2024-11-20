@@ -55,6 +55,7 @@ class ProductController extends Controller
     {
         $products = Product::with('rewards')
             ->published()
+			->orderBy('order')
             ->get();
 
         return ProductResource::collection($products);
