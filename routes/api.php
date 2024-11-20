@@ -31,6 +31,11 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::group(['prefix' => 'external'], function () {
             Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+
+            //  Kenneth
+            Route::get('merchants', [\App\Http\Controllers\Api\ExternalSyncController::class, 'merchants']);
+            Route::get('merchant_categories', [\App\Http\Controllers\Api\ExternalSyncController::class, 'merchant_categories']);
+            Route::post('campaigns', [\App\Http\Controllers\Api\ExternalSyncController::class, 'campaigns']);
         });
     });
 
