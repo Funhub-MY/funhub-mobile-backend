@@ -234,41 +234,28 @@ class ByteplusService
                 'vid' => $vid
             ]);
 
-            // Extract different quality playback URLs
             $playbackLinks = [
-                'abr' => null,    // adaptive
-                'low' => null,    // 480p
-                'medium' => null, // 720p
-                'high' => null    // 1080p
+                'abr' => null,    // adaptive bit rate with three different streams
             ];
 
             if (isset($result['PlayInfoList']) && is_array($result['PlayInfoList'])) {
-                foreach ($result['PlayInfoList'] as $playInfo) {
-                    switch ($playInfo['Definition'] ?? '') {
-                        case '480p':
-                            $playbackLinks['low'] = $playInfo['MainPlayUrl'] ?? null;
-                            break;
-                        case '720p':
-                            $playbackLinks['medium'] = $playInfo['MainPlayUrl'] ?? null;
-                            break;
-                        case '1080p':
-                            $playbackLinks['high'] = $playInfo['MainPlayUrl'] ?? null;
-                            break;
-                    }
-                }
+                $playbackLinks['abr'] = $result['PlayInfoList'][0]['MainPlayUrl'] ?? null;
+                // foreach ($result['PlayInfoList'] as $playInfo) {
+                //     switch ($playInfo['Definition'] ?? '') {
+                //         case '480p':
+                //             $playbackLinks['low'] = $playInfo['MainPlayUrl'] ?? null;
+                //             break;
+                //         case '720p':
+                //             $playbackLinks['medium'] = $playInfo['MainPlayUrl'] ?? null;
+                //             break;
+                //         case '1080p':
+                //             $playbackLinks['high'] = $playInfo['MainPlayUrl'] ?? null;
+                //             break;
+                //     }
+                // }
             } else {
                 Log::error('Byteplus get play info error', [
                     'message' => 'No Play Info',
-                    'vid' => $vid,
-                    'result' => $result
-                ]);
-            }
-
-            if (isset($resuult['AdaptiveBitrateStreamingInfo'])) {
-                $playbackLinks['abr'] = $result['AdaptiveBitrateStreamingInfo']['MainPlayUrl'] ?? null;
-            } else {
-                Log::error('Byteplus get play info error', [
-                    'message' => 'No Adaptive Bitrate Streaming Info',
                     'vid' => $vid,
                     'result' => $result
                 ]);
