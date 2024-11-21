@@ -1819,7 +1819,6 @@ class ArticleController extends Controller
             })
             ->with('user', 'media', 'location', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
-            // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
@@ -1827,6 +1826,25 @@ class ArticleController extends Controller
                 });
             }])
             ->first();
+
+        if ($article && $article->location->isNotEmpty()) {
+            $locationIds = $article->location->pluck('id')->toArray();
+            $hasOffer = DB::table('locatables as store_locatables')
+                ->whereIn('store_locatables.location_id', $locationIds)
+                ->where('store_locatables.locatable_type', Store::class)
+                ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                ->join('merchant_offers', function ($join) {
+                    $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                        ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                        ->where('merchant_offers.available_at', '<=', now())
+                        ->where('merchant_offers.available_until', '>=', now());
+                })
+                ->exists();
+
+            $article->has_merchant_offer = $hasOffer;
+        } else {
+            $article->has_merchant_offer = false;
+        }
 
         return response()->json([
             'article' => new PublicArticleResource($article)
