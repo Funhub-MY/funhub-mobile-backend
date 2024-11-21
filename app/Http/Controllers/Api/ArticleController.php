@@ -1753,11 +1753,13 @@ class ArticleController extends Controller
             ->published()
             ->where('visibility', Article::VISIBILITY_PUBLIC);
 
-        // pass to query builder
-        $data = $this->articleQueryBuilder($query, $request, false);
+        $query = $this->articleQueryBuilder($query, $request, false);
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
+        // get location IDs from the paginated data
         $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
+        // get stores with offers
         $storesWithOffers = DB::table('locatables as store_locatables')
             ->whereIn('store_locatables.location_id', $locationIds)
             ->where('store_locatables.locatable_type', Store::class)
@@ -1771,6 +1773,7 @@ class ArticleController extends Controller
             ->pluck('store_locatables.location_id')
             ->unique();
 
+        // set has_merchant_offer on the paginated data
         $data->each(function ($article) use ($storesWithOffers) {
             if ($article->location->isNotEmpty()) {
                 $articleLocationId = $article->location->first()->id;
@@ -1779,8 +1782,6 @@ class ArticleController extends Controller
                 $article->has_merchant_offer = false;
             }
         });
-
-        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return PublicArticleResource::collection($data);
     }
