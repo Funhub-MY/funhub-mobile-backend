@@ -205,7 +205,7 @@ class ByteplusService
             'Version' => '2023-01-01',
             'Vid' => $vid,
             'FileType' => 'video',
-            'Format' => 'mp4',
+            'Format' => 'hls', // for abr
             'Codec' => 'H264',
             'Ssl' => '1' // always return https
         ];
@@ -235,25 +235,40 @@ class ByteplusService
 
             // Extract different quality playback URLs
             $playbackLinks = [
-                'low' => null,    // 360p
-                'medium' => null, // 480p
-                'high' => null    // 720p
+                'abr' => null,    // adaptive
+                'low' => null,    // 480p
+                'medium' => null, // 720p
+                'high' => null    // 1080p
             ];
 
             if (isset($result['PlayInfoList']) && is_array($result['PlayInfoList'])) {
                 foreach ($result['PlayInfoList'] as $playInfo) {
                     switch ($playInfo['Definition'] ?? '') {
-                        case '360p':
+                        case '480p':
                             $playbackLinks['low'] = $playInfo['MainPlayUrl'] ?? null;
                             break;
-                        case '480p':
+                        case '720p':
                             $playbackLinks['medium'] = $playInfo['MainPlayUrl'] ?? null;
                             break;
-                        case '720p':
+                        case '1080p':
                             $playbackLinks['high'] = $playInfo['MainPlayUrl'] ?? null;
                             break;
                     }
                 }
+            } else {
+                Log::error('Byteplus get play info error', [
+                    'message' => 'No Play Info',
+                    'vid' => $vid
+                ]);
+            }
+
+            if (isset($resuult['AdaptiveBitrateStreamingInfo'])) {
+                $playbackLinks['abr'] = $result['AdaptiveBitrateStreamingInfo']['MainPlayUrl'] ?? null;
+            } else {
+                Log::error('Byteplus get play info error', [
+                    'message' => 'No Adaptive Bitrate Streaming Info',
+                    'vid' => $vid
+                ]);
             }
 
             return $playbackLinks;
