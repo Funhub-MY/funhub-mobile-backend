@@ -1846,10 +1846,7 @@ class ArticleController extends Controller
      */
     public function getPublicArticleSingleOffers(Article $article)
     {
-        // Get all article location IDs
         $locationIds = $article->location->pluck('id')->toArray();
-
-        // Get store IDs with available merchant offers matching the article locations
         $storeIdsWithOffers = DB::table('locatables as store_locatables')
             ->whereIn('store_locatables.location_id', $locationIds)
             ->where('store_locatables.locatable_type', Store::class)
@@ -1863,8 +1860,11 @@ class ArticleController extends Controller
             ->pluck('merchant_offer_stores.merchant_offer_id')
             ->unique();
 
-        Log::info('Location IDs:', $locationIds);
-        Log::info('Store IDs with offers:', $storeIdsWithOffers->toArray());
+        Log::info('Single article offers', [
+            'article' => $article,
+            'location_ids' => $locationIds,
+            'storeIds' => $storeIdsWithOffers,
+        ]);
 
         $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
             ->with([
