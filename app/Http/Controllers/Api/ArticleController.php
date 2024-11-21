@@ -1861,7 +1861,7 @@ class ArticleController extends Controller
             ->unique();
 
         Log::info('Single article offers', [
-            'article' => $article,
+            'article' => $article->id,
             'location_ids' => $locationIds,
             'storeIds' => $storeIdsWithOffers,
         ]);
