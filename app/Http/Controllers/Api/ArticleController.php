@@ -1846,29 +1846,33 @@ class ArticleController extends Controller
      */
     public function getPublicArticleSingleOffers(Article $article)
     {
-        // Get all article location IDs
         $locationIds = $article->location->pluck('id')->toArray();
 
-        // Get store IDs with available merchant offers matching the article locations
-        $storeIdsWithOffers = DB::table('locatables as store_locatables')
-            ->whereIn('store_locatables.location_id', $locationIds)
-            ->where('store_locatables.locatable_type', Store::class)
-            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
-            ->join('merchant_offers', function ($join) {
-                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
-                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
-                    ->where('merchant_offers.available_at', '<=', now())
-                    ->where('merchant_offers.available_until', '>=', now());
+        $merchantOffers = MerchantOffer::query()
+            ->select('merchant_offers.*')
+            ->join('merchant_offer_stores', 'merchant_offers.id', '=', 'merchant_offer_stores.merchant_offer_id')
+            ->join('stores', 'merchant_offer_stores.store_id', '=', 'stores.id')
+            ->join('locatables as store_locatables', function ($join) {
+                $join->on('stores.id', '=', 'store_locatables.locatable_id')
+                    ->where('store_locatables.locatable_type', Store::class);
             })
-            ->pluck('merchant_offer_stores.merchant_offer_id')
-            ->unique();
-
-        // Retrieve the merchant offers associated with the store IDs
-        $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
-            ->with('merchant')
-            ->where('available_for_web', true)
-            ->published()
-            ->available()
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('merchant_offers.status', MerchantOffer::STATUS_PUBLISHED)
+            ->where('merchant_offers.available_at', '<=', now())
+            ->where('merchant_offers.available_until', '>=', now())
+            ->where('merchant_offers.available_for_web', true)
+            ->with([
+                'media',
+                'store',
+                'stores.location',
+                'stores.storeRatings',
+                'user.merchant.media',
+                'categories',
+                'interactions',
+                'views',
+                'location.ratings',
+            ])
+            ->distinct()
             ->paginate(config('app.paginate_per_page'));
 
         return PublicMerchantOfferResource::collection($merchantOffers);
