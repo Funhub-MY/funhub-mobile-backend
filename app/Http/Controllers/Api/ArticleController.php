@@ -1767,6 +1767,7 @@ class ArticleController extends Controller
             ->join('merchant_offers', function ($join) {
                 $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
                     ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('available_for_web', true)
                     ->where('merchant_offers.available_at', '<=', now())
                     ->where('merchant_offers.available_until', '>=', now());
             })
