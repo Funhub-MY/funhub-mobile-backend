@@ -205,7 +205,8 @@ class ByteplusService
             'Version' => '2023-01-01',
             'Vid' => $vid,
             'FileType' => 'video',
-            'Format' => 'hls', // for abr
+            'Definition' => 'auto', // for ABR to return
+            // 'Format' => 'hls', // for abr
             'Codec' => 'H264',
             'Ssl' => '1' // always return https
         ];
@@ -258,7 +259,8 @@ class ByteplusService
             } else {
                 Log::error('Byteplus get play info error', [
                     'message' => 'No Play Info',
-                    'vid' => $vid
+                    'vid' => $vid,
+                    'result' => $result
                 ]);
             }
 
@@ -267,7 +269,8 @@ class ByteplusService
             } else {
                 Log::error('Byteplus get play info error', [
                     'message' => 'No Adaptive Bitrate Streaming Info',
-                    'vid' => $vid
+                    'vid' => $vid,
+                    'result' => $result
                 ]);
             }
 
