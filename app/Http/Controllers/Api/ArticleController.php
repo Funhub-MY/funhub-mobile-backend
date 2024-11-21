@@ -1860,12 +1860,6 @@ class ArticleController extends Controller
             ->pluck('merchant_offer_stores.merchant_offer_id')
             ->unique();
 
-        Log::info('Single article offers', [
-            'article' => $article->id,
-            'location_ids' => $locationIds,
-            'storeIds' => $storeIdsWithOffers,
-        ]);
-
         $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
             ->with([
                 'media',
