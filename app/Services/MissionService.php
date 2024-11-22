@@ -114,7 +114,7 @@ class MissionService
 
         if (!$userMission) {
             $currentValues = collect($mission->events)
-                ->mapWithKeys(fn ($event) => [$event => $event === $eventType ? 1 : 0])
+                ->mapWithKeys(fn ($event) => [$event => 0])
                 ->toArray();
 
             $user->missionsParticipating()->attach($mission->id, [
@@ -154,21 +154,18 @@ class MissionService
      */
     private function checkMissionCompletion(Mission $mission, array $currentValues): bool
     {
-        $missionValues = is_string($mission->values) ?
-            json_decode($mission->values, true) :
-            $mission->values;
+        $missionValues = is_array($mission->values) ? $mission->values : json_decode($mission->values, true);
+        $missionEvents = is_array($mission->events) ? $mission->events : json_decode($mission->events, true);
 
-        $missionEvents = is_string($mission->events) ?
-            json_decode($mission->events, true) :
-            $mission->events;
-
+        $totalValue = 0;
         foreach ($missionEvents as $index => $event) {
-            if (!isset($currentValues[$event]) || $currentValues[$event] < $missionValues[$index]) {
+            if (!isset($currentValues[$event])) {
                 return false;
             }
+            $totalValue = $currentValues[$event];
         }
 
-        return true;
+        return $totalValue >= $missionValues[0];
     }
 
     /**
