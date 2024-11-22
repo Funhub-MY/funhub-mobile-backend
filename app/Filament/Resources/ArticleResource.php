@@ -40,6 +40,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class ArticleResource extends Resource
@@ -549,8 +550,19 @@ class ArticleResource extends Resource
                         1 => 'Yes',
                     ])
                     ->placeholder('All'),
+
+                // filter by pinned_recommended
                 Tables\Filters\SelectFilter::make('pinned_recommended')
                     ->label('Pinned (Recommended)')
+                    ->options([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->placeholder('All'),
+
+                // filter by available_for_web
+                Tables\Filters\SelectFilter::make('available_for_web')
+                    ->label('Available for Web?')
                     ->options([
                         0 => 'No',
                         1 => 'Yes',
@@ -668,6 +680,28 @@ class ArticleResource extends Resource
                             ->update(['pinned_recommended' => $data['pinned_recommended']]);
                     }
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
+                // bulk action toggle available_for_web
+                Tables\Actions\BulkAction::make('toggle_available_for_web')
+                   ->label('Toggle Available for Web')
+                   ->form([
+                       Toggle::make('available_for_web')
+                           ->default(true)
+                           ->required(),
+                   ])
+                   ->action(function (Collection $records, array $data): void {
+                      // mass update available_for_web for records
+                      Article::whereIn('id', $records->pluck('id'))
+                          ->update(['available_for_web' => $data['available_for_web']]);
+
+                       Notification::make()
+                           ->success()
+                           ->title('Successfully updated '.$records->count().' articles')
+                           ->send();
+                   })
+                   ->requiresConfirmation()
+                   ->deselectRecordsAfterCompletion(),
+
 				ExportBulkAction::make()
 					->exports([
 						ExcelExport::make()
