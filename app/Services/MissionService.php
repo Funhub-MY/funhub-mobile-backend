@@ -80,11 +80,16 @@ class MissionService
             return true;
         }
 
+        // convert completed_at to carbon if it exists
+        $completedAt = $latestParticipation->pivot->completed_at
+            ? \Carbon\Carbon::parse($latestParticipation->pivot->completed_at)
+            : null;
+
         return match ($mission->frequency) {
             'one-off' => !$latestParticipation->pivot->is_completed,
-            'daily' => !$latestParticipation->pivot->completed_at?->isToday(),
+            'daily' => !$completedAt || !$completedAt->isToday(),
             'accumulated' => !$latestParticipation->pivot->is_completed || $latestParticipation->pivot->claimed_at,
-            'monthly' => !$latestParticipation->pivot->completed_at?->isSameMonth(now()),
+            'monthly' => !$completedAt || !$completedAt->isSameMonth(now()),
             default => true,
         };
     }

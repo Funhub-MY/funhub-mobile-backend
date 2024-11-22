@@ -212,5 +212,7 @@ class MissionController extends Controller
 
             return $mission;
         });
+
+        return MissionResource::collection($missions);
     }
 }
