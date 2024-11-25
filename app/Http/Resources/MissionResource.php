@@ -17,18 +17,13 @@ class MissionResource extends JsonResource
         $myParticipation = $this->participants()
             ->where('user_id', $user->id)
             ->when($this->frequency === 'daily', function($query) {
-                return $query->whereBetween('missions_users.created_at', [
-                    now()->startOfDay(),
-                    now()->endOfDay()
-                ]);
+                return $query->where('started_at', '>=', now()->startOfDay())
+                    ->orderByDesc('missions_users.id');
+            }, function($query) {
+                // for non-daily missions, get latest record
+                return $query->orderByDesc('missions_users.id');
             })
-            ->when($this->frequency === 'monthly', function($query) {
-                return $query->whereBetween('missions_users.created_at', [
-                    now()->startOfMonth(),
-                    now()->endOfMonth()
-                ]);
-            })
-            ->latest('missions_users.id')
+            ->orderByDesc('missions_users.id')
             ->first();
 
         // get translated content
@@ -86,19 +81,23 @@ class MissionResource extends JsonResource
 
     protected function calculateProgress($participation): array
     {
+        $values = is_string($this->values) ? json_decode($this->values, true) : $this->values;
+        $goal = is_array($values) ? (array_values($values)[0] ?? 0) : (int) $values;
+
         if (!$participation) {
-            return ['currentValues' => [], 'progress' => 0, 'goal' => 0];
+            return [
+                'currentValues' => [],
+                'progress' => 0,
+                'goal' => $goal
+            ];
         }
 
         $currentValues = json_decode($participation->pivot->current_values, true) ?? [];
-        $values = is_string($this->values) ? json_decode($this->values, true) : $this->values;
-
-        $progress = $currentValues ? array_values($currentValues)[0] ?? 0 : 0;
-        $goal = is_array($values) ? (array_values($values)[0] ?? 0) : (int) $values;
+        $event = is_array($this->events) ? $this->events[0] : json_decode($this->events, true)[0];
 
         return [
             'currentValues' => $currentValues,
-            'progress' => $progress,
+            'progress' => $currentValues[$event] ?? 0,
             'goal' => $goal
         ];
     }

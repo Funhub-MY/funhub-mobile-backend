@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 uses(RefreshDatabase::class);
@@ -269,7 +270,7 @@ test('mission api endpoints', function () {
         ->assertOk();
 });
 
-test('one off mission auto disbursement and non-repeatable behavior via API', function () {
+test('one off mission auto disbursement and non-repeatable behavior', function () {
     Notification::fake();
     Event::fake([CommentCreated::class]);
 
@@ -542,5 +543,100 @@ test('multiple missions with different frequencies and shared events', function 
     Notification::assertSentTimes(
         \App\Notifications\RewardReceivedNotification::class,
         3
+    );
+});
+
+test('daily mission progress resets at midnight', function () {
+    Notification::fake();
+    Event::fake([CommentCreated::class]);
+
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+    $missionService = app(MissionService::class);
+
+    $mission = Mission::factory()->create([
+        'name' => 'Daily Comment Mission',
+        'description' => 'Create 3 comments daily',
+        'events' => ['comment_created'],
+        'values' => [3],
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'frequency' => 'daily',
+        'status' => 1,
+        'auto_disburse_rewards' => true,
+        'user_id' => $this->user->id,
+        'enabled_at' => now()
+    ]);
+
+    // Make 2 comments today
+    $articles = Article::factory(2)->create();
+    foreach ($articles as $index => $article) {
+        $response = $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => "test comment #". $index + 1
+        ]);
+        $response->assertOk();
+
+        $missionService->handleEvent('comment_created', $this->user);
+    }
+
+    // check today's progress
+    $response = $this->getJson('/api/v1/missions');
+    $response->assertOk();
+
+    $missionData = collect($response->json('data'))
+        ->firstWhere('id', $mission->id);
+
+    expect($missionData)->toBeTruthy()
+        ->and($missionData['progress'])->toBe(2)
+        ->and($missionData['goal'])->toBe(3)
+        ->and($missionData['is_completed'])->toBeFalse();
+
+    // simulate next day
+    $this->travel(1)->days();
+    Log::info('--- Simulating next day');
+
+    // check progress should be reset
+    $response = $this->getJson('/api/v1/missions');
+    $response->assertOk();
+
+    $nextDayMissionData = collect($response->json('data'))
+        ->firstWhere('id', $mission->id);
+
+    expect($nextDayMissionData)->toBeTruthy()
+        ->and($nextDayMissionData['progress'])->toBe(0)
+        ->and($nextDayMissionData['goal'])->toBe(3)
+        ->and($nextDayMissionData['is_completed'])->toBeFalse();
+
+    // make new comments on next day
+    $newArticles = Article::factory(3)->create();
+    foreach ($newArticles as $article) {
+        $this->postJson('/api/v1/comments', [
+            'id' => $article->id,
+            'type' => 'article',
+            'body' => 'test comment'
+        ])->assertOk();
+        $missionService->handleEvent('comment_created', $this->user);
+    }
+
+    // check new day progress and completion
+    $response = $this->getJson('/api/v1/missions');
+    $response->assertOk();
+
+    Log::info('--- Checking new day progress and completion');
+
+    $newProgressData = collect($response->json('data'))
+        ->firstWhere('id', $mission->id);
+
+    expect($newProgressData)->toBeTruthy()
+        ->and($newProgressData['progress'])->toBe(3)
+        ->and($newProgressData['goal'])->toBe(3)
+        ->and($newProgressData['is_completed'])->toBeTrue();
+
+    // verify reward was disbursed
+    Notification::assertSentTimes(
+        \App\Notifications\RewardReceivedNotification::class,
+        1
     );
 });

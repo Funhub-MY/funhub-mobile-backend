@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Events\MissionProgressUpdated;
 use App\Notifications\MissionCompleted;
 use App\Notifications\RewardReceivedNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -71,27 +72,42 @@ class MissionService
      */
     private function isMissionEligible(Mission $mission, User $user): bool
     {
+        Log::info('Checking mission eligibility', [
+            'mission_id' => $mission->id,
+            'frequency' => $mission->frequency
+        ]);
+
         $latestParticipation = $mission->participants()
             ->where('user_id', $user->id)
             ->orderByDesc('missions_users.created_at')
             ->first();
 
         if (!$latestParticipation) {
+            Log::info('No participation found, mission is eligible');
             return true;
         }
 
-        // convert completed_at to carbon if it exists
-        $completedAt = $latestParticipation->pivot->completed_at
-            ? \Carbon\Carbon::parse($latestParticipation->pivot->completed_at)
+        $startedAt = $latestParticipation->pivot->started_at
+            ? Carbon::parse($latestParticipation->pivot->started_at)
             : null;
 
-        return match ($mission->frequency) {
+        $isEligible = match ($mission->frequency) {
             'one-off' => !$latestParticipation->pivot->is_completed,
-            'daily' => !$completedAt || !$completedAt->isToday(),
+            'daily' => ($startedAt && $startedAt->isToday() && !$latestParticipation->pivot->is_completed) || !$startedAt,
             'accumulated' => !$latestParticipation->pivot->is_completed || $latestParticipation->pivot->claimed_at,
-            'monthly' => !$completedAt || !$completedAt->isSameMonth(now()),
+            'monthly' => !$latestParticipation->pivot->completed_at || !Carbon::parse($latestParticipation->pivot->completed_at)->isSameMonth(now()),
             default => true,
         };
+
+        Log::info('Mission eligibility check result', [
+            'mission_id' => $mission->id,
+            'frequency' => $mission->frequency,
+            'is_eligible' => $isEligible,
+            'started_at' => $startedAt ? $startedAt->toDateTimeString() : null,
+            'is_completed' => $latestParticipation->pivot->is_completed,
+        ]);
+
+        return $isEligible;
     }
 
     /**
@@ -99,10 +115,21 @@ class MissionService
      */
     private function processMissionProgress(Mission $mission, User $user, string $eventType): void
     {
+        Log::info('Processing mission progress', [
+            'mission_id' => $mission->id,
+            'user_id' => $user->id,
+            'event_type' => $eventType
+        ]);
+
         $userMission = $this->getOrCreateUserMission($mission, $user, $eventType);
 
         if (!$userMission->pivot->is_completed) {
             $this->updateProgress($userMission, $mission, $eventType);
+        } else {
+            Log::info('Mission already completed', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+            ]);
         }
     }
 
@@ -111,28 +138,45 @@ class MissionService
      */
     private function getOrCreateUserMission(Mission $mission, User $user, string $eventType)
     {
-        $userMission = $user->missionsParticipating()
+        $query = $user->missionsParticipating()
             ->where('mission_id', $mission->id)
-            ->where('is_completed', false)
-            ->orderByDesc('missions_users.id')
-            ->first();
+            ->where('is_completed', false);
+
+        if ($mission->frequency === 'daily') {
+            $query->where('started_at', '>=', now()->startOfDay());
+        }
+
+        $userMission = $query->latest('id')->first();
 
         if (!$userMission) {
-            $currentValues = collect($mission->events)
-                ->mapWithKeys(fn ($event) => [$event => 0])
-                ->toArray();
+            DB::transaction(function() use ($mission, $user, $eventType) {
+                $currentValues = collect($mission->events)
+                    ->mapWithKeys(fn ($event) => [$event => 0])
+                    ->toArray();
 
-            $user->missionsParticipating()->attach($mission->id, [
-                'started_at' => now(),
-                'current_values' => json_encode($currentValues)
-            ]);
+                $user->missionsParticipating()->attach($mission->id, [
+                    'started_at' => now(),
+                    'current_values' => json_encode($currentValues),
+                    'is_completed' => false,
+                    'completed_at' => null
+                ]);
+
+                Log::info('Created new mission progress', [
+                    'mission_id' => $mission->id,
+                    'user_id' => $user->id,
+                    'current_values' => $currentValues
+                ]);
+            });
 
             $userMission = $user->missionsParticipating()
                 ->where('mission_id', $mission->id)
-                ->orderByDesc('missions_users.id')
+                ->latest('id')
                 ->first();
-
-            $this->sendMissionStartedNotification($mission, $user);
+        } else {
+            Log::info('Has existing mission progress', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+            ]);
         }
 
         return $userMission;
@@ -143,11 +187,26 @@ class MissionService
      */
     private function updateProgress($userMission, Mission $mission, string $eventType): void
     {
+        Log::info('Starting progress update', [
+            'mission_id' => $mission->id,
+            'event_type' => $eventType,
+            'before_values' => $userMission->pivot->current_values
+        ]);
+
         $currentValues = json_decode($userMission->pivot->current_values, true);
-        $currentValues[$eventType] = ($currentValues[$eventType] ?? 0) + 1;
+        $oldCount = $currentValues[$eventType] ?? 0;
+        $currentValues[$eventType] = $oldCount + 1;
 
         $userMission->pivot->current_values = json_encode($currentValues);
         $userMission->pivot->save();
+
+        Log::info('Progress updated', [
+            'mission_id' => $mission->id,
+            'event_type' => $eventType,
+            'old_count' => $oldCount,
+            'new_count' => $currentValues[$eventType],
+            'pivot_id' => $userMission->pivot->id
+        ]);
 
         if ($this->checkMissionCompletion($mission, $currentValues)) {
             $this->handleMissionCompletion($mission, $userMission);
