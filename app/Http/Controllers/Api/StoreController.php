@@ -402,7 +402,7 @@ class StoreController extends Controller
 
         $menus = null;
         if ($merchant) {
-            $menus = $merchant->getMedia(Merchant::MEDIA_COLLECTION_MENUS)->map(function ($item) {
+            $menus = $store->getMedia(Store::MEDIA_COLLECTION_MENUS)->map(function ($item) {
                 return [
                     'name' => (isset($item->custom_properties['name'])) ? $item->custom_properties['name'] : $item->file_name,
                     'url' => $item->getFullUrl()
