@@ -38,7 +38,10 @@ class StoreResource extends JsonResource
                 $articlePhoto = $firstArticle->media->filter(function ($media) {
                     return str_contains($media->mime_type, 'image');
                 })->first();
-                $photos = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
+				if ($articlePhoto){
+					$photos[] = $articlePhoto->getFullUrl();
+				}
+//                $photos[] = ($articlePhoto) ? [$articlePhoto->getFullUrl()] : null;
             }
         }
 
@@ -48,7 +51,7 @@ class StoreResource extends JsonResource
                 return $item->collection_name == Store::MEDIA_COLLECTION_PHOTOS;
             })->map(function ($item) {
                 return $item->getFullUrl();
-            });
+            })->values()->toArray();
         }
 
         // Initialize complete week structure for business hours and rest hours
@@ -108,7 +111,7 @@ class StoreResource extends JsonResource
             'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
             'logo' => ($this->merchant) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
-            'photos' => $photos,
+            'photos' => array_values($photos),
             'merchant' => $merchant,
             'other_stores' => ($this->otherStores) ? $this->otherStores->map(function ($store) {
                 return [
