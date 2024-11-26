@@ -30,6 +30,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Filament\Resources\MerchantOfferResource\Pages;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\MerchantOfferResource\RelationManagers;
+use App\Models\MerchantOfferCampaign;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Arr;
@@ -37,7 +38,9 @@ use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Toggle;
+use Filament\Tables\Filters\SelectFilter;
 use Google\Service\StreetViewPublish\Place;
+use Illuminate\Support\Facades\DB;
 
 class MerchantOfferResource extends Resource
 {
@@ -329,6 +332,10 @@ class MerchantOfferResource extends Resource
                     ->label('ID')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('campaign.name')
+                    ->url(fn ($record) => (isset($record->campaign)) ? route('filament.resources.merchant-offer-campaigns.edit', $record->campaign) : null)
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->getStateUsing(function ($record) {
                         $name = $record->name;
@@ -343,6 +350,17 @@ class MerchantOfferResource extends Resource
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(MerchantOffer::STATUS)
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\BadgeColumn::make('available_for_web')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
                     ->colors([
                         'secondary' => 0,
                         'success' => 1,
@@ -371,7 +389,37 @@ class MerchantOfferResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                // filter by available_at and available_until date range
+                // filter by campaign relation
+                SelectFilter::make('campaign_id')
+                    ->label('Campaign')
+                    ->searchable()
+                    ->options(function () {
+                        return MerchantOfferCampaign::select('id', DB::raw("CONCAT(name, ' (', sku, ')') as name"))
+                            ->get()
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->relationship('campaign', 'name'),
+
+                Filter::make('available_for_web')
+                    ->form([
+                        Select::make('available_for_web')
+                            ->options([
+                                0 => 'No',
+                                1 => 'Yes',
+                            ])
+                            ->default(0)
+                            ->required(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['available_for_web'],
+                                fn(Builder $query, $status): Builder => $query->where('available_for_web', $status),
+                            );
+                    }),
+
+                 // filter by available_at and available_until date range
                 Filter::make('availability')
                     ->form([
                         DatePicker::make('available_at'),
@@ -503,6 +551,28 @@ class MerchantOfferResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+
+                // bulk action toggle available_for_web
+                Tables\Actions\BulkAction::make('toggle_available_for_web')
+                    ->label('Toggle Available for Web')
+                    ->form([
+                        Toggle::make('available_for_web')
+                            ->default(true)
+                            ->required(),
+                    ])
+                    ->action(function (Collection $records, array $data): void {
+                       // mass update available_for_web for records
+                       MerchantOffer::whereIn('id', $records->pluck('id'))
+                           ->update(['available_for_web' => $data['available_for_web']]);
+
+                        Notification::make()
+                            ->success()
+                            ->title('Successfully updated '.$records->count().' offers')
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
+
                 Tables\Actions\BulkAction::make('update_status')
                     ->hidden(fn () => auth()->user()->hasRole('merchant'))
                     ->label('Update Status')

@@ -30,9 +30,10 @@ class MediaResource extends JsonResource
         // video resolutions refer to VideoJob
         if (str_contains($this->mime_type, 'video') && $this->video_resolutions) {
             $response['resolutions'] = [
-                'low' => $this->video_resolutions['low'] ?? null,
-                'medium' => $this->video_resolutions['medium'] ?? null,
-                'high' => $this->video_resolutions['high'] ?? null,
+                'abr' => $this->video_resolutions['abr'] ?? null,
+                // 'low' => $this->video_resolutions['low'] ?? null,
+                // 'medium' => $this->video_resolutions['medium'] ?? null,
+                // 'high' => $this->video_resolutions['high'] ?? null,
             ];
         }
 

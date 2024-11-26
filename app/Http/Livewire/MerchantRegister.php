@@ -89,7 +89,7 @@ class MerchantRegister extends Component implements HasForms
             // 'business_hours.*.day' => 'required',
             // 'business_hours.*.open_time' => 'required',
             // 'business_hours.*.close_time' => 'required',
-            'company_email' => 'required|email|unique:users,email',
+            'company_email' => 'required|email',
             // 'password' => 'required',
             // 'passwordConfirmation' => 'required|same:password',
         ]);
@@ -116,7 +116,7 @@ class MerchantRegister extends Component implements HasForms
             if (!$user) {
                 $user = User::create([
                     'name' => $data['brand_name'],
-                    'email' => $data['company_email'],
+                    // 'email' => $data['company_email'],
                     'phone_no' => $data['business_phone_no'],
                     'phone_country_code' => $data['phone_country_code'],
                     'password' => bcrypt($password),
@@ -415,7 +415,7 @@ class MerchantRegister extends Component implements HasForms
                             'phone_country_code' => 'required|max:255',
                             'business_phone_no' => 'required|max:255',
                             // 'business_phone_no' => 'required|max:255|unique:users,phone_no',
-                            'company_email' => 'required|email|unique:users,email|unique:merchants,email',
+                            'company_email' => 'required|email',
                         ])->validate();
                     }),
                 Wizard\Step::make('Company')

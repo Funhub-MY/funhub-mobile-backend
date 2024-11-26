@@ -1753,11 +1753,13 @@ class ArticleController extends Controller
             ->published()
             ->where('visibility', Article::VISIBILITY_PUBLIC);
 
-        // pass to query builder
-        $data = $this->articleQueryBuilder($query, $request, false);
+        $query = $this->articleQueryBuilder($query, $request, false);
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
+        // get location IDs from the paginated data
         $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
 
+        // get stores with offers
         $storesWithOffers = DB::table('locatables as store_locatables')
             ->whereIn('store_locatables.location_id', $locationIds)
             ->where('store_locatables.locatable_type', Store::class)
@@ -1765,12 +1767,14 @@ class ArticleController extends Controller
             ->join('merchant_offers', function ($join) {
                 $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
                     ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('available_for_web', true)
                     ->where('merchant_offers.available_at', '<=', now())
                     ->where('merchant_offers.available_until', '>=', now());
             })
             ->pluck('store_locatables.location_id')
             ->unique();
 
+        // set has_merchant_offer on the paginated data
         $data->each(function ($article) use ($storesWithOffers) {
             if ($article->location->isNotEmpty()) {
                 $articleLocationId = $article->location->first()->id;
@@ -1779,8 +1783,6 @@ class ArticleController extends Controller
                 $article->has_merchant_offer = false;
             }
         });
-
-        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
 
         return PublicArticleResource::collection($data);
     }
@@ -1817,7 +1819,6 @@ class ArticleController extends Controller
             })
             ->with('user', 'media', 'location', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
-            // withCount comment where dont have parent_id
             ->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
@@ -1825,6 +1826,26 @@ class ArticleController extends Controller
                 });
             }])
             ->first();
+
+        if ($article && $article->location->isNotEmpty()) {
+            $locationIds = $article->location->pluck('id')->toArray();
+            $hasOffer = DB::table('locatables as store_locatables')
+                ->whereIn('store_locatables.location_id', $locationIds)
+                ->where('store_locatables.locatable_type', Store::class)
+                ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                ->join('merchant_offers', function ($join) {
+                    $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                        ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                        ->where('available_for_web', true)
+                        ->where('merchant_offers.available_at', '<=', now())
+                        ->where('merchant_offers.available_until', '>=', now());
+                })
+                ->exists();
+
+            $article->has_merchant_offer = $hasOffer;
+        } else {
+            $article->has_merchant_offer = false;
+        }
 
         return response()->json([
             'article' => new PublicArticleResource($article)
@@ -1845,10 +1866,7 @@ class ArticleController extends Controller
      */
     public function getPublicArticleSingleOffers(Article $article)
     {
-        // Get all article location IDs
         $locationIds = $article->location->pluck('id')->toArray();
-
-        // Get store IDs with available merchant offers matching the article locations
         $storeIdsWithOffers = DB::table('locatables as store_locatables')
             ->whereIn('store_locatables.location_id', $locationIds)
             ->where('store_locatables.locatable_type', Store::class)
@@ -1856,20 +1874,29 @@ class ArticleController extends Controller
             ->join('merchant_offers', function ($join) {
                 $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
                     ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('available_for_web', true)
                     ->where('merchant_offers.available_at', '<=', now())
                     ->where('merchant_offers.available_until', '>=', now());
             })
             ->pluck('merchant_offer_stores.merchant_offer_id')
             ->unique();
 
-        // Retrieve the merchant offers associated with the store IDs
         $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
-            ->with('merchant')
+            ->with([
+                'media',
+                'store',
+                'stores.location',
+                'stores.storeRatings',
+                'user.merchant.media',
+                'categories',
+                'interactions',
+                'views',
+                'location.ratings'
+            ])
             ->where('available_for_web', true)
             ->published()
             ->available()
             ->paginate(config('app.paginate_per_page'));
-
         return PublicMerchantOfferResource::collection($merchantOffers);
     }
 

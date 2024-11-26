@@ -27,7 +27,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     // public routes for articles
     Route::get('public_articles', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticles']);
     Route::get('public_articles_single', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticleSingle']);
-    Route::get('public_articles_single/{id}/offers', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticleSingleOffers']);
+    Route::get('public_articles_single/{article}/offers', [\App\Http\Controllers\Api\ArticleController::class, 'getPublicArticleSingleOffers']);
     Route::get('public_article', [\App\Http\Controllers\Api\ArticleController::class, 'getArticleForPublicView']); // share link
 
     // public routes for merchant offers
@@ -40,6 +40,14 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
         Route::group(['prefix' => 'external'], function () {
             Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
             Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
+
+            //  Kenneth
+            Route::get('merchants', [\App\Http\Controllers\Api\ExternalSyncController::class, 'merchants']);
+            Route::get('merchant_categories', [\App\Http\Controllers\Api\ExternalSyncController::class, 'merchant_categories']);
+            Route::post('campaigns', [\App\Http\Controllers\Api\ExternalSyncController::class, 'campaigns']);
+            Route::post('offer_overview', [\App\Http\Controllers\Api\ExternalSyncController::class, 'offer_overview']);
+            Route::post('offer_lists', [\App\Http\Controllers\Api\ExternalSyncController::class, 'offer_lists']);
+
         });
     });
 
