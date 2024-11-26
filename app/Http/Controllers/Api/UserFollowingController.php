@@ -122,26 +122,32 @@ class UserFollowingController extends Controller
     {
          // check if user profile is private and user already requesting follow, if yes delete the follow request
          $user = User::find($request->user_id);
-         if ($user->profile_is_private) {
-             $followRequest = FollowRequest::where('user_id', auth()->id())
-                 ->where('following_id', $request->user_id)
-                 ->first();
-             if ($followRequest) {
-                // delete any follow requests first
-                 $followRequest->delete();
-				 return response()->json([
-					 'message' => __('messages.success.user_following_controller.Follow_request_removed'),
-					 'status' => 'request_removed'
-				 ], 200);
-             }
-         }
 
-        // check if user already following user or not
-        if (!auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
-            return response()->json([
-                'message' => __('messages.error.user_following_controller.You_are_not_following_this_user')
-            ], 400);
-        }
+		// Check and delete follow request if exists
+		$followRequest = FollowRequest::where('user_id', auth()->id())
+			->where('following_id', $request->user_id)
+			->first();
+
+		if ($followRequest) {
+			$followRequest->delete();
+		}
+
+		// Check if user is being followed
+		$isFollowing = auth()->user()->followings()->where('following_id', $request->user_id)->exists();
+
+		if (!$isFollowing) {
+			// Return specific response if only the follow request existed
+			if ($followRequest) {
+				return response()->json([
+					'message' => __('messages.success.user_following_controller.Follow_request_removed'),
+					'status' => 'request_removed',
+				], 200);
+			}
+
+			return response()->json([
+				'message' => __('messages.error.user_following_controller.You_are_not_following_this_user'),
+			], 400);
+		}
 
         // logged in user unfollow anothe user
         auth()->user()->followings()->detach($request->user_id);
