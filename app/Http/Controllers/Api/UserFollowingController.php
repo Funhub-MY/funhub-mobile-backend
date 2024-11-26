@@ -130,8 +130,8 @@ class UserFollowingController extends Controller
                 // delete any follow requests first
                  $followRequest->delete();
 				 return response()->json([
-					 'message' => __('messages.success.user_following_controller.You_are_now_unfollowing_this_user'),
-					 'status' => 'unfollowed'
+					 'message' => __('messages.success.user_following_controller.Follow_request_removed'),
+					 'status' => 'success'
 				 ], 200);
              }
          }
