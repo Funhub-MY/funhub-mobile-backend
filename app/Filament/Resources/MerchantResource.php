@@ -119,28 +119,34 @@ class MerchantResource extends Resource
                                     ->unique(Merchant::class, 'redeem_code', ignoreRecord: true)
                                     ->helperText('Auto-generated, used when cashier validates merchant offers, will be provided to user during offer redemption in store.123'),
 
+                                // TextInput::make('email')
+                                //     ->label('Email (used for Login)')
+                                //     ->email(true)
+                                //     ->helperText('System auto send an email with their Login Email, Password to this address when created.')
+                                //     ->required()
+                                //     ->rules(['email', 'required', function ($context, ?Model $record) {
+                                //         return function (string $attribute, $value, Closure $fail) use ($context, $record) {
+                                //             if ($context === 'create' || !$record) {
+                                //                 $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
+                                //                     ->exists();
+                                //             } elseif ($context === 'edit' && $record instanceof Model)  {
+                                //                 $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
+                                //                     ->where('id', '!=', $record->user_id) // excluding current user record in the table
+                                //                     ->exists();
+                                //             }
+
+                                //             // Check the result and fail if the email already exists
+                                //             if ($is_user_exists) {
+                                //                 $fail('The :attribute is exists');
+                                //             }
+                                //         };
+                                //     }]),
+
                                 TextInput::make('email')
                                     ->label('Email (used for Login)')
                                     ->email(true)
-                                    ->helperText('System auto send an email with their Login Email, Password to this address when created.')
                                     ->required()
-                                    ->rules(['email', 'required', function ($context, ?Model $record) {
-                                        return function (string $attribute, $value, Closure $fail) use ($context, $record) {
-                                            if ($context === 'create' || !$record) {
-                                                $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
-                                                    ->exists();
-                                            } elseif ($context === 'edit' && $record instanceof Model)  {
-                                                $is_user_exists = User::where('email', $value) // check if email already existed in the User table,
-                                                    ->where('id', '!=', $record->user_id) // excluding current user record in the table
-                                                    ->exists();
-                                            }
-
-                                            // Check the result and fail if the email already exists
-                                            if ($is_user_exists) {
-                                                $fail('The :attribute is exists');
-                                            }
-                                        };
-                                    }]),
+                                    ->helperText('System auto send an email with their Login Email, Password to this address when created.'),
 
                                 // categories
                                 Select::make('categories')
@@ -341,7 +347,7 @@ class MerchantResource extends Resource
                         Log::info('[MerchantResource] Reset Password for Merchant ID: '.$record->id. ', triggered by user: '.auth()->user()->id);
 
                         // resent user
-                        $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
+                        // $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
 
                         Notification::make()
                             ->success()
@@ -365,12 +371,37 @@ class MerchantResource extends Resource
                                 $user->password = bcrypt($record->default_password);
                                 $user->save();
                             }
-                            $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
+                            if ($record->user && $record->user->email) {
+                                // if merchant has an associated user with email
+                                $record->user->notify(new MerchantOnboardEmail(
+                                    $record->name,
+                                    $record->user->email,
+                                    $record->default_password,
+                                    $record->redeem_code
+                                ));
 
-                            Notification::make()
-                                ->title('Sent to ' . $record->user->email)
-                                ->success()
-                                ->send();
+                                Notification::make()
+                                    ->title('Sent to ' . $record->user->email)
+                                    ->success()
+                                    ->send();
+
+                            } else if ($record->email) {
+                                \Illuminate\Support\Facades\Notification::route('mail', $record->email)
+                                    ->notify(new MerchantOnboardEmail(
+                                        $record->name,
+                                        $record->email,
+                                        $record->default_password,
+                                        $record->redeem_code
+                                    ));
+                            } else {
+                                // log error if no email found
+                                Log::error('[MerchantResource] Email not found for merchant id: ' . $record->id);
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Email not found for merchant ID: ' . $record->id)
+                                    ->send();
+                                return;
+                            }
                         }
                     })
                     ->requiresConfirmation()
