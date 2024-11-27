@@ -315,6 +315,20 @@ class MerchantResource extends Resource
                 //     ->searchable()
                 //     ->url(fn ($record) => route('filament.resources.users.view', $record->user))
                 //     ->label('Linked User Account'),
+                /**
+                 * Add the checking to prevent error due to the new merchant register from merchant portal won't have the user id
+                 **/
+                Tables\Columns\TextColumn::make('user.name')
+                    ->formatStateUsing(function ($record) {
+                        return $record->user 
+                            ? ($record->has_auto_linked_user 
+                                ? $record->user->name . ' (Auto Linked)' 
+                                : $record->user->name)
+                            : 'No Linked User';
+                    })
+                    ->searchable()
+                    ->url(fn ($record) => $record->user ? route('filament.resources.users.view', $record->user) : null)
+                    ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_name'),
                 Tables\Columns\TextColumn::make('redeem_code'),
                 Tables\Columns\TextColumn::make('business_phone_no'),
