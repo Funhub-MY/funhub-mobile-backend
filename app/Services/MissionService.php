@@ -72,12 +72,6 @@ class MissionService
      */
     private function isMissionEligible(Mission $mission, User $user): bool
     {
-        Log::info('Checking mission eligibility', [
-            'mission_id' => $mission->id,
-            'frequency' => $mission->frequency,
-            'now' => now()->toDateTimeString()
-        ]);
-
         $latestParticipation = $mission->participants()
             ->where('user_id', $user->id)
             ->orderByDesc('missions_users.created_at')
@@ -103,16 +97,16 @@ class MissionService
             default => true,
         };
 
-        Log::info('Mission eligibility check result', [
-            'mission_id' => $mission->id,
-            'frequency' => $mission->frequency,
-            'is_eligible' => $isEligible,
-            'started_at' => $startedAt ? $startedAt->toDateTimeString() : null,
-            'is_completed' => $latestParticipation->pivot->is_completed,
-            'claimed_at' => $latestParticipation->pivot->claimed_at,
-            'latest_participation_id' => $latestParticipation->pivot->id,
-            'is_today' => $startedAt ? $startedAt->isToday() : null
-        ]);
+        // Log::info('Mission eligibility check result', [
+        //     'mission_id' => $mission->id,
+        //     'frequency' => $mission->frequency,
+        //     'is_eligible' => $isEligible,
+        //     'started_at' => $startedAt ? $startedAt->toDateTimeString() : null,
+        //     'is_completed' => $latestParticipation->pivot->is_completed,
+        //     'claimed_at' => $latestParticipation->pivot->claimed_at,
+        //     'latest_participation_id' => $latestParticipation->pivot->id,
+        //     'is_today' => $startedAt ? $startedAt->isToday() : null
+        // ]);
 
         return $isEligible;
     }
@@ -134,17 +128,59 @@ class MissionService
             Log::error('Failed to get or create user mission', [
                 'mission_id' => $mission->id,
                 'user_id' => $user->id,
+                'event_type' => $eventType
             ]);
             return;
         }
 
-        // only update progress if mission is not completed
-        // exception: For daily/monthly missions, we allow updates on the same day/month even if completed
-        // for accumulated missions, we allow updates if it's been claimed
-        $shouldUpdate = !$userMission->pivot->is_completed || 
+        // For accumulated missions, check if latest instance is completed and claimed
+        if ($mission->frequency === 'accumulated' && 
+            $userMission->pivot->is_completed && 
+            $userMission->pivot->claimed_at) {
+            
+            Log::info('Creating new accumulated mission instance - previous one completed and claimed', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'previous_instance_id' => $userMission->pivot->id
+            ]);
+
+            // Create new progress record with initial values
+            $initialValues = collect($mission->events)
+                ->mapWithKeys(fn ($event) => [$event => 0])
+                ->toArray();
+
+            $user->missionsParticipating()->attach($mission->id, [
+                'started_at' => now(),
+                'current_values' => json_encode($initialValues),
+                'is_completed' => false,
+                'completed_at' => null,
+                'claimed_at' => null
+            ]);
+
+            // Get the newly created mission instance
+            $userMission = $user->missionsParticipating()
+                ->where('mission_id', $mission->id)
+                ->orderByPivot('id', 'desc')
+                ->first();
+
+            Log::info('New accumulated mission instance created', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'new_instance_id' => $userMission->pivot->id,
+                'is_completed' => $userMission->pivot->is_completed,
+                'claimed_at' => $userMission->pivot->claimed_at,
+                'current_values' => $userMission->pivot->current_values
+            ]);
+        }
+
+        // for accumulated missions, we allow updates if:
+        // 1. Mission is not completed, or
+        // 2. Mission is completed but not claimed (for manual claim missions)
+        $shouldUpdate = 
+            !$userMission->pivot->is_completed || 
+            ($mission->frequency === 'accumulated' && !$userMission->pivot->claimed_at) ||
             ($mission->frequency === 'daily' && Carbon::parse($userMission->pivot->started_at)->isToday()) ||
-            ($mission->frequency === 'monthly' && Carbon::parse($userMission->pivot->started_at)->isSameMonth(now())) ||
-            ($mission->frequency === 'accumulated' && $userMission->pivot->claimed_at);
+            ($mission->frequency === 'monthly' && Carbon::parse($userMission->pivot->started_at)->isSameMonth(now()));
 
         if ($shouldUpdate) {
             $this->updateProgress($userMission, $mission, $eventType);
@@ -173,7 +209,7 @@ class MissionService
         ]);
 
         // get current active mission progress
-        $userMission = $user->missionsParticipating()
+        $userMissionQuery = $user->missionsParticipating()
             ->where('mission_id', $mission->id)
             ->where(function ($query) use ($mission) {
                 $query->where('is_completed', false)
@@ -181,6 +217,10 @@ class MissionService
                         $query->orWhere(function($q) {
                             $q->where('is_completed', true)
                                 ->whereNull('claimed_at');
+                        })->orWhere(function($q) {
+                            $q->where('is_completed', true)
+                                ->whereNotNull('claimed_at')
+                                ->whereRaw('missions_users.id = (SELECT id FROM missions_users WHERE mission_id = missions_users.mission_id AND user_id = missions_users.user_id ORDER BY created_at DESC LIMIT 1)');
                         });
                     });
             })
@@ -189,9 +229,15 @@ class MissionService
             })
             ->when($mission->frequency === 'monthly', function($query) {
                 return $query->where('started_at', '>=', now()->startOfMonth());
-            })
-            ->orderByDesc('missions_users.created_at')
-            ->first();
+            });
+
+        if ($mission->frequency === 'accumulated') {
+            $userMissionQuery->orderByDesc('missions_users.id'); // get latest started record by id
+        } else {
+            $userMissionQuery->orderBy('missions_users.created_at', 'desc');
+        }
+
+        $userMission = $userMissionQuery->first();
 
         if (!$userMission) {
             Log::info('Creating new mission progress', [
@@ -236,6 +282,9 @@ class MissionService
             if ($userMission) {
                 $userMission->pivot->current_values = json_encode($currentValues);
                 $userMission->pivot->save();
+
+                // Send mission started notification when creating new progress
+                $this->sendMissionStartedNotification($mission, $user);
             }
         }
 
@@ -284,25 +333,28 @@ class MissionService
                         'frequency' => $mission->frequency
                     ]);
 
-                    // For accumulated missions, we update both is_completed and claimed_at when auto-disbursing
-                    $updateData = [
-                        'is_completed' => true,
-                        'completed_at' => now(),
-                    ];
+                    // Only update completion status and disburse rewards if mission is not already completed and claimed
+                    if (!$userMission->pivot->is_completed || !$userMission->pivot->claimed_at) {
+                        // For accumulated missions, we update both is_completed and claimed_at when auto-disbursing
+                        $updateData = [
+                            'is_completed' => true,
+                            'completed_at' => now(),
+                        ];
 
-                    if ($mission->auto_disburse_rewards) {
-                        $updateData['claimed_at'] = now();
-                    }
+                        if ($mission->auto_disburse_rewards) {
+                            $updateData['claimed_at'] = now();
+                        }
 
-                    // Update completion status directly
-                    $userMission->pivot->update($updateData);
+                        // Update completion status directly
+                        $userMission->pivot->update($updateData);
 
-                    // Send mission completed notification
-                    $this->sendMissionCompletedNotification($mission, $userMission->user);
+                        // Send mission completed notification
+                        $this->sendMissionCompletedNotification($mission, $userMission->user);
 
-                    // Handle auto-disbursement if enabled
-                    if ($mission->auto_disburse_rewards) {
-                        $this->disburseReward($mission, $userMission->user);
+                        // Handle auto-disbursement if enabled
+                        if ($mission->auto_disburse_rewards) {
+                            $this->disburseReward($mission, $userMission->user);
+                        }
                     }
                 }
             });
@@ -420,7 +472,7 @@ class MissionService
                 'reward_quantity' => $mission->reward_quantity
             ]);
 
-            // Pprocess reward based on type
+            // process reward based on type
             $this->processReward($mission, $user);
 
             // Update claimed status for manual claims

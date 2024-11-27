@@ -661,96 +661,103 @@ test('daily mission progress resets at midnight', function () {
     );
 });
 
-// test('accumulated mission with follow events can be repeated', function () {
-//     Notification::fake();
+test('accumulated mission with follow events can be repeated', function () {
+    Notification::fake();
 
-//     $component = RewardComponent::where('name', '鸡蛋')->first();
-//     $missionService = app(MissionService::class);
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+    $missionService = app(MissionService::class);
 
-//     // Create accumulated mission for following users
-//     $mission = Mission::factory()->create([
-//         'name' => 'Follow 5 Users Mission',
-//         'description' => 'Follow 5 users to get reward',
-//         'events' => ['user_followed'],
-//         'values' => [5],
-//         'missionable_type' => RewardComponent::class,
-//         'missionable_id' => $component->id,
-//         'reward_quantity' => 1,
-//         'frequency' => 'accumulated',
-//         'status' => 1,
-//         'auto_disburse_rewards' => true,
-//         'user_id' => $this->user->id,
-//         'enabled_at' => now()
-//     ]);
+    // Create accumulated mission for following users
+    $mission = Mission::factory()->create([
+        'name' => 'Follow 5 Users Mission',
+        'description' => 'Follow 5 users to get reward',
+        'events' => ['user_followed'],
+        'values' => [5],
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'reward_quantity' => 1,
+        'frequency' => 'accumulated',
+        'status' => 1,
+        'auto_disburse_rewards' => true,
+        'user_id' => $this->user->id,
+        'enabled_at' => now()
+    ]);
 
-//     // Create users to follow
-//     $usersToFollow = User::factory(10)->create();
+    // Create users to follow
+    $usersToFollow = User::factory(10)->create();
     
-//     // First round - Follow first 5 users
-//     foreach ($usersToFollow->take(5) as $index => $userToFollow) {
-//         $response = $this->postJson('/api/v1/user/follow', [
-//             'user_id' => $userToFollow->id,
-//         ]);
-//         $response->assertOk();
+    // First round - Follow first 5 users
+    foreach ($usersToFollow->take(5) as $index => $userToFollow) {
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $userToFollow->id,
+        ]);
+        $response->assertOk();
         
-//         $missionService->handleEvent('user_followed', $this->user);
+        $missionService->handleEvent('user_followed', $this->user);
         
-//         // Check progress after each follow
-//         $userMission = $this->user->missionsParticipating()
-//             ->where('mission_id', $mission->id)
-//             ->orderByDesc('missions_users.id')
-//             ->first();
-            
-//         $currentValues = json_decode($userMission->pivot->current_values, true);
-//         expect($currentValues['user_followed'])->toBe($index + 1);
+        // Check progress after each follow
+        $userMission = $this->user->missionsParticipating()
+            ->where('mission_id', $mission->id)
+            ->orderByDesc('missions_users.id')
+            ->first();
         
-//         // On last follow, should complete and auto-disburse
-//         if ($index === 4) {
-//             expect($userMission->pivot->is_completed)->toBeTrue();
-//             expect($userMission->pivot->claimed_at)->not->toBeNull();
-//         }
-//     }
+        if ($index < 4) {
+            // Not completed yet
+            $currentValues = json_decode($userMission->pivot->current_values, true);
+            expect($currentValues['user_followed'])->toBe($index + 1);
+            expect($userMission->pivot->is_completed)->toBe(0);
+            expect($userMission->pivot->claimed_at)->toBeNull();
+        }
+    }
 
-//     // Verify first reward was disbursed
-//     $firstBalance = $this->getJson('/api/v1/points/components/balance?type=鸡蛋')
-//         ->assertOk()
-//         ->json('balance');
-//     expect($firstBalance)->toBe(1);
+    // Verify first reward was disbursed
+    $firstBalance = $this->getJson('/api/v1/points/components/balance?type=鸡蛋')
+        ->assertOk()
+        ->json('balance');
+    expect($firstBalance)->toBe(1);
 
-//     // Second round - Follow next 5 users
-//     foreach ($usersToFollow->skip(5)->take(5) as $index => $userToFollow) {
-//         $response = $this->postJson('/api/v1/user/follow', [
-//             'user_id' => $userToFollow->id,
-//         ]);
-//         $response->assertOk();
-        
-//         $missionService->handleEvent('user_followed', $this->user);
-        
-//         // Check progress of new mission instance
-//         $userMission = $this->user->missionsParticipating()
-//             ->where('mission_id', $mission->id)
-//             ->orderByDesc('missions_users.id')
-//             ->first();
-            
-//         $currentValues = json_decode($userMission->pivot->current_values, true);
-//         expect($currentValues['user_followed'])->toBe($index + 1);
-        
-//         // On last follow, should complete and auto-disburse again
-//         if ($index === 4) {
-//             expect($userMission->pivot->is_completed)->toBeTrue();
-//             expect($userMission->pivot->claimed_at)->not->toBeNull();
-//         }
-//     }
+    sleep(5);
 
-//     // Verify second reward was disbursed
-//     $finalBalance = $this->getJson('/api/v1/points/components/balance?type=鸡蛋')
-//         ->assertOk()
-//         ->json('balance');
-//     expect($finalBalance)->toBe(2);
+    // Second round - Follow next 5 users
+    $counter = 0;
+    foreach ($usersToFollow->skip(5)->take(5) as $index => $userToFollow) {
+        $response = $this->postJson('/api/v1/user/follow', [
+            'user_id' => $userToFollow->id,
+        ]);
+        $response->assertOk();
+        
+        $missionService->handleEvent('user_followed', $this->user);
+        
+        // Check progress of new mission instance
+        $userMission = $this->user->missionsParticipating()
+            ->where('mission_id', $mission->id)
+            ->orderByDesc('missions_users.id')
+            ->first();
 
-//     // Verify notifications were sent
-//     Notification::assertSentTimes(
-//         \App\Notifications\RewardReceivedNotification::class,
-//         2
-//     );
-// });
+        $currentValues = json_decode($userMission->pivot->current_values, true);
+        Log::info('[TEST] Current Values' , [
+            $currentValues['user_followed'],
+            $counter + 1
+        ]);
+
+        expect($currentValues['user_followed'])->toBe($counter + 1);        
+        // On last follow, should complete and auto-disburse again
+        if ($index === 4) {
+            expect($userMission->pivot->is_completed)->toBe(1);
+            expect($userMission->pivot->claimed_at)->not->toBeNull();
+        }
+        $counter++;
+    }
+
+    // Verify second reward was disbursed
+    $finalBalance = $this->getJson('/api/v1/points/components/balance?type=鸡蛋')
+        ->assertOk()
+        ->json('balance');
+    expect($finalBalance)->toBe(2);
+
+    // Verify notifications were sent
+    Notification::assertSentTimes(
+        \App\Notifications\RewardReceivedNotification::class,
+        2
+    );
+});
