@@ -10,6 +10,7 @@ use App\Models\FollowRequest;
 use App\Models\User;
 use App\Notifications\UserFollowed;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserFollowingController extends Controller
@@ -32,67 +33,76 @@ class UserFollowingController extends Controller
      */
     public function follow(Request $request)
     {
-        // ensure user_id is not self
-        if ($request->user_id === auth()->user()->id) {
-            return response()->json([
-                'message' => __('messages.error.user_following_controller.You_cannot_follow_yourself')
-            ], 400);
-        }
+		return DB::transaction(function() use ($request) {
+			// ensure user_id is not self
+			if ($request->user_id === auth()->user()->id) {
+				return response()->json([
+					'message' => __('messages.error.user_following_controller.You_cannot_follow_yourself')
+				], 400);
+			}
 
-        // check if user already following user or not
-        if (auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
-            return response()->json([
-                'message' => __('messages.error.user_following_controller.You_are_already_following_this_user')
-            ], 400);
-        }
+			// Lock the row for update to prevent race conditions
+			$existingFollow = auth()->user()
+				->followings()
+				->where('following_id', $request->user_id)
+				->lockForUpdate()
+				->exists();
 
-        // if user profile is private then create a new follow request if not exist
-        $user = User::find($request->user_id);
-        if ($user->profile_is_private) {
-            $followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
-            if (!$followRequest) {
-                auth()->user()->followRequests()->create([
-                    'following_id' => $request->user_id
-                ]);
+			// check if user already following user or not
+			if ($existingFollow) {
+				return response()->json([
+					'message' => __('messages.error.user_following_controller.You_are_already_following_this_user')
+				], 400);
+			}
 
-                if ($user && $user->id !== auth()->user()->id) {
-                    $locale = $user->last_lang ?? config('app.locale');
-                    $user->notify((new \App\Notifications\NewFollowRequest(auth()->user()))->locale($locale));
-                }
-                return response()->json([
-                    'message' => __('messages.success.user_following_controller.Follow_request_sent'),
-                    'status' => 'requested'
-                ], 200);
-            }
-        }
+			// if user profile is private then create a new follow request if not exist
+			$user = User::find($request->user_id);
+			if ($user->profile_is_private) {
+				$followRequest = auth()->user()->followRequests()->where('following_id', $request->user_id)->first();
+				if (!$followRequest) {
+					auth()->user()->followRequests()->create([
+						'following_id' => $request->user_id
+					]);
 
-        // logged in user follow anothe user
-        auth()->user()->followings()->attach($request->user_id);
+					if ($user && $user->id !== auth()->user()->id) {
+						$locale = $user->last_lang ?? config('app.locale');
+						$user->notify((new \App\Notifications\NewFollowRequest(auth()->user()))->locale($locale));
+					}
+					return response()->json([
+						'message' => __('messages.success.user_following_controller.Follow_request_sent'),
+						'status' => 'requested'
+					], 200);
+				}
+			}
 
-        // remove model cache
-        auth()->user()->load('followings');
+			// logged in user follow anothe user
+			auth()->user()->followings()->attach($request->user_id);
 
-        $followedUser = User::find($request->user_id);
-        event(new FollowedUser(auth()->user(), $followedUser));
+			// remove model cache
+			auth()->user()->load('followings');
 
-        // ensure not sending to self
-        if ($followedUser && $followedUser->id !== auth()->user()->id) {
-            $lastNotificationSentAt = cache()->get('follow_notification_' . auth()->id() . '_' . $followedUser->id);
+			$followedUser = User::find($request->user_id);
+			event(new FollowedUser(auth()->user(), $followedUser));
 
-            // cool down for 5 minutes
-            if (!$lastNotificationSentAt || now()->diffInMinutes($lastNotificationSentAt) >= config('app.cooldowns.following_a_user_notification')) {
-                $locale = $followedUser->last_lang ?? config('app.locale');
-                $followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
+			// ensure not sending to self
+			if ($followedUser && $followedUser->id !== auth()->user()->id) {
+				$lastNotificationSentAt = cache()->get('follow_notification_' . auth()->id() . '_' . $followedUser->id);
 
-                // Set the cache with a 5-minute timeout
-                cache()->put('follow_notification_' . auth()->id() . '_' . $followedUser->id, now(), now()->addMinutes(config('app.cooldowns.following_a_user_notification')));
-            }
-        }
+				// cool down for 5 minutes
+				if (!$lastNotificationSentAt || now()->diffInMinutes($lastNotificationSentAt) >= config('app.cooldowns.following_a_user_notification')) {
+					$locale = $followedUser->last_lang ?? config('app.locale');
+					$followedUser->notify((new \App\Notifications\Newfollower(auth()->user()))->locale($locale));
 
-        return response()->json([
-            'message' => __('messages.success.user_following_controller.You_are_now_following_this_user'),
-            'status' => 'followed'
-        ], 200);
+					// Set the cache with a 5-minute timeout
+					cache()->put('follow_notification_' . auth()->id() . '_' . $followedUser->id, now(), now()->addMinutes(config('app.cooldowns.following_a_user_notification')));
+				}
+			}
+
+			return response()->json([
+				'message' => __('messages.success.user_following_controller.You_are_now_following_this_user'),
+				'status' => 'followed'
+			], 200);
+		});
     }
 
     /**
@@ -112,22 +122,32 @@ class UserFollowingController extends Controller
     {
          // check if user profile is private and user already requesting follow, if yes delete the follow request
          $user = User::find($request->user_id);
-         if ($user->profile_is_private) {
-             $followRequest = FollowRequest::where('user_id', auth()->id())
-                 ->where('following_id', $request->user_id)
-                 ->first();
-             if ($followRequest) {
-                // delete any follow requests first
-                 $followRequest->delete();
-             }
-         }
 
-        // check if user already following user or not
-        if (!auth()->user()->followings()->where('following_id', $request->user_id)->exists()) {
-            return response()->json([
-                'message' => __('messages.error.user_following_controller.You_are_not_following_this_user')
-            ], 400);
-        }
+		// Check and delete follow request if exists
+		$followRequest = FollowRequest::where('user_id', auth()->id())
+			->where('following_id', $request->user_id)
+			->first();
+
+		if ($followRequest) {
+			$followRequest->delete();
+		}
+
+		// Check if user is being followed
+		$isFollowing = auth()->user()->followings()->where('following_id', $request->user_id)->exists();
+
+		if (!$isFollowing) {
+			// Return specific response if only the follow request existed
+			if ($followRequest) {
+				return response()->json([
+					'message' => __('messages.success.user_following_controller.Follow_request_removed'),
+					'status' => 'request_removed',
+				], 200);
+			}
+
+			return response()->json([
+				'message' => __('messages.error.user_following_controller.You_are_not_following_this_user'),
+			], 400);
+		}
 
         // logged in user unfollow anothe user
         auth()->user()->followings()->detach($request->user_id);

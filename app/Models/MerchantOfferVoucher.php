@@ -70,4 +70,16 @@ class MerchantOfferVoucher extends BaseModel implements Auditable
         }
         return false;
     }
+
+    public function campaign()
+    {
+        return $this->hasOneThrough(
+            MerchantOfferCampaign::class,
+            MerchantOffer::class,
+            'id', // foreign key on merchant_offers table
+            'id', // foreign key on merchant_offer_campaigns table
+            'merchant_offer_id', // local key on merchant_offer_vouchers table
+            'merchant_offer_campaign_id' // local key on merchant_offers table
+        );
+    }
 }

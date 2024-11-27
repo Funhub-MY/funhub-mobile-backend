@@ -220,7 +220,7 @@ class StoreTest extends TestCase
         ];
 
         foreach ($menus as $menu) {
-            $merchant->addMedia($menu)->toMediaCollection(Merchant::MEDIA_COLLECTION_MENUS);
+            $store->addMedia($menu)->toMediaCollection(Store::MEDIA_COLLECTION_MENUS);
         }
 
         $response = $this->getJson("/api/v1/stores/{$store->id}/menus");

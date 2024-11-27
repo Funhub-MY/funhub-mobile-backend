@@ -40,7 +40,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\Placeholder;
 
 class ArticleResource extends Resource
 {
@@ -549,8 +551,19 @@ class ArticleResource extends Resource
                         1 => 'Yes',
                     ])
                     ->placeholder('All'),
+
+                // filter by pinned_recommended
                 Tables\Filters\SelectFilter::make('pinned_recommended')
                     ->label('Pinned (Recommended)')
+                    ->options([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->placeholder('All'),
+
+                // filter by available_for_web
+                Tables\Filters\SelectFilter::make('available_for_web')
+                    ->label('Available for Web?')
                     ->options([
                         0 => 'No',
                         1 => 'Yes',
@@ -668,6 +681,55 @@ class ArticleResource extends Resource
                             ->update(['pinned_recommended' => $data['pinned_recommended']]);
                     }
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
+                // bulk action toggle available_for_web
+                Tables\Actions\BulkAction::make('toggle_available_for_web')
+                    ->label('Toggle Available for Web')
+                    ->form([
+                        Toggle::make('available_for_web')
+                            ->label('Available for Web')
+                            ->default(true)
+                            ->required(),
+                        Placeholder::make('max_limit')
+                            ->content('You can only have 5 articles available for web at a time.')
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        // only check limit when enabling web availability
+                        if ($data['available_for_web']) {
+                            // count currently available articles (excluding selected ones)
+                            $currentWebAvailable = Article::where('available_for_web', true)
+                                ->whereNotIn('id', $records->pluck('id'))
+                                ->count();
+                            
+                            // count how many selected articles would be newly enabled
+                            $selectedCount = $records->count();
+                            
+                            // check if adding these would exceed the limit
+                            if (($currentWebAvailable + $selectedCount) > 5) {
+                                Notification::make()
+                                    ->title('Maximum limit reached')
+                                    ->body('You can only have 5 articles available for web at a time. Please unselect some articles.')
+                                    ->danger()
+                                    ->send();
+                                    
+                                return;
+                            }
+                        }
+                        
+                        // Update the records
+                        $records->each(function ($record) use ($data) {
+                            $record->update(['available_for_web' => $data['available_for_web']]);
+                        });
+                        
+                        Notification::make()
+                            ->title('Success')
+                            ->body('Web availability updated successfully')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
+
 				ExportBulkAction::make()
 					->exports([
 						ExcelExport::make()

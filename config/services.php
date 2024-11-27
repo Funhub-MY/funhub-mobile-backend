@@ -80,6 +80,7 @@ return [
     ],
 
     'byteplus' => [
+        'enabled_vod' => env('BYTEPLUS_ENABLED_VOD', false),
         'key' => env('BYTEPLUS_KEY'),
         'secret' => env('BYTEPLUS_SECRET'),
         'vod_space' => env('BYTEPLUS_VOD_SPACE'),

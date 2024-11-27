@@ -10,6 +10,7 @@ use Filament\Resources\Pages\CreateRecord;
 use App\Notifications\MerchantOnboardEmail;
 use App\Filament\Resources\MerchantResource;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CreateMerchant extends CreateRecord
@@ -58,14 +59,27 @@ class CreateMerchant extends CreateRecord
         $email = $this->record->email;
         $password = $this->record->default_password;
 
-        $user = new User([
-            'name' => $name,
-            'email' => $email,
-            'password' => bcrypt($password),
-        ]);
-
-        $user->save();
-
+        $sameEmailUser = User::where('email', $email)->first();
+        $user = null;
+        if ($sameEmailUser) {
+            // create user without email first
+            Log::info('[CreateMerchant] User with same email already exists, creating user without email first', [
+                'email' => $email,
+                'name' => $name,
+            ]);
+            $user = new User([
+                'name' => $name,
+                'password' => bcrypt($password),
+            ]);
+            $user->save();
+        } else {
+            $user = new User([
+                'name' => $name,
+                'email' => $email,
+                'password' => bcrypt($password),
+            ]);
+            $user->save();
+        }
         // attach merchant role
         $user->assignRole('merchant');
 

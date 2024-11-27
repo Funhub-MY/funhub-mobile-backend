@@ -8,6 +8,7 @@ use App\Jobs\UpdateUserLastLang;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class SetLocaleFromHeader
@@ -23,12 +24,12 @@ class SetLocaleFromHeader
     {
         // Get the language from the request header
         $locale = $request->header('X-Locale');
+
         $supportedLocales = ['en', 'zh'];
 
         if (in_array($locale, $supportedLocales)) {
             // Set the locale for the current request
             App::setLocale($locale);
-
             // If the user is authenticated, handle language preference
             if (Auth::check()) {
                 $user = Auth::user();

@@ -21,7 +21,10 @@ class Kernel extends ConsoleKernel
 
         // Every Five Minutes
         $schedule->command('article:publish')->everyFiveMinutes();
-        $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
+
+        if (config('services.byteplus.enabled_vod') == true) {
+            $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
+        }
 
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
@@ -30,8 +33,8 @@ class Kernel extends ConsoleKernel
             $schedule->command('bubble:sync-user-store-ratings')->everyFifteenMinutes();
         }
 
-        // Every Thirty Minutes
-        $schedule->command('city-names:populate')->everyThirtyMinutes();
+		// Every Thirty Minutes
+		$schedule->command('city-names:populate')->everyThirtyMinutes();
         if (config('app.auto_article_categories') == true) {
             $schedule->command('articles:categorize')->everyThirtyMinutes();
         }
@@ -42,6 +45,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:sync-location-as-stores')->hourly();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
+		$schedule->command('redeem:send-review-reminder')->hourly();
 
         // Every Two Hours
         $schedule->command('generate:article-views')->everyTwoHours();
@@ -56,7 +60,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('article:auto-archive')->dailyAt('00:05');
         $schedule->command('merchant-offers:send-expiring-notification')->dailyAt('00:10');
         $schedule->command('merchant-offers:auto-move-vouchers-unsold')->dailyAt('00:15');
-        $schedule->command('redeem:send-review-reminder')->dailyAt('10:00');
     }
 
     /**

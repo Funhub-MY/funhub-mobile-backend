@@ -7,6 +7,7 @@ use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
 use App\Models\Store;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
@@ -34,6 +35,11 @@ class RedeemReview extends Notification
 
         $this->claim_id = null;
         $this->merchant_id = null;
+
+		// Set the locale based on user's preference
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
     }
 
     /**
@@ -49,6 +55,11 @@ class RedeemReview extends Notification
 
     protected function getMessage()
     {
+		// Ensure locale is set before getting translated message
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
+
         return __('messages.notification.fcm.RedemptioReviewReminder', [
             'storeName' => ($this->store) ? $this->store->name : ''
         ]);
@@ -80,6 +91,10 @@ class RedeemReview extends Notification
 
     public function toFcm($notifiable)
     {
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
+
         $this->getClaim();
         $this->getOffer();
 
@@ -117,6 +132,10 @@ class RedeemReview extends Notification
      */
     public function toArray($notifiable)
     {
+		if ($this->user && $this->user->last_lang) {
+			App::setLocale($this->user->last_lang);
+		}
+
         $this->getClaim();
         $this->getOffer();
 
