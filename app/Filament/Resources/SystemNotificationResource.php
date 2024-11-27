@@ -309,6 +309,19 @@ class SystemNotificationResource extends Resource
 
 				Forms\Components\Card::make()
 					->schema([
+						Radio::make('selection_type')
+							->label('Select users method')
+							->options([
+								'select' => 'Select users',
+								'import' => 'Import users list',
+							])
+							->default('select')
+							->reactive()
+							->required()
+							->rules('required')
+							->hidden(fn (Closure $get) => $get('all_active_users') === true)
+							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below')
+							->columnSpan('full'),
 						Select::make('users')
 							->preload()
 							->multiple()
@@ -316,8 +329,7 @@ class SystemNotificationResource extends Resource
 							->relationship('users', 'username')
                             ->options(User::pluck('username', 'id')->toArray())
 							->placeholder('Enter username or select by user status')
-							->hidden(fn (Closure $get) => $get('all_active_users') === true)
-							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below')
+							->hidden(fn (Closure $get) => $get('selection_type') === 'import' || $get('all_active_users') === true)
 							->rules([
 								function (Closure $get) {
 									return function (string $attribute, $value, Closure $fail) use ($get) {
