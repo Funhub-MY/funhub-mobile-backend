@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Merchant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ExternalMerchantCampaignResource extends JsonResource
+class SyncMerchantCampaignResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

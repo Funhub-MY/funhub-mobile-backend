@@ -42,6 +42,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Nette\Utils\Html;
 
+use App\Services\SyncMerchantPortal;
+
 class MerchantResource extends Resource
 {
     protected static ?string $model = Merchant::class;
@@ -306,13 +308,13 @@ class MerchantResource extends Resource
                     ->label('Brand Name')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->formatStateUsing(function ($record) {
-                        return $record->has_auto_linked_user ? $record->user->name. ' (Auto Linked)' : $record->user->name;
-                    })
-                    ->searchable()
-                    ->url(fn ($record) => route('filament.resources.users.view', $record->user))
-                    ->label('Linked User Account'),
+                // Tables\Columns\TextColumn::make('user.name')
+                //     ->formatStateUsing(function ($record) {
+                //         return $record->has_auto_linked_user ? $record->user->name. ' (Auto Linked)' : $record->user->name;
+                //     })
+                //     ->searchable()
+                //     ->url(fn ($record) => route('filament.resources.users.view', $record->user))
+                //     ->label('Linked User Account'),
                 Tables\Columns\TextColumn::make('business_name'),
                 Tables\Columns\TextColumn::make('redeem_code'),
                 Tables\Columns\TextColumn::make('business_phone_no'),
@@ -401,6 +403,11 @@ class MerchantResource extends Resource
                                 $user->password = bcrypt($record->default_password);
                                 $user->save();
                             }
+
+                            // Send approval signal to merchant portal
+                            $syncMerchantPortal = app(SyncMerchantPortal::class);
+                            $syncMerchantPortal->approve($record->id);
+
                             // $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
 
                             Notification::make()
@@ -424,6 +431,10 @@ class MerchantResource extends Resource
                                     ->send();
                             } else {
                                 $record->update(['status' => Merchant::STATUS_REJECTED]);
+
+                                // Send approval signal to merchant portal
+                                $syncMerchantPortal = app(SyncMerchantPortal::class);
+                                $syncMerchantPortal->reject($record->id);
 
                                 Notification::make()
                                     ->success()
