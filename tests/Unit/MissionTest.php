@@ -552,7 +552,6 @@ test('daily mission progress resets at midnight', function () {
 
     $component = RewardComponent::where('name', '鸡蛋')->first();
     $missionService = app(MissionService::class);
-
     $mission = Mission::factory()->create([
         'name' => 'Daily Comment Mission',
         'description' => 'Create 3 comments daily',
@@ -568,20 +567,18 @@ test('daily mission progress resets at midnight', function () {
         'enabled_at' => now()
     ]);
 
-    // Make 2 comments today
+    // day 1: Make 2 comments
     $articles = Article::factory(2)->create();
-    foreach ($articles as $index => $article) {
-        $response = $this->postJson('/api/v1/comments', [
+    foreach ($articles as $article) {
+        $this->postJson('/api/v1/comments', [
             'id' => $article->id,
             'type' => 'article',
-            'body' => "test comment #". $index + 1
-        ]);
-        $response->assertOk();
-
+            'body' => 'test comment'
+        ])->assertOk();
         $missionService->handleEvent('comment_created', $this->user);
     }
 
-    // check today's progress
+    // Check day 1 progress
     $response = $this->getJson('/api/v1/missions');
     $response->assertOk();
 
@@ -593,11 +590,11 @@ test('daily mission progress resets at midnight', function () {
         ->and($missionData['goal'])->toBe(3)
         ->and($missionData['is_completed'])->toBeFalse();
 
-    // simulate next day
+    // Simulate next day
     $this->travel(1)->days();
     Log::info('--- Simulating next day');
 
-    // check progress should be reset
+    // Check progress is reset
     $response = $this->getJson('/api/v1/missions');
     $response->assertOk();
 
@@ -609,34 +606,151 @@ test('daily mission progress resets at midnight', function () {
         ->and($nextDayMissionData['goal'])->toBe(3)
         ->and($nextDayMissionData['is_completed'])->toBeFalse();
 
-    // make new comments on next day
+    // Day 2: Make 3 comments with explicit event handling
+    Log::info('Creating day 2 comments');
     $newArticles = Article::factory(3)->create();
-    foreach ($newArticles as $article) {
+
+    foreach ($newArticles as $index => $article) {
+        Log::info("Creating day 2 comment #". ($index + 1));
+
         $this->postJson('/api/v1/comments', [
             'id' => $article->id,
             'type' => 'article',
-            'body' => 'test comment'
+            'body' => "test comment day 2 #". ($index + 1)
         ])->assertOk();
+
+        Log::info("Handling day 2 comment #".($index + 1)." event");
         $missionService->handleEvent('comment_created', $this->user);
+
+        // Check intermediate progress
+        $progress = DB::table('missions_users')
+            ->where('mission_id', $mission->id)
+            ->where('user_id', $this->user->id)
+            ->whereDate('started_at', now())
+            ->first();
+
+        Log::info("Progress after day 2 comment #". ($index + 1), [
+            'current_values' => $progress->current_values ?? 'null'
+        ]);
     }
 
-    // check new day progress and completion
+    // Check final progress
     $response = $this->getJson('/api/v1/missions');
     $response->assertOk();
 
-    Log::info('--- Checking new day progress and completion');
+    Log::info('--- Checking final progress');
 
     $newProgressData = collect($response->json('data'))
         ->firstWhere('id', $mission->id);
+
+    Log::info('Final mission data', [
+        'progress' => $newProgressData['progress'],
+        'goal' => $newProgressData['goal'],
+        'is_completed' => $newProgressData['is_completed']
+    ]);
 
     expect($newProgressData)->toBeTruthy()
         ->and($newProgressData['progress'])->toBe(3)
         ->and($newProgressData['goal'])->toBe(3)
         ->and($newProgressData['is_completed'])->toBeTrue();
 
-    // verify reward was disbursed
+    // Verify reward
     Notification::assertSentTimes(
         \App\Notifications\RewardReceivedNotification::class,
         1
     );
 });
+
+// test('accumulated mission with follow events can be repeated', function () {
+//     Notification::fake();
+
+//     $component = RewardComponent::where('name', '鸡蛋')->first();
+//     $missionService = app(MissionService::class);
+
+//     // Create accumulated mission for following users
+//     $mission = Mission::factory()->create([
+//         'name' => 'Follow 5 Users Mission',
+//         'description' => 'Follow 5 users to get reward',
+//         'events' => ['user_followed'],
+//         'values' => [5],
+//         'missionable_type' => RewardComponent::class,
+//         'missionable_id' => $component->id,
+//         'reward_quantity' => 1,
+//         'frequency' => 'accumulated',
+//         'status' => 1,
+//         'auto_disburse_rewards' => true,
+//         'user_id' => $this->user->id,
+//         'enabled_at' => now()
+//     ]);
+
+//     // Create users to follow
+//     $usersToFollow = User::factory(10)->create();
+    
+//     // First round - Follow first 5 users
+//     foreach ($usersToFollow->take(5) as $index => $userToFollow) {
+//         $response = $this->postJson('/api/v1/user/follow', [
+//             'user_id' => $userToFollow->id,
+//         ]);
+//         $response->assertOk();
+        
+//         $missionService->handleEvent('user_followed', $this->user);
+        
+//         // Check progress after each follow
+//         $userMission = $this->user->missionsParticipating()
+//             ->where('mission_id', $mission->id)
+//             ->orderByDesc('missions_users.id')
+//             ->first();
+            
+//         $currentValues = json_decode($userMission->pivot->current_values, true);
+//         expect($currentValues['user_followed'])->toBe($index + 1);
+        
+//         // On last follow, should complete and auto-disburse
+//         if ($index === 4) {
+//             expect($userMission->pivot->is_completed)->toBeTrue();
+//             expect($userMission->pivot->claimed_at)->not->toBeNull();
+//         }
+//     }
+
+//     // Verify first reward was disbursed
+//     $firstBalance = $this->getJson('/api/v1/points/components/balance?type=鸡蛋')
+//         ->assertOk()
+//         ->json('balance');
+//     expect($firstBalance)->toBe(1);
+
+//     // Second round - Follow next 5 users
+//     foreach ($usersToFollow->skip(5)->take(5) as $index => $userToFollow) {
+//         $response = $this->postJson('/api/v1/user/follow', [
+//             'user_id' => $userToFollow->id,
+//         ]);
+//         $response->assertOk();
+        
+//         $missionService->handleEvent('user_followed', $this->user);
+        
+//         // Check progress of new mission instance
+//         $userMission = $this->user->missionsParticipating()
+//             ->where('mission_id', $mission->id)
+//             ->orderByDesc('missions_users.id')
+//             ->first();
+            
+//         $currentValues = json_decode($userMission->pivot->current_values, true);
+//         expect($currentValues['user_followed'])->toBe($index + 1);
+        
+//         // On last follow, should complete and auto-disburse again
+//         if ($index === 4) {
+//             expect($userMission->pivot->is_completed)->toBeTrue();
+//             expect($userMission->pivot->claimed_at)->not->toBeNull();
+//         }
+//     }
+
+//     // Verify second reward was disbursed
+//     $finalBalance = $this->getJson('/api/v1/points/components/balance?type=鸡蛋')
+//         ->assertOk()
+//         ->json('balance');
+//     expect($finalBalance)->toBe(2);
+
+//     // Verify notifications were sent
+//     Notification::assertSentTimes(
+//         \App\Notifications\RewardReceivedNotification::class,
+//         2
+//     );
+// });
