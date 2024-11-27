@@ -391,12 +391,7 @@ class SystemNotificationResource extends Resource
 //							}),
                         Toggle::make('all_active_users')
                             ->label('Toggle on to send notification to all active users')
-                            ->reactive()
-							->afterStateUpdated(function (Closure $set, $state) {
-								if ($state) {
-									$set('selection_type', null);
-								}
-							}),
+                            ->reactive(),
                     ])
             ]);
     }
