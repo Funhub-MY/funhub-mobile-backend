@@ -317,10 +317,8 @@ class SystemNotificationResource extends Resource
 							])
 							->reactive()
 							->required()
-							->rules('required')
 							->hidden(fn (Closure $get) => $get('all_active_users') === true)
-							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below')
-							->columnSpan('full'),
+							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below'),
 						Select::make('users')
 							->preload()
 							->multiple()
