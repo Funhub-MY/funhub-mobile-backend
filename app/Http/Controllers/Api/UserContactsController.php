@@ -122,6 +122,7 @@ class UserContactsController extends Controller
     {
         $contacts = UserContact::whereNotNull('related_user_id')
             ->where('imported_by_id', auth()->user()->id)
+			->where('related_user_id','<>', auth()->user()->id)
             ->get();
 
         Log::info('Contacts imported with related user', [
