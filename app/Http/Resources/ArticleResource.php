@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Models\Article;
 use App\Models\Interaction;
 use App\Models\Location;
-use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ArticleResource extends JsonResource
@@ -56,8 +55,8 @@ class ArticleResource extends JsonResource
                 'username' => $this->user->username,
                 'avatar' => $userAvatar,
                 'avatar_thumb' => $this->user->avatar_thumb_url,
-				'following_count' => $this->user->followings()->where('status', User::STATUS_ACTIVE)->count(),
-				'followers_count' => $this->user->followers()->where('status', User::STATUS_ACTIVE)->count(),
+                'following_count' => $this->user_followings_count,
+                'followers_count' => $this->user_followers_count,
                 'has_avatar' => $this->user->hasMedia('avatar'),
                 'is_following' => ($request->user()) ? $this->user->followers->contains($request->user()->id) : false
             ],
