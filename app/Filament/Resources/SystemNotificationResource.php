@@ -310,12 +310,11 @@ class SystemNotificationResource extends Resource
 				Forms\Components\Card::make()
 					->schema([
 						Radio::make('selection_type')
-							->label('Select users method')
+							->label('Select users for sending notification method')
 							->options([
 								'select' => 'Select users',
 								'import' => 'Import users list',
 							])
-							->default('select')
 							->reactive()
 							->required()
 							->rules('required')
@@ -329,7 +328,7 @@ class SystemNotificationResource extends Resource
 							->relationship('users', 'username')
                             ->options(User::pluck('username', 'id')->toArray())
 							->placeholder('Enter username or select by user status')
-							->hidden(fn (Closure $get) => $get('selection_type') === 'import' || $get('all_active_users') === true)
+							->hidden(fn (Closure $get) => $get('selection_type') === 'import' || $get('selection_type') === null || $get('all_active_users') === true)
 							->rules([
 								function (Closure $get) {
 									return function (string $attribute, $value, Closure $fail) use ($get) {
@@ -392,7 +391,12 @@ class SystemNotificationResource extends Resource
 //							}),
                         Toggle::make('all_active_users')
                             ->label('Toggle on to send notification to all active users')
-                            ->reactive(),
+                            ->reactive()
+							->afterStateUpdated(function (Closure $set, $state) {
+								if ($state) {
+									$set('selection_type', null);
+								}
+							}),
                     ])
             ]);
     }
