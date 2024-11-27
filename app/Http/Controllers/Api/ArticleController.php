@@ -687,11 +687,14 @@ class ArticleController extends Controller
         $this->filterArticlesBlockedOrHidden($query);
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'media.videoJob', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             }])
-            ->withCount(['comments' => function ($query) {
+			->withCount(['userFollowings' => function ($query) {
+				$query->where('status', User::STATUS_ACTIVE);
+			}])
+			->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
