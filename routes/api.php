@@ -50,6 +50,7 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::post('merchant/offer_lists', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_lists']);
             Route::post('merchant/register', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_register']);
             Route::post('merchant/update', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_update']);
+            Route::post('merchant/logo', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_update_logo']);
             Route::get('merchant/{merchant_id}', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant']);
         });
     });
