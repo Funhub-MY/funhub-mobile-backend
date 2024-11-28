@@ -34,7 +34,7 @@ class SyncMerchantPortalController extends Controller
      */
     public function merchant_categories(Request $request)
     {
-        $results =  MerchantCategory::orderBy('id', 'asc');//->paginate(1000);
+        $results =  MerchantCategory::orderBy('id', 'asc')->get();//->paginate(1000);
         return SyncMerchantCategoryResource::collection($results);
     }
 
@@ -45,7 +45,7 @@ class SyncMerchantPortalController extends Controller
      */
     public function merchants(Request $request)
     {
-        $results =  Merchant::orderBy('id', 'asc');//->paginate(1000);
+        $results =  Merchant::orderBy('id', 'asc')->get();//->paginate(1000);
         return SyncMerchantResource::collection($results);
     }
 
