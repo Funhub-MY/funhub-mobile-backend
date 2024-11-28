@@ -122,7 +122,7 @@ class SyncMerchantPortalController extends Controller
             ]);
 
         }catch (\Exception $e) {
-            Log::error('[SyncSyncController] merchant register api failed: ' . $e->getMessage());
+            Log::error('[SyncMerchantPortalController] merchant register api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
                 'message'   => $e->getMessage()
@@ -139,7 +139,7 @@ class SyncMerchantPortalController extends Controller
         try {
             $request->validate([
                 'business_name' => 'required',
-                'company_reg_no' => 'required|unique:merchants,company_reg_no',
+                'company_reg_no' => 'required|unique:merchants,company_reg_no,'.$request->id,
                 'brand_name' => 'required',
                 'business_phone_no' => 'required|max:20',
                 'address' => 'required',
@@ -154,7 +154,8 @@ class SyncMerchantPortalController extends Controller
                 'authorised_personnel_designation' => 'required',
                 'authorised_personnel_name' => 'required',
                 'authorised_personnel_ic_no' => 'required',
-                'id' => 'required'
+                'id' => 'required',
+                'categories' => 'required'
             ]);
 
             $merchant = Merchant::findOrFail($request->id);
@@ -180,6 +181,7 @@ class SyncMerchantPortalController extends Controller
                 ];
 
                 $merchant->update($merchant_data); 
+                $merchant->categories()->sync($request->categories);
 
                 return response()->json([
                     'error'     => false,
@@ -193,13 +195,84 @@ class SyncMerchantPortalController extends Controller
             }
 
         }catch (\Exception $e) {
-            Log::error('[SyncSyncController] merchant update api failed: ' . $e->getMessage());
+            Log::error('[SyncMerchantPortalController] merchant update api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
                 'message'   => $e->getMessage()
             ]);
         }
     }
+
+    /**
+     * Post Merchant Update Logo
+     * Merchant portal send data to this api to update the merchant information in base portal
+     */
+    public function merchant_update_logo(Request $request)
+    {
+        try {
+            // Validate input data
+            $request->validate([
+                'media' => 'required|array',
+                'media.model_type' => 'required|string',
+                'media.model_id' => 'required|integer',
+                'media.uuid' => 'required|string',
+                'media.collection_name' => 'required|string',
+                'media.name' => 'required|string',
+                'media.file_name' => 'required|string',
+                'media.mime_type' => 'required|string',
+                'media.disk' => 'required|string',
+                'media.size' => 'required|integer',
+                'media.custom_properties' => 'nullable|array',
+                'media.manipulations' => 'nullable|array',
+                'media.responsive_images' => 'nullable|array',
+                'media.original_url' => 'required|url',
+            ]);
+
+            $mediaData = $request->media;
+
+            // Ensure critical fields are not empty
+            if (empty($mediaData['original_url']) || empty($mediaData['collection_name'])) {
+                Log::warning("Invalid media data: " . json_encode($mediaData));
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Invalid media data',
+                ]);
+            }
+
+            // Find the merchant
+            $merchant = Merchant::find($mediaData['model_id']);
+            if (!$merchant) {
+                Log::warning("Merchant not found for Media: " . json_encode($mediaData));
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Merchant not found for Media',
+                ]);
+            }
+            
+            $merchant->media()->where('collection_name', $mediaData['collection_name'])->delete();
+            // Upload media
+            $merchant
+                ->addMediaFromUrl($mediaData['original_url'])
+                ->usingName($mediaData['name'])
+                ->usingFileName($mediaData['file_name'])
+                ->withCustomProperties($mediaData['custom_properties'] ?? [])
+                ->toMediaCollection($mediaData['collection_name'], $mediaData['disk']);
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Success',
+            ]);
+
+        } catch (\Throwable $e) {
+            // Log errors and return response
+            Log::error("Error in merchant_update_logo: " . $e->getMessage());
+            return response()->json([
+                'error' => true,
+                'message' => 'Error uploading media: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
     /**
      * Get Merchant's Offer Overview
      * Merchant portal will call this api for reporting overview
@@ -251,7 +324,7 @@ class SyncMerchantPortalController extends Controller
             }
 
         } catch (\Exception $e) {
-            Log::error('[SyncSyncController] get offer overview api failed: ' . $e->getMessage());
+            Log::error('[SyncMerchantPortalController] get offer overview api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
                 'message'   => $e->getMessage()
@@ -345,7 +418,7 @@ class SyncMerchantPortalController extends Controller
             }
 
         } catch (\Exception $e) {
-            Log::error('[SyncSyncController] get offer lists api failed: ' . $e->getMessage());
+            Log::error('[SyncMerchantPortalController] get offer lists api failed: ' . $e->getMessage());
             return response()->json([
                 'error'     => true,
                 'message'   => $e->getMessage()
@@ -374,7 +447,7 @@ class SyncMerchantPortalController extends Controller
     //         return SyncMerchantCampaignResource::collection($campaigns);
 
     //     } catch (\Exception $e) {
-    //         Log::error('[SyncSyncController] get campaigns api failed: ' . $e->getMessage());
+    //         Log::error('[SyncMerchantPortalController] get campaigns api failed: ' . $e->getMessage());
     //         return response()->json([
     //             'error'     => true,
     //             'message'   => $e->getMessage()
