@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ExternalMerchantCategoryResource extends JsonResource
+class SyncMerchantCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
