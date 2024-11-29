@@ -224,7 +224,7 @@ class SupportRequestController extends Controller
         $query = $supportRequest->messages()
             ->orderBy('created_at', 'desc');
 
-        $results = $query->paginate(config('app.paginate_per_page'));
+        $results = $query->paginate(30);
 
         return SupportRequestMessageResource::collection($results);
     }
