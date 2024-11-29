@@ -274,8 +274,12 @@ class UserFollowingController extends Controller
 
         $users = User::whereIn('id', $followRequests->pluck('user_id'))->paginate(config('app.paginate_per_page'));
 
-        return UserResource::collection($users);
-    }
+		return UserResource::collection(
+			$users->getCollection()->map(function ($user) {
+				return new UserResource($user, false, null, 'follow_requests');
+			})
+		);
+	}
 
     /**
      * Accept Follow Request
