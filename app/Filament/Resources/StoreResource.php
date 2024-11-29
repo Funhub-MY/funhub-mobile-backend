@@ -87,6 +87,7 @@ class StoreResource extends Resource
                                 ->rules('required', 'max:255'),
 							TextInput::make('slug')
 								->maxLength(255)
+								->required()
 								->default(Str::random(10))
 //								->disabled()
 								->unique(Store::class, 'slug', ignoreRecord: true),
