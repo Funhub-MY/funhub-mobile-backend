@@ -565,8 +565,10 @@ class ArticleController extends Controller
         if ($myBlockedUserIds) {
             $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
         }
-        $query->whereNotIn('user_id', $excludedUserIds);
-
+        $query->whereNotIn('user_id', $excludedUserIds)
+			->whereDoesntHave('hiddenUsers', function($q) {
+				$q->where('user_id', auth()->id());
+			});
     }
 
     /**
