@@ -83,6 +83,7 @@ class ReleaseFailedMerchantOffers extends Command
 
                 $claim = MerchantOfferClaim::where('merchant_offer_id', $offer->id)
                     ->where('user_id', $transaction->user_id)
+                    ->where('transaction_no', $transaction->transaction_no)
                     ->whereIn('status', [MerchantOffer::CLAIM_AWAIT_PAYMENT, MerchantOffer::CLAIM_FAILED])
                     ->latest()
                     ->first();
