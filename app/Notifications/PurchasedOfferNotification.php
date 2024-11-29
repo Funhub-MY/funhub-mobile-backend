@@ -51,7 +51,7 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Purchase Receipt')
-            ->view('emails.purchased-offer', [
+            ->markdown('emails.purchased-offer', [
                 'transactionNo' => $this->transactionNo,
                 'dateTime' => $this->dateTime,
                 'itemTitle' => $this->itemTitle,
