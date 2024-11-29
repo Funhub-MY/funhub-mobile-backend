@@ -366,33 +366,63 @@ class MerchantOfferController extends Controller
      */
     public function show($id)
     {
-        $offer = MerchantOffer::where('id', $id)->first();
+        // $offer = MerchantOffer::where('id', $id)->first();
 
-        $offer->load([
-            'user',
-            'user.merchant',
-            'user.merchant.media',
-            'claims',
-            'categories',
-            'stores',
-            'stores.location',
-            'stores.storeRatings',
-            'claims',
-            'location',
-            'location.ratings',
-            'media',
-            'interactions',
-            'views',
-            'likes' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-            'interactions' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-        ])
-        ->loadCount([
-            'unclaimedVouchers',
-        ]);
+        // $offer->load([
+        //     'user',
+        //     'user.merchant',
+        //     'user.merchant.media',
+        //     'claims',
+        //     'categories',
+        //     'stores',
+        //     'stores.location',
+        //     'stores.storeRatings',
+        //     'claims',
+        //     'location',
+        //     'location.ratings',
+        //     'media',
+        //     'interactions',
+        //     'views',
+        //     'likes' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        //     'interactions' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        // ])
+        // ->loadCount([
+        //     'unclaimedVouchers',
+        // ]);
+
+        $offer = MerchantOffer::query()
+            ->where('id', $id)
+            // ->available()
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                'likes' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+                'interactions' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
+            ])->first();
+
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
