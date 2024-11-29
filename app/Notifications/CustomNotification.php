@@ -139,14 +139,15 @@ class CustomNotification extends Notification implements ShouldQueue
             'from_id' => '',
         ];
 
-        // Check if redirect type is dynamic and content type is set
-        if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
-            // Set the class of the 'object' based on the content type
-            $toArrayData['object'] = $this->customNotification->content_type; // App\Models\Article / User / MerchantOffer
-            $toArrayData['object_id'] = $this->customNotification->content_id; // article_id, user_id, offer_id
+        if ($this->customNotification->content_type == Article::class) {
+            // Retrieve the Article based on the article_id (object_id)
+            $article = Article::find($this->customNotification->content_id);
 
-            if ($this->customNotification->content_type == Article::class) {
-                $toArrayData['article_type'] = $this->customNotification->content->type;
+            if ($article) {
+                $toArrayData['article_type'] = $article->type ?? null;
+            } else {
+                \Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
+                $toArrayData['article_type'] = null;
             }
         }
 
