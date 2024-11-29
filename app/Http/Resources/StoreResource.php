@@ -106,6 +106,7 @@ class StoreResource extends JsonResource
 
         return [
             'id' => $this->id,
+			'slug' => $this->slug,
             'name' => $this->name,
             'manager_name' => $this->manager_name,
             'onboarded' => ($this->merchant) ? true : false,
