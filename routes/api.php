@@ -36,8 +36,10 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
             Route::get('merchants', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchants']);
            
             Route::get('merchant/categories', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_categories']);
-            // Route::post('campaigns', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'campaigns']);
+            // Route::post('campaigns', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'campaigns']);\
+            Route::post('merchant/dashboard', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'dashboard']);
             Route::post('merchant/offer_overview', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_overview']);
+            Route::post('merchant/offer_code_lists', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_code_lists']);
             Route::post('merchant/offer_lists', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_lists']);
             Route::post('merchant/register', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_register']);
             Route::post('merchant/update', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_update']);

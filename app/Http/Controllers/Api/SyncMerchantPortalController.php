@@ -13,6 +13,7 @@ use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferVoucher;
 use App\Models\MerchantOffer;
 use App\Models\MerchantOfferClaim;
+use App\Models\View;
 use App\Traits\QueryBuilderTrait;
 
 use App\Http\Resources\SyncMerchantResource;
@@ -274,6 +275,84 @@ class SyncMerchantPortalController extends Controller
     }
 
     /**
+     * Get Merchant's Dashboard
+     * Merchant portal will call this api for reporting overview
+     */
+    public function dashboard(Request $request)
+    {
+        try {
+            $request->validate([
+                'merchant_id' => 'required',
+            ]);
+
+            //  Get this merchant and update
+            $merchant = Merchant::find($request->merchant_id);
+            if($merchant){
+                $userId = $merchant->user_id;
+
+                //  Total Reviews for all stores under this merchant
+                $reviews = $merchant->stores->sum(function ($store) {
+                    return $store->storeRatings->count();
+                });
+
+                //  Get the average rating for all stores under this merchant
+                $ratings = $merchant->stores->sum(function ($store) {
+                    return $store->storeRatings->avg('rating');
+                });
+                $averageRating = $ratings > 0 ? $ratings / count($merchant->stores->pluck('id')) : 0;
+
+                //  Stores Views
+                $storesView = View::where('viewable_type', Store::class)
+                    ->whereIn('viewable_id', $merchant->stores->pluck('id'))
+                    ->count();
+
+                $storesUniqueView = View::where('viewable_type', Store::class)
+                    ->whereIn('viewable_id', $merchant->stores->pluck('id'))
+                    ->distinct('user_id')
+                    ->count('user_id');
+
+                //  Offer Views
+                $offerView = View::where('viewable_type', MerchantOffer::class)
+                    ->whereIn('viewable_id', $merchant->stores->pluck('id'))
+                    ->count('user_id');
+
+                $offerUniqueView = View::where('viewable_type', MerchantOffer::class)
+                    ->whereIn('viewable_id', $merchant->stores->pluck('id'))
+                    ->distinct('user_id')
+                    ->count('user_id');
+               
+                $data = [
+                    'rating'            => (float) number_format($averageRating, 1),
+                    'review'            => $reviews,
+                    'storesView'        => $storesView,
+                    'storesUniqueView'  => $storesUniqueView,
+                    'offerView'         => $offerView,
+                    'offerUniqueView'   => $offerUniqueView
+                ];
+
+                return response()->json([
+                    'error'     => false,
+                    'message'   => 'Success',
+                    'data'      => $data
+                ]);
+
+            }else{
+                return response()->json([
+                    'error'     => true,
+                    'message'   => 'Oops! invalid request.'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('[SyncMerchantPortalController] get offer overview api failed: ' . $e->getMessage());
+            return response()->json([
+                'error'     => true,
+                'message'   => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
      * Get Merchant's Offer Overview
      * Merchant portal will call this api for reporting overview
      */
@@ -426,6 +505,66 @@ class SyncMerchantPortalController extends Controller
         }
     }
     
+     /**
+     * Get Merchant's Offer Codes lists
+     * Merchant portal will call this api for reporting
+     */
+    public function offer_code_lists(Request $request)
+    {
+        try {
+            $request->validate([
+                'merchant_id' => 'required',
+            ]);
+
+            //  Get this merchant and update
+            $merchant = Merchant::find($request->merchant_id);
+            if($merchant){
+                $userId = $merchant->user_id;
+
+                $lists = DB::table('merchant_offer_vouchers')
+                    ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+                    ->leftJoin('merchant_offer_user', 'merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
+                    ->leftJoin('merchant_offer_claims_redemptions', 'merchant_offer_claims_redemptions.claim_id', '=', 'merchant_offer_user.id')
+                    ->where('merchant_offers.user_id', $userId)
+                    ->select(
+                        'merchant_offer_vouchers.id as id',
+                        'merchant_offer_vouchers.code as code',
+                        'merchant_offers.name as offer_name',
+                        DB::raw('COALESCE(merchant_offer_user.status, 0) as purchase_status'), 
+                        DB::raw('CASE WHEN merchant_offer_claims_redemptions.id IS NOT NULL THEN 1 ELSE 0 END as isRedeemed')
+                    )
+                    ->groupBy(
+                        'merchant_offer_vouchers.id',
+                        'merchant_offer_vouchers.code',
+                        'merchant_offers.name',
+                        'merchant_offer_user.status',
+                        'merchant_offer_claims_redemptions.id'
+                    )
+                    ->distinct()
+                    ->get();
+
+                return response()->json([
+                    'error'     => false,
+                    'message'   => "Success",
+                    'data'      => $lists
+                ]);
+
+            }else{
+                return response()->json([
+                    'error'     => true,
+                    'message'   => 'Oops! invalid request.'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('[SyncMerchantPortalController] get offer lists api failed: ' . $e->getMessage());
+            return response()->json([
+                'error'     => true,
+                'message'   => $e->getMessage()
+            ]);
+        }
+    }
+
     // /**
     //  * Get Merchant's campaign
     //  */
