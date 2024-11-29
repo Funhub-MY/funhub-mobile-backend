@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\FollowedUser;
 use App\Events\UnfollowedUser;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FollowRequestResource;
 use App\Http\Resources\UserResource;
 use App\Models\FollowRequest;
 use App\Models\User;
@@ -274,41 +275,7 @@ class UserFollowingController extends Controller
 
         $users = User::whereIn('id', $followRequests->pluck('user_id'))->paginate(config('app.paginate_per_page'));
 
-//		return UserResource::collection(
-//			$users->getCollection()->map(function ($user) {
-//				return new UserResource($user, false, null, 'follow_requests');
-//			})
-//		);
-
-		return response()->json([
-			'data' => UserResource::collection(
-				$users->getCollection()->map(function ($user) {
-					return new UserResource($user, false, null, 'follow_requests');
-				})
-			),
-			'links' => [
-				'first' => $users->url(1),
-				'last' => $users->url($users->lastPage()),
-				'prev' => $users->previousPageUrl(),
-				'next' => $users->nextPageUrl()
-			],
-			'meta' => [
-				'current_page' => $users->currentPage(),
-				'from' => $users->firstItem(),
-				'last_page' => $users->lastPage(),
-				'links' => collect($users->getUrlRange(1, $users->lastPage()))->map(function ($url, $page) use ($users) {
-					return [
-						'url' => $url,
-						'label' => (string)$page,
-						'active' => $page === $users->currentPage()
-					];
-				})->values()->toArray(),
-				'path' => $users->path(),
-				'per_page' => $users->perPage(),
-				'to' => $users->lastItem(),
-				'total' => $users->total()
-			]
-		]);
+		return FollowRequestResource::collection($users);
 	}
 
     /**
