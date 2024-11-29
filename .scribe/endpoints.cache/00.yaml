@@ -6,13 +6,69 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/public_article
+    uri: api/v1/public_user
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Article (public)'
+      title: ''
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      username:
+        name: username
+        description: ''
+        required: true
+        example: saepe
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      username: saepe
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"message":"User not found"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          x-ratelimit-limit: '120'
+          x-ratelimit-remaining: '119'
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer ev46dbVDE6caZg8fkha5P13'
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/v1/public_store
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Public Store Public View'
       description: ''
       authenticated: true
       custom: []
@@ -29,13 +85,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: voluptatum
+        example: et
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: voluptatum
+      share_code: et
     fileParameters: []
     responses:
       -
@@ -55,15 +112,15 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
-                      "line": 1688,
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/StoreController.php",
+                      "line": 513,
                       "function": "abort"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
                       "line": 54,
-                      "function": "getArticleForPublicView",
-                      "class": "App\\Http\\Controllers\\Api\\ArticleController",
+                      "function": "getPublicStorePublicView",
+                      "class": "App\\Http\\Controllers\\Api\\StoreController",
                       "type": "->"
                   },
                   {
@@ -103,7 +160,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 47,
+                      "line": 48,
                       "function": "Illuminate\\Pipeline\\{closure}",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
@@ -341,14 +398,14 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 300,
+                      "line": 310,
                       "function": "handle",
                       "class": "Illuminate\\Foundation\\Http\\Kernel",
                       "type": "->"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 288,
+                      "line": 298,
                       "function": "callLaravelOrLumenRoute",
                       "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
                       "type": "->"
@@ -376,7 +433,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 236,
+                      "line": 237,
                       "function": "__invoke",
                       "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
                       "type": "->"
@@ -527,61 +584,6 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '119'
-          access-control-allow-origin: '*'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer e3EhPk8dg5v6DaZ41ba6cVf'
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/v1/public_user
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {USER_TOKEN_KEY}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      username:
-        name: username
-        description: ''
-        required: true
-        example: deserunt
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        custom: []
-    cleanBodyParameters:
-      username: deserunt
-    fileParameters: []
-    responses:
-      -
-        status: 404
-        content: '{"message":"User not found"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          x-ratelimit-limit: '120'
           x-ratelimit-remaining: '118'
           access-control-allow-origin: '*'
         description: null
@@ -590,7 +592,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6af4ZPbdvgcDEe3ah186k5V'
+      - 'Bearer vaZPaeD85b463k1cVh6dfEg'
     controller: null
     method: null
     route: null
@@ -598,13 +600,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/public_offer
+    uri: api/v1/public_article
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Merchant Offer Public'
+      title: 'Get Article (public)'
       description: ''
       authenticated: true
       custom: []
@@ -621,13 +623,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: optio
+        example: ea
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: optio
+      share_code: ea
     fileParameters: []
     responses:
       -
@@ -647,15 +650,15 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
-                      "line": 984,
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/ArticleController.php",
+                      "line": 1712,
                       "function": "abort"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
                       "line": 54,
-                      "function": "getPublicOfferPublicView",
-                      "class": "App\\Http\\Controllers\\Api\\MerchantOfferController",
+                      "function": "getArticleForPublicView",
+                      "class": "App\\Http\\Controllers\\Api\\ArticleController",
                       "type": "->"
                   },
                   {
@@ -695,7 +698,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 47,
+                      "line": 48,
                       "function": "Illuminate\\Pipeline\\{closure}",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
@@ -933,14 +936,14 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 300,
+                      "line": 310,
                       "function": "handle",
                       "class": "Illuminate\\Foundation\\Http\\Kernel",
                       "type": "->"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 288,
+                      "line": 298,
                       "function": "callLaravelOrLumenRoute",
                       "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
                       "type": "->"
@@ -968,7 +971,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 236,
+                      "line": 237,
                       "function": "__invoke",
                       "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
                       "type": "->"
@@ -1127,7 +1130,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer h4cZvPeE3a1ad6D8b65fVkg'
+      - 'Bearer Dagafebh834Vd6EPZ16vc5k'
     controller: null
     method: null
     route: null
@@ -1135,13 +1138,13 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/v1/public_store
+    uri: api/v1/public_offer
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get Public Store Public View'
+      title: 'Get Merchant Offer Public'
       description: ''
       authenticated: true
       custom: []
@@ -1158,13 +1161,14 @@ endpoints:
         name: share_code
         description: ''
         required: true
-        example: voluptatem
+        example: aliquid
         type: string
         enumValues: []
         exampleWasSpecified: false
+        nullable: false
         custom: []
     cleanBodyParameters:
-      share_code: voluptatem
+      share_code: aliquid
     fileParameters: []
     responses:
       -
@@ -1184,15 +1188,15 @@ endpoints:
                       "type": "->"
                   },
                   {
-                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/StoreController.php",
-                      "line": 513,
+                      "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Controllers/Api/MerchantOfferController.php",
+                      "line": 1172,
                       "function": "abort"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
                       "line": 54,
-                      "function": "getPublicStorePublicView",
-                      "class": "App\\Http\\Controllers\\Api\\StoreController",
+                      "function": "getPublicOfferPublicView",
+                      "class": "App\\Http\\Controllers\\Api\\MerchantOfferController",
                       "type": "->"
                   },
                   {
@@ -1232,7 +1236,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/app/Http/Middleware/SetLocaleFromHeader.php",
-                      "line": 47,
+                      "line": 48,
                       "function": "Illuminate\\Pipeline\\{closure}",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
@@ -1470,14 +1474,14 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 300,
+                      "line": 310,
                       "function": "handle",
                       "class": "Illuminate\\Foundation\\Http\\Kernel",
                       "type": "->"
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Strategies/Responses/ResponseCalls.php",
-                      "line": 288,
+                      "line": 298,
                       "function": "callLaravelOrLumenRoute",
                       "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
                       "type": "->"
@@ -1505,7 +1509,7 @@ endpoints:
                   },
                   {
                       "file": "/Users/elson/Documents/Projects/funhub-mobile-backend/vendor/knuckleswtf/scribe/src/Extracting/Extractor.php",
-                      "line": 236,
+                      "line": 237,
                       "function": "__invoke",
                       "class": "Knuckles\\Scribe\\Extracting\\Strategies\\Responses\\ResponseCalls",
                       "type": "->"
@@ -1656,7 +1660,7 @@ endpoints:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '120'
-          x-ratelimit-remaining: '116'
+          x-ratelimit-remaining: '115'
           access-control-allow-origin: '*'
         description: null
         custom: []
@@ -1664,7 +1668,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6ckh6g3d85bP1aEDVeZavf4'
+      - 'Bearer e66VvPbEad8Zgah3cD14k5f'
     controller: null
     method: null
     route: null

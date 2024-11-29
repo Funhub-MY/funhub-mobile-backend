@@ -6,6 +6,7 @@ use App\Events\MerchantOfferClaimed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MerchantOfferClaimResource;
 use App\Http\Resources\MerchantOfferResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Interaction;
 use App\Models\Merchant;
 use App\Models\MerchantOffer;
@@ -36,6 +37,28 @@ class ProductController extends Controller
     {
         $this->pointService = new PointService();
         $this->transactionService = new TransactionService();
+    }
+
+    /**
+     * Get Products for Sale (Gift Cards)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @group Product
+     * @response scenario=success {
+     * "current_page": 1,
+     * "data": []
+     * }
+     */
+    public function index(Request $request)
+    {
+        $products = Product::with('rewards')
+            ->published()
+			->orderBy('order')
+            ->get();
+
+        return ProductResource::collection($products);
     }
 
     /**

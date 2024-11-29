@@ -40,7 +40,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
 use App\Filament\Resources\LocationRelationManagerResource\RelationManagers\LocationRelationManager;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Storage;
+use Filament\Forms\Components\Placeholder;
 
 class ArticleResource extends Resource
 {
@@ -217,6 +219,12 @@ class ArticleResource extends Resource
                         Forms\Components\Section::make('Status')->schema([
                             Forms\Components\Select::make('status')
                                 ->options(Article::STATUS)->default(0),
+
+                            // available_for_web
+                            Forms\Components\Toggle::make('available_for_web')
+                                ->label('Available for Web')
+                                ->helperText('If enabled, this article will be shown in Funhub Web.')
+                                ->default(false),
 
                             Forms\Components\Select::make('visibility')
                                 ->default(Article::VISIBILITY_PUBLIC)
@@ -438,6 +446,19 @@ class ArticleResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
+
+                Tables\Columns\BadgeColumn::make('available_for_web')
+                    ->label('Available for Web')
+                    ->enum([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->colors([
+                        'secondary' => 0,
+                        'success' => 1,
+                    ])
+                    ->sortable(),
+
                 Tables\Columns\BadgeColumn::make('visibility')
                     ->label('Visibility')
                     ->enum([
@@ -530,8 +551,19 @@ class ArticleResource extends Resource
                         1 => 'Yes',
                     ])
                     ->placeholder('All'),
+
+                // filter by pinned_recommended
                 Tables\Filters\SelectFilter::make('pinned_recommended')
                     ->label('Pinned (Recommended)')
+                    ->options([
+                        0 => 'No',
+                        1 => 'Yes',
+                    ])
+                    ->placeholder('All'),
+
+                // filter by available_for_web
+                Tables\Filters\SelectFilter::make('available_for_web')
+                    ->label('Available for Web?')
                     ->options([
                         0 => 'No',
                         1 => 'Yes',
@@ -588,18 +620,21 @@ class ArticleResource extends Resource
                         ]);
                     });
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
                 Tables\Actions\BulkAction::make('Change to Draft')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 0]);
                     });
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
                 Tables\Actions\BulkAction::make('Move to Archived')
                 ->action(function (Collection $records) {
                     $records->each(function (Article $record) {
                         $record->update(['status' => 2]);
                     });
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
+
                 // table bulkaction to mark hidden from home toggle
                 Tables\Actions\BulkAction::make('toggle_hidden_from_home')
                 ->label('Toggle Home Hidden/Visible')
@@ -646,20 +681,92 @@ class ArticleResource extends Resource
                             ->update(['pinned_recommended' => $data['pinned_recommended']]);
                     }
                 })->requiresConfirmation()->deselectRecordsAfterCompletion(),
-				// ExportBulkAction::make()
-				// 	->exports([
-				// 		ExcelExport::make()
-				// 			->label('Export Articles Categories')
-				// 			->withColumns([
-				// 				Column::make('id')->heading('article_id'),
-				// 				Column::make('title')->heading('article_title'),
-				// 				Column::make('categories.name')
-				// 					->heading('category_names')
-				// 					->getStateUsing(fn($record) => $record->categories->pluck('name')->join(',')),
-				// 			])
-				// 			->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
-				// 			->withWriterType(\Maatwebsite\Excel\Excel::CSV)
-				// 	]),
+
+                // bulk action toggle available_for_web
+                Tables\Actions\BulkAction::make('toggle_available_for_web')
+                    ->label('Toggle Available for Web')
+                    ->form([
+                        Toggle::make('available_for_web')
+                            ->label('Available for Web')
+                            ->default(true)
+                            ->required(),
+                        Placeholder::make('max_limit')
+                            ->content('You can only have 5 articles available for web at a time.')
+                    ])
+                    ->action(function (Collection $records, array $data) {
+                        // only check limit when enabling web availability
+                        if ($data['available_for_web']) {
+                            // count currently available articles (excluding selected ones)
+                            $currentWebAvailable = Article::where('available_for_web', true)
+                                ->whereNotIn('id', $records->pluck('id'))
+                                ->count();
+                            
+                            // count how many selected articles would be newly enabled
+                            $selectedCount = $records->count();
+                            
+                            // check if adding these would exceed the limit
+                            if (($currentWebAvailable + $selectedCount) > 5) {
+                                Notification::make()
+                                    ->title('Maximum limit reached')
+                                    ->body('You can only have 5 articles available for web at a time. Please unselect some articles.')
+                                    ->danger()
+                                    ->send();
+                                    
+                                return;
+                            }
+                        }
+                        
+                        // Update the records
+                        $records->each(function ($record) use ($data) {
+                            $record->update(['available_for_web' => $data['available_for_web']]);
+                        });
+                        
+                        Notification::make()
+                            ->title('Success')
+                            ->body('Web availability updated successfully')
+                            ->success()
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->deselectRecordsAfterCompletion(),
+
+				ExportBulkAction::make()
+					->exports([
+						ExcelExport::make()
+							->label('Export Articles Categories')
+							->withColumns([
+								Column::make('id')->heading('article_id'),
+								Column::make('user_id')
+									->heading('author')
+									->getStateUsing(fn($record) => $record->user ? $record->user->name : 'N/A'),
+								Column::make('lang')->heading('language'),
+								Column::make('status')
+									->heading('status')
+									->getStateUsing(fn($record) => match($record->status) {
+										Article::STATUS_DRAFT => 'Draft',
+										Article::STATUS_PUBLISHED => 'Published',
+										Article::STATUS_ARCHIVED => 'Archived',
+										default => 'Unknown'
+									}),
+								Column::make('hidden_from_home')
+									->heading('hide from home')
+									->getStateUsing(fn($record) => $record->hidden_from_home ? 'Yes' : 'No'),
+								Column::make('categories.name')
+									->heading('category_names')
+									->getStateUsing(fn($record) => $record->categories->pluck('name')->join(',')),
+								Column::make('subCategories.name')
+									->heading('sub_categories')
+									->getStateUsing(fn($record) => $record->subCategories->pluck('name')->join(',')),
+								Column::make('tags.name')
+									->heading('tags')
+									->getStateUsing(fn($record) => $record->tags->pluck('name')->join(',')),
+								Column::make('title')->heading('title'),
+								Column::make('slug')->heading('slug'),
+								Column::make('body')->heading('body')
+							])
+							->withFilename(fn($resource) => $resource::getModelLabel() . '-' . date('Y-m-d'))
+							->withWriterType(\Maatwebsite\Excel\Excel::CSV)
+					]),
 
             ]);
     }

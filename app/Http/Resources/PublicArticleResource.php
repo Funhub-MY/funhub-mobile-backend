@@ -62,6 +62,7 @@ class PublicArticleResource extends JsonResource
                 'bookmarks' => $this->interactions->where('type', Interaction::TYPE_BOOKMARK)->count(),
                 'views' => $this->views_count ?? 0,
             ],
+            'has_merchant_offer' => (isset($this->has_merchant_offer) && $this->has_merchant_offer) ? true : false,
             'lang' => $this->lang,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

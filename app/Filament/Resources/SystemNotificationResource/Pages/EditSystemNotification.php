@@ -16,4 +16,8 @@ class EditSystemNotification extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+	protected function afterSave() {
+		$this->emit('refreshRelation');
+	}
 }

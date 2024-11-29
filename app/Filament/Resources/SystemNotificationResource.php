@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Article;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Filament\Resources\Form;
 use App\Models\MerchantOffer;
@@ -306,31 +307,86 @@ class SystemNotificationResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Card::make()
-                    ->schema([
-                        Select::make('user')
-                            ->preload()
-                            ->multiple()
-                            ->searchable()
+				Forms\Components\Card::make()
+					->schema([
+						Radio::make('selection_type')
+							->label('Select users for sending notification method')
+							->options([
+								'select' => 'Select users',
+								'import' => 'Import users list',
+							])
+							->reactive()
+							->required()
+							->hidden(fn (Closure $get) => $get('all_active_users') === true)
+							->helperText('If want to import User list, please create notification first then import CSV in the "User" table below'),
+						Select::make('users')
+							->preload()
+							->multiple()
+							->searchable()
+							->relationship('users', 'username')
                             ->options(User::pluck('username', 'id')->toArray())
-                            // ->getSearchResultsUsing(fn (string $search) => User::where('username', 'like', "%{$search}%")->limit(25)->pluck('username', 'id'))
-                            ->placeholder('Enter username or select by user status')
-                            ->hidden(fn (Closure $get) => $get('all_active_users') === true)
-                            ->dehydrateStateUsing(function ($state) {
-                                    $stateData = [];
-                                    foreach ($state as $s) {
-                                        $stateData[] = intval($s);
-                                    }
-
-                                    return json_encode($stateData);
-                                })
-                            ->formatStateUsing(function ($context, $state) {
-                                if ($context == 'edit') {
-                                    $stateData = json_decode($state, true);
-                                    return $stateData;
-                                }
-                            })
-                            ->rules([fn($get) => $get('all_active_users') === false ? 'required' : '']),
+							->placeholder('Enter username or select by user status')
+							->hidden(fn (Closure $get) => $get('selection_type') === 'import' || $get('selection_type') === null || $get('all_active_users') === true)
+							->rules([
+								function (Closure $get) {
+									return function (string $attribute, $value, Closure $fail) use ($get) {
+										$scheduledAt = $get('scheduled_at');
+										if ($scheduledAt) {
+											$scheduledTime = Carbon::parse($scheduledAt);
+											if (now()->diffInMinutes($scheduledTime, false) <= 30 && empty($value)) {
+												$fail('The :attribute field is required when the scheduled time is within 30 minutes.');
+											}
+										}
+									};
+								}
+							]),
+//                        Select::make('user')
+//                            ->preload()
+//                            ->multiple()
+//                            ->searchable()
+//                            ->options(User::pluck('username', 'id')->toArray())
+//                            // ->getSearchResultsUsing(fn (string $search) => User::where('username', 'like', "%{$search}%")->limit(25)->pluck('username', 'id'))
+//                            ->placeholder('Enter username or select by user status')
+//                            ->hidden(fn (Closure $get) => $get('all_active_users') === true)
+//                            ->dehydrateStateUsing(function ($state) {
+//                                    $stateData = [];
+//                                    foreach ($state as $s) {
+//                                        $stateData[] = intval($s);
+//                                    }
+//
+//                                    return json_encode($stateData);
+//                                })
+//                            ->formatStateUsing(function ($context, $state) {
+//                                if ($context == 'edit') {
+//                                    $stateData = json_decode($state, true);
+//                                    return $stateData;
+//                                }
+//                            })
+//							->rules([fn($get) => $get('all_active_users') === false ? 'required' : ''])
+//							->afterStateUpdated(function ($state, $record) {
+//								if ($record && $state) {
+//									// Convert string IDs to integers
+//									$userIds = collect($state)->map(fn ($id) => (int) $id)->toArray();
+//
+////									// Get existing user IDs from imported records
+////									$existingUserIds = $record->users()
+////										->wherePivotNull('created_at')  // Only get manually added users
+////										->pluck('user_id')
+////										->toArray();
+////
+////									// Remove users that were manually added (not imported)
+////									$record->users()
+////										->wherePivotNull('created_at')
+////										->detach();
+////
+////									// Attach new users with null imported_at
+////									$attachData = collect($userIds)->mapWithKeys(function ($id) {
+////										return [$id => ['created_at' => null]];
+////									})->toArray();
+////
+////									$record->users()->attach($attachData);
+//								}
+//							}),
                         Toggle::make('all_active_users')
                             ->label('Toggle on to send notification to all active users')
                             ->reactive(),
@@ -448,7 +504,8 @@ class SystemNotificationResource extends Resource
     {
         return [
             AuditsRelationManager::class,
-        ];
+			RelationManagers\SystemNotificationUsersRelationManager::class
+		];
     }
 
     public static function getPages(): array

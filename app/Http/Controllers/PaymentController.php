@@ -18,6 +18,7 @@ use App\Notifications\PurchasedGiftCardNotification;
 use App\Notifications\PurchasedOfferNotification;
 use App\Services\PointService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
@@ -47,7 +48,7 @@ class PaymentController extends Controller
         // check if request has {"result":null,"secureHash":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mid":"7860","responseCode":"XC","maskedPAN":null,"authCode":null,"amt":"150.00","invno":"2308106HLQ8S","responseDesc":"Seller Exchange Encryption Error","tranDate":"2023-08-09 12:05:04","paymentType":"FPX-B2C","securehash2":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mpay_ref_no":"REF007860021002"}
         if (!$request->has('mid') || !$request->has('responseCode') || !$request->has('authCode') || !$request->has('amt') || !$request->has('invno') || !$request->has('responseDesc') || !$request->has('tranDate') || !$request->has('paymentType') || !$request->has('securehash2')) {
             Log::error('Payment return failed', [
-                'error' => 'Missingh parameter from request',
+                'error' => 'Missing parameter from request',
                 'missing' => [
                     // 'result' => $request->has('result'),
                     // 'secureHash' => $request->has('secureHash'),
@@ -114,20 +115,68 @@ class PaymentController extends Controller
                 ]);
 
                 if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
-                    return view('payment-return', [
+                    // SUCCESS
+					$claim_id = null;
+					$redemption_start_date = null;
+					$redemption_end_date = null;
+					if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+						$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+							->where('user_id', $transaction->user_id)
+							->latest()
+							->first();
+
+						if ($claim) {
+							$claim_id = $claim->id;
+							$redemption_start_date = $claim->created_at;
+
+							if (isset($claim->merchantOffer)) {
+								$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+							} else {
+								$redemption_end_date = $claim->created_at->endOfDay(); // Default to one-day expiry if not set
+							}
+						}
+					}
+
+                    $params = [
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
-                        'success' => true
-                    ]);
+                        'transaction_no' => $transaction->transaction_no,
+                        'offer_claim_id' => $claim_id,
+                        'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
+                        'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
+                        'success' => true,
+                    ];
+
+                    if ($transaction->channel === 'app') {
+                        return view('payment-return', $params);
+                    } else if ($transaction->channel === 'funhub_web') {
+                        // redirect to FUNHUB_WEB_LINK
+                        // encode all params above with a hash string agreed by both ends
+                        $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
+                        return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)) . '&hash=' . $hash_string);
+                    }
                 } else {
+                    // PENDING
                     if ($request->responseCode == 'PE') {
-                        return 'Transaction Still Pending';
+                        if ($transaction->channel === 'app') {
+                            return 'Transaction Still Pending';
+                        } else if ($transaction->channel === 'funhub_web') {
+                            return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Still Pending', 'success' => false])));
+                        }
                     } else {
-                        return view('payment-return', [
+                        // FAILURE
+                        $params = [
                             'message' => 'Transaction Failed - Already Processed',
                             'transaction_id' => $transaction->id,
+                            'transaction_no' => $transaction->transaction_no,
                             'success' => false
-                        ]);
+                        ];
+                        if ($transaction->channel === 'app') {
+                            return view('payment-return', $params);
+                        } else if ($transaction->channel === 'funhub_web') {
+                            $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
+                            return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)) . '&hash=' . $hash_string);
+                        }
                     }
                 }
             }
@@ -135,35 +184,10 @@ class PaymentController extends Controller
             // ===================== SUCCESS
             if ($request->responseCode == 0 || $request->responseCode == '0') { // success
 
-                // if transaction has use using_point_discount then we need deduct the point ledger
-                // DEPRECATED: 24 sep
-                // if ($transaction->using_point_discount) {
-                //     $pointService = new PointService();
-                //     $latestBalancePointsOfUser = $pointService->getBalanceOfUser($transaction->user);
-
-                //     // check if user has enough points to use
-                //     if ($latestBalancePointsOfUser < $transaction->points_to_use) {
-                //         Log::error('[PaymentController] Insufficient Point Balance for user used for a successful payment of a discounted offer: ' . $transaction->user->id);
-                //         return view('payment-return', [
-                //             'message' => 'Transaction Failed - Insufficient Point Balance',
-                //             'transaction_id' => $transaction->id,
-                //             'success' => false
-                //         ]);
-                //     }
-
-                //     // deduct point from user's account
-                //     $pointService->debit($transaction->transactionable, $transaction->user, $transaction->points_to_use, 'Voucher Discount RM'. number_format($transaction->discount_amount, 2) .' - '.$transaction->transaction_no);
-                // }
-
                 $transactionUpdateData = [
                     'status' => \App\Models\Transaction::STATUS_SUCCESS,
                     'gateway_transaction_id' => ($request->has('mpay_ref_no')) ? $request->mpay_ref_no : $request->authCode,
                 ];
-
-                // if ($transaction->using_point_discount) {
-                //     $transactionUpdateData['point_balance_after_usage'] = $pointService->getBalanceOfUser($transaction->user);
-                //     $transactionUpdateData['point_ledger_id'] = $pointService->getPointLedger($transaction->user)->last()->id;
-                // }
 
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
@@ -216,23 +240,36 @@ class PaymentController extends Controller
 
                 // return with js
                 // window.flutter_inappwebview.callHandler('passData', {'someKey': 'someValue'});
-                return view('payment-return', [
+                $params = [
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no,
                     'offer_claim_id' => $claim_id,
-                    'redemption_start_date' => $redemption_start_date,
-                    'redemption_end_date' => $redemption_end_date,
+					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
+					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                     'success' => true
-                ]);
+                ];
+
+                if ($transaction->channel === 'app') {
+                    return view('payment-return', $params);
+                } else if ($transaction->channel === 'funhub_web') {
+                    $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
+                    return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)) . '&hash=' . $hash_string);
+                }
 
             // ===================== PENDING
             } else if ($request->responseCode == 'PE') { // pending
                 Log::info('Payment return/callback pending', [
                     'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no,
                     'request' => request()->all()
                 ]);
-                return 'Transaction Still Pending';
-
+                if ($transaction->channel === 'app') {
+                    return 'Transaction Still Pending';
+                } else if ($transaction->channel === 'funhub_web') {
+                    $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
+                    return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Still Pending', 'success' => false])) . '&hash=' . $hash_string);
+                }
             // ===================== FAILED
             } else { // failed
                 Log::error('Payment return failed', [
@@ -255,11 +292,18 @@ class PaymentController extends Controller
                     $this->updateProductTransaction($request, $transaction);
                 }
 
-                return view('payment-return', [
+                $params = [
                     'message' => 'Transaction Failed - Gateway Response Code Failed [2]',
                     'transaction_id' => $transaction->id,
+                    'transaction_no' => $transaction->transaction_no,
                     'success' => false
-                ]);
+                ];
+                if ($transaction->channel === 'app') {
+                    return view('payment-return', $params);
+                } else if ($transaction->channel === 'funhub_web') {
+                    $hash_string = hash_hmac('sha256', $transaction->transaction_no, config('app.funhub_web_hash_secret'));
+                    return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)) . '&hash=' . $hash_string);
+                }
             }
         } else {
             Log::error('Payment return failed', [
@@ -267,13 +311,16 @@ class PaymentController extends Controller
                 'request' => request()->all()
             ]);
 
-            return view('payment-return', [
-                'message' => 'Transaction Failed - No transaction',
-                'transaction_id' => null,
-                'success' => false
-            ]);
+            if ($transaction->channel === 'app') {
+                return view('payment-return', [
+                    'message' => 'Transaction Failed - No transaction',
+                    'transaction_id' => null,
+                    'success' => false
+                ]);
+            } else if ($transaction->channel === 'funhub_web') {
+                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Failed - No transaction', 'success' => false])));
+            }
         }
-
     }
 
     protected function updateProductTransaction($request, $transaction)

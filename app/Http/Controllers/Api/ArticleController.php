@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\MerchantOfferResource;
 use App\Http\Resources\PublicArticleResource;
+use App\Http\Resources\PublicMerchantOfferResource;
 use App\Http\Resources\UserResource;
 use App\Models\Article;
 use App\Models\ArticleCategory;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Jobs\BuildRecommendationsForUser;
+use App\Jobs\ByteplusVODProcess;
 use App\Jobs\UpdateArticleTagArticlesCount;
 use App\Models\City;
 use App\Models\SearchKeyword;
@@ -224,7 +226,7 @@ class ArticleController extends Controller
         $paginatePerPage = $request->has('limit') ? $request->limit : config('app.paginate_per_page');
 
         $data = $query->with(
-                'media', 'imports',
+                'media', 'imports', 'media.videoJob',
                 'categories', 'subCategories', 'tags',
                 'user', 'user.media',
                 'comments', 'interactions.user', 'interactions.user.media',
@@ -478,10 +480,10 @@ class ArticleController extends Controller
      * @param Request $request
      * @return QueryBuilder
      */
-    public function articleQueryBuilder($query, $request) {
+    public function articleQueryBuilder($query, $request, $hasUser = true) {
         $query->published();
 
-        if (!$request->has('include_own_article') || $request->include_own_article == 0) {
+        if ($hasUser && (!$request->has('include_own_article') || $request->include_own_article == 0)) {
             // default to exclude own article
             $query->where('user_id', '!=', auth()->user()->id);
             // else it will also include own article
@@ -520,6 +522,7 @@ class ArticleController extends Controller
             'categories',
             'subCategories',
             'media',
+            'media.videoJob',
             'tags',
             'location',
             'interactions' => function ($query) {
@@ -562,8 +565,10 @@ class ArticleController extends Controller
         if ($myBlockedUserIds) {
             $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
         }
-        $query->whereNotIn('user_id', $excludedUserIds);
-
+        $query->whereNotIn('user_id', $excludedUserIds)
+			->whereDoesntHave('hiddenUsers', function($q) {
+				$q->where('user_id', auth()->id());
+			});
     }
 
     /**
@@ -683,12 +688,15 @@ class ArticleController extends Controller
 
         $this->filterArticlesBlockedOrHidden($query);
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'media.videoJob', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             }])
-            ->withCount(['comments' => function ($query) {
+			->withCount(['userFollowings' => function ($query) {
+				$query->where('status', User::STATUS_ACTIVE);
+			}])
+			->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
@@ -780,7 +788,7 @@ class ArticleController extends Controller
             $query->where('type', 'video');
         }
 
-        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
+        $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'media.videoJob', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
             ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
@@ -927,7 +935,13 @@ class ArticleController extends Controller
             }
             $userVideos->each(function ($media) use ($article) {
                 // move to article_videos collection of the created article
-                $media->move($article, Article::MEDIA_COLLECTION_NAME);
+                $movedMediaItem = $media->move($article, Article::MEDIA_COLLECTION_NAME);
+
+                // when move to article_videos, dispatch byteplus video process
+                if (str_contains($movedMediaItem->mime_type, 'video')) {
+                    // get latest $media after move
+                    ByteplusVODProcess::dispatch($movedMediaItem);
+                }
             });
         }
 
@@ -986,7 +1000,7 @@ class ArticleController extends Controller
 
         $article = $article->refresh();
         // load relations
-        $article->load('user', 'comments', 'interactions', 'media', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
+        $article->load('user', 'comments', 'interactions', 'media', 'media.videoJob', 'categories', 'tags', 'location', 'views', 'location.ratings', 'taggedUsers');
         return response()->json([
             'message' => 'Article created',
             'article' => new ArticleResource($article),
@@ -1679,7 +1693,7 @@ class ArticleController extends Controller
             ->available()
             ->paginate(config('app.paginate_per_page'));
 
-            return MerchantOfferResource::collection($merchantOffers);
+        return MerchantOfferResource::collection($merchantOffers);
     }
 
     /**
@@ -1722,6 +1736,173 @@ class ArticleController extends Controller
         return response()->json([
             'article' => new PublicArticleResource($article)
         ]);
+    }
+
+    /**
+     * Web - Get Public Articles
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam limit integer optional Limit the number of results. Example: 10
+     * @response scenario=success {
+     * "data": []
+     * }
+     */
+    public function getPublicArticles(Request $request)
+    {
+        $query = Article::query();
+
+        $query->where('available_for_web', true)
+            ->published()
+            ->where('visibility', Article::VISIBILITY_PUBLIC);
+
+        $query = $this->articleQueryBuilder($query, $request, false);
+        $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+
+        // get location IDs from the paginated data
+        $locationIds = $data->pluck('location.0.id')->filter()->unique()->toArray();
+
+        // get stores with offers
+        $storesWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('available_for_web', true)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('store_locatables.location_id')
+            ->unique();
+
+        // set has_merchant_offer on the paginated data
+        $data->each(function ($article) use ($storesWithOffers) {
+            if ($article->location->isNotEmpty()) {
+                $articleLocationId = $article->location->first()->id;
+                $article->has_merchant_offer = $storesWithOffers->contains($articleLocationId);
+            } else {
+                $article->has_merchant_offer = false;
+            }
+        });
+
+        return PublicArticleResource::collection($data);
+    }
+
+    /**
+     * Web - Get Single Public Article
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam id integer optional The id of the article. Example: 1
+     * @urlParam slug string optional The slug of the article. Example: my-article
+     * @response scenario=success {
+     * "article": {}
+     * }
+     */
+    public function getPublicArticleSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required_if:slug,null|integer',
+            'slug' => 'required_if:id,null|string',
+        ]);
+
+        $article = Article::where('available_for_web', true)
+            ->published()
+            ->where('visibility', Article::VISIBILITY_PUBLIC)
+            ->where(function ($query) use ($request) {
+                if ($request->has('id')) {
+                    $query->where('id', $request->id);
+                } else {
+                    $query->where('slug', $request->slug);
+                }
+            })
+            ->with('user', 'media', 'location', 'location.ratings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
+            ->withCount(['comments' => function ($query) {
+                $query->whereNull('parent_id')
+                ->whereHas('user' , function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
+            }])
+            ->first();
+
+        if ($article && $article->location->isNotEmpty()) {
+            $locationIds = $article->location->pluck('id')->toArray();
+            $hasOffer = DB::table('locatables as store_locatables')
+                ->whereIn('store_locatables.location_id', $locationIds)
+                ->where('store_locatables.locatable_type', Store::class)
+                ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+                ->join('merchant_offers', function ($join) {
+                    $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                        ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                        ->where('available_for_web', true)
+                        ->where('merchant_offers.available_at', '<=', now())
+                        ->where('merchant_offers.available_until', '>=', now());
+                })
+                ->exists();
+
+            $article->has_merchant_offer = $hasOffer;
+        } else {
+            $article->has_merchant_offer = false;
+        }
+
+        return response()->json([
+            'article' => new PublicArticleResource($article)
+        ]);
+    }
+
+    /**
+     * Web - Get an Article's Offers
+     *
+     * @param Article $article
+     * @return JsonResponse
+     *
+     * @group Article
+     * @urlParam id integer required The id of the article. Example: 1
+     * @response scenario=success {
+     * "data": [],
+     * }
+     */
+    public function getPublicArticleSingleOffers(Article $article)
+    {
+        $locationIds = $article->location->pluck('id')->toArray();
+        $storeIdsWithOffers = DB::table('locatables as store_locatables')
+            ->whereIn('store_locatables.location_id', $locationIds)
+            ->where('store_locatables.locatable_type', Store::class)
+            ->join('merchant_offer_stores', 'store_locatables.locatable_id', '=', 'merchant_offer_stores.store_id')
+            ->join('merchant_offers', function ($join) {
+                $join->on('merchant_offer_stores.merchant_offer_id', '=', 'merchant_offers.id')
+                    ->where('merchant_offers.status', '=', MerchantOffer::STATUS_PUBLISHED)
+                    ->where('available_for_web', true)
+                    ->where('merchant_offers.available_at', '<=', now())
+                    ->where('merchant_offers.available_until', '>=', now());
+            })
+            ->pluck('merchant_offer_stores.merchant_offer_id')
+            ->unique();
+
+        $merchantOffers = MerchantOffer::whereIn('id', $storeIdsWithOffers)
+            ->with([
+                'media',
+                'store',
+                'stores.location',
+                'stores.storeRatings',
+                'user.merchant.media',
+                'categories',
+                'interactions',
+                'views',
+                'location.ratings'
+            ])
+            ->where('available_for_web', true)
+            ->published()
+            ->available()
+            ->paginate(config('app.paginate_per_page'));
+        return PublicMerchantOfferResource::collection($merchantOffers);
     }
 
     /**

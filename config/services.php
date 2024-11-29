@@ -80,8 +80,12 @@ return [
     ],
 
     'byteplus' => [
+        'enabled_vod' => env('BYTEPLUS_ENABLED_VOD', false),
         'key' => env('BYTEPLUS_KEY'),
         'secret' => env('BYTEPLUS_SECRET'),
+        'vod_space' => env('BYTEPLUS_VOD_SPACE'),
+        'vod_template_id' => env('BYTEPLUS_VOD_TEMPLATE_ID'),
+        'vod_region' => env('BYTEPLUS_VOD_REGION', 'ap-singapore-1'),
         'sms_url' => env('BYTEPLUS_SMS_URL', 'https://sms.byteplusapi.com/sms/openapi/send_sms'),
         'sms_account' => env('BYTEPLUS_SMS_ACCOUNT'),
         'sms_password' => env('BYTEPLUS_SMS_PASSWORD'),

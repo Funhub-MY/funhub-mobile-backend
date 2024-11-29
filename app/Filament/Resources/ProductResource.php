@@ -41,6 +41,11 @@ class ProductResource extends Resource
                     ->schema([
                         Section::make('Product Details')
                             ->schema([
+								TextInput::make('order')
+									->required()
+									->numeric()
+									->label('Order')
+									->default(fn () => (Product::max('order') ?? 0) + 1),
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('product_image')
                                     ->label('Image')
                                     ->collection(Product::MEDIA_COLLECTION_NAME)
@@ -62,7 +67,7 @@ class ProductResource extends Resource
 
                                 TextInput::make('sku')
                                     ->label('SKU')
-                                    ->unique()
+                                    ->unique(Product::class, 'sku', ignoreRecord: true)
                                     ->required(),
 
                                 RichEditor::make('description')
@@ -126,6 +131,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+				TextColumn::make('order')
+					->sortable()
+					->label('Order'),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -158,7 +166,7 @@ class ProductResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
@@ -166,7 +174,7 @@ class ProductResource extends Resource
             AuditsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -174,5 +182,5 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
-    }    
+    }
 }
