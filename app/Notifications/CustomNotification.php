@@ -96,8 +96,16 @@ class CustomNotification extends Notification implements ShouldQueue
             $data['object_id'] = $this->customNotification->content_id; // article_id, user_id, offer_id
 
             if ($this->customNotification->content_type == Article::class) {
-                $data['article_type'] = $this->customNotification->content->type;
-            }
+				// Retrieve the Article based on the article_id (object_id)
+				$article = Article::find($this->customNotification->content_id);
+
+				if ($article) {
+					$data['article_type'] = $article->type ?? null;
+				} else {
+					\Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
+					$data['article_type'] = null;
+				}
+			}
         }
 
         return FcmMessage::create()
