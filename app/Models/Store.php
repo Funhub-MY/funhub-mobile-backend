@@ -160,6 +160,7 @@ class Store extends BaseModel implements HasMedia, Auditable
         return $this->status !== self::STATUS_ARCHIVED;
     }
 
+    // DEPRECATED for FUN-1193
     // public function merchant()
     // {
     //     return $this->hasOneThrough(

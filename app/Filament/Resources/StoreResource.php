@@ -98,6 +98,11 @@ class StoreResource extends Resource
                                 ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
                                 ->relationship('user', 'name'),
 
+                            Forms\Components\Select::make('merchant_id')
+                                ->label('Linked Merchant')
+                                ->searchable()
+                                ->relationship('merchant', 'name'),
+
                             Toggle::make('use_store_redeem')
                                 ->label('Use Store Redeem Code Instead')
                                 ->onIcon('heroicon-s-check-circle')
@@ -408,6 +413,11 @@ class StoreResource extends Resource
                     ->formatStateUsing(fn($state) => $state ?? 'Un-onboarded')
                     ->sortable()
                     ->label('Linked User Account'),
+
+                Tables\Columns\TextColumn::make('merchant.name')
+                    ->formatStateUsing(fn($state) => $state ?? 'Un-onboarded')
+                    ->sortable()
+                    ->label('Merchant Name'),
 
                 TagsColumn::make('categories.name')
                     ->label('Categories')
