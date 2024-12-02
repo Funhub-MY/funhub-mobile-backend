@@ -142,10 +142,6 @@ class EditMerchant extends EditRecord
 				'koc_user_id' => $updatedKocUserId,
 			]);
 		}
-
-        //  Call the merchant portal api to sync (Send signal to merchant portal)
-        $syncMerchantPortal = app(\App\Services\SyncMerchantPortal::class);
-        $syncMerchantPortal->syncMerchant($record->id);
 	}
 
 }

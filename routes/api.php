@@ -26,28 +26,6 @@ Route::group(['prefix' => 'v1', 'middleware' => 'setLocale'], function () {
     Route::get('public_offer', [\App\Http\Controllers\Api\MerchantOfferController::class, 'getPublicOfferPublicView']);
     Route::get('public_store', [\App\Http\Controllers\Api\StoreController::class, 'getPublicStorePublicView']);
 
-    // app to app
-    Route::middleware(['application.token'])->group(function() {
-        Route::group(['prefix' => 'external'], function () {
-            Route::get('locations', [\App\Http\Controllers\Api\LocationController::class, 'index']);
-            Route::get('stores', [\App\Http\Controllers\Api\StoreController::class, 'index']);
-
-            //  Kenneth
-            Route::get('merchants', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchants']);
-           
-            Route::get('merchant/categories', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_categories']);
-            // Route::post('campaigns', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'campaigns']);\
-            Route::post('merchant/dashboard', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'dashboard']);
-            Route::post('merchant/offer_overview', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_overview']);
-            Route::post('merchant/offer_code_lists', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_code_lists']);
-            Route::post('merchant/offer_lists', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'offer_lists']);
-            Route::post('merchant/register', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_register']);
-            Route::post('merchant/update', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_update']);
-            Route::post('merchant/logo', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant_update_logo']);
-            Route::get('merchant/{merchant_id}', [\App\Http\Controllers\Api\SyncMerchantPortalController::class, 'merchant']);
-        });
-    });
-
     // primary otp login
     Route::post('check_phone_no', [\App\Http\Controllers\Api\AuthController::class, 'checkPhoneNoExists']); // send otp
     Route::post('sendOtp', [\App\Http\Controllers\Api\AuthController::class, 'sendOtp']); // send otp
