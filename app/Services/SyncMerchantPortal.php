@@ -45,6 +45,12 @@ class SyncMerchantPortal
         return $this->callAPI($this->domain."/api/v1/external/merchant/sync", "POST", "Sync merchant", ['id' => $id]);
     }
 
+    //  Call the signal to merchant portal to sync the data with base portal
+    public function syncStore($id)
+    {
+        return $this->callAPI($this->domain."/api/v1/external/store/sync", "POST", "Sync store", ['id' => $id]);
+    }
+
     private function callAPI($url = "", $method = "", $action = "", $data = []){
         try {
             // Send $method request to external API

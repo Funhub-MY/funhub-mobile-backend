@@ -56,8 +56,8 @@ class SyncMerchantResource extends JsonResource
                     'name' => $store->name,
                     'manager_name' => $store->manager_name,
                     'business_phone_no' => $store->business_phone_no,
-                    'business_hours' => ($store->business_hours) ? json_decode($store->business_hours, true) : null,
-                    'rest_hours' => ($store->rest_hours) ? json_decode($store->rest_hours, true) : null,
+                    'business_hours' => (object) $this->formatHours($store->business_hours),
+                    'rest_hours' => (object) $this->formatHours($store->rest_hours),
                     'address' => $store->address,
                     'address_postcode' => $store->address_postcode,
                     'long' => $store->long,
@@ -67,6 +67,7 @@ class SyncMerchantResource extends JsonResource
                     'state' => $store->state,
                     'country' => $store->country,
                     'state_id' => $store->state_id,
+                    'status' => $store->status,
                     'country_id' => $store->country_id,
                     'created_at' => $store->created_at,
                     'updated_at' => $store->updated_at,
@@ -81,5 +82,30 @@ class SyncMerchantResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+    }
+
+    /**
+     * Format hours into an object-like structure.
+     *
+     * @param string|null $hours
+     * @return array|null
+     */
+    protected function formatHours($hours)
+    {
+        if (!$hours) {
+            return null;
+        }
+
+        $decoded = json_decode($hours, true);
+
+        // Ensure the keys are retained
+        return collect($decoded)->mapWithKeys(function ($hour, $day) {
+            return [
+                (string) $day => [
+                    'open_time' => $hour['open_time'] ?? null,
+                    'close_time' => $hour['close_time'] ?? null,
+                ]
+            ];
+        })->toArray();
     }
 }
