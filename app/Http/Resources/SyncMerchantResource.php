@@ -19,6 +19,7 @@ class SyncMerchantResource extends JsonResource
             'id' => $this->id,
             // 'name' => $this->name,
             'business_name' => $this->business_name,
+            'company_reg_no' => $this->company_reg_no,
             'brand_name' => $this->brand_name ?? null,
             'logo' => ($this->getFirstMedia(Merchant::MEDIA_COLLECTION_NAME)) ? $this->getFirstMedia(Merchant::MEDIA_COLLECTION_NAME) : null,
             'address' => $this->address,

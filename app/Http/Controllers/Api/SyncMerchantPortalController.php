@@ -70,7 +70,7 @@ class SyncMerchantPortalController extends Controller
         try {
             $request->validate([
                 'business_name' => 'required',
-                'company_reg_no' => 'required|unique:merchants,company_reg_no',
+                'company_reg_no' => 'required',
                 'brand_name' => 'required',
                 'business_phone_no' => 'required|max:20',
                 'address' => 'required',
@@ -140,7 +140,7 @@ class SyncMerchantPortalController extends Controller
         try {
             $request->validate([
                 'business_name' => 'required',
-                'company_reg_no' => 'required|unique:merchants,company_reg_no,'.$request->id,
+                'company_reg_no' => 'required',//|unique:merchants,company_reg_no,'.$request->id
                 'brand_name' => 'required',
                 'business_phone_no' => 'required|max:20',
                 'address' => 'required',
@@ -156,7 +156,7 @@ class SyncMerchantPortalController extends Controller
                 'authorised_personnel_name' => 'required',
                 'authorised_personnel_ic_no' => 'required',
                 'id' => 'required',
-                'categories' => 'required'
+                // 'categories' => 'required'
             ]);
 
             $merchant = Merchant::findOrFail($request->id);
@@ -182,7 +182,11 @@ class SyncMerchantPortalController extends Controller
                 ];
 
                 $merchant->update($merchant_data); 
-                $merchant->categories()->sync($request->categories);
+
+                //  Process the category change if it not empty
+                if(!empty($request->categories)){
+                    $merchant->categories()->sync($request->categories);
+                }
 
                 return response()->json([
                     'error'     => false,
