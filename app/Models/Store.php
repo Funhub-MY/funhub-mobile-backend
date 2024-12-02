@@ -160,16 +160,21 @@ class Store extends BaseModel implements HasMedia, Auditable
         return $this->status !== self::STATUS_ARCHIVED;
     }
 
+    // public function merchant()
+    // {
+    //     return $this->hasOneThrough(
+    //         Merchant::class,  // Final model
+    //         User::class,      // Intermediate model
+    //         'id',             // Foreign key on the intermediate model (users.id)
+    //         'user_id',        // Foreign key on the final model (merchants.user_id)
+    //         'user_id',        // Local key on the current model (stores.user_id)
+    //         'id'              // Local key on the intermediate model (users.id)
+    //     );
+    // }
+
     public function merchant()
     {
-        return $this->hasOneThrough(
-            Merchant::class,  // Final model
-            User::class,      // Intermediate model
-            'id',             // Foreign key on the intermediate model (users.id)
-            'user_id',        // Foreign key on the final model (merchants.user_id)
-            'user_id',        // Local key on the current model (stores.user_id)
-            'id'              // Local key on the intermediate model (users.id)
-        );
+        return $this->belongsTo(Merchant::class, 'merchant_id');
     }
 
     public function otherStores()
