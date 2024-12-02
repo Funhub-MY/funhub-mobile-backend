@@ -276,6 +276,10 @@ class EditStore extends EditRecord
         if (isset($this->record)) {
             // trigger searcheable to reindex
             $this->record->searchable();
+
+            //  Call the merchant portal api to sync (Send signal to merchant portal)
+            $syncMerchantPortal = app(\App\Services\SyncMerchantPortal::class);
+            $syncMerchantPortal->syncStore($this->record->id);
         }
     }
 }

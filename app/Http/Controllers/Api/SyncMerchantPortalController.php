@@ -20,6 +20,7 @@ use App\Http\Resources\SyncMerchantResource;
 use App\Http\Resources\SyncMerchantCategoryResource;
 use App\Http\Resources\SyncMerchantCampaignResource;
 use App\Http\Resources\SyncMerchantOfferResource;
+use App\Http\Resources\SyncStoreResource;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -59,6 +60,17 @@ class SyncMerchantPortalController extends Controller
     {
         $results = Merchant::where('id', $merchant_id)->first();
         return new SyncMerchantResource($results);
+    }
+
+    /**
+     * Get Single Store
+     * Merchant portal will call this api to sync data
+     * Get store info
+     */
+    public function store($store_id)
+    {
+        $results = Store::where('id', $store_id)->first();
+        return new SyncStoreResource($results);
     }
 
     /**
