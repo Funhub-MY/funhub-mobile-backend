@@ -174,17 +174,10 @@ class MerchantController extends Controller
      */
     public function getRatings(Merchant $merchant, Request $request)
     {
-        $query = $merchant->merchantRatings()->with(['user' => function ($query) use ($merchant) {
-            $query->withCount(['merchantRatings' => function ($query) use ($merchant) {
-                $query->where('merchant_id', $merchant->id);
+        $query = $merchant->merchantRatings()
+            ->with(['interactions', 'user' => function($query) {
+                $query->select('id', 'name', 'username', 'status');
             }]);
-        }, 'interactions']);
-
-        // if there's no sort, sort by latest
-        if (!$request->has('sort')) {
-            $request->merge(['sort' => 'created_at']);
-            $request->merge(['order' => 'desc']);
-        }
 
         // if request has only_mine
         if ($request->has('only_mine')) {
@@ -203,6 +196,12 @@ class MerchantController extends Controller
         if (!$request->has('user_id') && !$request->has('merchant_id')) {
             // get only one latest rating per user
             $query->distinct('user_id')->latest('created_at');
+        }
+
+        // if there's no sort, sort by latest
+        if (!$request->has('sort')) {
+            $request->merge(['sort' => 'created_at']);
+            $request->merge(['order' => 'desc']);
         }
 
         $this->buildQuery($query, $request);

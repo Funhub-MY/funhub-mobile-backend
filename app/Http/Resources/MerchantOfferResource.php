@@ -60,6 +60,8 @@ class MerchantOfferResource extends JsonResource
                     'address_postcode' => $store->address_postcode,
                     'lat' => ($store->location && isset($store->location->lat)) ? floatval($store->location->lat) : $store->lang,
                     'lng' => ($store->location && isset($store->location->lng)) ? floatval($store->location->lng) : $store->long,
+
+                    'distance' => (float) $store->distance, //Kenneth - add the distance for stores
                     'is_hq' => $store->is_hq,
                     'state' => $store->state,
                     'country' => $store->country

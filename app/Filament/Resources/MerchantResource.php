@@ -91,11 +91,12 @@ class MerchantResource extends Resource
                                         Merchant::STATUS_REJECTED => 'Rejected',
                                     ])
                                     ->required(),
+                                    
                                 Forms\Components\Select::make('user_id')
                                     ->label('Linked User Account')
                                     ->relationship('user', 'name')
-                                    ->searchable()
-                                    ->required(),
+                                    ->searchable(),
+                                    // ->required(),
                                                                     // if edit context and record has auto linked show placeholder
                                 Placeholder::make('business_phone_no')
                                     ->disableLabel(true)
@@ -452,7 +453,8 @@ class MerchantResource extends Resource
                             // Send approval signal to merchant portal
                             $syncMerchantPortal = app(SyncMerchantPortal::class);
                             $syncMerchantPortal->approve($record->id);
-
+                            $syncMerchantPortal->syncMerchant($record->id);
+                            
                             // $record->user->notify(new MerchantOnboardEmail($record->name, $record->user->email, $record->default_password, $record->redeem_code));
 
                             Notification::make()
@@ -477,7 +479,7 @@ class MerchantResource extends Resource
                             } else {
                                 $record->update(['status' => Merchant::STATUS_REJECTED]);
 
-                                // Send approval signal to merchant portal
+                                // Send reject and sync signal to merchant portal
                                 $syncMerchantPortal = app(SyncMerchantPortal::class);
                                 $syncMerchantPortal->reject($record->id);
 

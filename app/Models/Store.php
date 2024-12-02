@@ -160,16 +160,22 @@ class Store extends BaseModel implements HasMedia, Auditable
         return $this->status !== self::STATUS_ARCHIVED;
     }
 
+    // DEPRECATED for FUN-1193
+    // public function merchant()
+    // {
+    //     return $this->hasOneThrough(
+    //         Merchant::class,  // Final model
+    //         User::class,      // Intermediate model
+    //         'id',             // Foreign key on the intermediate model (users.id)
+    //         'user_id',        // Foreign key on the final model (merchants.user_id)
+    //         'user_id',        // Local key on the current model (stores.user_id)
+    //         'id'              // Local key on the intermediate model (users.id)
+    //     );
+    // }
+
     public function merchant()
     {
-        return $this->hasOneThrough(
-            Merchant::class,  // Final model
-            User::class,      // Intermediate model
-            'id',             // Foreign key on the intermediate model (users.id)
-            'user_id',        // Foreign key on the final model (merchants.user_id)
-            'user_id',        // Local key on the current model (stores.user_id)
-            'id'              // Local key on the intermediate model (users.id)
-        );
+        return $this->belongsTo(Merchant::class, 'merchant_id');
     }
 
     public function otherStores()
@@ -294,5 +300,17 @@ class Store extends BaseModel implements HasMedia, Auditable
     public function scopeListed(Builder $query): void
     {
         $query->where($this->getTable() . '.status', self::STATUS_ACTIVE);
+    }
+
+    public function scopeWithDistance(Builder $query, float $latitude, float $longitude): void
+    {
+        $query->selectRaw("
+            {$this->getTable()}.*, 
+            (6371 * acos(cos(radians(?)) 
+            * cos(radians(lang)) 
+            * cos(radians(`long`) - radians(?)) 
+            + sin(radians(?)) 
+            * sin(radians(lang)))) AS distance
+        ", [$latitude, $longitude, $latitude]);
     }
 }
