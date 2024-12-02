@@ -27,16 +27,22 @@ class SyncMerchantPortal
         ];
     }
 
-    // Send approval signal to merchant portal
+    //  Send approval signal to merchant portal
     public function approve($id)
     {
         return $this->callAPI($this->domain."/api/v1/external/merchant/approve", "POST", "Approve merchant", ['id' => $id]);
     }
 
-    // Send reject signal to merchant portal
+    //  Send reject signal to merchant portal
     public function reject($id)
     {
         return $this->callAPI($this->domain."/api/v1/external/merchant/reject", "POST", "Reject merchant", ['id' => $id]);
+    }
+
+    //  Call the signal to merchant portal to sync the data with base portal
+    public function syncMerchant($id)
+    {
+        return $this->callAPI($this->domain."/api/v1/external/merchant/sync", "POST", "Sync merchant", ['id' => $id]);
     }
 
     private function callAPI($url = "", $method = "", $action = "", $data = []){
