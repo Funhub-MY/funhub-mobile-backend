@@ -73,7 +73,7 @@ class ArticleTagController extends Controller
         $this->buildQuery($query, $request);
 
         if ($request->has('search')) {
-            $hashtag = trim($request->search);
+			$hashtag = ltrim(trim($request->search), '#');
             $query->where('name', 'like', '%' . $hashtag . '%');
         }
 
