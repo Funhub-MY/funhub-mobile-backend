@@ -91,11 +91,12 @@ class MerchantResource extends Resource
                                         Merchant::STATUS_REJECTED => 'Rejected',
                                     ])
                                     ->required(),
+                                    
                                 Forms\Components\Select::make('user_id')
                                     ->label('Linked User Account')
                                     ->relationship('user', 'name')
-                                    ->searchable()
-                                    ->required(),
+                                    ->searchable(),
+                                    // ->required(),
                                                                     // if edit context and record has auto linked show placeholder
                                 Placeholder::make('business_phone_no')
                                     ->disableLabel(true)
