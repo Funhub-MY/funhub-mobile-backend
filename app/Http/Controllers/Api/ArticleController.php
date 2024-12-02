@@ -954,14 +954,14 @@ class ArticleController extends Controller
         // attach tags, if doesn't exist create new with # as prefix
         if ($request->has('tags')) {
             $tags = $request->tags;
-//            $tags = array_map(function ($tag) {
-//                return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
-//            }, $tags);
+            $tags = array_map(function ($tag) {
+                return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
+            }, $tags);
 
             // create or update tags
             $tags = collect($tags)->map(function ($tag) {
-				$cleanedTag = ltrim($tag, '#');
-				return ArticleTag::firstOrCreate(['name' => $cleanedTag, 'user_id' => auth()->id()])->id;
+//				$cleanedTag = ltrim($tag, '#');
+				return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
             $article->refresh();
@@ -1324,14 +1324,14 @@ class ArticleController extends Controller
             // sync tags
             if ($request->has('tags')) {
                 $tags = $request->tags;
-//                $tags = array_map(function ($tag) {
-//                    return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
-//                }, $tags);
+                $tags = array_map(function ($tag) {
+                    return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
+                }, $tags);
 
                 // create or update tags
                 $tags = collect($tags)->map(function ($tag) {
-					$cleanedTag = ltrim($tag, '#');
-					return ArticleTag::firstOrCreate(['name' => $cleanedTag, 'user_id' => auth()->id()])->id;
+//					$cleanedTag = ltrim($tag, '#');
+					return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
                 });
                 $article->tags()->sync($tags);
             }
