@@ -1326,7 +1326,10 @@ class MerchantOfferController extends Controller
             'user.merchant.media',
             'claims',
             'categories',
-            'stores',
+            'stores' => function ($query) use ($request) {
+                $query->withDistance($request->lat, $request->lng)
+                      ->orderBy('distance', 'ASC');
+            },
             'stores.location',
             'stores.storeRatings',
             'claims',

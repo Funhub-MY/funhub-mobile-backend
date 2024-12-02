@@ -295,4 +295,16 @@ class Store extends BaseModel implements HasMedia, Auditable
     {
         $query->where($this->getTable() . '.status', self::STATUS_ACTIVE);
     }
+
+    public function scopeWithDistance(Builder $query, float $latitude, float $longitude): void
+    {
+        $query->selectRaw("
+            {$this->getTable()}.*, 
+            (6371 * acos(cos(radians(?)) 
+            * cos(radians(lang)) 
+            * cos(radians(`long`) - radians(?)) 
+            + sin(radians(?)) 
+            * sin(radians(lang)))) AS distance
+        ", [$latitude, $longitude, $latitude]);
+    }
 }
