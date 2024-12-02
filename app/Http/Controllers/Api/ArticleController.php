@@ -954,9 +954,9 @@ class ArticleController extends Controller
         // attach tags, if doesn't exist create new with # as prefix
         if ($request->has('tags')) {
             $tags = $request->tags;
-            $tags = array_map(function ($tag) {
-                return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
-            }, $tags);
+//            $tags = array_map(function ($tag) {
+//                return Str::startsWith($tag, '#') ? $tag : '#' . $tag;
+//            }, $tags);
 
             // create or update tags
             $tags = collect($tags)->map(function ($tag) {
