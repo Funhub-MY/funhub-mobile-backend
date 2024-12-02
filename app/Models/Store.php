@@ -43,6 +43,7 @@ class Store extends BaseModel implements HasMedia, Auditable
 
     protected $fillable = [
         'name',
+		'slug',
         'status',
         'is_closed',
         'manager_name',
