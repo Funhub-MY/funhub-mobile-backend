@@ -162,7 +162,14 @@ class StoreTest extends TestCase
 
     public function testPostStoreRatings()
     {
-        $store = Store::factory()->create();
+        $merchant = Merchant::factory()->create();
+        $store = Store::factory()->create([
+            'merchant_id' => $merchant->id,
+            'user_id' => $merchant->user_id,
+        ]);
+        
+        $this->actingAs($merchant->user);
+
         $ratingCategories = RatingCategory::factory()->count(3)->create();
 
         $ratingCategoriesIds = $ratingCategories->pluck('id')->toArray();
@@ -191,7 +198,7 @@ class StoreTest extends TestCase
         // assert that the rating was created
         $this->assertDatabaseHas('store_ratings', [
             'store_id' => $store->id,
-            'user_id' => $this->user->id,
+            'user_id' => $store->merchant->user->id,
             'rating' => $ratingData['rating'],
             'comment' => $ratingData['comment'],
         ]);
@@ -201,17 +208,20 @@ class StoreTest extends TestCase
             $this->assertDatabaseHas('rating_categories_store_ratings', [
                 'store_rating_id' => $response['data']['id'],
                 'rating_category_id' => $category->id,
-                'user_id' => $this->user->id,
+                'user_id' => $store->merchant->user->id,
             ]);
         }
     }
 
     public function testGetMerchantMenus()
     {
+        $merchant = Merchant::factory()->create();
         $store = Store::factory()->create([
-            'user_id' => $this->user->id,
+            'merchant_id' => $merchant->id,
+            'user_id' => $merchant->user_id,
         ]);
-        $merchant = $store->merchant;
+        
+        $this->actingAs($merchant->user);
 
         $menus = [
             UploadedFile::fake()->create('menu1.pdf'),
