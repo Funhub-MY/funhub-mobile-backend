@@ -397,11 +397,11 @@ class ArticleTest extends TestCase
         // check article has tags attached (two tags)
         $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
-            'article_tag_id' => ArticleTag::where('name', 'test')->first()->id,
+            'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
         ]);
         $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
-            'article_tag_id' => ArticleTag::where('name', 'test2')->first()->id,
+            'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
     }
 
@@ -535,11 +535,11 @@ class ArticleTest extends TestCase
         // check article has tags attached (two tags)
         $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
-            'article_tag_id' => ArticleTag::where('name', 'test')->first()->id,
+            'article_tag_id' => ArticleTag::where('name', '#test')->first()->id,
         ]);
         $this->assertDatabaseHas('articles_article_tags', [
             'article_id' => $article_id,
-            'article_tag_id' => ArticleTag::where('name', 'test2')->first()->id,
+            'article_tag_id' => ArticleTag::where('name', '#test2')->first()->id,
         ]);
     }
 
@@ -1745,7 +1745,7 @@ class ArticleTest extends TestCase
         ]);
 
         // Retrieve the tag from the database
-        $articleTag = ArticleTag::where('name', 'test')->first();
+        $articleTag = ArticleTag::where('name', '#test')->first();
 
         // Ensure the tag is associated with two articles
         $articlesWithTag = $articleTag ? $articleTag->articles : collect();
