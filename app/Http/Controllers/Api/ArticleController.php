@@ -301,27 +301,55 @@ class ArticleController extends Controller
 
         try {
             $articleIds = explode(',', $request->article_ids);
+            $userId = auth()->id();
 
-            // clear existing list
-            auth()->user()->articleRecommendations()->delete();
+            // get existing recommendations to preserve last_viewed_at
+            $existingRecommendations = auth()->user()
+                ->articleRecommendations()
+                ->whereIn('article_id', $articleIds)
+                ->pluck('article_id')
+                ->toArray();
 
-            foreach ($articleIds as $articleId) {
-                // insert
-                auth()->user()->articleRecommendations()->create([
-                    'user_id' => auth()->id(),
-                    'article_id' => $articleId,
-                    'last_viewed_at' => null,
-                ]);
+            // find new article IDs that don't exist yet
+            $newArticleIds = array_diff($articleIds, $existingRecommendations);
+
+            if (!empty($newArticleIds)) {
+                // prepare batch insert data
+                $timestamp = now();
+                $insertData = array_map(function($articleId) use ($userId, $timestamp) {
+                    return [
+                        'user_id' => $userId,
+                        'article_id' => $articleId,
+                        'last_viewed_at' => null,
+                        'created_at' => $timestamp,
+                        'updated_at' => $timestamp,
+                    ];
+                }, $newArticleIds);
+
+                // mass insert new recommendations
+                \App\Models\ArticleRecommendation::insert($insertData);
             }
+
+            // delete recommendations that are not in the new list
+            auth()->user()
+                ->articleRecommendations()
+                ->whereNotIn('article_id', $articleIds)
+                ->delete();
 
             return response()->json([
                 'message' => 'Article recommendations updated',
-                'user_id' => auth()->id(),
+                'user_id' => $userId,
                 'total_articles' => count($articleIds),
+                'new_articles' => count($newArticleIds),
+                'preserved_articles' => count($existingRecommendations),
             ]);
+
         } catch (\Exception $e) {
-            Log::error('[ArticleController] Article recommendations update failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Article recommendations update failed. Please try again later']);
+            Log::error('Error saving article recommendations: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Error saving article recommendations',
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -1687,7 +1715,7 @@ class ArticleController extends Controller
                     ->where('merchant_offers.available_at', '<=', now())
                     ->where('merchant_offers.available_until', '>=', now());
             })
-            ->pluck('merchant_offer_stores.merchant_offer_id')
+            ->pluck('store_locatables.location_id')
             ->unique();
 
         // Retrieve the merchant offers associated with the store IDs
