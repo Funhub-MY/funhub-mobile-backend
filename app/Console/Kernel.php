@@ -20,7 +20,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('articles:run-engagements')->everyMinute();
 
         // Every Five Minutes
-        $schedule->command('article:publish')->everyFiveMinutes();
+		$schedule->command('articles:sync-location-as-stores')->everyFiveMinutes();
+		$schedule->command('article:publish')->everyFiveMinutes();
 
         if (config('services.byteplus.enabled_vod') == true) {
             $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
@@ -42,7 +43,7 @@ class Kernel extends ConsoleKernel
         // Hourly
         $schedule->command('fetch:news-feed')->hourly();
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly();
-        $schedule->command('articles:sync-location-as-stores')->hourly();
+//        $schedule->command('articles:sync-location-as-stores')->hourly();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
 		$schedule->command('redeem:send-review-reminder')->hourly();
