@@ -79,6 +79,12 @@ class ArticleTagController extends Controller
 
         $tags = $query->paginate(config('app.paginate_per_page'));
 
+		// Modify the collection to remove # prefix from tag names
+		$tags->getCollection()->transform(function ($tag) {
+			$tag->name = $this->convertToPascalCase(trim(ltrim($tag->name, '#')));
+			return $tag;
+		});
+
         return ArticleTagResource::collection($tags);
     }
 
@@ -107,4 +113,11 @@ class ArticleTagController extends Controller
 
         return  ArticleTagResource::collection($tags);
     }
+
+	private function convertToPascalCase($string)
+	{
+		$string = preg_replace('/[^a-zA-Z0-9]/', ' ', $string);
+		$string = preg_replace('/\s+/', ' ', $string);
+		return str_replace(' ', '', ucwords(strtolower($string)));
+	}
 }
