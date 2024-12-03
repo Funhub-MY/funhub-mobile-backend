@@ -89,7 +89,6 @@ class SyncArticlesLocationAsStores extends Command
 
                 // get first article latest
                 $article = $location->articles()->where('status', \App\Models\Article::STATUS_PUBLISHED)->latest()->first();
-				Log::info('[SyncArticlesLocationAsStores] Article: ' . $article->id);
                 if ($article) {
 					try {
 						// Get article category IDs
