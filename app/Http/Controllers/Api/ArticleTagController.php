@@ -81,7 +81,7 @@ class ArticleTagController extends Controller
 
 		// Modify the collection to remove # prefix from tag names
 		$tags->getCollection()->transform(function ($tag) {
-			$tag->name = $this->convertToPascalCase(trim(ltrim($tag->name, '#')));
+			$tag->name = $this->formatTagName(trim(ltrim($tag->name, '#')));
 			return $tag;
 		});
 
@@ -114,10 +114,14 @@ class ArticleTagController extends Controller
         return  ArticleTagResource::collection($tags);
     }
 
-	private function convertToPascalCase($string)
+	private function formatTagName($string)
 	{
-		$string = preg_replace('/[^a-zA-Z0-9]/', ' ', $string);
-		$string = preg_replace('/\s+/', ' ', $string);
-		return str_replace(' ', '', ucwords(strtolower($string)));
+		// Remove the leading '#' if it exists
+		if (str_starts_with($string, '#')) {
+			$string = substr($string, 1);
+		}
+
+		// Remove all spaces between words
+		return str_replace(' ', '', $string);
 	}
 }
