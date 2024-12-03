@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\ArticleRecommendation;
 use App\Models\Comment;
 use App\Models\Location;
 use App\Models\MerchantOffer;
@@ -65,6 +66,13 @@ class ViewController extends Controller
             'viewable_id' => $request->viewable_id,
             'ip_address' => $request->ip(),
         ]);
+
+        // update article recommendation if this is an article view
+        if ($request->viewable_type === Article::class && auth()->check()) {
+            ArticleRecommendation::where('user_id', auth()->id())
+                ->where('article_id', $request->viewable_id)
+                ->update(['last_viewed_at' => now()]);
+        }
 
         // record insights
         if ($view->viewable_type === Article::class) {

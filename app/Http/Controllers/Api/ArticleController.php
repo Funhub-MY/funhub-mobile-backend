@@ -109,8 +109,10 @@ class ArticleController extends Controller
         // Handle build_recommendations alongside article_ids
         if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
             $recommendedArticleIds = auth()->user()->articleRecommendations()
-                ->whereNull('last_viewed_at')
-                ->inRandomOrder()
+                ->select('article_id')
+                ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
+                ->orderByRaw('RAND()')
+                ->limit(50)
                 ->pluck('article_id')
                 ->toArray();
 
@@ -128,7 +130,7 @@ class ArticleController extends Controller
                     $query->whereIn('id', $recommendedArticleIds);
                 }
 
-                // Maintain the random order of recommendations
+                // Maintain the order of recommendations (unviewed first, then viewed)
                 $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
                 $query->orderByRaw($orderString);
             } elseif ($request->has('article_ids')) {
