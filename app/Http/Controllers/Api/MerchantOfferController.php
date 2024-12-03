@@ -1257,14 +1257,39 @@ class MerchantOfferController extends Controller
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
-            $data = MerchantOffer::search('')->with([
+            // build search query with all filters
+            $searchQuery = MerchantOffer::search('')->with([
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
-            ])
-                ->query(function ($query) use ($request) {
-                    $query = $this->merchantOfferQueryBuilder($query, $request);
-                })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+            ]);
+
+            // apply filters at search level
+            if ($request->has('category_ids')) {
+                $category_ids = explode(',', $request->category_ids);
+                $searchQuery->whereIn('category_ids', $category_ids);
+            }
+
+            if ($request->has('available_only')) {
+                $searchQuery->where('available', true);
+            }
+
+            if ($request->has('coming_soon_only')) {
+                $searchQuery->where('available_at', '>', now()->toIso8601String());
+            }
+
+            if ($request->has('except_expired')) {
+                $searchQuery->where('available_until', '>', now()->toIso8601String());
+            }
+
+            if ($request->has('flash_only')) {
+                $searchQuery->where('flash_deal', $request->flash_only == 1);
+            }
+
+            // apply pagination at search level
+            $data = $searchQuery->paginate(
+                $request->has('limit') ? $request->limit : config('app.paginate_per_page')
+            );
         }
 
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
