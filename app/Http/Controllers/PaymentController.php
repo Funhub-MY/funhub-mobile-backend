@@ -197,12 +197,28 @@ class PaymentController extends Controller
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
 
+				$redemption_start_date = null;
+				$redemption_end_date = null;
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
+					$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+						->where('user_id', $transaction->user_id)
+						->latest()
+						->first();
+					if ($claim) {
+						// redemption dates is claim created_at + offer expiry_days
+						$redemption_start_date = $claim->created_at;
 
+						if (isset($claim->merchantOffer)) {
+							$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+						} else {
+							$redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
+						}
+					}
                     if ($transaction->user->email) {
                         $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR'));
+                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR', $transaction->created_at->format('Y-m-d'), $transaction->created_at->format('H:i:s'), $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null, $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null));
                     }
 
                 } else if ($transaction->transactionable_type == Product::class) {
