@@ -156,6 +156,12 @@ class CreateStore extends CreateRecord
                 Log::info('Failed to get location data from Google Maps API');
             }
         }
+
         $this->record->searchable();
+
+
+        //  Call the merchant portal api to sync (Send signal to merchant portal)
+        $syncMerchantPortal = app(\App\Services\SyncMerchantPortal::class);
+        $syncMerchantPortal->syncStore($this->record->id);
     }
 }
