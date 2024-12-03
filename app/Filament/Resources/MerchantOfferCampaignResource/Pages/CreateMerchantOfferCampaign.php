@@ -92,4 +92,46 @@ class CreateMerchantOfferCampaign extends CreateRecord
             CreateMerchantOfferJob::dispatch($record->id, $schedule->id);
         }
     }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public function addAvailableVouchers(): void
+    {
+        $userId = $this->data['user_id'] ?? null;
+        
+        if (!$userId) {
+            Notification::make()
+                ->warning()
+                ->title('Please select a merchant first')
+                ->send();
+            return;
+        }
+        
+        $available = \App\Models\MerchantOffer::whereHas('campaign', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->withCount([
+                'vouchers as available_count' => function ($query) {
+                    $query->whereNull('owned_by_id')
+                        ->where('voided', false);
+                }
+            ])
+            ->get()
+            ->sum('available_count');
+        
+        $currentValue = (int)($this->data['vouchers_count'] ?? 0);
+        $newValue = $currentValue + $available;
+        $this->data['vouchers_count'] = $newValue;
+        
+        Notification::make()
+            ->success()
+            ->title('Vouchers Added')
+            ->body("Added {$available} available vouchers. New total: {$newValue}")
+            ->send();
+    }
 }
