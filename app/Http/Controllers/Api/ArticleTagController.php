@@ -116,8 +116,17 @@ class ArticleTagController extends Controller
 
 	private function convertToPascalCase($string)
 	{
-		$string = preg_replace('/[^a-zA-Z0-9]/', ' ', $string);
-		$string = preg_replace('/\s+/', ' ', $string);
-		return str_replace(' ', '', ucwords(strtolower($string)));
+		// Allow Unicode characters (including Chinese), alphanumeric, and spaces
+		$string = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $string);
+		$string = preg_replace('/\s+/', ' ', $string); // Normalize spaces
+		$words = explode(' ', trim($string));
+
+		// Convert to PascalCase while keeping the first word's original case
+		$formatted = array_shift($words); // Keep the first word as is
+		foreach ($words as $word) {
+			$formatted .= mb_convert_case($word, MB_CASE_TITLE, "UTF-8");
+		}
+
+		return $formatted;
 	}
 }
