@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
             $schedule->command('byteplus:check-video-status')->everyFiveMinutes()->withoutOverlapping();
         }
 
+		// Every Ten Minutes
+		$schedule->command('articles:sync-location-as-stores')->everyTenMinutes();
+
         // Every Fifteen Minutes
         $schedule->command('merchant-offers:release')->everyFifteenMinutes();
         $schedule->command('articles:sync-ratings-to-store-ratings')->everyFifteenMinutes()->withoutOverlapping();
@@ -42,7 +45,6 @@ class Kernel extends ConsoleKernel
         // Hourly
         $schedule->command('fetch:news-feed')->hourly();
         $schedule->command('media-partner:auto-publish-by-keywords')->hourly();
-        $schedule->command('articles:sync-location-as-stores')->hourly();
         $schedule->job(new \App\Jobs\ImportedContactMatching())->hourly();
         $schedule->command('stores:auto-hide-unonboarded')->hourly();
 		$schedule->command('redeem:send-review-reminder')->hourly();
