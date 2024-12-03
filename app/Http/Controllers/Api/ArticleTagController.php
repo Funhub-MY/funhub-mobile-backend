@@ -81,7 +81,7 @@ class ArticleTagController extends Controller
 
 		// Modify the collection to remove # prefix from tag names
 		$tags->getCollection()->transform(function ($tag) {
-			$tag->name = $this->convertToPascalCase(trim(ltrim($tag->name, '#')));
+			$tag->name = $this->formatTagName(trim(ltrim($tag->name, '#')));
 			return $tag;
 		});
 
@@ -114,19 +114,14 @@ class ArticleTagController extends Controller
         return  ArticleTagResource::collection($tags);
     }
 
-	private function convertToPascalCase($string)
+	private function formatTagName($string)
 	{
-		// Allow Unicode characters (including Chinese), alphanumeric, and spaces
-		$string = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $string);
-		$string = preg_replace('/\s+/', ' ', $string); // Normalize spaces
-		$words = explode(' ', trim($string));
-
-		// Convert to PascalCase while keeping the first word's original case
-		$formatted = array_shift($words); // Keep the first word as is
-		foreach ($words as $word) {
-			$formatted .= mb_convert_case($word, MB_CASE_TITLE, "UTF-8");
+		// Remove the leading '#' if it exists
+		if (str_starts_with($string, '#')) {
+			$string = substr($string, 1);
 		}
 
-		return $formatted;
+		// Remove all spaces between words
+		return str_replace(' ', '', $string);
 	}
 }
