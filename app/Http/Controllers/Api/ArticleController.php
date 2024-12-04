@@ -117,28 +117,17 @@ class ArticleController extends Controller
                 ->toArray();
 
             if (!empty($recommendedArticleIds)) {
-                // If there are existing article_ids, intersect with recommendations
-                if ($request->has('article_ids')) {
-                    $requestedIds = explode(',', $request->article_ids);
-                    $intersectedIds = array_intersect($recommendedArticleIds, $requestedIds);
-
-                    // If intersection exists, use it; otherwise fall back to requested IDs
-                    $finalIds = !empty($intersectedIds) ? $intersectedIds : $requestedIds;
-                    $query->whereIn('id', $finalIds);
-                } else {
-                    // No article_ids specified, just use recommendations
-                    $query->whereIn('id', $recommendedArticleIds);
-                }
-
-                // Maintain the order of recommendations (unviewed first, then viewed)
+                // use recommendations if available
+                $query->whereIn('id', $recommendedArticleIds);
+                // maintain the order of recommendations
                 $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
                 $query->orderByRaw($orderString);
             } elseif ($request->has('article_ids')) {
-                // If no recommendations but article_ids exist, use those
+                // fall back to article_ids only if no recommendations
                 $query->whereIn('id', explode(',', $request->article_ids));
             }
         } elseif ($request->has('article_ids')) {
-            // Normal article_ids handling if no recommendations
+            // normal article_ids handling if no recommendations enabled
             $query->whereIn('id', explode(',', $request->article_ids));
         }
 
@@ -556,7 +545,9 @@ class ArticleController extends Controller
             'tags',
             'location',
             'interactions' => function ($query) {
-                $query->where('user_id', auth()->id());
+                $query->whereHas('user', function ($query) {
+                    $query->where('status', User::STATUS_ACTIVE);
+                });
             },
             'interactions.user' => function ($query) {
                 $query->without('pointLedgers');
