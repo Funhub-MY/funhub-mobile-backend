@@ -46,8 +46,13 @@ class SyncMerchantPortalController extends Controller
      * Get merchant info, logo, user, categories, stores and store categories
      */
     public function merchants(Request $request)
-    {
-        $results =  Merchant::orderBy('id', 'asc')->get();//->paginate(1000);
+    {   
+        $offset = $request->input('offset', 0); // Default offset is 0
+        $limit  = $request->input('limit', 100); // Default limit is 100
+        $results =  Merchant::orderBy('id', 'asc')
+            ->skip($offset)
+            ->take($limit)
+            ->get();
         return SyncMerchantResource::collection($results);
     }
 
