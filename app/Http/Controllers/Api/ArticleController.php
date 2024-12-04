@@ -108,10 +108,12 @@ class ArticleController extends Controller
 
         // Handle build_recommendations alongside article_ids
         if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
+            // seed random with current timestamp for different results each time
+            $timestamp = now()->timestamp;
             $recommendedArticleIds = auth()->user()->articleRecommendations()
                 ->select('article_id')
                 ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
-                ->orderByRaw('RAND()')
+                ->orderByRaw("RAND($timestamp)")
                 ->limit(50)
                 ->pluck('article_id')
                 ->toArray();
