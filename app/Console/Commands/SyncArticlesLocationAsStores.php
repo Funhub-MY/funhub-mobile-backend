@@ -93,9 +93,12 @@ class SyncArticlesLocationAsStores extends Command
 					try {
 						// Get article category IDs
 						$articleCategoryIds = $article->categories->pluck('id');
+						$articleSubCategoryIds = $article->subCategories->pluck('id');
+
+						$allArticleCategoryIds = $articleCategoryIds->merge($articleSubCategoryIds);
 
 						// Find mapped merchant categories from ArticleStoreCategory
-						$storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $articleCategoryIds)
+						$storeCategoriesToAttach = \App\Models\ArticleStoreCategory::whereIn('article_category_id', $allArticleCategoryIds)
 							->pluck('merchant_category_id')
 							->unique();
 
