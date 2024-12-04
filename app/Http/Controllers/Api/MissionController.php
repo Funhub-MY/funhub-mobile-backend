@@ -41,6 +41,11 @@ class MissionController extends Controller
             ->with(['participants' => function($query) {
                 $query->where('user_id', auth()->user()->id);
             }])
+            ->with(['predecessors' => function($query) {
+                $query->with(['participants' => function($query) {
+                    $query->where('user_id', auth()->user()->id);
+                }]);
+            }])
             ->orderBy('created_at', 'desc');
 
         // filter by claimed_only

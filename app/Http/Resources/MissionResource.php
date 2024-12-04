@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Mission;
+use App\Services\MissionService;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -63,6 +64,18 @@ class MissionResource extends JsonResource
             'claimed_at_ago' => $myParticipation?->pivot->claimed_at
                 ? Carbon::parse($myParticipation->pivot->claimed_at)->diffForHumans()
                 : null,
+            // 'pivot' => $this->whenPivotLoaded('missions_users', function () {
+            //     return [
+            //         'id' => $this->pivot->id,
+            //         'is_completed' => (bool) $this->pivot->is_completed,
+            //         'claimed_at' => $this->pivot->claimed_at,
+            //         'last_rewarded_at' => $this->pivot->last_rewarded_at,
+            //         'started_at' => $this->pivot->started_at,
+            //         'current_values' => json_decode($this->pivot->current_values ?? '[]'),
+            //         'completed_at' => $this->pivot->completed_at,
+            //     ];
+            // }),
+            'predecessors' => MissionResource::collection($this->whenLoaded('predecessors')),
         ];
     }
 

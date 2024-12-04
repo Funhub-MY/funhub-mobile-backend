@@ -198,7 +198,7 @@ class MissionService
     /**
      * Get existing or create new user mission progress
      */
-    private function getOrCreateUserMission(Mission $mission, User $user, string $eventType)
+    public function getOrCreateUserMission(Mission $mission, User $user, string $eventType)
     {
         Log::info('Getting or creating user mission', [
             'mission_id' => $mission->id,
@@ -240,6 +240,16 @@ class MissionService
         $userMission = $userMissionQuery->first();
 
         if (!$userMission) {
+            // check if all predecessors are completed before creating new mission
+            if (!$this->arePredecessorsCompleted($user, $mission)) {
+                Log::info('Cannot start mission - prerequisites not completed', [
+                    'mission_id' => $mission->id,
+                    'user_id' => $user->id,
+                    'frequency' => $mission->frequency
+                ]);
+                return false;
+            }
+
             Log::info('Creating new mission progress', [
                 'mission_id' => $mission->id,
                 'user_id' => $user->id,
@@ -400,58 +410,6 @@ class MissionService
     }
 
     /**
-     * Handle mission completion and rewards
-     */
-    private function handleMissionCompletion(Mission $mission, MissionUser $missionUser, array $currentValues): void
-    {
-        Log::info('Checking mission completion', [
-            'mission_id' => $mission->id,
-            'current_values' => $currentValues,
-            'required_value' => $mission->required_value,
-            'frequency' => $mission->frequency
-        ]);
-
-        $isCompleted = false;
-        foreach ($currentValues as $value) {
-            if ($value >= $mission->required_value) {
-                $isCompleted = true;
-                break;
-            }
-        }
-
-        if (!$isCompleted) {
-            return;
-        }
-
-        Log::info('Mission completion check passed', [
-            'mission_id' => $mission->id,
-            'current_values' => $currentValues,
-            'required_value' => $mission->required_value,
-            'frequency' => $mission->frequency
-        ]);
-
-        // Mark mission as completed
-        $missionUser->is_completed = true;
-        $missionUser->completed_at = now();
-
-        // Auto disburse reward if enabled
-        if ($mission->auto_disburse) {
-            $this->disburseReward($mission, $missionUser->user);
-            $missionUser->claimed_at = now();
-        }
-
-        $missionUser->save();
-
-        Log::info('Mission status after update', [
-            'mission_id' => $mission->id,
-            'is_completed' => $missionUser->is_completed,
-            'claimed_at' => $missionUser->claimed_at,
-            'current_values' => json_encode($currentValues),
-            'frequency' => $mission->frequency
-        ]);
-    }
-
-    /**
      * Disburse reward to user
      */
     public function disburseReward(Mission $mission, User $user): void
@@ -602,5 +560,34 @@ class MissionService
                 'error' => $e->getMessage()
             ]);
         }
+    }
+    
+    protected function arePredecessorsCompleted(User $user, Mission $mission): bool
+    {
+        // if no predecessors, return true
+        if ($mission->predecessors->isEmpty()) {
+            return true;
+        }
+
+        // get all predecessors and their completion status
+        $predecessorStatuses = $mission->predecessors()
+            ->with(['participants' => function($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }])
+            ->get();
+
+        // check if any predecessor is not completed
+        foreach ($predecessorStatuses as $predecessor) {
+            $isCompleted = $predecessor->participants
+                ->contains(function($participation) {
+                    return $participation->pivot->is_completed;
+                });
+
+            if (!$isCompleted) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

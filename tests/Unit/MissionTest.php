@@ -391,6 +391,75 @@ test('one off mission auto disbursement and non-repeatable behavior', function (
     );
 });
 
+test('missions with incomplete predecessors are not able start', function () {
+    Notification::fake();
+    $component = RewardComponent::where('name', '鸡蛋')->first();
+    $missionService = app(MissionService::class);
+
+    // create one-off missions that will be prerequisites
+    $prerequisiteMissions = Mission::factory(2)->create([
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'frequency' => 'one-off',
+        'status' => 1,
+        'enabled_at' => now(),
+        'user_id' => $this->user->id,
+        'events' => ['comment_created'],
+        'values' => [5],
+    ]);
+
+    // create missions that depend on the prerequisites
+    $dependentMissions = Mission::factory(2)->create([
+        'missionable_type' => RewardComponent::class,
+        'missionable_id' => $component->id,
+        'frequency' => 'daily',
+        'status' => 1,
+        'enabled_at' => now(),
+        'user_id' => $this->user->id,
+        'events' => ['comment_created'],
+        'values' => [5],
+    ]);
+
+    // set up prerequisites
+    foreach ($prerequisiteMissions as $index => $prerequisite) {
+        $dependentMissions[$index]->predecessors()->attach($prerequisite->id);
+    }
+
+    // try to trigger events for dependent missions - should not create participation records
+    foreach ($dependentMissions as $mission) {
+        // should return false since prerequisites are not completed
+        $result = $missionService->getOrCreateUserMission($mission, $this->user, 'comment_created');
+        expect($result)->toBeFalse();
+
+        // verify no mission participation was created
+        $participation = $this->user->missionsParticipating()
+            ->where('mission_id', $mission->id)
+            ->first();
+        expect($participation)->toBeNull();
+    }
+
+    // complete first prerequisite
+    $prerequisiteMissions[0]->participants()->attach($this->user->id, [
+        'started_at' => now(),
+        'current_values' => json_encode(['comment_created' => 5]),
+        'is_completed' => true,
+        'completed_at' => now()
+    ]);
+
+    // now first dependent mission should be able to start
+    $missionService->handleEvent('comment_created', $this->user);
+    $participation = $this->user->missionsParticipating()
+        ->where('mission_id', $dependentMissions[0]->id)
+        ->first();
+    expect($participation)->not->toBeNull();
+
+    // second dependent mission should still not be able to start
+    $participation = $this->user->missionsParticipating()
+        ->where('mission_id', $dependentMissions[1]->id)
+        ->first();
+    expect($participation)->toBeNull();
+});
+
 
 // 1. Different mission frequencies track progress independently
 // 2. Shared events contribute to all applicable missions
@@ -695,18 +764,17 @@ test('accumulated mission with follow events can be repeated', function () {
         
         $missionService->handleEvent('user_followed', $this->user);
         
-        // Check progress after each follow
-        $userMission = $this->user->missionsParticipating()
-            ->where('mission_id', $mission->id)
-            ->orderByDesc('missions_users.id')
-            ->first();
+        // Check progress after each follow through API
+        $response = $this->getJson('/api/v1/missions?frequency=accumulated');
+        $response->assertOk();
+        
+        $missionData = collect($response->json('data'))->firstWhere('id', $mission->id);
         
         if ($index < 4) {
             // Not completed yet
-            $currentValues = json_decode($userMission->pivot->current_values, true);
-            expect($currentValues['user_followed'])->toBe($index + 1);
-            expect($userMission->pivot->is_completed)->toBe(0);
-            expect($userMission->pivot->claimed_at)->toBeNull();
+            expect($missionData['current_values']['user_followed'])->toBe($index + 1);
+            expect($missionData['is_completed'])->toBeFalse();
+            expect($missionData['claimed_at'])->toBeNull();
         }
     }
 
@@ -728,23 +796,18 @@ test('accumulated mission with follow events can be repeated', function () {
         
         $missionService->handleEvent('user_followed', $this->user);
         
-        // Check progress of new mission instance
-        $userMission = $this->user->missionsParticipating()
-            ->where('mission_id', $mission->id)
-            ->orderByDesc('missions_users.id')
-            ->first();
-
-        $currentValues = json_decode($userMission->pivot->current_values, true);
-        Log::info('[TEST] Current Values' , [
-            $currentValues['user_followed'],
-            $counter + 1
-        ]);
-
-        expect($currentValues['user_followed'])->toBe($counter + 1);        
+        // Check progress of new mission instance through API
+        $response = $this->getJson('/api/v1/missions?frequency=accumulated');
+        $response->assertOk();
+        
+        $missionData = collect($response->json('data'))->firstWhere('id', $mission->id);
+        
+        expect($missionData['current_values']['user_followed'])->toBe($counter + 1);
+        
         // On last follow, should complete and auto-disburse again
         if ($index === 4) {
-            expect($userMission->pivot->is_completed)->toBe(1);
-            expect($userMission->pivot->claimed_at)->not->toBeNull();
+            expect($missionData['is_completed'])->toBeTrue();
+            expect($missionData['claimed_at'])->not->toBeNull();
         }
         $counter++;
     }
