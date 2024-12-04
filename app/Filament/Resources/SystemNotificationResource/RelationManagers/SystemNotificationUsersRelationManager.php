@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SystemNotificationResource\RelationManagers;
 
 use App\Models\User;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
@@ -134,7 +135,11 @@ class SystemNotificationUsersRelationManager extends RelationManager
 							->title('Import Complete')
 							->body($message)
 							->send();
-					}),
+					})
+					->hidden(fn ($livewire) =>
+						$livewire->ownerRecord->selection_type === 'select' ||
+						$livewire->ownerRecord->all_active_users === 1
+					)
 			])
 			->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

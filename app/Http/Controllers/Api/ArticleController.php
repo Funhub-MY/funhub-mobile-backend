@@ -109,8 +109,10 @@ class ArticleController extends Controller
         // Handle build_recommendations alongside article_ids
         if ($request->has('build_recommendations') && $request->build_recommendations == 1 && auth()->user()->has_article_personalization) {
             $recommendedArticleIds = auth()->user()->articleRecommendations()
-                ->whereNull('last_viewed_at')
-                ->inRandomOrder()
+                ->select('article_id')
+                ->orderByRaw('CASE WHEN last_viewed_at IS NULL THEN 0 ELSE 1 END')
+                ->orderByRaw('RAND()')
+                ->limit(50)
                 ->pluck('article_id')
                 ->toArray();
 
@@ -128,7 +130,7 @@ class ArticleController extends Controller
                     $query->whereIn('id', $recommendedArticleIds);
                 }
 
-                // Maintain the random order of recommendations
+                // Maintain the order of recommendations (unviewed first, then viewed)
                 $orderString = 'FIELD(id,' . implode(',', $recommendedArticleIds) . ')';
                 $query->orderByRaw($orderString);
             } elseif ($request->has('article_ids')) {
@@ -299,27 +301,55 @@ class ArticleController extends Controller
 
         try {
             $articleIds = explode(',', $request->article_ids);
+            $userId = auth()->id();
 
-            // clear existing list
-            auth()->user()->articleRecommendations()->delete();
+            // get existing recommendations to preserve last_viewed_at
+            $existingRecommendations = auth()->user()
+                ->articleRecommendations()
+                ->whereIn('article_id', $articleIds)
+                ->pluck('article_id')
+                ->toArray();
 
-            foreach ($articleIds as $articleId) {
-                // insert
-                auth()->user()->articleRecommendations()->create([
-                    'user_id' => auth()->id(),
-                    'article_id' => $articleId,
-                    'last_viewed_at' => null,
-                ]);
+            // find new article IDs that don't exist yet
+            $newArticleIds = array_diff($articleIds, $existingRecommendations);
+
+            if (!empty($newArticleIds)) {
+                // prepare batch insert data
+                $timestamp = now();
+                $insertData = array_map(function($articleId) use ($userId, $timestamp) {
+                    return [
+                        'user_id' => $userId,
+                        'article_id' => $articleId,
+                        'last_viewed_at' => null,
+                        'created_at' => $timestamp,
+                        'updated_at' => $timestamp,
+                    ];
+                }, $newArticleIds);
+
+                // mass insert new recommendations
+                \App\Models\ArticleRecommendation::insert($insertData);
             }
+
+            // delete recommendations that are not in the new list
+            auth()->user()
+                ->articleRecommendations()
+                ->whereNotIn('article_id', $articleIds)
+                ->delete();
 
             return response()->json([
                 'message' => 'Article recommendations updated',
-                'user_id' => auth()->id(),
+                'user_id' => $userId,
                 'total_articles' => count($articleIds),
+                'new_articles' => count($newArticleIds),
+                'preserved_articles' => count($existingRecommendations),
             ]);
+
         } catch (\Exception $e) {
-            Log::error('[ArticleController] Article recommendations update failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Article recommendations update failed. Please try again later']);
+            Log::error('Error saving article recommendations: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Error saving article recommendations',
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -565,8 +595,10 @@ class ArticleController extends Controller
         if ($myBlockedUserIds) {
             $excludedUserIds = array_merge($excludedUserIds, $myBlockedUserIds);
         }
-        $query->whereNotIn('user_id', $excludedUserIds);
-
+        $query->whereNotIn('user_id', $excludedUserIds)
+			->whereDoesntHave('hiddenUsers', function($q) {
+				$q->where('user_id', auth()->id());
+			});
     }
 
     /**
@@ -687,11 +719,14 @@ class ArticleController extends Controller
         $this->filterArticlesBlockedOrHidden($query);
 
         $data = $query->with('user', 'user.media', 'user.followers', 'comments', 'interactions', 'interactions.user', 'media', 'media.videoJob', 'categories', 'subCategories', 'tags', 'location', 'imports', 'location.state', 'location.country', 'location.ratings')
-            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports', 'userFollowings')
+            ->withCount('interactions', 'media', 'categories', 'tags', 'views', 'imports')
             ->withCount(['userFollowers' => function ($query) {
                 $query->where('status', User::STATUS_ACTIVE);
             }])
-            ->withCount(['comments' => function ($query) {
+			->withCount(['userFollowings' => function ($query) {
+				$query->where('status', User::STATUS_ACTIVE);
+			}])
+			->withCount(['comments' => function ($query) {
                 $query->whereNull('parent_id')
                 ->whereHas('user' , function ($query) {
                     $query->where('status', User::STATUS_ACTIVE);
@@ -955,7 +990,8 @@ class ArticleController extends Controller
 
             // create or update tags
             $tags = collect($tags)->map(function ($tag) {
-                return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
+//				$cleanedTag = ltrim($tag, '#');
+				return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
             });
             $article->tags()->attach($tags);
             $article->refresh();
@@ -1324,7 +1360,8 @@ class ArticleController extends Controller
 
                 // create or update tags
                 $tags = collect($tags)->map(function ($tag) {
-                    return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
+//					$cleanedTag = ltrim($tag, '#');
+					return ArticleTag::firstOrCreate(['name' => $tag, 'user_id' => auth()->id()])->id;
                 });
                 $article->tags()->sync($tags);
             }
@@ -1678,7 +1715,7 @@ class ArticleController extends Controller
                     ->where('merchant_offers.available_at', '<=', now())
                     ->where('merchant_offers.available_until', '>=', now());
             })
-            ->pluck('merchant_offer_stores.merchant_offer_id')
+            ->pluck('store_locatables.location_id')
             ->unique();
 
         // Retrieve the merchant offers associated with the store IDs

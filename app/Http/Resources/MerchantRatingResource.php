@@ -46,7 +46,7 @@ class MerchantRatingResource extends JsonResource
             'user_liked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_LIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'user_disliked' => (auth()->user()) ? $this->interactions->where('type', Interaction::TYPE_DISLIKE)->where('user_id', auth()->user()->id)->count() > 0 : false,
             'is_my_ratings' => $this->user_id == auth()->id(),
-            'total_ratings_for_merchant' => $this->user->ratings_count, // Access the count directly
+            'total_ratings_for_merchant' => $this->merchant->merchantRatings()->count(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

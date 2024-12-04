@@ -18,7 +18,6 @@ class SendRedeemReviewReminder extends Command
     {
         // Get recent redemptions (e.g., more than 2 hours)
 		$recentRedemptions = MerchantOfferClaimRedemptions::with(['claim', 'claim.merchantOffer', 'claim.merchantOffer.stores', 'user'])
-//			->where('created_at', '>=', now()->subMinutes(30))
 			->where('created_at', '<=', now()->subHours(2))
 			->whereNull('reminder_sent_at')
 			->get();
@@ -27,12 +26,10 @@ class SendRedeemReviewReminder extends Command
         $this->info('[SendRedeemReviewReminder] Total Redemptions before 2 hours: ' . count($recentRedemptions));
 
         foreach ($recentRedemptions as $redemption) {
-			Log::info('[SendRedeemReviewReminder] Log into redemptions foreach loop.');
 			try {
 				if (!$redemption->claim || !$redemption->claim->merchantOffer) {
 					throw new \Exception('Claim or Merchant Offer is null for redemption ID ' . $redemption->id);
 				}
-				Log::info('[SendRedeemReviewReminder] Processing redemption for user ID ' . $redemption->user_id . ' and merchant offer ID ' . $redemption->claim->merchantOffer->id);
 				$this->info('Processing redemption for user ID ' . $redemption->user_id . ' and merchant offer ID ' . $redemption->claim->merchantOffer->id);
 				$user = $redemption->user;
 				$stores = $redemption->claim->merchantOffer->stores;
@@ -40,10 +37,6 @@ class SendRedeemReviewReminder extends Command
 				$hasReviewedAnyStore = false;
 
 				foreach ($stores as $store) {
-					Log::info('[SendRedeemReviewReminder] Store for user', [
-						'user_id' => $user->id,
-						'store_id' => $store->id,
-					]);
 					// Check if the user has already rated the store
 					$existingRating = StoreRating::where('user_id', $user->id)
 						->where('store_id', $store->id)
@@ -51,16 +44,11 @@ class SendRedeemReviewReminder extends Command
 
 					if ($existingRating) {
 						$hasReviewedAnyStore = true;
-						Log::info('[SendRedeemReviewReminder] User has already reviewed store', [
-							'user_id' => $user->id,
-							'store_id' => $store->id,
-						]);
 						break;
 					}
 				}
 
 				if (!$hasReviewedAnyStore) {
-					Log::info('[SendRedeemReviewReminder] User has not been reviewed the store');
 					foreach ($stores as $store) {
 						// Send the RedeemReview notification to the user
 						$user->notify(new RedeemReview($redemption->claim, $user, $store, $redemption->claim->merchant_offer_id));
@@ -81,6 +69,5 @@ class SendRedeemReviewReminder extends Command
 				$this->error('Error processing redemption ID: ' . $redemption->id . ' - ' . $e->getMessage());
 			}
         }
-		Log::info('[SendRedeemReviewReminder] redemption foreach loop ended');
     }
 }

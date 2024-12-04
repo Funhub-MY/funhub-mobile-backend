@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MerchantOfferCampaignResource extends Resource
 {
@@ -50,12 +51,37 @@ class MerchantOfferCampaignResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = static::getModel()::query();
+        $query = parent::getEloquentQuery();
+        
         if (auth()->user()->hasRole('merchant')) {
             $query->where('user_id', auth()->user()->id);
         }
 
-        return $query;
+        return $query->withCount([
+            'merchantOffers as total_vouchers_count' => function ($query) {
+                $query->select(DB::raw('COALESCE(SUM(
+                    (SELECT COUNT(*) FROM merchant_offer_vouchers 
+                    WHERE merchant_offers.id = merchant_offer_vouchers.merchant_offer_id 
+                    AND voided = false)
+                ), 0)'));
+            },
+            'merchantOffers as sold_vouchers_count' => function ($query) {
+                $query->select(DB::raw('COALESCE(SUM(
+                    (SELECT COUNT(*) FROM merchant_offer_vouchers 
+                    WHERE merchant_offers.id = merchant_offer_vouchers.merchant_offer_id 
+                    AND owned_by_id IS NOT NULL 
+                    AND voided = false)
+                ), 0)'));
+            },
+            'merchantOffers as available_vouchers_count' => function ($query) {
+                $query->select(DB::raw('COALESCE(SUM(
+                    (SELECT COUNT(*) FROM merchant_offer_vouchers 
+                    WHERE merchant_offers.id = merchant_offer_vouchers.merchant_offer_id 
+                    AND owned_by_id IS NULL 
+                    AND voided = false)
+                ), 0)'));
+            },
+        ]);
     }
 
     public static function form(Form $form): Form
@@ -249,7 +275,17 @@ class MerchantOfferCampaignResource extends Resource
                                                     TextInput::make('vouchers_count')
                                                         ->required()
                                                         ->label('Total No. of Vouchers')
-                                                        ->numeric(),
+                                                        ->numeric()
+                                                        ->reactive()
+                                                        ->suffixAction(
+                                                            fn (TextInput $component): Action => 
+                                                            Action::make('add_available')
+                                                                ->icon('heroicon-s-plus')
+                                                                ->tooltip('Add available unsold vouchers')
+                                                                ->extraAttributes([
+                                                                    'wire:click' => 'addAvailableVouchers',
+                                                                ]),
+                                                        ),
 
                                                     TextInput::make('interval_days')
                                                         ->label('Interval (Days)')
@@ -262,10 +298,11 @@ class MerchantOfferCampaignResource extends Resource
                                                         ->required()
                                                         ->reactive(),
 
-                                                    TextInput::make('available_quantity')
+                                                        TextInput::make('available_quantity')
                                                         ->label('Available Quantity per Schedule')
                                                         ->numeric()
-                                                        ->minValue(1)
+                                                        ->minValue(1),
+                                                        
                                                 ])
                                                 ->columns(2),
                                     ])
@@ -338,7 +375,6 @@ class MerchantOfferCampaignResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Merchant')
                             ->schema([
-
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant User')
                                     ->searchable()
@@ -394,6 +430,45 @@ class MerchantOfferCampaignResource extends Resource
                                     ->searchable()
                                     ->placeholder('Select offer categories...'),
                             ])->columns(1),
+
+                            Forms\Components\Section::make('Global Vouchers')
+                                ->schema([
+                                    Placeholder::make('available_vouchers_create')
+                                    ->reactive()
+                                    ->label('Total Available Vouchers')
+                                    ->content(function (Closure $get) {
+                                        $userId = $get('user_id');
+                                        if (!$userId) return 'Select a merchant to see available vouchers';
+                                        
+                                        $offers = \App\Models\MerchantOffer::whereHas('campaign', function ($query) use ($userId) {
+                                                $query->where('user_id', $userId);
+                                            })
+                                            ->withCount([
+                                                'vouchers as available_count' => function ($query) {
+                                                    $query->whereNull('owned_by_id')
+                                                        ->where('voided', false);
+                                                },
+                                                'vouchers as sold_count' => function ($query) {
+                                                    $query->whereNotNull('owned_by_id')
+                                                        ->where('voided', false);
+                                                }
+                                            ])
+                                            ->get();
+                                            
+                                        $available = $offers->sum('available_count');
+                                        $sold = $offers->sum('sold_count');
+                                            
+                                        return new HtmlString(
+                                            "<div style='font-size: 1.2em; font-weight: 600;'>
+                                                {$sold} sold / {$available} available
+                                            </div>
+                                            <div style='color: #666; margin-top: 4px;'>
+                                                across all offers under this merchant
+                                            </div>"
+                                        );
+                                    })
+                                    ->columnSpan(1),
+                                ])->columns(1),
                     ])->columnSpan(['lg' => 1]),
             ])
             ->columns(3);
@@ -437,15 +512,23 @@ class MerchantOfferCampaignResource extends Resource
 
                 Tables\Columns\TextColumn::make('vouchers_count')
                     ->label('Total Vouchers')
-                    ->sum('schedules', 'quantity')
-                    ->sortable(),
+                    ->formatStateUsing(fn ($record): string => 
+                        (string)$record->total_vouchers_count),
+
+                Tables\Columns\TextColumn::make('vouchers_status')
+                ->label('Sold / Available')
+                ->formatStateUsing(fn ($record): string => 
+                    "{$record->sold_vouchers_count} / {$record->available_vouchers_count}")
+                ->description(fn ($record): string =>
+                    "Total: {$record->total_vouchers_count}")
+                ->color(fn ($record): string =>
+                    $record->available_vouchers_count > 0 ? 'success' : 'warning'),
 
                 Tables\Columns\TextColumn::make('upcoming_vouchers_count')
                     ->label('Upcoming Vouchers')
                     ->sum('upcomingSchedules', 'quantity')
                     ->sortable(),
 
-                // created at sortable
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()

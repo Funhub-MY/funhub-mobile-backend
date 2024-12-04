@@ -48,7 +48,7 @@ class PaymentController extends Controller
         // check if request has {"result":null,"secureHash":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mid":"7860","responseCode":"XC","maskedPAN":null,"authCode":null,"amt":"150.00","invno":"2308106HLQ8S","responseDesc":"Seller Exchange Encryption Error","tranDate":"2023-08-09 12:05:04","paymentType":"FPX-B2C","securehash2":"E8EF785622C418B75B4B6F3ED778729F01991D4FB04E681AE5E088895F530394","mpay_ref_no":"REF007860021002"}
         if (!$request->has('mid') || !$request->has('responseCode') || !$request->has('authCode') || !$request->has('amt') || !$request->has('invno') || !$request->has('responseDesc') || !$request->has('tranDate') || !$request->has('paymentType') || !$request->has('securehash2')) {
             Log::error('Payment return failed', [
-                'error' => 'Missingh parameter from request',
+                'error' => 'Missing parameter from request',
                 'missing' => [
                     // 'result' => $request->has('result'),
                     // 'secureHash' => $request->has('secureHash'),
@@ -116,10 +116,14 @@ class PaymentController extends Controller
 
                 if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
                     // SUCCESS
+					$offer_name = null;
 					$claim_id = null;
 					$redemption_start_date = null;
 					$redemption_end_date = null;
 					if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+						$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+						$offer_name = $merchantOffer ? $merchantOffer->name : null;
+
 						$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
 							->where('user_id', $transaction->user_id)
 							->latest()
@@ -141,7 +145,8 @@ class PaymentController extends Controller
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
                         'transaction_no' => $transaction->transaction_no,
-                        'offer_claim_id' => $claim_id,
+						'offer_name' => $offer_name,
+						'offer_claim_id' => $claim_id,
                         'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                         'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                         'success' => true,
@@ -192,12 +197,28 @@ class PaymentController extends Controller
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
 
+				$redemption_start_date = null;
+				$redemption_end_date = null;
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
+					$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+						->where('user_id', $transaction->user_id)
+						->latest()
+						->first();
+					if ($claim) {
+						// redemption dates is claim created_at + offer expiry_days
+						$redemption_start_date = $claim->created_at;
 
+						if (isset($claim->merchantOffer)) {
+							$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+						} else {
+							$redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
+						}
+					}
                     if ($transaction->user->email) {
                         $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR'));
+                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR', $transaction->created_at->format('Y-m-d'), $transaction->created_at->format('H:i:s'), $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null, $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null));
                     }
 
                 } else if ($transaction->transactionable_type == Product::class) {
@@ -216,10 +237,14 @@ class PaymentController extends Controller
                 ]);
 
                 // if transactionable_type is merchant_offer, get the relevant claim id
-                $claim_id = null;
+				$offer_name = null;
+				$claim_id = null;
                 $redemption_start_date = null;
                 $redemption_end_date = null;
                 if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+					$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+					$offer_name = $merchantOffer ? $merchantOffer->name : null;
+
                     $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
                         ->where('user_id', $transaction->user_id)
                         ->latest()
@@ -244,6 +269,7 @@ class PaymentController extends Controller
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
                     'transaction_no' => $transaction->transaction_no,
+					'offer_name' => $offer_name,
                     'offer_claim_id' => $claim_id,
 					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
 					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,

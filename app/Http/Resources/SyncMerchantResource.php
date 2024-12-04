@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Merchant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ExternalMerchantResource extends JsonResource
+class SyncMerchantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,6 +19,7 @@ class ExternalMerchantResource extends JsonResource
             'id' => $this->id,
             // 'name' => $this->name,
             'business_name' => $this->business_name,
+            'company_reg_no' => $this->company_reg_no,
             'brand_name' => $this->brand_name ?? null,
             'logo' => ($this->getFirstMedia(Merchant::MEDIA_COLLECTION_NAME)) ? $this->getFirstMedia(Merchant::MEDIA_COLLECTION_NAME) : null,
             'address' => $this->address,
@@ -55,17 +56,18 @@ class ExternalMerchantResource extends JsonResource
                     'name' => $store->name,
                     'manager_name' => $store->manager_name,
                     'business_phone_no' => $store->business_phone_no,
-                    'business_hours' => ($store->business_hours) ? json_decode($store->business_hours, true) : null,
-                    'rest_hours' => ($store->rest_hours) ? json_decode($store->rest_hours, true) : null,
+                    'business_hours' => (object) $this->formatHours($store->business_hours),
+                    'rest_hours' => (object) $this->formatHours($store->rest_hours),
                     'address' => $store->address,
                     'address_postcode' => $store->address_postcode,
-                    'lat' => $store->lat,
-                    'lng' => $store->lng,
+                    'long' => $store->long,
+                    'lang' => $store->lang,
                     'is_hq' => $store->is_hq,
                     'is_closed' => $store->is_closed,
                     'state' => $store->state,
                     'country' => $store->country,
                     'state_id' => $store->state_id,
+                    'status' => $store->status,
                     'country_id' => $store->country_id,
                     'created_at' => $store->created_at,
                     'updated_at' => $store->updated_at,
@@ -80,5 +82,30 @@ class ExternalMerchantResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+    }
+
+    /**
+     * Format hours into an object-like structure.
+     *
+     * @param string|null $hours
+     * @return array|null
+     */
+    protected function formatHours($hours)
+    {
+        if (!$hours) {
+            return null;
+        }
+
+        $decoded = json_decode($hours, true);
+
+        // Ensure the keys are retained
+        return collect($decoded)->mapWithKeys(function ($hour, $day) {
+            return [
+                (string) $day => [
+                    'open_time' => $hour['open_time'] ?? null,
+                    'close_time' => $hour['close_time'] ?? null,
+                ]
+            ];
+        })->toArray();
     }
 }

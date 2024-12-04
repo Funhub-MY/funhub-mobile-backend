@@ -38,7 +38,13 @@ class StoreFactory extends Factory
             'lang' => fake()->latitude(),
             'long' => fake()->longitude(),
             'is_hq' => fake()->boolean(),
-            'user_id' => User::factory(),
+            'merchant_id' => function () {
+                $merchant = Merchant::factory()->create();
+                return $merchant->id;
+            },
+            'user_id' => function (array $attributes) {
+                return Merchant::find($attributes['merchant_id'])->user_id;
+            },
             'state_id' => 1,
             'country_id' => 1,
             'created_at' => now(),

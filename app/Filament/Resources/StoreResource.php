@@ -41,6 +41,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Google\Service\Compute\Tags;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -84,12 +85,23 @@ class StoreResource extends Resource
                                 ->helperText('Will be also used as Location name, if new location is added. eg. KFC Midvalley')
                                 ->required()
                                 ->rules('required', 'max:255'),
-                            Forms\Components\Select::make('user_id')
+							TextInput::make('slug')
+								->maxLength(255)
+								->required()
+								->default(Str::random(10))
+//								->disabled()
+								->unique(Store::class, 'slug', ignoreRecord: true),
+							Forms\Components\Select::make('user_id')
                                 ->label('Linked User Account')
                                 ->searchable()
                                 ->getOptionLabelFromRecordUsing(fn($record) => $record->name . ($record->username ? ' (username: ' . $record->username  . ')' : ''))
                                 ->helperText('User account that has merchant attached to it. A store must share same linked user account as merchant to appear under Merchant > Stores')
                                 ->relationship('user', 'name'),
+
+                            Forms\Components\Select::make('merchant_id')
+                                ->label('Linked Merchant')
+                                ->searchable()
+                                ->relationship('merchant', 'name'),
 
                             Toggle::make('use_store_redeem')
                                 ->label('Use Store Redeem Code Instead')
@@ -401,6 +413,11 @@ class StoreResource extends Resource
                     ->formatStateUsing(fn($state) => $state ?? 'Un-onboarded')
                     ->sortable()
                     ->label('Linked User Account'),
+
+                Tables\Columns\TextColumn::make('merchant.name')
+                    ->formatStateUsing(fn($state) => $state ?? 'Un-onboarded')
+                    ->sortable()
+                    ->label('Merchant Name'),
 
                 TagsColumn::make('categories.name')
                     ->label('Categories')

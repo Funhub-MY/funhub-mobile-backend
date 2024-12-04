@@ -366,33 +366,63 @@ class MerchantOfferController extends Controller
      */
     public function show($id)
     {
-        $offer = MerchantOffer::where('id', $id)->first();
+        // $offer = MerchantOffer::where('id', $id)->first();
 
-        $offer->load([
-            'user',
-            'user.merchant',
-            'user.merchant.media',
-            'claims',
-            'categories',
-            'stores',
-            'stores.location',
-            'stores.storeRatings',
-            'claims',
-            'location',
-            'location.ratings',
-            'media',
-            'interactions',
-            'views',
-            'likes' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-            'interactions' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-        ])
-        ->loadCount([
-            'unclaimedVouchers',
-        ]);
+        // $offer->load([
+        //     'user',
+        //     'user.merchant',
+        //     'user.merchant.media',
+        //     'claims',
+        //     'categories',
+        //     'stores',
+        //     'stores.location',
+        //     'stores.storeRatings',
+        //     'claims',
+        //     'location',
+        //     'location.ratings',
+        //     'media',
+        //     'interactions',
+        //     'views',
+        //     'likes' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        //     'interactions' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        // ])
+        // ->loadCount([
+        //     'unclaimedVouchers',
+        // ]);
+
+        $offer = MerchantOffer::query()
+            ->where('id', $id)
+            // ->available()
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                'likes' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+                'interactions' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
+            ])->first();
+
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
@@ -536,12 +566,12 @@ class MerchantOfferController extends Controller
             event(new PurchasedMerchantOffer($user, $offer, 'points'));
 
             $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
-            if ($user->email) {
-                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
-            }
+			$redemption_start_date = $claim->created_at;
+			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
-            $redemption_start_date = $claim->created_at;
-            $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
+            if ($user->email) {
+                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points', $claim->created_at->format('Y-m-d'), $claim->created_at->format('H:i:s'), $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null, $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null));
+            }
 
             try {
                 // notify user offer claimed
@@ -1227,14 +1257,39 @@ class MerchantOfferController extends Controller
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
-            $data = MerchantOffer::search('')->with([
+            // build search query with all filters
+            $searchQuery = MerchantOffer::search('')->with([
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
-            ])
-                ->query(function ($query) use ($request) {
-                    $query = $this->merchantOfferQueryBuilder($query, $request);
-                })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+            ]);
+
+            // apply filters at search level
+            if ($request->has('category_ids')) {
+                $category_ids = explode(',', $request->category_ids);
+                $searchQuery->whereIn('category_ids', $category_ids);
+            }
+
+            if ($request->has('available_only')) {
+                $searchQuery->where('available', true);
+            }
+
+            if ($request->has('coming_soon_only')) {
+                $searchQuery->where('available_at', '>', now()->toIso8601String());
+            }
+
+            if ($request->has('except_expired')) {
+                $searchQuery->where('available_until', '>', now()->toIso8601String());
+            }
+
+            if ($request->has('flash_only')) {
+                $searchQuery->where('flash_deal', $request->flash_only == 1);
+            }
+
+            // apply pagination at search level
+            $data = $searchQuery->paginate(
+                $request->has('limit') ? $request->limit : config('app.paginate_per_page')
+            );
         }
 
         $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
@@ -1296,7 +1351,10 @@ class MerchantOfferController extends Controller
             'user.merchant.media',
             'claims',
             'categories',
-            'stores',
+            'stores' => function ($query) use ($request) {
+                $query->withDistance($request->lat, $request->lng)
+                      ->orderBy('distance', 'ASC');
+            },
             'stores.location',
             'stores.storeRatings',
             'claims',
