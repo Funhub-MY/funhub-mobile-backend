@@ -95,7 +95,7 @@ class MissionResource extends JsonResource
     protected function calculateProgress($participation): array
     {
         $values = is_string($this->values) ? json_decode($this->values, true) : $this->values;
-        $goal = is_array($values) ? (array_values($values)[0] ?? 0) : (int) $values;
+        $goal = (int) (is_array($values) ? (array_values($values)[0] ?? 0) : $values);
 
         if (!$participation) {
             return [
@@ -110,7 +110,7 @@ class MissionResource extends JsonResource
 
         return [
             'currentValues' => $currentValues,
-            'progress' => $currentValues[$event] ?? 0,
+            'progress' => (int) ($currentValues[$event] ?? 0),
             'goal' => $goal
         ];
     }
