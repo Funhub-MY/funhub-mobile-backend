@@ -228,13 +228,15 @@ class ArticleResource extends Resource
                                 ->afterStateUpdated(function ($state, $record, $set) {
                                     if ($state) { // Only check when enabling
                                         $currentWebAvailable = Article::where('available_for_web', true)
+                                            ->published()
+                                            ->where('visibility', Article::VISIBILITY_PUBLIC)
                                             ->when($record, fn($query) => $query->where('id', '!=', $record->id))
                                             ->count();
                                             
                                         if ($currentWebAvailable >= 5) {
                                             Notification::make()
                                                 ->title('Maximum limit reached')
-                                                ->body('You can only have 5 articles available for web at a time.')
+                                                ->body('You can only have 5 articles  published, public, available for web at a time.')
                                                 ->danger()
                                                 ->send();
                                                 
@@ -715,6 +717,8 @@ class ArticleResource extends Resource
                         if ($data['available_for_web']) {
                             // count currently available articles (excluding selected ones)
                             $currentWebAvailable = Article::where('available_for_web', true)
+                                ->published()
+                                ->where('visibility', Article::VISIBILITY_PUBLIC)
                                 ->whereNotIn('id', $records->pluck('id'))
                                 ->count();
                             
@@ -725,7 +729,7 @@ class ArticleResource extends Resource
                             if (($currentWebAvailable + $selectedCount) > 5) {
                                 Notification::make()
                                     ->title('Maximum limit reached')
-                                    ->body('You can only have 5 articles available for web at a time. Please unselect some articles.')
+                                    ->body('You can only have 5 articles published, public, available for web at a time. Please unselect some articles.')
                                     ->danger()
                                     ->send();
                                     
