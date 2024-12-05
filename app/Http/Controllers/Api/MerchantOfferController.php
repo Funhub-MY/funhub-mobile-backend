@@ -1253,8 +1253,6 @@ class MerchantOfferController extends Controller
                 $query->where('city', 'like', '%' . $request->city . '%');
             });
 
-			Log::info('City Filter Query:', ['city' => $request->city]);
-
             // pass to query builder
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
@@ -1264,6 +1262,7 @@ class MerchantOfferController extends Controller
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
+                'getRankingInfo' => true,
             ]);
 
             // apply filters at search level
@@ -1287,18 +1286,6 @@ class MerchantOfferController extends Controller
             if ($request->has('flash_only')) {
                 $searchQuery->where('flash_deal', $request->flash_only == 1);
 			}
-
-			Log::info('Algolia Search Query:', [
-				'aroundLatLng' => $request->lat . ',' . $request->lng,
-				'aroundRadius' => $radius * 1000,
-				'filters' => [
-					'category_ids' => $request->has('category_ids') ? explode(',', $request->category_ids) : null,
-					'available_only' => $request->has('available_only') ? true : null,
-					'coming_soon_only' => $request->has('coming_soon_only') ? ['available_at' => ['>' => now()->toIso8601String()]] : null,
-					'except_expired' => $request->has('except_expired') ? ['available_until' => ['>' => now()->toIso8601String()]] : null,
-					'flash_only' => $request->has('flash_only') ? (bool) $request->flash_only : null,
-				],
-			]);
 
             // apply pagination at search level
             $data = $searchQuery->paginate(
