@@ -94,67 +94,88 @@ class CreateStore extends CreateRecord
 
         // If location_type is 'manual', create a new location and attach it to the store
         if (isset($data['location_type']) && $data['location_type'] === 'manual') {
-            $state = State::find($data['state_id']);
-            $country = Country::find($data['country_id']);
-            $address = $data['address'] . ', ' . $data['address_postcode'] . ', ' . $state->name . ', ' . $country->name;
 
-            $client = new Client();
-            $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
-                'query' => [
-                    'address' => $address,
-                    'key' => config('filament-google-maps.key'),
-                ]
-            ]);
+			$lang = isset($data['lang']) && $data['lang'] !== 0 ? $data['lang'] : null;
+			$long = isset($data['long']) && $data['long'] !== 0 ? $data['long'] : null;
 
-            $locationFromGoogle = null;
-            if ($response->getStatusCode() === 200) {
-                $locationFromGoogle = json_decode($response->getBody(), true);
+			if ($lang && $long) {
+				$location = Location::create([
+					'name' => $data['name'],
+					'lat' => $lang,
+					'lng' => $long,
+					'address' => $data['address'] ?? '',
+					'zip_code' => $data['address_postcode'] ?? '',
+					'city' => $data['city'] ?? '',
+					'state_id' => $data['state_id'],
+					'country_id' => $data['country_id'],
+				]);
+				Log::info('[Store Filament] Location created: ' . $location->id);
 
-                if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
-                    $data['lang'] = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
-                    $data['long'] = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
-                }
-                $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
-                if ($locationFromGoogle) {
-                    $location = null;
+				$this->record->location()->attach($location);
+				Log::info('[Store Filament Create] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+			} else {
+				$state = State::find($data['state_id']);
+				$country = Country::find($data['country_id']);
+				$address = $data['address'] . ', ' . $data['address_postcode'] . ', ' . $state->name . ', ' . $country->name;
 
-                    if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
-                        $location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
-                    } else {
-                        $location = Location::where('lat', $locationFromGoogle['lat'])
-                            ->where('lng', $locationFromGoogle['lng'])
-                            ->first();
-                    }
+				$client = new Client();
+				$response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+					'query' => [
+						'address' => $address,
+						'key' => config('filament-google-maps.key'),
+					]
+				]);
 
-                    if (!$location) {
-                        $addressComponents = collect($locationFromGoogle['address_components']);
-                        $city = $addressComponents->filter(function ($component) {
-                            return in_array('locality', $component['types']);
-                        })->first();
+				$locationFromGoogle = null;
+				if ($response->getStatusCode() === 200) {
+					$locationFromGoogle = json_decode($response->getBody(), true);
 
-                        $location = Location::create([
-                            'name' => $data['name'],
-                            'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
-                            'lat' => $data['lang'],
-                            'lng' => $data['long'],
-                            'address' => $data['address'] ?? '',
-                            'zip_code' => $data['address_postcode'] ?? '',
-                            'city' => $city['long_name'] ?? '',
-                            'state_id' => $data['state_id'],
-                            'country_id' => $data['country_id'],
-                        ]);
+					if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
+						$data['lang'] = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
+						$data['long'] = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
+					}
+					$locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
+					if ($locationFromGoogle) {
+						$location = null;
 
-                        Log::info('[Store Filament] Location created: ' . $location->id);
-                    }
+						if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
+							$location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
+						} else {
+							$location = Location::where('lat', $locationFromGoogle['lat'])
+								->where('lng', $locationFromGoogle['lng'])
+								->first();
+						}
 
-                    $this->record->location()->attach($location);
-                    Log::info('[Store Filament Create] Store ' . $this->record->id . ' attached to location: ' . $location->id);
-                } else {
-                    Log::info('[Store Filament Create] Failed to get location data from Google Maps API');
-                }
-            } else {
-                Log::info('Failed to get location data from Google Maps API');
-            }
+						if (!$location) {
+							$addressComponents = collect($locationFromGoogle['address_components']);
+							$city = $addressComponents->filter(function ($component) {
+								return in_array('locality', $component['types']);
+							})->first();
+
+							$location = Location::create([
+								'name' => $data['name'],
+								'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
+								'lat' => $data['lang'],
+								'lng' => $data['long'],
+								'address' => $data['address'] ?? '',
+								'zip_code' => $data['address_postcode'] ?? '',
+								'city' => $city['long_name'] ?? '',
+								'state_id' => $data['state_id'],
+								'country_id' => $data['country_id'],
+							]);
+
+							Log::info('[Store Filament] Location created: ' . $location->id);
+						}
+
+						$this->record->location()->attach($location);
+						Log::info('[Store Filament Create] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+					} else {
+						Log::info('[Store Filament Create] Failed to get location data from Google Maps API');
+					}
+				} else {
+					Log::info('Failed to get location data from Google Maps API');
+				}
+			}
         }
 
         $this->record->searchable();
