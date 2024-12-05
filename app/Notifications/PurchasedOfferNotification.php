@@ -13,14 +13,14 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate;
+    protected $transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $offerId, $claimId;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate)
+    public function __construct($transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $offerId, $claimId)
     {
         $this->transactionNo = $transactionNo;
         $this->dateTime = $dateTime;
@@ -32,6 +32,8 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 		$this->purchaseTime = $purchaseTime;
 		$this->redemptionStartDate = $redemptionStartDate;
 		$this->redemptionEndDate = $redemptionEndDate;
+		$this->offerId = $offerId;
+		$this->claimId = $claimId;
     }
 
     /**
@@ -66,6 +68,8 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 				'purchaseTime' => $this->purchaseTime,
 				'redemptionStartDate' => $this->redemptionStartDate,
 				'redemptionEndDate' => $this->redemptionEndDate,
+				'offerId' => $this->offerId,
+				'claimId' => $this->claimId
             ]);
     }
 
