@@ -112,10 +112,11 @@ class StoreResource extends JsonResource
             // get merchant company logo
             'logo' => ($this->merchant) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'photos' => array_values($photos),
+            //  solve the issue which occur due to the store don't have merchant information.
             'merchant' => [
-                'name' => $this->merchant->name,
-                'business_name' => $this->merchant->business_name,
-                'brand_name' => $this->merchant->brand_name,
+                'name' => ($this->merchant->name) ?? null,
+                'business_name' => ($this->merchant->business_name) ?? null,
+                'brand_name' => ($this->merchant->brand_name) ?? null,
             ],
             'other_stores' => ($this->otherStores) ? $this->otherStores->map(function ($store) {
                 return [
