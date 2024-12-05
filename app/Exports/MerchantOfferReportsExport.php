@@ -28,7 +28,6 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
             ->selectRaw('
                 merchant_offer_vouchers.merchant_offer_id AS id,
                 merchant_offers.name AS offer_name,
-                merchant_offers.store_id AS store_id,
                 merchants.name AS merchant_name,
                 merchant_offers.available_at AS offer_available_at,
                 merchant_offers.available_until AS offer_available_until,
@@ -60,7 +59,6 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
             ->groupBy([
                 'merchant_offer_vouchers.merchant_offer_id',
                 'merchant_offers.name',
-                'merchant_offers.store_id',
                 'merchants.name',
                 'merchant_offers.available_at',
                 'merchant_offers.available_until',

@@ -81,6 +81,32 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchant_offers.name', 'like', "%{$search}%");
                 }),
+
+            Columns\TextColumn::make('merchant_name')
+                ->label('Merchant Name')
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('merchants.name', 'like', "%{$search}%");
+                }), 
+            Columns\TextColumn::make('brand_name')
+                ->label('Brand Name')
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('merchants.brand_name', 'like', "%{$search}%");
+                }), 
+            Columns\TextColumn::make('koc_user_name')
+                ->label('KOC Name')
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('users.name', 'like', "%{$search}%");
+                }), 
+            Columns\TextColumn::make('koc_user_email')
+                ->label('KOC Email address')
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('users.email', 'like', "%{$search}%");
+                }),
+            Columns\TextColumn::make('koc_user_phone_no')
+                ->label('KOC Phone No')
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('users.phone_no', 'like', "%{$search}%");
+                }),
             Columns\TextColumn::make('code')
                 ->label('Voucher Code'),
             Columns\TextColumn::make('transaction_date')
@@ -243,6 +269,11 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 merchant_offer_user.purchase_method AS purchase_method,
                 merchant_offer_user.total AS amount_total,
                 merchant_offer_user.created_at AS transaction_date,
+                merchants.name AS merchant_name,
+                merchants.brand_name AS brand_name,
+                users.name AS koc_user_name,
+                users.email AS koc_user_email,
+                users.phone_no AS koc_user_phone_no,
                 transactions.transaction_no AS transaction_no,
                 transactions.amount AS amount,
                 transactions.gateway_transaction_id AS reference_no,
@@ -264,6 +295,8 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 END AS discount_rate
             ')
             ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+            ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
+            ->leftJoin('users', 'merchants.koc_user_id', '=', 'users.id')
             ->join('merchant_offer_user', function ($join) {
                 $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                     ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
@@ -278,6 +311,11 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 'merchant_offer_user.purchase_method',
                 'merchant_offer_user.total',
                 'merchant_offer_user.created_at',
+                'merchants.name',
+                'merchants.brand_name',
+                'users.name',
+                'users.email',
+                'users.phone_no',
                 'transactions.transaction_no',
                 'transactions.amount',
                 'transactions.gateway_transaction_id',

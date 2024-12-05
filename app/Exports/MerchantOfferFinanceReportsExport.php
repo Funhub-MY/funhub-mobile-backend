@@ -34,6 +34,11 @@ class MerchantOfferFinanceReportsExport implements FromQuery, WithHeadings, With
                 merchant_offer_user.purchase_method AS purchase_method,
                 merchant_offer_user.total AS amount_total,
                 merchant_offer_user.created_at AS transaction_date,
+                merchants.name AS merchant_name,
+                merchants.brand_name AS brand_name,
+                users.name AS koc_user_name,
+                users.email AS koc_user_email,
+                users.phone_no AS koc_user_phone_no,
                 transactions.transaction_no AS transaction_no,
                 transactions.amount AS amount,
                 transactions.gateway_transaction_id AS reference_no,
@@ -55,6 +60,8 @@ class MerchantOfferFinanceReportsExport implements FromQuery, WithHeadings, With
                 END AS discount_rate
             ')
             ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+            ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
+            ->leftJoin('users', 'merchants.koc_user_id', '=', 'users.id')
             ->join('merchant_offer_user', function ($join) {
                 $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                     ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
@@ -69,6 +76,11 @@ class MerchantOfferFinanceReportsExport implements FromQuery, WithHeadings, With
                 'merchant_offer_user.purchase_method',
                 'merchant_offer_user.total',
                 'merchant_offer_user.created_at',
+                'merchants.name',
+                'merchants.brand_name',
+                'users.name',
+                'users.email',
+                'users.phone_no',
                 'transactions.transaction_no',
                 'transactions.amount',
                 'transactions.gateway_transaction_id',
@@ -103,6 +115,11 @@ class MerchantOfferFinanceReportsExport implements FromQuery, WithHeadings, With
         return [
             'ID',
             'Offer Name',
+            'Merchant Name',
+            'Brand Name',
+            'KOC Name',
+            'KOC Email address',
+            'KOC Phone No',
             'Voucher Code',
             'Transaction Date',
             'Purchase Method',
@@ -125,6 +142,11 @@ class MerchantOfferFinanceReportsExport implements FromQuery, WithHeadings, With
         return [
             $row->id,
             $row->offer_name,
+            $row->merchant_name,
+            $row->brand_name,
+            $row->koc_user_name,
+            $row->koc_user_email,
+            $row->koc_user_phone_no,
             $row->code,
             $row->transaction_date,
             $row->purchase_method === 'fiat' ? 'Cash' : ($row->purchase_method === 'points' ? 'Funbox' : 'Unknown'),
