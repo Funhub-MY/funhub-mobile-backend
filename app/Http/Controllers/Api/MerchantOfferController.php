@@ -582,7 +582,8 @@ class MerchantOfferController extends Controller
 						$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 						$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
 						$offer->id,
-						$claim->id
+						$claim->id,
+						$user->phone_no
 					));
 				} catch (\Exception $e) {
 					Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
