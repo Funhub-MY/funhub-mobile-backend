@@ -181,6 +181,7 @@ class StoreResource extends Resource
                                     $location = Location::find($state);
                                     if ($location) {
                                         $set('address', $location->address);
+                                        $set('city', $location->city);
                                         $set('address_postcode', $location->zip_code);
                                         $set('lang', $location->lat);
                                         $set('long', $location->lng);
@@ -189,6 +190,7 @@ class StoreResource extends Resource
                                     }
                                 } else {
                                     $set('address', '');
+                                    $set('city', '');
                                     $set('address_postcode', '');
                                     $set('lang', '');
                                     $set('long', '');
@@ -205,7 +207,10 @@ class StoreResource extends Resource
                         Forms\Components\Textarea::make('address')
                             ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
-                        Forms\Components\TextInput::make('address_postcode')
+						Forms\Components\TextInput::make('city')
+							->disabled(fn($get) => $get('location_type') === 'existing')
+							->required(),
+						Forms\Components\TextInput::make('address_postcode')
                             ->disabled(fn($get) => $get('location_type') === 'existing')
                             ->required(),
 
