@@ -183,7 +183,7 @@ class LocationResource extends Resource
                 TextColumn::make('cityLinked.name')
                     ->label('City Linked')
                     ->sortable()
-                    ->url(fn ($record) => route('filament.resources.cities.edit', $record->cityLinked))
+                    ->url(fn ($record) => $record->cityLinked ? route('filament.resources.cities.edit', $record->cityLinked) : null)
                     ->openUrlInNewTab()
                     ->searchable(),
 
