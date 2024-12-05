@@ -217,29 +217,38 @@ class PaymentController extends Controller
 						}
 					}
                     if ($transaction->user->email) {
-                        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-                        $transaction->user->notify(new PurchasedOfferNotification(
-							$transaction->transaction_no,
-							$transaction->updated_at,
-							$merchantOffer->name,
-							1, $transaction->amount,
-							'MYR',
-							$transaction->created_at->format('Y-m-d'),
-							$transaction->created_at->format('H:i:s'),
-							$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
-							$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-							$claim->merchantOffer->id,
-							$claim->id
-						));
+						try{
+							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+							$transaction->user->notify(new PurchasedOfferNotification(
+								$transaction->transaction_no,
+								$transaction->updated_at,
+								$merchantOffer->name,
+								1, $transaction->amount,
+								'MYR',
+								$transaction->created_at->format('Y-m-d'),
+								$transaction->created_at->format('H:i:s'),
+								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+								$claim->merchantOffer->id,
+								$claim->id
+							));
+						} catch (Exception $e) {
+							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
+						}
+
                     }
 
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
 
                     if ($transaction->user->email) {
-                        $product = Product::where('id', $transaction->transactionable_id)->first();
-                        $quantity = $transaction->amount / $product->unit_price;
-                        $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+						try {
+							$product = Product::where('id', $transaction->transactionable_id)->first();
+							$quantity = $transaction->amount / $product->unit_price;
+							$transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+						} catch (\Exception $e) {
+							Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
+						}
                     }
                 }
 
