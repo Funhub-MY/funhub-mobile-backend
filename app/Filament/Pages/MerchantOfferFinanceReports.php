@@ -288,8 +288,8 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 'merchant_offers.fiat_price',
                 'merchant_offers.discounted_fiat_price'
             ])
-            ->orderBy('merchant_offers.name', 'DESC')
-            ->orderBy('merchant_offer_user.created_at', 'ASC');
+            ->orderBy('merchant_offer_user.created_at', 'DESC')
+            ->orderBy('merchant_offers.name', 'DESC');
 
         // Get filters from the table
         $filters = $this->tableFilters;

@@ -41,7 +41,7 @@ class MerchantOfferReports extends Page implements HasTable
     {
         return [10, 25, 50, 100];
     } 
-    
+
     protected function getActions(): array
     {
         return [
@@ -79,10 +79,10 @@ class MerchantOfferReports extends Page implements HasTable
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchant_offers.name', 'like', "%{$search}%");
                 }),
-            Columns\TextColumn::make('store_name')
-                ->label('Store Name')
+            Columns\TextColumn::make('merchant_name')
+                ->label('Merchant Name')
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
-                    return $query->where('stores.name', 'like', "%{$search}%");
+                    return $query->where('merchants.name', 'like', "%{$search}%");
                 }),
             Columns\TextColumn::make('total_purchases')
                 ->label('Total Purchases Quantity')
@@ -178,8 +178,7 @@ class MerchantOfferReports extends Page implements HasTable
             ->selectRaw('
                 merchant_offer_vouchers.merchant_offer_id AS id,
                 merchant_offers.name AS offer_name,
-                merchant_offers.store_id AS store_id,
-                stores.name AS store_name,
+                merchants.name AS merchant_name,
                 merchant_offers.available_at AS offer_available_at,
                 merchant_offers.available_until AS offer_available_until,
                 COUNT(merchant_offer_vouchers.id) AS total_purchases,
@@ -200,7 +199,7 @@ class MerchantOfferReports extends Page implements HasTable
                 END AS discount_rate
             ')
             ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
-            ->leftJoin('stores', 'stores.id', '=', 'merchant_offers.store_id')
+            ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
             ->join('merchant_offer_user', function ($join) {
                 $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                     ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
@@ -210,8 +209,7 @@ class MerchantOfferReports extends Page implements HasTable
             ->groupBy([
                 'merchant_offer_vouchers.merchant_offer_id',
                 'merchant_offers.name',
-                'merchant_offers.store_id',
-                'stores.name',
+                'merchants.name',
                 'merchant_offers.available_at',
                 'merchant_offers.available_until',
                 'merchant_offers.unit_price',

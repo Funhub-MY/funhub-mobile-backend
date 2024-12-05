@@ -79,8 +79,8 @@ class MerchantOfferFinanceReportsExport implements FromQuery, WithHeadings, With
                 'merchant_offers.fiat_price',
                 'merchant_offers.discounted_fiat_price'
             ])
-            ->orderBy('merchant_offers.name', 'DESC')
-            ->orderBy('merchant_offer_user.created_at', 'ASC');
+            ->orderBy('merchant_offer_user.created_at', 'DESC')
+            ->orderBy('merchant_offers.name', 'DESC');
 
         // Apply date filters if provided
         if ($this->startDate) {

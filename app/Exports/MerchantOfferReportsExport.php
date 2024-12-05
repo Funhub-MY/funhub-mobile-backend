@@ -29,7 +29,7 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
                 merchant_offer_vouchers.merchant_offer_id AS id,
                 merchant_offers.name AS offer_name,
                 merchant_offers.store_id AS store_id,
-                stores.name AS store_name,
+                merchants.name AS merchant_name,
                 merchant_offers.available_at AS offer_available_at,
                 merchant_offers.available_until AS offer_available_until,
                 COUNT(merchant_offer_vouchers.id) AS total_purchases,
@@ -50,7 +50,7 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
                 END AS discount_rate
             ')
             ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
-            ->leftJoin('stores', 'stores.id', '=', 'merchant_offers.store_id')
+            ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
             ->join('merchant_offer_user', function ($join) {
                 $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                     ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
@@ -61,7 +61,7 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
                 'merchant_offer_vouchers.merchant_offer_id',
                 'merchant_offers.name',
                 'merchant_offers.store_id',
-                'stores.name',
+                'merchants.name',
                 'merchant_offers.available_at',
                 'merchant_offers.available_until',
                 'merchant_offers.unit_price',
@@ -91,7 +91,7 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
         return [
             'Offer ID',
             'Offer Name',
-            'Store Name',
+            'Merchant Name',
             'Total Purchases Quantity',
             'Funbox Quantity',
             'Funbox Original Price (RM)',
@@ -110,7 +110,7 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
         return [
             $row->id,
             $row->offer_name,
-            $row->store_name,
+            $row->merchant_name,
             $row->total_purchases,
             $row->funbox_quantity,
             number_format($row->funbox_original, 2, '.', ','),
