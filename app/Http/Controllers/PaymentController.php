@@ -218,7 +218,19 @@ class PaymentController extends Controller
 					}
                     if ($transaction->user->email) {
                         $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR', $transaction->created_at->format('Y-m-d'), $transaction->created_at->format('H:i:s'), $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null, $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null));
+                        $transaction->user->notify(new PurchasedOfferNotification(
+							$transaction->transaction_no,
+							$transaction->updated_at,
+							$merchantOffer->name,
+							1, $transaction->amount,
+							'MYR',
+							$transaction->created_at->format('Y-m-d'),
+							$transaction->created_at->format('H:i:s'),
+							$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+							$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+							$claim->merchantOffer->id,
+							$claim->id
+						));
                     }
 
                 } else if ($transaction->transactionable_type == Product::class) {

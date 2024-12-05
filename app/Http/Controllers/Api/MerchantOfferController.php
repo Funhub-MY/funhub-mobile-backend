@@ -570,7 +570,19 @@ class MerchantOfferController extends Controller
 			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
             if ($user->email) {
-                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points', $claim->created_at->format('Y-m-d'), $claim->created_at->format('H:i:s'), $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null, $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null));
+                $user->notify(new PurchasedOfferNotification(
+					$claim->order_no,
+					$claim->updated_at,
+					$offer->name,
+					$request->quantity, $net_amount,
+					'points',
+					$claim->created_at->format('Y-m-d'),
+					$claim->created_at->format('H:i:s'),
+					$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+					$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+					$offer->id,
+					$claim->id
+				));
             }
 
             try {
