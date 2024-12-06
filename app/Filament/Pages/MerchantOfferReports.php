@@ -84,6 +84,11 @@ class MerchantOfferReports extends Page implements HasTable
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.name', 'like', "%{$search}%");
                 }),
+            Columns\TextColumn::make('brand_name')
+                ->label('Brand Name')
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('merchants.brand_name', 'like', "%{$search}%");
+                }), 
             Columns\TextColumn::make('total_purchases')
                 ->label('Total Purchases Quantity')
                 ->sortable(),
@@ -179,6 +184,7 @@ class MerchantOfferReports extends Page implements HasTable
                 merchant_offer_vouchers.merchant_offer_id AS id,
                 merchant_offers.name AS offer_name,
                 merchants.name AS merchant_name,
+                merchants.brand_name AS brand_name,
                 merchant_offers.available_at AS offer_available_at,
                 merchant_offers.available_until AS offer_available_until,
                 COUNT(merchant_offer_vouchers.id) AS total_purchases,
@@ -210,6 +216,7 @@ class MerchantOfferReports extends Page implements HasTable
                 'merchant_offer_vouchers.merchant_offer_id',
                 'merchant_offers.name',
                 'merchants.name',
+                'merchants.brand_name',
                 'merchant_offers.available_at',
                 'merchant_offers.available_until',
                 'merchant_offers.unit_price',
