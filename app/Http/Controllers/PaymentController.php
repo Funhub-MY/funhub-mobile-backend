@@ -755,6 +755,11 @@ class PaymentController extends Controller
     }
 
     public function processEncrypt($data) {
+
+        Log::info('Encrypting Data', [
+            'data' => json_encode($data)
+        ]);
+
         try {
             // we use the same key and IV
             $key = hex2bin($this->checkout_secret);
