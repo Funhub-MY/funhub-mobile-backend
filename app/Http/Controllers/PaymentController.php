@@ -758,7 +758,7 @@ class PaymentController extends Controller
 
             // we receive the encrypted string from the post
             // finally we trim to get our original string
-            return openssl_encrypt($data, 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv);
+            return openssl_encrypt(json_encode($data), 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv);
 
         } catch (\Exception $e) {
             Log::info('Error encrypting data', [
