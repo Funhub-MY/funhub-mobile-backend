@@ -23,6 +23,7 @@ use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
     protected $gateway;
+    protected $checkout_secret;
 
     public function __construct()
     {
@@ -30,6 +31,8 @@ class PaymentController extends Controller
             config('services.mpay.mid'),
             config('services.mpay.hash_key')
         );
+
+        $this->checkout_secret = config('app.funhub_checkout_secret');
     }
 
     /**
@@ -218,6 +221,17 @@ class PaymentController extends Controller
 					}
                     if ($transaction->user->email) {
 						try{
+
+                            $encrypted_data = $this->processEncrypt([
+                                'offer_id' => $claim->merchantOffer->id,
+                                'claim_id' => $claim->id,
+                                'phone_no' => $transaction->user->phone_no
+                            ]);
+
+                            Log::info('Encrypted Data',[
+                                'encrypted_data' => $encrypted_data,
+                            ]);
+
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
 							$transaction->user->notify(new PurchasedOfferNotification(
 								$transaction->transaction_no,
@@ -229,9 +243,7 @@ class PaymentController extends Controller
 								$transaction->created_at->format('H:i:s'),
 								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-								$claim->merchantOffer->id,
-								$claim->id,
-								$transaction->user->phone_no
+                                $encrypted_data
 							));
 						} catch (Exception $e) {
 							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
@@ -740,5 +752,25 @@ class PaymentController extends Controller
         return response()->json([
             'funbox_ringgit_value' => config('app.funbox_ringgit_value')
         ]);
+    }
+
+    public function processEncrypt($data) {
+        try {
+            // we use the same key and IV
+            $key = hex2bin($this->checkout_secret);
+            $iv =  hex2bin($this->checkout_secret);
+
+            // we receive the encrypted string from the post
+            // finally we trim to get our original string
+            return openssl_encrypt(json_encode($data), 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv);
+
+        } catch (\Exception $e) {
+            Log::error('Error encrypting data', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+
+            return '';
+        }
     }
 }
