@@ -228,7 +228,9 @@ class PaymentController extends Controller
                                 'phone_no' => $transaction->user->phone_no
                             ]);
 
-                            Log::info('Encrypted Data', $encrypted_data);
+                            Log::info('Encrypted Data',[
+                                'encrypted_data' => $encrypted_data,
+                            ]);
 
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
 							$transaction->user->notify(new PurchasedOfferNotification(
@@ -763,7 +765,7 @@ class PaymentController extends Controller
             return openssl_encrypt(json_encode($data), 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv);
 
         } catch (\Exception $e) {
-            Log::info('Error encrypting data', [
+            Log::error('Error encrypting data', [
                 'error' => $e->getMessage(),
                 'data' => $data
             ]);
