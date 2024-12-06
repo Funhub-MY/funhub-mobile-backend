@@ -228,6 +228,8 @@ class PaymentController extends Controller
                                 'phone_no' => $transaction->user->phone_no
                             ]);
 
+                            Log::info('Encrypted Data', $encrypted_data);
+
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
 							$transaction->user->notify(new PurchasedOfferNotification(
 								$transaction->transaction_no,
