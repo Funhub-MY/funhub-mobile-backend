@@ -757,7 +757,9 @@ class PaymentController extends Controller
     public function processEncrypt($data) {
 
         Log::info('Encrypting Data', [
-            'data' => json_encode($data)
+            'data' => json_encode($data),
+            'key' => hex2bin($this->checkout_secret),
+            'iv' => hex2bin($this->checkout_secret),
         ]);
 
         try {
@@ -767,7 +769,18 @@ class PaymentController extends Controller
 
             // we receive the encrypted string from the post
             // finally we trim to get our original string
-            return openssl_encrypt('test', 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv);
+            $encrypted_data = openssl_encrypt('test', 'AES-128-CBC', $key, OPENSSL_ZERO_PADDING, $iv);
+
+            if ($encrypted_data === false) {
+                Log::error('Error encrypting data', [
+                    'error' => 'Encryption Failed - '. openssl_error_string(),
+                    'data' => json_encode($data),
+                    'key' => hex2bin($this->checkout_secret),
+                    'iv' => hex2bin($this->checkout_secret),
+                ]);
+            }
+
+            return $encrypted_data;
 
         } catch (\Exception $e) {
             Log::error('Error encrypting data', [
