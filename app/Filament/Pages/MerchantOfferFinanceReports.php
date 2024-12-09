@@ -75,42 +75,57 @@ class MerchantOfferFinanceReports extends Page implements HasTable
     {
         return [
             Columns\TextColumn::make('id')
-                ->label('ID'),
+                ->label('ID')
+                ->sortable(),
             Columns\TextColumn::make('offer_name')
                 ->label('Offer Name')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchant_offers.name', 'like', "%{$search}%");
                 }),
 
             Columns\TextColumn::make('merchant_name')
                 ->label('Merchant Name')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.name', 'like', "%{$search}%");
                 }), 
             Columns\TextColumn::make('brand_name')
                 ->label('Brand Name')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('merchants.brand_name', 'like', "%{$search}%");
                 }), 
             Columns\TextColumn::make('koc_user_name')
                 ->label('KOC Name')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
-                    return $query->where('users.name', 'like', "%{$search}%");
+                    return $query->where('koc_users.name', 'like', "%{$search}%");
                 }), 
             Columns\TextColumn::make('koc_user_email')
                 ->label('KOC Email address')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
-                    return $query->where('users.email', 'like', "%{$search}%");
+                    return $query->where('koc_users.email', 'like', "%{$search}%");
                 }),
             Columns\TextColumn::make('koc_user_phone_no')
                 ->label('KOC Phone No')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
-                    return $query->where('users.phone_no', 'like', "%{$search}%");
+                    return $query->where('koc_users.phone_no', 'like', "%{$search}%");
+                }),
+            Columns\TextColumn::make('buyer_name')
+                ->label('Buyer Name')
+                ->sortable()
+                ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
+                    return $query->where('users.name', 'like', "%{$search}%");
                 }),
             Columns\TextColumn::make('code')
-                ->label('Voucher Code'),
+                ->label('Voucher Code')
+                ->sortable(),
             Columns\TextColumn::make('transaction_date')
                 ->label('Transaction Date')
+                ->sortable()
                 ->sortable(query: function (Builder $query, string $direction): Builder {
                     return $query->orderBy('merchant_offer_user.created_at', $direction);
                 }),
@@ -127,6 +142,7 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 ->sortable(),
             Columns\TextColumn::make('amount_total')
                 ->label('Purchase Amount')
+                ->sortable()
                 ->formatStateUsing(function (?string $state, $record): string {
                     if ($state === null) {
                         return '-';
@@ -145,11 +161,13 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 }),
             Columns\TextColumn::make('transaction_no')
                 ->label('Transaction No (MPAY)')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('transactions.transaction_no', 'like', "%{$search}%");
                 }),
             Columns\TextColumn::make('amount')
                 ->label('Purchase Amount (MPAY)')
+                ->sortable()
                 ->formatStateUsing(function (?string $state): string {
                     if ($state === null) {
                         return '-';
@@ -161,11 +179,13 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 }),
             Columns\TextColumn::make('reference_no')
                 ->label('Reference No (MPAY)')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('transactions.gateway_transaction_id', 'like', "%{$search}%");
                 }),
             Columns\TextColumn::make('payment_method')
                 ->label('Payment Method (MPAY)')
+                ->sortable()
                 ->searchable(isGlobal: true, query: function (Builder $query, string $search): Builder {
                     return $query->where('transactions.payment_method', 'like', "%{$search}%");
                 }),
@@ -271,9 +291,10 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 merchant_offer_user.created_at AS transaction_date,
                 merchants.name AS merchant_name,
                 merchants.brand_name AS brand_name,
-                users.name AS koc_user_name,
-                users.email AS koc_user_email,
-                users.phone_no AS koc_user_phone_no,
+                users.name AS buyer_name,
+                koc_users.name AS koc_user_name,
+                koc_users.email AS koc_user_email,
+                koc_users.phone_no AS koc_user_phone_no,
                 transactions.transaction_no AS transaction_no,
                 transactions.amount AS amount,
                 transactions.gateway_transaction_id AS reference_no,
@@ -296,7 +317,8 @@ class MerchantOfferFinanceReports extends Page implements HasTable
             ')
             ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
             ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
-            ->leftJoin('users', 'merchants.koc_user_id', '=', 'users.id')
+            ->leftJoin('users AS koc_users', 'merchants.koc_user_id', '=', 'koc_users.id')
+            ->join('users', 'merchant_offer_vouchers.owned_by_id', '=', 'users.id')
             ->join('merchant_offer_user', function ($join) {
                 $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
                     ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
@@ -314,8 +336,9 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 'merchants.name',
                 'merchants.brand_name',
                 'users.name',
-                'users.email',
-                'users.phone_no',
+                'koc_users.name',
+                'koc_users.email',
+                'koc_users.phone_no',
                 'transactions.transaction_no',
                 'transactions.amount',
                 'transactions.gateway_transaction_id',
@@ -326,6 +349,13 @@ class MerchantOfferFinanceReports extends Page implements HasTable
                 'merchant_offers.fiat_price',
                 'merchant_offers.discounted_fiat_price'
             ])
+            ->when(
+                $this->getTableSortColumn(), 
+                fn (Builder $query): Builder => $query->orderBy(
+                    $this->getTableSortColumn(), 
+                    $this->getTableSortDirection() ?? 'asc'
+                )
+            )
             ->orderBy('merchant_offer_user.created_at', 'DESC')
             ->orderBy('merchant_offers.name', 'DESC');
 
