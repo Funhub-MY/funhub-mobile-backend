@@ -1285,7 +1285,7 @@ class MerchantOfferController extends Controller
 
             // apply filters at search level
             if ($request->has('category_ids')) {
-                $category_ids = explode(',', $request->category_ids);
+                $category_ids = is_array($request->category_ids) ? $request->category_ids : explode(',', $request->category_ids);
                 $searchQuery->whereIn('category_ids', $category_ids);
             }
 
@@ -1332,7 +1332,7 @@ class MerchantOfferController extends Controller
         // category_ids filter
         if ($request->has('category_ids')) {
             // explode categories ids
-            $category_ids = explode(',', $request->category_ids);
+            $category_ids = is_array($request->category_ids) ? $request->category_ids : explode(',', $request->category_ids);
             if (count($category_ids) > 0) {
                 $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
                     $q->whereIn('merchant_offer_categories.id', $category_ids);
