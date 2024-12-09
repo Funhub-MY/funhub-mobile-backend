@@ -35,8 +35,10 @@ class EditStore extends EditRecord
 
         // check if record has location attached
         if ($this->record->location->count() > 0) {
-            $data['location_id'] = $this->record->location->first()->id;
+			$location = $this->record->location->first();
+			$data['location_id'] = $this->record->location->first()->id;
             $data['location_type'] = 'existing';
+			$data['city'] = $location->city;
         }
 
         // inverse business_hours if there is json data
@@ -112,77 +114,129 @@ class EditStore extends EditRecord
                 $this->record->location()->detach();
             }
 
-            // google reverse geoloc search via address first
-            $state = State::find($data['state_id']);
-            $country = Country::find($data['country_id']);
-            $address = $data['address'] . ', ' . $data['address_postcode'] . ', ' . $state->name . ', ' . $country->name;
-            // eg. "17, jalan usj 18/4, 47630, Selangor, Malaysia"
-            $client = new Client();
-            $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
-                'query' => [
-                    'address' => $address,
-                    'key' => config('filament-google-maps.key'),
-                ]
-            ]);
+			$lang = isset($data['lang']) && $data['lang'] !== 0 ? $data['lang'] : null;
+			$long = isset($data['long']) && $data['long'] !== 0 ? $data['long'] : null;
 
-            $locationFromGoogle = null;
-            if ($response->getStatusCode() === 200) {
-                // Parse the response
-                $locationFromGoogle = json_decode($response->getBody(), true);
+			if ($lang && $long) {
+				// $location = Location::create([
+				// 	'name' => $data['name'],
+				// 	'lat' => $lang,
+				// 	'lng' => $long,
+				// 	'address' => $data['address'] ?? '',
+				// 	'zip_code' => $data['address_postcode'] ?? '',
+				// 	'city' => $data['city'] ?? '',
+				// 	'state_id' => $data['state_id'],
+				// 	'country_id' => $data['country_id'],
+				// ]);
 
-                // Check if the response contains results
-                if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
-                    $data['lang'] = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
-                    $data['long'] = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
-                } else {
-                    // No results found, keep as null first
-                    $data['lang'] = null;
-                    $data['long'] = null;
+                // Log::info('[Store Filament] Location created: ' . $location->id);
+
+                // $this->record->location()->attach($location);
+                // Log::info('[Store Filament] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+
+                Location::updateOrInsert(
+                    [
+                        'name' => $data['name'],
+                        'address' => $data['address'] ?? '',
+                        'zip_code' => $data['address_postcode'] ?? '',
+                        'city' => $data['city'] ?? '',
+                        'state_id' => $data['state_id'],
+                        'country_id' => $data['country_id'],
+                    ],
+                    [
+                        'lat' => $lang,
+                        'lng' => $long
+                    ]);
+
+                    // Fetch the location record to attach it
+                $location = Location::where('name', $data['name'])
+                    ->where('address', $data['address'] ?? '')
+                    ->where('zip_code', $data['address_postcode'] ?? '')
+                    ->where('city', $data['city'] ?? '')
+                    ->where('state_id', $data['state_id'])
+                    ->where('country_id', $data['country_id'])
+                    ->first();
+
+                // Attach the location to the record
+                if ($location) {
+                    Log::info('[Store Filament] Location created: ' . $location->id);
+                    $this->record->location()->attach($location->id);
+                    Log::info('[Store Filament] Store ' . $this->record->id . ' attached to location: ' . $location->id);
                 }
 
-                $locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
-                if ($locationFromGoogle) {
-                    $location = null;
-                    // must create a location data if not exists
-                    if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
-                        $location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
-                    } else {
-                        // if location cant be found by google_id, then find by lat,lng
-                        $location = Location::where('lat', $locationFromGoogle['lat'])
-                            ->where('lng', $locationFromGoogle['lng'])
-                            ->first();
-                    }
+			} else {
+				// google reverse geoloc search via address first
+				$state = State::find($data['state_id']);
+				$country = Country::find($data['country_id']);
+				$address = $data['address'] . ', ' . $data['address_postcode'] . ', ' . $state->name . ', ' . $country->name;
+				// eg. "17, jalan usj 18/4, 47630, Selangor, Malaysia"
+				$client = new Client();
+				$response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+					'query' => [
+						'address' => $address,
+						'key' => config('filament-google-maps.key'),
+					]
+				]);
 
-                    if (!$location) {
-                        $addressComponents = collect($locationFromGoogle['address_components']);
-                        $city = $addressComponents->filter(function ($component) {
-                            return in_array('locality', $component['types']);
-                        })->first(); // grab city out from google
+				$locationFromGoogle = null;
+				if ($response->getStatusCode() === 200) {
+					// Parse the response
+					$locationFromGoogle = json_decode($response->getBody(), true);
 
-                        // create a new location
-                        $location = Location::create([
-                            'name' => $data['name'], // store name
-                            'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
-                            'lat' => $data['lang'], // google provided
-                            'lng' => $data['long'], // google provided
-                            'address' => $data['address'] ?? '', // user provided
-                            'zip_code' => $data['address_postcode'] ?? '', // user provided
-                            'city' => $city['long_name'] ?? '', // google provided
-                            'state_id' => $data['state_id'], // user provided
-                            'country_id' => $data['country_id'], // user provided
-                        ]);
+					// Check if the response contains results
+					if (isset($locationFromGoogle['results']) && !empty($locationFromGoogle['results'])) {
+						$data['lang'] = $locationFromGoogle['results'][0]['geometry']['location']['lat'];
+						$data['long'] = $locationFromGoogle['results'][0]['geometry']['location']['lng'];
+					} else {
+						// No results found, keep as null first
+						$data['lang'] = null;
+						$data['long'] = null;
+					}
 
-                        Log::info('[Store Filament] Location created: ' . $location->id);
-                    }
-                    // attach store to location
-                    $this->record->location()->attach($location);
-                    Log::info('[Store Filament] Store ' . $this->record->id . 'attached to location: ' . $location->id);
-                } else {
-                    Log::info('[Store Filament] Failed to get location data from Google Maps API');
-                }
-            } else {
-                Log::info('Failed to get location data from Google Maps API');
-            }
+					$locationFromGoogle = $locationFromGoogle['results'][0] ?? null;
+					if ($locationFromGoogle) {
+						$location = null;
+						// must create a location data if not exists
+						if (isset($locationFromGoogle['place_id']) && $locationFromGoogle['place_id'] != 0) {
+							$location = Location::where('google_id', $locationFromGoogle['place_id'])->first();
+						} else {
+							// if location cant be found by google_id, then find by lat,lng
+							$location = Location::where('lat', $locationFromGoogle['lat'])
+								->where('lng', $locationFromGoogle['lng'])
+								->first();
+						}
+
+						if (!$location) {
+							$addressComponents = collect($locationFromGoogle['address_components']);
+							$city = $addressComponents->filter(function ($component) {
+								return in_array('locality', $component['types']);
+							})->first(); // grab city out from google
+
+							// create a new location
+							$location = Location::create([
+								'name' => $data['name'], // store name
+								'google_id' => isset($locationFromGoogle['place_id']) ? $locationFromGoogle['place_id'] : null,
+								'lat' => $data['lang'], // google provided
+								'lng' => $data['long'], // google provided
+								'address' => $data['address'] ?? '', // user provided
+								'zip_code' => $data['address_postcode'] ?? '', // user provided
+								'city' => $city['long_name'] ?? '', // google provided
+								'state_id' => $data['state_id'], // user provided
+								'country_id' => $data['country_id'], // user provided
+							]);
+
+							Log::info('[Store Filament] Location created: ' . $location->id);
+						}
+						// attach store to location
+						$this->record->location()->attach($location);
+						Log::info('[Store Filament] Store ' . $this->record->id . 'attached to location: ' . $location->id);
+					} else {
+						Log::info('[Store Filament] Failed to get location data from Google Maps API');
+					}
+				} else {
+					Log::info('Failed to get location data from Google Maps API');
+				}
+			}
         }
 
         // handles business hours save
@@ -276,6 +330,10 @@ class EditStore extends EditRecord
         if (isset($this->record)) {
             // trigger searcheable to reindex
             $this->record->searchable();
+
+            //  Call the merchant portal api to sync (Send signal to merchant portal)
+            $syncMerchantPortal = app(\App\Services\SyncMerchantPortal::class);
+            $syncMerchantPortal->syncStore($this->record->id);
         }
     }
 }

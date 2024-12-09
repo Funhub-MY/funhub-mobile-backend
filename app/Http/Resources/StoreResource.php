@@ -28,7 +28,6 @@ class StoreResource extends JsonResource
             }
         }
 
-        $merchant = null;
         // $logo = null;
         $photos = [];
         // get from first latest article media
@@ -106,13 +105,19 @@ class StoreResource extends JsonResource
 
         return [
             'id' => $this->id,
+			'slug' => $this->slug,
             'name' => $this->name,
             'manager_name' => $this->manager_name,
             'onboarded' => ($this->merchant) ? true : false,
             // get merchant company logo
             'logo' => ($this->merchant) ? $this->merchant->getFirstMediaUrl(Merchant::MEDIA_COLLECTION_NAME) : null,
             'photos' => array_values($photos),
-            'merchant' => $merchant,
+            //  solve the issue which occur due to the store don't have merchant information.
+            'merchant' => [
+                'name' => ($this->merchant->name) ?? null,
+                'business_name' => ($this->merchant->business_name) ?? null,
+                'brand_name' => ($this->merchant->brand_name) ?? null,
+            ],
             'other_stores' => ($this->otherStores) ? $this->otherStores->map(function ($store) {
                 return [
                     'id' => $store->id,

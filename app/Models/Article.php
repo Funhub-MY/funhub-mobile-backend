@@ -202,6 +202,13 @@ class Article extends BaseModel implements HasMedia, Auditable
     /**
      * Relationships
      */
+
+    public function media() : \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(config('media-library.media_model'), 'model')
+            ->with('videoJob');
+    }
+
     public function categories()
     {
         return $this->belongsToMany(ArticleCategory::class, 'articles_article_categories')

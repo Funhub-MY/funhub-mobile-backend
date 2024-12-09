@@ -137,11 +137,20 @@ class ParticipantsRelationManager extends RelationManager
                     ->exports([
                         ExcelExport::make()
                             ->label('Export Participants')
-                            ->withColumns([
-                                Column::make('id')->heading('user_id'),
-                                Column::make('username')->heading('funhub_id'),
-                                Column::make('created_at')->heading('Action At')
-                            ])
+							->fromTable()
+							->only([
+								'user_id',
+								'username',
+								'completed_at',
+							])
+							->withColumns([
+								Column::make('user_id')
+									->heading('User ID'),
+								Column::make('username')
+									->heading('Funhub ID'),
+								Column::make('completed_at')
+									->heading('Completed At'),
+							])
                             ->withFilename(fn () => 'Participants-' . date('Y-m-d'))
                             ->withWriterType(\Maatwebsite\Excel\Excel::CSV)
                     ]),

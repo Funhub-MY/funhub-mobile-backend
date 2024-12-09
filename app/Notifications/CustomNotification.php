@@ -95,7 +95,7 @@ class CustomNotification extends Notification implements ShouldQueue
             $data['object'] = $this->customNotification->content_type; // App\Models\Article / User / MerchantOffer
             $data['object_id'] = $this->customNotification->content_id; // article_id, user_id, offer_id
 
-            if ($this->customNotification->content_type == Article::class) {
+			if ($this->customNotification->content_type == Article::class) {
 				// Retrieve the Article based on the article_id (object_id)
 				$article = Article::find($this->customNotification->content_id);
 
@@ -139,18 +139,30 @@ class CustomNotification extends Notification implements ShouldQueue
             'from_id' => '',
         ];
 
-        if ($this->customNotification->content_type == Article::class) {
-            // Retrieve the Article based on the article_id (object_id)
-            $article = Article::find($this->customNotification->content_id);
+        // Check if redirect type is dynamic and content type is set
+        if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
+            // Set the class of the 'object' based on the content type
+            $toArrayData['object'] = $this->customNotification->content_type; // App\Models\Article / User / MerchantOffer
+			$toArrayData['object_id'] = (string) $this->customNotification->content_id; // article_id, user_id, offer_id
 
-            if ($article) {
-                $toArrayData['article_type'] = $article->type ?? null;
-            } else {
-                \Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
-                $toArrayData['article_type'] = null;
-            }
-        }
+//			if ($this->customNotification->content_type == Article::class) {
+//				$toArrayData['article_type'] = $this->customNotification->content->type;
+//			}
 
-        return $toArrayData;
+			if ($this->customNotification->content_type == Article::class) {
+				// Retrieve the Article based on the article_id (object_id)
+				$article = Article::find($this->customNotification->content_id);
+
+				if ($article) {
+					$toArrayData['article_type'] = $article->type ?? null;
+				} else {
+					\Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
+					$toArrayData['article_type'] = null;
+				}
+			}
+			\Illuminate\Support\Facades\Log::info('Final toArrayData', ['toArrayData' => $toArrayData]);
+
+		}
+		return $toArrayData;
     }
 }

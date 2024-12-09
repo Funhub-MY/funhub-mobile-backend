@@ -366,33 +366,63 @@ class MerchantOfferController extends Controller
      */
     public function show($id)
     {
-        $offer = MerchantOffer::where('id', $id)->first();
+        // $offer = MerchantOffer::where('id', $id)->first();
 
-        $offer->load([
-            'user',
-            'user.merchant',
-            'user.merchant.media',
-            'claims',
-            'categories',
-            'stores',
-            'stores.location',
-            'stores.storeRatings',
-            'claims',
-            'location',
-            'location.ratings',
-            'media',
-            'interactions',
-            'views',
-            'likes' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-            'interactions' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-        ])
-        ->loadCount([
-            'unclaimedVouchers',
-        ]);
+        // $offer->load([
+        //     'user',
+        //     'user.merchant',
+        //     'user.merchant.media',
+        //     'claims',
+        //     'categories',
+        //     'stores',
+        //     'stores.location',
+        //     'stores.storeRatings',
+        //     'claims',
+        //     'location',
+        //     'location.ratings',
+        //     'media',
+        //     'interactions',
+        //     'views',
+        //     'likes' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        //     'interactions' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        // ])
+        // ->loadCount([
+        //     'unclaimedVouchers',
+        // ]);
+
+        $offer = MerchantOffer::query()
+            ->where('id', $id)
+            // ->available()
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                'likes' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+                'interactions' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
+            ])->first();
+
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
@@ -419,6 +449,7 @@ class MerchantOfferController extends Controller
      * @bodyParam fiat_payment_method string required_if:payment_method,fiat Payment Method. Example: fpx/card
      * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
+     * @bodyParam channel string optional Channel. Example: app/funhub_web
      * @bodyParam use_point_discount boolean optional Use Point(Funbox) Discount. Example: 1
      * @bodyParam points_to_use integer optional Points(Funbox) to Use. Example: 2
      * @response scenario=success {
@@ -535,12 +566,30 @@ class MerchantOfferController extends Controller
             event(new PurchasedMerchantOffer($user, $offer, 'points'));
 
             $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
-            if ($user->email) {
-                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
-            }
+			$redemption_start_date = $claim->created_at;
+			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
-            $redemption_start_date = $claim->created_at;
-            $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
+            if ($user->email) {
+				try {
+					$user->notify(new PurchasedOfferNotification(
+						$claim->order_no,
+						$claim->updated_at,
+						$offer->name,
+						$request->quantity, $net_amount,
+						'points',
+						$claim->created_at->format('Y-m-d'),
+						$claim->created_at->format('H:i:s'),
+						$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+						$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+						$offer->id,
+						$claim->id,
+						$user->phone_no
+					));
+				} catch (\Exception $e) {
+					Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
+				}
+
+            }
 
             try {
                 // notify user offer claimed
@@ -581,6 +630,7 @@ class MerchantOfferController extends Controller
             }
 
             // discount using funbox logic (Point)
+            // DEPRECATED
             $discount_amount = 0;
             if ($request->has('use_point_discount')
                 && $request->use_point_discount == true
@@ -609,7 +659,8 @@ class MerchantOfferController extends Controller
                 config('app.default_payment_gateway'),
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
-                $discount_amount
+                // $discount_amount,
+                $request->has('channel') ? $request->channel : 'app'
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
@@ -965,6 +1016,191 @@ class MerchantOfferController extends Controller
     }
 
     /**
+     * Web - Get Public Offers
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam category_ids array optional Category Ids to Filter. Example: 1,2,3
+     * @urlParam merchant_offer_ids array optional Merchant Offer Ids to Filter. Example: 1,2,3
+     * @urlParam city string optional Filter by City. Example: Subang Jaya
+     * @urlParam lat float optional Filter by Lat of User (must provide lng). Example: 3.123456
+     * @urlParam lng float optional Filter by Lng of User (must provide lat). Example: 101.123456
+     * @urlParam radius integer optional Filter by Radius (in meters) if provided lat, lng. Example: 10000
+     * @urlParam available_only boolean optional Filter by Available Only. Example: true or 0
+     * @urlParam coming_soon_only boolean optional Filter by Coming Soon Only. Example: true or 0
+     */
+    public function getPublicOffers(Request $request)
+    {
+        // ensure only published offers
+        $query = MerchantOffer::query()
+            ->published()
+            ->where('available_for_web', true)
+            // ->available()
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                // 'likes' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
+                // 'interactions' => function ($query) {
+                //     $query->where('user_id', auth()->user()->id);
+                // },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
+            ]);
+
+        // category_ids filter
+        if ($request->has('category_ids')) {
+            // explode categories ids
+            $category_ids = explode(',', $request->category_ids);
+            if (count($category_ids) > 0) {
+                $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
+                    $q->whereIn('merchant_offer_categories.id', $category_ids);
+                });
+            }
+        }
+
+        if ($request->has('merchant_offer_ids')) {
+            $query->whereIn('id', explode(',', $request->merchant_offer_ids));
+        }
+
+        if ($request->has('available_only')) {
+            $query->available();
+        }
+
+        if ($request->has('coming_soon_only')) {
+            $query->where('available_at', '>', now());
+        }
+
+        if ($request->has('except_expired')) {
+            $query->where('available_until', '>', now());
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 1) {
+            $query->flash();
+        }
+
+        if ($request->has('flash_only') && $request->flash_only == 0) {
+            $query->where('flash_deal', false);
+        }
+
+        // get articles by city
+        if ($request->has('city')) {
+            $query->whereHas('location', function ($query) use ($request) {
+                $query->where('city', 'like', '%' . $request->city . '%');
+            });
+        }
+
+        if ($request->has('merchant_id')) {
+            $query->whereHas('merchant', function ($query) use ($request) {
+                $query->where('id', $request->merchant_id);
+            });
+        }
+
+        // get articles by lat, lng
+        if ($request->has('lat') && $request->has('lng')) {
+            $radius = $request->has('radius') ? $request->radius : 10000; // 10km default
+            // get article where article->location lat,lng is within the radius
+            $query->whereHas('location', function ($query) use ($request, $radius) {
+                $query->selectRaw('( 6371 * acos( cos( radians(?) ) *
+                    cos( radians( lat ) )
+                    * cos( radians( lng ) - radians(?)
+                    ) + sin( radians(?) ) *
+                    sin( radians( lat ) ) )
+                    ) AS distance', [$request->lat, $request->lng, $request->lat])
+                    ->havingRaw("distance < ?", [$radius]);
+            });
+        }
+
+        // location id
+        if ($request->has('location_id')) {
+            // where two condition merchant offer locaiton tagged same location id or merchant offer's stores tagged same location id
+            $query->where(function ($subQuery) {
+                $subQuery->whereHas('location', function ($query) {
+                    $query->where('locations.id', request()->location_id);
+                })->orWhereHas('stores', function ($query) {
+                    $query->whereHas('location', function ($query) {
+                        $query->where('locations.id', request()->location_id);
+                    });
+                });
+            });
+        }
+
+        if ($request->has('store_id')) {
+            // explode store_id if has comma
+            $storeIds = explode(',', $request->store_id);
+            $query->whereHas('stores', function ($query) use ($storeIds) {
+                $query->whereIn('stores.id', $storeIds);
+            });
+        }
+
+        // order by available_at from past first to future
+        $query->orderBy('available_at', 'asc');
+
+        $this->buildQuery($query, $request);
+
+        $data = $query->paginate(config('app.paginate_per_page'));
+
+        return PublicMerchantOfferResource::collection($data);
+    }
+
+    /**
+     * Web - Get Single Public Offer
+     *
+     * @param Request $request
+     * @return JsonResponse
+     *
+     * @group Merchant
+     * @urlParam id integer optional The id of the merchant offer. Example: 1
+     * @urlParam sku string optional The id of the merchant offer. Example: ABC-1234
+     * @response scenario=success {
+     * "offer": {}
+     * }
+     */
+    public function getPublicOferSingle(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required_if:sku,null|integer',
+            'sku' => 'required_if:id,null',
+        ]);
+
+        if ($request->has('id')) {
+            $offer = MerchantOffer::where('id', $request->id)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        } else {
+            $offer = MerchantOffer::where('sku', $request->sku)
+                ->published()
+                ->where('available_for_web', true)
+                ->first();
+        }
+
+        if (!$offer) {
+            return response()->json(['message' => __('messages.error.merchant_offer_controller.Deal_not_found')], 404);
+        }
+
+        return response()->json([
+            'offer' => new PublicMerchantOfferResource($offer)
+        ]);
+    }
+
+    /**
      * Get Merchant Offer Public
      *
      * @param Request $request
@@ -1029,7 +1265,7 @@ class MerchantOfferController extends Controller
         $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius');
 
         if ($request->has('city')) {
-            // Directly filter by city
+            // City-based search remains the same...
             $query = MerchantOffer::query();
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
@@ -1039,27 +1275,24 @@ class MerchantOfferController extends Controller
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
-            $data = MerchantOffer::search('')->with([
+            // step 1: get nearby offers using Algolia's geosearch
+            $searchQuery = MerchantOffer::search('')->with([
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
-            ])
-                ->query(function ($query) use ($request) {
-                    $query = $this->merchantOfferQueryBuilder($query, $request);
-                })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+                'getRankingInfo' => true,
+            ]);
+
+            // get the IDs of nearby offers
+            $nearbyOfferIds = $searchQuery->get()->pluck('id')->toArray();
+
+            // step 2: apply additional filters 
+            $query = MerchantOffer::whereIn('id', $nearbyOfferIds)
+                ->orderByRaw("FIELD(id, " . implode(',', $nearbyOfferIds) . ") ASC");
+            // pass to query builder
+            $data = $this->merchantOfferQueryBuilder($query, $request)
+                ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
-
-        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
-        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
-        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
-            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
-                $item->user_purchased_before_from_merchant = true;
-            } else {
-                $item->user_purchased_before_from_merchant = false;
-            }
-            return $item;
-        });
-
         return MerchantOfferResource::collection($data);
     }
 
@@ -1070,7 +1303,7 @@ class MerchantOfferController extends Controller
         // category_ids filter
         if ($request->has('category_ids')) {
             // explode categories ids
-            $category_ids = explode(',', $request->category_ids);
+            $category_ids = is_array($request->category_ids) ? $request->category_ids : explode(',', $request->category_ids);
             if (count($category_ids) > 0) {
                 $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
                     $q->whereIn('merchant_offer_categories.id', $category_ids);
@@ -1108,7 +1341,10 @@ class MerchantOfferController extends Controller
             'user.merchant.media',
             'claims',
             'categories',
-            'stores',
+            'stores' => function ($query) use ($request) {
+                $query->withDistance($request->lat, $request->lng)
+                      ->orderBy('distance', 'ASC');
+            },
             'stores.location',
             'stores.storeRatings',
             'claims',

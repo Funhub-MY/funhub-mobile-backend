@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\FollowRequest;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class UserResource extends JsonResource
 {
@@ -14,7 +16,7 @@ class UserResource extends JsonResource
     {
         parent::__construct($resource);
         $this->isAuthUser = $isAuthUser;
-    }
+	}
 
     /**
      * The "data" wrapper that should be applied.
@@ -57,6 +59,23 @@ class UserResource extends JsonResource
             ];
         }, $tutorialSteps);
 
+		$currentUser = $request->user();
+		$isFollowing = false;
+		$hasRequestedFollow = false;
+
+		if ($currentUser) {
+			// Check if the current user is already a follower
+			$isFollowing = $this->resource->followers->contains($currentUser->id);
+
+			// If already a follower, set has_requested_follow to false
+			if ($isFollowing) {
+				$hasRequestedFollow = false;
+			} else {
+				// Otherwise, check for follow requests
+				$hasRequestedFollow = $this->resource->beingFollowedRequests->contains('user_id', $currentUser->id);
+			}
+		}
+
         return [
             'id' => $this->id,
             'name' => $name,
@@ -78,8 +97,10 @@ class UserResource extends JsonResource
             'has_avatar' => $this->hasMedia('avatar'),
             'point_balance' => $this->point_balance,
             'unread_notifications_count' => $this->unreadNotifications()->count(),
-            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
-            'has_requested_follow' => ($request->user()) ? $this->resource->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
+			'is_following' => $isFollowing,
+			'has_requested_follow' => $hasRequestedFollow,
+//            'is_following' => ($request->user()) ? $this->resource->followers->contains($request->user()->id) : false,
+//            'has_requested_follow' => ($request->user()) ? $this->resource->beingFollowedRequests->contains('user_id', $request->user()->id) : false,
             'is_profile_private' => $this->profile_is_private,
             'dob' => $this->when($this->isAuthUser, $this->dob),
             'gender' => $this->when($this->isAuthUser, $this->gender),

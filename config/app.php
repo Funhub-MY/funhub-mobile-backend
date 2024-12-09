@@ -301,7 +301,7 @@ return [
 
     'mpay_default_phone' => env('MPAY_DEFAULT_PHONE', '60123456789'),
 
-    'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my/'),
+    'frontend_app' => env('FRONTEND_APP', 'https://app.funhub.my'),
 
     'search_location_use_algolia' => env('SEARCH_LOCATION_USE_ALGOLIA', true),
 
@@ -344,6 +344,10 @@ return [
     ],
 
     'funbox_ringgit_value' => env('FUNBOX_RINGGIT_VALUE', 5),
+
+    'funhub_web_link' => env('FUNHUB_WEB_LINK', 'https://app.funhub.my/payment/status'),
+    'funhub_web_hash_secret' => env('FUNHUB_WEB_HASH_SECRET'),
+    'funhub_checkout_secret' => env('FUNHUB_CHECKOUT_SECRET'),
 
     /*
     |--------------------------------------------------------------------------

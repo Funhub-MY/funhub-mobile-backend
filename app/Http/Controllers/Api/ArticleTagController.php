@@ -73,11 +73,17 @@ class ArticleTagController extends Controller
         $this->buildQuery($query, $request);
 
         if ($request->has('search')) {
-            $hashtag = trim($request->search);
+			$hashtag = ltrim(trim($request->search), '#');
             $query->where('name', 'like', '%' . $hashtag . '%');
         }
 
         $tags = $query->paginate(config('app.paginate_per_page'));
+
+		// Modify the collection to remove # prefix from tag names
+		$tags->getCollection()->transform(function ($tag) {
+			$tag->name = $this->formatTagName(trim(ltrim($tag->name, '#')));
+			return $tag;
+		});
 
         return ArticleTagResource::collection($tags);
     }
@@ -107,4 +113,15 @@ class ArticleTagController extends Controller
 
         return  ArticleTagResource::collection($tags);
     }
+
+	private function formatTagName($string)
+	{
+		// Remove the leading '#' if it exists
+		if (str_starts_with($string, '#')) {
+			$string = substr($string, 1);
+		}
+
+		// Remove all spaces between words
+		return str_replace(' ', '', $string);
+	}
 }
