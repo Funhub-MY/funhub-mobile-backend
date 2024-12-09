@@ -339,15 +339,7 @@ class MerchantOfferCampaignResource extends Resource
                                                     TextInput::make('available_quantity')
                                                         ->label('Available Quantity per Schedule')
                                                         ->numeric()
-                                                        ->minValue(1)
-                                                        ->helperText('Number of vouchers available in each schedule')
-                                                        ->reactive()
-                                                        ->afterStateUpdated(function ($state, callable $set, $get) {
-                                                            if ($state && $get('days_per_schedule')) {
-                                                                $totalSchedules = ceil(($get('end_date') ? Carbon::parse($get('end_date'))->diffInDays(Carbon::parse($get('start_date'))) : 0) / $get('days_per_schedule'));
-                                                                $set('vouchers_count', $state * ($totalSchedules ?: 1));
-                                                            }
-                                                        }),
+                                                        ->minValue(1),
                                                 ])
                                                 ->columns(2),
                                     ])
