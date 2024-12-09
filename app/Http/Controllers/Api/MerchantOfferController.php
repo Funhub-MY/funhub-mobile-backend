@@ -1287,30 +1287,12 @@ class MerchantOfferController extends Controller
             $nearbyOfferIds = $searchQuery->get()->pluck('id')->toArray();
 
             // step 2: apply additional filters 
-            $query = MerchantOffer::whereIn('id', $nearbyOfferIds);
-
-            if ($request->has('category_ids')) {
-                $category_ids = is_array($request->category_ids) ? $request->category_ids : explode(',', $request->category_ids);
-                $query->whereHas('categories', function($q) use ($category_ids) {
-                    $q->whereIn('merchant_offer_categories.id', $category_ids);
-                });
-            }
-
-            if ($request->has('available_only')) {
-                $query->available();
-            }
-
-            if ($request->has('coming_soon_only')) {
-                $query->where('available_at', '>', now());
-            }
-
-            if ($request->has('except_expired')) {
-                $query->where('available_until', '>', now());
-            }
-
-            $data = $query->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+            $query = MerchantOffer::whereIn('id', $nearbyOfferIds)
+                ->orderByRaw("FIELD(id, " . implode(',', $nearbyOfferIds) . ") ASC");
+            // pass to query builder
+            $data = $this->merchantOfferQueryBuilder($query, $request)
+                ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
-
         return MerchantOfferResource::collection($data);
     }
 
