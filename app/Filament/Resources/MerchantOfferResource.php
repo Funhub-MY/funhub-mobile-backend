@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Closure;
 use Filament\Forms;
 use App\Models\User;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables;
 use App\Models\Store;
 use App\Models\Merchant;
@@ -138,12 +139,25 @@ class MerchantOfferResource extends Resource
                                     ->label('Flash Deal')
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
+								Repeater::make('highlight_messages')
+									->label('Highlight Message')
+									->createItemButtonLabel('Add Highlight Message')
+									->schema([
+										TextInput::make('message')
+											->label('Message')
+											->maxLength(255)
+											->placeholder('Enter a highlight message'),
+									])
+									->maxItems(3)
+									->columnSpan('full')
+									->helperText('Maximum 3 highlighted message.'),
                                 Forms\Components\Textarea::make('description')
                                     ->rows(5)
                                     ->cols(10)
                                     ->columnSpan('full')
                                     ->required(),
                                 Forms\Components\Textarea::make('fine_print')
+									->label('T&C')
                                     ->rows(5)
                                     ->cols(10)
                                     ->columnSpan('full'),
