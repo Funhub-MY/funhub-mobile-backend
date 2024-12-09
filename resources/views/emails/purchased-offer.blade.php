@@ -1,3 +1,5 @@
+<?php
+    /*
 <x-mail::message>
     # Purchase Receipt
 
@@ -20,9 +22,9 @@
     Thanks,<br>
     {{ config('app.name') }}
 </x-mail::message>
+    */
+?>
 
-<?php
-    /*
 <html>
 <head>
     <meta charset="utf-8">
@@ -87,7 +89,7 @@
             <table style="border-collapse: separate; border-spacing: 0 15px;">
                 <tr>
                     <td class="title">Redeemable Time</td>
-                    <td>1/9/2024 until 31/9/2024 </td>
+                    <td>{{ $redemptionStartDate }} until {{ $redemptionEndDate }} </td>
                 </tr>
                 <tr>
                     <td class="title">Transaction No</td>
@@ -95,12 +97,12 @@
                 </tr>
                 <tr>
                     <td class="title">Date of Purchase</td>
-                    <td>{{ $dateTime  }}</td>
+                    <td>{{ $purchaseDate  }}</td>
                 </tr>
-                <!--<tr>
+                <tr>
                     <td class="title">Time of Purchase</td>
-                    <td>15:55:27</td>
-                </tr>-->
+                    <td>{{ $purchaseTime }}</td>
+                </tr>
                 <tr>
                     <td class="title">Quantity</td>
                     <td>{{ $quantity }}</td>
@@ -153,7 +155,7 @@
             </tr>
         </table>
         <div style="margin: 0 auto; text-align: center">
-            <button style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Download FUNHUB Now</button>
+            <a href="{{ config('app.frontend_app') }}/download/app" style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Download FUNHUB Now</a>
         </div>
         <div class="underline"></div>
         <h1 style="font-size: 28px">To Redeem Now</h1>
@@ -175,7 +177,7 @@
             <tr style="height: 30px"></tr>
         </table>
         <div style="margin: 15px auto; text-align: center">
-            <button style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Redeem Voucher Now</button>
+            <a href="{{ config('app.frontend_app').'/redeem/voucher?data='.urlencode($encryptedData) }}" style="font-size:18px; margin-top: 20px; background-color: #ffe200; padding: 10px 25px; border: none; border-radius: 8px">Redeem Voucher Now</a>
         </div>
         <div style="background:  linear-gradient(to bottom, #FFF6B7, #FFFCE9); padding: 20px; border-radius: 0 0 8px 8px;">
             <table cellpadding="0" cellspacing="0" width="100%">
@@ -192,5 +194,3 @@
     </div>
 </body>
 </html>
-    */
-?>

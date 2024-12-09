@@ -205,10 +205,10 @@ class ByteplusService
             'Version' => '2023-01-01',
             'Vid' => $vid,
             'FileType' => 'video',
-            'Definition' => 'auto', // for ABR to return
-            // 'Format' => 'hls', // for abr
+            'Definition' => 'auto',
+            'Format' => 'hls',
             'Codec' => 'H264',
-            'Ssl' => '1' // always return https
+            'Ssl' => '1'
         ];
 
         try {

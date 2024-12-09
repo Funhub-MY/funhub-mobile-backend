@@ -13,14 +13,14 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType;
+    protected $transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $encryptedData;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType)
+    public function __construct($transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $encryptedData)
     {
         $this->transactionNo = $transactionNo;
         $this->dateTime = $dateTime;
@@ -28,6 +28,11 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
         $this->quantity = $quantity;
         $this->subtotal = $subtotal;
         $this->currencyType = $currencyType;
+		$this->purchaseDate = $purchaseDate;
+		$this->purchaseTime = $purchaseTime;
+		$this->redemptionStartDate = $redemptionStartDate;
+		$this->redemptionEndDate = $redemptionEndDate;
+        $this->encryptedData = $encryptedData;
     }
 
     /**
@@ -51,13 +56,18 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Purchase Receipt')
-            ->markdown('emails.purchased-offer', [
+            ->view('emails.purchased-offer', [
                 'transactionNo' => $this->transactionNo,
                 'dateTime' => $this->dateTime,
                 'itemTitle' => $this->itemTitle,
                 'quantity' => $this->quantity,
                 'subtotal' => $this->subtotal,
                 'currencyType' => $this->currencyType,
+				'purchaseDate' => $this->purchaseDate,
+				'purchaseTime' => $this->purchaseTime,
+				'redemptionStartDate' => $this->redemptionStartDate,
+				'redemptionEndDate' => $this->redemptionEndDate,
+                'encryptedData' => $this->encryptedData
             ]);
     }
 

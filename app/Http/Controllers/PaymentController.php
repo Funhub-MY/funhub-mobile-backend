@@ -23,6 +23,7 @@ use Illuminate\Support\Str;
 class PaymentController extends Controller
 {
     protected $gateway;
+    protected $checkout_secret;
 
     public function __construct()
     {
@@ -30,6 +31,8 @@ class PaymentController extends Controller
             config('services.mpay.mid'),
             config('services.mpay.hash_key')
         );
+
+        $this->checkout_secret = config('app.funhub_checkout_secret');
     }
 
     /**
@@ -116,10 +119,14 @@ class PaymentController extends Controller
 
                 if ($transaction->status == \App\Models\Transaction::STATUS_SUCCESS) {
                     // SUCCESS
+					$offer_name = null;
 					$claim_id = null;
 					$redemption_start_date = null;
 					$redemption_end_date = null;
 					if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+						$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+						$offer_name = $merchantOffer ? $merchantOffer->name : null;
+
 						$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
 							->where('user_id', $transaction->user_id)
 							->latest()
@@ -141,7 +148,8 @@ class PaymentController extends Controller
                         'message' => 'Transaction Success',
                         'transaction_id' => $transaction->id,
                         'transaction_no' => $transaction->transaction_no,
-                        'offer_claim_id' => $claim_id,
+						'offer_name' => $offer_name,
+						'offer_claim_id' => $claim_id,
                         'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
                         'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
                         'success' => true,
@@ -192,21 +200,68 @@ class PaymentController extends Controller
                 // update transaction status to success first with gateway transaction id
                 $transaction->update($transactionUpdateData);
 
+				$redemption_start_date = null;
+				$redemption_end_date = null;
+
                 if ($transaction->transactionable_type == MerchantOffer::class) {
                     $this->updateMerchantOfferTransaction($request, $transaction);
+					$claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
+						->where('user_id', $transaction->user_id)
+						->latest()
+						->first();
+					if ($claim) {
+						// redemption dates is claim created_at + offer expiry_days
+						$redemption_start_date = $claim->created_at;
 
+						if (isset($claim->merchantOffer)) {
+							$redemption_end_date = $claim->created_at->addDays($claim->merchantOffer->expiry_days)->endOfDay();
+						} else {
+							$redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
+						}
+					}
                     if ($transaction->user->email) {
-                        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-                        $transaction->user->notify(new PurchasedOfferNotification($transaction->transaction_no, $transaction->updated_at, $merchantOffer->name, 1, $transaction->amount, 'MYR'));
+						try{
+
+                            $encrypted_data = $this->processEncrypt([
+                                'offer_id' => $claim->merchantOffer->id,
+                                'claim_id' => $claim->id,
+                                'phone_no' => $transaction->user->phone_no
+                            ]);
+
+                            Log::info('Encrypted Data',[
+                                'encrypted_data' => $encrypted_data,
+                            ]);
+
+							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+							$transaction->user->notify(new PurchasedOfferNotification(
+								$transaction->transaction_no,
+								$transaction->updated_at,
+								$merchantOffer->name,
+								1, $transaction->amount,
+								'MYR',
+								$transaction->created_at->format('Y-m-d'),
+								$transaction->created_at->format('H:i:s'),
+								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+                                $encrypted_data
+							));
+						} catch (Exception $e) {
+							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
+						}
+
                     }
 
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
 
                     if ($transaction->user->email) {
-                        $product = Product::where('id', $transaction->transactionable_id)->first();
-                        $quantity = $transaction->amount / $product->unit_price;
-                        $transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+						try {
+							$product = Product::where('id', $transaction->transactionable_id)->first();
+							$quantity = $transaction->amount / $product->unit_price;
+							$transaction->user->notify(new PurchasedGiftCardNotification($transaction->transaction_no, $transaction->updated_at, $product->name, $quantity, $transaction->amount));
+						} catch (\Exception $e) {
+							Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
+						}
                     }
                 }
 
@@ -216,10 +271,14 @@ class PaymentController extends Controller
                 ]);
 
                 // if transactionable_type is merchant_offer, get the relevant claim id
-                $claim_id = null;
+				$offer_name = null;
+				$claim_id = null;
                 $redemption_start_date = null;
                 $redemption_end_date = null;
                 if ($transaction->transactionable_type == \App\Models\MerchantOffer::class) {
+					$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+					$offer_name = $merchantOffer ? $merchantOffer->name : null;
+
                     $claim = MerchantOfferClaim::where('merchant_offer_id', $transaction->transactionable_id)
                         ->where('user_id', $transaction->user_id)
                         ->latest()
@@ -244,6 +303,7 @@ class PaymentController extends Controller
                     'message' => 'Transaction Success',
                     'transaction_id' => $transaction->id,
                     'transaction_no' => $transaction->transaction_no,
+					'offer_name' => $offer_name,
                     'offer_claim_id' => $claim_id,
 					'redemption_start_date' => $redemption_start_date ? $redemption_start_date->toISOString() : null,
 					'redemption_end_date' => $redemption_end_date ? $redemption_end_date->toISOString() : null,
@@ -308,18 +368,27 @@ class PaymentController extends Controller
         } else {
             Log::error('Payment return failed', [
                 'error' => 'Transaction not found',
-                'request' => request()->all()
+                'request' => request()->all(),
+                'invno' => request()->invno ?? null
             ]);
 
-            if ($transaction->channel === 'app') {
-                return view('payment-return', [
-                    'message' => 'Transaction Failed - No transaction',
-                    'transaction_id' => null,
-                    'success' => false
-                ]);
-            } else if ($transaction->channel === 'funhub_web') {
-                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Failed - No transaction', 'success' => false])));
+            $params = [
+                'message' => 'Transaction Failed - No transaction',
+                'transaction_id' => null,
+                'success' => false
+            ];
+
+            // Check if channel parameter exists in request, default to 'app' if not specified
+            $channel = request()->channel ?? 'app';
+
+            if ($channel === 'app') {
+                return view('payment-return', $params);
+            } else if ($channel === 'funhub_web') {
+                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)));
             }
+
+            // Default fallback to app view if channel is neither app nor funhub_web
+            return view('payment-return', $params);
         }
     }
 
@@ -692,5 +761,35 @@ class PaymentController extends Controller
         return response()->json([
             'funbox_ringgit_value' => config('app.funbox_ringgit_value')
         ]);
+    }
+
+    public function processEncrypt($data) {
+
+        try {
+            // we use the same key and IV
+            $key = hex2bin($this->checkout_secret);
+            $iv =  hex2bin($this->checkout_secret);
+
+            // we receive the encrypted string from the post
+            // finally we trim to get our original string
+            $encrypted_data = openssl_encrypt(json_encode($data), 'AES-128-CBC', $key, 0, $iv);
+
+            if ($encrypted_data === false) {
+                Log::error('Error encrypting data', [
+                    'error' => 'Encryption Failed - '. openssl_error_string(),
+                    'data' => json_encode($data),
+                ]);
+            }
+
+            return $encrypted_data;
+
+        } catch (\Exception $e) {
+            Log::error('Error encrypting data', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+
+            return '';
+        }
     }
 }

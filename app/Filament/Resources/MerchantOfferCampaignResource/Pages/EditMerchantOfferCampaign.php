@@ -47,9 +47,10 @@ class EditMerchantOfferCampaign extends EditRecord
         return Action::make('save')
             ->label('Save changes')
             ->action(function () {
-                $this->validate();
-                $data = $this->form->getState();
-                $this->handleRecordUpdate($this->record, $data);
+				$this->save();
+//                $this->validate();
+//                $data = $this->form->getState();
+//                $this->handleRecordUpdate($this->record, $data);
                 Notification::make()
                     ->success()
                     ->title('Saved')
@@ -77,6 +78,7 @@ class EditMerchantOfferCampaign extends EditRecord
         {
             $offer->update([
                 'name' => $record->name,
+				'highlight_messages' => $record->highlight_messages,
                 'description' => $record->description,
                 'fine_print' => $record->fine_print,
                 'available_for_web' => $record->available_for_web,
@@ -174,7 +176,8 @@ class EditMerchantOfferCampaign extends EditRecord
                     'merchant_offer_campaign_id' => $record->id,
                     'schedule_id' => $schedule->id, // record schedule id so when update can update correct offer available_at and until
                     'name' => $record->name,
-                    'description' => $record->description,
+					 'highlight_messages' => $record->highlight_messages,
+					 'description' => $record->description,
                     'available_for_web' => $record->available_for_web,
                     'sku' => $record->sku . '-' . $index+1,
                     'fine_print' => $record->fine_print,

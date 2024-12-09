@@ -27,6 +27,10 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
          'name_sku'
     ];
 
+	protected $casts = [
+		'highlight_messages' => 'array',
+	];
+
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',
@@ -103,6 +107,9 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             }
         }
 
+        // load categories relationship
+        $this->load('categories');
+        
         return [
             'id' => $this->id,
             'sku' => $this->sku,
@@ -129,6 +136,7 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
             'updated_at' => $this->updated_at,
             'created_at_diff' => $this->created_at->diffForHumans(),
             'updated_at_diff' => $this->updated_at->diffForHumans(),
+            'category_ids' => $this->categories->pluck('id')->toArray(),
             '_geoloc' => $geolocs,
         ];
     }

@@ -223,8 +223,27 @@ class ArticleResource extends Resource
                             // available_for_web
                             Forms\Components\Toggle::make('available_for_web')
                                 ->label('Available for Web')
-                                ->helperText('If enabled, this article will be shown in Funhub Web.')
-                                ->default(false),
+                                ->helperText('If enabled, this article will be shown in Funhub Web. Max 5 articles web at a time.')
+                                ->default(false)
+                                ->afterStateUpdated(function ($state, $record, $set) {
+                                    if ($state) { // Only check when enabling
+                                        $currentWebAvailable = Article::where('available_for_web', true)
+                                            ->published()
+                                            ->where('visibility', Article::VISIBILITY_PUBLIC)
+                                            ->when($record, fn($query) => $query->where('id', '!=', $record->id))
+                                            ->count();
+                                            
+                                        if ($currentWebAvailable >= 5) {
+                                            Notification::make()
+                                                ->title('Maximum limit reached')
+                                                ->body('You can only have 5 articles  published, public, available for web at a time.')
+                                                ->danger()
+                                                ->send();
+                                                
+                                            $set('available_for_web', false);
+                                        }
+                                    }
+                                }),
 
                             Forms\Components\Select::make('visibility')
                                 ->default(Article::VISIBILITY_PUBLIC)
@@ -698,6 +717,8 @@ class ArticleResource extends Resource
                         if ($data['available_for_web']) {
                             // count currently available articles (excluding selected ones)
                             $currentWebAvailable = Article::where('available_for_web', true)
+                                ->published()
+                                ->where('visibility', Article::VISIBILITY_PUBLIC)
                                 ->whereNotIn('id', $records->pluck('id'))
                                 ->count();
                             
@@ -708,7 +729,7 @@ class ArticleResource extends Resource
                             if (($currentWebAvailable + $selectedCount) > 5) {
                                 Notification::make()
                                     ->title('Maximum limit reached')
-                                    ->body('You can only have 5 articles available for web at a time. Please unselect some articles.')
+                                    ->body('You can only have 5 articles published, public, available for web at a time. Please unselect some articles.')
                                     ->danger()
                                     ->send();
                                     

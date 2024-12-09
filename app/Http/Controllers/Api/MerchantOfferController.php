@@ -366,33 +366,63 @@ class MerchantOfferController extends Controller
      */
     public function show($id)
     {
-        $offer = MerchantOffer::where('id', $id)->first();
+        // $offer = MerchantOffer::where('id', $id)->first();
 
-        $offer->load([
-            'user',
-            'user.merchant',
-            'user.merchant.media',
-            'claims',
-            'categories',
-            'stores',
-            'stores.location',
-            'stores.storeRatings',
-            'claims',
-            'location',
-            'location.ratings',
-            'media',
-            'interactions',
-            'views',
-            'likes' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-            'interactions' => function ($query) {
-                $query->where('user_id', auth()->user()->id);
-            },
-        ])
-        ->loadCount([
-            'unclaimedVouchers',
-        ]);
+        // $offer->load([
+        //     'user',
+        //     'user.merchant',
+        //     'user.merchant.media',
+        //     'claims',
+        //     'categories',
+        //     'stores',
+        //     'stores.location',
+        //     'stores.storeRatings',
+        //     'claims',
+        //     'location',
+        //     'location.ratings',
+        //     'media',
+        //     'interactions',
+        //     'views',
+        //     'likes' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        //     'interactions' => function ($query) {
+        //         $query->where('user_id', auth()->user()->id);
+        //     },
+        // ])
+        // ->loadCount([
+        //     'unclaimedVouchers',
+        // ]);
+
+        $offer = MerchantOffer::query()
+            ->where('id', $id)
+            // ->available()
+            ->with([
+                'user',
+                'user.merchant',
+                'user.merchant.media',
+                'claims',
+                'categories',
+                'stores',
+                'stores.location',
+                'stores.storeRatings',
+                'claims',
+                'location',
+                'location.ratings',
+                'media',
+                'interactions',
+                'views',
+                'likes' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+                'interactions' => function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                },
+            ])
+            ->withCount([
+                'unclaimedVouchers',
+            ])->first();
+
 
         // ensure customer should not see offer from same user within time span of config('app.same_merchant_spend_limit_days') if they have purchased
         // eg. customer buy from Merchant A offer A today, they should not see Merchant A offer A for next 30 days
@@ -536,12 +566,30 @@ class MerchantOfferController extends Controller
             event(new PurchasedMerchantOffer($user, $offer, 'points'));
 
             $claim = MerchantOfferClaim::where('order_no', $orderNo)->first();
-            if ($user->email) {
-                $user->notify(new PurchasedOfferNotification($claim->order_no, $claim->updated_at, $offer->name, $request->quantity, $net_amount, 'points'));
-            }
+			$redemption_start_date = $claim->created_at;
+			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
-            $redemption_start_date = $claim->created_at;
-            $redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
+            if ($user->email) {
+				try {
+					$user->notify(new PurchasedOfferNotification(
+						$claim->order_no,
+						$claim->updated_at,
+						$offer->name,
+						$request->quantity, $net_amount,
+						'points',
+						$claim->created_at->format('Y-m-d'),
+						$claim->created_at->format('H:i:s'),
+						$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+						$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+						$offer->id,
+						$claim->id,
+						$user->phone_no
+					));
+				} catch (\Exception $e) {
+					Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
+				}
+
+            }
 
             try {
                 // notify user offer claimed
@@ -1217,7 +1265,7 @@ class MerchantOfferController extends Controller
         $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius');
 
         if ($request->has('city')) {
-            // Directly filter by city
+            // City-based search remains the same...
             $query = MerchantOffer::query();
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
@@ -1227,27 +1275,24 @@ class MerchantOfferController extends Controller
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
-            $data = MerchantOffer::search('')->with([
+            // step 1: get nearby offers using Algolia's geosearch
+            $searchQuery = MerchantOffer::search('')->with([
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
                 'aroundPrecision' => 50,
-            ])
-                ->query(function ($query) use ($request) {
-                    $query = $this->merchantOfferQueryBuilder($query, $request);
-                })->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
+                'getRankingInfo' => true,
+            ]);
+
+            // get the IDs of nearby offers
+            $nearbyOfferIds = $searchQuery->get()->pluck('id')->toArray();
+
+            // step 2: apply additional filters 
+            $query = MerchantOffer::whereIn('id', $nearbyOfferIds)
+                ->orderByRaw("FIELD(id, " . implode(',', $nearbyOfferIds) . ") ASC");
+            // pass to query builder
+            $data = $this->merchantOfferQueryBuilder($query, $request)
+                ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
-
-        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
-        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
-        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
-            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
-                $item->user_purchased_before_from_merchant = true;
-            } else {
-                $item->user_purchased_before_from_merchant = false;
-            }
-            return $item;
-        });
-
         return MerchantOfferResource::collection($data);
     }
 
@@ -1258,7 +1303,7 @@ class MerchantOfferController extends Controller
         // category_ids filter
         if ($request->has('category_ids')) {
             // explode categories ids
-            $category_ids = explode(',', $request->category_ids);
+            $category_ids = is_array($request->category_ids) ? $request->category_ids : explode(',', $request->category_ids);
             if (count($category_ids) > 0) {
                 $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
                     $q->whereIn('merchant_offer_categories.id', $category_ids);
@@ -1296,7 +1341,10 @@ class MerchantOfferController extends Controller
             'user.merchant.media',
             'claims',
             'categories',
-            'stores',
+            'stores' => function ($query) use ($request) {
+                $query->withDistance($request->lat, $request->lng)
+                      ->orderBy('distance', 'ASC');
+            },
             'stores.location',
             'stores.storeRatings',
             'claims',

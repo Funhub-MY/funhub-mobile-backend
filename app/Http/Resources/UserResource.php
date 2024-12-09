@@ -12,11 +12,10 @@ class UserResource extends JsonResource
 {
     protected $isAuthUser;
 
-    public function __construct($resource, $isAuthUser = false, $context = null, $apiContext = 'default')
+    public function __construct($resource, $isAuthUser = false)
     {
         parent::__construct($resource);
         $this->isAuthUser = $isAuthUser;
-		$this->apiContext = $apiContext;
 	}
 
     /**
@@ -64,40 +63,19 @@ class UserResource extends JsonResource
 		$isFollowing = false;
 		$hasRequestedFollow = false;
 
-//		if ($currentUser) {
-//			// Check if the current user is already a follower
-//			$isFollowing = $this->resource->followers->contains($currentUser->id);
-//
-//			// If already a follower, set has_requested_follow to false
-//			if ($isFollowing) {
-//				$hasRequestedFollow = false;
-//			} else {
-//				// Otherwise, check for follow requests
-//				$hasRequestedFollow = $this->resource->beingFollowedRequests->contains('user_id', $currentUser->id);
-//			}
-//		}
-
 		if ($currentUser) {
 			// Check if the current user is already a follower
 			$isFollowing = $this->resource->followers->contains($currentUser->id);
 
-			// Different logic based on API context
-			if ($this->apiContext === 'default') {
-				// For public user profile - only one can be true
-				if ($isFollowing) {
-					$hasRequestedFollow = false;
-				} else {
-					// Otherwise, check for follow requests
-					$hasRequestedFollow = $this->resource->beingFollowedRequests->contains('user_id', $currentUser->id);
-				}
-			} else if ($this->apiContext === 'follow_requests') {
-				// For follow requests API - can have both true
-				$hasRequestedFollow = FollowRequest::where('following_id', $currentUser->id)
-					->where('user_id', $this->id)
-					->where('accepted', false)
-					->exists();
+			// If already a follower, set has_requested_follow to false
+			if ($isFollowing) {
+				$hasRequestedFollow = false;
+			} else {
+				// Otherwise, check for follow requests
+				$hasRequestedFollow = $this->resource->beingFollowedRequests->contains('user_id', $currentUser->id);
 			}
 		}
+
         return [
             'id' => $this->id,
             'name' => $name,

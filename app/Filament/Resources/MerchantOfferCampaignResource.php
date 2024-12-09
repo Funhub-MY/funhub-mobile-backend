@@ -20,6 +20,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -36,6 +37,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MerchantOfferCampaignResource extends Resource
 {
@@ -50,12 +52,40 @@ class MerchantOfferCampaignResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = static::getModel()::query();
+        $query = parent::getEloquentQuery();
+        
         if (auth()->user()->hasRole('merchant')) {
             $query->where('user_id', auth()->user()->id);
         }
 
-        return $query;
+        return $query->withCount([
+            'merchantOffers as total_vouchers_count' => function ($query) {
+                $query->select(DB::raw('COALESCE(SUM(
+                    (SELECT COUNT(*) FROM merchant_offer_vouchers 
+                    WHERE merchant_offers.id = merchant_offer_vouchers.merchant_offer_id 
+                    AND merchant_offers.merchant_offer_campaign_id = merchant_offer_campaigns.id
+                    AND voided = false)
+                ), 0)'));
+            },
+            'merchantOffers as sold_vouchers_count' => function ($query) {
+                $query->select(DB::raw('COALESCE(SUM(
+                    (SELECT COUNT(*) FROM merchant_offer_vouchers 
+                    WHERE merchant_offers.id = merchant_offer_vouchers.merchant_offer_id 
+                    AND merchant_offers.merchant_offer_campaign_id = merchant_offer_campaigns.id
+                    AND owned_by_id IS NOT NULL 
+                    AND voided = false)
+                ), 0)'));
+            },
+            'merchantOffers as available_vouchers_count' => function ($query) {
+                $query->select(DB::raw('COALESCE(SUM(
+                    (SELECT COUNT(*) FROM merchant_offer_vouchers 
+                    WHERE merchant_offers.id = merchant_offer_vouchers.merchant_offer_id 
+                    AND merchant_offers.merchant_offer_campaign_id = merchant_offer_campaigns.id
+                    AND owned_by_id IS NULL 
+                    AND voided = false)
+                ), 0)'));
+            },
+        ]);
     }
 
     public static function form(Form $form): Form
@@ -112,6 +142,19 @@ class MerchantOfferCampaignResource extends Resource
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
 
+								Repeater::make('highlight_messages')
+									->label('Highlight Message')
+									->createItemButtonLabel('Add Highlight Message')
+									->schema([
+										TextInput::make('message')
+											->label('Message')
+											->maxLength(255)
+											->placeholder('Enter a highlight message'),
+									])
+									->maxItems(3)
+									->columnSpan('full')
+									->helperText('Maximum 3 highlighted message.'),
+
                                 Forms\Components\Toggle::make('available_for_web')
                                     ->label('Available for Web')
                                     ->helperText('If enabled, this offer will be shown in Funhub Merchant Web.')
@@ -136,6 +179,7 @@ class MerchantOfferCampaignResource extends Resource
                                     ->columnSpan('full')
                                     ->required(),
                                 Forms\Components\Textarea::make('fine_print')
+									->label('T&C')
                                     ->rows(5)
                                     ->cols(10)
                                     ->required()
@@ -249,23 +293,53 @@ class MerchantOfferCampaignResource extends Resource
                                                     TextInput::make('vouchers_count')
                                                         ->required()
                                                         ->label('Total No. of Vouchers')
-                                                        ->numeric(),
+                                                        ->numeric()
+                                                        ->reactive()
+                                                        ->helperText('Total number of vouchers for this campaign'),
+                                                        // ->suffixAction(
+                                                        //     fn (TextInput $component): Action => 
+                                                        //     Action::make('add_available')
+                                                        //         ->icon('heroicon-s-plus')
+                                                        //         ->tooltip('Add vouchers to this campaign')
+                                                        //         ->action(function (array $data) {
+                                                        //             if (!isset($data['vouchers_count']) || !$data['vouchers_count']) {
+                                                        //                 Notification::make()
+                                                        //                     ->title('Please specify the number of vouchers')
+                                                        //                     ->danger()
+                                                        //                     ->send();
+                                                        //                 return;
+                                                        //             }
+
+                                                        //             $currentCount = $data['vouchers_count'] ?? 0;
+                                                        //             $this->form->fill([
+                                                        //                 'vouchers_count' => $currentCount,
+                                                        //                 'available_quantity' => ceil($currentCount / ($data['days_per_schedule'] ?? 1))
+                                                        //             ]);
+
+                                                        //             Notification::make()
+                                                        //                 ->title('Vouchers distribution updated')
+                                                        //                 ->success()
+                                                        //                 ->send();
+                                                        //         }),
+                                                        // ),
 
                                                     TextInput::make('interval_days')
                                                         ->label('Interval (Days)')
-                                                        ->numeric(),
+                                                        ->numeric()
+                                                        ->helperText('Days between each schedule'),
 
                                                     TextInput::make('days_per_schedule')
                                                         ->label('Days Per Schedule')
                                                         ->numeric()
                                                         ->minValue(1)
                                                         ->required()
-                                                        ->reactive(),
+                                                        ->reactive()
+                                                        ->helperText('Duration of each schedule in days'),
 
                                                     TextInput::make('available_quantity')
                                                         ->label('Available Quantity per Schedule')
                                                         ->numeric()
-                                                        ->minValue(1)
+                                                        ->minValue(1),
                                                 ])
                                                 ->columns(2),
                                     ])
@@ -338,7 +412,6 @@ class MerchantOfferCampaignResource extends Resource
                     ->schema([
                         Forms\Components\Section::make('Merchant')
                             ->schema([
-
                                 Forms\Components\Select::make('user_id')
                                     ->label('Merchant User')
                                     ->searchable()
@@ -394,6 +467,56 @@ class MerchantOfferCampaignResource extends Resource
                                     ->searchable()
                                     ->placeholder('Select offer categories...'),
                             ])->columns(1),
+
+                            Forms\Components\Section::make('Global Vouchers')
+                                ->schema([
+                                    Placeholder::make('available_vouchers_create')
+                                    ->reactive()
+                                    ->label('Campaign Vouchers Status')
+                                    ->content(function (Closure $get, $record) {
+                                        if (!$record) return 'Save the campaign first to see voucher status';
+                                        
+                                        $offers = \App\Models\MerchantOffer::where('merchant_offer_campaign_id', $record->id)
+                                            ->withCount([
+                                                'vouchers as available_count' => function ($query) {
+                                                    $query->whereNull('owned_by_id')
+                                                        ->where('voided', false);
+                                                },
+                                                'vouchers as sold_count' => function ($query) {
+                                                    $query->whereNotNull('owned_by_id')
+                                                        ->where('voided', false);
+                                                },
+                                                'vouchers as total_count' => function ($query) {
+                                                    $query->where('voided', false);
+                                                }
+                                            ])
+                                            ->get();
+
+                                        // if no offers exist yet but schedules exist, show the processing message
+                                        if ($offers->isEmpty() && $record->schedules()->exists()) {
+                                            return new HtmlString(
+                                                "<div style='font-size: 1.2em; font-weight: 600;'>Merchant offers and vouchers are being generated</div>
+                                                <div style='color: #666; margin-top: 4px;'>
+                                                    Please refresh in a few minutes to see the updated status.
+                                                </div>"
+                                            );
+                                        }
+                                            
+                                        $available = $offers->sum('available_count');
+                                        $sold = $offers->sum('sold_count');
+                                        $total = $offers->sum('total_count');
+                                            
+                                        return new HtmlString(
+                                            "<div style='font-size: 1.2em; font-weight: 600;'>
+                                                {$sold} sold / {$available} available
+                                            </div>
+                                            <div style='color: #666; margin-top: 4px;'>
+                                                Total vouchers in this campaign: {$total}
+                                            </div>"
+                                        );
+                                    })
+                                    ->columnSpan(1),
+                                ])->columns(1),
                     ])->columnSpan(['lg' => 1]),
             ])
             ->columns(3);
@@ -437,15 +560,23 @@ class MerchantOfferCampaignResource extends Resource
 
                 Tables\Columns\TextColumn::make('vouchers_count')
                     ->label('Total Vouchers')
-                    ->sum('schedules', 'quantity')
-                    ->sortable(),
+                    ->formatStateUsing(fn ($record): string => 
+                        (string)$record->total_vouchers_count),
+
+                Tables\Columns\TextColumn::make('vouchers_status')
+                ->label('Sold / Available')
+                ->formatStateUsing(fn ($record): string => 
+                    "{$record->sold_vouchers_count} / {$record->available_vouchers_count}")
+                ->description(fn ($record): string =>
+                    "Total: {$record->total_vouchers_count}")
+                ->color(fn ($record): string =>
+                    $record->available_vouchers_count > 0 ? 'success' : 'warning'),
 
                 Tables\Columns\TextColumn::make('upcoming_vouchers_count')
                     ->label('Upcoming Vouchers')
                     ->sum('upcomingSchedules', 'quantity')
                     ->sortable(),
 
-                // created at sortable
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()

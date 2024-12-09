@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\FollowedUser;
 use App\Events\UnfollowedUser;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FollowRequestResource;
 use App\Http\Resources\UserResource;
 use App\Models\FollowRequest;
 use App\Models\User;
@@ -274,11 +275,7 @@ class UserFollowingController extends Controller
 
         $users = User::whereIn('id', $followRequests->pluck('user_id'))->paginate(config('app.paginate_per_page'));
 
-		return UserResource::collection(
-			$users->getCollection()->map(function ($user) {
-				return new UserResource($user, false, null, 'follow_requests');
-			})
-		);
+		return FollowRequestResource::collection($users);
 	}
 
     /**

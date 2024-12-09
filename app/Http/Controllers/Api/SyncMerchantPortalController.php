@@ -20,6 +20,7 @@ use App\Http\Resources\SyncMerchantResource;
 use App\Http\Resources\SyncMerchantCategoryResource;
 use App\Http\Resources\SyncMerchantCampaignResource;
 use App\Http\Resources\SyncMerchantOfferResource;
+use App\Http\Resources\SyncStoreResource;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -45,8 +46,13 @@ class SyncMerchantPortalController extends Controller
      * Get merchant info, logo, user, categories, stores and store categories
      */
     public function merchants(Request $request)
-    {
-        $results =  Merchant::orderBy('id', 'asc')->get();//->paginate(1000);
+    {   
+        $offset = $request->input('offset', 0); // Default offset is 0
+        $limit  = $request->input('limit', 100); // Default limit is 100
+        $results =  Merchant::orderBy('id', 'asc')
+            ->skip($offset)
+            ->take($limit)
+            ->get();
         return SyncMerchantResource::collection($results);
     }
 
@@ -62,6 +68,17 @@ class SyncMerchantPortalController extends Controller
     }
 
     /**
+     * Get Single Store
+     * Merchant portal will call this api to sync data
+     * Get store info
+     */
+    public function store($store_id)
+    {
+        $results = Store::where('id', $store_id)->first();
+        return new SyncStoreResource($results);
+    }
+
+    /**
      * Post Merchant Registration
      * Merchant portal send data to this api to register the merchant information in base portal
      */
@@ -70,7 +87,7 @@ class SyncMerchantPortalController extends Controller
         try {
             $request->validate([
                 'business_name' => 'required',
-                'company_reg_no' => 'required|unique:merchants,company_reg_no',
+                'company_reg_no' => 'required',
                 'brand_name' => 'required',
                 'business_phone_no' => 'required|max:20',
                 'address' => 'required',
@@ -139,50 +156,54 @@ class SyncMerchantPortalController extends Controller
     {
         try {
             $request->validate([
-                'business_name' => 'required',
-                'company_reg_no' => 'required|unique:merchants,company_reg_no,'.$request->id,
-                'brand_name' => 'required',
-                'business_phone_no' => 'required|max:20',
-                'address' => 'required',
-                'address_postcode' => 'required|numeric',
-                'state_id' => 'required',
-                'country_id' => 'required',
+                // 'business_name' => 'required',
+                // 'company_reg_no' => 'required',//|unique:merchants,company_reg_no,'.$request->id
+                // 'brand_name' => 'required',
+                // 'business_phone_no' => 'required|max:20',
+                // 'address' => 'required',
+                // 'address_postcode' => 'required|numeric',
+                // 'state_id' => 'required',
+                // 'country_id' => 'required',
                 'pic_name' => 'required',
                 'pic_designation' => 'required',
                 'pic_phone_no' => 'required|max:20',
                 'pic_email' => 'required',
                 'pic_ic_no' => 'required',
-                'authorised_personnel_designation' => 'required',
-                'authorised_personnel_name' => 'required',
-                'authorised_personnel_ic_no' => 'required',
+                // 'authorised_personnel_designation' => 'required',
+                // 'authorised_personnel_name' => 'required',
+                // 'authorised_personnel_ic_no' => 'required',
                 'id' => 'required',
-                'categories' => 'required'
+                // 'categories' => 'required'
             ]);
 
             $merchant = Merchant::findOrFail($request->id);
             if($merchant){
                 //  Merchant data
                 $merchant_data = [
-                    'business_name' => $request->business_name, 
-                    'company_reg_no' => $request->company_reg_no,
-                    'brand_name' => $request->brand_name,
-                    'business_phone_no' => $request->business_phone_no,
-                    'address' => $request->address,
-                    'address_postcode' => $request->address_postcode,
-                    'state_id' => $request->state_id,
-                    'country_id' => $request->country_id,
+                    // 'business_name' => $request->business_name, 
+                    // 'company_reg_no' => $request->company_reg_no,
+                    // 'brand_name' => $request->brand_name,
+                    // 'business_phone_no' => $request->business_phone_no,
+                    // 'address' => $request->address,
+                    // 'address_postcode' => $request->address_postcode,
+                    // 'state_id' => $request->state_id,
+                    // 'country_id' => $request->country_id,
                     'pic_name' => $request->pic_name,
                     'pic_designation' => $request->pic_designation,
                     'pic_ic_no' => $request->pic_ic_no,
                     'pic_phone_no' => $request->pic_phone_no,
                     'pic_email' => $request->pic_email,
-                    'authorised_personnel_designation' => $request->authorised_personnel_designation,
-                    'authorised_personnel_name' => $request->authorised_personnel_name,
-                    'authorised_personnel_ic_no' => $request->authorised_personnel_ic_no,
+                    // 'authorised_personnel_designation' => $request->authorised_personnel_designation,
+                    // 'authorised_personnel_name' => $request->authorised_personnel_name,
+                    // 'authorised_personnel_ic_no' => $request->authorised_personnel_ic_no,
                 ];
 
                 $merchant->update($merchant_data); 
-                $merchant->categories()->sync($request->categories);
+
+                //  Process the category change if it not empty
+                if(!empty($request->categories)){
+                    $merchant->categories()->sync($request->categories);
+                }
 
                 return response()->json([
                     'error'     => false,

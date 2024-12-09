@@ -37,6 +37,16 @@ class MerchantOfferResource extends JsonResource
             }
         }
 
+//		$highlight_messages = null;
+//		if ($this->highlight_messages) {
+//			$decoded = json_decode($this->highlight_messages, true);
+//			if (json_last_error() === JSON_ERROR_NONE) {
+//				$highlight_messages = array_column($decoded, 'message');
+//			} else {
+//				Log::error('Invalid JSON for highlight_messages: ' . $this->highlight_messages);
+//			}
+//		}
+
         // horizontal banner
         $horizontalMedia = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
         $verticalBanner = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_NAME);
@@ -60,6 +70,8 @@ class MerchantOfferResource extends JsonResource
                     'address_postcode' => $store->address_postcode,
                     'lat' => ($store->location && isset($store->location->lat)) ? floatval($store->location->lat) : $store->lang,
                     'lng' => ($store->location && isset($store->location->lng)) ? floatval($store->location->lng) : $store->long,
+
+                    'distance' => (float) $store->distance, //Kenneth - add the distance for stores
                     'is_hq' => $store->is_hq,
                     'state' => $store->state,
                     'country' => $store->country
@@ -80,7 +92,8 @@ class MerchantOfferResource extends JsonResource
             ],
             'name' => $this->name,
             'is_flash' => $this->flash_deal,
-            'description' => $this->description,
+			'highlight_messages' => $this->highlight_messages,
+			'description' => $this->description,
             'fine_print' => $this->fine_print,
             'redemption_policy' => $this->redemption_policy,
             'cancellation_policy' => $this->cancellation_policy,

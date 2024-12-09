@@ -30,6 +30,7 @@ class MerchantFactory extends Factory
             'pic_phone_no' => fake()->randomNumber(9),
             'pic_email' => fake()->unique()->safeEmail(),
             'status' => Merchant::STATUS_APPROVED,
+            'user_id' => User::factory(),
             'state_id' => 1, // mock id only
             'country_id' => 1,  // mock id only
             'created_at' => now(),
