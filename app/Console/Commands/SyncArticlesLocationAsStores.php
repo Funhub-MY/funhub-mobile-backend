@@ -48,6 +48,7 @@ class SyncArticlesLocationAsStores extends Command
 				if (!$store) {
 					// make sure same Store location never created before
 					if (Store::where('name', $location->name)->exists()) {
+						Log::info('Store same name already exists for location: ' . $location->id);
 						$this->info('Store same name already exists for location: ' . $location->id);
 						continue;
 					}
