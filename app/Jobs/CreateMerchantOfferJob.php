@@ -35,6 +35,7 @@ class CreateMerchantOfferJob implements ShouldQueue
             'merchant_offer_campaign_id' => $campaign->id,
             'schedule_id' => $schedule->id,
             'name' => $campaign->name,
+			'highlight_messages' => $campaign->highlight_messages ? json_encode($campaign->highlight_messages) : null,
             'description' => $campaign->description,
             'sku' => $campaign->sku . '-' . $schedule->id,
             'available_for_web' => $campaign->available_for_web,
