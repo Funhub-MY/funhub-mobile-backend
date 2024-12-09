@@ -27,6 +27,10 @@ class MerchantOffer extends BaseModel implements HasMedia, Auditable
          'name_sku'
     ];
 
+	protected $casts = [
+		'highlight_messages' => 'array',
+	];
+
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',

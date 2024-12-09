@@ -20,6 +20,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -138,6 +139,19 @@ class MerchantOfferCampaignResource extends Resource
                                     ->helperText('If enabled, this offer will be shown in Flash Deal section in the app. Use Available At & Until to set the Flash deals countdown')
                                     ->default(false),
 
+								Repeater::make('highlight_messages')
+									->label('Highlight Message')
+									->createItemButtonLabel('Add Highlight Message')
+									->schema([
+										TextInput::make('message')
+											->label('Message')
+											->maxLength(255)
+											->placeholder('Enter a highlight message'),
+									])
+									->maxItems(3)
+									->columnSpan('full')
+									->helperText('Maximum 3 highlighted message.'),
+
                                 Forms\Components\Toggle::make('available_for_web')
                                     ->label('Available for Web')
                                     ->helperText('If enabled, this offer will be shown in Funhub Merchant Web.')
@@ -162,6 +176,7 @@ class MerchantOfferCampaignResource extends Resource
                                     ->columnSpan('full')
                                     ->required(),
                                 Forms\Components\Textarea::make('fine_print')
+									->label('T&C')
                                     ->rows(5)
                                     ->cols(10)
                                     ->required()

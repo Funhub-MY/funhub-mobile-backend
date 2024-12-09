@@ -37,15 +37,15 @@ class MerchantOfferResource extends JsonResource
             }
         }
 
-		$highlight_messages = null;
-		if ($this->highlight_messages) {
-			$decoded = json_decode($this->highlight_messages, true);
-			if (json_last_error() === JSON_ERROR_NONE) {
-				$highlight_messages = array_column($decoded, 'message');
-			} else {
-				Log::error('Invalid JSON for highlight_messages: ' . $this->highlight_messages);
-			}
-		}
+//		$highlight_messages = null;
+//		if ($this->highlight_messages) {
+//			$decoded = json_decode($this->highlight_messages, true);
+//			if (json_last_error() === JSON_ERROR_NONE) {
+//				$highlight_messages = array_column($decoded, 'message');
+//			} else {
+//				Log::error('Invalid JSON for highlight_messages: ' . $this->highlight_messages);
+//			}
+//		}
 
         // horizontal banner
         $horizontalMedia = $this->getFirstMedia(MerchantOffer::MEDIA_COLLECTION_HORIZONTAL_BANNER);
@@ -92,7 +92,7 @@ class MerchantOfferResource extends JsonResource
             ],
             'name' => $this->name,
             'is_flash' => $this->flash_deal,
-			'highlight_messages' => $highlight_messages,
+			'highlight_messages' => $this->highlight_messages,
 			'description' => $this->description,
             'fine_print' => $this->fine_print,
             'redemption_policy' => $this->redemption_policy,
