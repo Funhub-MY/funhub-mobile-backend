@@ -17,6 +17,10 @@ class MerchantOfferCampaign extends BaseModel implements HasMedia, Auditable
         'id'
     ];
 
+	protected $casts = [
+		'highlight_messages' => 'array',
+	];
+
     const STATUS = [
         0 => 'Draft',
         1 => 'Published',
