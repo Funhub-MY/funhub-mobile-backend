@@ -14,11 +14,6 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
-		$product_value = null;
-		if (preg_match('/^\d+/', $this->name, $matches)) {
-			$product_value = (int) $matches[0];
-		}
-
         // map rewards
         $rewards = null;
         if ($this->rewards) {
@@ -28,7 +23,8 @@ class ProductResource extends JsonResource
                     'name' => $reward->name,
                     'description' => $reward->description,
                     'thumbnail' => $reward->thumbnail_url,
-                ];
+					'quantity' => $reward->pivot->quantity,
+				];
             });
         }
 
@@ -36,7 +32,6 @@ class ProductResource extends JsonResource
             'id' => $this->id,
 			'order' => $this->order,
             'name' => $this->name,
-            'product_value' => $product_value,
             'slug' => $this->slug,
             'description' => $this->description,
             'unit_price' => $this->unit_price,
