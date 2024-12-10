@@ -548,7 +548,7 @@ class PaymentController extends Controller
             $claim->update([
                 'status' => \App\Models\MerchantOffer::CLAIM_FAILED
             ]);
-            if ($claim) {
+            if ($claim && !empty($claim->pivot->quantity)) {
                 try {
                     $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
                     $merchantOffer->save();
@@ -558,6 +558,7 @@ class PaymentController extends Controller
                     if ($voucher_id) {
                         $voucher = MerchantOfferVoucher::where('id', $voucher_id)
                             ->where('owned_by_id', $claim->user_id)
+                            ->where('transaction_no', $transaction->transaction_no)
                             ->first();
                         if ($voucher) {
                             $voucher->owned_by_id = null;
@@ -574,9 +575,16 @@ class PaymentController extends Controller
                     Log::error('Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim_data' => json_encode($claim),
                         'error' => $ex->getMessage()
                     ]);
                 }
+            } else {
+                Log::info('Updated Merchant Offer Claim to Failed, no claim data or claim quantity not found', [
+                    'transaction_id' => $transaction->id,
+                    'merchant_offer_id' => $transaction->transactionable_id,
+                    'claim_data' => json_encode($claim),
+                ]);
             }
         }
     }
