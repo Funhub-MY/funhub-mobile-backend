@@ -391,18 +391,27 @@ class PaymentController extends Controller
         } else {
             Log::error('Payment return failed', [
                 'error' => 'Transaction not found',
-                'request' => request()->all()
+                'request' => request()->all(),
+                'invno' => request()->invno ?? null
             ]);
 
-            if ($transaction->channel === 'app') {
-                return view('payment-return', [
-                    'message' => 'Transaction Failed - No transaction',
-                    'transaction_id' => null,
-                    'success' => false
-                ]);
-            } else if ($transaction->channel === 'funhub_web') {
-                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Failed - No transaction', 'success' => false])));
+            $params = [
+                'message' => 'Transaction Failed - No transaction',
+                'transaction_id' => null,
+                'success' => false
+            ];
+
+            // Check if channel parameter exists in request, default to 'app' if not specified
+            $channel = request()->channel ?? 'app';
+
+            if ($channel === 'app') {
+                return view('payment-return', $params);
+            } else if ($channel === 'funhub_web') {
+                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)));
             }
+
+            // Default fallback to app view if channel is neither app nor funhub_web
+            return view('payment-return', $params);
         }
     }
 

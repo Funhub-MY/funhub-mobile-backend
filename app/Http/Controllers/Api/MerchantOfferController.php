@@ -1265,7 +1265,7 @@ class MerchantOfferController extends Controller
         $radius = $request->has('radius') ? $request->radius : config('app.location_default_radius');
 
         if ($request->has('city')) {
-            // Directly filter by city
+            // City-based search remains the same...
             $query = MerchantOffer::query();
             $query->whereHas('location', function ($query) use ($request) {
                 $query->where('city', 'like', '%' . $request->city . '%');
@@ -1275,7 +1275,7 @@ class MerchantOfferController extends Controller
             $data = $this->merchantOfferQueryBuilder($query, $request)
                 ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         } else {
-            // build search query with all filters
+            // step 1: get nearby offers using Algolia's geosearch
             $searchQuery = MerchantOffer::search('')->with([
                 'aroundLatLng' => $request->lat . ',' . $request->lng,
                 'aroundRadius' => $radius * 1000,
@@ -1283,45 +1283,16 @@ class MerchantOfferController extends Controller
                 'getRankingInfo' => true,
             ]);
 
-            // apply filters at search level
-            if ($request->has('category_ids')) {
-                $category_ids = explode(',', $request->category_ids);
-                $searchQuery->whereIn('category_ids', $category_ids);
-            }
+            // get the IDs of nearby offers
+            $nearbyOfferIds = $searchQuery->get()->pluck('id')->toArray();
 
-            if ($request->has('available_only')) {
-                $searchQuery->where('available', true);
-            }
-
-            if ($request->has('coming_soon_only')) {
-                $searchQuery->where('available_at', '>', now()->toIso8601String());
-            }
-
-            if ($request->has('except_expired')) {
-                $searchQuery->where('available_until', '>', now()->toIso8601String());
-            }
-
-            if ($request->has('flash_only')) {
-                $searchQuery->where('flash_deal', $request->flash_only == 1);
-			}
-
-            // apply pagination at search level
-            $data = $searchQuery->paginate(
-                $request->has('limit') ? $request->limit : config('app.paginate_per_page')
-            );
+            // step 2: apply additional filters 
+            $query = MerchantOffer::whereIn('id', $nearbyOfferIds)
+                ->orderByRaw("FIELD(id, " . implode(',', $nearbyOfferIds) . ") ASC");
+            // pass to query builder
+            $data = $this->merchantOfferQueryBuilder($query, $request)
+                ->paginate($request->has('limit') ? $request->limit : config('app.paginate_per_page'));
         }
-
-        $userPurchasedBeforeFromMerchantIds = $this->getUserPurchasedBeforeFromMerchantIds($request->user());
-        // map userPurchasedBeforeFromMerchantIds to MerchantOfferResource
-        $data->map(function ($item, $key) use ($userPurchasedBeforeFromMerchantIds) {
-            if (in_array($item->user->id, $userPurchasedBeforeFromMerchantIds)) {
-                $item->user_purchased_before_from_merchant = true;
-            } else {
-                $item->user_purchased_before_from_merchant = false;
-            }
-            return $item;
-        });
-
         return MerchantOfferResource::collection($data);
     }
 
@@ -1332,7 +1303,7 @@ class MerchantOfferController extends Controller
         // category_ids filter
         if ($request->has('category_ids')) {
             // explode categories ids
-            $category_ids = explode(',', $request->category_ids);
+            $category_ids = is_array($request->category_ids) ? $request->category_ids : explode(',', $request->category_ids);
             if (count($category_ids) > 0) {
                 $query->whereHas('allOfferCategories', function ($q) use ($category_ids) {
                     $q->whereIn('merchant_offer_categories.id', $category_ids);

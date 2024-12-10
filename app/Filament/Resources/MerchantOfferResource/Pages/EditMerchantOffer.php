@@ -22,6 +22,18 @@ class EditMerchantOffer extends EditRecord
         ];
     }
 
+	protected function mutateFormDataBeforeFill(array $data): array
+	{
+		if (isset($data['highlight_messages']) && is_string($data['highlight_messages'])) {
+			$decodedMessages = json_decode($data['highlight_messages'], true);
+
+			if ($decodedMessages !== null) {
+				$data['highlight_messages'] = $decodedMessages;
+			}
+		}
+		return $data;
+	}
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         // $language = $this->current_locale ?? app()->getLocale();

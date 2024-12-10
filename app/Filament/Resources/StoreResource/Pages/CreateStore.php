@@ -99,20 +99,50 @@ class CreateStore extends CreateRecord
 			$long = isset($data['long']) && $data['long'] !== 0 ? $data['long'] : null;
 
 			if ($lang && $long) {
-				$location = Location::create([
-					'name' => $data['name'],
-					'lat' => $lang,
-					'lng' => $long,
-					'address' => $data['address'] ?? '',
-					'zip_code' => $data['address_postcode'] ?? '',
-					'city' => $data['city'] ?? '',
-					'state_id' => $data['state_id'],
-					'country_id' => $data['country_id'],
-				]);
-				Log::info('[Store Filament] Location created: ' . $location->id);
+				// $location = Location::create([
+				// 	'name' => $data['name'],
+				// 	'lat' => $lang,
+				// 	'lng' => $long,
+				// 	'address' => $data['address'] ?? '',
+				// 	'zip_code' => $data['address_postcode'] ?? '',
+				// 	'city' => $data['city'] ?? '',
+				// 	'state_id' => $data['state_id'],
+				// 	'country_id' => $data['country_id'],
+				// ]);
+				// Log::info('[Store Filament] Location created: ' . $location->id);
 
-				$this->record->location()->attach($location);
-				Log::info('[Store Filament Create] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+				// $this->record->location()->attach($location);
+				// Log::info('[Store Filament Create] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+
+				Location::updateOrInsert(
+                    [
+                        'name' => $data['name'],
+                        'address' => $data['address'] ?? '',
+                        'zip_code' => $data['address_postcode'] ?? '',
+                        'city' => $data['city'] ?? '',
+                        'state_id' => $data['state_id'],
+                        'country_id' => $data['country_id'],
+                    ],
+                    [
+                        'lat' => $lang,
+                        'lng' => $long
+                    ]);
+
+                    // Fetch the location record to attach it
+                $location = Location::where('name', $data['name'])
+                    ->where('address', $data['address'] ?? '')
+                    ->where('zip_code', $data['address_postcode'] ?? '')
+                    ->where('city', $data['city'] ?? '')
+                    ->where('state_id', $data['state_id'])
+                    ->where('country_id', $data['country_id'])
+                    ->first();
+
+                // Attach the location to the record
+                if ($location) {
+                    Log::info('[Store Filament] Location created: ' . $location->id);
+                    $this->record->location()->attach($location->id);
+                    Log::info('[Store Filament] Store ' . $this->record->id . ' attached to location: ' . $location->id);
+                }
 			} else {
 				$state = State::find($data['state_id']);
 				$country = Country::find($data['country_id']);

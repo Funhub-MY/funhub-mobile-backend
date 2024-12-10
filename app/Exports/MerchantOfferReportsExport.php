@@ -24,20 +24,20 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {   
-        $query = MerchantOfferVoucher::query()
+        $query = MerchantOffer::query()
             ->selectRaw('
-                merchant_offer_vouchers.merchant_offer_id AS id,
+                merchant_offers.id AS id,
                 merchant_offers.name AS offer_name,
+                merchant_offers.quantity AS quantity,
                 merchants.name AS merchant_name,
                 merchants.brand_name AS brand_name,
                 merchant_offers.available_at AS offer_available_at,
                 merchant_offers.available_until AS offer_available_until,
-                COUNT(merchant_offer_vouchers.id) AS total_purchases,
-                merchant_offers.unit_price as funbox_quantity,
-                merchant_offers.point_fiat_price as funbox_original,
-                merchant_offers.discounted_point_fiat_price as funbox_selling,
-                merchant_offers.fiat_price as price_original,
-                merchant_offers.discounted_fiat_price as price_selling,
+                merchant_offers.unit_price AS funbox_quantity,
+                merchant_offers.point_fiat_price AS funbox_original,
+                merchant_offers.discounted_point_fiat_price AS funbox_selling,
+                merchant_offers.fiat_price AS price_original,
+                merchant_offers.discounted_fiat_price AS price_selling,
                 CASE 
                     WHEN merchant_offers.point_fiat_price > 0 THEN 
                         ((1 - (merchant_offers.discounted_point_fiat_price / merchant_offers.point_fiat_price)) * 100)
@@ -47,19 +47,24 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
                     WHEN merchant_offers.fiat_price > 0 THEN 
                         ((1 - (merchant_offers.discounted_fiat_price / merchant_offers.fiat_price)) * 100)
                     ELSE 0
-                END AS discount_rate
-            ')
-            ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+                END AS discount_rate,
+                merchant_offers.status AS offer_status,
+                (SELECT COUNT(*) 
+                    FROM merchant_offer_vouchers 
+                    WHERE merchant_offer_vouchers.merchant_offer_id = merchant_offers.id
+                ) AS total_vouchers,
+                (SELECT COUNT(*) 
+                    FROM merchant_offer_user 
+                    WHERE merchant_offer_user.merchant_offer_id = merchant_offers.id 
+                    AND merchant_offer_user.status = ?
+                ) AS total_purchases
+            ', [MerchantOfferClaim::CLAIM_SUCCESS])
             ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
-            ->join('merchant_offer_user', function ($join) {
-                $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
-                    ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
-                    ->where('merchant_offer_user.status', '=', MerchantOfferClaim::CLAIM_SUCCESS);
-            })
-            ->whereNotNull('merchant_offer_vouchers.owned_by_id')
             ->groupBy([
-                'merchant_offer_vouchers.merchant_offer_id',
+                'merchant_offers.id',
                 'merchant_offers.name',
+                'merchant_offers.quantity',
+                'merchant_offers.status',
                 'merchants.name',
                 'merchants.brand_name',
                 'merchant_offers.available_at',
@@ -73,6 +78,56 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
             ->orderBy('merchant_offers.id', 'ASC')
             ->orderBy('merchant_offers.name', 'DESC')
             ->orderBy('merchant_offers.created_at', 'ASC');
+
+        // $query = MerchantOfferVoucher::query()
+        //     ->selectRaw('
+        //         merchant_offer_vouchers.merchant_offer_id AS id,
+        //         merchant_offers.name AS offer_name,
+        //         merchants.name AS merchant_name,
+        //         merchants.brand_name AS brand_name,
+        //         merchant_offers.available_at AS offer_available_at,
+        //         merchant_offers.available_until AS offer_available_until,
+        //         COUNT(merchant_offer_vouchers.id) AS total_purchases,
+        //         merchant_offers.unit_price as funbox_quantity,
+        //         merchant_offers.point_fiat_price as funbox_original,
+        //         merchant_offers.discounted_point_fiat_price as funbox_selling,
+        //         merchant_offers.fiat_price as price_original,
+        //         merchant_offers.discounted_fiat_price as price_selling,
+        //         CASE 
+        //             WHEN merchant_offers.point_fiat_price > 0 THEN 
+        //                 ((1 - (merchant_offers.discounted_point_fiat_price / merchant_offers.point_fiat_price)) * 100)
+        //             ELSE 0
+        //         END AS funbox_discount_rate,
+        //         CASE 
+        //             WHEN merchant_offers.fiat_price > 0 THEN 
+        //                 ((1 - (merchant_offers.discounted_fiat_price / merchant_offers.fiat_price)) * 100)
+        //             ELSE 0
+        //         END AS discount_rate
+        //     ')
+        //     ->join('merchant_offers', 'merchant_offers.id', '=', 'merchant_offer_vouchers.merchant_offer_id')
+        //     ->leftJoin('merchants', 'merchants.user_id', '=', 'merchant_offers.user_id')
+        //     ->join('merchant_offer_user', function ($join) {
+        //         $join->on('merchant_offer_user.voucher_id', '=', 'merchant_offer_vouchers.id')
+        //             ->whereColumn('merchant_offer_user.user_id', '=', 'merchant_offer_vouchers.owned_by_id')
+        //             ->where('merchant_offer_user.status', '=', MerchantOfferClaim::CLAIM_SUCCESS);
+        //     })
+        //     ->whereNotNull('merchant_offer_vouchers.owned_by_id')
+        //     ->groupBy([
+        //         'merchant_offer_vouchers.merchant_offer_id',
+        //         'merchant_offers.name',
+        //         'merchants.name',
+        //         'merchants.brand_name',
+        //         'merchant_offers.available_at',
+        //         'merchant_offers.available_until',
+        //         'merchant_offers.unit_price',
+        //         'merchant_offers.point_fiat_price',
+        //         'merchant_offers.discounted_point_fiat_price',
+        //         'merchant_offers.fiat_price',
+        //         'merchant_offers.discounted_fiat_price'
+        //     ])
+        //     ->orderBy('merchant_offers.id', 'ASC')
+        //     ->orderBy('merchant_offers.name', 'DESC')
+        //     ->orderBy('merchant_offers.created_at', 'ASC');
 
         // Apply date filters if provided
         if ($this->startDate) {
@@ -90,10 +145,13 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             'Offer ID',
+            'Status',
             'Offer Name',
             'Merchant Name',
             'Brand Name',
-            'Total Purchases Quantity',
+            'Total Vouchers',
+            'Total Sold',
+            'Offer Remaining Quantity',
             'Funbox Quantity',
             'Funbox Original Price (RM)',
             'Funbox Selling Price (RM)',
@@ -106,14 +164,18 @@ class MerchantOfferReportsExport implements FromQuery, WithHeadings, WithMapping
         ];
     }
 
+
     public function map($row): array
     {
         return [
             $row->id,
+            MerchantOffer::STATUS[$row->offer_status] ?? 'Unknown',
             $row->offer_name,
             $row->merchant_name,
             $row->brand_name,
+            $row->total_vouchers,
             $row->total_purchases,
+            $row->quantity,
             $row->funbox_quantity,
             number_format($row->funbox_original, 2, '.', ','),
             number_format($row->funbox_selling, 2, '.', ','),
