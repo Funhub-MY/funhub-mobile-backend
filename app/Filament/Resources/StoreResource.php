@@ -424,10 +424,15 @@ class StoreResource extends Resource
                     ->sortable()
                     ->label('Merchant Name'),
 
-                TagsColumn::make('categories.name')
-                    ->label('Categories')
-                    ->sortable()
-                    ->searchable(),
+				TagsColumn::make('parentCategories.name')
+					->label('Parent Categories')
+					->sortable()
+					->searchable(),
+
+				TagsColumn::make('childCategories.name')
+					->label('Sub Categories')
+					->sortable()
+					->searchable(),
 
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address')
