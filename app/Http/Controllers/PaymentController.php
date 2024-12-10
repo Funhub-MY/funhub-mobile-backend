@@ -25,6 +25,8 @@ class PaymentController extends Controller
     protected $gateway;
     protected $checkout_secret;
 
+    protected $smsService;
+
     public function __construct()
     {
         $this->gateway = new Mpay(
@@ -33,6 +35,19 @@ class PaymentController extends Controller
         );
 
         $this->checkout_secret = config('app.funhub_checkout_secret');
+
+        $this->smsService = new \App\Services\Sms(
+            [
+                'url' => config('services.byteplus.sms_url'),
+                'username' => config('services.byteplus.sms_account'),
+                'password' => config('services.byteplus.sms_password'),
+            ],
+            [
+                'api_url' => config('services.movider.api_url'),
+                'key' => config('services.movider.key'),
+                'secret' => config('services.movider.secret'),
+            ]
+        );
     }
 
     /**
@@ -262,6 +277,14 @@ class PaymentController extends Controller
 						} catch (\Exception $e) {
 							Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
 						}
+                    }
+
+                    if ($transaction->user->phone_no) {
+                        try {
+                            $this->smsService->sendSms($transaction->user->full_phone_no, config('app.name') . " - Voucher purchase successful. Redemption steps are sent via email.");
+                        } catch (\Exception $e) {
+                            Log::error('Error sending PurchasedGiftCardNotification SMS: ' . $e->getMessage());
+                        }
                     }
                 }
 
