@@ -155,10 +155,56 @@ class StoreResource extends Resource
                             ->options([
                                 'existing' => 'Choose from existing location (articles tagged before)',
                                 'manual' => 'Enter new location',
+                                'googlemap' => 'Autocomplete from GoogleMap', //(Kenneth)
                             ])
                             ->default('existing')
                             ->reactive()
                             ->required(),
+
+                        //(Kenneth)
+                        TextInput::make('auto_complete_address')
+                                ->label('Find a Location')
+                                ->placeholder('Start typing an address ...')
+                                ->hidden(fn($get) => $get('location_type') != 'googlemap'),
+
+                        Map::make('location')
+                            ->autocomplete(
+                                fieldName: 'auto_complete_address',
+                                types: ["geocode", "establishment"],
+                                placeField: 'name',
+                                countries: ['MY'],
+                            )
+                            ->reactive()
+                            ->defaultZoom(15)
+                            ->defaultLocation([
+                                // klang valley coordinates
+                                'lat' => 3.1390,
+                                'lng' => 101.6869,
+                            ])
+                            ->reverseGeocode([
+                                'city'   => '%L',
+                                'zip'    => '%z',
+                                'state'  => '%D',
+                                'zip_code' => '%z',
+                                'address' => '%n %S',
+                            ])
+                            ->mapControls([
+                                'mapTypeControl'    => true,
+                                'scaleControl'      => true,
+                                'streetViewControl' => false,
+                                'rotateControl'     => true,
+                                'fullscreenControl' => true,
+                                'searchBoxControl'  => false, // creates geocomplete field inside map
+                                'zoomControl'       => false,
+                            ])
+                            ->clickable(true)
+                            ->hidden(fn($get) => $get('location_type') != 'googlemap')
+                            ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                    // Set latitude and longitude as before
+                                    $set('lang', $state['lat']);
+                                    $set('long', $state['lng']);
+                            }),
+                            //(Kenneth)
 
                         // location choose from a location to attach
                         Select::make('location_id')
@@ -173,7 +219,7 @@ class StoreResource extends Resource
                                         return [$location->id => $location->name . ' - ' . $location->full_address];
                                     })
                             )
-                            ->hidden(fn($get) => $get('location_type') === 'manual')
+                            ->hidden(fn($get) => $get('location_type') != 'existing') //(Kenneth) === 'manual'
                             ->getOptionLabelUsing(fn($value): ?string => Location::find($value)?->name . ' - ' . Location::find($value)?->full_address)
                             ->reactive()
                             ->afterStateUpdated(function ($state, $set) {
