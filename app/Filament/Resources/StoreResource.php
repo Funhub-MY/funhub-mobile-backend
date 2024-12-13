@@ -162,49 +162,27 @@ class StoreResource extends Resource
                             ->required(),
 
                         //(Kenneth)
-                        TextInput::make('auto_complete_address')
-                                ->label('Find a Location')
-                                ->placeholder('Start typing an address ...')
-                                ->hidden(fn($get) => $get('location_type') != 'googlemap'),
-
-                        Map::make('location')
-                            ->autocomplete(
-                                fieldName: 'auto_complete_address',
-                                types: ["geocode", "establishment"],
-                                placeField: 'name',
-                                countries: ['MY'],
-                            )
-                            ->reactive()
-                            ->defaultZoom(15)
-                            ->defaultLocation([
-                                // klang valley coordinates
-                                'lat' => 3.1390,
-                                'lng' => 101.6869,
-                            ])
+                        Geocomplete::make('auto_complete_address')
+                            ->types(["geocode", "establishment"])
+                            ->placeField('name')
+                            ->countries(['MY'])
+                            ->placeholder('Start typing an address ...')
+                            ->isLocation()
+                            ->geolocate() // add a suffix button which requests and reverse geocodes the device location
+                            ->geolocateIcon('heroicon-o-map')
                             ->reverseGeocode([
                                 'city'   => '%L',
-                                'zip'    => '%z',
                                 'state'  => '%D',
-                                'zip_code' => '%z',
-                                'address' => '%n %S',
+                                'address_postcode' => '%z',
+                                'address' => '%n %S'
                             ])
-                            ->mapControls([
-                                'mapTypeControl'    => true,
-                                'scaleControl'      => true,
-                                'streetViewControl' => false,
-                                'rotateControl'     => true,
-                                'fullscreenControl' => true,
-                                'searchBoxControl'  => false, // creates geocomplete field inside map
-                                'zoomControl'       => false,
-                            ])
-                            ->clickable(true)
                             ->hidden(fn($get) => $get('location_type') != 'googlemap')
                             ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                    // Set latitude and longitude as before
-                                    $set('lang', $state['lat']);
-                                    $set('long', $state['lng']);
+                                // Set latitude and longitude as before
+                                $set('lang', $state['lat']);
+                                $set('long', $state['lng']);
                             }),
-                            //(Kenneth)
+                        //  (Kenneth)
 
                         // location choose from a location to attach
                         Select::make('location_id')
