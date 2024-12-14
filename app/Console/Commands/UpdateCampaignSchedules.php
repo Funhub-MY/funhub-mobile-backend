@@ -46,6 +46,7 @@ class UpdateCampaignSchedules extends Command
         $campaign = MerchantOfferCampaign::findOrFail($campaignId);
         $this->info("Updating schedules for campaign: " . $campaign->name);
 
+
         // handle moving existing vouchers if any
         if ($totalMoveQuantity > 0) {
             $remainingToCreate = $this->handleVoucherMovement($campaign, $totalMoveQuantity, $intervalDays);
@@ -128,13 +129,13 @@ class UpdateCampaignSchedules extends Command
             'available_at' => now(),
             'available_until' => now()->addDays($intervalDays),
             'quantity' => min($totalMoveQuantity, $availableVouchersCount),
-            'flash_deal' => $campaign->flash_deal,
+            'flash_deal' => $campaign->flash_deal ?? 0, // Not allow to null
             'expiry_days' => $campaign->expiry_days,
             'user_id' => $campaign->user_id,
         ]);
 
         // create merchant offer manually (don't use job as we don't want vouchers created)
-        $newOffer = $this->createMerchantOffer($campaign, $schedule);
+        $newOffer = $this->createMerchantOffer($campaign, $schedule, min($totalMoveQuantity, $availableVouchersCount));
 
         // move vouchers
         $movedCount = 0;
@@ -210,17 +211,19 @@ class UpdateCampaignSchedules extends Command
             'quantity' => $quantity,
             'available_at' => $availableAt,
             'available_until' => $availableUntil,
+            'user_id' => $campaign->user_id //Not allow to null Field 'user_id' doesn't have a default value
         ]);
 
         // create merchant offer directly instead of using job
-        $newOffer = $this->createMerchantOffer($campaign, $schedule);
+        $newOffer = $this->createMerchantOffer($campaign, $schedule, $quantity);
 
         $this->info("Created schedule " . $currentSchedule . "/" . $totalSchedules . " - Available from " . $availableAt . " to " . $availableUntil . " with quantity " . $quantity);
 
         return $schedule;
     }
 
-    private function createMerchantOffer($campaign, $schedule)
+    // [Kenneth - added the quantity]
+    private function createMerchantOffer($campaign, $schedule, $quantity)
     {
         $newOffer = MerchantOffer::create([
             'user_id' => $campaign->user_id,
@@ -228,11 +231,12 @@ class UpdateCampaignSchedules extends Command
             'merchant_offer_campaign_id' => $campaign->id,
             'schedule_id' => $schedule->id,
             'name' => $campaign->name,
+            'quantity' => $quantity, // This column not allow to null, without quantity will it affect the deduction when make purchase and show (negative) value? (as we knew this column didn't use for future, but to prevent the value go to negative)
             'description' => $campaign->description,
             'sku' => $campaign->sku . '-' . $schedule->id,
             'available_at' => $schedule->available_at,
             'available_until' => $schedule->available_until,
-            'flash_deal' => $campaign->flash_deal,
+            'flash_deal' => $campaign->flash_deal ?? 0, // Not allow to null
             'expiry_days' => $campaign->expiry_days,
             'status' => MerchantOffer::STATUS_PUBLISHED,
             'unit_price' => $campaign->unit_price,
