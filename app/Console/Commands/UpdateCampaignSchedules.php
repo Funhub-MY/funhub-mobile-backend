@@ -80,7 +80,7 @@ class UpdateCampaignSchedules extends Command
         for ($i = 0; $i < $numberOfSchedules; $i++) {
             // calculate dates for this schedule
             $availableAt = $startDate->copy();
-            $availableUntil = $availableAt->copy()->addDays($scheduleDays);
+            $availableUntil = $availableAt->copy()->addDays($scheduleDays)->endOfDay();
 
             // calculate quantity for this schedule
             $remainingTotal = $totalQuantity - ($i * $quantityPerSchedule);
