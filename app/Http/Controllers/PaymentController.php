@@ -550,9 +550,6 @@ class PaymentController extends Controller
             ]);
             if ($claim) {
                 try {
-                    $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
-                    $merchantOffer->save();
-
                     // release voucher
                     $voucher_id = $claim->voucher_id;
                     if ($voucher_id) {
@@ -566,7 +563,30 @@ class PaymentController extends Controller
                         }
                     }
 
-                    Log::info('Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
+                    Log::info('Updated Merchant Offer Claim to Failed, released voucher', [
+                        'transaction_id' => $transaction->id,
+                        'merchant_offer_id' => $transaction->transactionable_id,
+                    ]);
+                } catch (Exception $ex) {
+                    Log::error('Updated Merchant Offer Claim to Failed, Release voucher failed', [
+                        'transaction_id' => $transaction->id,
+                        'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim' => json_encode($claim),
+                        'error' => $ex->getMessage()
+                    ]);
+                }
+
+                // revert stock
+                try {
+                    $latestQuantity = MerchantOfferVoucher::where('merchant_offer_id', $merchantOffer->id)
+                        ->whereNull('owned_by_id')
+                        ->where('voided', false)
+                        ->count();
+
+                    $merchantOffer->quantity = $latestQuantity;
+                    $merchantOffer->save();
+
+                    Log::info('Updated Merchant Offer Claim to Failed, updated merchant offer stock count', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
                     ]);
@@ -574,6 +594,7 @@ class PaymentController extends Controller
                     Log::error('Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim' => json_encode($claim),
                         'error' => $ex->getMessage()
                     ]);
                 }
