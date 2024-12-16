@@ -1042,29 +1042,52 @@ class ArticleController extends Controller
     {
         // search by google_id first if there is in locationData
         $location = null;
-        if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
-            $location = Location::where('google_id', $locationData['google_id'])->first();
-        } else {
-            // if location cant be found by google_id, then find by lat,lng
-            $location = Location::where('name', $locationData['name'])
-                ->where('lat', $locationData['lat'])
-                ->where('lng', $locationData['lng'])
-                ->first();
-        }
+        // if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+        //     $location = Location::where('google_id', $locationData['google_id'])->first();
+        // } else {
+        //     // if location cant be found by google_id, then find by lat,lng
+        //     $location = Location::where('name', $locationData['name'])
+        //         ->where('lat', $locationData['lat'])
+        //         ->where('lng', $locationData['lng'])
+        //         ->first();
+        // }
 
-        // detach existing location first
+        // // detach existing location first
+        // $article->location()->detach(); // detaches all
+
+        // // Mall outlets incorrect attaching issue
+        // // if location exists, check if is_mall, if is mall check if name of locationData same as location name
+        // if ($location && $location->is_mall && $locationData['name'] != $location->name) {
+        //     // eg. location name is Chagee @ Sunway Pyramid it will have same lat,lng and google_id as Sunway Pyramid
+        //     // to prevent Chagee @ Sunway Pyramid being attached incorrectly to Sunway Pyramid
+        //     // search again with name of locationData, lat, lng. instead of just google_id or lat/lng
+        //     $location = Location::where('lat', $locationData['lat'])
+        //         ->where('lng', $locationData['lng'])
+        //         ->where('name', $locationData['name'])
+        //         ->first();
+        // }
+
         $article->location()->detach(); // detaches all
 
-        // Mall outlets incorrect attaching issue
-        // if location exists, check if is_mall, if is mall check if name of locationData same as location name
-        if ($location && $location->is_mall && $locationData['name'] != $location->name) {
-            // eg. location name is Chagee @ Sunway Pyramid it will have same lat,lng and google_id as Sunway Pyramid
-            // to prevent Chagee @ Sunway Pyramid being attached incorrectly to Sunway Pyramid
-            // search again with name of locationData, lat, lng. instead of just google_id or lat/lng
-            $location = Location::where('lat', $locationData['lat'])
+        if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
+            $locations = Location::where('google_id', $locationData['google_id'])->get();
+        } else {
+            // if location cant be found by google_id, then find by lat,lng
+            $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
-                ->where('name', $locationData['name'])
-                ->first();
+                ->get();
+        }
+        
+        if($locations){
+            foreach($locations as $loc){
+                //  Calculate the percentage of similar both text
+                similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
+
+                if ($loc && ($locationData['name'] == $loc->name || $percentage > 90)) {
+                    $location = $loc;
+                    break;
+                }
+            }
         }
 
         if ($location) {
