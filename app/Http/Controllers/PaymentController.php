@@ -248,6 +248,7 @@ class PaymentController extends Controller
                             ]);
 
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+
 							$transaction->user->notify(new PurchasedOfferNotification(
 								$transaction->transaction_no,
 								$transaction->updated_at,
@@ -259,7 +260,7 @@ class PaymentController extends Controller
 								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
                                 $encrypted_data,
-                                $claim->merchantOffer->merchant->name,
+                                $claim->merchantOffer->user->merchant->brand_name,
                                 $transaction->user->full_name
 							));
 						} catch (Exception $e) {
