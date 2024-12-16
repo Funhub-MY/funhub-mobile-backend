@@ -258,7 +258,9 @@ class PaymentController extends Controller
 								$transaction->created_at->format('H:i:s'),
 								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-                                $encrypted_data
+                                $encrypted_data,
+                                $claim->merchantOffer->merchant->name,
+                                $transaction->user->full_name
 							));
 						} catch (Exception $e) {
 							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());

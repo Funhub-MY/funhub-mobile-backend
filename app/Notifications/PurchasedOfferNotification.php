@@ -13,14 +13,14 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $encryptedData;
+    protected $transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $encryptedData, $merchantName, $userName;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $encryptedData)
+    public function __construct($transactionNo, $dateTime, $itemTitle, $quantity, $subtotal, $currencyType, $purchaseDate, $purchaseTime, $redemptionStartDate, $redemptionEndDate, $encryptedData, $merchantName, $userName)
     {
         $this->transactionNo = $transactionNo;
         $this->dateTime = $dateTime;
@@ -33,6 +33,8 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 		$this->redemptionStartDate = $redemptionStartDate;
 		$this->redemptionEndDate = $redemptionEndDate;
         $this->encryptedData = $encryptedData;
+        $this->merchantName = $merchantName;
+        $this->userName = $userName;
     }
 
     /**
@@ -67,7 +69,9 @@ class PurchasedOfferNotification extends Notification implements ShouldQueue
 				'purchaseTime' => $this->purchaseTime,
 				'redemptionStartDate' => $this->redemptionStartDate,
 				'redemptionEndDate' => $this->redemptionEndDate,
-                'encryptedData' => $this->encryptedData
+                'encryptedData' => $this->encryptedData,
+                'merchantName' => $this->merchantName,
+                'userName' => $this->userName
             ]);
     }
 
