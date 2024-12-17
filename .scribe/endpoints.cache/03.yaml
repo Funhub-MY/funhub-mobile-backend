@@ -30,7 +30,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - vel
+          - placeat
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -108,7 +108,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - vel
+        - placeat
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -135,7 +135,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 4gh6VEd58a6cf13ebDkPvaZ'
+      - 'Bearer PZhV86D6ev4ak5fdaEbcg31'
     controller: null
     method: null
     route: null
@@ -167,7 +167,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - incidunt
+          - voluptas
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -245,7 +245,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - incidunt
+        - voluptas
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -272,7 +272,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer bgaa1563fZheV6dPkD84vcE'
+      - 'Bearer D36aPVhgavcbkEZde1465f8'
     controller: null
     method: null
     route: null
@@ -338,7 +338,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 1Ev8hZPgdk45aDeV6c6fba3'
+      - 'Bearer 8kd3ZfaeDbv654g61PcahVE'
     controller: null
     method: null
     route: null
