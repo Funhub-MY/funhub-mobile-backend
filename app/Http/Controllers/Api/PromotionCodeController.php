@@ -8,6 +8,8 @@ use App\Services\PointService;
 use App\Services\PointComponentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PromotionCodeController extends Controller
 {
@@ -15,61 +17,6 @@ class PromotionCodeController extends Controller
         protected PointService $pointService,
         protected PointComponentService $pointComponentService
     ) {}
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function redeem(Request $request)
     {
@@ -80,10 +27,14 @@ class PromotionCodeController extends Controller
         try {
             return DB::transaction(function () use ($request) {
                 $code = $request->input('code');
-                
                 $promotionCode = PromotionCode::where('code', $code)
                     ->where('is_redeemed', false)
                     ->firstOrFail();
+
+                Log::info('[PromotionCodeController] Found promotion code', [
+                    'promotion_code_id' => $promotionCode->id,
+                    'claimed_by_id' => $promotionCode->claimed_by_id
+                ]);
 
                 // check if it's already claimed
                 if ($promotionCode->claimed_by_id) {
@@ -98,43 +49,53 @@ class PromotionCodeController extends Controller
                 $promotionCode->redeemed_at = now();
                 $promotionCode->save();
 
+                Log::info('[PromotionCodeController] Marked promotion code as claimed', [
+                    'promotion_code_id' => $promotionCode->id,
+                    'user_id' => auth()->id()
+                ]);
+
                 // process rewards
                 $rewards = $promotionCode->reward;
                 $rewardComponents = $promotionCode->rewardComponent;
-
                 foreach ($rewards as $reward) {
+                    Log::info('[PromotionCodeController] Crediting reward', [
+                        'reward_id' => $reward->id,
+                        'quantity' => $reward->pivot->quantity
+                    ]);
+
                     $this->pointService->credit(
                         $promotionCode,
                         auth()->user(),
-                        $reward->pivot->quantity,
+                        $reward->pivot->quantity * $reward->points,
                         'Promotion code: ' . $code
                     );
                 }
 
                 foreach ($rewardComponents as $component) {
+                    Log::info('[PromotionCodeController] Crediting reward component', [
+                        'component_id' => $component->id,
+                        'quantity' => $component->pivot->quantity
+                    ]);
+
                     $this->pointComponentService->credit(
                         $promotionCode,
-                        auth()->user(),
                         $component,
+                        auth()->user(),
                         $component->pivot->quantity,
                         'Promotion code: ' . $code
                     );
                 }
 
                 return response()->json([
-                    'message' => 'Code redeemed successfully',
+                    'message' => '[PromotionCodeController] Code redeemed successfully',
                     'rewards' => $rewards,
                     'reward_components' => $rewardComponents,
                 ]);
             });
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Invalid or already redeemed code',
             ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred while redeeming the code',
-            ], 500);
         }
     }
 }
