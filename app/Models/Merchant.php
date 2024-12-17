@@ -146,6 +146,11 @@ class Merchant extends BaseModel implements HasMedia, Auditable
         );
     }
 
+    public function merchantStores()
+    {
+        return $this->hasMany(Store::class, 'merchant_id');
+    }
+    
     public function merchantRatings()
     {
         return $this->hasMany(MerchantRating::class, 'merchant_id');
