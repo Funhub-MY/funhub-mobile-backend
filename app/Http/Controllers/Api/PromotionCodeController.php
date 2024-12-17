@@ -18,6 +18,34 @@ class PromotionCodeController extends Controller
         protected PointComponentService $pointComponentService
     ) {}
 
+    /**
+     * Redeem a promotion code
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
+     * @group Promotion Code
+     * @bodyParam code string required The code to redeem. Example: ABCD123ABCDD
+     * @response scenario=success {
+     * "message": "Code redeemed successfully",
+     * "rewards": [
+     *   {
+     *     "id": 1,
+     *     "name": "Funhub",
+     *     "description": "Funhub",
+     *     "components": [],
+     *   }
+     * ],
+     * "reward_components": [
+     *   {
+     *     "id": 1,
+     *     "name": "Funhub",
+     *     "description": "Funhub",
+     *     "components": [],
+     *   }
+     * ]
+     * }
+     */
     public function redeem(Request $request)
     {
         $request->validate([
@@ -87,7 +115,7 @@ class PromotionCodeController extends Controller
                 }
 
                 return response()->json([
-                    'message' => '[PromotionCodeController] Code redeemed successfully',
+                    'message' => 'Code redeemed successfully',
                     'rewards' => $rewards,
                     'reward_components' => $rewardComponents,
                 ]);
