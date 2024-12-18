@@ -1,0 +1,73 @@
+name: 'Promotion Code'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/promotion-codes/redeem
+    metadata:
+      groupName: 'Promotion Code'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Redeem a promotion code'
+      description: ''
+      authenticated: true
+      custom: []
+    headers:
+      Authorization: 'Bearer {USER_TOKEN_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      code:
+        name: code
+        description: 'The code to redeem.'
+        required: true
+        example: ABCD123ABCDD
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      code: ABCD123ABCDD
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+          "message": "Code redeemed successfully",
+          "rewards": [
+            {
+              "id": 1,
+              "name": "Funhub",
+              "description": "Funhub",
+              "components": [],
+            }
+          ],
+          "reward_components": [
+            {
+              "id": 1,
+              "name": "Funhub",
+              "description": "Funhub",
+              "components": [],
+            }
+          ]
+          }
+        headers: []
+        description: success
+        custom: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 38ED6Za6bfcdV1v4hePkg5a'
+    controller: null
+    method: null
+    route: null
+    custom: []

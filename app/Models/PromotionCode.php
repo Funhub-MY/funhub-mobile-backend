@@ -10,6 +10,7 @@ use App\Models\BaseModel;
 use App\Models\User;
 use App\Models\Reward;
 use App\Models\RewardComponent;
+use App\Models\PromotionCodeGroup;
 
 class PromotionCode extends BaseModel implements Auditable
 {
@@ -21,6 +22,7 @@ class PromotionCode extends BaseModel implements Auditable
         'is_redeemed' => 'boolean',
         'redeemed_at' => 'datetime',
         'tags' => 'array',
+        'status' => 'boolean',
     ];
 
     public function claimedBy()
@@ -45,6 +47,16 @@ class PromotionCode extends BaseModel implements Auditable
         return $this->morphedByMany(RewardComponent::class, 'rewardable', 'promotion_code_rewardable')
             ->withPivot('quantity')
             ->withTimestamps();
+    }
+
+    public function promotionCodeGroup()
+    {
+        return $this->belongsTo(PromotionCodeGroup::class);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status && ($this->promotionCodeGroup === null || $this->promotionCodeGroup->isActive());
     }
 
     public static function generateUniqueCode(): string

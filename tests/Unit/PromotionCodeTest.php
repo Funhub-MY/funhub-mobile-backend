@@ -187,4 +187,140 @@ class PromotionCodeTest extends TestCase
                 'message' => 'Invalid or already redeemed code'
             ]);
     }
+
+    public function testCannotRedeemWhenPromotionGroupDisabled()
+    {
+        // Create a promotion code group with status disabled
+        $group = new \App\Models\PromotionCodeGroup([
+            'name' => 'Test Group',
+            'description' => 'Test Description',
+            'status' => false,
+            'campaign_from' => now()->subDay(),
+            'campaign_until' => now()->addDay(),
+        ]);
+        $group->save();
+
+        // Create a promotion code
+        $code = new PromotionCode([
+            'code' => 'TEST123',
+            'status' => true,
+            'promotion_code_group_id' => $group->id
+        ]);
+        $code->save();
+
+        // Try to redeem the code
+        $response = $this->postJson('/api/v1/promotion-codes/redeem', [
+            'code' => 'TEST123'
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJson(['message' => 'This code is not active or has expired']);
+    }
+
+    public function testCannotRedeemWhenCampaignNotStarted()
+    {
+        // Create a promotion code group with future start date
+        $group = new \App\Models\PromotionCodeGroup([
+            'name' => 'Test Group',
+            'description' => 'Test Description',
+            'status' => true,
+            'campaign_from' => now()->addDay(),
+            'campaign_until' => now()->addDays(2),
+        ]);
+        $group->save();
+
+        // Create a promotion code
+        $code = new PromotionCode([
+            'code' => 'TEST123',
+            'status' => true,
+            'promotion_code_group_id' => $group->id
+        ]);
+        $code->save();
+
+        // Try to redeem the code
+        $response = $this->postJson('/api/v1/promotion-codes/redeem', [
+            'code' => 'TEST123'
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJson(['message' => 'This code is not active or has expired']);
+    }
+
+    public function testCannotRedeemWhenCampaignEnded()
+    {
+        // Create a promotion code group with past end date
+        $group = new \App\Models\PromotionCodeGroup([
+            'name' => 'Test Group',
+            'description' => 'Test Description',
+            'status' => true,
+            'campaign_from' => now()->subDays(2),
+            'campaign_until' => now()->subDay(),
+        ]);
+        $group->save();
+
+        // Create a promotion code
+        $code = new PromotionCode([
+            'code' => 'TEST123',
+            'status' => true,
+            'promotion_code_group_id' => $group->id
+        ]);
+        $code->save();
+
+        // Try to redeem the code
+        $response = $this->postJson('/api/v1/promotion-codes/redeem', [
+            'code' => 'TEST123'
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJson(['message' => 'This code is not active or has expired']);
+    }
+
+    public function testCanRedeemWithValidCampaign()
+    {
+        // Create a reward for the test
+        $reward = Reward::create([
+            'name' => 'Test Reward',
+            'description' => 'Test Description',
+            'points' => 100,
+            'user_id' => $this->user->id
+        ]);
+
+        // Create a promotion code group with valid campaign period
+        $group = new \App\Models\PromotionCodeGroup([
+            'name' => 'Test Group',
+            'description' => 'Test Description',
+            'status' => true,
+            'campaign_from' => now()->subDay(),
+            'campaign_until' => now()->addDay(),
+        ]);
+        $group->save();
+
+        // Create a promotion code
+        $code = new PromotionCode([
+            'code' => 'TEST123',
+            'status' => true,
+            'promotion_code_group_id' => $group->id
+        ]);
+        $code->save();
+
+        // Attach reward to the code
+        $code->reward()->attach($reward->id, ['quantity' => 1]);
+
+        // Try to redeem the code
+        $response = $this->postJson('/api/v1/promotion-codes/redeem', [
+            'code' => 'TEST123'
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson(['message' => 'Code redeemed successfully']);
+
+        // Check that points were credited
+        $this->assertDatabaseHas('point_ledgers', [
+            'user_id' => $this->user->id,
+            'amount' => 100,
+            'pointable_type' => PromotionCode::class,
+            'pointable_id' => $code->id,
+            'credit' => true
+        ]);
+    }
 }
