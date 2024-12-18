@@ -134,6 +134,15 @@ class MissionService
             return;
         }
 
+        if (!$userMission->pivot) {
+            Log::error('Mission pivot relationship not found', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'event_type' => $eventType
+            ]);
+            return;
+        }
+
         // For accumulated missions, check if latest instance is completed and claimed
         if ($mission->frequency === 'accumulated' && 
             $userMission->pivot->is_completed && 
@@ -289,13 +298,29 @@ class MissionService
                 ->orderByDesc('missions_users.created_at')
                 ->first();
 
+            Log::info('New mission progress created', [
+                'mission_id' => $mission->id,
+                'user_id' => $user->id,
+                'new_instance_id' => $userMission->pivot->id,
+                'is_completed' => $userMission->pivot->is_completed,
+                'claimed_at' => $userMission->pivot->claimed_at,
+                'current_values' => $userMission->pivot->current_values
+            ]);
+
             // Initialize the current values for the new mission progress
-            if ($userMission) {
+            if ($userMission && $userMission->pivot) {
                 $userMission->pivot->current_values = json_encode($currentValues);
                 $userMission->pivot->save();
 
                 // Send mission started notification when creating new progress
                 $this->sendMissionStartedNotification($mission, $user);
+            } else {
+                Log::error('Failed to initialize mission progress - pivot not found', [
+                    'mission_id' => $mission->id,
+                    'user_id' => $user->id,
+                    'event_type' => $eventType
+                ]);
+                return null;
             }
         }
 
