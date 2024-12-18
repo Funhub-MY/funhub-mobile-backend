@@ -271,6 +271,14 @@ class PaymentController extends Controller
 
                     }
 
+                    if ($transaction->user->phone_no) {
+                        try {
+                            $this->smsService->sendSms($transaction->user->full_phone_no, config('app.name') . " - Voucher purchase successful. Redemption steps are sent via email.");
+                        } catch (\Exception $e) {
+                            Log::error('Error sending PurchasedOfferNotification SMS: ' . $e->getMessage());
+                        }
+                    }
+
                 } else if ($transaction->transactionable_type == Product::class) {
                     $this->updateProductTransaction($request, $transaction);
 
@@ -282,14 +290,6 @@ class PaymentController extends Controller
 						} catch (\Exception $e) {
 							Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
 						}
-                    }
-
-                    if ($transaction->user->phone_no) {
-                        try {
-                            $this->smsService->sendSms($transaction->user->full_phone_no, config('app.name') . " - Voucher purchase successful. Redemption steps are sent via email.");
-                        } catch (\Exception $e) {
-                            Log::error('Error sending PurchasedGiftCardNotification SMS: ' . $e->getMessage());
-                        }
                     }
                 }
 
