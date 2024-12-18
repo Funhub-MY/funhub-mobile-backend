@@ -25,7 +25,7 @@ use App\Filament\Resources\MissionResource\RelationManagers;
 use App\Filament\Resources\MissionResource\RelationManagers\ParticipantsRelationManager;
 use Filament\Forms\Components\KeyValue;
 use Tapp\FilamentAuditing\RelationManagers\AuditsRelationManager;
-
+use Filament\Tables\Filters\SelectFilter;
 class MissionResource extends Resource
 {
     protected static ?string $model = Mission::class;
@@ -297,7 +297,9 @@ class MissionResource extends Resource
                             // reward limit
                             TextInput::make('reward_limit')
                                 ->label('Max Reward Limit')
-                                ->helperText('How many reward to be given to user, once hit limit, mission will no longer reward user. Leave empty if no limit set.'),
+                                ->default(0)
+                                ->required()
+                                ->helperText('How many reward to be given to user, once hit limit, mission will no longer reward user. Default 0 if no limit set.'),
 
                             // frequency select input
                             Select::make('frequency')
@@ -382,7 +384,19 @@ class MissionResource extends Resource
                     ->counts('participants'),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        0 => 'Disabled',
+                        1 => 'Enabled',
+                    ])
+                    ->label('Status'),
+                SelectFilter::make('frequency')
+                    ->options([
+                        'one-off' => 'One-off (Non Repeatable)',
+                        'accumulated' => 'Accumulated (Repeatable)',
+                        'daily' => 'Daily, Resets Midnight (Repeatable)',
+                        'monthly' => 'Monthly, Resets Start of Month (Repeatable)',
+                    ])
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
