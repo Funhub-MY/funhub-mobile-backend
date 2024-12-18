@@ -610,9 +610,10 @@ class MerchantOfferController extends Controller
             }
 
         } else if($request->payment_method == 'fiat') {
-            // ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
+			$channel = $request->has('channel') ? $request->channel : 'app';
+			// ------------------------------------ CASH (FPX/CARD/WALET) CHECKOUT ------------------------------------
             // check if user has verified email address
-            if (!$user->hasVerifiedEmail()) {
+            if ($channel === 'app' && !$user->hasVerifiedEmail()) {
                 return response()->json([
                     'message' => __('messages.error.merchant_offer_controller.Please_verify_your_email_address_first')
                 ], 422);
