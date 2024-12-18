@@ -82,7 +82,7 @@
         <p>You can find your voucher in this email. Make sure to check how to redeem the voucher before you visit <span style="font-weight: bold">{{ $merchantName }}</span>.</p>
         <p>You can redeem your voucher via <span style="font-weight: bold">downloading the app</span> or clicking the <span style="font-weight: bold">"Redeem Voucher Now"</span> button in this email:</p>
         <div style="text-align: center">
-            <img src="https://picsum.photos/200/300" alt="voucher" class="voucher-img" style="text-align: center">
+            <img src="{{ $merchantOfferCover }}" alt="voucher" class="voucher-img" style="text-align: center">
         </div>
         <div class="voucher-info-container">
             <h2>{{ $itemTitle }}</h2>
