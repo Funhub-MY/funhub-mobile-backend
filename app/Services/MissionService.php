@@ -46,6 +46,7 @@ class MissionService
                 'event' => $eventType,
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }
@@ -387,7 +388,8 @@ class MissionService
         } catch (\Exception $e) {
             Log::error('Failed to update mission progress', [
                 'mission_id' => $mission->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }
