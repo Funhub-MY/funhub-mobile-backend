@@ -37,22 +37,43 @@ class SupportRequestMessageObserver
         } else {
             // if NOT admin created message
             // Determine the admin email address based on the request category type
-            $supportEmail = ($supportRequestMessage->request->category['type'] === 'complain') ? config('app.support_email2') : config('app.support_email1');
+            // $supportEmail = ($supportRequestMessage->request->category['type'] === 'complain') ? config('app.support_email2') : config('app.support_email1');
+
+			$categoryType = $supportRequestMessage->request->category['type'];
+			$supportEmails = [];
+
+			switch ($categoryType) {
+				case 'complain':
+					$supportEmails = [config('app.support_email2')];
+					break;
+
+				case 'bug':
+				case 'feature_request':
+					$supportEmails = [config('app.support_email1'), config('app.support_email2')];
+					break;
+
+				case 'information_update':
+					$supportEmails = [config('app.support_email1')];
+					break;
+
+				default:
+					Log::info("Unknown category type: $categoryType");
+					return;
+			}
 
             try {
                 // Check if this support_request_id already existed more than once in the SupportRequestMessage table
                 $existingMessagesCount = SupportRequestMessage::where('support_request_id', $supportRequestMessage->request->id)->count();
 
-                if ($existingMessagesCount === 1) { // If this is the first message of the request, send NewSupportRequestRaised email
-                    Notification::route('mail', $supportEmail)
-                        ->notify(new NewSupportRequestRaised($supportRequestMessage));
-                } elseif ($existingMessagesCount > 0) { // If this id existed more than once, send update email to support admin
-                    Notification::route('mail', $supportEmail)
-                        ->notify(new NewSupportRequestRaised($supportRequestMessage, 'update'));
-                }
-            } catch (\Exception $e) {
-                Log::error('Error sending support request email to admin: ' . $e->getMessage());
-            }
+				// If this is the first message of the request, send NewSupportRequestRaised email; if this id existed more than once, send update email to support admin
+				$notificationType = $existingMessagesCount === 1 ? 'initial' : 'update';
+				foreach ($supportEmails as $email) {
+					Notification::route('mail', $email)
+						->notify(new NewSupportRequestRaised($supportRequestMessage, $notificationType));
+				}
+			} catch (\Exception $e) {
+				Log::error('Error sending support request email to admin: ' . $e->getMessage());
+			}
         }
     }
 
