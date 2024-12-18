@@ -381,8 +381,14 @@ class MissionService
                         // Update completion status directly
                         $userMission->pivot->update($updateData);
 
+                        Log::info('Mission completed', [
+                            'mission_id' => $mission->id,
+                            'user_id' => $userMission->user_id,
+                            'missionUser' => $userMission,
+                        ]);
+
                         // Send mission completed notification
-                        $this->sendMissionCompletedNotification($mission, $userMission->user);
+                        $this->sendMissionCompletedNotification($mission, $userMission->user_id);
 
                         // Handle auto-disbursement if enabled
                         if ($mission->auto_disburse_rewards) {
@@ -393,7 +399,7 @@ class MissionService
             });
 
             // Refresh the relationship after transaction
-            $userMission->unsetRelation('pivot');
+            // $userMission->unsetRelation('pivot');
             $userMission = $userMission->user->missionsParticipating()
                 ->where('mission_id', $mission->id)
                 ->orderByDesc('missions_users.id')
