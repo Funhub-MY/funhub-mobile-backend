@@ -25,6 +25,8 @@ class PaymentController extends Controller
     protected $gateway;
     protected $checkout_secret;
 
+    protected $smsService;
+
     public function __construct()
     {
         $this->gateway = new Mpay(
@@ -33,6 +35,19 @@ class PaymentController extends Controller
         );
 
         $this->checkout_secret = config('app.funhub_checkout_secret');
+
+        $this->smsService = new \App\Services\Sms(
+            [
+                'url' => config('services.byteplus.sms_url'),
+                'username' => config('services.byteplus.sms_account'),
+                'password' => config('services.byteplus.sms_password'),
+            ],
+            [
+                'api_url' => config('services.movider.api_url'),
+                'key' => config('services.movider.key'),
+                'secret' => config('services.movider.secret'),
+            ]
+        );
     }
 
     /**
@@ -233,6 +248,7 @@ class PaymentController extends Controller
                             ]);
 
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+
 							$transaction->user->notify(new PurchasedOfferNotification(
 								$transaction->transaction_no,
 								$transaction->updated_at,
@@ -243,7 +259,9 @@ class PaymentController extends Controller
 								$transaction->created_at->format('H:i:s'),
 								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-                                $encrypted_data
+                                $encrypted_data,
+                                $claim->merchantOffer->user->merchant->brand,
+                                $transaction->user->name
 							));
 						} catch (Exception $e) {
 							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
@@ -262,6 +280,14 @@ class PaymentController extends Controller
 						} catch (\Exception $e) {
 							Log::error('Error sending PurchasedGiftCardNotification: ' . $e->getMessage());
 						}
+                    }
+
+                    if ($transaction->user->phone_no) {
+                        try {
+                            $this->smsService->sendSms($transaction->user->full_phone_no, config('app.name') . " - Voucher purchase successful. Redemption steps are sent via email.");
+                        } catch (\Exception $e) {
+                            Log::error('Error sending PurchasedGiftCardNotification SMS: ' . $e->getMessage());
+                        }
                     }
                 }
 
@@ -368,18 +394,27 @@ class PaymentController extends Controller
         } else {
             Log::error('Payment return failed', [
                 'error' => 'Transaction not found',
-                'request' => request()->all()
+                'request' => request()->all(),
+                'invno' => request()->invno ?? null
             ]);
 
-            if ($transaction->channel === 'app') {
-                return view('payment-return', [
-                    'message' => 'Transaction Failed - No transaction',
-                    'transaction_id' => null,
-                    'success' => false
-                ]);
-            } else if ($transaction->channel === 'funhub_web') {
-                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode(['message' => 'Transaction Failed - No transaction', 'success' => false])));
+            $params = [
+                'message' => 'Transaction Failed - No transaction',
+                'transaction_id' => null,
+                'success' => false
+            ];
+
+            // Check if channel parameter exists in request, default to 'app' if not specified
+            $channel = request()->channel ?? 'app';
+
+            if ($channel === 'app') {
+                return view('payment-return', $params);
+            } else if ($channel === 'funhub_web') {
+                return redirect(config('app.funhub_web_link') . '?data=' . urlencode(json_encode($params)));
             }
+
+            // Default fallback to app view if channel is neither app nor funhub_web
+            return view('payment-return', $params);
         }
     }
 
@@ -518,9 +553,6 @@ class PaymentController extends Controller
             ]);
             if ($claim) {
                 try {
-                    $merchantOffer->quantity = $merchantOffer->quantity + $claim->pivot->quantity;
-                    $merchantOffer->save();
-
                     // release voucher
                     $voucher_id = $claim->voucher_id;
                     if ($voucher_id) {
@@ -534,7 +566,30 @@ class PaymentController extends Controller
                         }
                     }
 
-                    Log::info('Updated Merchant Offer Claim to Failed, Stock Quantity Reverted', [
+                    Log::info('Updated Merchant Offer Claim to Failed, released voucher', [
+                        'transaction_id' => $transaction->id,
+                        'merchant_offer_id' => $transaction->transactionable_id,
+                    ]);
+                } catch (Exception $ex) {
+                    Log::error('Updated Merchant Offer Claim to Failed, Release voucher failed', [
+                        'transaction_id' => $transaction->id,
+                        'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim' => json_encode($claim),
+                        'error' => $ex->getMessage()
+                    ]);
+                }
+
+                // revert stock
+                try {
+                    $latestQuantity = MerchantOfferVoucher::where('merchant_offer_id', $merchantOffer->id)
+                        ->whereNull('owned_by_id')
+                        ->where('voided', false)
+                        ->count();
+
+                    $merchantOffer->quantity = $latestQuantity;
+                    $merchantOffer->save();
+
+                    Log::info('Updated Merchant Offer Claim to Failed, updated merchant offer stock count', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
                     ]);
@@ -542,6 +597,7 @@ class PaymentController extends Controller
                     Log::error('Updated Merchant Offer Claim to Failed, Stock Quantity Revert Failed', [
                         'transaction_id' => $transaction->id,
                         'merchant_offer_id' => $transaction->transactionable_id,
+                        'claim' => json_encode($claim),
                         'error' => $ex->getMessage()
                     ]);
                 }

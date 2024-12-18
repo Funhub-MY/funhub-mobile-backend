@@ -155,10 +155,34 @@ class StoreResource extends Resource
                             ->options([
                                 'existing' => 'Choose from existing location (articles tagged before)',
                                 'manual' => 'Enter new location',
+                                'googlemap' => 'Autocomplete from GoogleMap', //(Kenneth)
                             ])
                             ->default('existing')
                             ->reactive()
                             ->required(),
+
+                        //(Kenneth)
+                        Geocomplete::make('auto_complete_address')
+                            ->types(["geocode", "establishment"])
+                            ->placeField('name')
+                            ->countries(['MY'])
+                            ->placeholder('Start typing an address ...')
+                            ->isLocation()
+                            ->geolocate() // add a suffix button which requests and reverse geocodes the device location
+                            ->geolocateIcon('heroicon-o-map')
+                            ->reverseGeocode([
+                                'city'   => '%L',
+                                'state'  => '%D',
+                                'address_postcode' => '%z',
+                                'address' => '%n %S'
+                            ])
+                            ->hidden(fn($get) => $get('location_type') != 'googlemap')
+                            ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                // Set latitude and longitude as before
+                                $set('lang', $state['lat']);
+                                $set('long', $state['lng']);
+                            }),
+                        //  (Kenneth)
 
                         // location choose from a location to attach
                         Select::make('location_id')
@@ -173,7 +197,7 @@ class StoreResource extends Resource
                                         return [$location->id => $location->name . ' - ' . $location->full_address];
                                     })
                             )
-                            ->hidden(fn($get) => $get('location_type') === 'manual')
+                            ->hidden(fn($get) => $get('location_type') != 'existing') //(Kenneth) === 'manual'
                             ->getOptionLabelUsing(fn($value): ?string => Location::find($value)?->name . ' - ' . Location::find($value)?->full_address)
                             ->reactive()
                             ->afterStateUpdated(function ($state, $set) {
@@ -424,10 +448,15 @@ class StoreResource extends Resource
                     ->sortable()
                     ->label('Merchant Name'),
 
-                TagsColumn::make('categories.name')
-                    ->label('Categories')
-                    ->sortable()
-                    ->searchable(),
+				TagsColumn::make('parentCategories.name')
+					->label('Parent Categories')
+					->sortable()
+					->searchable(),
+
+				TagsColumn::make('childCategories.name')
+					->label('Sub Categories')
+					->sortable()
+					->searchable(),
 
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address')

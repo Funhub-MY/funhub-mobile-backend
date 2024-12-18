@@ -17,7 +17,7 @@ class SyncMerchantResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'name' => $this->name,
+            'name' => $this->name,
             'business_name' => $this->business_name,
             'company_reg_no' => $this->company_reg_no,
             'brand_name' => $this->brand_name ?? null,
@@ -50,7 +50,7 @@ class SyncMerchantResource extends JsonResource
             }),
             // 'ratings' => $this->ratings,
             // 'total_ratings' => $this->merchant_ratings_count,
-            'stores' => $this->stores->map(function ($store) {
+            'stores' => $this->merchantStores->map(function ($store) {
                 return [
                     'id' => $store->id,
                     'name' => $store->name,
