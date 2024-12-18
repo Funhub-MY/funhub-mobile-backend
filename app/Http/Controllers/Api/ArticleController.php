@@ -1071,11 +1071,20 @@ class ArticleController extends Controller
 
         if (isset($locationData['google_id']) && $locationData['google_id'] != 0) {
             $locations = Location::where('google_id', $locationData['google_id'])->get();
+			Log::info('Locations retrieved by google_id', [
+				'google_id' => $locationData['google_id'],
+				'locations' => $locations->toArray(),
+			]);
         } else {
             // if location cant be found by google_id, then find by lat,lng
             $locations = Location::where('lat', $locationData['lat'])
                 ->where('lng', $locationData['lng'])
                 ->get();
+			Log::info('Locations retrieved by lat,lng', [
+				'lat' => $locationData['lat'],
+				'lng' => $locationData['lng'],
+				'locations' => $locations->toArray(),
+			]);
         }
         
         if($locations){
