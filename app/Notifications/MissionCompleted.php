@@ -88,6 +88,7 @@ class MissionCompleted extends Notification
                     'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
                     'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                     'frequency' => $this->mission->frequency,
+                    'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false'
                 ])
             ])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -121,6 +122,7 @@ class MissionCompleted extends Notification
                 'complete_mission_image_en_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_EN),
                 'complete_mission_image_zh_url' => $this->mission->getFirstMediaUrl(Mission::COMPLETED_MISSION_COLLECTION_ZH),
                 'frequency' => $this->mission->frequency,
+                'auto_disburse_rewards' => (string) $this->mission->auto_disburse_rewards ? 'true' : 'false'
             ]
         ];
     }

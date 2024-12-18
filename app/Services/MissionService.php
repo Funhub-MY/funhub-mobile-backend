@@ -16,7 +16,7 @@ class MissionService
 {
     protected PointService $pointService;
     protected PointComponentService $pointComponentService;
-    protected User $currentUser;
+    protected $currentUser;
 
     public function __construct(
         PointService $pointService,
@@ -24,7 +24,7 @@ class MissionService
     ) {
         $this->pointService = $pointService;
         $this->pointComponentService = $pointComponentService;
-        $this->currentUser = auth()->user();
+        $this->currentUser = auth()->user(); // possible null but it will be assigned a user when receive an event
     }
 
     /**
