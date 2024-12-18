@@ -64,6 +64,35 @@ class PromotionCodeController extends Controller
                     'claimed_by_id' => $promotionCode->claimed_by_id
                 ]);
 
+                // check if promotion code is active
+                if (!$promotionCode->isActive()) {
+                    return response()->json([
+                        'message' => 'This code is not active or has expired',
+                    ], 400);
+                }
+
+                // check if promotion code group campaign is still active
+                if ($promotionCode->promotionCodeGroup) {
+                    if (!$promotionCode->promotionCodeGroup->status) {
+                        return response()->json([
+                            'message' => 'This promotion campaign is disabled',
+                        ], 400);
+                    }
+
+                    $now = now();
+                    if ($promotionCode->promotionCodeGroup->campaign_until && $now->gt($promotionCode->promotionCodeGroup->campaign_until)) {
+                        return response()->json([
+                            'message' => 'This promotion campaign has ended',
+                        ], 400);
+                    }
+
+                    if ($promotionCode->promotionCodeGroup->campaign_from && $now->lt($promotionCode->promotionCodeGroup->campaign_from)) {
+                        return response()->json([
+                            'message' => 'This promotion campaign has not started yet',
+                        ], 400);
+                    }
+                }
+
                 // check if it's already claimed
                 if ($promotionCode->claimed_by_id) {
                     return response()->json([
