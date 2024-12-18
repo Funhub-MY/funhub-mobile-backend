@@ -569,7 +569,14 @@ class MerchantOfferController extends Controller
 			$redemption_start_date = $claim->created_at;
 			$redemption_end_date = $claim->created_at->addDays($offer->expiry_days)->endOfDay();
 
-            if ($user->email) {
+			$encrypted_data = $this->processEncrypt([
+				'offer_id' => $offer->id,
+				'claim_id' => $claim->id,
+				'phone_no' => $user->phone_no
+			]);
+			$merchantOfferCover = $offer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
+
+			if ($user->email) {
 				try {
 					$user->notify(new PurchasedOfferNotification(
 						$claim->order_no,
@@ -581,9 +588,10 @@ class MerchantOfferController extends Controller
 						$claim->created_at->format('H:i:s'),
 						$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
 						$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
-						$offer->id,
-						$claim->id,
-						$user->phone_no
+						$encrypted_data,
+						$claim->merchantOffer->user->merchant->brand_name,
+						$claim->merchantOffer->user->name,
+						$merchantOfferCover
 					));
 				} catch (\Exception $e) {
 					Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());

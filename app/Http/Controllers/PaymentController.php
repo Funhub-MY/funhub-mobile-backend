@@ -248,6 +248,7 @@ class PaymentController extends Controller
                             ]);
 
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+							$merchantOfferCover = $merchantOffer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
 
 							$transaction->user->notify(new PurchasedOfferNotification(
 								$transaction->transaction_no,
@@ -261,7 +262,8 @@ class PaymentController extends Controller
 								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
                                 $encrypted_data,
                                 $claim->merchantOffer->user->merchant->brand_name,
-                                $transaction->user->name
+                                $transaction->user->name,
+								$merchantOfferCover
 							));
 						} catch (Exception $e) {
 							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
