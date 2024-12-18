@@ -1078,8 +1078,13 @@ class ArticleController extends Controller
                 ->get();
         }
         
+        //  Grab all the same latitude and longitude to find the most matching records.
         if($locations){
-            foreach($locations as $loc){
+            foreach($locations as $keys => $loc){
+                //  Default set the 1st location
+                if($keys == 0){
+                    $location = $loc;
+                }
                 //  Calculate the percentage of similar both text
                 similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
 
