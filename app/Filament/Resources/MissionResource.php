@@ -262,6 +262,7 @@ class MissionResource extends Resource
 
                             Forms\Components\Toggle::make('disable_fcm')
                                 ->label('Disable FCM')
+                                ->helperText('If disabled, no push notification will be sent, but will send in-app notifications.')
                                 ->onIcon('heroicon-s-check-circle')
                                 ->offIcon('heroicon-s-x-circle'),
 
