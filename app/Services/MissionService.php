@@ -16,6 +16,7 @@ class MissionService
 {
     protected PointService $pointService;
     protected PointComponentService $pointComponentService;
+    protected User $currentUser;
 
     public function __construct(
         PointService $pointService,
@@ -23,6 +24,7 @@ class MissionService
     ) {
         $this->pointService = $pointService;
         $this->pointComponentService = $pointComponentService;
+        $this->currentUser = auth()->user();
     }
 
     /**
@@ -117,6 +119,8 @@ class MissionService
      */
     private function processMissionProgress(Mission $mission, User $user, string $eventType): void
     {
+        $this->currentUser = $user; // update current user when processing mission
+        
         Log::info('Processing mission progress', [
             'mission_id' => $mission->id,
             'user_id' => $user->id,
@@ -310,7 +314,7 @@ class MissionService
                 $userMission->pivot->save();
 
                 // Send mission started notification when creating new progress
-                $this->sendMissionStartedNotification($mission, $user);
+                $this->sendMissionStartedNotification($mission, $this->currentUser);
             } else {
                 Log::error('Failed to initialize mission progress - pivot not found', [
                     'mission_id' => $mission->id,
@@ -388,11 +392,11 @@ class MissionService
                         ]);
 
                         // Send mission completed notification
-                        $this->sendMissionCompletedNotification($mission, $userMission->user_id);
+                        $this->sendMissionCompletedNotification($mission, $this->currentUser);
 
                         // Handle auto-disbursement if enabled
                         if ($mission->auto_disburse_rewards) {
-                            $this->disburseReward($mission, $userMission->user);
+                            $this->disburseReward($mission, $this->currentUser);
                         }
                     }
                 }
@@ -533,7 +537,7 @@ class MissionService
     /**
      * Send notifications with proper error handling
      */
-    private function sendMissionStartedNotification(Mission $mission, User $user): void
+    private function sendMissionStartedNotification(Mission $mission, User $user): void 
     {
         try {
             $locale = $user->last_lang ?? config('app.locale');
@@ -552,7 +556,7 @@ class MissionService
         }
     }
 
-    private function sendMissionCompletedNotification(Mission $mission, User $user): void
+    private function sendMissionCompletedNotification(Mission $mission, User $user): void 
     {
         try {
             $user->notify(new MissionCompleted(
@@ -573,10 +577,10 @@ class MissionService
     private function sendRewardReceivedNotification(Mission $mission, User $user, MissionRewardDisbursement $disbursement): void
     {
         try {
-            $user->notify(new RewardReceivedNotification(
+            $this->currentUser->notify(new RewardReceivedNotification(
                 $mission->missionable,
                 $disbursement->reward_quantity,
-                $user,
+                $this->currentUser,
                 $mission->name,
                 $mission
             ));
