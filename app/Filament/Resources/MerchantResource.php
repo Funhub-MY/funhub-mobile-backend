@@ -225,6 +225,7 @@ class MerchantResource extends Resource
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('company_logo')
                             ->label('Company Logo')
+							->required()
                             ->maxFiles(1)
                             ->collection(Merchant::MEDIA_COLLECTION_NAME)
                             // ->required()
