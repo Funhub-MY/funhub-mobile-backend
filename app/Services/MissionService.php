@@ -301,10 +301,7 @@ class MissionService
             Log::info('New mission progress created', [
                 'mission_id' => $mission->id,
                 'user_id' => $user->id,
-                'new_instance_id' => $userMission->pivot->id,
-                'is_completed' => $userMission->pivot->is_completed,
-                'claimed_at' => $userMission->pivot->claimed_at,
-                'current_values' => $userMission->pivot->current_values
+                'mission_data' => $userMission
             ]);
 
             // Initialize the current values for the new mission progress
@@ -404,10 +401,8 @@ class MissionService
 
             Log::info('Mission status after update', [
                 'mission_id' => $mission->id,
-                'is_completed' => $userMission->pivot->is_completed,
-                'claimed_at' => $userMission->pivot->claimed_at,
-                'current_values' => $userMission->pivot->current_values,
-                'frequency' => $mission->frequency
+                'mission_data' => $mission,
+                'usermission_data' => $userMission
             ]);
 
         } catch (\Exception $e) {
