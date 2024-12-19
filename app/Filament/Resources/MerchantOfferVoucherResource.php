@@ -106,24 +106,36 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->label('Voucher Code')
                     ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->where('code', strtoupper($search)); // exact match with upper case
+                        return $query->where('merchant_offer_vouchers.code', strtoupper($search));
                     }),
 
                 (!auth()->user()->hasRole('merchant')) ?  TextColumn::make('campaign.name')
                     ->label('Campaign')
                     ->url(fn ($record) => ($record->merchant_offer->campaign) ? route('filament.resources.merchant-offer-campaigns.edit', $record->merchant_offer->campaign) : null)
-                    ->searchable() : null,
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('campaign', function ($query) use ($search) {
+                            $query->where('merchant_offer_campaigns.name', 'like', "%{$search}%");
+                        });
+                    }) : null,
 
                 (!auth()->user()->hasRole('merchant')) ? TextColumn::make('merchant_offer.name')
                     ->label('Merchant Offer')
                     ->url(fn ($record) => route('filament.resources.merchant-offers.edit', $record->merchant_offer))
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('merchant_offer', function ($query) use ($search) {
+                            $query->where('merchant_offers.name', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable() : null,
 
                 // sku
                 TextColumn::make('merchant_offer.sku')
                     ->label('SKU')
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('merchant_offer', function ($query) use ($search) {
+                            $query->where('merchant_offers.sku', 'like', "%{$search}%");
+                        });
+                    }),
 
                 // financial status (claim status)
                 Tables\Columns\BadgeColumn::make('latestSuccessfulClaim.status')
@@ -173,7 +185,11 @@ class MerchantOfferVoucherResource extends Resource
                 Tables\Columns\TextColumn::make('owner.name')
                     ->label('Purchased By')
                     ->default('-')
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('owner', function ($query) use ($search) {
+                            $query->where('users.name', 'like', "%{$search}%");
+                        });
+                    }),
 
                 Tables\Columns\TextColumn::make('latestSuccessfulClaim.purchase_method')
                     ->label('Purchase Method')
