@@ -149,6 +149,7 @@ class MerchantOfferCampaignResource extends Resource
 										TextInput::make('message')
 											->label('Message')
 											->maxLength(255)
+											->required()
 											->placeholder('Enter a highlight message'),
 									])
 									->maxItems(3)
