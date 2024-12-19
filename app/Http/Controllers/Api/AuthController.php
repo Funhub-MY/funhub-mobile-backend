@@ -597,7 +597,7 @@ class AuthController extends Controller
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
             $user = new User();
-            $user->name = $socialiteUser->getName();
+            // $user->name = $socialiteUser->getName();
             $user->email = $socialiteUser->getEmail();
             $user->facebook_id = $socialiteUser->getId();
             $user->save();
@@ -639,7 +639,7 @@ class AuthController extends Controller
         if(!$user) {
             //if user does not exist in the database, create a new user using the Facebook data
             $user = new User();
-            $user->name = $socialiteUser->getName();
+            // $user->name = $socialiteUser->getName();
             $user->email = $socialiteUser->getEmail();
             $user->google_id = $socialiteUser->getId();
             $user->save();
@@ -745,7 +745,7 @@ class AuthController extends Controller
                 'providerData' => $firebase_user->providerData
             ]);
             $user = new User();
-            $user->name = $name;
+            // $user->name = $name;
             $user->email = $firebase_user->email;
 
             // Save IDs to associated fields in DB for social providers
