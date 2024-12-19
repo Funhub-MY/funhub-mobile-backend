@@ -793,10 +793,10 @@ class AuthController extends Controller
                }
             }
 
-            // update name if null
-            if ($user->name == null || $user->name == '') {
-                $user->update(['name' => $name]);
-            }
+            // // update name if null
+            // if ($user->name == null || $user->name == '') {
+            //     $user->update(['name' => $name]);
+            // }
         }
 
         $user = $user->refresh();
