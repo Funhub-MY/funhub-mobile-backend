@@ -1,4 +1,3 @@
-
 default:
   image: lorisleiva/laravel-docker:8.2
 services:
@@ -31,17 +30,20 @@ building:
     - php artisan migrate --seed
     - php artisan key:generate
     - php artisan optimize
-    
   artifacts:
     paths:
       - vendor/
       - node_modules/
       - .env
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main")'
 
 testing:
   stage: test
   script:
     - ./vendor/bin/pest
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main")'
 
 # deploy_staging:
 #   stage: deploy
