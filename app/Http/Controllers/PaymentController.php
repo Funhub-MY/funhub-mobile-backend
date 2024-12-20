@@ -226,6 +226,7 @@ class PaymentController extends Controller
 						->where('user_id', $transaction->user_id)
 						->latest()
 						->first();
+                        
 					if ($claim) {
 						// redemption dates is claim created_at + offer expiry_days
 						$redemption_start_date = $claim->created_at;
@@ -236,27 +237,26 @@ class PaymentController extends Controller
 							$redemption_end_date = $claim->created_at->endOfDay();// default to one day expired since offer expiry_days is not set
 						}
 					}
-                    if ($transaction->user->email) {
-						try{
-                            $encrypted_data = $this->processEncrypt([
-                                'offer_id' => $claim->merchantOffer->id,
-                                'claim_id' => $claim->id,
-                                'phone_no' => $transaction->user->phone_no
-                            ]);
 
-							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+                    try {
+                        $encrypted_data = $this->processEncrypt([
+                            'offer_id' => $claim->merchantOffer->id,
+                            'claim_id' => $claim->id,
+                            'phone_no' => $transaction->user->phone_no
+                        ]);
 
-                            $this->sendPurchasedOfferNotification(
-                                $transaction,
-                                $merchantOffer,
-                                $redemption_start_date,
-                                $redemption_end_date,
-                                $encrypted_data,
-                                $claim
-                            );
-						} catch (Exception $e) {
-							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
-						}
+                        $merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
+
+                        $this->sendPurchasedOfferNotification(
+                            $transaction,
+                            $merchantOffer,
+                            $redemption_start_date,
+                            $redemption_end_date,
+                            $encrypted_data,
+                            $claim
+                        );
+                    } catch (Exception $e) {
+                        Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
                     }
 
                     if ($transaction->user->phone_no) {
