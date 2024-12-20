@@ -222,29 +222,30 @@ class MissionController extends Controller
     }
 
     /**
-     * Get enabled mission frequency
+     * Get enabled mission frequencies
      *
      * @return MissionResource
      *
      * @group Mission
-    
+     * @response scenario=success {
+     * "data": [
+     *  "one-off",
+     *  "daily",
+     *  "monthly",
+     *  "accumulated"
+     * ]
+     * }
      */
     public function getEnabledMissionFrequency()
     {
-        $frequencies = DB::table('missions')
+        $frequencies = Mission::enabled()
             ->select('frequency')
-            ->where('status', 1)
-            ->whereNull('deleted_at')
-            ->groupBy('frequency')
-            ->get()->toArray();
+            ->distinct()
+            ->pluck('frequency')
+            ->toArray();
 
-        $frequencies = array_column($frequencies, "frequency");
-        return response()->json(
-            [
-                'data' => $frequencies
-            ]
-        );
+        return response()->json([
+            'data' => $frequencies
+        ]);
     }
-    
-
 }
