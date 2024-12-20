@@ -28,7 +28,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - velit
+          - tempore
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -106,7 +106,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - velit
+        - tempore
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -133,7 +133,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 6fZ51eab84VhEkcdagv36DP'
+      - 'Bearer ceh1fa5a6dkV4bPD683EgZv'
     controller: null
     method: null
     route: null
@@ -165,7 +165,7 @@ endpoints:
         description: 'optional Location Ids to Filter. Example [1,2,3]'
         required: false
         example:
-          - cum
+          - rem
         type: 'string[]'
         enumValues: []
         exampleWasSpecified: false
@@ -243,7 +243,7 @@ endpoints:
         custom: []
     cleanBodyParameters:
       location_ids:
-        - cum
+        - rem
       name: '"KFC SS15"'
       state_id: 1
       country_id: 1
@@ -270,7 +270,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer ZV8ae1c4f6gPDhE56vd3akb'
+      - 'Bearer Ecdevaf5DbhZ61PVkg4863a'
     controller: null
     method: null
     route: null
@@ -336,7 +336,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer E4chVDvedagkP86135Zfa6b'
+      - 'Bearer a1b6ga48Zvh3eVfPDEdkc65'
     controller: null
     method: null
     route: null
