@@ -669,9 +669,8 @@ class MerchantOfferController extends Controller
                 config('app.default_payment_gateway'),
                 $user->id,
                 ($walletType) ? $walletType : $request->fiat_payment_method,
-                // $discount_amount,
-                $request->has('channel') ? $request->channel : 'app'
-                ($request->has('email') ? $request->email : null),
+                $request->get('channel', 'app'),
+                $request->get('email')
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
@@ -1419,4 +1418,36 @@ class MerchantOfferController extends Controller
             ]);
         }
     }
+
+    public function processEncrypt($data) {
+        $checkout_secret = config('app.funhub_checkout_secret');
+
+        try {
+            // we use the same key and IV
+            $key = hex2bin($checkout_secret);
+            $iv =  hex2bin($checkout_secret);
+
+            // we receive the encrypted string from the post
+            // finally we trim to get our original string
+            $encrypted_data = openssl_encrypt(json_encode($data), 'AES-128-CBC', $key, 0, $iv);
+
+            if ($encrypted_data === false) {
+                Log::error('Error encrypting data', [
+                    'error' => 'Encryption Failed - '. openssl_error_string(),
+                    'data' => json_encode($data),
+                ]);
+            }
+
+            return $encrypted_data;
+
+        } catch (\Exception $e) {
+            Log::error('Error encrypting data', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+
+            return '';
+        }
+    }
+    
 }
