@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\Article;
 use Illuminate\Bus\Queueable;
 use App\Models\SystemNotification;
+use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use Illuminate\Notifications\Notification;
@@ -93,11 +94,19 @@ class CustomNotification extends Notification implements ShouldQueue
         if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
             // Set the class of the 'object' based on the content type
             $data['object'] = $this->customNotification->content_type; // App\Models\Article / User / MerchantOffer
-            $data['object_id'] = $this->customNotification->content_id; // article_id, user_id, offer_id
+            $data['object_id'] = (string)$this->customNotification->content_id; // article_id, user_id, offer_id
+
+			Log::info('FCM Notification Object Details', [
+				'object' => $data['object'],
+				'object_id' => $data['object_id'],
+			]);
 
 			if ($this->customNotification->content_type == Article::class) {
 				// Retrieve the Article based on the article_id (object_id)
 				$article = Article::find($this->customNotification->content_id);
+				Log::info('FCM Notification Object Details 2', [
+					'article' => $article
+				]);
 
 				if ($article) {
 					$data['article_type'] = $article->type ?? null;
@@ -105,6 +114,10 @@ class CustomNotification extends Notification implements ShouldQueue
 					\Illuminate\Support\Facades\Log::error('Article not found', ['article_id' => $this->customNotification->content_id]);
 					$data['article_type'] = null;
 				}
+
+				Log::info('FCM Notification Object Details 3', [
+					'article_type' => $data['article_type']
+				]);
 			}
         }
 
