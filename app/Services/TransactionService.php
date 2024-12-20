@@ -22,8 +22,8 @@ class TransactionService {
      *
      * @return Transaction
      */
-    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $transaction_no = null, $discount = 0, $points_to_use = 0)
-    {
+    public function create($transactionable, $amount, $gateway, $user_id, $payment_method = 'fpx', $channel = 'app', $email = null, $transaction_no = null, $discount = 0, $points_to_use = 0) {
+    
         if ($transaction_no == null) {
             $transaction_no = $this->generateTransactionNo();
         }
@@ -52,6 +52,7 @@ class TransactionService {
                 'user_id' => $user_id,
                 'amount' => $amount,
                 'gateway' => $gateway,
+                'email' => $email,
                 'status' => Transaction::STATUS_PENDING,
                 'gateway_transaction_id' => 'N/A',
                 'payment_method' => $payment_method,
