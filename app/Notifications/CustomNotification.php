@@ -94,19 +94,11 @@ class CustomNotification extends Notification implements ShouldQueue
         if ($this->customNotification->redirect_type == SystemNotification::REDIRECT_DYNAMIC && $this->customNotification->content_type) {
             // Set the class of the 'object' based on the content type
             $data['object'] = $this->customNotification->content_type; // App\Models\Article / User / MerchantOffer
-            $data['object_id'] = (string)$this->customNotification->content_id; // article_id, user_id, offer_id
-
-			Log::info('FCM Notification Object Details', [
-				'object' => $data['object'],
-				'object_id' => $data['object_id'],
-			]);
+            $data['object_id'] = (string) $this->customNotification->content_id ?? 'nothing object_id'; // article_id, user_id, offer_id
 
 			if ($this->customNotification->content_type == Article::class) {
 				// Retrieve the Article based on the article_id (object_id)
 				$article = Article::find($this->customNotification->content_id);
-				Log::info('FCM Notification Object Details 2', [
-					'article' => $article
-				]);
 
 				if ($article) {
 					$data['article_type'] = $article->type ?? null;
@@ -115,9 +107,6 @@ class CustomNotification extends Notification implements ShouldQueue
 					$data['article_type'] = null;
 				}
 
-				Log::info('FCM Notification Object Details 3', [
-					'article_type' => $data['article_type']
-				]);
 			}
         }
 
