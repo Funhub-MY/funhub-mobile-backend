@@ -20,6 +20,8 @@ use App\Services\PointService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
+
 class PaymentController extends Controller
 {
     protected $gateway;
@@ -236,39 +238,25 @@ class PaymentController extends Controller
 					}
                     if ($transaction->user->email) {
 						try{
-
                             $encrypted_data = $this->processEncrypt([
                                 'offer_id' => $claim->merchantOffer->id,
                                 'claim_id' => $claim->id,
                                 'phone_no' => $transaction->user->phone_no
                             ]);
 
-                            Log::info('Encrypted Data',[
-                                'encrypted_data' => $encrypted_data,
-                            ]);
-
 							$merchantOffer = MerchantOffer::where('id', $transaction->transactionable_id)->first();
-							$merchantOfferCover = $merchantOffer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
 
-							$transaction->user->notify(new PurchasedOfferNotification(
-								$transaction->transaction_no,
-								$transaction->updated_at,
-								$merchantOffer->name,
-								1, $transaction->amount,
-								'MYR',
-								$transaction->created_at->format('Y-m-d'),
-								$transaction->created_at->format('H:i:s'),
-								$redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
-								$redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+                            $this->sendPurchasedOfferNotification(
+                                $transaction,
+                                $merchantOffer,
+                                $redemption_start_date,
+                                $redemption_end_date,
                                 $encrypted_data,
-                                $claim->merchantOffer->user->merchant->brand_name,
-                                $transaction->user->name,
-								$merchantOfferCover
-							));
+                                $claim
+                            );
 						} catch (Exception $e) {
 							Log::error('Error sending PurchasedOfferNotification: ' . $e->getMessage());
 						}
-
                     }
 
                     if ($transaction->user->phone_no) {
@@ -531,8 +519,15 @@ class PaymentController extends Controller
 
             try {
                 $locale = $transaction->user->last_lang ?? config('app.locale');
-                // notify
-                $transaction->user->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
+                
+                if ($transaction->channel == 'funhub_web' && $transaction->email) {
+                    // Send email notification to transaction email for web transactions
+                    Notification::route('mail', $transaction->email)
+                        ->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
+                } else {
+                    // Send notification to user for app transactions
+                    $transaction->user->notify((new OfferClaimed($merchantOffer, $transaction->user, 'fiat', $transaction->amount))->locale($locale));
+                }
             } catch (Exception $ex) {
                 Log::error('Failed to send notification', [
                     'error' => $ex->getMessage(),
@@ -810,6 +805,48 @@ class PaymentController extends Controller
         return response()->json([
             'funbox_ringgit_value' => config('app.funbox_ringgit_value')
         ]);
+    }
+
+    /**
+     * Send purchased offer notification based on transaction channel
+     */
+    private function sendPurchasedOfferNotification($transaction, $merchantOffer, $redemption_start_date, $redemption_end_date, $encrypted_data, $claim)
+    {
+        Log::info('[PaymentController] Send Purchased Offer Notification', [
+            'transaction' => $transaction,
+            'merchantOffer' => $merchantOffer,
+            'redemption_start_date' => $redemption_start_date,
+            'redemption_end_date' => $redemption_end_date,
+            'encrypted_data' => $encrypted_data,
+            'claim' => $claim
+        ]);
+        
+        $merchantOfferCover = $merchantOffer->getFirstMediaUrl(MerchantOffer::MEDIA_COLLECTION_NAME);
+        
+        $notification = new PurchasedOfferNotification(
+            $transaction->transaction_no,
+            $transaction->updated_at,
+            $merchantOffer->name,
+            1,
+            $transaction->amount,
+            'MYR',
+            $transaction->created_at->format('Y-m-d'),
+            $transaction->created_at->format('H:i:s'),
+            $redemption_start_date ? $redemption_start_date->format('j/n/Y') : null,
+            $redemption_end_date ? $redemption_end_date->format('j/n/Y') : null,
+            $encrypted_data,
+            $claim->merchantOffer->user->merchant->brand_name,
+            $transaction->user->name,
+            $merchantOfferCover
+        );
+
+        if ($transaction->channel == 'funhub_web' && $transaction->email) {
+            // send email notification to transaction email
+            Notification::route('mail', $transaction->email)->notify(notification: $notification);
+        } else {
+            // send notification to user for app transactions
+            $transaction->user->notify($notification);
+        }
     }
 
     public function processEncrypt($data) {

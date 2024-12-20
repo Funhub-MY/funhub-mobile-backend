@@ -450,6 +450,7 @@ class MerchantOfferController extends Controller
      * @bodyParam card_id integer required_if:fiat_payment_method,card Card ID. Example: 1
      * @bodyParam wallet_type string optional Wallet Type. Example: TNG/FPX-CIMB
      * @bodyParam channel string optional Channel. Example: app/funhub_web
+     * @bodyParam email string optional Email for web channel to fire purchased email after successful purchase. Example: john@email.com
      * @bodyParam use_point_discount boolean optional Use Point(Funbox) Discount. Example: 1
      * @bodyParam points_to_use integer optional Points(Funbox) to Use. Example: 2
      * @response scenario=success {
@@ -670,6 +671,7 @@ class MerchantOfferController extends Controller
                 ($walletType) ? $walletType : $request->fiat_payment_method,
                 // $discount_amount,
                 $request->has('channel') ? $request->channel : 'app'
+                ($request->has('email') ? $request->email : null),
             );
 
             // if gateway is mpay call mpay service generate Hash for frontend form
