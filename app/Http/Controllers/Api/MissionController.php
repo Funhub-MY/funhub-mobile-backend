@@ -220,4 +220,31 @@ class MissionController extends Controller
 
         return MissionResource::collection($missions);
     }
+
+    /**
+     * Get enabled mission frequency
+     *
+     * @return MissionResource
+     *
+     * @group Mission
+    
+     */
+    public function getEnabledMissionFrequency()
+    {
+        $frequencies = DB::table('missions')
+            ->select('frequency')
+            ->where('status', 1)
+            ->whereNull('deleted_at')
+            ->groupBy('frequency')
+            ->get()->toArray();
+
+        $frequencies = array_column($frequencies, "frequency");
+        return response()->json(
+            [
+                'data' => $frequencies
+            ]
+        );
+    }
+    
+
 }
