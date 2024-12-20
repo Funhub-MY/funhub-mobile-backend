@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
 class MerchantRegister extends Component implements HasForms
 {
     use InteractsWithForms;
@@ -371,14 +372,19 @@ class MerchantRegister extends Component implements HasForms
                 ->schema([
                     Fieldset::make('Phone Number')
                         ->schema([
-                            TextInput::make('phone_country_code')
-                                ->placeholder('Country Code eg. 60')
-                                ->default('60')
+                            Select::make('phone_country_code')
                                 ->label('')
-                                ->afterStateHydrated(function ($component, $state, $livewire) {
-                                    // ensure no symbols only numbers
-                                    $component->state(preg_replace('/[^0-9]/', '', $state));
+                                ->options(function() {
+                                    return Country::whereNotNull('phone_code')
+                                        ->orderBy('name')
+                                        ->get()
+                                        ->mapWithKeys(function ($country) {
+                                            return [$country->phone_code => "+{$country->phone_code} ({$country->name})"];
+                                        });
                                 })
+                                ->required()
+                                ->default('60') // Malaysia
+                                ->searchable()
                                 ->columnSpan(['lg' => 1]),
                             TextInput::make('business_phone_no')
                                 ->placeholder('eg. 123456789 (without zero infront)')
@@ -582,7 +588,7 @@ class MerchantRegister extends Component implements HasForms
                         ];
                         Validator::make($data, [
                             // 'pic_ic_no' => 'numeric',
-                            'authorised_personne_designation' => 'required',
+                            'authorised_personnel_designation' => 'required',
                             'authorised_personnel_name' => 'required',
                             'authorised_personnel_ic_no' => 'required',
                         ])->validate();
@@ -757,4 +763,3 @@ class MerchantRegister extends Component implements HasForms
                 ]);
     }
 }
-
