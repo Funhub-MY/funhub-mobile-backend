@@ -8,6 +8,7 @@ use App\Models\MerchantOfferCampaign;
 use App\Models\MerchantOfferSchedule;
 use App\Models\MerchantOfferVoucherMovement;
 use App\Models\MerchantOfferCampaignSchedule;
+use App\Models\MerchantOfferVoucher;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -15,12 +16,12 @@ use Illuminate\Support\Facades\Log;
 /**
  * Update campaign schedules
  * Move or create new schedules easily with just providing quantities
- * 
+ *
  * Adhoc requested by BD to put up sales for balance unsold vouchers.
  */
 class UpdateCampaignSchedules extends Command
 {
-    protected $signature = 'campaign:update-schedules 
+    protected $signature = 'campaign:update-schedules
                           {campaign_id : The ID of the campaign to update}
                           {total_new_quantity : Total new quantity to create}
                           {total_move_quantity : Total quantity to move from existing offers}
@@ -73,7 +74,7 @@ class UpdateCampaignSchedules extends Command
 
         // start from tomorrow at start of day
         $startDate = now()->addDay()->startOfDay();
-        
+
         $movedCount = 0;
         $newCount = 0;
 
@@ -127,15 +128,27 @@ class UpdateCampaignSchedules extends Command
                 $this->info("Moved " . $vouchersToMove->count() . " vouchers to schedule " . ($i + 1));
             }
 
+
             // Generate new vouchers for remaining quantity
             $newQuantity = $scheduleQuantity - $moveQuantity;
             if ($newQuantity > 0) {
+                // create vouchers
+                $voucherData = [];
+                for ($i = 0; $i < $schedule->quantity; $i++) {
+                    $voucherData[] = [
+                        'merchant_offer_id' => $newOffer->id,
+                        'code' => MerchantOfferVoucher::generateCode(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                MerchantOfferVoucher::insert($voucherData);
                 $newCount += $newQuantity;
                 $this->info("Created " . $newQuantity . " new vouchers for schedule " . ($i + 1));
             }
 
-            $this->info("Schedule " . ($i + 1) . "/" . $numberOfSchedules . 
-                       " - Available from " . $availableAt . " to " . $availableUntil . 
+            $this->info("Schedule " . ($i + 1) . "/" . $numberOfSchedules .
+                       " - Available from " . $availableAt . " to " . $availableUntil .
                        " with " . $moveQuantity . " moved and " . $newQuantity . " new vouchers");
 
             // move startDate for next schedule
@@ -193,7 +206,7 @@ class UpdateCampaignSchedules extends Command
     private function createMerchantOffer($campaign, $schedule, $quantity, $publishAt = null)
     {
         $publishAt = $publishAt ?? now()->addDay()->startOfDay();
-        
+
         $newOffer = MerchantOffer::create([
             'user_id' => $campaign->user_id,
             'store_id' => $campaign->store_id ?? null,
