@@ -134,7 +134,7 @@ class UpdateCampaignSchedules extends Command
             if ($newQuantity > 0) {
                 // create vouchers
                 $voucherData = [];
-                for ($i = 0; $i < $schedule->quantity; $i++) {
+                for ($i = 0; $i < $newQuantity; $i++) {
                     $voucherData[] = [
                         'merchant_offer_id' => $newOffer->id,
                         'code' => MerchantOfferVoucher::generateCode(),
