@@ -1192,12 +1192,12 @@ class MerchantOfferController extends Controller
         if ($request->has('id')) {
             $offer = MerchantOffer::where('id', $request->id)
                 ->published()
-                ->where('available_for_web', true)
+                // ->where('available_for_web', true)
                 ->first();
         } else {
             $offer = MerchantOffer::where('sku', $request->sku)
                 ->published()
-                ->where('available_for_web', true)
+                // ->where('available_for_web', true)
                 ->first();
         }
 

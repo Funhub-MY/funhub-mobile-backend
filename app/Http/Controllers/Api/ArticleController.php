@@ -1861,8 +1861,8 @@ class ArticleController extends Controller
             'slug' => 'required_if:id,null|string',
         ]);
 
-        $article = Article::where('available_for_web', true)
-            ->published()
+        // $article = Article::where('available_for_web', true)
+        $article = Article::published()
             ->where('visibility', Article::VISIBILITY_PUBLIC)
             ->where(function ($query) use ($request) {
                 if ($request->has('id')) {
