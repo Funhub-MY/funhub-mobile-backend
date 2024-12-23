@@ -450,13 +450,11 @@ class StoreResource extends Resource
 
 				TagsColumn::make('parentCategories.name')
 					->label('Parent Categories')
-					->sortable()
-					->searchable(),
+					->sortable(),
 
 				TagsColumn::make('childCategories.name')
 					->label('Sub Categories')
-					->sortable()
-					->searchable(),
+					->sortable(),
 
                 Tables\Columns\TextColumn::make('business_phone_no'),
                 Tables\Columns\TextColumn::make('address')
@@ -517,6 +515,23 @@ class StoreResource extends Resource
                                     $query->whereIn('merchant_category_id', (array) $data['categories']);
                                 });
                             }
+                        }
+                    }),
+                Filter::make('child_categories')
+                    ->form([
+                        Select::make('child_categories')
+                            ->multiple()
+                            ->label('Child Categories')
+                            ->options(function () {
+                                return MerchantCategory::whereNotNull('parent_id')->pluck('name', 'id');
+                            })
+                            ->placeholder('Select Categories'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if (!empty($data['child_categories'])) {
+                            $query->whereHas('categories', function (Builder $query) use ($data) {
+                                $query->whereIn('merchant_category_id', $data['child_categories']);
+                            });
                         }
                     })
             ])
