@@ -1079,7 +1079,16 @@ class ArticleController extends Controller
         }
         
         if($locations){
+<<<<<<< Updated upstream
             foreach($locations as $loc){
+=======
+            foreach($locations as $keys => $loc){
+                //  Default set the 1st location
+                if($keys == 0){
+                    $location = $loc;
+                }
+                
+>>>>>>> Stashed changes
                 //  Calculate the percentage of similar both text
                 similar_text(strtolower($locationData['name']), strtolower($loc->name), $percentage);
 
